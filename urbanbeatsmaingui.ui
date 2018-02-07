@@ -116,7 +116,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPlainTextEdit" name="OutputConsole"/>
+        <widget class="QTextEdit" name="OutputConsole"/>
        </item>
        <item>
         <widget class="QProgressBar" name="ProgressBar">
@@ -500,11 +500,21 @@
         </item>
         <item>
          <property name="text">
-          <string>Soil Classification</string>
+          <string>Soil</string>
          </property>
          <item>
           <property name="text">
            <string>&lt;no data&gt;</string>
+          </property>
+         </item>
+        </item>
+        <item>
+         <property name="text">
+          <string>Water Bodies</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>&lt;none&gt;</string>
           </property>
          </item>
         </item>
@@ -535,6 +545,16 @@
          <item>
           <property name="text">
            <string>&lt;no data&gt;</string>
+          </property>
+         </item>
+        </item>
+        <item>
+         <property name="text">
+          <string>Employment</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>&lt;none&gt;</string>
           </property>
          </item>
         </item>
