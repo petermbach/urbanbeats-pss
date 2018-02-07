@@ -22,8 +22,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 __author__ = "Peter M. Bach"
+__copyright__ = "Copyright 2012. Peter M. Bach"
 
-# --- CODE STRUCTURE ---
+# --- CODE STRUCTURE --- --- --- --- --- ---
 #       1.) CORE LIBRARY IMPORTS
 #       2.) URBANBEATS LIBRARY IMPORTS
 #       3.) GUI IMPORTS
@@ -32,10 +33,14 @@ __author__ = "Peter M. Bach"
 #       6.) START SCREEN LAUNCH
 # --- --- --- --- --- --- --- --- --- --- ---
 
-
-# --- CORE LIBRARY IMPORTS ---
-import sys, os, time, random, webbrowser, subprocess
-
+# --- PYTHON LIBRARY IMPORTS ---
+import sys
+import os
+import time
+import random
+import webbrowser
+import subprocess
+import xml.etree.ElementTree as ET
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 
@@ -45,67 +50,279 @@ from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKit
 from urbanbeatsmaingui import Ui_MainWindow
 from startscreen import Ui_StartDialog
 
+
 # --- MAIN GUI FUNCTION ---
 class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self, parent=None):
-        QtWidgets.QMainWindow.__init__(self, parent)
+    """The class definition for the UrbanBEATS Main Window. The main window
+    opens during the main runtime loop and manages the calls to all other GUIs. It
+    links with the model core."""
+    def __init__(self):
+        QtWidgets.QMainWindow.__init__(self)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        # --- INITIALIZATION ---
+        self.ui.OutputConsole.append("<b>=================================<b>")
+        self.ui.OutputConsole.append("<b>UrbanBEATS OUTPUT CONSOLE<b>")
+        self.ui.OutputConsole.append("<b>=================================<b>\n")
+        self.consoleobserver = ConsoleObserver()
+
+        # --- SIGNAL DEFINITIONS ---
 
 
+        # --- WORKFLOW VARIABLES ---
+        self.__saveProjectState = True      # True = unsaved, False = saved - used to track changes in workflow
+        self.__activeSimulationObject = None
+        self.__activeprojectpath = "C:\\"
+
+        self.__global_options = {}
+        self.__dtype_names = []
+
+        # --- GUI SIGNALS AND SLOTS ---
+        # FILE MENU
+        # self.ui.actionNew_Project.triggered.connect()
+        # self.ui.actionOpen_Project.triggered.connect()
+        # self.ui.actionSave.triggered.connect()
+        # self.ui.actionSave_As.triggered.connect()
+        # self.ui.actionImport_Project.triggered.connect()
+        # self.ui.actionExport_Project.triggered.connect()
+        # # self.ui.actionQuit.triggered.connect() - implemented through QtDesigner
+        #
+        # # EDIT MENU
+        # self.ui.actionEdit_Project_Details.triggered.connect()
+        # self.ui.actionPreferences.triggered.connect()
+        #
+        # # PROJECT MENU
+        self.ui.actionView_Project_Description.triggered.connect(self.testfunction)
+        # self.ui.actionView_Full_Project_Log.triggered.connect()
+        # self.ui.actionDefine_New_Scenario.triggered.connect()
+        # self.ui.actionDelete_Scenario.triggered.connect()
+        #
+        # # DATA MENU
+        # self.ui.actionAdd_Data.triggered.connect()
+        # self.ui.actionImport_Archive_File.triggered.connect()
+        # self.ui.actionImport_Archive_from_Project.triggered.connect()
+        # self.ui.actionExport_Data_Archive.triggered.connect()
+        # self.ui.actionReset_Data_Library.triggered.connect()
+        #
+        # # SIMULATION MENU
+        # # Do this much later once GUIs for modules have been defined.
+        #
+        # # ADVANCED MENU
+        # self.ui.actionModel_Calibration_Viewer.triggered.connect()
+        #
+        # # WINDOW MENU
+        # self.ui.actionMinimize.triggered.connect()
+        # self.ui.actionOpen_Project_Folder.triggered.connect()
+        # self.ui.actionResults_Viewer.triggered.connect()
+        #
+        # # HELP MENU
+        # self.ui.actionAbout.triggered.connect()
+        # self.ui.actionView_Documentation.triggered.connect()
+        # self.ui.actionOnline_Help.triggered.connect()
+        # self.ui.actionSubmit_a_Bug_Report.triggered.connect()
+        # self.ui.actionLike_on_Facebook.triggered.connect()
+        # self.ui.actionShare_on_Twiter.triggered.connect()
+
+        # OBSERVER PATTERN - CONSOLE UPDATE
+        self.consoleobserver.updateConsole[str].connect(self.printc)
+
+    def printc(self, textmessage):
+        """Print to console function, adds the textmessage to the console"""
+        if "PROGRESSUPDATE" in str(textmessage):
+            progress = textmessage.split('||')
+            #self.updateProgressBar(int(progress[1]))
+            pass
+        else:
+            self.ui.OutputConsole.append(str("<font color=\"#93cbc7\">"+time.asctime())+"</font> | "+str(textmessage))
 
 
-# --- CONSOLTE OBSERVER ---
+    def testfunction(self):
+        self.consoleobserver.update_observer("Hello World")
 
 
+    def set_options_from_config(self, filepath):
+        """Parses config.cfg file and saves all attributes into the self.__global_options dictionary"""
+        options = ET.parse(filepath+"/config.cfg")
+        root = options.getroot()
+
+        for section in root.find('options'):
+            for child in section:
+                self.__global_options[child.tag] = child.text
+
+
+    def resetConfigFile(self):
+        """Resets all default values in the .cfg file."""
+        #ubfiles.resetGlobalOptions(UBEATSROOT)
+        self.setOptionsFromConfig(UBEATSROOT)
+
+    # def create_new_project_instance(self):
+    #     """Creates a new instance of an UrbanBEATS Core Program."""
+    #     newsimulation = ubc.UrbanBeatsSim(UBEATSROOT)
+    #     newsimulation.register_observer(self.consoleobserver)
+    #     return newsimulation
+
+    def set_active_simulation_object(self, simobjectfromcore):
+        self.__activeSimulationObject = simobjectfromcore
+
+    def reverse_save_project_state(self):
+        """Reverses the state of saveProjectState. Tracks changes made to project settings"""
+        self.__saveProjectState = not self.__saveProjectState
+
+    def save_project(self):
+        """Saves the project's current state, overwriting the existing project."""
+        pass
+
+    def close_event(self, event):
+        """Shows a message box before closing the program to confirm with the user."""
+
+        quit_msg = "Would you like to save your work before quitting?"
+        reply = QtWidgets.QMessageBox.question(self, 'Close Program?',
+                                               quit_msg, QtWidgets.QMessageBox.Yes,
+                                               QtWidgets.QMessageBox.No,
+                                               QtWidgets.QMessageBox.Cancel)
+        if reply == QtWidgets.QMessageBox.Yes:
+            self.saveProject()
+            event.accept()
+        elif reply == QtWidgets.QMessageBox.No:
+            event.accept()
+        else:
+            event.ignore()
+
+    # FUNCTIONS TO DO
+    def checks_before_run(self):
+        pass
+
+    def raise_ub_error_message(self, message):
+        pass
+
+    def run_simulation(self):
+        pass
+
+    def run_simulation_perfonly(self):
+        pass
+
+
+# --- CONSOLE OBSERVER ---
+class ConsoleObserver(QtCore.QObject):
+    """Defines the observer class that will work with the console window in
+    UrbanBEATS' main window."""
+
+    updateConsole = QtCore.pyqtSignal(str, name="updateConsole")
+
+    def update_observer(self, textmessage):
+        """Emits <updateConsole> signal"""
+        self.updateConsole.emit(textmessage)
 
 
 # --- START SCREEN LAUNCH ---
 class StartScreenLaunch(QtWidgets.QDialog):
+    """Class definition for the Getting Started Screen that launches when
+    UrbanBEATS starts up. The dialog has several options for the user to choose
+    including New, Open, Import, Website/Online service + options, help and quit."""
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
-        self.ui = Ui_StartDialog()
-        self.ui.setupUi(self)
+        self.ui = Ui_StartDialog()      # Assign an instance of the UI class to variable
+        self.ui.setupUi(self)           # Call setup to set up the UI
+
+        # --- SIGNALS AND SLOTS ---
+        self.ui.NewProject_button.clicked.connect(self.startup_new_project_window)
+        self.ui.OpenProject_button.clicked.connect(self.startup_open_project)
+        self.ui.ImportProject_button.clicked.connect(self.startup_import_project)
+        self.ui.VisitWeb_button.clicked.connect(self.startup_web)
+        self.ui.OptionsButton.clicked.connect(self.startup_options)
+        self.ui.HelpButton.clicked.connect(self.startup_help)
+        self.ui.QuitButton.clicked.connect(self.startup_quit)
+
+    def startup_new_project_window(self):
+        """Called when user clicks on Begin New Project, emits <startupNew> signal."""
+        self.accept()   #closes dialog
+        self.emit(QtCore.pyqtSignal(name="startupNew"))
+
+    def startup_open_project(self):
+        """Called when user clicks on Open Existing Project, emits <startupOpen> signal."""
+        self.accept()   #closes dialog
+        self.emit(QtCore.pyqtSignal(name="startupOpen"))
+
+    def startup_import_project(self):
+        """Called when user clicks on Import Existing Project, emits <startupImport> signal."""
+        self.accept()   #closes dialog
+        self.emit(QtCore.pyqtSignal(name="startupImport"))
+
+    @staticmethod
+    def startup_web(self):
+        """Called when user clicks on visit Ubeatsmodel.com, emits <startupWeb> signal."""
+        webbrowser.open("http://urbanbeatsmodel.com")
+
+    def startup_options(self):
+        """Called when Options button clicked, opens the options dialog box."""
+        pass
+
+    def startup_help(self):
+        """Called when Help button clicked, opens documentation."""
+        pass
+
+    def startup_quit(self):
+        """Called when Quit button clicked, quits the program."""
+        self.accept()
+        sys.exit()
 
 
 # --- MAIN PROGRAM RUNTIME ---
 if __name__ == "__main__":
 
-    #--- OBTAIN AND STORE PATH DATA FOR PROGRAM ---
+    # --- OBTAIN AND STORE PATH DATA FOR PROGRAM ---
     UBEATSROOT = os.path.dirname(sys.argv[0])  # Obtains the program's root directory
     UBEATSROOT = UBEATSROOT.encode('string-escape')  # To avoid weird bugs e.g. if someone's folder path
 
-    print UBEATSROOT
-    # contains escape characters e.g. \testing or \newSoftware
-
-    random.seed()
+    random.seed()   #Seed the random numbers
 
     # Someone is launching this directly
     # Create the QApplication
     app = QtWidgets.QApplication(sys.argv)
 
+    # --- I18N Localization ---
+    # To create a translation, follow these steps:
+    #   (1) run the command: pylupdate5 <GUI file>.py -ts <translation_file>.ts
+    #   (2) Open the file with QLinguist, set the language options and edit the file with translations.
+    #       Save the .ts file
+    #   (3) in the command prompt, run: lrelease <translation_file>.ts    <--- same path as translation file
+    #       This creates a qmake file: .qm
+    #   (4) In the program runtime, here is the following code to select the correct translation file and
+    #       call the translator (continued below - search for tag i18n step 5)
+    #   (5) Final step to translate UI is to call installTranslator(translator) on the app variable.
+    # File Naming Convention: Needs to follow <lang>_<region>.ts convention
+    #   <lang> = ISO 639-1 (see https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) and
+    #   <region> = ISO3166-1 (see https://en.wikipedia.org/wiki/ISO_3166-1)
+    translator = QtCore.QTranslator()
+    translator.load("ubjapa")
+    #app.installTranslator(translator)
+
+    # --- SPLASH SCREEN ---
     splash_matrix = ["1", "2", "3", "4", "5"]
-    # Splash Screen
     splash_pix = QtGui.QPixmap("media/splashscreen" + splash_matrix[random.randint(0, 4)] + ".png")
     splash = QtWidgets.QSplashScreen(splash_pix, QtCore.Qt.WindowStaysOnTopHint)
     splash.setMask(splash_pix.mask())
     splash.show()
+
     app.processEvents()
 
     # Simulate something that takes time
-    time.sleep(3)
+    time.sleep(3)       # "Marvel at the beautiful splash screen!"
 
-    # Main Window
+    # --- MAIN WINDOW AND APPLICATION LOOP ---
+    # Setup Main Window
     main_window = MainWindow()
     main_window.showMaximized()
-    splash.finish(main_window)
+    splash.finish(main_window)  # remove splashscreen, follow by main window
 
     # Enter the main loop
     start_screen = StartScreenLaunch()
-    #main_window.setOptionsFromConfig(UBEATSROOT)
-    #QtCore.QObject.connect(start_screen, QtCore.SIGNAL("startupOpen"), main_window.openExistingProject)
-    #QtCore.QObject.connect(start_screen, QtCore.SIGNAL("startupNew"), main_window.beginNewProjectDialog)
-    start_screen.exec_()
+    main_window.set_options_from_config(UBEATSROOT)
 
-    sys.exit(app.exec_())
+    # Signals for the Main Window and Start Screen Connection
+    # QtCore.QObject.connect(start_screen, QtCore.SIGNAL("startupOpen"), main_window.openExistingProject)
+    # QtCore.QObject.connect(start_screen, QtCore.SIGNAL("startupNew"), main_window.beginNewProjectDialog)
+
+    start_screen.exec_()
+    sys.exit(app.exec_())   # END OF MAIN WINDOW LOOP
