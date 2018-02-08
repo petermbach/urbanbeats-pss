@@ -69,7 +69,7 @@
    <item>
     <widget class="QTabWidget" name="options_tabs">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="general_tab">
       <attribute name="title">
@@ -88,7 +88,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-118</y>
+            <y>0</y>
             <width>457</width>
             <height>577</height>
            </rect>
@@ -1100,10 +1100,44 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>options_tabs</tabstop>
+  <tabstop>general_scrollArea</tabstop>
+  <tabstop>modellername_line</tabstop>
+  <tabstop>modelleraffil_line</tabstop>
+  <tabstop>projectlog_simple</tabstop>
+  <tabstop>projectlog_compreh</tabstop>
+  <tabstop>lang_combo</tabstop>
+  <tabstop>location_combo</tabstop>
+  <tabstop>coords_line</tabstop>
+  <tabstop>projpath_line</tabstop>
+  <tabstop>projpath_button</tabstop>
+  <tabstop>temppath_line</tabstop>
+  <tabstop>temppath_button</tabstop>
+  <tabstop>temppath_check</tabstop>
+  <tabstop>bodytext_combo</tabstop>
+  <tabstop>consolets_combo</tabstop>
+  <tabstop>error_combo</tabstop>
+  <tabstop>numiter_spin</tabstop>
+  <tabstop>tolerance_spin</tabstop>
+  <tabstop>decision_combo</tabstop>
+  <tabstop>mapstyle_combo</tabstop>
+  <tabstop>tileserver_line</tabstop>
+  <tabstop>cache_check</tabstop>
+  <tabstop>offline_check</tabstop>
+  <tabstop>coords_combo</tabstop>
+  <tabstop>epsg_line</tabstop>
+  <tabstop>epanetpath_line</tabstop>
+  <tabstop>epanetpath_button</tabstop>
+  <tabstop>swmmpath_line</tabstop>
+  <tabstop>swmmpath_button</tabstop>
+  <tabstop>musicpath_line</tabstop>
+  <tabstop>musicpath_button</tabstop>
   <tabstop>buttonBox</tabstop>
   <tabstop>reset_button</tabstop>
-  <tabstop>general_scrollArea</tabstop>
   <tabstop>simulation_scrollArea</tabstop>
+  <tabstop>mapsettings_scrollArea</tabstop>
+  <tabstop>external_scrollArea</tabstop>
+  <tabstop>online_scrollArea</tabstop>
  </tabstops>
  <resources>
   <include location="graphics/ubeats.qrc"/>

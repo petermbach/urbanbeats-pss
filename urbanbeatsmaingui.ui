@@ -12,7 +12,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>UrbanBEATS Planning Support Tool</string>
   </property>
   <widget class="QWidget" name="Central_Widget">
    <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -186,7 +186,7 @@
             </property>
             <property name="icon">
              <iconset resource="graphics/ubeats.qrc">
-              <normaloff>:/icons/Info-icon.png</normaloff>:/icons/Info-icon.png</iconset>
+              <normaloff>:/icons/map-icon.png</normaloff>:/icons/map-icon.png</iconset>
             </property>
            </widget>
           </item>
@@ -651,7 +651,7 @@
           </property>
           <property name="icon">
            <iconset resource="graphics/ubeats.qrc">
-            <normaloff>:/icons/Info-icon.png</normaloff>:/icons/Info-icon.png</iconset>
+            <normaloff>:/icons/map-icon.png</normaloff>:/icons/map-icon.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -837,14 +837,14 @@
         </item>
         <item>
          <property name="text">
-          <string>Urban Development</string>
+          <string>City Development</string>
          </property>
          <property name="checkState">
           <enum>Checked</enum>
          </property>
          <property name="icon">
           <iconset resource="graphics/ubeats.qrc">
-           <normaloff>:/icons/map-icon.png</normaloff>:/icons/map-icon.png</iconset>
+           <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
          </property>
         </item>
         <item>
@@ -1146,11 +1146,11 @@
         <string>Urban Development Modelling</string>
        </property>
        <property name="text">
-        <string>Urban Development</string>
+        <string>City Development</string>
        </property>
        <property name="icon">
         <iconset resource="graphics/ubeats.qrc">
-         <normaloff>:/icons/map-icon.png</normaloff>:/icons/map-icon.png</iconset>
+         <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -2111,6 +2111,46 @@
    <header>QtWebKit/QWebView</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>DataDock_View</tabstop>
+  <tabstop>addData</tabstop>
+  <tabstop>removeData</tabstop>
+  <tabstop>infoData</tabstop>
+  <tabstop>previewData</tabstop>
+  <tabstop>expcolData</tabstop>
+  <tabstop>ScenarioDock_Combo</tabstop>
+  <tabstop>ScenarioDock_View</tabstop>
+  <tabstop>newScenario</tabstop>
+  <tabstop>editScenario</tabstop>
+  <tabstop>deleteScenario</tabstop>
+  <tabstop>ScenarioView_Widget</tabstop>
+  <tabstop>Narrative</tabstop>
+  <tabstop>Simulation</tabstop>
+  <tabstop>DataSummary</tabstop>
+  <tabstop>Log</tabstop>
+  <tabstop>OutputConsole</tabstop>
+  <tabstop>DataView_extent</tabstop>
+  <tabstop>DataView_meta</tabstop>
+  <tabstop>DataView_options</tabstop>
+  <tabstop>DataView_web</tabstop>
+  <tabstop>ModuleDock_spatialsetup</tabstop>
+  <tabstop>ModuleDock_climatesetup</tabstop>
+  <tabstop>ModuleDock_urbandev</tabstop>
+  <tabstop>ModuleDock_urbanplan</tabstop>
+  <tabstop>ModuleDock_socioeconomic</tabstop>
+  <tabstop>ModuleDock_spatialmap</tabstop>
+  <tabstop>ModuleDock_regulation</tabstop>
+  <tabstop>ModuleDock_infrastructure</tabstop>
+  <tabstop>ModuleDock_performance</tabstop>
+  <tabstop>ModuleDock_impact</tabstop>
+  <tabstop>ModuleDock_decisionanalysis</tabstop>
+  <tabstop>SimDock_run</tabstop>
+  <tabstop>SimDock_mapoptions</tabstop>
+  <tabstop>SimDock_projectfolder</tabstop>
+  <tabstop>SimDock_resultsview</tabstop>
+  <tabstop>SimDock_report</tabstop>
+  <tabstop>DataSummary_check</tabstop>
+ </tabstops>
  <resources>
   <include location="graphics/ubeats.qrc"/>
  </resources>

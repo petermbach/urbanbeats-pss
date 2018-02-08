@@ -198,6 +198,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.printc("Options have been reset!")
         elif reset == False:
             self.printc("Options have been successfully changed!")
+            print self.__global_options
 
     def set_options_from_config(self, filepath):
         """Parses config.cfg file and saves all attributes into the self.__global_options dictionary

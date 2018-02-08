@@ -80,12 +80,12 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         else:
             self.ui.projectlog_simple.setChecked(0)
 
-        languagecombo = ["DE", "EN", "ES", "FR", "PO", "CN", "JP"]
-        self.ui.lang_combo.setCurrentIndex(languagecombo.index(self.options["language"]))
+        self.__languagecombo = ["DE", "EN", "ES", "FR", "PO", "CN", "JP"]
+        self.ui.lang_combo.setCurrentIndex(self.__languagecombo.index(self.options["language"]))
 
-        cities = ["Adelaide", "Brisbane", "Innsbruck", "Melbourne", "Nanjing", "Perth",
+        self.__cities = ["Adelaide", "Brisbane", "Innsbruck", "Melbourne", "Nanjing", "Perth",
                   "SanFrancisco", "Sydney", "Zurich", "Other"]
-        self.ui.location_combo.setCurrentIndex(cities.index(self.options["city"]))
+        self.ui.location_combo.setCurrentIndex(self.__cities.index(self.options["city"]))
         self.ui_coords_line_enabledisable()
 
         self.ui.projpath_line.setText(str(self.options["defaultpath"]))
@@ -99,20 +99,20 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         self.ui.numiter_spin.setValue(int(self.options["maxiterations"]))
         self.ui.tolerance_spin.setValue(float(self.options["globaltolerance"]))
 
-        decisions = ["best", "random", "none"]
-        self.ui.decision_combo.setCurrentIndex(decisions.index(self.options["defaultdecision"]))
+        self.__decisions = ["best", "random", "none"]
+        self.ui.decision_combo.setCurrentIndex(self.__decisions.index(self.options["defaultdecision"]))
 
         # MAP SETTINGS TAB
-        mapstyles = ["CARTO", "ESRI", "OSM", "TONER", "TERRAIN"]
-        self.ui.mapstyle_combo.setCurrentIndex(mapstyles.index(self.options["mapstyle"]))
+        self.__mapstyles = ["CARTO", "ESRI", "OSM", "TONER", "TERRAIN"]
+        self.ui.mapstyle_combo.setCurrentIndex(self.__mapstyles.index(self.options["mapstyle"]))
         self.ui_setmapstyle_pixmap()
 
         self.ui.tileserver_line.setText(self.options["tileserverURL"])
         self.ui.cache_check.setChecked(bool(self.options["cachetiles"]))
         self.ui.offline_check.setChecked(bool(self.options["offline"]))
 
-        coordinatesystems = ["GDA", "UTM", "Other"]
-        self.ui.coords_combo.setCurrentIndex(coordinatesystems.index(self.options["defaultcoordsys"]))
+        self.__coordinatesystems = ["GDA", "UTM", "Other"]
+        self.ui.coords_combo.setCurrentIndex(self.__coordinatesystems.index(self.options["defaultcoordsys"]))
         self.ui.epsg_line.setText(self.options["customepsg"])
         self.ui_epsg_line_enabledisable()
 
@@ -212,7 +212,45 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
 
         :return: None
         """
-        
+        # GENERAL TAB
+        self.options["defaultmodeller"] = str(self.ui.modellername_line.text())
+        self.options["defaultaffil"] = str(self.ui.modelleraffil_line.text())
+        if self.ui.projectlog_compreh.isChecked():
+            self.options["projectlogstyle"] = "comprehensive"
+        else:
+            self.options["projectlogstyle"] = "simplified"
+
+        self.options["language"] = str(self.__languagecombo[self.ui.lang_combo.currentIndex()])
+        self.options["city"] = str(self.__cities[self.ui.location_combo.currentIndex()])
+        self.options["coordinates"] = str(self.ui.coords_line.text())
+        self.options["defaultpath"] = str(self.ui.projpath_line.text())
+        self.options["tempdir"] = str(self.ui.temppath_line.text())
+        self.options["tempdefault"] = int(self.ui.temppath_check.isChecked())
+
+        # Text Appearance
+
+        # SIMULATION TAB
+        self.options["maxiterations"] = int(self.ui.numiter_spin.value())
+        self.options["globaltolerance"] = float(self.ui.tolerance_spin.value())
+        self.options["defaultdecision"] = str(self.__decisions[self.ui.decision_combo.currentIndex()])
+
+        # MAP SETTINGS TAB
+        self.options["mapstyle"] = str(self.__mapstyles[self.ui.mapstyle_combo.currentIndex()])
+        self.options["tileserverURL"] = str(self.ui.tileserver_line.text())
+        self.options["cachetiles"] = int(self.ui.cache_check.isChecked())
+        self.options["offline"] = int(self.ui.offline_check.isChecked())
+        self.options["defaultcoordsys"] = str(self.__coordinatesystems[self.ui.coords_combo.currentIndex()])
+        self.options["customepsg"] = str(self.ui.epsg_line.text())
+
+        # EXTERNAL TAB
+        self.options["epanetpath"] = str(self.ui.epanetpath_line.text())
+        self.options["swmmpath"] = str(self.ui.swmmpath_line.text())
+        self.options["musicpath"] = str(self.ui.musicpath_line.text())
+
+        #ONLINE TAB
+        # Coming Soon
+
+        #UPDATE THE CFG FILE BY EMITTING THE SIGNAL
         self.updateCFG.emit(self.options, False)    # emit update Signal with new dictionary and no reset
 
 
