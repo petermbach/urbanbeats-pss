@@ -49,7 +49,7 @@ import xml.etree.ElementTree as ET
 from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKit
 from urbanbeatsmaingui import Ui_MainWindow
 from startscreen import Ui_StartDialog
-
+import urbanbeatsdialogs as ubdialogs       # Contains code for all non-module and non-result dialog windows
 
 # --- MAIN GUI FUNCTION ---
 class MainWindow(QtWidgets.QMainWindow):
@@ -62,6 +62,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
 
         # --- INITIALIZATION ---
+        self.setWindowTitle("UrbanBEATS Planning Support Tool")
         self.ui.OutputConsole.append("<b>=================================<b>")
         self.ui.OutputConsole.append("<b>UrbanBEATS OUTPUT CONSOLE<b>")
         self.ui.OutputConsole.append("<b>=================================<b>\n")
@@ -71,6 +72,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
         # --- WORKFLOW VARIABLES ---
+        self.__current_project_name = ""
         self.__saveProjectState = True      # True = unsaved, False = saved - used to track changes in workflow
         self.__activeSimulationObject = None
         self.__activeprojectpath = "C:\\"
@@ -79,6 +81,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__dtype_names = []
 
         # --- GUI SIGNALS AND SLOTS ---
+        # Function naming conventions: show_ = launching dialog windows,
+        #                              get_ / set_ / update_ = modifying existing information
+        #                              reset_ = resets variables to original state
+        #                              run_ = executes some form of runtime function
+
         # FILE MENU
         # self.ui.actionNew_Project.triggered.connect()
         # self.ui.actionOpen_Project.triggered.connect()
@@ -90,7 +97,7 @@ class MainWindow(QtWidgets.QMainWindow):
         #
         # # EDIT MENU
         # self.ui.actionEdit_Project_Details.triggered.connect()
-        # self.ui.actionPreferences.triggered.connect()
+        self.ui.actionPreferences.triggered.connect(self.show_options)
         #
         # # PROJECT MENU
         self.ui.actionView_Project_Description.triggered.connect(self.testfunction)
@@ -127,6 +134,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # OBSERVER PATTERN - CONSOLE UPDATE
         self.consoleobserver.updateConsole[str].connect(self.printc)
 
+    # MAIN INTERFACE FUNCTIONALITY
     def printc(self, textmessage):
         """Print to console function, adds the textmessage to the console"""
         if "PROGRESSUPDATE" in str(textmessage):
@@ -136,13 +144,45 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.ui.OutputConsole.append(str("<font color=\"#93cbc7\">"+time.asctime())+"</font> | "+str(textmessage))
 
-
     def testfunction(self):
         self.consoleobserver.update_observer("Hello World")
 
+    # OPTIONS DIALOG AND RELATED FUNCTIONS
+    def show_options(self):
+        """Launches the Options/Preferences Dialog window and updates its interface with the data from
+        the variable self.__global_options. Upon closing the window, an accept() signal will call the
+        update_options() method."""
+        preferencedialog = ubdialogs.PreferenceDialogLaunch(self)
+        preferencedialog.updateCFG[dict, bool].connect(self.update_options)
+        preferencedialog.resetCFG[int, bool].connect(self.update_options)
+        preferencedialog.exec_()
+
+    def get_options(self):
+        """Gets the complete list of global options.
+
+        :return: dict - self.__global_options
+        """
+        return self.__global_options
+
+    def update_options(self, newoptions, reset=False):
+        """Updates the config.cfg file with either the user-modified options saved in newoptions or
+        the default values if the user is resetting options.
+
+        :param newoptions: dictionary type in the same format as self.__global_options
+        :param reset: boolean, if False, config.cfg if updated with values from newoptions, otherwise reset to default
+        :return: None
+        """
+        if newoptions == None and reset:
+            self.printc("Options have been reset!")
+        elif reset == False:
+            self.printc("Options have been successfully changed!")
 
     def set_options_from_config(self, filepath):
-        """Parses config.cfg file and saves all attributes into the self.__global_options dictionary"""
+        """Parses config.cfg file and saves all attributes into the self.__global_options dictionary
+
+        :param filepath: str, full filepath to the .cfg file. Usually UBEATSROOT
+        :return: None
+        """
         options = ET.parse(filepath+"/config.cfg")
         root = options.getroot()
 
@@ -150,11 +190,19 @@ class MainWindow(QtWidgets.QMainWindow):
             for child in section:
                 self.__global_options[child.tag] = child.text
 
+    # NEW PROJECT INSTANCE CREATION
+    def show_new_project_dialog(self):
+        self.printc("NEW PROJECT! YAY")
+        pass
 
-    def resetConfigFile(self):
-        """Resets all default values in the .cfg file."""
-        #ubfiles.resetGlobalOptions(UBEATSROOT)
-        self.setOptionsFromConfig(UBEATSROOT)
+    def open_existing_project(self):
+        self.printc("OPEN AN EXISTING PROJECT")
+        pass
+
+    def import_existing_project(self):
+        self.printc("IMPORT PROJECT!")
+        pass
+
 
     # def create_new_project_instance(self):
     #     """Creates a new instance of an UrbanBEATS Core Program."""
@@ -165,29 +213,39 @@ class MainWindow(QtWidgets.QMainWindow):
     def set_active_simulation_object(self, simobjectfromcore):
         self.__activeSimulationObject = simobjectfromcore
 
-    def reverse_save_project_state(self):
-        """Reverses the state of saveProjectState. Tracks changes made to project settings"""
-        self.__saveProjectState = not self.__saveProjectState
+    def set_save_project_state(self, status):
+        """Reverses the state of saveProjectState. Tracks changes made to project settings. Then, changes
+         the Main Window title depending on the save state. If unsaved, appends *, if saved, removes *
+
+        :param status: bool, True = all changes saved, False = changes made and project unsaved
+        :return: None
+        """
+        self.__saveProjectState = status
+        if self.__saveProjectState: # if saved
+            self.setWindowTitle("UrbanBEATS Planning Support Tool -" + self.__current_project_name + "")
+        else:
+            self.setWindowTitle("UrbanBEATS Planning Support Tool -" + self.__current_project_name + "*")
 
     def save_project(self):
         """Saves the project's current state, overwriting the existing project."""
-        pass
+        self.set_save_project_state(True)
 
     def close_event(self, event):
-        """Shows a message box before closing the program to confirm with the user."""
-
-        quit_msg = "Would you like to save your work before quitting?"
-        reply = QtWidgets.QMessageBox.question(self, 'Close Program?',
-                                               quit_msg, QtWidgets.QMessageBox.Yes,
-                                               QtWidgets.QMessageBox.No,
-                                               QtWidgets.QMessageBox.Cancel)
-        if reply == QtWidgets.QMessageBox.Yes:
-            self.saveProject()
-            event.accept()
-        elif reply == QtWidgets.QMessageBox.No:
-            event.accept()
-        else:
-            event.ignore()
+        """Shows a message box before closing the program to confirm with the user about quitting.
+        Checks the save project state before deciding to post the message or not."""
+        if not self.__saveProjectState:
+            quit_msg = "Would you like to save your work before quitting?"
+            reply = QtWidgets.QMessageBox.question(self, 'Close Program?',
+                                                   quit_msg, QtWidgets.QMessageBox.Yes,
+                                                   QtWidgets.QMessageBox.No,
+                                                   QtWidgets.QMessageBox.Cancel)
+            if reply == QtWidgets.QMessageBox.Yes:
+                self.saveProject()
+                event.accept()
+            elif reply == QtWidgets.QMessageBox.No:
+                event.accept()
+            else:
+                event.ignore()
 
     # FUNCTIONS TO DO
     def checks_before_run(self):
@@ -220,10 +278,18 @@ class StartScreenLaunch(QtWidgets.QDialog):
     """Class definition for the Getting Started Screen that launches when
     UrbanBEATS starts up. The dialog has several options for the user to choose
     including New, Open, Import, Website/Online service + options, help and quit."""
-    def __init__(self, parent=None):
+
+    # DEFINITION OF SIGNALS
+    startupNew = QtCore.pyqtSignal()
+    startupOpen = QtCore.pyqtSignal()
+    startupImport = QtCore.pyqtSignal()
+    startupOptions = QtCore.pyqtSignal()
+
+    def __init__(self, main, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
         self.ui = Ui_StartDialog()      # Assign an instance of the UI class to variable
         self.ui.setupUi(self)           # Call setup to set up the UI
+        self.main = main
 
         # --- SIGNALS AND SLOTS ---
         self.ui.NewProject_button.clicked.connect(self.startup_new_project_window)
@@ -237,17 +303,17 @@ class StartScreenLaunch(QtWidgets.QDialog):
     def startup_new_project_window(self):
         """Called when user clicks on Begin New Project, emits <startupNew> signal."""
         self.accept()   #closes dialog
-        self.emit(QtCore.pyqtSignal(name="startupNew"))
+        self.startupNew.emit()
 
     def startup_open_project(self):
         """Called when user clicks on Open Existing Project, emits <startupOpen> signal."""
         self.accept()   #closes dialog
-        self.emit(QtCore.pyqtSignal(name="startupOpen"))
+        self.startupOpen.emit()
 
     def startup_import_project(self):
         """Called when user clicks on Import Existing Project, emits <startupImport> signal."""
         self.accept()   #closes dialog
-        self.emit(QtCore.pyqtSignal(name="startupImport"))
+        self.startupImport.emit()
 
     @staticmethod
     def startup_web(self):
@@ -256,7 +322,8 @@ class StartScreenLaunch(QtWidgets.QDialog):
 
     def startup_options(self):
         """Called when Options button clicked, opens the options dialog box."""
-        pass
+        self.accept()
+        self.startupOptions.emit()
 
     def startup_help(self):
         """Called when Help button clicked, opens documentation."""
@@ -317,12 +384,14 @@ if __name__ == "__main__":
     splash.finish(main_window)  # remove splashscreen, follow by main window
 
     # Enter the main loop
-    start_screen = StartScreenLaunch()
+    start_screen = StartScreenLaunch(main_window)
     main_window.set_options_from_config(UBEATSROOT)
 
     # Signals for the Main Window and Start Screen Connection
-    # QtCore.QObject.connect(start_screen, QtCore.SIGNAL("startupOpen"), main_window.openExistingProject)
-    # QtCore.QObject.connect(start_screen, QtCore.SIGNAL("startupNew"), main_window.beginNewProjectDialog)
+    start_screen.startupOpen.connect(main_window.open_existing_project)
+    start_screen.startupNew.connect(main_window.show_new_project_dialog)
+    start_screen.startupImport.connect(main_window.import_existing_project)
+    start_screen.startupOptions.connect(main_window.show_options)
 
     start_screen.exec_()
     sys.exit(app.exec_())   # END OF MAIN WINDOW LOOP
