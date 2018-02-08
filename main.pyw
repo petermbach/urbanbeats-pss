@@ -124,7 +124,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.ui.actionResults_Viewer.triggered.connect()
         #
         # # HELP MENU
-        # self.ui.actionAbout.triggered.connect()
+        self.ui.actionAbout.triggered.connect(self.show_about_dialog)
         # self.ui.actionView_Documentation.triggered.connect()
         # self.ui.actionOnline_Help.triggered.connect()
         # self.ui.actionSubmit_a_Bug_Report.triggered.connect()
@@ -133,6 +133,23 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # OBSERVER PATTERN - CONSOLE UPDATE
         self.consoleobserver.updateConsole[str].connect(self.printc)
+
+        # MAIN INTERFACE BUTTONS
+        # Project Data Library Interface
+
+        # Scenario Browser Interface
+
+        # Data View Interface
+        #self.ui.DataView_extent.clicked.connect()
+        #self.ui.DataView_meta.clicked.connect()
+        self.ui.DataView_options.clicked.connect(lambda: self.show_options(2))
+
+        # Scenario Narrative Interface
+
+        # Modules Interface
+
+        # Control Panel Interface
+
 
     # MAIN INTERFACE FUNCTIONALITY
     def printc(self, textmessage):
@@ -148,11 +165,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.consoleobserver.update_observer("Hello World")
 
     # OPTIONS DIALOG AND RELATED FUNCTIONS
-    def show_options(self):
+    def show_about_dialog(self):
+        """Shows the About Dialog with all model information, development team, etc."""
+        aboutdialog = ubdialogs.AboutDialogLaunch()
+        aboutdialog.exec_()
+
+    def show_options(self, tabindex):
         """Launches the Options/Preferences Dialog window and updates its interface with the data from
         the variable self.__global_options. Upon closing the window, an accept() signal will call the
         update_options() method."""
-        preferencedialog = ubdialogs.PreferenceDialogLaunch(self)
+        preferencedialog = ubdialogs.PreferenceDialogLaunch(self, tabindex)
         preferencedialog.updateCFG[dict, bool].connect(self.update_options)
         preferencedialog.resetCFG[int, bool].connect(self.update_options)
         preferencedialog.exec_()
@@ -391,7 +413,7 @@ if __name__ == "__main__":
     start_screen.startupOpen.connect(main_window.open_existing_project)
     start_screen.startupNew.connect(main_window.show_new_project_dialog)
     start_screen.startupImport.connect(main_window.import_existing_project)
-    start_screen.startupOptions.connect(main_window.show_options)
+    start_screen.startupOptions.connect(lambda: main_window.show_options(0))
 
     start_screen.exec_()
     sys.exit(app.exec_())   # END OF MAIN WINDOW LOOP

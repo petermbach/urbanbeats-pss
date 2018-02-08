@@ -37,7 +37,18 @@ import webbrowser
 from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKit
 
 # --- URBANBEATS LIBRARY IMPORTS ---
+from aboutdialog import Ui_AboutDialog
 from preferencesdialog import Ui_PreferencesDialog
+
+
+# --- ABOUT DIALOG ---
+class AboutDialogLaunch(QtWidgets.QDialog):
+    """Class definition for the about dialog window. Connects the GUI
+    Ui_AboutDialog() with the Main Window"""
+    def __init__(self):
+        QtWidgets.QDialog.__init__(self)
+        self.ui = Ui_AboutDialog()
+        self.ui.setupUi(self)
 
 
 # --- PREFERENCES DIALOG ---
@@ -49,10 +60,12 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
     updateCFG = QtCore.pyqtSignal(dict, bool, name="updateCFG")     # Update config file signal
     resetCFG = QtCore.pyqtSignal(int, bool, name="resetCFG")      # Reset all options signal
 
-    def __init__(self, main):
+    def __init__(self, main, tabindex):
         QtWidgets.QDialog.__init__(self)
         self.ui = Ui_PreferencesDialog()
         self.ui.setupUi(self)
+
+        self.ui.options_tabs.setCurrentIndex(tabindex)
 
         self.module = main
         self.options = main.get_options()
