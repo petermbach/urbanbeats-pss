@@ -69,7 +69,7 @@
    <item>
     <widget class="QTabWidget" name="options_tabs">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="general_tab">
       <attribute name="title">
@@ -88,9 +88,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-118</y>
             <width>457</width>
-            <height>597</height>
+            <height>577</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -450,16 +450,6 @@
                 </item>
                </widget>
               </item>
-              <item row="0" column="1">
-               <widget class="QFontComboBox" name="fontface_combo">
-                <property name="currentFont">
-                 <font>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-               </widget>
-              </item>
               <item row="1" column="0">
                <widget class="QLabel" name="bodytext_lbl">
                 <property name="text">
@@ -495,26 +485,6 @@
                 </item>
                </widget>
               </item>
-              <item row="0" column="2">
-               <spacer name="horizontalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="fontface_lbl">
-                <property name="text">
-                 <string>Font Face:</string>
-                </property>
-               </widget>
-              </item>
               <item row="3" column="0">
                <widget class="QLabel" name="consolets_lbl">
                 <property name="text">
@@ -528,6 +498,19 @@
                  <string>Errors and Warnings Text:</string>
                 </property>
                </widget>
+              </item>
+              <item row="1" column="2">
+               <spacer name="horizontalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
              </layout>
             </widget>
@@ -849,14 +832,14 @@
             <widget class="QWidget" name="datadisplay_widget" native="true">
              <layout class="QGridLayout" name="gridLayout_9">
               <item row="1" column="0">
-               <widget class="QLabel" name="label_31">
+               <widget class="QLabel" name="coords_lbl_2">
                 <property name="text">
                  <string>Default Coordinate System:</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QComboBox" name="comboBox_8">
+               <widget class="QComboBox" name="coords_combo">
                 <property name="currentIndex">
                  <number>0</number>
                 </property>
@@ -878,14 +861,14 @@
                </widget>
               </item>
               <item row="2" column="0">
-               <widget class="QLabel" name="label_32">
+               <widget class="QLabel" name="epsg_lbl">
                 <property name="text">
                  <string>Custom (EPSG):</string>
                 </property>
                </widget>
               </item>
               <item row="2" column="1">
-               <widget class="QLineEdit" name="lineEdit_7"/>
+               <widget class="QLineEdit" name="epsg_line"/>
               </item>
              </layout>
             </widget>

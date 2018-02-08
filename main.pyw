@@ -164,7 +164,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def testfunction(self):
         self.consoleobserver.update_observer("Hello World")
 
-    # OPTIONS DIALOG AND RELATED FUNCTIONS
+    # ABOUT AND OPTIONS DIALOG AND RELATED FUNCTIONS
     def show_about_dialog(self):
         """Shows the About Dialog with all model information, development team, etc."""
         aboutdialog = ubdialogs.AboutDialogLaunch()
@@ -194,7 +194,7 @@ class MainWindow(QtWidgets.QMainWindow):
         :param reset: boolean, if False, config.cfg if updated with values from newoptions, otherwise reset to default
         :return: None
         """
-        if newoptions == None and reset:
+        if newoptions == 0 and reset:
             self.printc("Options have been reset!")
         elif reset == False:
             self.printc("Options have been successfully changed!")
@@ -397,7 +397,7 @@ if __name__ == "__main__":
     app.processEvents()
 
     # Simulate something that takes time
-    time.sleep(3)       # "Marvel at the beautiful splash screen!"
+    time.sleep(1)       # "Marvel at the beautiful splash screen!"
 
     # --- MAIN WINDOW AND APPLICATION LOOP ---
     # Setup Main Window
