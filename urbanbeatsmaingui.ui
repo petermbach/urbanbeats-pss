@@ -470,7 +470,7 @@
         </property>
         <item>
          <property name="text">
-          <string>Land Use</string>
+          <string>Boundaries</string>
          </property>
          <item>
           <property name="text">
@@ -480,7 +480,7 @@
         </item>
         <item>
          <property name="text">
-          <string>Population</string>
+          <string>Built Infrastructure</string>
          </property>
          <item>
           <property name="text">
@@ -491,6 +491,56 @@
         <item>
          <property name="text">
           <string>Elevation</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>&lt;no data&gt;</string>
+          </property>
+         </item>
+        </item>
+        <item>
+         <property name="text">
+          <string>Employment</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>&lt;none&gt;</string>
+          </property>
+         </item>
+        </item>
+        <item>
+         <property name="text">
+          <string>Land Use</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>&lt;no data&gt;</string>
+          </property>
+         </item>
+        </item>
+        <item>
+         <property name="text">
+          <string>Locality Maps</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>&lt;no data&gt;</string>
+          </property>
+         </item>
+        </item>
+        <item>
+         <property name="text">
+          <string>Overlays</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>&lt;no data&gt;</string>
+          </property>
+         </item>
+        </item>
+        <item>
+         <property name="text">
+          <string>Population</string>
          </property>
          <item>
           <property name="text">
@@ -511,46 +561,6 @@
         <item>
          <property name="text">
           <string>Water Bodies</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>&lt;none&gt;</string>
-          </property>
-         </item>
-        </item>
-        <item>
-         <property name="text">
-          <string>Built Infrastructure</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>&lt;no data&gt;</string>
-          </property>
-         </item>
-        </item>
-        <item>
-         <property name="text">
-          <string>Overlays</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>&lt;no data&gt;</string>
-          </property>
-         </item>
-        </item>
-        <item>
-         <property name="text">
-          <string>Locality Maps</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>&lt;no data&gt;</string>
-          </property>
-         </item>
-        </item>
-        <item>
-         <property name="text">
-          <string>Employment</string>
          </property>
          <item>
           <property name="text">
@@ -593,11 +603,26 @@
           </property>
          </item>
         </item>
+        <item>
+         <property name="text">
+          <string>Temperature</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>&lt;no data&gt;</string>
+          </property>
+         </item>
+        </item>
        </item>
        <item>
         <property name="text">
          <string>Qualitative Data</string>
         </property>
+        <item>
+         <property name="text">
+          <string>&lt;no data&gt;</string>
+         </property>
+        </item>
        </item>
       </widget>
      </item>
@@ -2154,5 +2179,38 @@
  <resources>
   <include location="graphics/ubeats.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionMinimize</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>682</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionQuit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>682</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
