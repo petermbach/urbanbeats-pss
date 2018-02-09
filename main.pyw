@@ -43,7 +43,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-
+import model.urbanbeatscore as ubcore
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKit
@@ -56,8 +56,8 @@ class MainWindow(QtWidgets.QMainWindow):
     """The class definition for the UrbanBEATS Main Window. The main window
     opens during the main runtime loop and manages the calls to all other GUIs. It
     links with the model core."""
-    def __init__(self):
-        QtWidgets.QMainWindow.__init__(self)
+    def __init__(self, parent=None):
+        QtWidgets.QMainWindow.__init__(self, parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
@@ -87,26 +87,26 @@ class MainWindow(QtWidgets.QMainWindow):
         #                              run_ = executes some form of runtime function
 
         # FILE MENU
-        # self.ui.actionNew_Project.triggered.connect()
+        self.ui.actionNew_Project.triggered.connect(self.create_new_project)
         # self.ui.actionOpen_Project.triggered.connect()
         # self.ui.actionSave.triggered.connect()
         # self.ui.actionSave_As.triggered.connect()
         # self.ui.actionImport_Project.triggered.connect()
         # self.ui.actionExport_Project.triggered.connect()
-        # # self.ui.actionQuit.triggered.connect() - implemented through QtDesigner
+        # self.ui.actionQuit.triggered.connect() - implemented through QtDesigner
         #
         # # EDIT MENU
-        # self.ui.actionEdit_Project_Details.triggered.connect()
+        self.ui.actionEdit_Project_Details.triggered.connect(lambda: self.show_new_project_dialog(1))
         self.ui.actionPreferences.triggered.connect(self.show_options)
         #
         # # PROJECT MENU
-        self.ui.actionView_Project_Description.triggered.connect(self.testfunction)
-        # self.ui.actionView_Full_Project_Log.triggered.connect()
+        self.ui.actionView_Project_Description.triggered.connect(lambda: self.show_new_project_dialog(2))
+        self.ui.actionView_Full_Project_Log.triggered.connect(self.show_project_log)
         # self.ui.actionDefine_New_Scenario.triggered.connect()
         # self.ui.actionDelete_Scenario.triggered.connect()
         #
         # # DATA MENU
-        # self.ui.actionAdd_Data.triggered.connect()
+        self.ui.actionAdd_Data.triggered.connect(self.show_add_data_dialog)
         # self.ui.actionImport_Archive_File.triggered.connect()
         # self.ui.actionImport_Archive_from_Project.triggered.connect()
         # self.ui.actionExport_Data_Archive.triggered.connect()
@@ -119,7 +119,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.ui.actionModel_Calibration_Viewer.triggered.connect()
         #
         # # WINDOW MENU
-        # self.ui.actionMinimize.triggered.connect()
+        # self.ui.actionMinimize.triggered.connect() - implemented through QtDesigner
         # self.ui.actionOpen_Project_Folder.triggered.connect()
         # self.ui.actionResults_Viewer.triggered.connect()
         #
@@ -214,9 +214,19 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.__global_options[child.tag] = child.text
 
     # NEW PROJECT INSTANCE CREATION
-    def show_new_project_dialog(self):
-        self.printc("NEW PROJECT! YAY")
-        pass
+    def create_new_project(self):
+        newsimulation = ubcore.UrbanBeatsSim(UBEATSROOT, self.__global_options) #instantiate new simulation objective
+        self.set_active_simulation_object(newsimulation)
+        self.show_new_project_dialog(0)
+
+    def show_new_project_dialog(self, viewmode):
+        newprojectdialog = ubdialogs.NewProjectDialogLaunch(self.get_active_simulation_object(), viewmode)
+        newprojectdialog.rejected.connect(self.cancel_new_project_creation)
+        newprojectdialog.exec_()
+
+    def cancel_new_project_creation(self):
+        self.set_active_simulation_object(None)
+        self.enable_disable_main_interface(0)
 
     def open_existing_project(self):
         self.printc("OPEN AN EXISTING PROJECT")
@@ -226,6 +236,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.printc("IMPORT PROJECT!")
         pass
 
+    def enable_disable_main_interface(self, condition):
+        pass
 
     # def create_new_project_instance(self):
     #     """Creates a new instance of an UrbanBEATS Core Program."""
@@ -235,6 +247,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def set_active_simulation_object(self, simobjectfromcore):
         self.__activeSimulationObject = simobjectfromcore
+
+    def get_active_simulation_object(self):
+        return self.__activeSimulationObject
 
     def set_save_project_state(self, status):
         """Reverses the state of saveProjectState. Tracks changes made to project settings. Then, changes
@@ -269,6 +284,20 @@ class MainWindow(QtWidgets.QMainWindow):
                 event.accept()
             else:
                 event.ignore()
+
+    def show_project_log(self):
+        """Opens the project log window for the user to review the history of the modelling project."""
+        # Get the active Log object
+        logobject = None
+        projectlog = ubdialogs.ProjectLogLaunch(logobject)
+
+        projectlog.exec_()
+
+    def show_add_data_dialog(self):
+        """Opens the Add Data Dialog window when the user clicks on any function to add data to the project."""
+        adddatadialog = ubdialogs.AddDataDialogLaunch()
+
+        adddatadialog.exec_()
 
     # FUNCTIONS TO DO
     def checks_before_run(self):
@@ -411,8 +440,8 @@ if __name__ == "__main__":
     main_window.set_options_from_config(UBEATSROOT)
 
     # Signals for the Main Window and Start Screen Connection
+    start_screen.startupNew.connect(main_window.create_new_project)
     start_screen.startupOpen.connect(main_window.open_existing_project)
-    start_screen.startupNew.connect(main_window.show_new_project_dialog)
     start_screen.startupImport.connect(main_window.import_existing_project)
     start_screen.startupOptions.connect(lambda: main_window.show_options(0))
 

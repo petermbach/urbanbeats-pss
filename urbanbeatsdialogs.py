@@ -39,6 +39,17 @@ from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKit
 # --- URBANBEATS LIBRARY IMPORTS ---
 from aboutdialog import Ui_AboutDialog
 from preferencesdialog import Ui_PreferencesDialog
+from adddatadialog import Ui_AddDataDialog
+from startnewprojectdialog import Ui_ProjectSetupDialog
+from logdialog import Ui_LogDialog
+
+# --- GLOBAL VARIABLES ---
+LANGUAGECOMBO = ["DE", "EN", "ES", "FR", "PO", "CN", "JP"]
+DECISIONS = ["best", "random", "none"]
+COORDINATESYSTEMS = ["GDA", "UTM", "Other"]
+CITIES = ["Adelaide", "Brisbane", "Innsbruck", "Melbourne", "Nanjing", "Perth",
+                  "SanFrancisco", "Sydney", "Zurich", "Other"]
+MAPSTYLES = ["CARTO", "ESRI", "OSM", "TONER", "TERRAIN"]
 
 
 # --- ABOUT DIALOG ---
@@ -51,6 +62,167 @@ class AboutDialogLaunch(QtWidgets.QDialog):
         self.ui.setupUi(self)
 
 
+# --- ADD DATA DIALOG ---
+class AddDataDialogLaunch(QtWidgets.QDialog):
+    """Class definition for the add data dialog window for importing and managing data."""
+    def __init__(self, main, datalibrary, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
+        self.ui = Ui_AddDataDialog()
+
+        # --- INITIALIZE MAIN VARIABLES ---
+        self.main = main    # the main runtime - for GUI changes
+        self.datalibrary = datalibrary      # the simulation object's data library
+
+        # --- SIGNALS AND SLOTS ---
+        self.ui.spatial_radio.clicked.connect(self.update_datacat_combo)
+        self.ui.temporal_radio.clicked.connect(self.update_datacat_combo)
+        self.ui.qualitative_radio.clicked.connect(self.update_datacat_combo)
+        self.ui.datacat_combo.currentIndexChanged.connect(self.update_datacatsub_combo)
+
+        self.ui.cleardata_button.clicked.connect(self.clear_interface)
+        self.ui.done_button.clicked.connect(self.accept)
+        self.ui.adddata_button.connect(self.add_data_to_project)
+
+    def update_datacat_combo(self):
+        pass
+
+    def update_datacatsub_combo(self):
+        pass
+
+    def clear_interface(self):
+        pass
+
+    def add_data_to_project(self):
+        dataset = {}
+        dataset["file"] = str(self.ui.databox.text())
+        if self.ui.spatial_radio.isChecked():
+            dataset["datatype"] = "SPATIAL"
+        elif self.ui.temporal_radio.isChecked():
+            dataset["datatype"] = "TEMPORAL"
+        else:
+            dataset["datatype"] = "QUALITATIVE"
+
+        self.addnewdata.emit(dataset)
+        self.clear_interface()
+
+
+# --- SETUP NEW PROJECT DIALOG ---
+class NewProjectDialogLaunch(QtWidgets.QDialog):
+    """Class definition for launching the setup of a new project dialog window Ui_ProjectSetupDialog
+    with the main window or startup dialog. This dialog helps the user set up a new project from
+    scratch and includes the essential elements for creating the initial project folder."""
+    def __init__(self, simulation, viewer, parent=None):
+        """Initialization of class, takes two key parameters that differentiate the dialog window's
+        use as a viewer or a setup dialog.
+
+        :param main: the instance of the main runtime environment
+        :param viewer: int, if 0, then the dialog is being opened for a new project, 1 to modify, 2 to view
+        """
+        QtWidgets.QDialog.__init__(self, parent)
+        self.ui = Ui_ProjectSetupDialog()
+        self.ui.setupUi(self)
+        self.__viewer = viewer
+        self.simulation = simulation
+
+        # --- PRE-FILLING GUI SETUP ---
+        if self.__viewer == 1:     # Edit Project Details
+            self.disable_non_modifiable_parameters()
+        if self.__viewer == 2:     # View Project Details
+            self.disable_all_parameters()
+
+        # --- GUI PARAMETERS ---
+        self.ui.projname_line.setText(self.simulation.get_project_parameter("name"))
+        self.ui.region_line.setText(self.simulation.get_project_parameter("region"))
+        self.ui.location_combo.setCurrentIndex(CITIES.index(self.simulation.get_project_parameter("city")))
+        self.ui.modellername_box.setText(self.simulation.get_project_parameter("modeller"))
+        self.ui.affiliation_box.setText(self.simulation.get_project_parameter("affiliation"))
+        self.ui.otherpersons_box.setPlainText(self.simulation.get_project_parameter("otherpersons"))
+        self.ui.synopsis_box.setPlainText(self.simulation.get_project_parameter("synopsis"))
+        self.ui.projectboundary_line.setText(self.simulation.get_project_parameter("boundaryshp"))
+
+        if self.simulation.get_project_parameter("logstyle") == "comprehensive":
+            self.ui.projectlog_compreh.setChecked(1)
+        else:
+            self.ui.projectlog_simple.setChecked(1)
+
+        self.ui.projpath_line.setText(self.simulation.get_project_parameter("projectpath"))
+        self.ui.keepcopy_check.setChecked(int(self.simulation.get_project_parameter("keepcopy")))
+
+        # --- SIGNALS AND SLOTS ---
+        self.ui.projectboundary_browse.clicked.connect(self.browse_boundary_file)
+        self.ui.projpath_button.clicked.connect(self.browse_project_path)
+        self.accepted.connect(self.run_setup_project)
+
+    def browse_boundary_file(self):
+        """Opens a file dialog, which requests a shapefile of the case study boundary. UrbanBEATS
+        uses this to delineate data for the project and for visualisation purposes and other calculations."""
+        message = "Browse for Project Boundary Shapefile..."
+        boundaryfile, _filter = QtWidgets.QFileDialog.getOpenFileName(self, message, os.curdir, "Shapefile (*.shp)")
+        if boundaryfile:
+            self.ui.projectboundary_line.setText(boundaryfile)
+
+    def browse_project_path(self):
+        """Opens a file dialog, which requests for a folder path within which UrbanBEATS will
+        create the project folders and move input maps if requested."""
+        message = "Select the folder you wish to create the project in..."
+        folderpath = QtWidgets.QFileDialog.getExistingDirectory(self, message)
+        if folderpath:
+            self.ui.projpath_line.setText(str(folderpath))
+
+    def disable_non_modifiable_parameters(self):
+        """Disabled several key input parameters that cannot be modified if the project
+        has already been created. The method is called if the GUI is being opened as a viewer
+        rather than for the setup of a new proejct. Items disabled include the project name,
+        the log settings, the path and whether to copy data into the project folder."""
+        self.ui.projname_line.setEnabled(0)
+        self.ui.projectlog_compreh.setEnabled(0)
+        self.ui.projectlog_simple.setEnabled(0)
+        self.ui.projpath_line.setEnabled(0)
+        self.ui.projpath_button.setEnabled(0)
+        self.ui.keepcopy_check.setEnabled(0)
+
+    def disable_all_parameters(self):
+        """Disables the whole interface as it was opened just for viewing the information."""
+        self.ui.aboutproject_widget1.setEnabled(0)
+        self.ui.aboutproject_widget2.setEnabled(0)
+        self.ui.aboutuser_widget.setEnabled(0)
+        self.ui.synopsis_box.setEnabled(0)
+        self.ui.boundary_widget.setEnabled(0)
+        self.ui.projectlog_widget.setEnabled(0)
+        self.ui.path_widget.setEnabled(0)
+
+    def run_setup_project(self):
+        """Determines based on how the GUI was opened what needs to occur. If self.__viewer == 0 then
+        new project signal is emitted with the dictionary of details. If self.__viewer == 1 then an update
+        of project parameters is passed back to the main runtime. If self.__viewer == 2, then nothing
+        happens and the dialog window just closes."""
+        if self.__viewer == 0:
+            # Do stuff
+            self.save_values()
+        elif self.__viewer == 1:
+            self.save_values()
+        else:
+            pass    # Just viewing, just close the window.
+
+    def save_values(self):
+        """Saves all project parameters values and returns a dictionary for use to setup simulation."""
+        self.simulation.set_project_parameter("name", self.ui.projname_line.text())
+        self.simulation.set_project_parameter("region", self.ui.region_line.text())
+        self.simulation.set_project_parameter("city", CITIES[self.ui.location_combo.currentIndex()])
+        self.simulation.set_project_parameter("modeller", self.ui.modellername_box.text())
+        self.simulation.set_project_parameter("affiliation", self.ui.affiliation_box.text())
+        self.simulation.set_project_parameter("otherpersons", self.ui.otherpersons_box.toPlainText())
+        self.simulation.set_project_parameter("synopsis", self.ui.synopsis_box.toPlainText())
+        self.simulation.set_project_parameter("boundaryshp", self.ui.projectboundary_line.text())
+        self.simulation.set_project_parameter("projectpath", self.ui.projpath_line.text())
+        self.simulation.set_project_parameter("keepcopy", int(self.ui.keepcopy_check.isChecked()))
+
+        if self.ui.projectlog_compreh.isChecked():
+            self.simulation.set_project_parameter("logstyle", "comprehensive")
+        else:
+            self.simulation.set_project_parameter("logstyle", "simplfied")
+
+
 # --- PREFERENCES DIALOG ---
 class PreferenceDialogLaunch(QtWidgets.QDialog):
     """Class definition for launching the preferences dialog. Connects the GUI
@@ -60,8 +232,8 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
     updateCFG = QtCore.pyqtSignal(dict, bool, name="updateCFG")     # Update config file signal
     resetCFG = QtCore.pyqtSignal(int, bool, name="resetCFG")      # Reset all options signal
 
-    def __init__(self, main, tabindex):
-        QtWidgets.QDialog.__init__(self)
+    def __init__(self, main, tabindex, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
         self.ui = Ui_PreferencesDialog()
         self.ui.setupUi(self)
 
@@ -80,12 +252,9 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         else:
             self.ui.projectlog_simple.setChecked(0)
 
-        self.__languagecombo = ["DE", "EN", "ES", "FR", "PO", "CN", "JP"]
-        self.ui.lang_combo.setCurrentIndex(self.__languagecombo.index(self.options["language"]))
+        self.ui.lang_combo.setCurrentIndex(LANGUAGECOMBO.index(self.options["language"]))
 
-        self.__cities = ["Adelaide", "Brisbane", "Innsbruck", "Melbourne", "Nanjing", "Perth",
-                  "SanFrancisco", "Sydney", "Zurich", "Other"]
-        self.ui.location_combo.setCurrentIndex(self.__cities.index(self.options["city"]))
+        self.ui.location_combo.setCurrentIndex(CITIES.index(self.options["city"]))
         self.ui_coords_line_enabledisable()
 
         self.ui.projpath_line.setText(str(self.options["defaultpath"]))
@@ -99,20 +268,17 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         self.ui.numiter_spin.setValue(int(self.options["maxiterations"]))
         self.ui.tolerance_spin.setValue(float(self.options["globaltolerance"]))
 
-        self.__decisions = ["best", "random", "none"]
-        self.ui.decision_combo.setCurrentIndex(self.__decisions.index(self.options["defaultdecision"]))
+        self.ui.decision_combo.setCurrentIndex(DECISIONS.index(self.options["defaultdecision"]))
 
         # MAP SETTINGS TAB
-        self.__mapstyles = ["CARTO", "ESRI", "OSM", "TONER", "TERRAIN"]
-        self.ui.mapstyle_combo.setCurrentIndex(self.__mapstyles.index(self.options["mapstyle"]))
+        self.ui.mapstyle_combo.setCurrentIndex(MAPSTYLES.index(self.options["mapstyle"]))
         self.ui_setmapstyle_pixmap()
 
         self.ui.tileserver_line.setText(self.options["tileserverURL"])
         self.ui.cache_check.setChecked(bool(self.options["cachetiles"]))
         self.ui.offline_check.setChecked(bool(self.options["offline"]))
 
-        self.__coordinatesystems = ["GDA", "UTM", "Other"]
-        self.ui.coords_combo.setCurrentIndex(self.__coordinatesystems.index(self.options["defaultcoordsys"]))
+        self.ui.coords_combo.setCurrentIndex(COORDINATESYSTEMS.index(self.options["defaultcoordsys"]))
         self.ui.epsg_line.setText(self.options["customepsg"])
         self.ui_epsg_line_enabledisable()
 
@@ -253,4 +419,27 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         #UPDATE THE CFG FILE BY EMITTING THE SIGNAL
         self.updateCFG.emit(self.options, False)    # emit update Signal with new dictionary and no reset
 
+
+# --- PROJECT LOG DIALOG ---
+class ProjectLogLaunch(QtWidgets.QDialog):
+    """Class instance for the project log window."""
+    def __init__(self, logobject, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
+        self.ui = Ui_LogDialog()
+        self.ui.setupUi(self)
+        self.__logobject = logobject
+
+        # --- SIGNALS AND SLOTS ---
+        self.ui.export_log.clicked.connect(self.export_log)
+        self.ui.log_widget.currentChanged.connect(self.disable_clear_button)
+        self.ui.done_button.clicked(self.accept)
+
+    def disable_clear_button(self):
+        if self.ui.log_widget.currentIndex() == 1:
+            self.ui.clear_log.setEnabled(0)
+        else:
+            self.ui.clear_log.setEnabled(1)
+
+    def export_log(self):
+        pass
 
