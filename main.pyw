@@ -43,7 +43,9 @@ import subprocess
 import xml.etree.ElementTree as ET
 
 # --- URBANBEATS LIBRARY IMPORTS ---
+import model.progref.ubglobals as ubglobals
 import model.urbanbeatscore as ubcore
+import ubeats_spatialhandling as ubspatial
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKit
@@ -140,6 +142,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Scenario Browser Interface
 
         # Data View Interface
+
         #self.ui.DataView_extent.clicked.connect()
         #self.ui.DataView_meta.clicked.connect()
         self.ui.DataView_options.clicked.connect(lambda: self.show_options(2))
@@ -175,8 +178,6 @@ class MainWindow(QtWidgets.QMainWindow):
         the variable self.__global_options. Upon closing the window, an accept() signal will call the
         update_options() method."""
         preferencedialog = ubdialogs.PreferenceDialogLaunch(self, tabindex)
-        preferencedialog.updateCFG[dict, bool].connect(self.update_options)
-        preferencedialog.resetCFG[int, bool].connect(self.update_options)
         preferencedialog.exec_()
 
     def get_options(self):
@@ -185,6 +186,16 @@ class MainWindow(QtWidgets.QMainWindow):
         :return: dict - self.__global_options
         """
         return self.__global_options
+
+    def get_option(self, att):
+        """Returns a specific attribute from the list of global program options.
+
+        :param: att - the attribute from the options list
+        :return: property of att if it is the correct key, otherwise None"""
+        try:
+            return self.__global_options[att]
+        except KeyError:
+            return None
 
     def update_options(self, newoptions, reset=False):
         """Updates the config.cfg file with either the user-modified options saved in newoptions or
@@ -200,18 +211,42 @@ class MainWindow(QtWidgets.QMainWindow):
             self.printc("Options have been successfully changed!")
             print self.__global_options
 
-    def set_options_from_config(self, filepath):
+    def set_options_from_config(self):
         """Parses config.cfg file and saves all attributes into the self.__global_options dictionary
 
         :param filepath: str, full filepath to the .cfg file. Usually UBEATSROOT
         :return: None
         """
-        options = ET.parse(filepath+"/config.cfg")
+        options = ET.parse(UBEATSROOT+"/config.cfg")
         root = options.getroot()
 
         for section in root.find('options'):
             for child in section:
                 self.__global_options[child.tag] = child.text
+        print self.__global_options
+
+    def write_new_options(self, newoptions):
+        """Updates the config
+
+        :return:
+        """
+        options = ET.parse(UBEATSROOT+"/config.cfg")
+        root = options.getroot()
+        for section in root.find('options'):
+            for child in section:
+                child.text = str(newoptions[child.tag])
+        options.write(UBEATSROOT+"/config.cfg")
+        self.update_gui_elements()
+
+    def reset_default_options(self):
+        print "RESETTING"
+
+
+    def update_gui_elements(self):
+        coordinates = ubglobals.COORDINATES[main_window.get_option("city")]
+        tileserver = ubglobals.TILESERVERS[main_window.get_option("mapstyle")]
+        leaflet_html = ubspatial.generate_initial_leaflet_map(coordinates, tileserver, UBEATSROOT)
+        main_window.ui.DataView_web.setHtml(leaflet_html)
 
     # NEW PROJECT INSTANCE CREATION
     def create_new_project(self):
@@ -436,9 +471,17 @@ if __name__ == "__main__":
     splash.finish(main_window)  # remove splashscreen, follow by main window
 
     # Enter the main loop
-    start_screen = StartScreenLaunch(main_window)
-    main_window.set_options_from_config(UBEATSROOT)
+    main_window.set_options_from_config()
 
+    # Set the initial Leaflet map
+    coordinates = ubglobals.COORDINATES[main_window.get_option("city")]
+    tileserver = ubglobals.TILESERVERS[main_window.get_option("mapstyle")]
+    leaflet_html = ubspatial.generate_initial_leaflet_map(coordinates, tileserver, UBEATSROOT)
+    main_window.ui.DataView_web.setHtml(leaflet_html)
+
+    time.sleep(1)
+
+    start_screen = StartScreenLaunch(main_window)
     # Signals for the Main Window and Start Screen Connection
     start_screen.startupNew.connect(main_window.create_new_project)
     start_screen.startupOpen.connect(main_window.open_existing_project)

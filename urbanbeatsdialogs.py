@@ -229,9 +229,6 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
     Ui_PreferenceDialog() with the Main Window. This dialog is primarily for adjusting
     global model options. These options are saved in the Main Window class (main.pyw) rather than
     model core."""
-    updateCFG = QtCore.pyqtSignal(dict, bool, name="updateCFG")     # Update config file signal
-    resetCFG = QtCore.pyqtSignal(int, bool, name="resetCFG")      # Reset all options signal
-
     def __init__(self, main, tabindex, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
         self.ui = Ui_PreferencesDialog()
@@ -369,8 +366,8 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
 
     def reset_values(self):
         """Resets all option values and closes the options/preferences dialog window."""
+        self.module.reset_default_options()
         self.reject()   # close the dialog window but do not update it
-        self.resetCFG.emit(None, True)  # emit reset Signal with no dictionary and True reset bool
 
     def save_values(self):
         """Saves the updated options to the main window and calls the update function to modify the
@@ -386,8 +383,9 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         else:
             self.options["projectlogstyle"] = "simplified"
 
-        self.options["language"] = str(self.__languagecombo[self.ui.lang_combo.currentIndex()])
-        self.options["city"] = str(self.__cities[self.ui.location_combo.currentIndex()])
+        self.options["language"] = str(LANGUAGECOMBO[self.ui.lang_combo.currentIndex()])
+        self.options["city"] = str(CITIES[self.ui.location_combo.currentIndex()])
+
         self.options["coordinates"] = str(self.ui.coords_line.text())
         self.options["defaultpath"] = str(self.ui.projpath_line.text())
         self.options["tempdir"] = str(self.ui.temppath_line.text())
@@ -398,14 +396,14 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         # SIMULATION TAB
         self.options["maxiterations"] = int(self.ui.numiter_spin.value())
         self.options["globaltolerance"] = float(self.ui.tolerance_spin.value())
-        self.options["defaultdecision"] = str(self.__decisions[self.ui.decision_combo.currentIndex()])
+        self.options["defaultdecision"] = str(DECISIONS[self.ui.decision_combo.currentIndex()])
 
         # MAP SETTINGS TAB
-        self.options["mapstyle"] = str(self.__mapstyles[self.ui.mapstyle_combo.currentIndex()])
+        self.options["mapstyle"] = str(MAPSTYLES[self.ui.mapstyle_combo.currentIndex()])
         self.options["tileserverURL"] = str(self.ui.tileserver_line.text())
         self.options["cachetiles"] = int(self.ui.cache_check.isChecked())
         self.options["offline"] = int(self.ui.offline_check.isChecked())
-        self.options["defaultcoordsys"] = str(self.__coordinatesystems[self.ui.coords_combo.currentIndex()])
+        self.options["defaultcoordsys"] = str(COORDINATESYSTEMS[self.ui.coords_combo.currentIndex()])
         self.options["customepsg"] = str(self.ui.epsg_line.text())
 
         # EXTERNAL TAB
@@ -417,7 +415,7 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         # Coming Soon
 
         #UPDATE THE CFG FILE BY EMITTING THE SIGNAL
-        self.updateCFG.emit(self.options, False)    # emit update Signal with new dictionary and no reset
+        self.module.write_new_options(self.options)
 
 
 # --- PROJECT LOG DIALOG ---
