@@ -54,6 +54,7 @@ from urbanbeatsmaingui import Ui_MainWindow
 from startscreen import Ui_StartDialog
 import urbanbeatsdialogs as ubdialogs       # Contains code for all non-module and non-result dialog windows
 
+
 # --- MAIN GUI FUNCTION ---
 class MainWindow(QtWidgets.QMainWindow):
     """The class definition for the UrbanBEATS Main Window. The main window
@@ -73,11 +74,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # --- SIGNAL DEFINITIONS ---
 
-
         # --- WORKFLOW VARIABLES ---
         self.__current_project_name = ""
+        self.__current_project_path = ""
         self.__saveProjectState = True      # True = unsaved, False = saved - used to track changes in workflow
         self.__activeSimulationObject = None
+        self.__activeDataLibrary = None
+        self.__activeProjectLog = None
         self.__activeprojectpath = "C:\\"
 
         self.__global_options = {}
@@ -90,40 +93,40 @@ class MainWindow(QtWidgets.QMainWindow):
         #                              run_ = executes some form of runtime function
 
         # FILE MENU
+        # actionQuit has been implemented through QtDesigner
         self.ui.actionNew_Project.triggered.connect(self.create_new_project)
         # self.ui.actionOpen_Project.triggered.connect()
         # self.ui.actionSave.triggered.connect()
         # self.ui.actionSave_As.triggered.connect()
         # self.ui.actionImport_Project.triggered.connect()
         # self.ui.actionExport_Project.triggered.connect()
-        # self.ui.actionQuit.triggered.connect() - implemented through QtDesigner
-        #
-        # # EDIT MENU
+
+        # EDIT MENU
         self.ui.actionEdit_Project_Details.triggered.connect(lambda: self.show_new_project_dialog(1))
         self.ui.actionPreferences.triggered.connect(self.show_options)
-        #
-        # # PROJECT MENU
+
+        # PROJECT MENU
         self.ui.actionView_Project_Description.triggered.connect(lambda: self.show_new_project_dialog(2))
         self.ui.actionView_Full_Project_Log.triggered.connect(self.show_project_log)
         # self.ui.actionDefine_New_Scenario.triggered.connect()
         # self.ui.actionDelete_Scenario.triggered.connect()
-        #
-        # # DATA MENU
+
+        # DATA MENU
         self.ui.actionAdd_Data.triggered.connect(self.show_add_data_dialog)
         # self.ui.actionImport_Archive_File.triggered.connect()
         # self.ui.actionImport_Archive_from_Project.triggered.connect()
         # self.ui.actionExport_Data_Archive.triggered.connect()
         # self.ui.actionReset_Data_Library.triggered.connect()
         #
-        # # SIMULATION MENU
-        # # Do this much later once GUIs for modules have been defined.
+        # SIMULATION MENU
+        # Do this much later once GUIs for modules have been defined.
         #
-        # # ADVANCED MENU
+        # ADVANCED MENU
         # self.ui.actionModel_Calibration_Viewer.triggered.connect()
         #
-        # # WINDOW MENU
-        # self.ui.actionMinimize.triggered.connect() - implemented through QtDesigner
-        # self.ui.actionOpen_Project_Folder.triggered.connect()
+        # WINDOW MENU
+        # actionMinimize has been implemented through QtDesigner
+        self.ui.actionOpen_Project_Folder.triggered.connect(self.open_project_folder)
         # self.ui.actionResults_Viewer.triggered.connect()
         #
         # # HELP MENU
@@ -241,7 +244,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.printc("Options have been reset!")
         elif reset == False:
             self.printc("Options have been successfully changed!")
-            print self.__global_options
 
     def set_options_from_config(self):
         """Parses config.cfg file and saves all attributes into the self.__global_options dictionary
@@ -255,7 +257,6 @@ class MainWindow(QtWidgets.QMainWindow):
         for section in root.find('options'):
             for child in section:
                 self.__global_options[child.tag] = child.text
-        print self.__global_options
 
     def write_new_options(self, newoptions):
         """Updates the config
@@ -273,8 +274,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def reset_default_options(self):
         print "RESETTING"
 
-
     def update_gui_elements(self):
+        """Updates elements on the main window GUI depending on what has changed in the options menu. This
+        includes the map viewer as well as others."""
         coordinates = ubglobals.COORDINATES[main_window.get_option("city")]
         tileserver = ubglobals.TILESERVERS[main_window.get_option("mapstyle")]
         leaflet_html = ubspatial.generate_initial_leaflet_map(coordinates, tileserver, UBEATSROOT)
@@ -373,10 +375,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def raise_ub_error_message(self, message):
         pass
 
-    def run_simulation(self):
+    def call_run_simulation(self):
         pass
 
-    def run_simulation_perfonly(self):
+    def call_run_simulation_perfonly(self):
         pass
 
 
