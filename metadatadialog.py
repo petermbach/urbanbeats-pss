@@ -45,6 +45,7 @@ class Ui_MetadataDialog(object):
         self.verticalLayout.addWidget(self.header)
         self.metadataView = QtWidgets.QTextEdit(MetadataDialog)
         self.metadataView.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.metadataView.setReadOnly(True)
         self.metadataView.setObjectName("metadataView")
         self.verticalLayout.addWidget(self.metadataView)
         self.footer = QtWidgets.QWidget(MetadataDialog)

@@ -97,6 +97,9 @@
          <property name="documentTitle">
           <string/>
          </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
          <property name="plainText">
           <string>&lt;none&gt;</string>
          </property>

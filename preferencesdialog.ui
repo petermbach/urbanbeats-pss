@@ -335,7 +335,11 @@
             <widget class="QWidget" name="path_widget" native="true">
              <layout class="QGridLayout" name="gridLayout_3">
               <item row="0" column="1">
-               <widget class="QLineEdit" name="projpath_line"/>
+               <widget class="QLineEdit" name="projpath_line">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
               <item row="1" column="0">
                <widget class="QLabel" name="temppath_lbl">
@@ -359,7 +363,11 @@
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QLineEdit" name="temppath_line"/>
+               <widget class="QLineEdit" name="temppath_line">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
               <item row="1" column="2">
                <widget class="QPushButton" name="temppath_button">
@@ -933,7 +941,11 @@
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QLineEdit" name="epanetpath_line"/>
+               <widget class="QLineEdit" name="epanetpath_line">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
               <item row="0" column="2">
                <widget class="QPushButton" name="epanetpath_button">
@@ -957,7 +969,11 @@
                </widget>
               </item>
               <item row="2" column="1">
-               <widget class="QLineEdit" name="musicpath_line"/>
+               <widget class="QLineEdit" name="musicpath_line">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
               <item row="1" column="0">
                <widget class="QLabel" name="swmmpath_lbl">
@@ -967,7 +983,11 @@
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QLineEdit" name="swmmpath_line"/>
+               <widget class="QLineEdit" name="swmmpath_line">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
               <item row="1" column="2">
                <widget class="QPushButton" name="swmmpath_button">

@@ -85,8 +85,14 @@
       </item>
       <item>
        <widget class="QLineEdit" name="databox">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>&lt;none&gt;</string>
+        </property>
         <property name="readOnly">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
        </widget>
       </item>

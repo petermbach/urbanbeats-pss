@@ -480,6 +480,9 @@ p, li { white-space: pre-wrap; }
                 <property name="text">
                  <string>&lt;none&gt;</string>
                 </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
              </layout>
@@ -568,6 +571,9 @@ p, li { white-space: pre-wrap; }
                <widget class="QLineEdit" name="projpath_line">
                 <property name="text">
                  <string>&lt;none&gt;</string>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>

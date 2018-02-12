@@ -53,6 +53,7 @@ class Ui_LogDialog(object):
         self.session_box = QtWidgets.QPlainTextEdit(self.session_tab)
         self.session_box.setMinimumSize(QtCore.QSize(0, 100))
         self.session_box.setDocumentTitle("")
+        self.session_box.setReadOnly(True)
         self.session_box.setObjectName("session_box")
         self.verticalLayout_2.addWidget(self.session_box)
         self.log_widget.addTab(self.session_tab, "")
