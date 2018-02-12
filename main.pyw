@@ -36,6 +36,7 @@ __copyright__ = "Copyright 2012. Peter M. Bach"
 # --- PYTHON LIBRARY IMPORTS ---
 import sys
 import os
+import platform
 import time
 import random
 import webbrowser
@@ -150,9 +151,27 @@ class MainWindow(QtWidgets.QMainWindow):
         # Scenario Narrative Interface
 
         # Modules Interface
+        self.ui.ModuleDock_spatialsetup.clicked.connect(self.launch_spatialsetup_modulegui)
+        self.ui.ModuleDock_climatesetup.clicked.connect(self.launch_climatesetup_modulegui)
+
+        self.ui.ModuleDock_urbandev.clicked.connect(self.launch_urbandev_modulegui)
+        self.ui.ModuleDock_urbanplan.clicked.connect(self.launch_urbanplan_modulegui)
+        self.ui.ModuleDock_socioeconomic.clicked.connect(self.launch_socioeconomic_modulegui)
+
+        self.ui.ModuleDock_spatialmap.clicked.connect(self.launch_spatialmap_modulegui)
+        self.ui.ModuleDock_regulation.clicked.connect(self.launch_regulation_modulegui)
+        self.ui.ModuleDock_infrastructure.clicked.connect(self.launch_infrastructure_modulegui)
+
+        self.ui.ModuleDock_performance.clicked.connect(self.launch_performance_modulegui)
+        self.ui.ModuleDock_impact.clicked.connect(self.launch_impact_modulegui)
+        self.ui.ModuleDock_decisionanalysis.clicked.connect(self.launch_decisionanalysis_modulegui)
 
         # Control Panel Interface
-
+        self.ui.SimDock_projectfolder.clicked.connect(self.open_project_folder)
+        # self.ui.SimDock_mapoptions.clicked.connect(self.show_map_export_settings)
+        # self.ui.SimDock_report.clicked.connect(self.show_reporting_settings)
+        # self.ui.SimDock_resultsview.connect(self.show_results_viewer)
+        # self.ui.SimDock_run.connect(self.call_run_simulation)
 
     # MAIN INTERFACE FUNCTIONALITY
     def printc(self, textmessage):
@@ -164,8 +183,21 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.ui.OutputConsole.append(str("<font color=\"#93cbc7\">"+time.asctime())+"</font> | "+str(textmessage))
 
-    def testfunction(self):
-        self.consoleobserver.update_observer("Hello World")
+    def open_project_folder(self):
+        """Opens the proejct folder of the active simulation. The function is called differently
+        depending on the operating system.
+
+        :return: None, opens Explorer or Finder depending on Windows/Mac
+        """
+        simulation = self.get_active_simulation_object()
+        if simulation:
+            print self.__activeprojectpath
+            self.printc("Opening Project Folder: "+str(self.__activeprojectpath))
+            if platform.system() == "Windows":
+                subprocess.Popen(r'explorer "'+self.__activeprojectpath+'"')
+            else:
+                subprocess.Popen(["open", self.__activeprojectpath])    # NOTE: untested!
+        return
 
     # ABOUT AND OPTIONS DIALOG AND RELATED FUNCTIONS
     def show_about_dialog(self):
