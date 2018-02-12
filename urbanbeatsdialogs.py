@@ -37,19 +37,14 @@ import webbrowser
 from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKit
 
 # --- URBANBEATS LIBRARY IMPORTS ---
+import model.progref.ubglobals as ubglobals
+import model.ubdatalibrary as ubdatalibrary
 from aboutdialog import Ui_AboutDialog
 from preferencesdialog import Ui_PreferencesDialog
 from adddatadialog import Ui_AddDataDialog
 from startnewprojectdialog import Ui_ProjectSetupDialog
 from logdialog import Ui_LogDialog
-
-# --- GLOBAL VARIABLES ---
-LANGUAGECOMBO = ["DE", "EN", "ES", "FR", "PO", "CN", "JP"]
-DECISIONS = ["best", "random", "none"]
-COORDINATESYSTEMS = ["GDA", "UTM", "Other"]
-CITIES = ["Adelaide", "Brisbane", "Innsbruck", "Melbourne", "Nanjing", "Perth",
-                  "SanFrancisco", "Sydney", "Zurich", "Other"]
-MAPSTYLES = ["CARTO", "ESRI", "OSM", "TONER", "TERRAIN"]
+from adddatadialog import Ui_AddDataDialog
 
 
 # --- ABOUT DIALOG ---
@@ -65,45 +60,139 @@ class AboutDialogLaunch(QtWidgets.QDialog):
 # --- ADD DATA DIALOG ---
 class AddDataDialogLaunch(QtWidgets.QDialog):
     """Class definition for the add data dialog window for importing and managing data."""
-    def __init__(self, main, datalibrary, parent=None):
+    dataLibraryUpdated = QtCore.pyqtSignal()
+
+    def __init__(self, main, simulation, datalibrary, parent=None):
+        """Class constructor, references the data library object active in the simulation as well as the main
+        runtime class.
+
+        :param main: referring to the main GUI so that changes can be made in real-time to the main interface
+        :param datalibrary: the data library object, which will be updated as data files are added to the project.
+        :param parent: None
+        """
         QtWidgets.QDialog.__init__(self, parent)
         self.ui = Ui_AddDataDialog()
+        self.ui.setupUi(self)
 
         # --- INITIALIZE MAIN VARIABLES ---
-        self.main = main    # the main runtime - for GUI changes
+        self.maingui = main    # the main runtime - for GUI changes
+        self.simulation = simulation
         self.datalibrary = datalibrary      # the simulation object's data library
+        self.currentDataType = "spatial"
+        self.ui.spatial_radio.setChecked(1)
+
+        # Update the category and sub-category combo boxes
+        self.update_datacat_combo()
+        self.update_datacatsub_combo()
 
         # --- SIGNALS AND SLOTS ---
+        self.ui.adddatabrowse.clicked.connect(self.browse_for_data)
         self.ui.spatial_radio.clicked.connect(self.update_datacat_combo)
         self.ui.temporal_radio.clicked.connect(self.update_datacat_combo)
         self.ui.qualitative_radio.clicked.connect(self.update_datacat_combo)
         self.ui.datacat_combo.currentIndexChanged.connect(self.update_datacatsub_combo)
 
+        self.ui.adddata_button.clicked.connect(self.add_data_to_project)
         self.ui.cleardata_button.clicked.connect(self.clear_interface)
-        self.ui.done_button.clicked.connect(self.accept)
-        self.ui.adddata_button.connect(self.add_data_to_project)
+        self.ui.done_button.clicked.connect(self.close)
+
+    def browse_for_data(self):
+        """Allows the user to select a data file to load into the model's data library."""
+        if self.ui.spatial_radio.isChecked():
+            datatype = "Spatial Formats (*.txt *shp)"
+        elif self.ui.temporal_radio.isChecked():
+            datatype = "Temporal Data (*.txt *.csv *.dat *.nc)"
+        else:
+            datatype = "Qualitative Data (*.txt *.csv *.dat)"
+
+        message = "Browse for Input Data File..."
+        datafile, _filter = QtWidgets.QFileDialog.getOpenFileName(self, message, os.curdir,datatype)
+        if datafile:
+            self.ui.databox.setText(datafile)
 
     def update_datacat_combo(self):
-        pass
+        """Updates the data category combo box depending on whether it should display spatial, temporal
+        or qualitative data. The update is dependent on the checked radio button. The function also
+        updates the main data browse box. If the user selected temporal data and then changed the
+        format, then the selected file should no longer be valid and will disappear."""
+        if self.ui.spatial_radio.isChecked():
+            if self.currentDataType != "spatial":
+                self.ui.databox.setText("<none>")
+            self.ui.datacat_combo.setEnabled(1)
+            self.ui.datacat_combo.clear()
+            self.ui.datacat_combo.addItem("<undefined>")
+            for i in ubglobals.SPATIALDATA:
+                self.ui.datacat_combo.addItem(i)
+        elif self.ui.temporal_radio.isChecked():
+            if self.currentDataType != "temporal":
+                self.ui.databox.setText("<none>")
+            self.ui.datacat_combo.setEnabled(1)
+            self.ui.datacat_combo.clear()
+            self.ui.datacat_combo.addItem("<undefined>")
+            for i in ubglobals.TEMPORALDATA:
+                self.ui.datacat_combo.addItem(i)
+        else:
+            if self.currentDataType != "qualitative":
+                self.ui.databox.setText("<none>")
+            self.ui.datacat_combo.setEnabled(0)
+            self.ui.datacat_combo.clear()
+            self.ui.datacat_combo.addItem("<undefined>")
+        self.ui.datacat_combo.setCurrentIndex(1)
 
     def update_datacatsub_combo(self):
-        pass
+        """Updates the sub-category combo box based on the required sub-classification of various
+        data sets."""
+        self.ui.datacatsub_combo.clear()
+        self.ui.datacatsub_combo.addItem("<undefined>")
+        try:
+            subcategories = ubglobals.SUBDATASETS[str(self.ui.datacat_combo.currentText())]
+        except KeyError:
+            self.ui.datacatsub_combo.setEnabled(0)
+            return
+        self.ui.datacatsub_combo.setEnabled(1)
+        for i in subcategories:
+            self.ui.datacatsub_combo.addItem(i)
+        self.ui.datacat_combo.setCurrentIndex(0)
+        self.ui.datacatsub_combo.setCurrentIndex(0)
 
     def clear_interface(self):
-        pass
+        """Clears the addData interface by removing the text in the browse box (setting it to <none>),
+        checking one of the radio buttons and updating the combo boxes."""
+        self.ui.databox.setText("<none>")
+        self.ui.spatial_radio.setChecked(1)
+        self.update_datacat_combo()
+        self.update_datacatsub_combo()
 
     def add_data_to_project(self):
-        dataset = {}
-        dataset["file"] = str(self.ui.databox.text())
-        if self.ui.spatial_radio.isChecked():
-            dataset["datatype"] = "SPATIAL"
-        elif self.ui.temporal_radio.isChecked():
-            dataset["datatype"] = "TEMPORAL"
+        """Adds the data to the project based on all the information provided. Checks for the validity
+        of the data file."""
+        datafile = self.ui.databox.text()
+        if os.path.isfile(datafile):
+            if self.ui.datacat_combo.currentText() != "<undefined>":
+                if self.ui.datacatsub_combo.isEnabled() == 0 \
+                        or self.ui.datacatsub_combo.currentIndex() != 0:
+                    datatype = []
+                    datatype.append(self.currentDataType)
+                    datatype.append(self.ui.datacat_combo.currentText())
+                    datatype.append(self.ui.datacatsub_combo.currentText())
+                    datatype.append(os.path.splitext(datafile)[1])
+                    dataref = ubdatalibrary.\
+                        UrbanBeatsDataReference(datatype, datafile,
+                                                self.simulation.get_project_parameter("projectpath"),
+                                                self.simulation.get_project_parameter("keepcopy"),
+                                                self.ui.notes_box.toPlainText())
+                    self.datalibrary.add_data_to_library(dataref)
+                    self.dataLibraryUpdated.emit()
+                    self.clear_interface()
+                else:
+                    prompt_msg = "Please select a valid classification"
+                    QtWidgets.QMessageBox.warning(self, 'Invalid Classification', prompt_msg, QtWidgets.QMessageBox.Ok)
+            else:
+                prompt_msg = "Please select a valid classification"
+                QtWidgets.QMessageBox.warning(self, 'Invalid Classification', prompt_msg, QtWidgets.QMessageBox.Ok)
         else:
-            dataset["datatype"] = "QUALITATIVE"
-
-        self.addnewdata.emit(dataset)
-        self.clear_interface()
+            prompt_msg = "Invalid Data Set! Please select a valid file."
+            QtWidgets.QMessageBox.warning(self, 'Invalid Data', prompt_msg, QtWidgets.QMessageBox.Ok)
 
 
 # --- SETUP NEW PROJECT DIALOG ---
@@ -133,7 +222,7 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         # --- GUI PARAMETERS ---
         self.ui.projname_line.setText(self.simulation.get_project_parameter("name"))
         self.ui.region_line.setText(self.simulation.get_project_parameter("region"))
-        self.ui.location_combo.setCurrentIndex(CITIES.index(self.simulation.get_project_parameter("city")))
+        self.ui.location_combo.setCurrentIndex(ubglobals.CITIES.index(self.simulation.get_project_parameter("city")))
         self.ui.modellername_box.setText(self.simulation.get_project_parameter("modeller"))
         self.ui.affiliation_box.setText(self.simulation.get_project_parameter("affiliation"))
         self.ui.otherpersons_box.setPlainText(self.simulation.get_project_parameter("otherpersons"))
@@ -204,11 +293,40 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         else:
             pass    # Just viewing, just close the window.
 
+    def done(self, r):
+        """Overwriting the done() method so that checks can be made before closing the window,
+        automatically gets called when the signals "accepted()" or "rejected()" are emitted.
+
+        :param r: The signal type
+        :return: Nothing if all conditions are fine, warning message box if not.
+        """
+        if self.Accepted == r:
+            conditions_met = [1, 1]
+            if os.path.isdir(self.ui.projpath_line.text()):
+                pass
+            else:
+                prompt_msg = "Please select a valid project path!"
+                QtWidgets.QMessageBox.warning(self, 'Invalid Path', prompt_msg, QtWidgets.QMessageBox.Ok)
+                conditions_met[0] = 0
+            if os.path.isfile(self.ui.projectboundary_line.text()):
+                pass
+            else:
+                prompt_msg = "Please select a valid boundary shapefile!"
+                QtWidgets.QMessageBox.warning(self, 'Invalid Boundary File', prompt_msg, QtWidgets.QMessageBox.Ok)
+                conditions_met[1] = 0
+            if sum(conditions_met) == len(conditions_met):
+                self.save_values()
+                QtWidgets.QDialog.done(self, r)
+            else:
+                return
+        else:
+            QtWidgets.QDialog.done(self, r) # Call the parent's method instead of the override.
+
     def save_values(self):
         """Saves all project parameters values and returns a dictionary for use to setup simulation."""
         self.simulation.set_project_parameter("name", self.ui.projname_line.text())
         self.simulation.set_project_parameter("region", self.ui.region_line.text())
-        self.simulation.set_project_parameter("city", CITIES[self.ui.location_combo.currentIndex()])
+        self.simulation.set_project_parameter("city", ubglobals.CITIES[self.ui.location_combo.currentIndex()])
         self.simulation.set_project_parameter("modeller", self.ui.modellername_box.text())
         self.simulation.set_project_parameter("affiliation", self.ui.affiliation_box.text())
         self.simulation.set_project_parameter("otherpersons", self.ui.otherpersons_box.toPlainText())
@@ -249,9 +367,9 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         else:
             self.ui.projectlog_simple.setChecked(0)
 
-        self.ui.lang_combo.setCurrentIndex(LANGUAGECOMBO.index(self.options["language"]))
+        self.ui.lang_combo.setCurrentIndex(ubglobals.LANGUAGECOMBO.index(self.options["language"]))
 
-        self.ui.location_combo.setCurrentIndex(CITIES.index(self.options["city"]))
+        self.ui.location_combo.setCurrentIndex(ubglobals.CITIES.index(self.options["city"]))
         self.ui_coords_line_enabledisable()
 
         self.ui.projpath_line.setText(str(self.options["defaultpath"]))
@@ -265,17 +383,17 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         self.ui.numiter_spin.setValue(int(self.options["maxiterations"]))
         self.ui.tolerance_spin.setValue(float(self.options["globaltolerance"]))
 
-        self.ui.decision_combo.setCurrentIndex(DECISIONS.index(self.options["defaultdecision"]))
+        self.ui.decision_combo.setCurrentIndex(ubglobals.DECISIONS.index(self.options["defaultdecision"]))
 
         # MAP SETTINGS TAB
-        self.ui.mapstyle_combo.setCurrentIndex(MAPSTYLES.index(self.options["mapstyle"]))
+        self.ui.mapstyle_combo.setCurrentIndex(ubglobals.MAPSTYLES.index(self.options["mapstyle"]))
         self.ui_setmapstyle_pixmap()
 
         self.ui.tileserver_line.setText(self.options["tileserverURL"])
         self.ui.cache_check.setChecked(bool(self.options["cachetiles"]))
         self.ui.offline_check.setChecked(bool(self.options["offline"]))
 
-        self.ui.coords_combo.setCurrentIndex(COORDINATESYSTEMS.index(self.options["defaultcoordsys"]))
+        self.ui.coords_combo.setCurrentIndex(ubglobals.COORDINATESYSTEMS.index(self.options["defaultcoordsys"]))
         self.ui.epsg_line.setText(self.options["customepsg"])
         self.ui_epsg_line_enabledisable()
 
@@ -383,8 +501,8 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         else:
             self.options["projectlogstyle"] = "simplified"
 
-        self.options["language"] = str(LANGUAGECOMBO[self.ui.lang_combo.currentIndex()])
-        self.options["city"] = str(CITIES[self.ui.location_combo.currentIndex()])
+        self.options["language"] = str(ubglobals.LANGUAGECOMBO[self.ui.lang_combo.currentIndex()])
+        self.options["city"] = str(ubglobals.CITIES[self.ui.location_combo.currentIndex()])
 
         self.options["coordinates"] = str(self.ui.coords_line.text())
         self.options["defaultpath"] = str(self.ui.projpath_line.text())
@@ -396,14 +514,14 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         # SIMULATION TAB
         self.options["maxiterations"] = int(self.ui.numiter_spin.value())
         self.options["globaltolerance"] = float(self.ui.tolerance_spin.value())
-        self.options["defaultdecision"] = str(DECISIONS[self.ui.decision_combo.currentIndex()])
+        self.options["defaultdecision"] = str(ubglobals.DECISIONS[self.ui.decision_combo.currentIndex()])
 
         # MAP SETTINGS TAB
-        self.options["mapstyle"] = str(MAPSTYLES[self.ui.mapstyle_combo.currentIndex()])
+        self.options["mapstyle"] = str(ubglobals.MAPSTYLES[self.ui.mapstyle_combo.currentIndex()])
         self.options["tileserverURL"] = str(self.ui.tileserver_line.text())
         self.options["cachetiles"] = int(self.ui.cache_check.isChecked())
         self.options["offline"] = int(self.ui.offline_check.isChecked())
-        self.options["defaultcoordsys"] = str(COORDINATESYSTEMS[self.ui.coords_combo.currentIndex()])
+        self.options["defaultcoordsys"] = str(ubglobals.COORDINATESYSTEMS[self.ui.coords_combo.currentIndex()])
         self.options["customepsg"] = str(self.ui.epsg_line.text())
 
         # EXTERNAL TAB
@@ -430,7 +548,7 @@ class ProjectLogLaunch(QtWidgets.QDialog):
         # --- SIGNALS AND SLOTS ---
         self.ui.export_log.clicked.connect(self.export_log)
         self.ui.log_widget.currentChanged.connect(self.disable_clear_button)
-        self.ui.done_button.clicked(self.accept)
+        self.ui.done_button.clicked.connect(self.close)
 
     def disable_clear_button(self):
         if self.ui.log_widget.currentIndex() == 1:

@@ -70,16 +70,16 @@ class UrbanBeatsDataLibrary(object):
         """Adds an UrbanBeatsDataReference() instance to the data library. The reference object
         is created in the import_data() method. Required for the
 
-        :param dataref:
-        :return:
+        :param dataref: The data reference object created by instantiating the
+                        UrbanBeatsDataReference() class
         """
         dataclass = dataref
         dataref.assign_id("ds_"+str(self.__data_library_idcount))
-        if dataclass == "SPATIAL":
+        if dataclass == "spatial":
             self.__spatial_data.append(dataref)
-        elif dataclass == "TIME":
+        elif dataclass == "temporal":
             self.__time_series_data.append(dataref)
-        elif dataclass == "QUAL":
+        elif dataclass == "qualitative":
             self.__qual_data.append(dataref)
         self.__data_library_idcount += 1
 

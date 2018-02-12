@@ -24,6 +24,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2012. Peter M. Bach"
 
+# --- LANGUAGE ---
+LANGUAGECOMBO = ["DE", "EN", "ES", "FR", "PO", "CN", "JP"]
+
+# --- DATA LIBRARY ---
+SPATIALDATA = ["Boundaries", "Built Infrastructure", "Elevation", "Employment", "Land Use",
+               "Locality Maps", "Overlays", "Population", "Soil", "Water Bodies"]
+SUBDATASETS = {"Boundaries": ["Geopolitical", "Suburban", "Catchment"],
+               "Population": ["Count", "Density"],
+               "Soil": ["Classification", "Infiltration Rate"],
+               "Employment": ["Count", "Density"],
+               "Overlay": ["Planning", "Groundwater", "Environmental", "Heritage", "Regulatory"],
+               "Water Bodies": ["Rivers", "Lakes"],
+               "Built Infrastructure": ["Rail Network", "Road Network", "Water Network", "WSUD"]
+               }
+TEMPORALDATA = ["Rainfall", "Evapotranspiration", "Solar Radiation", "Temperature"]
+
+# --- LOCATION & MAPS ---
+COORDINATESYSTEMS = ["GDA", "UTM", "Other"]
+
+CITIES = ["Adelaide", "Brisbane", "Innsbruck", "Melbourne", "Nanjing", "Perth",
+                  "SanFrancisco", "Sydney", "Zurich", "Other"]
+MAPSTYLES = ["CARTO", "ESRI", "OSM", "TONER", "TERRAIN"]
+
 COORDINATES = {"Adelaide": [-34.9285, 138.6007],
                 "Brisbane": [-27.4698, 153.0251],
                 "Innsbruck": [47.2692, 11.4041],
@@ -61,3 +84,6 @@ maxZoom: 18,
 ext: 'png'
 });"""
     }
+
+# --- MODEL SETTING ---
+DECISIONS = ["best", "random", "none"]
