@@ -142,11 +142,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # MAIN INTERFACE BUTTONS
         # Project Data Library Interface
+        self.ui.addData.clicked.connect(self.show_add_data_dialog)
+        self.ui.removeData.clicked.connect(self.remove_data_from_library)
+        self.ui.infoData.clicked.connect(self.view_metadata_window)
+        self.ui.previewData.clicked.connect(self.update_preview_data)
+        self.ui.expcolData.clicked.connect(self.expand_collapse_data_library)
 
         # Scenario Browser Interface
 
         # Data View Interface
-
         #self.ui.DataView_extent.clicked.connect()
         #self.ui.DataView_meta.clicked.connect()
         self.ui.DataView_options.clicked.connect(lambda: self.show_options(2))
@@ -291,7 +295,15 @@ class MainWindow(QtWidgets.QMainWindow):
     def show_new_project_dialog(self, viewmode):
         newprojectdialog = ubdialogs.NewProjectDialogLaunch(self.get_active_simulation_object(), viewmode)
         newprojectdialog.rejected.connect(self.cancel_new_project_creation)
+        newprojectdialog.accepted.connect(self.setup_main_gui)
         newprojectdialog.exec_()
+
+    def setup_main_gui(self):
+        """Setup the main user interface, several functions carried out.
+
+        :return:
+        """
+        pass
 
     def cancel_new_project_creation(self):
         self.set_active_simulation_object(None)
@@ -317,8 +329,20 @@ class MainWindow(QtWidgets.QMainWindow):
     def set_active_simulation_object(self, simobjectfromcore):
         self.__activeSimulationObject = simobjectfromcore
 
+    def set_active_data_library(self, libraryfromcore):
+        self.__activeDataLibrary = libraryfromcore
+
+    def set_active_project_log(self, logfromcore):
+        self.__activeProjectLog = logfromcore
+
     def get_active_simulation_object(self):
         return self.__activeSimulationObject
+
+    def get_active_data_library(self):
+        return self.__activeDataLibrary
+
+    def get_active_project_log(self):
+        return self.__activeProjectLog
 
     def set_save_project_state(self, status):
         """Reverses the state of saveProjectState. Tracks changes made to project settings. Then, changes
@@ -354,19 +378,119 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 event.ignore()
 
+    # PROJECT LOG
     def show_project_log(self):
         """Opens the project log window for the user to review the history of the modelling project."""
         # Get the active Log object
-        logobject = None
+        logobject = self.get_active_project_log()
         projectlog = ubdialogs.ProjectLogLaunch(logobject)
 
         projectlog.exec_()
 
+    # DATA LIBRARY METHODS
     def show_add_data_dialog(self):
-        """Opens the Add Data Dialog window when the user clicks on any function to add data to the project."""
-        adddatadialog = ubdialogs.AddDataDialogLaunch()
-
+        """Opens the Add Data Dialog window when the user clicks on any function to add data to
+        the project."""
+        adddatadialog = ubdialogs.AddDataDialogLaunch(self, self.get_active_simulation_object(),
+                                                      self.get_active_data_library())
+        adddatadialog.dataLibraryUpdated.connect(self.update_data_library_view)
         adddatadialog.exec_()
+
+    def remove_data_from_library(self):
+        pass
+
+    def update_data_library_view(self):
+        """Called then changes are made to the data library object either through the addition or
+        removal of data from the data library. The program goes through the data library and updates
+        the tree widget."""
+        pass
+
+    def view_metadata_window(self):
+        pass
+
+    def update_preview_data(self):
+        pass
+
+    def expand_collapse_data_library(self):
+        pass
+
+    # MODULE BAR - LAUNCHING ALL MODULES
+    def launch_spatialsetup_modulegui(self):
+        """
+
+        :return:
+        """
+        pass
+
+    def launch_climatesetup_modulegui(self):
+        """
+
+        :return:
+        """
+        pass
+
+    def launch_urbandev_modulegui(self):
+        """
+
+        :return:
+        """
+        pass
+
+    def launch_urbanplan_modulegui(self):
+        """
+
+        :return:
+        """
+        pass
+
+    def launch_socioeconomic_modulegui(self):
+        """
+
+        :return:
+        """
+        pass
+
+    def launch_spatialmap_modulegui(self):
+        """
+
+        :return:
+        """
+        pass
+
+    def launch_regulation_modulegui(self):
+        """
+
+        :return:
+        """
+        pass
+
+    def launch_infrastructure_modulegui(self):
+        """
+
+        :return:
+        """
+        pass
+
+    def launch_performance_modulegui(self):
+        """
+
+        :return:
+        """
+        pass
+
+    def launch_impact_modulegui(self):
+        """
+
+        :return:
+        """
+        pass
+
+    def launch_decisionanalysis_modulegui(self):
+        """
+
+        :return:
+        """
+        pass
 
     # FUNCTIONS TO DO
     def checks_before_run(self):
