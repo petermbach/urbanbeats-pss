@@ -84,7 +84,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__activeprojectpath = "C:\\"
 
         self.__global_options = {}
-        self.__dtype_names = []
 
         # --- GUI SIGNALS AND SLOTS ---
         # Function naming conventions: show_ = launching dialog windows,
@@ -156,6 +155,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.DataView_options.clicked.connect(lambda: self.show_options(2))
 
         # Scenario Narrative Interface
+        self.ui.newScenario.clicked.connect(lambda: self.show_scenario_dialog(0))
+        self.ui.editScenario.clicked.connect(lambda: self.show_scenario_dialog(1))
 
         # Modules Interface
         self.ui.ModuleDock_spatialsetup.clicked.connect(self.launch_spatialsetup_modulegui)
@@ -179,6 +180,19 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.ui.SimDock_report.clicked.connect(self.show_reporting_settings)
         # self.ui.SimDock_resultsview.connect(self.show_results_viewer)
         # self.ui.SimDock_run.connect(self.call_run_simulation)
+
+    # SCENARIO CREATION AND MANAGEMENT FUNCTIONALITY
+    def show_scenario_dialog(self, viewmode):
+        """Launches the scenario dialog window, which the user can use to customize and set up a simulation scenario.
+
+        :param viewmode: 0 = new scenario, 1 = edit scenario
+        """
+        if viewmode == 0:       # View Scenario
+            newscenariodialog = ubdialogs.CreateScenarioLaunch(self, self.get_active_simulation_object(),
+                                                               self.get_active_data_library())
+            newscenariodialog.exec_()
+        elif viewmode == 1:     # Edit Scenario
+            pass
 
     # MAIN INTERFACE FUNCTIONALITY
     def printc(self, textmessage):
@@ -303,11 +317,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
         :return:
         """
-        pass
+        self.enable_disable_main_interface("new")
+        self.printc("New Project Initialized")
 
     def cancel_new_project_creation(self):
         self.set_active_simulation_object(None)
-        self.enable_disable_main_interface(0)
+        self.enable_disable_main_interface("startup")
 
     def open_existing_project(self):
         self.printc("OPEN AN EXISTING PROJECT")
@@ -315,9 +330,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def import_existing_project(self):
         self.printc("IMPORT PROJECT!")
-        pass
-
-    def enable_disable_main_interface(self, condition):
         pass
 
     # def create_new_project_instance(self):
@@ -505,6 +517,49 @@ class MainWindow(QtWidgets.QMainWindow):
     def call_run_simulation_perfonly(self):
         pass
 
+    def enable_disable_main_interface(self, condition, **kwargs):
+        if condition == "startup":
+            self.enable_disable_module_icons([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+            self.ui.DataDock.setEnabled(0)
+            self.ui.ScenarioDock.setEnabled(0)
+            self.ui.SimDock.setEnabled(0)
+            self.ui.ScenarioView_Widget.setEnabled(0)
+            self.ui.DataView_extent.setEnabled(0)
+            self.ui.DataView_meta.setEnabled(0)
+            self.ui.actionView_Full_Project_Log.setEnabled(0)
+            self.ui.actionView_Project_Description.setEnabled(0)
+        elif condition == "new":
+            self.ui.ModuleDock.setEnabled(1)
+            self.ui.DataDock.setEnabled(1)
+            self.ui.ScenarioDock.setEnabled(1)
+            self.ui.SimDock.setEnabled(1)
+            self.ui.ScenarioView_Widget.setEnabled(1)
+            self.ui.DataView_extent.setEnabled(1)
+            self.ui.DataView_meta.setEnabled(1)
+            self.ui.actionView_Full_Project_Log.setEnabled(1)
+            self.ui.actionView_Project_Description.setEnabled(1)
+            self.enable_disable_module_icons([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+            self.enable_disable_scenario_module_list([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        elif condition == "scenario":
+            self.enable_disable_module_icons(kwargs["modulesetup"])
+        return
+
+    def enable_disable_module_icons(self, condition):
+        self.ui.ModuleDock_spatialsetup.setEnabled(condition[0])
+        self.ui.ModuleDock_climatesetup.setEnabled(condition[1])
+        self.ui.ModuleDock_urbandev.setEnabled(condition[2])
+        self.ui.ModuleDock_urbanplan.setEnabled(condition[3])
+        self.ui.ModuleDock_socioeconomic.setEnabled(condition[4])
+        self.ui.ModuleDock_spatialmap.setEnabled(condition[5])
+        self.ui.ModuleDock_regulation.setEnabled(condition[6])
+        self.ui.ModuleDock_infrastructure.setEnabled(condition[7])
+        self.ui.ModuleDock_performance.setEnabled(condition[8])
+        self.ui.ModuleDock_impact.setEnabled(condition[9])
+        self.ui.ModuleDock_decisionanalysis.setEnabled(condition[10])
+
+    def enable_disable_scenario_module_list(self, condition):
+        # Scan the tree widget for scenario stuff.
+        pass
 
 # --- CONSOLE OBSERVER ---
 class ConsoleObserver(QtCore.QObject):
@@ -636,6 +691,7 @@ if __name__ == "__main__":
     tileserver = ubglobals.TILESERVERS[main_window.get_option("mapstyle")]
     leaflet_html = ubspatial.generate_initial_leaflet_map(coordinates, tileserver, UBEATSROOT)
     main_window.ui.DataView_web.setHtml(leaflet_html)
+    main_window.enable_disable_main_interface("startup")
 
     time.sleep(1)
 
