@@ -39,13 +39,167 @@ from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKit
 # --- URBANBEATS LIBRARY IMPORTS ---
 import model.progref.ubglobals as ubglobals
 import model.ubdatalibrary as ubdatalibrary
-from aboutdialog import Ui_AboutDialog
-from preferencesdialog import Ui_PreferencesDialog
-from adddatadialog import Ui_AddDataDialog
-from startnewprojectdialog import Ui_ProjectSetupDialog
-from logdialog import Ui_LogDialog
-from adddatadialog import Ui_AddDataDialog
 
+from aboutdialog import Ui_AboutDialog      # About UrbanBEATS Dialog
+from preferencesdialog import Ui_PreferencesDialog      # Preferences Dialog
+from startnewprojectdialog import Ui_ProjectSetupDialog     # Start New Project Dialog
+from logdialog import Ui_LogDialog         # Project Log Dialog
+from adddatadialog import Ui_AddDataDialog      # Add Data Dialog
+from newscenario import Ui_NewScenarioDialog    # Scenario Creation Dialog
+
+
+# --- CREATE SCENARIO DIALOG ---
+class CreateScenarioLaunch(QtWidgets.QDialog):
+    """Class definition for the create scenario dialog window. Connects the GUI Ui_NewScenarioDialog()
+    with the Main Window"""
+    def __init__(self, main, simulation, datalibrary, parent=None):
+        """Class constructor, references the active runtime, active simulation and data library.
+
+        :param main: active instance of the MainWindow() class
+        :param simulation: active instance of the UrbanBeatsSimulation() class
+        :param datalibrary: active instance of the data library in the main simulation
+        :param parent: None
+        """
+        QtWidgets.QDialog.__init__(self, parent)
+        self.ui = Ui_NewScenarioDialog()
+        self.ui.setupUi(self)
+
+        # --- INITIALIZE MAIN VARIABLES ---
+        self.maingui = main
+        self.simulation = simulation
+        self.datalibrary = datalibrary
+
+        self.ui.static_radio.setChecked(1)
+        self.enable_disable_module_checkboxes()
+        self.enable_disable_settings_tab()
+
+        # --- SIGNALS AND SLOTS
+        self.ui.benchmark_radio.clicked.connect(self.enable_disable_module_checkboxes)
+        self.ui.static_radio.clicked.connect(self.enable_disable_module_checkboxes)
+        self.ui.dynamic_radio.clicked.connect(self.enable_disable_module_checkboxes)
+        self.ui.benchmark_radio.clicked.connect(self.enable_disable_settings_tab)
+        self.ui.static_radio.clicked.connect(self.enable_disable_settings_tab)
+        self.ui.dynamic_radio.clicked.connect(self.enable_disable_settings_tab)
+
+        self.ui.urbanplanning.clicked.connect(self.enable_disable_module_checkboxes)
+        self.ui.spatialmapping.clicked.connect(self.enable_disable_module_checkboxes)
+        self.ui.regulation.clicked.connect(self.enable_disable_module_checkboxes)
+        self.ui.infrastructure.clicked.connect(self.enable_disable_module_checkboxes)
+        self.ui.performance.clicked.connect(self.enable_disable_module_checkboxes)
+        self.ui.impact.clicked.connect(self.enable_disable_module_checkboxes)
+
+        self.ui.naming_check.clicked.connect(self.enable_disable_naming_line)
+        self.ui.done_button.clicked.connect(self.close)
+        self.ui.create_button.clicked.connect(self.create_scenario)
+        self.ui.clear_button.clicked.connect(self.reset_interface)
+
+    def enable_disable_settings_tab(self):
+        """Enables and disables the details tab widgets based on the simulation type selected. This determines
+        what kinds of options are available to the user.
+
+        :return: None (GUI changes)
+        """
+        if self.ui.dynamic_radio.isChecked():
+            self.ui.benchmark_spin.setEnabled(0)
+            self.ui.timestep_spin.setEnabled(1)
+            self.ui.endyear_spin.setEnabled(1)
+        elif self.ui.benchmark_radio.isChecked():
+            self.ui.benchmark_spin.setEnabled(1)
+            self.ui.timestep_spin.setEnabled(0)
+            self.ui.endyear_spin.setEnabled(0)
+        elif self.ui.static_radio.isChecked():
+            self.ui.benchmark_spin.setEnabled(0)
+            self.ui.timestep_spin.setEnabled(0)
+            self.ui.endyear_spin.setEnabled(0)
+
+    def create_scenario(self):
+        pass
+
+    def enable_disable_module_checkboxes(self):
+        """Enables and disables the module checkboxes based on various conditionals. This is a clusterfuck of
+        if else statements! Good luck working out the logic!
+        """
+        boxes = [self.ui.spatialmapping, self.ui.regulation, self.ui.infrastructure,
+                   self.ui.performance, self.ui.impact, self.ui.decisionanalysis]
+        # LOGIC CHAIN 1 - URBAN DEVELOPMENT
+        # Spatial setup and climate setup are ALWAYS active
+        if self.ui.static_radio.isChecked() or self.ui.benchmark_radio.isChecked():
+            self.ui.citydevelopment.setEnabled(0)   # no urban development if static or benchmark mode
+        else:
+            self.ui.citydevelopment.setEnabled(1)
+
+        # Urban Planning Module Chain
+        if self.ui.urbanplanning.isChecked():
+            mbool = [1, 1, 1, 1, 1, 1]
+            [boxes[b].setEnabled(mbool[b]) for b in range(len(boxes))]  # list comprehension a.k.a. one-line for loop
+        else:
+            mbool = [0, 0, 0, 0, 0, 0]
+            [boxes[b].setEnabled(mbool[b]) for b in range(len(boxes))]
+            return
+
+        # Spatial Mapping Chain
+        if self.ui.spatialmapping.isChecked():
+            mbool = [1, 1, 1, 1, 1, 1]
+            [boxes[b].setEnabled(mbool[b]) for b in range(len(boxes))]
+        else:
+            mbool = [1, 1, 0, 0, 0, 0]
+            [boxes[b].setEnabled(mbool[b]) for b in range(len(boxes))]
+            return
+
+        # Conditions to enable infrastructure planning
+        if self.ui.regulation.isChecked() and self.ui.spatialmapping.isChecked():
+            self.ui.infrastructure.setEnabled(1)
+        else:
+            self.ui.infrastructure.setEnabled(0)
+
+        if self.ui.spatialmapping.isChecked():
+            self.ui.decisionanalysis.setEnabled(1)
+        else:
+            self.ui.decisionanalysis.setEnabled(0)
+
+    def enable_disable_naming_line(self):
+        """Enables or disables the naming convention lineEdit if the checkbox is unchecked/checked."""
+        self.ui.naming_line.setEnabled(self.ui.naming_check.isChecked())
+
+    def uncheck_all_module_checkboxes(self):
+        """Unchecks all module checkboxes as part of the resetting of the user interface. Then calls enable
+        disable method."""
+        self.ui.urbanplanning.setChecked(0)
+        self.ui.citydevelopment.setChecked(0)
+        self.ui.socioeconomic.setChecked(0)
+        self.ui.spatialmapping.setChecked(0)
+        self.ui.regulation.setChecked(0)
+        self.ui.infrastructure.setChecked(0)
+        self.ui.performance.setChecked(0)
+        self.ui.impact.setChecked(0)
+        self.ui.decisionanalysis.setChecked(0)
+        self.enable_disable_module_checkboxes()
+
+    def reset_interface(self):
+        """Reverts entire interface back to default settings."""
+        self.ui.setup_widget.setCurrentIndex(0)
+
+        # Refresh narrative tab
+        self.ui.name_box.setText("<enter scenario name>")
+        self.ui.narrative_box.setText("<enter scenario description")
+        self.ui.static_radio.setChecked(1)
+        self.ui.endyear_spin.setValue(2068)
+        self.ui.startyear_spin.setValue(2018)
+        self.ui.timestep_spin.setValue(1)
+
+        # Refresh Modules
+        self.uncheck_all_module_checkboxes()
+        self.enable_disable_settings_tab()
+
+        # Refresh Data TreeWidgets
+
+        # Refresh Output tab
+        self.ui.naming_line.setText("<enter a naming convention for outputs>")
+        self.ui.naming_check.setChecked(0)
+
+    def fill_data_library_from_project(self):
+        """Fills out the data library treewidget with the data from the project."""
+        pass
 
 # --- ABOUT DIALOG ---
 class AboutDialogLaunch(QtWidgets.QDialog):
