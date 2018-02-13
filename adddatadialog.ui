@@ -71,42 +71,6 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="adddatafile_widget" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="datafile_lbl">
-        <property name="whatsThis">
-         <string>Rainfall time series, obtain data from weather station or climate authority of your city. Time series should be in rainfall depth and have units millimetres.</string>
-        </property>
-        <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Data File&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="databox">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="text">
-         <string>&lt;none&gt;</string>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="adddatabrowse">
-        <property name="text">
-         <string>Browse...</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
     <widget class="QWidget" name="datatype_widget" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
@@ -137,6 +101,42 @@
        <widget class="QRadioButton" name="qualitative_radio">
         <property name="text">
          <string>Qualitative</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="adddatafile_widget" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="datafile_lbl">
+        <property name="whatsThis">
+         <string>Rainfall time series, obtain data from weather station or climate authority of your city. Time series should be in rainfall depth and have units millimetres.</string>
+        </property>
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Data File&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="databox">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>&lt;none&gt;</string>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="adddatabrowse">
+        <property name="text">
+         <string>Browse...</string>
         </property>
        </widget>
       </item>

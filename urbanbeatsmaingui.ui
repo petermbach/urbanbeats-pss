@@ -43,6 +43,20 @@
          <property name="currentIndex">
           <number>0</number>
          </property>
+         <widget class="QWidget" name="Project_tab">
+          <attribute name="title">
+           <string>Project</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_10">
+           <item>
+            <widget class="QTextEdit" name="textEdit">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="Narrative_tab">
           <attribute name="title">
            <string>Narrative</string>
@@ -59,7 +73,11 @@
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_6">
            <item>
-            <widget class="QPlainTextEdit" name="Simulation"/>
+            <widget class="QPlainTextEdit" name="Simulation">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -102,7 +120,11 @@
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_9">
            <item>
-            <widget class="QPlainTextEdit" name="Log"/>
+            <widget class="QPlainTextEdit" name="Log">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -116,7 +138,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QTextEdit" name="OutputConsole"/>
+        <widget class="QTextEdit" name="OutputConsole">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QProgressBar" name="ProgressBar">
@@ -1057,422 +1083,431 @@
    <widget class="QWidget" name="ModuleDock_Contents">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QLabel" name="lbl_dataproc">
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Data Processing&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="ModuleDock_spatialsetup">
-       <property name="minimumSize">
-        <size>
-         <width>138</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Spatial Delineation</string>
-       </property>
-       <property name="text">
-        <string>Spatial Setup</string>
-       </property>
-       <property name="icon">
-        <iconset resource="graphics/ubeats.qrc">
-         <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="shortcut">
-        <string>Up</string>
-       </property>
-       <property name="checkable">
-        <bool>false</bool>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="ModuleDock_climatesetup">
-       <property name="minimumSize">
-        <size>
-         <width>138</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Spatial Connectivity</string>
-       </property>
-       <property name="text">
-        <string>Climate Setup</string>
-       </property>
-       <property name="icon">
-        <iconset resource="graphics/ubeats.qrc">
-         <normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="Line" name="sep_dataproc">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="lbl_planning">
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Planning&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="ModuleDock_urbandev">
-       <property name="minimumSize">
-        <size>
-         <width>138</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Urban Development Modelling</string>
-       </property>
-       <property name="text">
-        <string>City Development</string>
-       </property>
-       <property name="icon">
-        <iconset resource="graphics/ubeats.qrc">
-         <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="ModuleDock_urbanplan">
-       <property name="minimumSize">
-        <size>
-         <width>138</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Urban Planning</string>
-       </property>
-       <property name="text">
-        <string>Urban Planning</string>
-       </property>
-       <property name="icon">
-        <iconset resource="graphics/ubeats.qrc">
-         <normaloff>:/icons/Very-Basic-Design-icon.png</normaloff>:/icons/Very-Basic-Design-icon.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="ModuleDock_socioeconomic">
-       <property name="minimumSize">
-        <size>
-         <width>138</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Socio-Economic</string>
-       </property>
-       <property name="icon">
-        <iconset resource="graphics/ubeats.qrc">
-         <normaloff>:/icons/community-users-icon.png</normaloff>:/icons/community-users-icon.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="Line" name="sep_planning">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="lbl_environment">
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Environment&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="ModuleDock_spatialmap">
-       <property name="minimumSize">
-        <size>
-         <width>138</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Spatial Mapping</string>
-       </property>
-       <property name="icon">
-        <iconset resource="graphics/ubeats.qrc">
-         <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>22</width>
-         <height>22</height>
-        </size>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="ModuleDock_regulation">
-       <property name="minimumSize">
-        <size>
-         <width>138</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Regulation</string>
-       </property>
-       <property name="icon">
-        <iconset resource="graphics/ubeats.qrc">
-         <normaloff>:/icons/Actions-view-pim-tasks-icon.png</normaloff>:/icons/Actions-view-pim-tasks-icon.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="ModuleDock_infrastructure">
-       <property name="minimumSize">
-        <size>
-         <width>138</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Infrastructure</string>
-       </property>
-       <property name="icon">
-        <iconset resource="graphics/ubeats.qrc">
-         <normaloff>:/icons/Bench-icon.png</normaloff>:/icons/Bench-icon.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>22</width>
-         <height>22</height>
-        </size>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="Line" name="sep_environment">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="lbl_evaluation">
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Evaluation&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="ModuleDock_performance">
-       <property name="minimumSize">
-        <size>
-         <width>138</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>40</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Performance</string>
-       </property>
-       <property name="icon">
-        <iconset resource="graphics/ubeats.qrc">
-         <normaloff>:/icons/Bar-chart-icon.png</normaloff>:/icons/Bar-chart-icon.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="ModuleDock_impact">
-       <property name="minimumSize">
-        <size>
-         <width>138</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>40</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Impact</string>
-       </property>
-       <property name="icon">
-        <iconset resource="graphics/ubeats.qrc">
-         <normaloff>:/icons/Market-Analysis-icon.png</normaloff>:/icons/Market-Analysis-icon.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="ModuleDock_decisionanalysis">
-       <property name="minimumSize">
-        <size>
-         <width>138</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>40</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Decision Analysis</string>
-       </property>
-       <property name="icon">
-        <iconset resource="graphics/ubeats.qrc">
-         <normaloff>:/icons/Data-Flow-Chart-icon.png</normaloff>:/icons/Data-Flow-Chart-icon.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
+      <widget class="QWidget" name="widget" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_11">
+        <property name="margin">
+         <number>5</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="lbl_dataproc">
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Data Processing&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="ModuleDock_spatialsetup">
+          <property name="minimumSize">
+           <size>
+            <width>138</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Spatial Delineation</string>
+          </property>
+          <property name="text">
+           <string>Spatial Setup</string>
+          </property>
+          <property name="icon">
+           <iconset resource="graphics/ubeats.qrc">
+            <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="shortcut">
+           <string>Up</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="ModuleDock_climatesetup">
+          <property name="minimumSize">
+           <size>
+            <width>138</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Spatial Connectivity</string>
+          </property>
+          <property name="text">
+           <string>Climate Setup</string>
+          </property>
+          <property name="icon">
+           <iconset resource="graphics/ubeats.qrc">
+            <normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="sep_dataproc">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lbl_planning">
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Planning&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="ModuleDock_urbandev">
+          <property name="minimumSize">
+           <size>
+            <width>138</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Urban Development Modelling</string>
+          </property>
+          <property name="text">
+           <string>City Development</string>
+          </property>
+          <property name="icon">
+           <iconset resource="graphics/ubeats.qrc">
+            <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="ModuleDock_urbanplan">
+          <property name="minimumSize">
+           <size>
+            <width>138</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Urban Planning</string>
+          </property>
+          <property name="text">
+           <string>Urban Planning</string>
+          </property>
+          <property name="icon">
+           <iconset resource="graphics/ubeats.qrc">
+            <normaloff>:/icons/Very-Basic-Design-icon.png</normaloff>:/icons/Very-Basic-Design-icon.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="ModuleDock_socioeconomic">
+          <property name="minimumSize">
+           <size>
+            <width>138</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Socio-Economic</string>
+          </property>
+          <property name="icon">
+           <iconset resource="graphics/ubeats.qrc">
+            <normaloff>:/icons/community-users-icon.png</normaloff>:/icons/community-users-icon.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="sep_planning">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lbl_environment">
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Environment&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="ModuleDock_spatialmap">
+          <property name="minimumSize">
+           <size>
+            <width>138</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Spatial Mapping</string>
+          </property>
+          <property name="icon">
+           <iconset resource="graphics/ubeats.qrc">
+            <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>22</width>
+            <height>22</height>
+           </size>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="ModuleDock_regulation">
+          <property name="minimumSize">
+           <size>
+            <width>138</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Regulation</string>
+          </property>
+          <property name="icon">
+           <iconset resource="graphics/ubeats.qrc">
+            <normaloff>:/icons/Actions-view-pim-tasks-icon.png</normaloff>:/icons/Actions-view-pim-tasks-icon.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="ModuleDock_infrastructure">
+          <property name="minimumSize">
+           <size>
+            <width>138</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Infrastructure</string>
+          </property>
+          <property name="icon">
+           <iconset resource="graphics/ubeats.qrc">
+            <normaloff>:/icons/Bench-icon.png</normaloff>:/icons/Bench-icon.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>22</width>
+            <height>22</height>
+           </size>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="sep_environment">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lbl_evaluation">
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Evaluation&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="ModuleDock_performance">
+          <property name="minimumSize">
+           <size>
+            <width>138</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Performance</string>
+          </property>
+          <property name="icon">
+           <iconset resource="graphics/ubeats.qrc">
+            <normaloff>:/icons/Bar-chart-icon.png</normaloff>:/icons/Bar-chart-icon.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="ModuleDock_impact">
+          <property name="minimumSize">
+           <size>
+            <width>138</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Impact</string>
+          </property>
+          <property name="icon">
+           <iconset resource="graphics/ubeats.qrc">
+            <normaloff>:/icons/Market-Analysis-icon.png</normaloff>:/icons/Market-Analysis-icon.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="ModuleDock_decisionanalysis">
+          <property name="minimumSize">
+           <size>
+            <width>138</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Decision Analysis</string>
+          </property>
+          <property name="icon">
+           <iconset resource="graphics/ubeats.qrc">
+            <normaloff>:/icons/Data-Flow-Chart-icon.png</normaloff>:/icons/Data-Flow-Chart-icon.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </item>
      <item>
@@ -2158,17 +2193,6 @@
   <tabstop>DataView_meta</tabstop>
   <tabstop>DataView_options</tabstop>
   <tabstop>DataView_web</tabstop>
-  <tabstop>ModuleDock_spatialsetup</tabstop>
-  <tabstop>ModuleDock_climatesetup</tabstop>
-  <tabstop>ModuleDock_urbandev</tabstop>
-  <tabstop>ModuleDock_urbanplan</tabstop>
-  <tabstop>ModuleDock_socioeconomic</tabstop>
-  <tabstop>ModuleDock_spatialmap</tabstop>
-  <tabstop>ModuleDock_regulation</tabstop>
-  <tabstop>ModuleDock_infrastructure</tabstop>
-  <tabstop>ModuleDock_performance</tabstop>
-  <tabstop>ModuleDock_impact</tabstop>
-  <tabstop>ModuleDock_decisionanalysis</tabstop>
   <tabstop>SimDock_run</tabstop>
   <tabstop>SimDock_mapoptions</tabstop>
   <tabstop>SimDock_projectfolder</tabstop>
