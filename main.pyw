@@ -68,38 +68,41 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # --- INITIALIZATION ---
         self.setWindowTitle("UrbanBEATS Planning Support Tool")
-        self.ui.OutputConsole.append("<b>=================================<b>")
-        self.ui.OutputConsole.append("<b>UrbanBEATS OUTPUT CONSOLE<b>")
-        self.ui.OutputConsole.append("<b>=================================<b>\n")
+        self.initialize_output_console()
         self.consoleobserver = ConsoleObserver()
 
-        # --- SIGNAL DEFINITIONS ---
+        # --- GLOBAL OPTIONS ---
+        self.__global_options = {}
+        self.set_options_from_config()
 
         # --- WORKFLOW VARIABLES ---
-        self.__current_project_name = ""
-        self.__current_project_path = ""
+        self.__current_project_name = ""    # Name of the current project
         self.__saveProjectState = True      # True = unsaved, False = saved - used to track changes in workflow
-        self.__activeSimulationObject = None
-        self.__activeDataLibrary = None
-        self.__activeProjectLog = None
-        self.__activeprojectpath = "C:\\"
+        self.__activeSimulationObject = None    # The active simulation class instance
+        self.__activeDataLibrary = None         # The active simulation's data library
+        self.__activeProjectLog = None          # The active simulation's log file
+        self.__activeprojectpath = "C:\\"       # The active project path
 
-        self.__global_options = {}
+        self.__datalibraryexpanded = 0      # STATE: is the data library browser fully expanded?
+        self.__current_location = self.get_option("city")   # STATE: the current location
+
+
 
         # --- GUI SIGNALS AND SLOTS ---
         # Function naming conventions: show_ = launching dialog windows,
         #                              get_ / set_ / update_ = modifying existing information
         #                              reset_ = resets variables to original state
         #                              run_ = executes some form of runtime function
+        #                              launch_ = for working with larger module dialog windows
 
         # FILE MENU
         # actionQuit has been implemented through QtDesigner
         self.ui.actionNew_Project.triggered.connect(self.create_new_project)
-        # self.ui.actionOpen_Project.triggered.connect()
-        # self.ui.actionSave.triggered.connect()
-        # self.ui.actionSave_As.triggered.connect()
-        # self.ui.actionImport_Project.triggered.connect()
-        # self.ui.actionExport_Project.triggered.connect()
+        self.ui.actionOpen_Project.triggered.connect(self.open_existing_project)
+        self.ui.actionSave.triggered.connect(self.save_project)
+        self.ui.actionSave_As.triggered.connect(self.save_as_project)
+        self.ui.actionImport_Project.triggered.connect(self.import_existing_project)
+        self.ui.actionExport_Project.triggered.connect(self.export_existing_project)
 
         # EDIT MENU
         self.ui.actionEdit_Project_Details.triggered.connect(lambda: self.show_new_project_dialog(1))
@@ -108,8 +111,13 @@ class MainWindow(QtWidgets.QMainWindow):
         # PROJECT MENU
         self.ui.actionView_Project_Description.triggered.connect(lambda: self.show_new_project_dialog(2))
         self.ui.actionView_Full_Project_Log.triggered.connect(self.show_project_log)
-        # self.ui.actionDefine_New_Scenario.triggered.connect()
-        # self.ui.actionDelete_Scenario.triggered.connect()
+        # Scenario Submenu ---
+        self.ui.actionDefine_New_Scenario.triggered.connect(lambda: self.show_scenario_dialog(0))
+        self.ui.actionEdit_Scenario.triggered.connect(lambda: self.show_scenario_dialog(1))
+        self.ui.actionDelete_Scenario.triggered.connect(self.delete_current_scenario)
+        # --- //
+        # self.ui.actionReporting_Options.triggered.connect()
+        # self.ui.actionMap_Export_Options.triggered.connect()
 
         # DATA MENU
         self.ui.actionAdd_Data.triggered.connect(self.show_add_data_dialog)
@@ -117,7 +125,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.ui.actionImport_Archive_from_Project.triggered.connect()
         # self.ui.actionExport_Data_Archive.triggered.connect()
         # self.ui.actionReset_Data_Library.triggered.connect()
-        #
+
         # SIMULATION MENU
         # Do this much later once GUIs for modules have been defined.
         #
@@ -128,8 +136,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # actionMinimize has been implemented through QtDesigner
         self.ui.actionOpen_Project_Folder.triggered.connect(self.open_project_folder)
         # self.ui.actionResults_Viewer.triggered.connect()
-        #
-        # # HELP MENU
+
+        # HELP MENU
         self.ui.actionAbout.triggered.connect(self.show_about_dialog)
         # self.ui.actionView_Documentation.triggered.connect()
         # self.ui.actionOnline_Help.triggered.connect()
@@ -144,20 +152,22 @@ class MainWindow(QtWidgets.QMainWindow):
         # Project Data Library Interface
         self.ui.addData.clicked.connect(self.show_add_data_dialog)
         self.ui.removeData.clicked.connect(self.remove_data_from_library)
-        self.ui.infoData.clicked.connect(self.view_metadata_window)
+        self.ui.infoData.clicked.connect(self.show_metadata_dialog)
         self.ui.previewData.clicked.connect(self.update_preview_data)
         self.ui.expcolData.clicked.connect(self.expand_collapse_data_library)
 
         # Scenario Browser Interface
+        self.ui.newScenario.clicked.connect(lambda: self.show_scenario_dialog(0))
+        self.ui.editScenario.clicked.connect(lambda: self.show_scenario_dialog(1))
+        self.ui.deleteScenario.clicked.connect(self.delete_current_scenario)
 
         # Data View Interface
-        #self.ui.DataView_extent.clicked.connect()
-        #self.ui.DataView_meta.clicked.connect()
+        # self.ui.DataView_extent.clicked.connect()
+        self.ui.DataView_meta.clicked.connect(self.show_metadata_dialog)
         self.ui.DataView_options.clicked.connect(lambda: self.show_options(2))
 
         # Scenario Narrative Interface
-        self.ui.newScenario.clicked.connect(lambda: self.show_scenario_dialog(0))
-        self.ui.editScenario.clicked.connect(lambda: self.show_scenario_dialog(1))
+        # clicking a data set on the table
 
         # Modules Interface
         self.ui.ModuleDock_spatialsetup.clicked.connect(self.launch_spatialsetup_modulegui)
@@ -190,10 +200,20 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         if viewmode == 0:       # View Scenario
             newscenariodialog = ubdialogs.CreateScenarioLaunch(self, self.get_active_simulation_object(),
-                                                               self.get_active_data_library())
+                                                               self.get_active_data_library(), viewmode)
             newscenariodialog.exec_()
         elif viewmode == 1:     # Edit Scenario
-            pass
+            newscenariodialog = ubdialogs.CreateScenarioLaunch(self, self.get_active_simulation_object(),
+                                                               self.get_active_data_library(), viewmode)
+
+    def delete_current_scenario(self):
+        """Deletes the active scenario based on the scenario combobox. This includes removing it from the active
+        simulation as well. The scenario interface is then reset to the default <select scenario> setting."""
+        # Algorithm: (1) Get current scenario data, (2) Reset scenario narrative interface by clearing it
+        # (3) Reset module buttons and control panel buttons, (4) Change current index of scenario combo
+        # (5) Update the scenario description information, (5) Remove the scenario from the combo box,
+        # (6) Remove the scenario from the simulation, (7) Delete the scenario folder from the project
+        pass        #[TO DO]
 
     # MAIN INTERFACE FUNCTIONALITY
     def printc(self, textmessage):
@@ -291,103 +311,170 @@ class MainWindow(QtWidgets.QMainWindow):
         self.update_gui_elements()
 
     def reset_default_options(self):
-        print "RESETTING"
+        """Completely restores the default options based on the .cfg's default attribute for each option type.
+        Also closes the options window."""
+        print "RESETTING"       #[TO DO]
 
     def update_gui_elements(self):
         """Updates elements on the main window GUI depending on what has changed in the options menu. This
         includes the map viewer as well as others."""
-        coordinates = ubglobals.COORDINATES[main_window.get_option("city")]
-        tileserver = ubglobals.TILESERVERS[main_window.get_option("mapstyle")]
-        leaflet_html = ubspatial.generate_initial_leaflet_map(coordinates, tileserver, UBEATSROOT)
-        main_window.ui.DataView_web.setHtml(leaflet_html)
+        self.reset_data_view_to_default()
 
     # NEW PROJECT INSTANCE CREATION
     def create_new_project(self):
-        newsimulation = ubcore.UrbanBeatsSim(UBEATSROOT, self.__global_options) #instantiate new simulation objective
-        self.set_active_simulation_object(newsimulation)
+        """Sets up the main user interface and calls the new project dialog"""
+        self.setup_main_gui()
         self.show_new_project_dialog(0)
 
+    def reset_data_view_to_default(self):
+        """Resets the leaflet map view to the default location and default style based on when the program was
+        opened"""
+        coordinates = ubglobals.COORDINATES[self.get_option("city")]
+        tileserver = ubglobals.TILESERVERS[self.get_option("mapstyle")]
+        leaflet_html = ubspatial.generate_initial_leaflet_map(coordinates, tileserver, UBEATSROOT)
+        self.ui.DataView_web.setHtml(leaflet_html)
+
+    def update_data_view(self, newdata):
+        """Updates the current leaflet map view to show base map and plot new data.
+
+        :param newdata: The input data map, if the data map is of type SHP or .txt, leaflet will attempt to plot it.
+        :return:
+        """
+        pass    #[TO DO]
+
+    def initialize_output_console(self):
+        """Resets the Output Console by first clearing its contents and then reprinting the three starting lines"""
+        self.ui.OutputConsole.clear()
+        self.ui.OutputConsole.append("<b>=================================<b>")
+        self.ui.OutputConsole.append("<b>UrbanBEATS OUTPUT CONSOLE<b>")
+        self.ui.OutputConsole.append("<b>=================================<b>\n")
+
+    def setup_narrative_widget(self, condition):
+        """Sets up the narrative widget based on the condition. If condition == "cler", method resets the scenario
+        narrative widgets. If condition is based on scenario, then information from the scenario object is used
+        to fill in the narrative scenario."""
+        if condition == "clear":
+            self.initialize_output_console()
+            scenviewtext = "<html><head/><body><p><span style=\" font-weight:600;\">Scenario Narrative" \
+                           "</span></p></body></html>"
+            self.ui.ScenarioView_lbl.setText(scenviewtext)
+            self.ui.Project.clear()
+            self.ui.Narrative.clear()
+            self.ui.Simulation.clear()
+            self.ui.Log.clear()
+            self.ui.DataSummary.setRowCount(0)
+        elif condition == "scenario":
+            pass    #[TO DO]
+
     def show_new_project_dialog(self, viewmode):
+        """Launches the New Project Dialog. Called either when starting new project, editing project info or
+        viewing project information.
+
+        :param viewmode: integer value that determins how GUI behaves, 0=newproject, 1=edit, 2=view
+        """
         newprojectdialog = ubdialogs.NewProjectDialogLaunch(self.get_active_simulation_object(), viewmode)
-        newprojectdialog.rejected.connect(self.cancel_new_project_creation)
-        newprojectdialog.accepted.connect(self.setup_main_gui)
+        newprojectdialog.rejected.connect(lambda: self.cancel_new_project_creation(viewmode))
+        newprojectdialog.accepted.connect(lambda: self.initialize_new_project(viewmode))
         newprojectdialog.exec_()
 
     def setup_main_gui(self):
-        """Setup the main user interface, several functions carried out.
+        """Runs through the essential methods in order to prepare the GUI and simulation core for creating a new
+        project. This includes: creating a new simulation object
 
-        :return:
-        """
-        self.enable_disable_main_interface("new")
-        self.printc("New Project Initialized")
-
-    def cancel_new_project_creation(self):
-        self.set_active_simulation_object(None)
-        self.enable_disable_main_interface("startup")
-
-    def open_existing_project(self):
-        self.printc("OPEN AN EXISTING PROJECT")
-        pass
-
-    def import_existing_project(self):
-        self.printc("IMPORT PROJECT!")
-        pass
-
-    # def create_new_project_instance(self):
-    #     """Creates a new instance of an UrbanBEATS Core Program."""
-    #     newsimulation = ubc.UrbanBeatsSim(UBEATSROOT)
-    #     newsimulation.register_observer(self.consoleobserver)
-    #     return newsimulation
-
-    def set_active_simulation_object(self, simobjectfromcore):
-        self.__activeSimulationObject = simobjectfromcore
-
-    def set_active_data_library(self, libraryfromcore):
-        self.__activeDataLibrary = libraryfromcore
-
-    def set_active_project_log(self, logfromcore):
-        self.__activeProjectLog = logfromcore
-
-    def get_active_simulation_object(self):
-        return self.__activeSimulationObject
-
-    def get_active_data_library(self):
-        return self.__activeDataLibrary
-
-    def get_active_project_log(self):
-        return self.__activeProjectLog
-
-    def set_save_project_state(self, status):
-        """Reverses the state of saveProjectState. Tracks changes made to project settings. Then, changes
-         the Main Window title depending on the save state. If unsaved, appends *, if saved, removes *
-
-        :param status: bool, True = all changes saved, False = changes made and project unsaved
         :return: None
         """
-        self.__saveProjectState = status
-        if self.__saveProjectState: # if saved
-            self.setWindowTitle("UrbanBEATS Planning Support Tool -" + self.__current_project_name + "")
-        else:
-            self.setWindowTitle("UrbanBEATS Planning Support Tool -" + self.__current_project_name + "*")
+        self.set_active_simulation_object(None)  # Remove any existing active simulation
+        newsimulation = ubcore.UrbanBeatsSim(UBEATSROOT, self.__global_options)  # instantiate new simulation objective
+        self.set_active_simulation_object(newsimulation)
+
+        # GUI calls
+        self.setWindowTitle("UrbanBEATS Planning Support Tool - ")
+        self.__datalibraryexpanded = True
+        self.expand_collapse_data_library()  # Collapses the entire data library window
+        self.ui.ScenarioDock_View.collapseAll()  # Collapse the scenario viewer
+
+        self.ui.ScenarioDock_Combo.clear()  # Clear the scenario browser's combo
+        self.ui.ScenarioDock_Combo.addItem("<Select Scenario>")
+        self.ui.ScenarioDock_Combo.setCurrentIndex(0)
+
+        self.setup_narrative_widget("clear")  # Clear the narrative widget's information
+        self.enable_disable_main_interface("new")  # Enable and disable elements of the GUI for starting new project
+        self.reset_data_view_to_default()  # Restore the default Leaflet view
+
+    def cancel_new_project_creation(self, viewmode):
+        """Called when the rejected() signal is emitted from the new project dialog. It reverts the active
+        simulation object to None and disables interface elements back to the "startup" condition. """
+        if viewmode == 0:   #ONLY IF CREATING NEW PROJECT
+            self.set_active_simulation_object(None)
+            self.enable_disable_main_interface("startup")
+
+    def initialize_new_project(self, viewmode):
+        """Calls core methods for the active simulation object and prepares the scenario and data library tree
+        widgets."""
+        if viewmode == 2:
+            return
+        self.set_save_project_state(False)  # Reverses the boolean on save project state
+        if viewmode == 1:
+            return
+        self.printc("New Project Initialized")
+        activesimulation = self.get_active_simulation_object()
+        activesimulation.initialize_simulation("new")
+
+        self.set_current_project_name(activesimulation.get_project_parameter("name"))
+        self.set_active_data_library(activesimulation.get_data_library())
+        self.set_active_project_log(activesimulation.get_project_log())
+
+        projboundarymap = activesimulation.get_project_parameter("boundaryshp")
+        self.update_data_view(projboundarymap)
+
+        self.ui.Project.setHtml(ubreport.generate_project_overview_html(self.get_options(),
+                                                                        activesimulation.get_project_info(),
+                                                                        activesimulation.get_num_scenarios(),
+                                                                        activesimulation.get_num_datasets()))
+        self.ui.ScenarioDock_View.expandAll()
+        # Scenario View - UNCHECK and DISABLE ALL MODULES
+        moduleTree = self.ui.ScenarioDock_View.topLevelItem(3)
+        moduleCount = moduleTree.childCount()
+        for twi_module in range(moduleCount):
+            moduleTree.child(twi_module).setDisabled(1)
+            moduleTree.child(twi_module).setCheckState(0, False)
+
+    def open_existing_project(self):
+        """Opens an existing project folder and sets up the interface based on its information."""
+        self.printc("OPEN AN EXISTING PROJECT")
+        pass    #[TO DO]
+
+    def import_existing_project(self):
+        """Imports an UrbanBEATS Project File into the workspace, unpacks the file and sets up the folder
+        structure of the project including scenarios and data."""
+        self.printc("IMPORT PROJECT!")
+        pass    #[TO DO]
+
+    def export_existing_project(self):
+        """Exports the existing project folder structure to a portable file."""
+        self.printc("EXPORTING")
 
     def save_project(self):
         """Saves the project's current state, overwriting the existing project."""
-        self.set_save_project_state(True)
+        self.set_save_project_state(True)   #[TO DO]
 
-    def close_event(self, event):
+    def save_as_project(self):
+        """Saves the project's current state to a completely different location. Also modifies its info with
+        the new path information."""
+        self.printc("SAVING AS")    #[TO DO]
+
+    def closeEvent(self, event):
         """Shows a message box before closing the program to confirm with the user about quitting.
         Checks the save project state before deciding to post the message or not."""
-        if not self.__saveProjectState:
+        if not self.get_save_project_state():
             quit_msg = "Would you like to save your work before quitting?"
             reply = QtWidgets.QMessageBox.question(self, 'Close Program?',
-                                                   quit_msg, QtWidgets.QMessageBox.Yes,
-                                                   QtWidgets.QMessageBox.No,
-                                                   QtWidgets.QMessageBox.Cancel)
+                                                   quit_msg, QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No |
+                                                   QtWidgets.QMessageBox.Cancel, QtWidgets.QMessageBox.Cancel)
             if reply == QtWidgets.QMessageBox.Yes:
-                self.saveProject()
-                event.accept()
+                self.save_project()
             elif reply == QtWidgets.QMessageBox.No:
-                event.accept()
+                pass
             else:
                 event.ignore()
 
@@ -418,14 +505,69 @@ class MainWindow(QtWidgets.QMainWindow):
         the tree widget."""
         pass
 
-    def view_metadata_window(self):
+    def show_metadata_dialog(self):
         pass
 
     def update_preview_data(self):
         pass
 
     def expand_collapse_data_library(self):
-        pass
+        """Expands or collapses the data library features based on the input parameter
+
+        :param action: "expand" or "collapse", calls the corresponding sequence of commands.
+        """
+        if self.__datalibraryexpanded:
+            self.ui.DataDock_View.collapseAll()
+            icon14 = QtGui.QIcon()
+            icon14.addPixmap(QtGui.QPixmap(":/icons/arrowright.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            self.ui.expcolData.setIcon(icon14)
+            self.ui.expcolData.setIconSize(QtCore.QSize(20, 20))
+            self.__datalibraryexpanded = False
+        else:
+            self.ui.DataDock_View.expandAll()
+            icon14 = QtGui.QIcon()
+            icon14.addPixmap(QtGui.QPixmap(":/icons/arrowdown.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            self.ui.expcolData.setIcon(icon14)
+            self.ui.expcolData.setIconSize(QtCore.QSize(20, 20))
+            self.__datalibraryexpanded = True
+
+    # GETTERS and SETTERS
+    def set_active_simulation_object(self, simobjectfromcore):
+        self.__activeSimulationObject = simobjectfromcore
+
+    def set_active_data_library(self, libraryfromcore):
+        self.__activeDataLibrary = libraryfromcore
+
+    def set_active_project_log(self, logfromcore):
+        self.__activeProjectLog = logfromcore
+
+    def get_active_simulation_object(self):
+        return self.__activeSimulationObject
+
+    def get_active_data_library(self):
+        return self.__activeDataLibrary
+
+    def get_active_project_log(self):
+        return self.__activeProjectLog
+
+    def set_save_project_state(self, status):
+        """Reverses the state of saveProjectState. Tracks changes made to project settings. Then, changes
+         the Main Window title depending on the save state. If unsaved, appends *, if saved, removes *
+
+        :param status: bool, True = all changes saved, False = changes made and project unsaved
+        :return: None
+        """
+        self.__saveProjectState = status
+        if self.__saveProjectState:  # if saved
+            self.setWindowTitle("UrbanBEATS Planning Support Tool - " + self.__current_project_name + "")
+        else:
+            self.setWindowTitle("UrbanBEATS Planning Support Tool - " + self.__current_project_name + "*")
+
+    def get_save_project_state(self):
+        return self.__saveProjectState
+
+    def set_current_project_name(self, pname):
+        self.__current_project_name = pname
 
     # MODULE BAR - LAUNCHING ALL MODULES
     def launch_spatialsetup_modulegui(self):
@@ -518,6 +660,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def call_run_simulation_perfonly(self):
         pass
 
+    #ENABLERS and DISABLERS
     def enable_disable_main_interface(self, condition, **kwargs):
         if condition == "startup":
             self.enable_disable_module_icons([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
@@ -684,14 +827,8 @@ if __name__ == "__main__":
     main_window.showMaximized()
     splash.finish(main_window)  # remove splashscreen, follow by main window
 
-    # Enter the main loop
-    main_window.set_options_from_config()
-
     # Set the initial Leaflet map
-    coordinates = ubglobals.COORDINATES[main_window.get_option("city")]
-    tileserver = ubglobals.TILESERVERS[main_window.get_option("mapstyle")]
-    leaflet_html = ubspatial.generate_initial_leaflet_map(coordinates, tileserver, UBEATSROOT)
-    main_window.ui.DataView_web.setHtml(leaflet_html)
+    main_window.reset_data_view_to_default()
     main_window.enable_disable_main_interface("startup")
 
     time.sleep(1)

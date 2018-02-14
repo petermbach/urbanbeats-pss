@@ -57,14 +57,18 @@ class UrbanBeatsDataLibrary(object):
         self.__keepcopy = keepcopy  # Tracks whether to copy each data to the project folder
 
         # Create the data directory
-        if os.path.isdir(projectpath+"/data"):  # Creates the data folder in the project path
+        if os.path.isdir(projectpath+"/datalib"):  # Creates the data folder in the project path
             pass
         else:
-            os.mkdir(projectpath+"/data")
-        self.__projectdatafolder = projectpath+"/data/"
+            os.mkdir(projectpath+"/datalib")
+        self.__projectdatafolder = projectpath+"/datalib/"
 
     def import_data(self):
         pass
+
+    def get_num_datafiles(self):
+        """Returns the total number of data files currently in the data library."""
+        return len(self.__spatial_data)+len(self.__time_series_data)+len(self.__qual_data)
 
     def add_data_to_library(self, dataref):
         """Adds an UrbanBeatsDataReference() instance to the data library. The reference object

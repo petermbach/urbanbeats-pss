@@ -33,9 +33,12 @@ import threading
 import time
 import os
 import sys
+import xml.etree.ElementTree as ET
 
 
 # --- URBANBEATS LIBRARY IMPORTS ---
+import ubdatalibrary
+import ubscenarios
 import modules.md_decisionanalysis
 import modules.md_climatesetup
 import modules.md_delinblocks
@@ -82,15 +85,15 @@ class UrbanBeatsSim(threading.Thread):
 
         # Project Parameters
         self.__project_info = {
-            "name": "<enter name>",
+            "name": "New UrbanBEATS Project",
             "date": "",
             "region": "",
             "city": self.__global_options["city"],
             "modeller": self.__global_options["defaultmodeller"],
             "affiliation": self.__global_options["defaultaffil"],
-            "otherpersons": "<none>",
-            "synopsis": "<no synopsis>",
-            "boundaryshp": "<none>",
+            "otherpersons": "none",
+            "synopsis": "no synopsis",
+            "boundaryshp": "no file selected",
             "logstyle": self.__global_options["projectlogstyle"],
             "projectpath": self.__global_options["defaultpath"],
             "keepcopy": 0
@@ -101,25 +104,85 @@ class UrbanBeatsSim(threading.Thread):
         self.__scenarios = []       # initialize the scenarios
 
     # INITIALIZATION METHODS
-    def initialize_simulation(self):
+    def initialize_simulation(self, condition):
         """Performs a full initialization of the project simulation, creates
         a folder for holding relevant data and results.
 
         :return: None
         """
-        pass
+        if condition == "new":  # for starting a new project
+            self.setup_project_folder_structure()
+            fullprojectpath = self.get_project_parameter("projectpath")+"/"+self.get_project_parameter("name")
+            # Create a new data library
+            datalib = ubdatalibrary.UrbanBeatsDataLibrary(fullprojectpath,
+                                                          self.get_project_parameter("keepcopy"))
+            self.set_data_library(datalib)
+
+            #Create a new project log
+            projectlog = UrbanBeatsLog(self.get_project_parameter("projectpath"))
+            self.set_project_log(projectlog)
+        elif condition == "open":   # for opening a project
+            pass    # [TO DO]
+        elif condition == "import": # for importing a project
+            pass    # [TO DO]
+
+    def setup_project_folder_structure(self):
+        """Sets up the base folder structure of the project based on the"""
+        projectpath = self.get_project_parameter("projectpath")
+        projectname = self.get_project_parameter("name")
+        namecounter = 0
+        projectnewname = projectname
+        while os.path.isdir(projectpath+"/"+projectnewname):
+            namecounter += 1
+            projectnewname = projectname+"_"+str(namecounter)
+            self.set_project_parameter("name", projectnewname)
+        os.makedirs(projectpath+"/"+projectnewname)
+        os.makedirs(projectpath+"/"+projectnewname+"/datalib")
+        os.makedirs(projectpath+"/"+projectnewname+"/output")
+        self.write_project_info_file()
+
+    def write_project_info_file(self):
+        # write project info XML
+        projectpath = self.get_project_parameter("projectpath")
+        projectname = self.get_project_parameter("name")
+        fullpath = projectpath+"/"+projectname
+        f = open(projectpath+"/"+projectname+"/info.xml", 'w')
+        f.write('<URBANBEATSPROJECTCONFIG creator="Peter M. Bach" version="1.0">\n')
+        f.write('\t<projectinfo>\n')
+        projinfo = self.get_project_info()
+        for item in projinfo.keys():
+            f.write("\t\t<"+str(item)+">"+str(projinfo[item])+"</"+str(item)+">\n")
+        f.write("\t</projectinfo>")
+        f.close()
 
     # PROJECT PARAMETER SETTINGS
 
-
     # SCENARIO MANAGEMENT
     def add_new_scenario(self, params):
-        pass
+        """Adds a new scenario to the simulation by creating a UrbanBeatsScenario() instance and initializing
+        it."""
+        pass    #[TO DO]
 
-    def delete_scenario(self, name):
-        pass
+    def edit_scenario(self, name, params):
+        """Passes modified parameters 'params' to the scenario with name 'name' for modification."""
+        pass    #[TO DO]
+
+    def delete_scenario(self, scenid):
+        """Removes the scenario with the ID scenID from the simulation core."""
+        pass    #[TO DO]
 
     # GETTERS AND SETTERS
+    def get_project_info(self):
+        """Returns the full project information"""
+        return self.__project_info
+
+    def get_num_scenarios(self):
+        """Returns the total number of scenarios currently in the project."""
+        return len(self.__scenarios)
+
+    def get_num_datasets(self):
+        return self.__datalibrary.get_num_datafiles()
+
     def get_project_parameter(self, parname):
         """Get project info either as a whole dictionary or based on individual
         attributes.
@@ -136,6 +199,11 @@ class UrbanBeatsSim(threading.Thread):
             return None
 
     def set_project_parameter(self, parname, value):
+        """Sets a project parameter.
+
+        :param parname: name of the parameter, contained in the keys of self.__project_info
+        :param value: value of the parameter to be set
+        """
         self.__project_info[parname] = value
 
     def get_project_path(self):
@@ -165,12 +233,36 @@ class UrbanBeatsSim(threading.Thread):
             except KeyError:
                 return None
 
+    def set_data_library(self, datalib):
+        """Sets the active data library using the object datalib of type UrbanBeatsDataLibrary()"""
+        self.__datalibrary = datalib
+
+    def get_data_library(self):
+        """Returns the active data library of type UrbanBeatsDataLibrary()"""
+        return self.__datalibrary
+
+    def import_data_from_project(self, projectpath):
+        """Imports and fills in the active data library using data from another project."""
+        pass    #[TO DO]
+
+    def import_archive_file(self, uba_filename):
+        """Imports data from a data archive file into the active project's data archive."""
+        pass    #[TO DO]
+
+    def set_project_log(self, projectlog):
+        """Sets the active project log using the object projectlog of type UrbanBeatsLog()"""
+        self.__projectlog = projectlog
+
+    def get_project_log(self):
+        """Returns the active project log of type UrbanBeatsLog()"""
+        return self.__projectlog
+
 
 class UrbanBeatsLog(object):
     """Class for logging the UrbanBEATS workflow, the log manages the history of the project
     as well as the current modelling session and is essential for tracking changes made throughout the
     workflow."""
-    def __init__(self):
+    def __init__(self, projectpath):
         """Contains two main variables: one that contains the project's history, one that contains the
         current session's log."""
         self.__ublogger = []
