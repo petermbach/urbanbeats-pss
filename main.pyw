@@ -47,6 +47,7 @@ import xml.etree.ElementTree as ET
 import model.progref.ubglobals as ubglobals
 import model.urbanbeatscore as ubcore
 import ubeats_spatialhandling as ubspatial
+import ubeats_reporting as ubreport
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKit
