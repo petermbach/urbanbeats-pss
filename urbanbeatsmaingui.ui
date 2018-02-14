@@ -8,7 +8,7 @@
     <x>0</x>
     <y>0</y>
     <width>1366</width>
-    <height>700</height>
+    <height>715</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -49,7 +49,7 @@
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_10">
            <item>
-            <widget class="QTextEdit" name="textEdit">
+            <widget class="QTextEdit" name="Project">
              <property name="readOnly">
               <bool>true</bool>
              </property>
@@ -103,13 +103,6 @@
                <string>Iteration</string>
               </property>
              </column>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="DataSummary_check">
-             <property name="text">
-              <string>Synchronize with Data View</string>
-             </property>
             </widget>
            </item>
           </layout>
@@ -283,12 +276,19 @@
      <property name="title">
       <string>Scenario</string>
      </property>
+     <property name="icon">
+      <iconset resource="graphics/ubeats.qrc">
+       <normaloff>:/icons/Map-icon (1).png</normaloff>:/icons/Map-icon (1).png</iconset>
+     </property>
      <addaction name="actionDefine_New_Scenario"/>
+     <addaction name="actionEdit_Scenario"/>
      <addaction name="actionDelete_Scenario"/>
     </widget>
     <addaction name="actionView_Project_Description"/>
     <addaction name="actionView_Full_Project_Log"/>
     <addaction name="menuScenario"/>
+    <addaction name="actionReporting_Options"/>
+    <addaction name="actionMap_Export_Options"/>
    </widget>
    <widget class="QMenu" name="menuSimulation">
     <property name="title">
@@ -298,6 +298,10 @@
      <property name="title">
       <string>Urban Modelling</string>
      </property>
+     <property name="icon">
+      <iconset resource="graphics/ubeats.qrc">
+       <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
+     </property>
      <addaction name="actionGrowth_Model"/>
      <addaction name="actionSpatial_Attraction"/>
      <addaction name="actionSpatial_Allocation"/>
@@ -305,6 +309,10 @@
     <widget class="QMenu" name="menuUrban_Planning">
      <property name="title">
       <string>Urban Planning</string>
+     </property>
+     <property name="icon">
+      <iconset resource="graphics/ubeats.qrc">
+       <normaloff>:/icons/Very-Basic-Design-icon.png</normaloff>:/icons/Very-Basic-Design-icon.png</iconset>
      </property>
      <addaction name="actionCity_wide_Planning"/>
      <addaction name="actionResidential"/>
@@ -319,6 +327,10 @@
      <property name="title">
       <string>Spatial Mapping</string>
      </property>
+     <property name="icon">
+      <iconset resource="graphics/ubeats.qrc">
+       <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
+     </property>
      <addaction name="actionPlanning_Overlays"/>
      <addaction name="actionLand_Cover"/>
      <addaction name="actionWater_Demands"/>
@@ -329,6 +341,10 @@
      <property name="title">
       <string>Infrastructure</string>
      </property>
+     <property name="icon">
+      <iconset resource="graphics/ubeats.qrc">
+       <normaloff>:/icons/Bench-icon.png</normaloff>:/icons/Bench-icon.png</iconset>
+     </property>
      <addaction name="actionHousehold_Appliances"/>
      <addaction name="actionGreen_Infrastructure"/>
      <addaction name="actionWater_Recycling_and_Reuse"/>
@@ -336,6 +352,10 @@
     <widget class="QMenu" name="menuSocio_Economic">
      <property name="title">
       <string>Socio-Economic</string>
+     </property>
+     <property name="icon">
+      <iconset resource="graphics/ubeats.qrc">
+       <normaloff>:/icons/community-users-icon.png</normaloff>:/icons/community-users-icon.png</iconset>
      </property>
      <addaction name="actionStakeholder_Groups"/>
      <addaction name="actionCost_Information"/>
@@ -345,12 +365,20 @@
      <property name="title">
       <string>Spatial Setup</string>
      </property>
+     <property name="icon">
+      <iconset resource="graphics/ubeats.qrc">
+       <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
+     </property>
      <addaction name="actionRepresentation"/>
      <addaction name="actionConnectivity"/>
     </widget>
     <widget class="QMenu" name="menuClimate_Setup">
      <property name="title">
       <string>Climate Setup</string>
+     </property>
+     <property name="icon">
+      <iconset resource="graphics/ubeats.qrc">
+       <normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</iconset>
      </property>
      <addaction name="actionData_Selection"/>
      <addaction name="actionScenario_Definition"/>
@@ -453,7 +481,7 @@
    <property name="minimumSize">
     <size>
      <width>297</width>
-     <height>167</height>
+     <height>185</height>
     </size>
    </property>
    <property name="floating">
@@ -474,280 +502,287 @@
    <widget class="QWidget" name="DataDock_Contents">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="QTreeWidget" name="DataDock_View">
-       <property name="verticalScrollBarPolicy">
-        <enum>Qt::ScrollBarAlwaysOn</enum>
+      <layout class="QVBoxLayout" name="verticalLayout_12">
+       <property name="margin">
+        <number>9</number>
        </property>
-       <column>
-        <property name="text">
-         <string>Project Data Library</string>
-        </property>
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <italic>false</italic>
-          <bold>true</bold>
-         </font>
-        </property>
-       </column>
        <item>
-        <property name="text">
-         <string>Spatial Data</string>
-        </property>
-        <item>
-         <property name="text">
-          <string>Boundaries</string>
+        <widget class="QTreeWidget" name="DataDock_View">
+         <property name="verticalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOn</enum>
          </property>
+         <column>
+          <property name="text">
+           <string>Project Data Library</string>
+          </property>
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <italic>false</italic>
+            <bold>true</bold>
+           </font>
+          </property>
+         </column>
          <item>
           <property name="text">
-           <string>&lt;no data&gt;</string>
+           <string>Spatial Data</string>
           </property>
+          <item>
+           <property name="text">
+            <string>Boundaries</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>&lt;no data&gt;</string>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Built Infrastructure</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>&lt;no data&gt;</string>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Elevation</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>&lt;no data&gt;</string>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Employment</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>&lt;none&gt;</string>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Land Use</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>&lt;no data&gt;</string>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Locality Maps</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>&lt;no data&gt;</string>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Overlays</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>&lt;no data&gt;</string>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Population</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>&lt;no data&gt;</string>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Soil</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>&lt;no data&gt;</string>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Water Bodies</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>&lt;none&gt;</string>
+            </property>
+           </item>
+          </item>
          </item>
-        </item>
-        <item>
-         <property name="text">
-          <string>Built Infrastructure</string>
-         </property>
          <item>
           <property name="text">
-           <string>&lt;no data&gt;</string>
+           <string>Time Series Data</string>
           </property>
+          <item>
+           <property name="text">
+            <string>Rainfall</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>&lt;no data&gt;</string>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Evapotranspiration</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>&lt;no data&gt;</string>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Solar Radiation</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>&lt;no data&gt;</string>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Temperature</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>&lt;no data&gt;</string>
+            </property>
+           </item>
+          </item>
          </item>
-        </item>
-        <item>
-         <property name="text">
-          <string>Elevation</string>
-         </property>
          <item>
           <property name="text">
-           <string>&lt;no data&gt;</string>
+           <string>Qualitative Data</string>
           </property>
+          <item>
+           <property name="text">
+            <string>&lt;no data&gt;</string>
+           </property>
+          </item>
          </item>
-        </item>
-        <item>
-         <property name="text">
-          <string>Employment</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>&lt;none&gt;</string>
-          </property>
-         </item>
-        </item>
-        <item>
-         <property name="text">
-          <string>Land Use</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>&lt;no data&gt;</string>
-          </property>
-         </item>
-        </item>
-        <item>
-         <property name="text">
-          <string>Locality Maps</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>&lt;no data&gt;</string>
-          </property>
-         </item>
-        </item>
-        <item>
-         <property name="text">
-          <string>Overlays</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>&lt;no data&gt;</string>
-          </property>
-         </item>
-        </item>
-        <item>
-         <property name="text">
-          <string>Population</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>&lt;no data&gt;</string>
-          </property>
-         </item>
-        </item>
-        <item>
-         <property name="text">
-          <string>Soil</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>&lt;no data&gt;</string>
-          </property>
-         </item>
-        </item>
-        <item>
-         <property name="text">
-          <string>Water Bodies</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>&lt;none&gt;</string>
-          </property>
-         </item>
-        </item>
+        </widget>
        </item>
        <item>
-        <property name="text">
-         <string>Time Series Data</string>
-        </property>
-        <item>
-         <property name="text">
-          <string>Rainfall</string>
+        <widget class="QWidget" name="DataDock_Controls" native="true">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>50</height>
+          </size>
          </property>
-         <item>
-          <property name="text">
-           <string>&lt;no data&gt;</string>
-          </property>
-         </item>
-        </item>
-        <item>
-         <property name="text">
-          <string>Evapotranspiration</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>&lt;no data&gt;</string>
-          </property>
-         </item>
-        </item>
-        <item>
-         <property name="text">
-          <string>Solar Radiation</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>&lt;no data&gt;</string>
-          </property>
-         </item>
-        </item>
-        <item>
-         <property name="text">
-          <string>Temperature</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>&lt;no data&gt;</string>
-          </property>
-         </item>
-        </item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QPushButton" name="addData">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="graphics/ubeats.qrc">
+              <normaloff>:/icons/add-icon.png</normaloff>:/icons/add-icon.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="removeData">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="graphics/ubeats.qrc">
+              <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="infoData">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="graphics/ubeats.qrc">
+              <normaloff>:/icons/map-icon.png</normaloff>:/icons/map-icon.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="previewData">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="graphics/ubeats.qrc">
+              <normaloff>:/icons/eye-2387853_960_720.png</normaloff>:/icons/eye-2387853_960_720.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="expcolData">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="graphics/ubeats.qrc">
+              <normaloff>:/icons/arrowright.png</normaloff>:/icons/arrowright.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
-       <item>
-        <property name="text">
-         <string>Qualitative Data</string>
-        </property>
-        <item>
-         <property name="text">
-          <string>&lt;no data&gt;</string>
-         </property>
-        </item>
-       </item>
-      </widget>
-     </item>
-     <item>
-      <widget class="QWidget" name="DataDock_Controls" native="true">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>50</height>
-        </size>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QPushButton" name="addData">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="graphics/ubeats.qrc">
-            <normaloff>:/icons/add-icon.png</normaloff>:/icons/add-icon.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="removeData">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="graphics/ubeats.qrc">
-            <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="infoData">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="graphics/ubeats.qrc">
-            <normaloff>:/icons/map-icon.png</normaloff>:/icons/map-icon.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="previewData">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="graphics/ubeats.qrc">
-            <normaloff>:/icons/eye-2387853_960_720.png</normaloff>:/icons/eye-2387853_960_720.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="expcolData">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="graphics/ubeats.qrc">
-            <normaloff>:/icons/arrowright.png</normaloff>:/icons/arrowright.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
+      </layout>
      </item>
     </layout>
    </widget>
@@ -755,8 +790,8 @@
   <widget class="QDockWidget" name="ScenarioDock">
    <property name="minimumSize">
     <size>
-     <width>280</width>
-     <height>189</height>
+     <width>291</width>
+     <height>207</height>
     </size>
    </property>
    <property name="floating">
@@ -777,289 +812,296 @@
    <widget class="QWidget" name="ScenarioDock_Contents">
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
-      <widget class="QComboBox" name="ScenarioDock_Combo">
-       <item>
-        <property name="text">
-         <string>&lt;Select Scenario&gt;</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item>
-      <widget class="QTreeWidget" name="ScenarioDock_View">
-       <property name="verticalScrollBarPolicy">
-        <enum>Qt::ScrollBarAlwaysOn</enum>
+      <layout class="QVBoxLayout" name="verticalLayout_13">
+       <property name="margin">
+        <number>9</number>
        </property>
-       <property name="alternatingRowColors">
-        <bool>false</bool>
-       </property>
-       <property name="wordWrap">
-        <bool>true</bool>
-       </property>
-       <column>
-        <property name="text">
-         <string>Scenario Description</string>
-        </property>
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-       </column>
        <item>
-        <property name="text">
-         <string>Narrative</string>
-        </property>
-        <property name="icon">
-         <iconset resource="graphics/ubeats.qrc">
-          <normaloff>:/icons/pages-brown-icon.png</normaloff>:/icons/pages-brown-icon.png</iconset>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Simulation Details</string>
-        </property>
-        <property name="icon">
-         <iconset resource="graphics/ubeats.qrc">
-          <normaloff>:/icons/Settings-icon.png</normaloff>:/icons/Settings-icon.png</iconset>
-        </property>
-        <item>
-         <property name="text">
-          <string>Type: &lt;static&gt;</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Status: &lt;none&gt;</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Simulation Year(s): &lt;year&gt;</string>
-         </property>
-        </item>
-       </item>
-       <item>
-        <property name="text">
-         <string>Using Spatial Data Sets</string>
-        </property>
-        <property name="icon">
-         <iconset resource="graphics/ubeats.qrc">
-          <normaloff>:/icons/Misc-Database-3-icon.png</normaloff>:/icons/Misc-Database-3-icon.png</iconset>
-        </property>
-        <item>
-         <property name="text">
-          <string>&lt;no files&gt;</string>
-         </property>
-        </item>
-       </item>
-       <item>
-        <property name="text">
-         <string>Modules</string>
-        </property>
-        <property name="icon">
-         <iconset resource="graphics/ubeats.qrc">
-          <normaloff>:/icons/palette-icon.png</normaloff>:/icons/palette-icon.png</iconset>
-        </property>
-        <item>
-         <property name="text">
-          <string>Spatial Setup</string>
-         </property>
-         <property name="checkState">
-          <enum>Checked</enum>
-         </property>
-         <property name="icon">
-          <iconset resource="graphics/ubeats.qrc">
-           <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Climate Setup</string>
-         </property>
-         <property name="checkState">
-          <enum>Checked</enum>
-         </property>
-         <property name="icon">
-          <iconset resource="graphics/ubeats.qrc">
-           <normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>City Development</string>
-         </property>
-         <property name="checkState">
-          <enum>Checked</enum>
-         </property>
-         <property name="icon">
-          <iconset resource="graphics/ubeats.qrc">
-           <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Urban Planning</string>
-         </property>
-         <property name="checkState">
-          <enum>Checked</enum>
-         </property>
-         <property name="icon">
-          <iconset resource="graphics/ubeats.qrc">
-           <normaloff>:/icons/Very-Basic-Design-icon.png</normaloff>:/icons/Very-Basic-Design-icon.png</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Socio-Economic</string>
-         </property>
-         <property name="checkState">
-          <enum>Checked</enum>
-         </property>
-         <property name="icon">
-          <iconset resource="graphics/ubeats.qrc">
-           <normaloff>:/icons/community-users-icon.png</normaloff>:/icons/community-users-icon.png</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Spatial Mapping</string>
-         </property>
-         <property name="checkState">
-          <enum>Checked</enum>
-         </property>
-         <property name="icon">
-          <iconset resource="graphics/ubeats.qrc">
-           <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Regulation</string>
-         </property>
-         <property name="checkState">
-          <enum>Checked</enum>
-         </property>
-         <property name="icon">
-          <iconset resource="graphics/ubeats.qrc">
-           <normaloff>:/icons/Actions-view-pim-tasks-icon.png</normaloff>:/icons/Actions-view-pim-tasks-icon.png</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Infrastructure</string>
-         </property>
-         <property name="checkState">
-          <enum>Checked</enum>
-         </property>
-         <property name="icon">
-          <iconset resource="graphics/ubeats.qrc">
-           <normaloff>:/icons/Bench-icon.png</normaloff>:/icons/Bench-icon.png</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>System Performance</string>
-         </property>
-         <property name="checkState">
-          <enum>Checked</enum>
-         </property>
-         <property name="icon">
-          <iconset resource="graphics/ubeats.qrc">
-           <normaloff>:/icons/Bar-chart-icon.png</normaloff>:/icons/Bar-chart-icon.png</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Impact</string>
-         </property>
-         <property name="checkState">
-          <enum>Checked</enum>
-         </property>
-         <property name="icon">
-          <iconset resource="graphics/ubeats.qrc">
-           <normaloff>:/icons/Market-Analysis-icon.png</normaloff>:/icons/Market-Analysis-icon.png</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Decision Analysis</string>
-         </property>
-         <property name="checkState">
-          <enum>Checked</enum>
-         </property>
-         <property name="icon">
-          <iconset resource="graphics/ubeats.qrc">
-           <normaloff>:/icons/Data-Flow-Chart-icon.png</normaloff>:/icons/Data-Flow-Chart-icon.png</iconset>
-         </property>
-        </item>
-       </item>
-       <item>
-        <property name="text">
-         <string>Export Details</string>
-        </property>
-        <property name="icon">
-         <iconset resource="graphics/ubeats.qrc">
-          <normaloff>:/icons/export-icon.png</normaloff>:/icons/export-icon.png</iconset>
-        </property>
-        <item>
-         <property name="text">
-          <string>File Naming: &lt;name&gt;</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Path: &lt;path&gt;</string>
-         </property>
-        </item>
-       </item>
-      </widget>
-     </item>
-     <item>
-      <widget class="QWidget" name="ScenarioDock_Controls" native="true">
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QPushButton" name="newScenario">
+        <widget class="QComboBox" name="ScenarioDock_Combo">
+         <item>
           <property name="text">
-           <string>New...</string>
+           <string>&lt;Select Scenario&gt;</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTreeWidget" name="ScenarioDock_View">
+         <property name="verticalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOn</enum>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>false</bool>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+         <column>
+          <property name="text">
+           <string>Scenario Description</string>
+          </property>
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+         </column>
+         <item>
+          <property name="text">
+           <string>Narrative</string>
           </property>
           <property name="icon">
            <iconset resource="graphics/ubeats.qrc">
-            <normaloff>:/icons/add-icon.png</normaloff>:/icons/add-icon.png</iconset>
+            <normaloff>:/icons/pages-brown-icon.png</normaloff>:/icons/pages-brown-icon.png</iconset>
           </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="editScenario">
+         </item>
+         <item>
           <property name="text">
-           <string>Edit...</string>
+           <string>Simulation Details</string>
           </property>
           <property name="icon">
            <iconset resource="graphics/ubeats.qrc">
-            <normaloff>:/icons/Editing-edit-icon.png</normaloff>:/icons/Editing-edit-icon.png</iconset>
+            <normaloff>:/icons/Settings-icon.png</normaloff>:/icons/Settings-icon.png</iconset>
           </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="deleteScenario">
+          <item>
+           <property name="text">
+            <string>Type: &lt;static&gt;</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Status: &lt;none&gt;</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Simulation Year(s): &lt;year&gt;</string>
+           </property>
+          </item>
+         </item>
+         <item>
           <property name="text">
-           <string>Delete...</string>
+           <string>Using Spatial Data Sets</string>
           </property>
           <property name="icon">
            <iconset resource="graphics/ubeats.qrc">
-            <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
+            <normaloff>:/icons/Misc-Database-3-icon.png</normaloff>:/icons/Misc-Database-3-icon.png</iconset>
           </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
+          <item>
+           <property name="text">
+            <string>&lt;no files&gt;</string>
+           </property>
+          </item>
+         </item>
+         <item>
+          <property name="text">
+           <string>Modules</string>
+          </property>
+          <property name="icon">
+           <iconset resource="graphics/ubeats.qrc">
+            <normaloff>:/icons/palette-icon.png</normaloff>:/icons/palette-icon.png</iconset>
+          </property>
+          <item>
+           <property name="text">
+            <string>Spatial Setup</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="graphics/ubeats.qrc">
+             <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Climate Setup</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="graphics/ubeats.qrc">
+             <normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>City Development</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="graphics/ubeats.qrc">
+             <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Urban Planning</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="graphics/ubeats.qrc">
+             <normaloff>:/icons/Very-Basic-Design-icon.png</normaloff>:/icons/Very-Basic-Design-icon.png</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Socio-Economic</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="graphics/ubeats.qrc">
+             <normaloff>:/icons/community-users-icon.png</normaloff>:/icons/community-users-icon.png</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Spatial Mapping</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="graphics/ubeats.qrc">
+             <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Regulation</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="graphics/ubeats.qrc">
+             <normaloff>:/icons/Actions-view-pim-tasks-icon.png</normaloff>:/icons/Actions-view-pim-tasks-icon.png</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Infrastructure</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="graphics/ubeats.qrc">
+             <normaloff>:/icons/Bench-icon.png</normaloff>:/icons/Bench-icon.png</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>System Performance</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="graphics/ubeats.qrc">
+             <normaloff>:/icons/Bar-chart-icon.png</normaloff>:/icons/Bar-chart-icon.png</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Impact</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="graphics/ubeats.qrc">
+             <normaloff>:/icons/Market-Analysis-icon.png</normaloff>:/icons/Market-Analysis-icon.png</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Decision Analysis</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="graphics/ubeats.qrc">
+             <normaloff>:/icons/Data-Flow-Chart-icon.png</normaloff>:/icons/Data-Flow-Chart-icon.png</iconset>
+           </property>
+          </item>
+         </item>
+         <item>
+          <property name="text">
+           <string>Export Details</string>
+          </property>
+          <property name="icon">
+           <iconset resource="graphics/ubeats.qrc">
+            <normaloff>:/icons/export-icon.png</normaloff>:/icons/export-icon.png</iconset>
+          </property>
+          <item>
+           <property name="text">
+            <string>File Naming: &lt;name&gt;</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Path: &lt;path&gt;</string>
+           </property>
+          </item>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="ScenarioDock_Controls" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QPushButton" name="newScenario">
+            <property name="text">
+             <string>New...</string>
+            </property>
+            <property name="icon">
+             <iconset resource="graphics/ubeats.qrc">
+              <normaloff>:/icons/add-icon.png</normaloff>:/icons/add-icon.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="editScenario">
+            <property name="text">
+             <string>Edit...</string>
+            </property>
+            <property name="icon">
+             <iconset resource="graphics/ubeats.qrc">
+              <normaloff>:/icons/Editing-edit-icon.png</normaloff>:/icons/Editing-edit-icon.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="deleteScenario">
+            <property name="text">
+             <string>Delete...</string>
+            </property>
+            <property name="icon">
+             <iconset resource="graphics/ubeats.qrc">
+              <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>
@@ -1534,153 +1576,160 @@
     <number>2</number>
    </attribute>
    <widget class="QWidget" name="SimDock_Contents">
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="1">
-      <widget class="QPushButton" name="SimDock_mapoptions">
-       <property name="maximumSize">
-        <size>
-         <width>40</width>
-         <height>40</height>
-        </size>
+    <layout class="QVBoxLayout" name="verticalLayout_14">
+     <item>
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="margin">
+        <number>5</number>
        </property>
-       <property name="toolTip">
-        <string>Customize Map Outputs</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="graphics/ubeats.qrc">
-         <normaloff>:/icons/maps-icon.png</normaloff>:/icons/maps-icon.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>35</width>
-         <height>35</height>
-        </size>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="SimDock_resultsview">
+         <property name="maximumSize">
+          <size>
+           <width>40</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Results Viewer</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="graphics/ubeats.qrc">
+           <normaloff>:/icons/chart-search-icon.png</normaloff>:/icons/chart-search-icon.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>40</width>
+           <height>35</height>
+          </size>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="SimDock_run">
+         <property name="maximumSize">
+          <size>
+           <width>40</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Run Simulation</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="graphics/ubeats.qrc">
+           <normaloff>:/icons/Play-icon.png</normaloff>:/icons/Play-icon.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>30</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="SimDock_projectfolder">
+         <property name="maximumSize">
+          <size>
+           <width>40</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Open Project Folder</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="graphics/ubeats.qrc">
+           <normaloff>:/icons/folder-open-icon.png</normaloff>:/icons/folder-open-icon.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>40</width>
+           <height>35</height>
+          </size>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QPushButton" name="SimDock_report">
+         <property name="maximumSize">
+          <size>
+           <width>40</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Export Results</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="graphics/ubeats.qrc">
+           <normaloff>:/icons/Reports-icon.png</normaloff>:/icons/Reports-icon.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>35</width>
+           <height>35</height>
+          </size>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="SimDock_mapoptions">
+         <property name="maximumSize">
+          <size>
+           <width>40</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Customize Map Outputs</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="graphics/ubeats.qrc">
+           <normaloff>:/icons/maps-icon.png</normaloff>:/icons/maps-icon.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>35</width>
+           <height>35</height>
+          </size>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
-     <item row="0" column="2">
-      <widget class="QPushButton" name="SimDock_projectfolder">
-       <property name="maximumSize">
-        <size>
-         <width>40</width>
-         <height>40</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Open Project Folder</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="graphics/ubeats.qrc">
-         <normaloff>:/icons/folder-open-icon.png</normaloff>:/icons/folder-open-icon.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>40</width>
-         <height>35</height>
-        </size>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QPushButton" name="SimDock_run">
-       <property name="maximumSize">
-        <size>
-         <width>40</width>
-         <height>40</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Run Simulation</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="graphics/ubeats.qrc">
-         <normaloff>:/icons/Play-icon.png</normaloff>:/icons/Play-icon.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>30</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QPushButton" name="SimDock_report">
-       <property name="maximumSize">
-        <size>
-         <width>40</width>
-         <height>40</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Export Results</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="graphics/ubeats.qrc">
-         <normaloff>:/icons/Reports-icon.png</normaloff>:/icons/Reports-icon.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>35</width>
-         <height>35</height>
-        </size>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QPushButton" name="SimDock_resultsview">
-       <property name="maximumSize">
-        <size>
-         <width>40</width>
-         <height>40</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Results Viewer</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="graphics/ubeats.qrc">
-         <normaloff>:/icons/chart-search-icon.png</normaloff>:/icons/chart-search-icon.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>40</width>
-         <height>35</height>
-        </size>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
+     <item>
       <spacer name="sep_simdock">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -1913,6 +1962,10 @@
    </property>
   </action>
   <action name="actionImport_Archive_File">
+   <property name="icon">
+    <iconset resource="graphics/ubeats.qrc">
+     <normaloff>:/icons/Misc-Download-Database-icon.png</normaloff>:/icons/Misc-Download-Database-icon.png</iconset>
+   </property>
    <property name="text">
     <string>Import Archive File</string>
    </property>
@@ -1923,11 +1976,19 @@
    </property>
   </action>
   <action name="actionExport_Data_Archive">
+   <property name="icon">
+    <iconset resource="graphics/ubeats.qrc">
+     <normaloff>:/icons/if_Upload_Database_66056.png</normaloff>:/icons/if_Upload_Database_66056.png</iconset>
+   </property>
    <property name="text">
     <string>Export Data Archive</string>
    </property>
   </action>
   <action name="actionReset_Data_Library">
+   <property name="icon">
+    <iconset resource="graphics/ubeats.qrc">
+     <normaloff>:/icons/Refresh-icon.png</normaloff>:/icons/Refresh-icon.png</iconset>
+   </property>
    <property name="text">
     <string>Reset Project Data Library</string>
    </property>
@@ -1938,11 +1999,19 @@
    </property>
   </action>
   <action name="actionDelete_Scenario">
+   <property name="icon">
+    <iconset resource="graphics/ubeats.qrc">
+     <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
+   </property>
    <property name="text">
     <string>Delete Scenario</string>
    </property>
   </action>
   <action name="actionDefine_New_Scenario">
+   <property name="icon">
+    <iconset resource="graphics/ubeats.qrc">
+     <normaloff>:/icons/add-icon.png</normaloff>:/icons/add-icon.png</iconset>
+   </property>
    <property name="text">
     <string>Define New Scenario</string>
    </property>
@@ -2163,6 +2232,33 @@
     <string>Scenario Definition</string>
    </property>
   </action>
+  <action name="actionEdit_Scenario">
+   <property name="icon">
+    <iconset resource="graphics/ubeats.qrc">
+     <normaloff>:/icons/Editing-edit-icon.png</normaloff>:/icons/Editing-edit-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Edit Scenario</string>
+   </property>
+  </action>
+  <action name="actionReporting_Options">
+   <property name="icon">
+    <iconset resource="graphics/ubeats.qrc">
+     <normaloff>:/icons/Distributor-report-icon.png</normaloff>:/icons/Distributor-report-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Reporting Options</string>
+   </property>
+  </action>
+  <action name="actionMap_Export_Options">
+   <property name="icon">
+    <iconset resource="graphics/ubeats.qrc">
+     <normaloff>:/icons/maps-icon.png</normaloff>:/icons/maps-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Map Export Options</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -2172,14 +2268,11 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>DataDock_View</tabstop>
   <tabstop>addData</tabstop>
   <tabstop>removeData</tabstop>
   <tabstop>infoData</tabstop>
   <tabstop>previewData</tabstop>
   <tabstop>expcolData</tabstop>
-  <tabstop>ScenarioDock_Combo</tabstop>
-  <tabstop>ScenarioDock_View</tabstop>
   <tabstop>newScenario</tabstop>
   <tabstop>editScenario</tabstop>
   <tabstop>deleteScenario</tabstop>
@@ -2193,12 +2286,7 @@
   <tabstop>DataView_meta</tabstop>
   <tabstop>DataView_options</tabstop>
   <tabstop>DataView_web</tabstop>
-  <tabstop>SimDock_run</tabstop>
-  <tabstop>SimDock_mapoptions</tabstop>
-  <tabstop>SimDock_projectfolder</tabstop>
   <tabstop>SimDock_resultsview</tabstop>
-  <tabstop>SimDock_report</tabstop>
-  <tabstop>DataSummary_check</tabstop>
  </tabstops>
  <resources>
   <include location="graphics/ubeats.qrc"/>
