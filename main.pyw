@@ -46,14 +46,14 @@ import xml.etree.ElementTree as ET
 # --- URBANBEATS LIBRARY IMPORTS ---
 import model.progref.ubglobals as ubglobals
 import model.urbanbeatscore as ubcore
-import ubeats_spatialhandling as ubspatial
-import ubeats_reporting as ubreport
+import ubgui_spatialhandling as ubspatial
+import ubgui_reporting as ubreport
 
 # --- GUI IMPORTS ---
-from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKit
-from urbanbeatsmaingui import Ui_MainWindow
-from startscreen import Ui_StartDialog
-import urbanbeatsdialogs as ubdialogs       # Contains code for all non-module and non-result dialog windows
+from PyQt5 import QtCore, QtGui, QtWidgets
+from gui.urbanbeatsmaingui import Ui_MainWindow
+from gui.startscreen import Ui_StartDialog
+from gui import urbanbeatsdialogs as ubdialogs
 
 
 # --- MAIN GUI FUNCTION ---
@@ -79,9 +79,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__current_project_name = ""    # Name of the current project
         self.__saveProjectState = True      # True = unsaved, False = saved - used to track changes in workflow
         self.__activeSimulationObject = None    # The active simulation class instance
+        self.__activeScenario = None            # The active scenario
         self.__activeDataLibrary = None         # The active simulation's data library
         self.__activeProjectLog = None          # The active simulation's log file
         self.__activeprojectpath = "C:\\"       # The active project path
+
 
         self.__datalibraryexpanded = 0      # STATE: is the data library browser fully expanded?
         self.__current_location = self.get_option("city")   # STATE: the current location
@@ -187,10 +189,24 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Control Panel Interface
         self.ui.SimDock_projectfolder.clicked.connect(self.open_project_folder)
-        # self.ui.SimDock_mapoptions.clicked.connect(self.show_map_export_settings)
-        # self.ui.SimDock_report.clicked.connect(self.show_reporting_settings)
+        self.ui.SimDock_mapoptions.clicked.connect(self.show_map_export_settings)
+        self.ui.SimDock_report.clicked.connect(self.show_reporting_settings)
         # self.ui.SimDock_resultsview.connect(self.show_results_viewer)
         # self.ui.SimDock_run.connect(self.call_run_simulation)
+
+    def show_map_export_settings(self):
+        """Launches the map export options dialog window for the current scenario, where the user can customize
+        the export format and types of spatial data required as output files from the model."""
+        mapexportdialog = ubdialogs.MapExportDialogLaunch(self.get_active_scenario())
+
+        mapexportdialog.exec_()
+
+    def show_reporting_settings(self):
+        """Launches the report creation dialog window, where the user can select and create reporting options. The
+        settings are saved to the project's options for later use."""
+        reportingdialog = ubdialogs.ReportingDialogLaunch(self.get_active_simulation_object())
+
+        reportingdialog.exec_()
 
     # SCENARIO CREATION AND MANAGEMENT FUNCTIONALITY
     def show_scenario_dialog(self, viewmode):
@@ -532,6 +548,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.__datalibraryexpanded = True
 
     # GETTERS and SETTERS
+    def set_active_scenario(self, scenarioobject):
+        self.__activeScenario = scenarioobject
+
     def set_active_simulation_object(self, simobjectfromcore):
         self.__activeSimulationObject = simobjectfromcore
 
@@ -540,6 +559,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def set_active_project_log(self, logfromcore):
         self.__activeProjectLog = logfromcore
+
+    def get_active_scenario(self):
+        return self.__activeScenario
 
     def get_active_simulation_object(self):
         return self.__activeSimulationObject
@@ -819,7 +841,7 @@ if __name__ == "__main__":
     app.processEvents()
 
     # Simulate something that takes time
-    time.sleep(1)       # "Marvel at the beautiful splash screen!"
+    time.sleep(4)       # "Marvel at the beautiful splash screen!"
 
     # --- MAIN WINDOW AND APPLICATION LOOP ---
     # Setup Main Window

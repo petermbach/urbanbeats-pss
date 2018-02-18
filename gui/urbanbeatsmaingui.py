@@ -359,9 +359,11 @@ class Ui_MainWindow(object):
         item_1 = QtWidgets.QTreeWidgetItem(item_0)
         item_1.setCheckState(0, QtCore.Qt.Checked)
         item_1.setIcon(0, icon9)
+        item_1.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
         item_1 = QtWidgets.QTreeWidgetItem(item_0)
         item_1.setCheckState(0, QtCore.Qt.Checked)
         item_1.setIcon(0, icon10)
+        item_1.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
         item_1 = QtWidgets.QTreeWidgetItem(item_0)
         item_1.setCheckState(0, QtCore.Qt.Checked)
         item_1.setIcon(0, icon4)
@@ -991,7 +993,12 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "UrbanBEATS Planning Support Tool"))
-        self.ScenarioView_lbl.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Scenario Narrative - &lt;scenario_name&gt;</span></p></body></html>"))
+        self.ScenarioView_lbl.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Scenario Narrative</span></p></body></html>"))
+        self.Project.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"><br /></p></body></html>"))
         self.ScenarioView_Widget.setTabText(self.ScenarioView_Widget.indexOf(self.Project_tab), _translate("MainWindow", "Project"))
         self.ScenarioView_Widget.setTabText(self.ScenarioView_Widget.indexOf(self.Narrative_tab), _translate("MainWindow", "Narrative"))
         self.ScenarioView_Widget.setTabText(self.ScenarioView_Widget.indexOf(self.Simulation_tab), _translate("MainWindow", "Simulation"))
@@ -1004,7 +1011,7 @@ class Ui_MainWindow(object):
         self.ScenarioView_Widget.setTabText(self.ScenarioView_Widget.indexOf(self.DataSummary_tab), _translate("MainWindow", "Data Summary"))
         self.ScenarioView_Widget.setTabText(self.ScenarioView_Widget.indexOf(self.Log_tab), _translate("MainWindow", "Log"))
         self.OutputConsole_lbl.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Output Console</span></p></body></html>"))
-        self.DataView_lbl.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Data View - &lt;Data Set Name&gt;</span></p></body></html>"))
+        self.DataView_lbl.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Data View</span></p></body></html>"))
         self.DataView_extent.setText(_translate("MainWindow", "Extent"))
         self.DataView_meta.setText(_translate("MainWindow", "Metadata"))
         self.DataView_options.setText(_translate("MainWindow", "Options"))

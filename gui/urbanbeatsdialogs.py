@@ -46,6 +46,8 @@ from startnewprojectdialog import Ui_ProjectSetupDialog     # Start New Project 
 from logdialog import Ui_LogDialog         # Project Log Dialog
 from adddatadialog import Ui_AddDataDialog      # Add Data Dialog
 from newscenario import Ui_NewScenarioDialog    # Scenario Creation Dialog
+from mapexportoptions import Ui_MapExportDialog
+from reportoptions import Ui_ReportingDialog
 
 
 # --- ABOUT DIALOG ---
@@ -375,6 +377,43 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
     def fill_data_library_from_project(self):
         """Fills out the data library treewidget with the data from the project."""
         pass
+
+# --- MAP EXPORT DIALOG ---
+class MapExportDialogLaunch(QtWidgets.QDialog):
+    """Class definition for the export options for all spatial maps from UrbanBEATS. Connects the GUI
+    Ui_MapExportDialog() with the Main Window."""
+    def __init__(self, scenarios, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
+        self.ui = Ui_MapExportDialog()
+        self.ui.setupUi(self)
+
+        self.ui.ok_button.clicked.connect(self.save_values)
+        self.ui.cancel_button.clicked.connect(self.reject)
+
+    def save_values(self):
+        """Saves all values to the project's current scenario. This is relevant as the scenario's settings will
+        determine what gets exported to files."""
+        # Save stuff
+        self.accept()
+
+
+# --- REPORTING OPTIONS DIALOG ---
+class ReportingDialogLaunch(QtWidgets.QDialog):
+    """Class definition for the reporting dialog window Ui_ReportingDialog(), which connects to the main
+    Window."""
+    def __init__(self, simulation, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
+        self.ui = Ui_ReportingDialog()
+        self.ui.setupUi(self)
+
+        self.ui.create_button.clicked.connect(self.create_report)
+        self.ui.done_button.clicked.connect(self.save_values)
+
+    def create_report(self):
+        pass
+
+    def save_values(self):
+        self.close()
 
 
 # --- SETUP NEW PROJECT DIALOG ---
