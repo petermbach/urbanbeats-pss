@@ -41,6 +41,12 @@ SUBDATASETS = {"Boundaries": ["Geopolitical", "Suburban", "Catchment"],
                }
 TEMPORALDATA = ["Rainfall", "Evapotranspiration", "Solar Radiation", "Temperature"]
 
+# SHAPEFILEEXT
+# If we are dealing with a shapefile, need to copy all possible files across, file formats
+# available at: https://www.loc.gov/preservation/digital/formats/fdd/fdd000280.shtml
+SHAPEFILEEXT = [".shp", ".shx", ".dbf", ".prj", ".sbn", ".sbx", ".fbn", ".fbx", ".ain",
+                                ".aih", ".ixs", ".mxs", ".atx", ".shp.xml", ".cpg", ".qix"]
+
 # --- LOCATION & MAPS ---
 COORDINATESYSTEMS = ["GDA", "UTM", "Other"]
 

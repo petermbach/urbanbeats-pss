@@ -33,6 +33,7 @@ import os
 import shutil
 
 # --- URBANBEATS LIBRARY IMPORTS ---
+import progref.ubglobals as ubglobals
 import modules.md_decisionanalysis
 import modules.md_climatesetup
 import modules.md_delinblocks
@@ -91,10 +92,30 @@ class UrbanBeatsDataLibrary(object):
         elif dataclass == "qualitative":
             self.__qual_data.append(dataref)
         self.__data_library_idcount += 1
+        self.copy_data_to_project_folder(dataref)
+
+    def copy_data_to_project_folder(self, dataref):
+        """Copies the different data formats to the project folder depending on what has been selected."""
         if self.__keepcopy:
+            # Path to directories (in case of multiple files copying)
+            sourcefolder = dataref.get_original_data_path()+"/"
+            destinationfolder = self.get_project_path() + str("/datalib/")
+
+            # Path to the main data file
             sourcepath = dataref.get_original_data_path()+"/"+dataref.get_metadata("filename")
             destination = self.get_project_path()+str("/datalib/")+dataref.get_metadata("filename")
-            shutil.copyfile(sourcepath, destination)
+
+            filename, file_extension = os.path.splitext(sourcepath) # Gets the file extension and full path
+            filename = os.path.basename(filename)   # Extracts the filename from the path
+
+            if file_extension == ".shp":        # Are we dealing with a shapefile?
+                for i in ubglobals.SHAPEFILEEXT:
+                    f = filename+i
+                    if os.path.exists(sourcefolder+f):  # Check for all files and delete them
+                        shutil.copyfile(sourcefolder+f, destinationfolder+f)
+            else:   # If not, then simply delete the file
+                # For any other normal file, we just copy source path to destination.
+                shutil.copyfile(sourcepath, destination)
 
     def delete_data(self, dataID):
         """Removes a data set from the library by searching for its unique dataID.
@@ -124,9 +145,14 @@ class UrbanBeatsDataLibrary(object):
         """
         if self.__keepcopy:
             fulldatapath = self.get_project_path() + str("/datalib/") + dataref.get_metadata("filename")
-            print fulldatapath
-            if os.path.isfile(fulldatapath):
-                os.remove(fulldatapath)
+            filename, ext = os.path.splitext(fulldatapath)
+            if ext == ".shp":
+                for i in ubglobals.SHAPEFILEEXT:
+                    if os.path.isfile(filename+i):
+                        os.remove(filename+i)
+            else:
+                if os.path.isfile(fulldatapath):
+                    os.remove(fulldatapath)
 
     def get_all_data_of_class(self, dataclass):
         """Returns one of the three data lists based on the input dataclass.
