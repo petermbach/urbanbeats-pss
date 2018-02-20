@@ -39,7 +39,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="graphics/ubeats.qrc">:/icons/add-icon.png</pixmap>
+         <pixmap resource="../graphics/ubeats.qrc">:/icons/add-icon.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -302,6 +302,7 @@
   <tabstop>done_button</tabstop>
  </tabstops>
  <resources>
+  <include location="../graphics/ubeats.qrc"/>
   <include location="graphics/ubeats.qrc"/>
  </resources>
  <connections/>

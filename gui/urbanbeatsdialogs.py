@@ -155,7 +155,6 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
         self.ui.datacatsub_combo.setEnabled(1)
         for i in subcategories:
             self.ui.datacatsub_combo.addItem(i)
-        self.ui.datacat_combo.setCurrentIndex(0)
         self.ui.datacatsub_combo.setCurrentIndex(0)
 
     def clear_interface(self):
@@ -170,15 +169,22 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
         """Adds the data to the project based on all the information provided. Checks for the validity
         of the data file."""
         datafile = self.ui.databox.text()
+        if self.ui.spatial_radio.isChecked():
+            self.currentDataType = "spatial"
+        elif self.ui.temporal_radio.isChecked():
+            self.currentDataType = "temporal"
+        else:
+            self.currentDataType = "qualitative"
+
         if os.path.isfile(datafile):
             if self.ui.datacat_combo.currentText() != "<undefined>":
                 if self.ui.datacatsub_combo.isEnabled() == 0 \
                         or self.ui.datacatsub_combo.currentIndex() != 0:
                     datatype = []
-                    datatype.append(self.currentDataType)
-                    datatype.append(self.ui.datacat_combo.currentText())
-                    datatype.append(self.ui.datacatsub_combo.currentText())
-                    datatype.append(os.path.splitext(datafile)[1])
+                    datatype.append(self.currentDataType)   # index 0
+                    datatype.append(self.ui.datacat_combo.currentText())    # index 1
+                    datatype.append(self.ui.datacatsub_combo.currentText()) # index 2
+                    datatype.append(os.path.splitext(datafile)[1])  # index 3
                     dataref = ubdatalibrary.\
                         UrbanBeatsDataReference(datatype, datafile,
                                                 self.simulation.get_project_parameter("projectpath"),
