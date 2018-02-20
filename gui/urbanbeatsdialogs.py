@@ -232,6 +232,8 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         if viewmode == 1:
             self.enable_disable_guis_for_viewonly()
 
+        self.update_dialog_data_library()
+
         # --- SIGNALS AND SLOTS
         self.ui.benchmark_radio.clicked.connect(self.enable_disable_module_checkboxes)
         self.ui.static_radio.clicked.connect(self.enable_disable_module_checkboxes)
@@ -251,6 +253,87 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.done_button.clicked.connect(self.close)
         self.ui.create_button.clicked.connect(self.create_scenario)
         self.ui.clear_button.clicked.connect(self.reset_interface)
+
+        self.ui.add_to_button.clicked.connect(self.add_datalibrary_to_scenariodata)
+        self.ui.remove_from_button.clicked.connect(self.remove_scenariodata_entry)
+
+    def add_datalibrary_to_scenariodata(self):
+        """DESCRIPTION"""
+        pass
+
+    def remove_scenariodata_entry(self):
+        """Description"""
+        pass
+
+    def reset_scenario_tree_widgets(self):
+        self.ui.scenariodata_tree.clear()
+        self.ui.datalibrary_tree.clear()
+        for datacat in ubglobals.DATACATEGORIES:
+            dtwi = QtWidgets.QTreeWidgetItem()
+            dtwi.setText(0, datacat)
+            self.ui.datalibrary_tree.addTopLevelItem(dtwi)
+
+            stwi = QtWidgets.QTreeWidgetItem()
+            stwi.setText(0, datacat)
+            self.ui.scenariodata_tree.addTopLevelItem(stwi)
+
+        for spdata in ubglobals.SPATIALDATA:
+            twi = QtWidgets.QTreeWidgetItem()
+            twi.setText(0, spdata)
+            twi_child = QtWidgets.QTreeWidgetItem()
+            twi_child.setText(0, "<no data>")
+            twi.addChild(twi_child)
+            self.ui.datalibrary_tree.topLevelItem(0).addChild(twi)
+        for tdata in ubglobals.TEMPORALDATA:
+            twi = QtWidgets.QTreeWidgetItem()
+            twi.setText(0, tdata)
+            twi_child = QtWidgets.QTreeWidgetItem()
+            twi_child.setText(0, "<no data>")
+            twi.addChild(twi_child)
+            self.ui.datalibrary_tree.topLevelItem(1).addChild(twi)
+
+    def update_dialog_data_library(self):
+        """Just like the main window, this method populates the dialog window's data library
+        browser with the info from the project's data library."""
+        self.reset_scenario_tree_widgets()  # Redo the data library
+        datacol = self.datalibrary.get_all_data_of_class("spatial")  # Get the list of data
+        cur_toplevelitem = self.ui.datalibrary_tree.topLevelItem(0)
+        for dref in datacol:
+            dtype = dref.get_metadata("parent")  # Returns overall type (e.g. Land Use, Rainfall, etc.)
+            dtypeindex = ubglobals.SPATIALDATA.index(dtype)  # Get the index in the tree-widget
+            if cur_toplevelitem.child(dtypeindex).child(0).text(0) == "<no data>":
+                cur_toplevelitem.child(dtypeindex).takeChild(0)
+            twi = QtWidgets.QTreeWidgetItem()
+            twi.setText(0, dref.get_metadata("filename"))
+            twi.setToolTip(0, str(dref.get_dataID()) + " - " + str(dref.get_data_file_path()))
+            cur_toplevelitem.child(dtypeindex).addChild(twi)
+
+        # Update Temporal Data Sets
+        datacol = self.datalibrary.get_all_data_of_class("temporal")
+        cur_toplevelitem = self.ui.datalibrary_tree.topLevelItem(1)
+        for dref in datacol:
+            dtype = dref.get_metadata("parent")
+            dtypeindex = ubglobals.TEMPORALDATA.index(dtype)
+            if cur_toplevelitem.child(dtypeindex).child(0).text(0) == "<no data>":
+                cur_toplevelitem.child(dtypeindex).takeChild(0)
+            twi = QtWidgets.QTreeWidgetItem()
+            twi.setText(0, dref.get_metadata("filename"))
+            twi.setToolTip(0, str(dref.get_dataID()) + " - " + str(dref.get_data_file_path()))
+            cur_toplevelitem.child(dtypeindex).addChild(twi)
+
+        # Update the Qualitative Data Set
+        datacol = self.datalibrary.get_all_data_of_class("qualitative")
+        for dref in datacol:
+            if self.ui.datalibrary_tree.topLevelItem(2).child(0).text(0) == "<no data>":
+                self.ui.datalibrary_tree.topLevelItem(2).takeChild(0)
+            twi = QtWidgets.QTreeWidgetItem()
+            twi.setText(0, dref.get_metadata("filename"))
+            twi.setToolTip(0, str(dref.get_dataID()) + " - " + str(dref.get_data_file_path()))
+            self.ui.datalibrary_tree.topLevelItem(2).addChild(twi)
+
+        self.ui.datalibrary_tree.expandAll()
+        self.ui.scenariodata_tree.expandAll()
+
 
     def enable_disable_guis_for_viewonly(self):
         """Disables all items to prevent user interference once the scenario has been creatd. The edit scenario

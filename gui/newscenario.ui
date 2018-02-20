@@ -39,7 +39,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="graphics/ubeats.qrc">:/icons/Map-icon (1).png</pixmap>
+         <pixmap resource="../graphics/ubeats.qrc">:/icons/Map-icon (1).png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -118,7 +118,7 @@
          <string>Static</string>
         </property>
         <property name="icon">
-         <iconset resource="graphics/ubeats.qrc">
+         <iconset resource="../graphics/ubeats.qrc">
           <normaloff>:/icons/camera.png</normaloff>:/icons/camera.png</iconset>
         </property>
        </widget>
@@ -129,7 +129,7 @@
          <string>Benchmark</string>
         </property>
         <property name="icon">
-         <iconset resource="graphics/ubeats.qrc">
+         <iconset resource="../graphics/ubeats.qrc">
           <normaloff>:/icons/78125-park-bench.png</normaloff>:/icons/78125-park-bench.png</iconset>
         </property>
        </widget>
@@ -140,7 +140,7 @@
          <string>Dynamic</string>
         </property>
         <property name="icon">
-         <iconset resource="graphics/ubeats.qrc">
+         <iconset resource="../graphics/ubeats.qrc">
           <normaloff>:/icons/55191-clock-symbol-of-circular-shape.png</normaloff>:/icons/55191-clock-symbol-of-circular-shape.png</iconset>
         </property>
        </widget>
@@ -155,7 +155,7 @@
      </property>
      <widget class="QWidget" name="narrative_tab">
       <attribute name="icon">
-       <iconset resource="graphics/ubeats.qrc">
+       <iconset resource="../graphics/ubeats.qrc">
         <normaloff>:/icons/pages-brown-icon.png</normaloff>:/icons/pages-brown-icon.png</iconset>
       </attribute>
       <attribute name="title">
@@ -199,7 +199,7 @@
      </widget>
      <widget class="QWidget" name="details_tab">
       <attribute name="icon">
-       <iconset resource="graphics/ubeats.qrc">
+       <iconset resource="../graphics/ubeats.qrc">
         <normaloff>:/icons/Settings-icon.png</normaloff>:/icons/Settings-icon.png</iconset>
       </attribute>
       <attribute name="title">
@@ -398,7 +398,7 @@
      </widget>
      <widget class="QWidget" name="module_tab">
       <attribute name="icon">
-       <iconset resource="graphics/ubeats.qrc">
+       <iconset resource="../graphics/ubeats.qrc">
         <normaloff>:/icons/palette-icon.png</normaloff>:/icons/palette-icon.png</iconset>
       </attribute>
       <attribute name="title">
@@ -443,7 +443,7 @@
                   <string>City Development</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="graphics/ubeats.qrc">
+                  <iconset resource="../graphics/ubeats.qrc">
                    <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
                  </property>
                 </widget>
@@ -464,7 +464,7 @@
                   <string>Climate Setup</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="graphics/ubeats.qrc">
+                  <iconset resource="../graphics/ubeats.qrc">
                    <normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</iconset>
                  </property>
                  <property name="checkable">
@@ -491,7 +491,7 @@
                   <string>Spatial Setup</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="graphics/ubeats.qrc">
+                  <iconset resource="../graphics/ubeats.qrc">
                    <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
                  </property>
                  <property name="checkable">
@@ -511,7 +511,7 @@
                   <string>Urban Planning</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="graphics/ubeats.qrc">
+                  <iconset resource="../graphics/ubeats.qrc">
                    <normaloff>:/icons/Very-Basic-Design-icon.png</normaloff>:/icons/Very-Basic-Design-icon.png</iconset>
                  </property>
                 </widget>
@@ -522,7 +522,7 @@
                   <string>Socio-Economic</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="graphics/ubeats.qrc">
+                  <iconset resource="../graphics/ubeats.qrc">
                    <normaloff>:/icons/community-users-icon.png</normaloff>:/icons/community-users-icon.png</iconset>
                  </property>
                 </widget>
@@ -547,7 +547,7 @@
                   <string>Spatial Mapping</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="graphics/ubeats.qrc">
+                  <iconset resource="../graphics/ubeats.qrc">
                    <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
                  </property>
                 </widget>
@@ -558,7 +558,7 @@
                   <string>Regulation</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="graphics/ubeats.qrc">
+                  <iconset resource="../graphics/ubeats.qrc">
                    <normaloff>:/icons/Actions-view-pim-tasks-icon.png</normaloff>:/icons/Actions-view-pim-tasks-icon.png</iconset>
                  </property>
                 </widget>
@@ -569,7 +569,7 @@
                   <string>Infrastructure</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="graphics/ubeats.qrc">
+                  <iconset resource="../graphics/ubeats.qrc">
                    <normaloff>:/icons/Bench-icon.png</normaloff>:/icons/Bench-icon.png</iconset>
                  </property>
                 </widget>
@@ -580,7 +580,7 @@
                   <string>Performance</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="graphics/ubeats.qrc">
+                  <iconset resource="../graphics/ubeats.qrc">
                    <normaloff>:/icons/Bar-chart-icon.png</normaloff>:/icons/Bar-chart-icon.png</iconset>
                  </property>
                 </widget>
@@ -591,7 +591,7 @@
                   <string>Decision Analysis</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="graphics/ubeats.qrc">
+                  <iconset resource="../graphics/ubeats.qrc">
                    <normaloff>:/icons/Data-Flow-Chart-icon.png</normaloff>:/icons/Data-Flow-Chart-icon.png</iconset>
                  </property>
                 </widget>
@@ -602,7 +602,7 @@
                   <string>Impact</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="graphics/ubeats.qrc">
+                  <iconset resource="../graphics/ubeats.qrc">
                    <normaloff>:/icons/Market-Analysis-icon.png</normaloff>:/icons/Market-Analysis-icon.png</iconset>
                  </property>
                 </widget>
@@ -632,7 +632,7 @@
      </widget>
      <widget class="QWidget" name="data_tab">
       <attribute name="icon">
-       <iconset resource="graphics/ubeats.qrc">
+       <iconset resource="../graphics/ubeats.qrc">
         <normaloff>:/icons/Misc-Database-3-icon.png</normaloff>:/icons/Misc-Database-3-icon.png</iconset>
       </attribute>
       <attribute name="title">
@@ -911,7 +911,7 @@
      </widget>
      <widget class="QWidget" name="output_tab">
       <attribute name="icon">
-       <iconset resource="graphics/ubeats.qrc">
+       <iconset resource="../graphics/ubeats.qrc">
         <normaloff>:/icons/export-icon.png</normaloff>:/icons/export-icon.png</iconset>
       </attribute>
       <attribute name="title">
@@ -1058,6 +1058,7 @@
   <tabstop>done_button</tabstop>
  </tabstops>
  <resources>
+  <include location="../graphics/ubeats.qrc"/>
   <include location="graphics/ubeats.qrc"/>
  </resources>
  <connections/>
