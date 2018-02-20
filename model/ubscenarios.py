@@ -60,5 +60,8 @@ class UrbanBeatsScenario(object):
         self.__mapdata = [] # a list of map data to be used, holds the data references.
         self.__modulesetup = [] # a boolean list of which modules are active and which are not.
 
+    def setup_scenario(self):
+        pass
+
     def run(self):
         pass

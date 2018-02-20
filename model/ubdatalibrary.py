@@ -30,6 +30,7 @@ __copyright__ = "Copyright 2012. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 import os
+import shutil
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 import modules.md_decisionanalysis
@@ -49,11 +50,11 @@ import modules.md_urbplanbb
 class UrbanBeatsDataLibrary(object):
     def __init__(self, projectpath, keepcopy):
         # Assign properties and initialize variables
-        self.__spatial_data = []
-        self.__time_series_data = []
-        self.__qual_data = []
-        self.__data_library_idcount = 0
-        self.__projectpath = projectpath
+        self.__spatial_data = []        # A list containing data reference objects for spatial data
+        self.__time_series_data = []    # List for data reference of time series data
+        self.__qual_data = []           # List of data references for qualitative data
+        self.__data_library_idcount = 0 # Tracks the current ID number
+        self.__projectpath = projectpath    # The active project path in case a copy needs to be kept
         self.__keepcopy = keepcopy  # Tracks whether to copy each data to the project folder
 
         # Create the data directory
@@ -64,7 +65,11 @@ class UrbanBeatsDataLibrary(object):
         self.__projectdatafolder = projectpath+"/datalib/"
 
     def import_data(self):
-        pass
+        pass    # [TO DO]
+
+    def get_project_path(self):
+        """Returns the full path to the project folder."""
+        return self.__projectpath
 
     def get_num_datafiles(self):
         """Returns the total number of data files currently in the data library."""
@@ -77,8 +82,8 @@ class UrbanBeatsDataLibrary(object):
         :param dataref: The data reference object created by instantiating the
                         UrbanBeatsDataReference() class
         """
-        dataclass = dataref
-        dataref.assign_id("ds_"+str(self.__data_library_idcount))
+        dataclass = dataref.get_metadata("class")
+        dataref.assign_id("ID#ds_"+str(self.__data_library_idcount))
         if dataclass == "spatial":
             self.__spatial_data.append(dataref)
         elif dataclass == "temporal":
@@ -86,6 +91,10 @@ class UrbanBeatsDataLibrary(object):
         elif dataclass == "qualitative":
             self.__qual_data.append(dataref)
         self.__data_library_idcount += 1
+        if self.__keepcopy:
+            sourcepath = dataref.get_original_data_path()+"/"+dataref.get_metadata("filename")
+            destination = self.get_project_path()+str("/datalib/")+dataref.get_metadata("filename")
+            shutil.copyfile(sourcepath, destination)
 
     def delete_data(self, dataID):
         """Removes a data set from the library by searching for its unique dataID.
@@ -93,7 +102,44 @@ class UrbanBeatsDataLibrary(object):
         :param dataID: the unique ID assigned to the data set upon importing.
         :return: None
         """
-        pass
+        for i in range(len(self.__spatial_data)):
+            if self.__spatial_data[i].get_dataID() == dataID:
+                self.delete_data_from_project_folder(self.__spatial_data[i])
+                self.__spatial_data.pop(i)
+                return
+        for i in range(len(self.__time_series_data)):
+            if self.__time_series_data[i].get_dataID() == dataID:
+                self.delete_data_from_project_folder(self.__time_series_data[i])
+                self.__time_series_data.pop(i)
+                return
+        for i in range(len(self.__qual_data)):
+            if self.__qual_data[i].get_dataID() == dataID:
+                self.delete_data_from_project_folder(self.__qual_data[i])
+                self.__qual_data.pop(i)
+
+    def delete_data_from_project_folder(self, dataref):
+        """Checks if the data file is present in the project folder and deletes it.
+
+        :param dataref: the data reference object to be removed from the data library.
+        """
+        if self.__keepcopy:
+            fulldatapath = self.get_project_path() + str("/datalib/") + dataref.get_metadata("filename")
+            print fulldatapath
+            if os.path.isfile(fulldatapath):
+                os.remove(fulldatapath)
+
+    def get_all_data_of_class(self, dataclass):
+        """Returns one of the three data lists based on the input dataclass.
+
+        :param dataclass: str() can be 'spatial', 'temporal' or 'qualitative'
+        :return: list type of either self.__spatial_data, self.__time_series_data or self.__qual_data
+        """
+        if dataclass == "spatial":
+            return self.__spatial_data
+        elif dataclass == "temporal":
+            return self.__time_series_data
+        else:
+            return self.__qual_data
 
     def reset_library(self):
         """Resets the entire data library, i.e. deletes all files from the project /data folder
@@ -102,7 +148,7 @@ class UrbanBeatsDataLibrary(object):
         :return: None
         """
         if self.__keepcopy:
-            pass    #Delete all data from the data folder
+            pass    # Delete all data from the data folder
         self.__spatial_data = []
         self.__time_series_data = []
         self.__qual_data = []
@@ -148,10 +194,10 @@ class UrbanBeatsDataReference(object):
         """
         # METADATA
         self.__dataID = None
-        self.__dataclass = datatype["class"]    # e.g. spatial, time series, qualitative
-        self.__datatype = datatype["parent"]    # e.g. overlay, rainfall, qualitative
-        self.__datasubtype = datatype["sub"]    # e.g. heritage, none, tech matrix
-        self.__dataformat = datatype["format"]  # e.g. .csv, .shp, .txt - so the model knows how to handle the data
+        self.__dataclass = datatype[0]    # e.g. spatial, time series, qualitative
+        self.__datatype = datatype[1]    # e.g. overlay, rainfall, qualitative
+        self.__datasubtype = datatype[2]    # e.g. heritage, none, tech matrix
+        self.__dataformat = datatype[3]  # e.g. .csv, .shp, .txt - so the model knows how to handle the data
         self.__notes = notes_text               # Further metadata or data description.
 
         # FILE LOCATION AND NAME
@@ -194,9 +240,12 @@ class UrbanBeatsDataReference(object):
         in the project folder), then method returns the project-local filepath. Otherwise it returns
         the original filepath of the data."""
         if self.__keepcopy:
-            return self.__projectdatapath+"/data/"
+            return self.__projectdatapath+"/datalib/"
         else:
             return self.__originaldatapath
+
+    def get_original_data_path(self):
+        return self.__originaldatapath
 
     def get_dataID(self):
         """Returns the identifier for the data object"""
@@ -218,5 +267,7 @@ class UrbanBeatsDataReference(object):
             return self.__dataformat
         elif attribute == "notes":
             return self.__notes
+        elif attribute == "filename":
+            return self.__datafilename
         else:
             return None

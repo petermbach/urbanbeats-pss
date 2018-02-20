@@ -46,8 +46,8 @@ import xml.etree.ElementTree as ET
 # --- URBANBEATS LIBRARY IMPORTS ---
 import model.progref.ubglobals as ubglobals
 import model.urbanbeatscore as ubcore
-import ubgui_spatialhandling as ubspatial
-import ubgui_reporting as ubreport
+import gui.ubgui_spatialhandling as ubspatial
+import gui.ubgui_reporting as ubreport
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -82,8 +82,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__activeScenario = None            # The active scenario
         self.__activeDataLibrary = None         # The active simulation's data library
         self.__activeProjectLog = None          # The active simulation's log file
-        self.__activeprojectpath = "C:\\"       # The active project path
-
 
         self.__datalibraryexpanded = 0      # STATE: is the data library browser fully expanded?
         self.__current_location = self.get_option("city")   # STATE: the current location
@@ -118,15 +116,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionEdit_Scenario.triggered.connect(lambda: self.show_scenario_dialog(1))
         self.ui.actionDelete_Scenario.triggered.connect(self.delete_current_scenario)
         # --- //
-        # self.ui.actionReporting_Options.triggered.connect()
-        # self.ui.actionMap_Export_Options.triggered.connect()
+        self.ui.actionReporting_Options.triggered.connect(self.show_reporting_settings)
+        self.ui.actionMap_Export_Options.triggered.connect(self.show_map_export_settings)
 
         # DATA MENU
         self.ui.actionAdd_Data.triggered.connect(self.show_add_data_dialog)
         # self.ui.actionImport_Archive_File.triggered.connect()
         # self.ui.actionImport_Archive_from_Project.triggered.connect()
         # self.ui.actionExport_Data_Archive.triggered.connect()
-        # self.ui.actionReset_Data_Library.triggered.connect()
+        self.ui.actionReset_Data_Library.triggered.connect(self.reset_project_data_library)
 
         # SIMULATION MENU
         # Do this much later once GUIs for modules have been defined.
@@ -145,7 +143,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.ui.actionOnline_Help.triggered.connect()
         # self.ui.actionSubmit_a_Bug_Report.triggered.connect()
         # self.ui.actionLike_on_Facebook.triggered.connect()
-        # self.ui.actionShare_on_Twiter.triggered.connect()
+        # self.ui.actionShare_on_Twitter.triggered.connect()
 
         # OBSERVER PATTERN - CONSOLE UPDATE
         self.consoleobserver.updateConsole[str].connect(self.printc)
@@ -162,6 +160,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.newScenario.clicked.connect(lambda: self.show_scenario_dialog(0))
         self.ui.editScenario.clicked.connect(lambda: self.show_scenario_dialog(1))
         self.ui.deleteScenario.clicked.connect(self.delete_current_scenario)
+        self.ui.ScenarioDock_Combo.currentIndexChanged.connect(self.scenario_change_ui_setup)
 
         # Data View Interface
         # self.ui.DataView_extent.clicked.connect()
@@ -194,20 +193,6 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.ui.SimDock_resultsview.connect(self.show_results_viewer)
         # self.ui.SimDock_run.connect(self.call_run_simulation)
 
-    def show_map_export_settings(self):
-        """Launches the map export options dialog window for the current scenario, where the user can customize
-        the export format and types of spatial data required as output files from the model."""
-        mapexportdialog = ubdialogs.MapExportDialogLaunch(self.get_active_scenario())
-
-        mapexportdialog.exec_()
-
-    def show_reporting_settings(self):
-        """Launches the report creation dialog window, where the user can select and create reporting options. The
-        settings are saved to the project's options for later use."""
-        reportingdialog = ubdialogs.ReportingDialogLaunch(self.get_active_simulation_object())
-
-        reportingdialog.exec_()
-
     # SCENARIO CREATION AND MANAGEMENT FUNCTIONALITY
     def show_scenario_dialog(self, viewmode):
         """Launches the scenario dialog window, which the user can use to customize and set up a simulation scenario.
@@ -231,12 +216,29 @@ class MainWindow(QtWidgets.QMainWindow):
         # (6) Remove the scenario from the simulation, (7) Delete the scenario folder from the project
         pass        #[TO DO]
 
+    def scenario_change_ui_setup(self):
+        """Modifies the current Main Window Interface to suit the selected scenario. This includes enabling and
+        disabling the module buttons, the control panel and updating the Scenario Narrative Section of the GUI
+        with information on the current scenario. It also includes printing out details into the output console."""
+        if self.ui.ScenarioDock_Combo.currentIndex() == 0:
+            # <Select Scenario> Case - disables everything
+            self.ui.ModuleDock.setEnabled(0)
+            self.ui.SimDock.setEnabled(0)
+        else:
+            self.enable_disable_module_buttons()
+            self.ui.SimDock.setEnabled(1)
+        pass # [TO DO]
+
+    def enable_disable_module_buttons(self):
+        curscenario = self.get_active_scenario()
+        pass #[TO DO]
+
     # MAIN INTERFACE FUNCTIONALITY
     def printc(self, textmessage):
         """Print to console function, adds the textmessage to the console"""
         if "PROGRESSUPDATE" in str(textmessage):
             progress = textmessage.split('||')
-            #self.updateProgressBar(int(progress[1]))
+            # self.updateProgressBar(int(progress[1]))
             pass
         else:
             self.ui.OutputConsole.append(str("<font color=\"#93cbc7\">"+time.asctime())+"</font> | "+str(textmessage))
@@ -249,12 +251,14 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         simulation = self.get_active_simulation_object()
         if simulation:
-            print self.__activeprojectpath
-            self.printc("Opening Project Folder: "+str(self.__activeprojectpath))
+            projectpath = os.path.normpath(simulation.get_project_path())
+            self.printc("Opening Project Folder: "+str(projectpath))
             if platform.system() == "Windows":
-                subprocess.Popen(r'explorer "'+self.__activeprojectpath+'"')
+                subprocess.Popen('explorer "%s"' %projectpath)
             else:
-                subprocess.Popen(["open", self.__activeprojectpath])    # NOTE: untested!
+                subprocess.Popen(["open", projectpath])    # NOTE: untested!
+        else:
+            pass    # If no active project then the button will be disabled
         return
 
     # ABOUT AND OPTIONS DIALOG AND RELATED FUNCTIONS
@@ -403,8 +407,10 @@ class MainWindow(QtWidgets.QMainWindow):
         newsimulation = ubcore.UrbanBeatsSim(UBEATSROOT, self.__global_options)  # instantiate new simulation objective
         self.set_active_simulation_object(newsimulation)
 
+        self.reset_project_data_library_view()
+
         # GUI calls
-        self.setWindowTitle("UrbanBEATS Planning Support Tool - ")
+        self.setWindowTitle("UrbanBEATS Planning Support Tool")
         self.__datalibraryexpanded = True
         self.expand_collapse_data_library()  # Collapses the entire data library window
         self.ui.ScenarioDock_View.collapseAll()  # Collapse the scenario viewer
@@ -416,6 +422,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setup_narrative_widget("clear")  # Clear the narrative widget's information
         self.enable_disable_main_interface("new")  # Enable and disable elements of the GUI for starting new project
         self.reset_data_view_to_default()  # Restore the default Leaflet view
+        self.scenario_change_ui_setup()
 
     def cancel_new_project_creation(self, viewmode):
         """Called when the rejected() signal is emitted from the new project dialog. It reverts the active
@@ -454,6 +461,9 @@ class MainWindow(QtWidgets.QMainWindow):
         for twi_module in range(moduleCount):
             moduleTree.child(twi_module).setDisabled(1)
             moduleTree.child(twi_module).setCheckState(0, False)
+
+        # Update Main Window Title
+        self.setWindowTitle("UrbanBEATS Planning Support Tool - "+str(self.get_current_project_name()))
 
     def open_existing_project(self):
         """Opens an existing project folder and sets up the interface based on its information."""
@@ -494,6 +504,21 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 event.ignore()
 
+    # OUTPUT OPTION GUIS - MAP EXPORT AND REPORT CREATION DIALOGS
+    def show_map_export_settings(self):
+        """Launches the map export options dialog window for the current scenario, where the user can customize
+        the export format and types of spatial data required as output files from the model."""
+        mapexportdialog = ubdialogs.MapExportDialogLaunch(self.get_active_scenario())
+
+        mapexportdialog.exec_()
+
+    def show_reporting_settings(self):
+        """Launches the report creation dialog window, where the user can select and create reporting options. The
+        settings are saved to the project's options for later use."""
+        reportingdialog = ubdialogs.ReportingDialogLaunch(self.get_active_simulation_object())
+
+        reportingdialog.exec_()
+
     # PROJECT LOG
     def show_project_log(self):
         """Opens the project log window for the user to review the history of the modelling project."""
@@ -512,14 +537,130 @@ class MainWindow(QtWidgets.QMainWindow):
         adddatadialog.dataLibraryUpdated.connect(self.update_data_library_view)
         adddatadialog.exec_()
 
+    def reset_project_data_library(self):
+        """RESETS THE ENTIRE PROJECT'S DATA LIBRARY including that in the simulation core."""
+        self.get_active_data_library().reset_library()
+        self.reset_project_data_library_view()
+
+        # Go through all scenarios and remove all files
+        pass    # [TO DO]
+
+    def reset_project_data_library_view(self):
+        """ONLY AFFECTS THE DATA LIBRARY VIEWER
+        Removes all entries and recreates the base tree. Also retains the expanded and collapsed subitems.
+        """
+        expandcol_tli = []
+        expandcol_twi = [[], []]
+        for i in range(self.ui.DataDock_View.topLevelItemCount()):
+            tli = self.ui.DataDock_View.topLevelItem(i)
+            expandcol_tli.append(tli.isExpanded())
+            if i == 2:  # Qualitative data has no children
+                continue
+            for j in range(tli.childCount()):
+                expandcol_twi[i].append(tli.child(j).isExpanded())
+
+        self.ui.DataDock_View.clear()
+        for datacat in ubglobals.DATACATEGORIES:
+            twi = QtWidgets.QTreeWidgetItem()
+            twi.setText(0, datacat)
+            self.ui.DataDock_View.addTopLevelItem(twi)
+        for spdata in ubglobals.SPATIALDATA:
+            twi = QtWidgets.QTreeWidgetItem()
+            twi.setText(0, spdata)
+            twi_child = QtWidgets.QTreeWidgetItem()
+            twi_child.setText(0, "<no data>")
+            twi.addChild(twi_child)
+            self.ui.DataDock_View.topLevelItem(0).addChild(twi)
+        for tdata in ubglobals.TEMPORALDATA:
+            twi = QtWidgets.QTreeWidgetItem()
+            twi.setText(0, tdata)
+            twi_child = QtWidgets.QTreeWidgetItem()
+            twi_child.setText(0, "<no data>")
+            twi.addChild(twi_child)
+            self.ui.DataDock_View.topLevelItem(1).addChild(twi)
+        twi = QtWidgets.QTreeWidgetItem()
+        twi.setText(0, "<no data>")
+        self.ui.DataDock_View.topLevelItem(2).addChild(twi)
+
+        # Now reorganise the expanded and contracted menus.
+        for i in range(self.ui.DataDock_View.topLevelItemCount()):
+            tli = self.ui.DataDock_View.topLevelItem(i)
+            tli.setExpanded(expandcol_tli[i])
+            if i == 2:  # Qualitative data has no children
+                continue
+            for j in range(tli.childCount()):
+                tli.child(j).setExpanded(expandcol_twi[i][j])
+
+        # Adjust the pixmap on the expand/col button
+        if sum(expandcol_tli) == len(expandcol_tli) \
+            and sum([len(i) for i in expandcol_twi]) == sum([sum(i) for i in expandcol_twi]):
+            # If true: then tree widget fully expanded
+            self.set_expand_collapse_button_icon("expanded")
+        else:
+            # If not fully expanded, then can still be expanded so set the button to the collapsed state.
+            self.set_expand_collapse_button_icon("collapsed")
+
     def remove_data_from_library(self):
-        pass
+        """Removes the current selected data set from the data library and the data library view."""
+        selection = self.ui.DataDock_View.selectedItems()[0]
+        if selection.childCount() == 0 and selection.text(0) != "<no data>":
+            datafilename = selection.text(0)
+            print "Removing", datafilename
+
+            dataID = selection.toolTip(0).split(" - ")[0]
+            print dataID
+            self.get_active_data_library().delete_data(dataID)
+
+            parent = selection.parent()
+            parent.removeChild(selection)
+            if parent.childCount() == 0:
+                twi = QtWidgets.QTreeWidgetItem()
+                twi.setText(0, "<no data>")
+                parent.addChild(twi)
+        else:
+            return
 
     def update_data_library_view(self):
         """Called then changes are made to the data library object either through the addition or
         removal of data from the data library. The program goes through the data library and updates
         the tree widget."""
-        pass
+        self.reset_project_data_library_view()  # Redo the data library
+        datalib = self.get_active_data_library()
+        # Update Spatial Data Sets
+        datacol = datalib.get_all_data_of_class("spatial")  # Get the list of data
+        cur_toplevelitem = self.ui.DataDock_View.topLevelItem(0)
+        for dref in datacol:
+            dtype = dref.get_metadata("parent")  # Returns overall type (e.g. Land Use, Rainfall, etc.)
+            dtypeindex = ubglobals.SPATIALDATA.index(dtype)    # Get the index in the tree-widget
+            if cur_toplevelitem.child(dtypeindex).child(0).text(0) == "<no data>":
+                cur_toplevelitem.child(dtypeindex).takeChild(0)
+            twi = QtWidgets.QTreeWidgetItem()
+            twi.setText(0, dref.get_metadata("filename"))
+            twi.setToolTip(0, str(dref.get_dataID()) + " - " + str(dref.get_data_file_path()))
+            cur_toplevelitem.child(dtypeindex).addChild(twi)
+
+        # Update Temporal Data Sets
+        datacol = datalib.get_all_data_of_class("temporal")
+        cur_toplevelitem = self.ui.DataDock_View.topLevelItem(1)
+        for dref in datacol:
+            dtype = dref.get_metadata("parent")
+            dtypeindex = ubglobals.TEMPORALDATA.index(dtype)
+            if cur_toplevelitem.child(dtypeindex).child(0).text(0) == "<no data>":
+                cur_toplevelitem.child(dtypeindex).takeChild(0)
+            twi = QtWidgets.QTreeWidgetItem()
+            twi.setText(0, dref.get_metadata("filename"))
+            twi.setToolTip(0, str(dref.get_dataID()) + " - " + str(dref.get_data_file_path()))
+            cur_toplevelitem.child(dtypeindex).addChild(twi)
+
+        # Update the Qualitative Data Set
+        datacol = datalib.get_all_data_of_class("qualitative")
+        for dref in datacol:
+            if self.ui.DataDock_View.topLevelItem(2).child(0).text(0) == "<no data>":
+                self.ui.DataDock_View.topLevelItem(2).takeChild(0)
+            twi = QtWidgets.QTreeWidgetItem()
+            twi.setText(0, dref.get_metadata("filename"))
+            twi.setToolTip(0, str(dref.get_dataID()) + " - " + str(dref.get_data_file_path()))
+            self.ui.DataDock_View.topLevelItem(2).addChild(twi)
 
     def show_metadata_dialog(self):
         pass
@@ -528,24 +669,35 @@ class MainWindow(QtWidgets.QMainWindow):
         pass
 
     def expand_collapse_data_library(self):
-        """Expands or collapses the data library features based on the input parameter
-
-        :param action: "expand" or "collapse", calls the corresponding sequence of commands.
+        """Expands or collapses the data library features based on the state of the data library. Also
+        changes the expand/collapse button by calling the set_expand_collapse_button_icon() method.
         """
         if self.__datalibraryexpanded:
             self.ui.DataDock_View.collapseAll()
+            self.set_expand_collapse_button_icon("collapsed")
+            self.__datalibraryexpanded = False
+        else:
+            self.ui.DataDock_View.expandAll()
+            self.set_expand_collapse_button_icon("expanded")
+            self.__datalibraryexpanded = True
+
+    def set_expand_collapse_button_icon(self, condition):
+        """Changes the icon pixmap on the expanded and collapse button in the Project Data Library
+        Dock Window depending on the condition provdied.
+
+        :param condition: one of two values, 'collapsed' or 'expanded'."""
+        if condition == "collapsed":
             icon14 = QtGui.QIcon()
             icon14.addPixmap(QtGui.QPixmap(":/icons/arrowright.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             self.ui.expcolData.setIcon(icon14)
             self.ui.expcolData.setIconSize(QtCore.QSize(20, 20))
-            self.__datalibraryexpanded = False
-        else:
-            self.ui.DataDock_View.expandAll()
+        elif condition == "expanded":
             icon14 = QtGui.QIcon()
             icon14.addPixmap(QtGui.QPixmap(":/icons/arrowdown.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             self.ui.expcolData.setIcon(icon14)
             self.ui.expcolData.setIconSize(QtCore.QSize(20, 20))
-            self.__datalibraryexpanded = True
+        else:
+            print "Something Wrong"
 
     # GETTERS and SETTERS
     def set_active_scenario(self, scenarioobject):
@@ -590,6 +742,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def set_current_project_name(self, pname):
         self.__current_project_name = pname
+
+    def get_current_project_name(self):
+        return self.__current_project_name
 
     # MODULE BAR - LAUNCHING ALL MODULES
     def launch_spatialsetup_modulegui(self):
@@ -841,7 +996,7 @@ if __name__ == "__main__":
     app.processEvents()
 
     # Simulate something that takes time
-    time.sleep(4)       # "Marvel at the beautiful splash screen!"
+    time.sleep(1)       # "Marvel at the beautiful splash screen!"
 
     # --- MAIN WINDOW AND APPLICATION LOOP ---
     # Setup Main Window

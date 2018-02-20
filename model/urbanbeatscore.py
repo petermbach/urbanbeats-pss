@@ -81,7 +81,7 @@ class UrbanBeatsSim(threading.Thread):
 
         self.__project_saved = 0    # BOOL - has the project been saved?
         self.__simulation_completed = 0 # BOOL - has the simulation completed run?
-        self.__projectpath = "" # Project Path. Starts blank, is then replaced.
+        self.__projectpath = ""     # Project Path. Starts blank, is then replaced.
 
         # Project Parameters
         self.__project_info = {
@@ -111,15 +111,15 @@ class UrbanBeatsSim(threading.Thread):
         :return: None
         """
         if condition == "new":  # for starting a new project
-            self.setup_project_folder_structure()
-            fullprojectpath = self.get_project_parameter("projectpath")+"/"+self.get_project_parameter("name")
+            self.setup_project_folder_structure()   # Creates all the folders
+
             # Create a new data library
-            datalib = ubdatalibrary.UrbanBeatsDataLibrary(fullprojectpath,
+            datalib = ubdatalibrary.UrbanBeatsDataLibrary(self.__projectpath,
                                                           self.get_project_parameter("keepcopy"))
             self.set_data_library(datalib)
 
-            #Create a new project log
-            projectlog = UrbanBeatsLog(self.get_project_parameter("projectpath"))
+            # Create a new project log
+            projectlog = UrbanBeatsLog(self.__projectpath)
             self.set_project_log(projectlog)
         elif condition == "open":   # for opening a project
             pass    # [TO DO]
@@ -140,6 +140,7 @@ class UrbanBeatsSim(threading.Thread):
         os.makedirs(projectpath+"/"+projectnewname+"/datalib")
         os.makedirs(projectpath+"/"+projectnewname+"/output")
         self.write_project_info_file()
+        self.__projectpath = projectpath+"/"+projectnewname
 
     def write_project_info_file(self):
         # write project info XML
@@ -181,6 +182,7 @@ class UrbanBeatsSim(threading.Thread):
         return len(self.__scenarios)
 
     def get_num_datasets(self):
+        """Returns a single integer indicating the number of data files in the library."""
         return self.__datalibrary.get_num_datafiles()
 
     def get_project_parameter(self, parname):
@@ -207,15 +209,11 @@ class UrbanBeatsSim(threading.Thread):
         self.__project_info[parname] = value
 
     def get_project_path(self):
-        """Returns the path of the current project.
+        """Returns the path of the current project. The path should never be modifiable.
 
         :return: self.__projectpath as string
         """
         return self.__projectpath
-
-    def set_project_path(self):
-        """Sets the active project directory."""
-        self.__projectpath = self.get_project_parameter("projectpath")
 
     def get_global_options(self, attribute):
         """Get the global options for the model. If a specific attribute is specified
