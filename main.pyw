@@ -103,6 +103,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionSave_As.triggered.connect(self.save_as_project)
         self.ui.actionImport_Project.triggered.connect(self.import_existing_project)
         self.ui.actionExport_Project.triggered.connect(self.export_existing_project)
+        self.ui.actionClose_Project.triggered.connect(self.close_project)
 
         # EDIT MENU
         self.ui.actionEdit_Project_Details.triggered.connect(lambda: self.show_new_project_dialog(1))
@@ -396,6 +397,44 @@ class MainWindow(QtWidgets.QMainWindow):
         newprojectdialog.rejected.connect(lambda: self.cancel_new_project_creation(viewmode))
         newprojectdialog.accepted.connect(lambda: self.initialize_new_project(viewmode))
         newprojectdialog.exec_()
+
+    def close_project(self):
+        """Closes the current project and resets the main gui to startup state."""
+        # First check save state
+        if not self.get_save_project_state():
+            quit_msg = "Would you like to save your work before closing the project?"
+            reply = QtWidgets.QMessageBox.question(self, 'Close Project?',
+                                                   quit_msg, QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No |
+                                                   QtWidgets.QMessageBox.Cancel, QtWidgets.QMessageBox.Cancel)
+            if reply == QtWidgets.QMessageBox.Yes:
+                self.save_project()
+            elif reply == QtWidgets.QMessageBox.No:
+                pass
+            else:
+                return
+
+        # Close project and prepare GUI and core for next project if the user wishes.
+        self.set_active_simulation_object(None)
+        self.set_active_data_library(None)
+        self.set_active_project_log(None)
+        self.set_current_project_name("")
+        self.set_active_scenario(None)
+        self.set_save_project_state(True)
+        self.reset_project_data_library_view()
+
+        self.setWindowTitle("UrbanBEATS Planning Support Tool")
+        self.__datalibraryexpanded = True
+        self.expand_collapse_data_library()  # Collapses the entire data library window
+        self.ui.ScenarioDock_View.collapseAll()  # Collapse the scenario viewer
+
+        self.ui.ScenarioDock_Combo.clear()  # Clear the scenario browser's combo
+        self.ui.ScenarioDock_Combo.addItem("<Select Scenario>")
+        self.ui.ScenarioDock_Combo.setCurrentIndex(0)
+
+        self.setup_narrative_widget("clear")  # Clear the narrative widget's information
+        self.reset_data_view_to_default()  # Restore the default Leaflet view
+        self.scenario_change_ui_setup()
+        self.enable_disable_main_interface("startup")
 
     def setup_main_gui(self):
         """Runs through the essential methods in order to prepare the GUI and simulation core for creating a new

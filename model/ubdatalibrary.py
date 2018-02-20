@@ -190,29 +190,9 @@ class UrbanBeatsDataReference(object):
         Data sets in the reference class are assigned metadata that will help the model
         identify how they are used throughout the project.
 
-        They are differentiated by type, denoted by a 3-letter string:
+        Data naming convention are in the ubglobals.py file, which contains global variables.
 
-        SPATIAL STRINGS:
-            - LUC = land use classification
-            - POP = population map (subtypes: count, density)
-            - CAS = case study boundary
-            - BND = internal boundaries (subtypes: geopolitical, suburban, catchment)
-            - ELV = elevation
-            - SOI = soil map (subtypes: infiltration rate, classification)
-            - EMP = employment (subtype: count, density)
-            - OVR = overlay (subtype: planning, groundwater, environmental, heritage, regulatory)
-            - LOC = locality map
-            - WAT = water bodies (subtypes: rivers, lakes)
-            - INF = built infrastructure, (subtypes: network, WSUD, road)
-        TEMPORAL STRINGS:
-            - RAI = rainfall time series
-            - EVP = evapotranspiration time series
-            - SOL = solar radiation time series
-            - TMP = temperature time series
-        QUALITATIVE STRINGS:
-            - QQQ = qualitative data (subtypes: tech matrix, survey, preference matrix)
-
-        :param datatype: a 3-letter string that identifies the data type
+        :param datatype: basic metadata in list form [class, category, subtype, format]
         :param fullfilepath: original path to the data file
         :param projectpath: path to the project folder
         :param keepcopy: bool, keep a copy of the data in the project folder?
