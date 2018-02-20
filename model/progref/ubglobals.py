@@ -28,13 +28,14 @@ __copyright__ = "Copyright 2012. Peter M. Bach"
 LANGUAGECOMBO = ["DE", "EN", "ES", "FR", "PO", "CN", "JP"]
 
 # --- DATA LIBRARY ---
+DATACATEGORIES = ["Spatial Data", "Time Series Data", "Qualitative Data"]
 SPATIALDATA = ["Boundaries", "Built Infrastructure", "Elevation", "Employment", "Land Use",
                "Locality Maps", "Overlays", "Population", "Soil", "Water Bodies"]
 SUBDATASETS = {"Boundaries": ["Geopolitical", "Suburban", "Catchment"],
                "Population": ["Count", "Density"],
                "Soil": ["Classification", "Infiltration Rate"],
                "Employment": ["Count", "Density"],
-               "Overlay": ["Planning", "Groundwater", "Environmental", "Heritage", "Regulatory"],
+               "Overlays": ["Planning", "Groundwater", "Environmental", "Heritage", "Regulatory"],
                "Water Bodies": ["Rivers", "Lakes"],
                "Built Infrastructure": ["Rail Network", "Road Network", "Water Network", "WSUD"]
                }
