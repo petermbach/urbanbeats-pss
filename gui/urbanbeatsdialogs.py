@@ -258,7 +258,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.remove_from_button.clicked.connect(self.remove_scenariodata_entry)
 
     def add_datalibrary_to_scenariodata(self):
-        """DESCRIPTION"""
+        """Description"""
         pass
 
     def remove_scenariodata_entry(self):

@@ -31,20 +31,18 @@ __copyright__ = "Copyright 2012. Peter M. Bach"
 # --- PYTHON LIBRARY IMPORTS ---
 import threading
 
-
 # --- URBANBEATS LIBRARY IMPORTS ---
-import modules.md_decisionanalysis
-import modules.md_climatesetup
-import modules.md_delinblocks
-import modules.md_impactassess
-import modules.md_perfassess
-import modules.md_regulation
-import modules.md_socioecon
-import modules.md_spatialmapping
-import modules.md_techplacement
-import modules.md_urbandev
-import modules.md_urbplanbb
-
+import modules.md_decisionanalysis as md_decisionanalysis
+import modules.md_climatesetup as md_climatesetup
+import modules.md_delinblocks as md_delinblocks
+import modules.md_impactassess as md_impactasess
+import modules.md_perfassess as md_perfassess
+import modules.md_regulation as md_regulation
+import modules.md_socioecon as md_socioecon
+import modules.md_spatialmapping as md_spatialmapping
+import modules.md_techplacement as md_techplacement
+import modules.md_urbandev as md_urbandev
+import modules.md_urbplanbb as md_urbplanbb
 
 # --- SCENARIO CLASS DEFINITION ---
 class UrbanBeatsScenario(object):
