@@ -255,6 +255,10 @@ class MainWindow(QtWidgets.QMainWindow):
         twi = QtWidgets.QTreeWidgetItem()
         twi.setText(0, str(active_scenario.get_metadata("narrative")[:100]+"..."))
         twi.setToolTip(0, str(active_scenario.get_metadata("narrative")[:100] + "..."))
+
+        # Narrative
+        self.ui.Narrative.setPlainText(active_scenario.get_metadata("narrative"))
+
         self.ui.ScenarioDock_View.topLevelItem(0).takeChildren()
         self.ui.ScenarioDock_View.topLevelItem(0).addChild(twi)
         self.ui.ScenarioDock_View.topLevelItem(1).child(0).setText(0, "Type: "+active_scenario.get_metadata("type"))
@@ -280,8 +284,27 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.ScenarioDock_View.topLevelItem(4).child(1).setText(0, "Path: " + str(os.path.normpath(project_path)))
         self.ui.ScenarioDock_View.topLevelItem(4).child(1).setToolTip(0, str(os.path.normpath(project_path)))
 
+        # LIST OF DATA SETS
+        datalist = active_scenario.create_dataset_file_list()
+        print datalist
+        self.ui.DataSummary.setRowCount(0)
+        self.ui.ScenarioDock_View.topLevelItem(2).takeChildren()
+        for entry in datalist:
+            twi = QtWidgets.QTreeWidgetItem()
+            twi.setText(0, entry[1])
+            twi.setToolTip(0, entry[0]+" - "+entry[2])
+            self.ui.ScenarioDock_View.topLevelItem(2).addChild(twi)
+
+            # Update the Data Table Widget.
+            rowposition = self.ui.DataSummary.rowCount()
+            self.ui.DataSummary.insertRow(rowposition)
+            self.ui.DataSummary.setItem(rowposition, 0, QtWidgets.QTableWidgetItem(entry[1]))
+            self.ui.DataSummary.setItem(rowposition, 1, QtWidgets.QTableWidgetItem(entry[3]))
+            self.ui.DataSummary.setItem(rowposition, 2, QtWidgets.QTableWidgetItem(entry[4]))
+            self.ui.DataSummary.resizeColumnsToContents()
+
         # MODULES
-        modulebools = []
+        modulebools = []    # Holds 1 and 0 booleans that represent different modules in the module dock
         for i in range(len(ubglobals.MODULENAMES)):
             mbool = active_scenario.check_is_module_active(ubglobals.MODULENAMES[i])
             if mbool:
@@ -291,7 +314,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.ui.ScenarioDock_View.topLevelItem(3).child(i).setDisabled(1)
                 self.ui.ScenarioDock_View.topLevelItem(3).child(i).setCheckState(0, 0)
             modulebools.append(int(mbool))
-        self.enable_disable_module_icons(modulebools)
+        self.enable_disable_module_icons(modulebools)   # enables corresponding module buttons
 
     def scenario_view_reset(self):
         """Resets the scenario view to the default """
@@ -307,6 +330,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.ScenarioDock_View.topLevelItem(3).child(i).setDisabled(1)
         self.ui.ScenarioDock_View.topLevelItem(4).child(0).setText(0, "File Naming: <name>")
         self.ui.ScenarioDock_View.topLevelItem(4).child(1).setText(0, "Path: <path>")
+
+        self.ui.Narrative.clear()
+        self.ui.DataSummary.setRowCount(0)
+        self.ui.Simulation.clear()
 
     # MAIN INTERFACE FUNCTIONALITY
     def printc(self, textmessage):
@@ -747,7 +774,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 cur_toplevelitem.child(dtypeindex).takeChild(0)
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, dref.get_metadata("filename"))
-            twi.setToolTip(0, str(dref.get_dataID()) + " - " + str(dref.get_data_file_path()))
+            twi.setToolTip(0, str(dref.get_data_id()) + " - " + str(dref.get_data_file_path()))
             cur_toplevelitem.child(dtypeindex).addChild(twi)
 
         # Update Temporal Data Sets
@@ -760,7 +787,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 cur_toplevelitem.child(dtypeindex).takeChild(0)
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, dref.get_metadata("filename"))
-            twi.setToolTip(0, str(dref.get_dataID()) + " - " + str(dref.get_data_file_path()))
+            twi.setToolTip(0, str(dref.get_data_id()) + " - " + str(dref.get_data_file_path()))
             cur_toplevelitem.child(dtypeindex).addChild(twi)
 
         # Update the Qualitative Data Set
@@ -770,7 +797,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.ui.DataDock_View.topLevelItem(2).takeChild(0)
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, dref.get_metadata("filename"))
-            twi.setToolTip(0, str(dref.get_dataID()) + " - " + str(dref.get_data_file_path()))
+            twi.setToolTip(0, str(dref.get_data_id()) + " - " + str(dref.get_data_file_path()))
             self.ui.DataDock_View.topLevelItem(2).addChild(twi)
 
     def show_metadata_dialog(self):

@@ -95,6 +95,9 @@ p, li { white-space: pre-wrap; }
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
             <widget class="QTableWidget" name="DataSummary">
+             <property name="sortingEnabled">
+              <bool>true</bool>
+             </property>
              <column>
               <property name="text">
                <string>Filename</string>
@@ -107,7 +110,7 @@ p, li { white-space: pre-wrap; }
              </column>
              <column>
               <property name="text">
-               <string>Iteration</string>
+               <string>Subtype</string>
               </property>
              </column>
             </widget>

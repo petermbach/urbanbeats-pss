@@ -124,17 +124,17 @@ class UrbanBeatsDataLibrary(object):
         :return: None
         """
         for i in range(len(self.__spatial_data)):
-            if self.__spatial_data[i].get_dataID() == dataID:
+            if self.__spatial_data[i].get_data_id() == dataID:
                 self.delete_data_from_project_folder(self.__spatial_data[i])
                 self.__spatial_data.pop(i)
                 return
         for i in range(len(self.__time_series_data)):
-            if self.__time_series_data[i].get_dataID() == dataID:
+            if self.__time_series_data[i].get_data_id() == dataID:
                 self.delete_data_from_project_folder(self.__time_series_data[i])
                 self.__time_series_data.pop(i)
                 return
         for i in range(len(self.__qual_data)):
-            if self.__qual_data[i].get_dataID() == dataID:
+            if self.__qual_data[i].get_data_id() == dataID:
                 self.delete_data_from_project_folder(self.__qual_data[i])
                 self.__qual_data.pop(i)
 
@@ -166,6 +166,18 @@ class UrbanBeatsDataLibrary(object):
             return self.__time_series_data
         else:
             return self.__qual_data
+
+    def get_data_with_id(self, dataid):
+        """Returns the data reference object with the indicated dataID.
+
+        :param dataid: the unique dataID of the data reference given to it upon adding to the library
+        :return: UrbanBeatsDataReference() object
+        """
+        for dataarray in [self.__spatial_data, self.__time_series_data, self.__qual_data]:
+            for dataref in dataarray:
+                if dataref.get_data_id() == dataid:
+                    return dataref
+        return None
 
     def reset_library(self):
         """Resets the entire data library, i.e. deletes all files from the project /data folder
@@ -253,7 +265,7 @@ class UrbanBeatsDataReference(object):
     def get_original_data_path(self):
         return self.__originaldatapath
 
-    def get_dataID(self):
+    def get_data_id(self):
         """Returns the identifier for the data object"""
         return self.__dataID
 

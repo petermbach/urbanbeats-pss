@@ -56,15 +56,15 @@ class UrbanBeatsScenario(object):
         self.projectlog = projectlog
         self.projectpath = simulation.get_project_path()
 
-        self.__scenariometadata = { "name": "My UrbanBEATS Scenario",
-                                    "type": "STATIC",
-                                    "narrative": "<A description of my scenario>",
-                                    "startyear": 2018,
-                                    "endyear": 2068,
-                                    "dt": 1,
-                                    "benchmarks": 100,
-                                    "filename": "<enter a naming convention for outputs>",
-                                    "usescenarioname": 0 }
+        self.__scenariometadata = {"name": "My UrbanBEATS Scenario",
+                                   "type": "STATIC",
+                                   "narrative": "<A description of my scenario>",
+                                   "startyear": 2018,
+                                   "endyear": 2068,
+                                   "dt": 1,
+                                   "benchmarks": 100,
+                                   "filename": "<enter a naming convention for outputs>",
+                                   "usescenarioname": 0}
 
         self.__modulesbools = {"SPATIAL": 1, "CLIMATE": 1, "URBDEV": 0, "URBPLAN": 0,
                           "SOCIO": 0, "MAP": 0, "REG": 0, "INFRA": 0, "PERF": 0,
@@ -74,14 +74,54 @@ class UrbanBeatsScenario(object):
         self.__time_series_data = []   # a list of time series data to be used in the scenario or stored.
         self.__qual_data = []   # a list of qualitative data to be used in the scenario
 
-        self.__modules = { "SPATIAL" : [], "CLIMATE" : [], "URBDEV": [], "URBPLAN": [],
+        self.__modules = {"SPATIAL" : [], "CLIMATE" : [], "URBDEV": [], "URBPLAN": [],
                            "SOCIO" : [], "MAP": [], "REG": [], "INFRA": [], "PERF": [],
-                           "IMPACT": [], "DECISION": [] }
+                           "IMPACT": [], "DECISION": []}
 
     def setup_scenario(self, setupdata):
         """Initializes the scenario with the setup data provided by the user."""
 
         pass
+
+    def add_data_reference(self, dataref):
+        """Adds the data reference to the scenario's data store depending on its class."""
+        if dataref.get_metadata("class") == "spatial":
+            self.__spatial_data.append(dataref)
+        elif dataref.get_metadata("class") == "temporal":
+            self.__time_series_data.append(dataref)
+        else:
+            self.__qual_data.append(dataref)
+
+    def remove_data_reference(self, dataID):
+        """Removes the dataref object from the corresponding list. Scans the list for the
+        corresponding data reference until it finds it and then pops it from the list.
+
+        :param dataID: the data reference unique identifier.
+        """
+        for i in range(len(self.__spatial_data)):
+            if self.__spatial_data[i].get_data_id() == dataID:
+                self.__spatial_data.pop(i)
+                return
+        for i in range(len(self.__time_series_data)):
+            if self.__time_series_data[i].get_data_id() == dataID:
+                self.__time_series_data.pop(i)
+                return
+        for i in range(len(self.__qual_data)):
+            if self.__qual_data[i].get_data_id() == dataID:
+                self.__qual_data.pop(i)
+                return
+
+    def create_dataset_file_list(self):
+        datalist = []   # [dataID, filename, parent, sub]
+        for dset in [self.__spatial_data, self.__time_series_data, self.__qual_data]:
+            for dref in dset:
+                dataid = dref.get_data_id()
+                filename = dref.get_metadata("filename")
+                filepath = dref.get_data_file_path()
+                category = dref.get_metadata("parent")
+                sub = dref.get_metadata("sub")
+                datalist.append([dataid, filename, filepath, category, sub])
+        return datalist
 
     def check_is_module_active(self, modulename):
         """Checks if a particular module is currently active in the scenario. Returns false if
@@ -127,7 +167,7 @@ class UrbanBeatsScenario(object):
         :param dref: the UrbanBeatsDataReference() object.
         :return: False if the data already exists, i.e. the method does nothing. True otherwise
         """
-        if self.has_dataref(dref.get_dataID()):
+        if self.has_dataref(dref.get_data_id()):
             return False
         else:
             if dataclass == "spatial":
@@ -147,7 +187,7 @@ class UrbanBeatsScenario(object):
         """
         for dataset in [self.__spatial_data, self.__time_series_data, self.__qual_data]:
             for i in range(len(dataset)):
-                if datanumID == dataset[i].get_dataID():
+                if datanumID == dataset[i].get_data_id():
                     return True
         return False    # Else, return false if all tests fail
 
