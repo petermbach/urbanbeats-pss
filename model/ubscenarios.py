@@ -56,13 +56,13 @@ class UrbanBeatsScenario(object):
         self.projectlog = projectlog
         self.projectpath = simulation.get_project_path()
 
-        self.__scenariometadata = { "name": "<enter scenario name>",
+        self.__scenariometadata = { "name": "My UrbanBEATS Scenario",
                                     "type": "STATIC",
-                                    "narrative": "<enter scenario description>",
-                                    "startyear": "2018",
-                                    "endyear": "2068",
+                                    "narrative": "<A description of my scenario>",
+                                    "startyear": 2018,
+                                    "endyear": 2068,
                                     "dt": 1,
-                                    "benchmarks": 1,
+                                    "benchmarks": 100,
                                     "filename": "<enter a naming convention for outputs>",
                                     "usescenarioname": 0 }
 
@@ -77,6 +77,11 @@ class UrbanBeatsScenario(object):
         self.__modules = { "SPATIAL" : [], "CLIMATE" : [], "URBDEV": [], "URBPLAN": [],
                            "SOCIO" : [], "MAP": [], "REG": [], "INFRA": [], "PERF": [],
                            "IMPACT": [], "DECISION": [] }
+
+    def setup_scenario(self, setupdata):
+        """Initializes the scenario with the setup data provided by the user."""
+
+        pass
 
     def check_is_module_active(self, modulename):
         """Checks if a particular module is currently active in the scenario. Returns false if
@@ -113,11 +118,6 @@ class UrbanBeatsScenario(object):
             return self.__scenariometadata[parname]
         except KeyError:
             return None
-
-    def setup_scenario(self, setupdata):
-        """Initializes the scenario with the setup data provided by the user."""
-
-        pass
 
     def add_data_to_scenario(self, dataclass, dref):
         """Adds a data set from the data library of type UrbanBeatsDataReference() to the current

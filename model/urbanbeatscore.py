@@ -101,7 +101,8 @@ class UrbanBeatsSim(threading.Thread):
 
         self.__datalibrary = None   # initialize the data library
         self.__projectlog = None    # initialize the project log
-        self.__scenarios = []       # initialize the scenarios
+        self.__scenarios = {}       # initialize the scenarios
+        self.__activescenario = None
 
     # INITIALIZATION METHODS
     def initialize_simulation(self, condition):
@@ -127,7 +128,10 @@ class UrbanBeatsSim(threading.Thread):
             pass    # [TO DO]
 
     def setup_project_folder_structure(self):
-        """Sets up the base folder structure of the project based on the"""
+        """Sets up the base folder structure of the project based on the specified path. The folder
+        structure contains several fundamental fodlers including 'datalib' and 'output' and one
+        folder for each scenario in the simulation. It also will contain several .xml files, which
+        are written in separate methods."""
         projectpath = self.get_project_parameter("projectpath")
         projectname = self.get_project_parameter("name")
         namecounter = 0
@@ -143,6 +147,8 @@ class UrbanBeatsSim(threading.Thread):
         self.__projectpath = projectpath+"/"+projectnewname
 
     def write_project_info_file(self):
+        """Writes the info.xml file, which contains the project's metadata to the project folder
+        for faster loading and setting up of the interface on the next simulation."""
         # write project info XML
         projectpath = self.get_project_parameter("projectpath")
         projectname = self.get_project_parameter("name")
@@ -159,18 +165,55 @@ class UrbanBeatsSim(threading.Thread):
     # PROJECT PARAMETER SETTINGS
 
     # SCENARIO MANAGEMENT
-    def add_new_scenario(self, params):
+    def create_new_scenario(self):
+        """Creates a new scenario object and sets it as the active scenario."""
+        newscenario = ubscenarios.UrbanBeatsScenario(self, self.__datalibrary, self.__projectlog)
+        self.__activescenario = newscenario     # Set the active scenario's name
+
+    def add_new_scenario(self, scenario_object):
         """Adds a new scenario to the simulation by creating a UrbanBeatsScenario() instance and initializing
         it."""
-        pass    #[TO DO]
+        if scenario_object.get_metadata("name") not in self.__scenarios.keys():
+            self.__scenarios[scenario_object.get_metadata("name")] = scenario_object    # [TO DO]
+            return True
+        else:
+            return False    # Cannot have two scenarios of the same name!
 
-    def edit_scenario(self, name, params):
-        """Passes modified parameters 'params' to the scenario with name 'name' for modification."""
-        pass    #[TO DO]
+    def set_active_scenario(self, scenario_name):
+        """Sets the current active scenario to the scenario with the name "name"."""
+        try:
+            self.__activescenario = self.__scenarios[scenario_name]
+        except KeyError:
+            self.__activescenario = None
 
-    def delete_scenario(self, scenid):
-        """Removes the scenario with the ID scenID from the simulation core."""
-        pass    #[TO DO]
+    def get_active_scenario(self):
+        """Returns the active scenario in the core simulation."""
+        return self.__activescenario
+
+    def get_scenario_by_name(self, scenario_name):
+        """Returns the scenario with the specified name."""
+        try:
+            return self.__scenarios[scenario_name]
+        except KeyError:
+            return None
+
+    def check_for_existing_scenario_by_name(self, scenario_name):
+        """Returns True if the scenario exists, false if the scenario doesn't already exist by name
+
+        :return True: scenario exists in simulation, False: scenario does not exist."""
+        if scenario_name in self.__scenarios.keys():
+            return True
+        else:
+            return False
+
+    def delete_scenario(self, scenario_name):
+        """Removes the scenario with the given scenario name from the simulation core."""
+        if self.__activescenario.get_metadata("name") == scenario_name:
+            self.__activescenario = None            # Set the active scenario to None
+        try:
+            self.__scenarios.pop(scenario_name)     # Pop the scenario with the key 'scenario_name'
+        except KeyError:
+            pass
 
     # GETTERS AND SETTERS
     def get_project_info(self):
@@ -254,6 +297,11 @@ class UrbanBeatsSim(threading.Thread):
     def get_project_log(self):
         """Returns the active project log of type UrbanBeatsLog()"""
         return self.__projectlog
+
+    def run(self):
+        """Runs the UrbanBEATS Simulation based on the active scenario, data library, project
+        info and other information."""
+        pass
 
 
 class UrbanBeatsLog(object):

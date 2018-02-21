@@ -1031,9 +1031,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="done_button">
+       <widget class="QPushButton" name="cancel_button">
         <property name="text">
-         <string>Done</string>
+         <string>Cancel</string>
         </property>
        </widget>
       </item>
@@ -1055,11 +1055,28 @@
   <tabstop>naming_check</tabstop>
   <tabstop>create_button</tabstop>
   <tabstop>clear_button</tabstop>
-  <tabstop>done_button</tabstop>
+  <tabstop>cancel_button</tabstop>
  </tabstops>
  <resources>
   <include location="../graphics/ubeats.qrc"/>
   <include location="graphics/ubeats.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>cancel_button</sender>
+   <signal>clicked()</signal>
+   <receiver>NewScenarioDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>462</x>
+     <y>571</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>258</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

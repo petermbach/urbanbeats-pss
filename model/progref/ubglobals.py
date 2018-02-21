@@ -24,6 +24,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2012. Peter M. Bach"
 
+# --- GENERAL ---
+NOCHARS = ["<", ">", ":", '"', "/", "\\", "|", "?", "*"]
+
 # --- LANGUAGE ---
 LANGUAGECOMBO = ["DE", "EN", "ES", "FR", "PO", "CN", "JP"]
 
@@ -94,3 +97,4 @@ ext: 'png'
 
 # --- MODEL SETTING ---
 DECISIONS = ["best", "random", "none"]
+MODULENAMES = ["SPATIAL", "CLIMATE", "URBDEV", "URBPLAN", "SOCIO", "MAP", "REG", "INFRA", "PERF", "IMPACT", "DECISION"]

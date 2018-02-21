@@ -225,12 +225,41 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.maingui = main
         self.simulation = simulation
         self.datalibrary = datalibrary
+        self.scenario = simulation.get_active_scenario()
 
-        self.ui.static_radio.setChecked(1)
+        self.ui.name_box.setText(self.scenario.get_metadata("name"))
+
+        if self.scenario.get_metadata("type") == "STATIC":
+            self.ui.static_radio.setChecked(1)
+        elif self.scenario.get_metadata("type") == "BENCHMARK":
+            self.ui.benchmark_radio.setChecked(1)
+        else:
+            self.ui.dynamic_radio.setChecked(1)
+
+        self.ui.narrative_box.setPlainText(self.scenario.get_metadata("narrative"))
+
+        self.ui.startyear_spin.setValue(int(self.scenario.get_metadata("startyear")))
+        self.ui.endyear_spin.setValue(int(self.scenario.get_metadata("endyear")))
+        self.ui.timestep_spin.setValue(int(self.scenario.get_metadata("dt")))
+        self.ui.benchmark_spin.setValue(int(self.scenario.get_metadata("benchmarks")))
+
+        self.ui.naming_line.setText(self.scenario.get_metadata("filename"))
+        self.ui.naming_check.setChecked(self.scenario.get_metadata("usescenarioname"))
+
+        # MODULE CHECKBOXES
+        self.ui.citydevelopment.setChecked(self.scenario.check_is_module_active("URBDEV"))
+        self.ui.urbanplanning.setChecked(self.scenario.check_is_module_active("URBPLAN"))
+        self.ui.socioeconomic.setChecked(self.scenario.check_is_module_active("SOCIO"))
+        self.ui.spatialmapping.setChecked(self.scenario.check_is_module_active("MAP"))
+        self.ui.regulation.setChecked(self.scenario.check_is_module_active("REG"))
+        self.ui.infrastructure.setChecked(self.scenario.check_is_module_active("INFRA"))
+        self.ui.performance.setChecked(self.scenario.check_is_module_active("PERF"))
+        self.ui.impact.setChecked(self.scenario.check_is_module_active("IMPACT"))
+        self.ui.decisionanalysis.setChecked(self.scenario.check_is_module_active("DECISION"))
+
         self.enable_disable_module_checkboxes()
         self.enable_disable_settings_tab()
-        if viewmode == 1:
-            self.enable_disable_guis_for_viewonly()
+        self.enable_disable_naming_line()
 
         self.update_dialog_data_library()
 
@@ -250,12 +279,14 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.impact.clicked.connect(self.enable_disable_module_checkboxes)
 
         self.ui.naming_check.clicked.connect(self.enable_disable_naming_line)
-        self.ui.done_button.clicked.connect(self.close)
         self.ui.create_button.clicked.connect(self.create_scenario)
         self.ui.clear_button.clicked.connect(self.reset_interface)
 
         self.ui.add_to_button.clicked.connect(self.add_datalibrary_to_scenariodata)
         self.ui.remove_from_button.clicked.connect(self.remove_scenariodata_entry)
+
+        if viewmode == 1:
+            self.enable_disable_guis_for_viewonly()
 
     def add_datalibrary_to_scenariodata(self):
         """Description"""
@@ -266,6 +297,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         pass
 
     def reset_scenario_tree_widgets(self):
+        """Resets the scenario tree widgets back to original before populating it with data."""
         self.ui.scenariodata_tree.clear()
         self.ui.datalibrary_tree.clear()
         for datacat in ubglobals.DATACATEGORIES:
@@ -334,7 +366,6 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.datalibrary_tree.expandAll()
         self.ui.scenariodata_tree.expandAll()
 
-
     def enable_disable_guis_for_viewonly(self):
         """Disables all items to prevent user interference once the scenario has been creatd. The edit scenario
         option is only meant for changes in file naming convention, narrative, data and name changes.
@@ -366,9 +397,6 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
             self.ui.benchmark_spin.setEnabled(0)
             self.ui.timestep_spin.setEnabled(0)
             self.ui.endyear_spin.setEnabled(0)
-
-    def create_scenario(self):
-        pass
 
     def enable_disable_module_checkboxes(self, **kwargs):
         """Enables and disables the module checkboxes based on various conditionals. This is a clusterfuck of
@@ -425,7 +453,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
 
     def enable_disable_naming_line(self):
         """Enables or disables the naming convention lineEdit if the checkbox is unchecked/checked."""
-        self.ui.naming_line.setEnabled(self.ui.naming_check.isChecked())
+        self.ui.naming_line.setEnabled(not self.ui.naming_check.isChecked())
 
     def uncheck_all_module_checkboxes(self):
         """Unchecks all module checkboxes as part of the resetting of the user interface. Then calls enable
@@ -466,6 +494,77 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
     def fill_data_library_from_project(self):
         """Fills out the data library treewidget with the data from the project."""
         pass
+
+    def create_scenario(self):
+        """Saves the newly created data to the scenario object and closes the window. Accept() signal
+        calls core functions that then create the scenario."""
+        self.scenario.set_metadata("name", str(self.ui.name_box.text()))
+        self.scenario.set_metadata("narrative", str(self.ui.narrative_box.toPlainText()))
+
+        if self.ui.static_radio.isChecked():
+            self.scenario.set_metadata("type", "STATIC")
+        elif self.ui.benchmark_radio.isChecked():
+            self.scenario.set_metadata("type", "BENCHMARK")
+        else:
+            self.scenario.set_metadata("type", "DYNAMIC")
+
+        self.scenario.set_metadata("startyear", int(self.ui.startyear_spin.value()))
+        self.scenario.set_metadata("endyear", int(self.ui.endyear_spin.value()))
+        self.scenario.set_metadata("dt", int(self.ui.timestep_spin.value()))
+        self.scenario.set_metadata("benchmarks", int(self.ui.benchmark_spin.value()))
+
+        # Activate the modules
+        if self.ui.citydevelopment.isChecked():
+            self.scenario.set_module_active("URBDEV")
+        if self.ui.urbanplanning.isChecked():
+            self.scenario.set_module_active("URBPLAN")
+        if self.ui.socioeconomic.isChecked():
+            self.scenario.set_module_active("SOCIO")
+        if self.ui.spatialmapping.isChecked():
+            self.scenario.set_module_active("MAP")
+        if self.ui.regulation.isChecked():
+            self.scenario.set_module_active("REG")
+        if self.ui.infrastructure.isChecked():
+            self.scenario.set_module_active("INFRA")
+        if self.ui.performance.isChecked():
+            self.scenario.set_module_active("PERF")
+        if self.ui.impact.isChecked():
+            self.scenario.set_module_active("IMPACT")
+        if self.ui.decisionanalysis.isChecked():
+            self.scenario.set_module_active("DECISION")
+
+        # Data Sets
+
+        # Outputs
+        self.scenario.set_metadata("usescenarioname", self.ui.naming_check.isChecked())
+        if self.ui.naming_check.isChecked():
+            self.scenario.set_metadata("filename", self.ui.name_box.text().replace(" ", "_"))
+        else:
+            self.scenario.set_metadata("filename", self.ui.naming_line.text().replace(" ", "_"))
+
+        self.accept()
+
+    def done(self, r):
+        """Checks if the scenario name already exists and if it does, tells the user to choose a different
+        name."""
+        scenario_name = self.ui.name_box.text()
+        nochars = False
+        for char in ubglobals.NOCHARS:
+            if char in scenario_name:
+                nochars = True
+        if self.Accepted == r:
+            if self.simulation.check_for_existing_scenario_by_name(scenario_name):
+                prompt_msg = "Error, scenario name already exists, please choose a different name!"
+                QtWidgets.QMessageBox.warning(self, 'Duplicate Scenario', prompt_msg, QtWidgets.QMessageBox.Ok)
+            elif nochars:
+                prompt_msg = "Please enter a valid name without special characters!"
+                QtWidgets.QMessageBox.warning(self, 'Invalid Name', prompt_msg, QtWidgets.QMessageBox.Ok)
+            else:
+                # OK all good.
+                QtWidgets.QDialog.done(self, r)  # Call the parent's method instead of the override.
+        else:
+            # If cancel or close is called, ignore
+            QtWidgets.QDialog.done(self, r)  # Call the parent's method instead of the override.
 
 # --- MAP EXPORT DIALOG ---
 class MapExportDialogLaunch(QtWidgets.QDialog):

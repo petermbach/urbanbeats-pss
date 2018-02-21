@@ -419,13 +419,14 @@ class Ui_NewScenarioDialog(object):
         self.clear_button.setMinimumSize(QtCore.QSize(75, 0))
         self.clear_button.setObjectName("clear_button")
         self.horizontalLayout_2.addWidget(self.clear_button)
-        self.done_button = QtWidgets.QPushButton(self.footer)
-        self.done_button.setObjectName("done_button")
-        self.horizontalLayout_2.addWidget(self.done_button)
+        self.cancel_button = QtWidgets.QPushButton(self.footer)
+        self.cancel_button.setObjectName("cancel_button")
+        self.horizontalLayout_2.addWidget(self.cancel_button)
         self.verticalLayout.addWidget(self.footer)
 
         self.retranslateUi(NewScenarioDialog)
         self.setup_widget.setCurrentIndex(0)
+        self.cancel_button.clicked.connect(NewScenarioDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(NewScenarioDialog)
         NewScenarioDialog.setTabOrder(self.name_box, self.static_radio)
         NewScenarioDialog.setTabOrder(self.static_radio, self.benchmark_radio)
@@ -438,7 +439,7 @@ class Ui_NewScenarioDialog(object):
         NewScenarioDialog.setTabOrder(self.naming_line, self.naming_check)
         NewScenarioDialog.setTabOrder(self.naming_check, self.create_button)
         NewScenarioDialog.setTabOrder(self.create_button, self.clear_button)
-        NewScenarioDialog.setTabOrder(self.clear_button, self.done_button)
+        NewScenarioDialog.setTabOrder(self.clear_button, self.cancel_button)
 
     def retranslateUi(self, NewScenarioDialog):
         _translate = QtCore.QCoreApplication.translate
@@ -539,6 +540,6 @@ class Ui_NewScenarioDialog(object):
         self.setup_widget.setTabText(self.setup_widget.indexOf(self.output_tab), _translate("NewScenarioDialog", "Output"))
         self.create_button.setText(_translate("NewScenarioDialog", "Create"))
         self.clear_button.setText(_translate("NewScenarioDialog", "Clear"))
-        self.done_button.setText(_translate("NewScenarioDialog", "Done"))
+        self.cancel_button.setText(_translate("NewScenarioDialog", "Cancel"))
 
 import ubeats_rc

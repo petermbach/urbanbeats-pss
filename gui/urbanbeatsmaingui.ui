@@ -887,6 +887,16 @@ p, li { white-space: pre-wrap; }
             <string>Simulation Year(s): &lt;year&gt;</string>
            </property>
           </item>
+          <item>
+           <property name="text">
+            <string>Simulation Time Step: N/A</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Benchmark Iterations: N/A</string>
+           </property>
+          </item>
          </item>
          <item>
           <property name="text">
