@@ -286,7 +286,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # LIST OF DATA SETS
         datalist = active_scenario.create_dataset_file_list()
-        print datalist
         self.ui.DataSummary.setRowCount(0)
         self.ui.ScenarioDock_View.topLevelItem(2).takeChildren()
         for entry in datalist:
@@ -742,11 +741,12 @@ class MainWindow(QtWidgets.QMainWindow):
         """Removes the current selected data set from the data library and the data library view."""
         selection = self.ui.DataDock_View.selectedItems()[0]
         if selection.childCount() == 0 and selection.text(0) != "<no data>":
-            datafilename = selection.text(0)
-            print "Removing", datafilename
-
             dataID = selection.toolTip(0).split(" - ")[0]
-            print dataID
+            dataref = self.get_active_data_library().get_data_with_id(dataID)
+            scenario_list = dataref.get_scenario_list()
+            for scen in scenario_list:
+                scenario = self.get_active_simulation_object().get_scenario_by_name(scen)
+                scenario.remove_data_reference(dataID)
             self.get_active_data_library().delete_data(dataID)
 
             parent = selection.parent()
@@ -755,6 +755,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 twi = QtWidgets.QTreeWidgetItem()
                 twi.setText(0, "<no data>")
                 parent.addChild(twi)
+
+            self.update_scenario_gui()
         else:
             return
 

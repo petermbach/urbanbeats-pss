@@ -241,6 +241,10 @@ class UrbanBeatsDataReference(object):
         else:
             pass
 
+    def get_scenario_list(self):
+        """Returns the list of scenarios that the data file is intended to be used in."""
+        return self.__scenarionames
+
     def remove_from_scenario(self, scenarioname):
         """Removes the scenarioname from the list of scenarios the data is used in."""
         if scenarioname in self.__scenarionames:
@@ -249,9 +253,9 @@ class UrbanBeatsDataReference(object):
             pass
 
     def check_for_data_file(self):
-        """Performs a scan of the system to determine if the data file is still prsent. If the file is missing,
+        """Performs a scan of the system to determine if the data file is still present. If the file is missing,
         function returns false."""
-        pass
+        pass # [TO DO]
 
     def get_data_file_path(self):
         """Returns the full filepath to the data set. If keep copy is active (i.e. keep a copy

@@ -295,7 +295,6 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
             # Then we have a data set
             dataID, filepath = selection.toolTip(0).split(" - ")
             filename = selection.text(0)
-            print dataID, filepath, filename, "add_datalibrary_to..."
             dataref = self.datalibrary.get_data_with_id(dataID)
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, filename)
@@ -306,18 +305,15 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
                 self.ui.scenariodata_tree.topLevelItem(1).addChild(twi)
             else:
                 self.ui.scenariodata_tree.topLevelItem(2).addChild(twi)
-            self.scenario.add_data_reference(dataref)
 
     def remove_scenariodata_entry(self):
         """Description"""
         selection = self.ui.scenariodata_tree.currentItem()
         if selection.text(0) not in ["Spatial Data", "Temporal Data", "Qualitative Data"]:
-            filename = selection.text(0)
-            dataID, filepath = selection.toolTip(0).split(" - ")
-            print dataID, filename, filepath, "remove_scenario_entry"
+            # filename = selection.text(0)
+            # dataID, filepath = selection.toolTip(0).split(" - ")
             parent = selection.parent()
             parent.removeChild(selection)
-            self.scenario.remove_data_reference(dataID)
 
     def reset_scenario_tree_widgets(self):
         """Resets the scenario tree widgets back to original before populating it with data."""
@@ -557,6 +553,13 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
             self.scenario.set_module_active("DECISION")
 
         # Data Sets
+
+        # self.scenario.remove_data_reference(dataID)
+        # self.datalibrary.get_data_with_id(dataID).remove_from_scenario(self.scenario.get_metadata("name"))
+        #
+        # self.scenario.add_data_reference(dataref)
+        # dataref.assign_scenario(self.scenario.get_metadata("name"))
+        #
 
         # Outputs
         self.scenario.set_metadata("usescenarioname", self.ui.naming_check.isChecked())
