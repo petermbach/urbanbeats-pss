@@ -226,6 +226,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.simulation = simulation
         self.datalibrary = datalibrary
         self.scenario = simulation.get_active_scenario()
+        self.viewmode = viewmode
 
         self.ui.name_box.setText(self.scenario.get_metadata("name"))
 
@@ -286,7 +287,23 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.remove_from_button.clicked.connect(self.remove_scenariodata_entry)
 
         if viewmode == 1:
-            self.enable_disable_guis_for_viewonly()
+            self.enable_disable_guis_for_editonly()
+
+    def enable_disable_guis_for_editonly(self):
+        """Disables certain features of the interface for editing mode."""
+        self.ui.name_box.setEnabled(0)
+        self.ui.benchmark_radio.setEnabled(0)
+        self.ui.static_radio.setEnabled(0)
+        self.ui.dynamic_radio.setEnabled(0)
+        self.ui.benchmark_spin.setEnabled(0)
+        self.ui.startyear_spin.setEnabled(0)
+        self.ui.endyear_spin.setEnabled(0)
+        self.ui.timestep_spin.setEnabled(0)
+        self.ui.scrollArea.setEnabled(0)
+        self.ui.naming_line.setEnabled(0)
+        self.ui.naming_check.setEnabled(0)
+        self.ui.create_button.setText("Update...")
+        self.ui.clear_button.setEnabled(0)
 
     def add_datalibrary_to_scenariodata(self):
         """Adds an entry in the data library to the scenario data tree widget."""
@@ -323,11 +340,9 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
             dtwi = QtWidgets.QTreeWidgetItem()
             dtwi.setText(0, datacat)
             self.ui.datalibrary_tree.addTopLevelItem(dtwi)
-
             stwi = QtWidgets.QTreeWidgetItem()
             stwi.setText(0, datacat)
             self.ui.scenariodata_tree.addTopLevelItem(stwi)
-
         for spdata in ubglobals.SPATIALDATA:
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, spdata)
@@ -514,9 +529,18 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         """Fills out the data library treewidget with the data from the project."""
         pass
 
+    def update_scenario_data(self):
+        """Called when the 'create' button is pressed during 'edit mode'. Note that the
+        create button will display the words 'Update...' during the edit scenario mode.
+        Things that can be updated include the narrative and the data used."""
+        self.scenario.set_metadata("narrative", str(self.ui.narrative_box.toPlainText()))
+
     def create_scenario(self):
         """Saves the newly created data to the scenario object and closes the window. Accept() signal
         calls core functions that then create the scenario."""
+        if self.viewmode == 1:
+            self.update_scenario_data()
+
         self.scenario.set_metadata("name", str(self.ui.name_box.text()))
         self.scenario.set_metadata("narrative", str(self.ui.narrative_box.toPlainText()))
 
@@ -573,6 +597,9 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
     def done(self, r):
         """Checks if the scenario name already exists and if it does, tells the user to choose a different
         name."""
+        if self.viewmode == 1:
+            QtWidgets.QDialog.done(self, r)  # Call the parent's method instead of the override.
+            return
         scenario_name = self.ui.name_box.text()
         nochars = False
         for char in ubglobals.NOCHARS:

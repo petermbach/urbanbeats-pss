@@ -80,7 +80,7 @@ class UrbanBeatsScenario(object):
 
     def setup_scenario(self, setupdata):
         """Initializes the scenario with the setup data provided by the user."""
-
+        print "setting up scenario"
         pass
 
     def add_data_reference(self, dataref):
@@ -112,6 +112,11 @@ class UrbanBeatsScenario(object):
                 return
 
     def create_dataset_file_list(self):
+        """Creates a table of the data contained in the scenario with the attributes:
+        dataID, filename, parent classification, sub-classification. Returns a list
+        object.
+
+        :return: list type containing metadata of the loaded data files."""
         datalist = []   # [dataID, filename, parent, sub]
         for dset in [self.__spatial_data, self.__time_series_data, self.__qual_data]:
             for dref in dset:

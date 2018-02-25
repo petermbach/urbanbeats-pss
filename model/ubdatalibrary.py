@@ -179,6 +179,12 @@ class UrbanBeatsDataLibrary(object):
                     return dataref
         return None
 
+    def remove_all_reference_to_scenario(self, scenario_name):
+        """Removes all references to a given scenario name."""
+        [dref.remove_from_scenario(scenario_name) for dref in self.__spatial_data]
+        [dref.remove_from_scenario(scenario_name) for dref in self.__time_series_data]
+        [dref.remove_from_scenario(scenario_name) for dref in self.__qual_data]
+
     def reset_library(self):
         """Resets the entire data library, i.e. deletes all files from the project /data folder
         and sets all data arrays to empty.

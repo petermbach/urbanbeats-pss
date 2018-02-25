@@ -214,6 +214,12 @@ class UrbanBeatsSim(threading.Thread):
             self.__scenarios.pop(scenario_name)     # Pop the scenario with the key 'scenario_name'
         except KeyError:
             pass
+        self.__datalibrary.remove_all_reference_to_scenario("name")  # Remove all references to scenario
+        self.delete_scenario_files(scenario_name)
+
+    def delete_scenario_files(self, scenario_name):
+        """Removes the file within the project folder containing the scenario."""
+        pass    # [TO DO]
 
     # GETTERS AND SETTERS
     def get_project_info(self):

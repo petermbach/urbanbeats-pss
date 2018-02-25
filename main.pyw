@@ -210,6 +210,8 @@ class MainWindow(QtWidgets.QMainWindow):
         elif viewmode == 1:     # Edit Scenario
             newscenariodialog = ubdialogs.CreateScenarioLaunch(self, self.get_active_simulation_object(),
                                                                self.get_active_data_library(), viewmode)
+            newscenariodialog.accepted.connect(self.update_scenario_gui)
+            newscenariodialog.exec_()
 
     def setup_scenario(self):
         """Called when the scenario setup dialog box has successfully closed. i.e. signal accepted()"""
@@ -223,10 +225,14 @@ class MainWindow(QtWidgets.QMainWindow):
         simulation as well. The scenario interface is then reset to the default <select scenario> setting."""
         # Algorithm: (1) Get current scenario data, (2) Reset scenario narrative interface by clearing it
         # (3) Reset module buttons and control panel buttons, (4) Change current index of scenario combo
-        # (5) Update the scenario description information, (5) Remove the scenario from the combo box,
-        # (6) Remove the scenario from the simulation, (7) Delete the scenario folder from the project
-        active_scenario = self.get_active_simulation_object().get_active_scenario()
-        pass        #[TO DO]
+        # (5) Update the scenario description information, (6) Remove the scenario from the combo box,
+        # (7) Remove the scenario from the simulation, (8) Delete the scenario folder from the project
+        if self.ui.ScenarioDock_Combo.currentIndex() == 0:
+            return  # Do nothing if no scenario selected.
+        active_scenario = self.get_active_simulation_object().get_active_scenario()    # (1)
+        self.ui.ScenarioDock_Combo.removeItem(self.ui.ScenarioDock_Combo.currentIndex())
+        self.ui.ScenarioDock_Combo.setCurrentIndex(0)   # (2), (3), (4), (5), (6)
+        self.get_active_simulation_object().delete_scenario(active_scenario.get_metadata("name"))   # (7), (8)
 
     def scenario_change_ui_setup(self):
         """Modifies the current Main Window Interface to suit the selected scenario. This includes enabling and
