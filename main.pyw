@@ -55,6 +55,8 @@ from gui import urbanbeatsdialogs as ubdialogs
 import gui.ubgui_spatialhandling as ubspatial
 import gui.ubgui_reporting as ubreport
 
+from gui.md_delinblocksguic import DelinBlocksGuiLaunch
+
 
 # --- MAIN GUI FUNCTION ---
 class MainWindow(QtWidgets.QMainWindow):
@@ -918,11 +920,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # MODULE BAR - LAUNCHING ALL MODULES
     def launch_spatialsetup_modulegui(self):
-        """
+        """Launches the spatial setup module's user interface and fills in relevant parameters.
 
-        :return:
+        :return: None
         """
-        pass
+        delinblocksgui = DelinBlocksGuiLaunch(self, self.get_active_simulation_object(),
+                                              self.get_active_data_library(), self.get_active_project_log())
+
+        delinblocksgui.exec_()
 
     def launch_climatesetup_modulegui(self):
         """
