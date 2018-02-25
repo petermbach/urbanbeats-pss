@@ -535,10 +535,6 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.naming_line.setText("<enter a naming convention for outputs>")
         self.ui.naming_check.setChecked(0)
 
-    def fill_data_library_from_project(self):
-        """Fills out the data library treewidget with the data from the project."""
-        pass
-
     def update_scenario_edit(self):
         """Called when the 'create' button is pressed during 'edit mode'. Note that the
         create button will display the words 'Update...' during the edit scenario mode.

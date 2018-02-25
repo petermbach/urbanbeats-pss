@@ -162,6 +162,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.editScenario.clicked.connect(lambda: self.show_scenario_dialog(1))
         self.ui.deleteScenario.clicked.connect(self.delete_current_scenario)
         self.ui.ScenarioDock_Combo.currentIndexChanged.connect(self.update_scenario_gui)
+        self.ui.ScenarioDock_View.itemClicked.connect(self.change_narrative_gui_tab)
 
         # Data View Interface
         # self.ui.DataView_extent.clicked.connect()
@@ -215,6 +216,23 @@ class MainWindow(QtWidgets.QMainWindow):
             newscenariodialog.accepted.connect(self.update_scenario_gui)
             newscenariodialog.exec_()
 
+    def change_narrative_gui_tab(self):
+        """Changes the current tab in the Scenario Narrative based on what is clicked in the Scenario Description
+        tree view widget. Only updates if a top level item has been clicked."""
+        print self.ui.ScenarioDock_View.selectedItems()[0].text(0)
+        if self.ui.ScenarioDock_View.selectedItems()[0].text(0) == "Narrative":
+            self.ui.ScenarioView_Widget.setCurrentIndex(1)
+        elif self.ui.ScenarioDock_View.selectedItems()[0].text(0) == "Simulation Details":
+            self.ui.ScenarioView_Widget.setCurrentIndex(2)
+        elif self.ui.ScenarioDock_View.selectedItems()[0].text(0) == "Using Spatial Data Sets":
+            self.ui.ScenarioView_Widget.setCurrentIndex(3)
+        elif self.ui.ScenarioDock_View.selectedItems()[0].text(0) == "Modules":
+            self.ui.ScenarioView_Widget.setCurrentIndex(2)
+        elif self.ui.ScenarioDock_View.selectedItems()[0].text(0) == "Export Details":
+            self.ui.ScenarioView_Widget.setCurrentIndex(2)
+        else:
+            pass
+
     def setup_scenario(self):
         """Called when the scenario setup dialog box has successfully closed. i.e. signal accepted()"""
         active_scenario = self.get_active_simulation_object().get_active_scenario()
@@ -232,9 +250,9 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.ui.ScenarioDock_Combo.currentIndex() == 0:
             return  # Do nothing if no scenario selected.
         active_scenario = self.get_active_simulation_object().get_active_scenario()    # (1)
-        self.ui.ScenarioDock_Combo.removeItem(self.ui.ScenarioDock_Combo.currentIndex())
-        self.ui.ScenarioDock_Combo.setCurrentIndex(0)   # (2), (3), (4), (5), (6)
         self.get_active_simulation_object().delete_scenario(active_scenario.get_metadata("name"))   # (7), (8)
+        self.ui.ScenarioDock_Combo.removeItem(self.ui.ScenarioDock_Combo.currentIndex())
+        self.ui.ScenarioDock_Combo.setCurrentIndex(0)  # (2), (3), (4), (5), (6)
 
     def scenario_change_ui_setup(self):
         """Modifies the current Main Window Interface to suit the selected scenario. This includes enabling and
@@ -462,7 +480,11 @@ class MainWindow(QtWidgets.QMainWindow):
     def reset_data_view_to_default(self):
         """Resets the leaflet map view to the default location and default style based on when the program was
         opened"""
-        coordinates = ubglobals.COORDINATES[self.get_option("city")]
+        if self.get_active_simulation_object() == None:
+            coordinates = ubglobals.COORDINATES[self.get_option("city")]
+        else:
+            coordinates = ubglobals.COORDINATES[self.__current_location]
+
         tileserver = ubglobals.TILESERVERS[self.get_option("mapstyle")]
         leaflet_html = ubspatial.generate_initial_leaflet_map(coordinates, tileserver, UBEATSROOT)
         self.ui.DataView_web.setHtml(leaflet_html)
@@ -555,9 +577,11 @@ class MainWindow(QtWidgets.QMainWindow):
         :return: None
         """
         self.set_active_simulation_object(None)  # Remove any existing active simulation
+        self.reset_data_view_to_default()  # Restore the default Leaflet view
         newsimulation = ubcore.UrbanBeatsSim(UBEATSROOT, self.__global_options)  # instantiate new simulation objective
         self.set_active_simulation_object(newsimulation)
         self.reset_project_data_library_view()
+
         # GUI calls
         self.setWindowTitle("UrbanBEATS Planning Support Tool")
         self.__datalibraryexpanded = True
@@ -571,7 +595,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.setup_narrative_widget("clear")  # Clear the narrative widget's information
         self.enable_disable_main_interface("new")  # Enable and disable elements of the GUI for starting new project
-        self.reset_data_view_to_default()  # Restore the default Leaflet view
 
     def cancel_new_project_creation(self, viewmode):
         """Called when the rejected() signal is emitted from the new project dialog. It reverts the active
@@ -595,6 +618,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_current_project_name(activesimulation.get_project_parameter("name"))
         self.set_active_data_library(activesimulation.get_data_library())
         self.set_active_project_log(activesimulation.get_project_log())
+        self.__current_location = activesimulation.get_project_parameter("city")
 
         projboundarymap = activesimulation.get_project_parameter("boundaryshp")
         self.update_data_view(projboundarymap)
