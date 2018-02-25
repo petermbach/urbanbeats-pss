@@ -208,6 +208,8 @@ class MainWindow(QtWidgets.QMainWindow):
             newscenariodialog.accepted.connect(self.setup_scenario)
             newscenariodialog.exec_()
         elif viewmode == 1:     # Edit Scenario
+            if self.ui.ScenarioDock_Combo.currentIndex() == 0:
+                return
             newscenariodialog = ubdialogs.CreateScenarioLaunch(self, self.get_active_simulation_object(),
                                                                self.get_active_data_library(), viewmode)
             newscenariodialog.accepted.connect(self.update_scenario_gui)
@@ -253,10 +255,13 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.ui.ScenarioDock_Combo.count() == 0:
             return
         if self.ui.ScenarioDock_Combo.currentIndex() == 0:
+            self.get_active_simulation_object().set_active_scenario(None)
             self.scenario_view_reset()
             return
         active_scenario_name = self.ui.ScenarioDock_Combo.currentText()
-        active_scenario = self.get_active_simulation_object().get_scenario_by_name(active_scenario_name)
+        self.get_active_simulation_object().set_active_scenario(active_scenario_name)
+        active_scenario = self.get_active_simulation_object().get_active_scenario()
+
         # Tree Widget Info:
         twi = QtWidgets.QTreeWidgetItem()
         twi.setText(0, str(active_scenario.get_metadata("narrative")[:100]+"..."))
@@ -294,6 +299,7 @@ class MainWindow(QtWidgets.QMainWindow):
         datalist = active_scenario.create_dataset_file_list()
         self.ui.DataSummary.setRowCount(0)
         self.ui.ScenarioDock_View.topLevelItem(2).takeChildren()
+        self.ui.DataSummary.setRowCount(0)
         for entry in datalist:
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, entry[1])

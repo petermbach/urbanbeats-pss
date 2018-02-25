@@ -92,6 +92,19 @@ class UrbanBeatsScenario(object):
         else:
             self.__qual_data.append(dataref)
 
+    def get_data_reference(self, dataclass):
+        """Returns a list of data references for a specific class of data set.
+
+        :param dataclass: 'spatial', 'temporal' or 'qualitative' as input string.
+        :return: list type object containing UrbanBeatsDataReference() objects
+        """
+        if dataclass == "spatial":
+            return self.__spatial_data
+        elif dataclass == "temporal":
+            return self.__time_series_data
+        else:
+            return self.__qual_data
+
     def remove_data_reference(self, dataID):
         """Removes the dataref object from the corresponding list. Scans the list for the
         corresponding data reference until it finds it and then pops it from the list.
@@ -125,6 +138,8 @@ class UrbanBeatsScenario(object):
                 filepath = dref.get_data_file_path()
                 category = dref.get_metadata("parent")
                 sub = dref.get_metadata("sub")
+                if sub == "<undefined>":
+                    sub = "-"
                 datalist.append([dataid, filename, filepath, category, sub])
         return datalist
 

@@ -285,17 +285,17 @@ class UrbanBeatsDataReference(object):
         :param attribute: str Options are 'class', 'parent', 'sub', 'format', 'notes'
         :return: corresponding meta data, if attribute is incorrect, returns None
         """
-        if attribute == "class":
+        if attribute == "class":        # "spatial", "temporal", "qualitative"
             return self.__dataclass
-        elif attribute == "parent":
+        elif attribute == "parent":     # "landuse", "population", etc.
             return self.__datatype
-        elif attribute == "sub":
+        elif attribute == "sub":        # "density", "classification", etc.
             return self.__datasubtype
-        elif attribute == "format":
+        elif attribute == "format":     # ".shp", ".txt.", etc.
             return self.__dataformat
-        elif attribute == "notes":
+        elif attribute == "notes":      # detailed notes on the data set.
             return self.__notes
-        elif attribute == "filename":
+        elif attribute == "filename":   # filename + extension.
             return self.__datafilename
         else:
             return None

@@ -289,6 +289,16 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         if viewmode == 1:
             self.enable_disable_guis_for_editonly()
 
+            dataclass = ["spatial", "temporal", "qualitative"]
+            for i in range(len(dataclass)):
+                datarefs = self.scenario.get_data_reference(dataclass[i])
+                self.ui.scenariodata_tree.topLevelItem(i).takeChildren()
+                for dref in datarefs:
+                    twi = QtWidgets.QTreeWidgetItem()
+                    twi.setText(0, dref.get_metadata("filename"))
+                    twi.setToolTip(0, str(dref.get_data_id())+" - "+str(dref.get_data_file_path()))
+                    self.ui.scenariodata_tree.topLevelItem(i).addChild(twi)
+
     def enable_disable_guis_for_editonly(self):
         """Disables certain features of the interface for editing mode."""
         self.ui.name_box.setEnabled(0)
@@ -529,17 +539,85 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         """Fills out the data library treewidget with the data from the project."""
         pass
 
-    def update_scenario_data(self):
+    def update_scenario_edit(self):
         """Called when the 'create' button is pressed during 'edit mode'. Note that the
         create button will display the words 'Update...' during the edit scenario mode.
         Things that can be updated include the narrative and the data used."""
         self.scenario.set_metadata("narrative", str(self.ui.narrative_box.toPlainText()))
+        self.update_scenario_datasets()
+
+    def update_scenario_datasets(self):
+        """Updates the scenario's data sets with the newly added or removed data maps."""
+        olddatasets = self.scenario.get_data_reference("spatial")
+        newdatasets = []
+        for i in range(self.ui.scenariodata_tree.topLevelItem(0).childCount()):
+            dataID, filepath = self.ui.scenariodata_tree.topLevelItem(0).child(i).toolTip(0).split(" - ")
+            filename = self.ui.scenariodata_tree.topLevelItem(0).child(i).text(0)
+            dref = self.datalibrary.get_data_with_id(dataID)
+            if self.scenario.has_dataref(dataID):
+                pass  # if the scenario already has the data in it, ignore
+            else:
+                self.scenario.add_data_reference(dref)
+                dref.assign_scenario(self.scenario.get_metadata("name"))
+            newdatasets.append(dref)
+
+        print "Old Data Set Length", len(olddatasets)
+        print "New Data Set Length", len(newdatasets)
+        data_to_remove = []
+        for dref in olddatasets:
+            if dref not in newdatasets:
+                data_to_remove.append(dref)
+        for dref in data_to_remove:
+            self.scenario.remove_data_reference(dref.get_data_id())
+            dref.remove_from_scenario(self.scenario.get_metadata("name"))
+
+        # Temporal Data
+        olddatasets = self.scenario.get_data_reference("temporal")
+        newdatasets = []
+        for i in range(self.ui.scenariodata_tree.topLevelItem(1).childCount()):
+            dataID, filepath = self.ui.scenariodata_tree.topLevelItem(1).child(i).toolTip(0).split(" - ")
+            filename = self.ui.scenariodata_tree.topLevelItem(1).child(i).text(0)
+            dref = self.datalibrary.get_data_with_id(dataID)
+            if self.scenario.has_dataref(dataID):
+                pass  # if the scenario already has the data in it, ignore
+            else:
+                self.scenario.add_data_reference(dref)
+                dref.assign_scenario(self.scenario.get_metadata("name"))
+            newdatasets.append(dref)
+        data_to_remove = []
+        for dref in olddatasets:
+            if dref not in newdatasets:
+                data_to_remove.append(dref)
+        for dref in data_to_remove:
+            self.scenario.remove_data_reference(dref.get_data_id())
+            dref.remove_from_scenario(self.scenario.get_metadata("name"))
+
+        # Qualitative Data
+        olddatasets = self.scenario.get_data_reference("qualitative")
+        newdatasets = []
+        for i in range(self.ui.scenariodata_tree.topLevelItem(2).childCount()):
+            dataID, filepath = self.ui.scenariodata_tree.topLevelItem(2).child(i).toolTip(0).split(" - ")
+            filename = self.ui.scenariodata_tree.topLevelItem(2).child(i).text(0)
+            dref = self.datalibrary.get_data_with_id(dataID)
+            if self.scenario.has_dataref(dataID):
+                pass  # if the scenario already has the data in it, ignore
+            else:
+                self.scenario.add_data_reference(dref)
+                dref.assign_scenario(self.scenario.get_metadata("name"))
+            newdatasets.append(dref)
+        data_to_remove = []
+        for dref in olddatasets:
+            if dref not in newdatasets:
+                data_to_remove.append(dref)
+        for dref in data_to_remove:
+            self.scenario.remove_data_reference(dref.get_data_id())
+            dref.remove_from_scenario(self.scenario.get_metadata("name"))
 
     def create_scenario(self):
         """Saves the newly created data to the scenario object and closes the window. Accept() signal
         calls core functions that then create the scenario."""
         if self.viewmode == 1:
-            self.update_scenario_data()
+            self.update_scenario_edit()
 
         self.scenario.set_metadata("name", str(self.ui.name_box.text()))
         self.scenario.set_metadata("narrative", str(self.ui.narrative_box.toPlainText()))
@@ -576,14 +654,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         if self.ui.decisionanalysis.isChecked():
             self.scenario.set_module_active("DECISION")
 
-        # Data Sets
-
-        # self.scenario.remove_data_reference(dataID)
-        # self.datalibrary.get_data_with_id(dataID).remove_from_scenario(self.scenario.get_metadata("name"))
-        #
-        # self.scenario.add_data_reference(dataref)
-        # dataref.assign_scenario(self.scenario.get_metadata("name"))
-        #
+        self.update_scenario_datasets()
 
         # Outputs
         self.scenario.set_metadata("usescenarioname", self.ui.naming_check.isChecked())
