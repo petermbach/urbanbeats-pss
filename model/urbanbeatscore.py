@@ -5,7 +5,7 @@
 @section LICENSE
 
 Urban Biophysical Environments and Technologies Simulator (UrbanBEATS)
-Copyright (C) 2012  Peter M. Bach
+Copyright (C) 2018  Peter M. Bach
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 __author__ = "Peter M. Bach"
-__copyright__ = "Copyright 2012. Peter M. Bach"
+__copyright__ = "Copyright 2018. Peter M. Bach"
 
 # --- CODE STRUCTURE ---
 #       (1) ...
@@ -30,6 +30,7 @@ __copyright__ = "Copyright 2012. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 import threading
+import random
 import time
 import os
 import sys
@@ -67,6 +68,8 @@ class UrbanBeatsSim(threading.Thread):
                         ["maxiterations"] ...
         """
         threading.Thread.__init__(self)
+
+        random.seed()  # Seed the random numbers
 
         # Initialize variables
         self.__rootpath = rootpath          # the root path for UrbanBEATS' runtime
