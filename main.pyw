@@ -1160,8 +1160,8 @@ if __name__ == "__main__":
     # File Naming Convention: Needs to follow <lang>_<region>.ts convention
     #   <lang> = ISO 639-1 (see https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) and
     #   <region> = ISO3166-1 (see https://en.wikipedia.org/wiki/ISO_3166-1)
-    translator = QtCore.QTranslator()
-    #translator.load("ubjapa")
+    #translator = QtCore.QTranslator()
+    #translator.load("i18n\\ubjapa")
     #app.installTranslator(translator)
 
     # --- SPLASH SCREEN ---
