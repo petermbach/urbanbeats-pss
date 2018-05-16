@@ -303,7 +303,7 @@
  </tabstops>
  <resources>
   <include location="../graphics/ubeats.qrc"/>
-  <include location="graphics/ubeats.qrc"/>
+  <include location="../graphics/ubeats.qrc"/>
  </resources>
  <connections/>
 </ui>

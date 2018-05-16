@@ -39,7 +39,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="graphics/ubeats.qrc">:/icons/Info-icon.png</pixmap>
+         <pixmap resource="../graphics/ubeats.qrc">:/icons/Info-icon.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -140,7 +140,7 @@ p, li { white-space: pre-wrap; }
             <string/>
            </property>
            <property name="pixmap">
-            <pixmap resource="graphics/ubeats.qrc">:/images/images/logosplaceholder.png</pixmap>
+            <pixmap resource="../graphics/ubeats.qrc">:/images/images/logosplaceholder.png</pixmap>
            </property>
           </widget>
          </item>
@@ -231,7 +231,8 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <resources>
-  <include location="graphics/ubeats.qrc"/>
+  <include location="../graphics/ubeats.qrc"/>
+  <include location="../graphics/ubeats.qrc"/>
  </resources>
  <connections>
   <connection>

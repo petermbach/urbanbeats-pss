@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-@file   main.pyw
+@file   urbanbeatsdialogs.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 
 Urban Biophysical Environments and Technologies Simulator (UrbanBEATS)
-Copyright (C) 2012  Peter M. Bach
+Copyright (C) 2018  Peter M. Bach
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 __author__ = "Peter M. Bach"
-__copyright__ = "Copyright 2012. Peter M. Bach"
+__copyright__ = "Copyright 2018. Peter M. Bach"
 
 # --- CODE STRUCTURE ---
 #       (1) Preferences Dialog

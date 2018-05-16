@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-@file   main.pyw
+@file   md_delinblocksguic.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 
