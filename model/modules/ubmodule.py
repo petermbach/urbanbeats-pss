@@ -5,7 +5,7 @@
 @section LICENSE
 
 Urban Biophysical Environments and Technologies Simulator (UrbanBEATS)
-Copyright (C) 2012  Peter M. Bach
+Copyright (C) 2018  Peter M. Bach
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,11 +25,9 @@ __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2018. Peter M. Bach"
 
 # --- CODE STRUCTURE ---
-#       (1) ...
+#       (1) UBModule Class Definition
+#       (2) Variable Type Definitions essential for UBModule
 # --- --- --- --- --- ---
-
-# --- PYTHON LIBRARY IMPORTS ---
-
 
 class UBModule(object):
     """Abstract class for the UrbanBEATS module classes. It has the basic structure of an UrbanBEATS module including
