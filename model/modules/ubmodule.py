@@ -75,10 +75,10 @@ class UBModule(object):
         self.__observers[0].updateObserver(str(updateMessage))
         return True
 
-    def notifyProgress(self, value):
+    def notify_progress(self, value):
         self.__observers[1].updateObserver(value)
 
-    def createParameter(self, name, type, descript):
+    def create_parameter(self, name, type, descript):
         """Creates a new parameter and saves its metadata to the list of parameters of the module self.__parameters.
         Note that when developing the module, each line of .createParameter() should be followed by a definition of
         class attribute with self.name = defaultvalue. This is essential for the get and set parameter functions.
@@ -92,7 +92,7 @@ class UBModule(object):
         self.__parameters[name] = [type, descript]
         return True
 
-    def getParameterType(self, name):
+    def get_parameter_type(self, name):
         """Returns the parameter type i.e. DOUBLE, BOOL, STRING, LISTDOUBLE of a given parameter if it exists in the
         module's parameter list.
 
@@ -104,7 +104,7 @@ class UBModule(object):
         except KeyError:
             return None
 
-    def getParameter(self, name):
+    def get_parameter(self, name):
         """Returns the value of the class' attribute with the parameter name 'name'. We are using the class' internal
         dictionary and are referring to parameter variables through __dict__
 
@@ -113,7 +113,7 @@ class UBModule(object):
         """
         return self.__dict__.get(name)
 
-    def setParameter(self, name, value):
+    def set_parameter(self, name, value):
         """Sets the paramter 'name' with the value 'value' by looking up the class' attributes for the specific class
         variable self.??? with the name <name>.
 
@@ -124,7 +124,7 @@ class UBModule(object):
         self.__dict__.__setitem__(name, value)
         return True
 
-    def getModuleParameterList(self):
+    def get_module_parameter_list(self):
         """Returns the full parameter list of the module. This is useful for obtaining all parameter names for saving
         and loading simulations and other actions where the full parameter metadata is needed.
 
