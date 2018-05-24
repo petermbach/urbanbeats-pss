@@ -40,6 +40,7 @@ import platform
 import time
 import webbrowser
 import subprocess
+import random
 import xml.etree.ElementTree as ET
 
 # --- URBANBEATS LIBRARY IMPORTS ---
@@ -55,7 +56,6 @@ import gui.ubgui_spatialhandling as ubspatial
 import gui.ubgui_reporting as ubreport
 
 from gui.md_delinblocksguic import DelinBlocksGuiLaunch
-
 
 
 # --- MAIN GUI FUNCTION ---
@@ -80,14 +80,13 @@ class MainWindow(QtWidgets.QMainWindow):
         # --- WORKFLOW VARIABLES ---
         self.__current_project_name = ""    # Name of the current project
         self.__saveProjectState = True      # True = unsaved, False = saved - used to track changes in workflow
-        self.__activeSimulationObject = None    # The active simulation class instance
+        self.__activeSimulationObject = None    # The active simulation class instance: urbanbeatscore.UrbanBeatsSim()
         self.__activeScenario = None            # The active scenario
         self.__activeDataLibrary = None         # The active simulation's data library
         self.__activeProjectLog = None          # The active simulation's log file
 
         self.__datalibraryexpanded = 0      # STATE: is the data library browser fully expanded?
         self.__current_location = self.get_option("city")   # STATE: the current location
-
 
         # --- GUI SIGNALS AND SLOTS ---
         # Function naming conventions: show_ = launching dialog windows,
@@ -147,10 +146,12 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.ui.actionLike_on_Facebook.triggered.connect()
         # self.ui.actionShare_on_Twitter.triggered.connect()
 
+        # --- END OF ACTIONS ---
+
         # OBSERVER PATTERN - CONSOLE UPDATE
         self.consoleobserver.updateConsole[str].connect(self.printc)
 
-        # MAIN INTERFACE BUTTONS
+        # --- MAIN INTERFACE BUTTONS ---
         # Project Data Library Interface
         self.ui.addData.clicked.connect(self.show_add_data_dialog)
         self.ui.removeData.clicked.connect(self.remove_data_from_library)
@@ -1143,6 +1144,8 @@ if __name__ == "__main__":
     UBEATSROOT = os.path.dirname(sys.argv[0])  # Obtains the program's root directory
     UBEATSROOT = UBEATSROOT.encode('string-escape')  # To avoid weird bugs e.g. if someone's folder path
 
+    random.seed()
+
     # Someone is launching this directly
     # Create the QApplication
     app = QtWidgets.QApplication(sys.argv)
@@ -1188,12 +1191,13 @@ if __name__ == "__main__":
 
     time.sleep(1)
 
-    start_screen = StartScreenLaunch(main_window)
+    start_screen = StartScreenLaunch(main_window)       # Begin the Start Screen Loop
     # Signals for the Main Window and Start Screen Connection
     start_screen.startupNew.connect(main_window.create_new_project)
     start_screen.startupOpen.connect(main_window.open_existing_project)
     start_screen.startupImport.connect(main_window.import_existing_project)
     start_screen.startupOptions.connect(lambda: main_window.show_options(0))
 
-    start_screen.exec_()
+    start_screen.exec_()    # End the Start Screen Loop
+
     sys.exit(app.exec_())   # END OF MAIN WINDOW LOOP
