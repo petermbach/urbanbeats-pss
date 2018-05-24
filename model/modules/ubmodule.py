@@ -29,6 +29,7 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 #       (2) Variable Type Definitions essential for UBModule
 # --- --- --- --- --- ---
 
+
 class UBModule(object):
     """Abstract class for the UrbanBEATS module classes. It has the basic structure of an UrbanBEATS module including
     parameter management functions, observer attaching/detaching and other future additions. When creating an
@@ -131,7 +132,8 @@ class UBModule(object):
         """
         return self.__parameters
 
-#KEYWORDS FOR VARIABLES (THIS IS RELEVANT FOR SAVING AND LOADING DATA)
+
+# KEYWORDS FOR VARIABLES (THIS IS RELEVANT FOR SAVING AND LOADING DATA)
 DOUBLE = 'DOUBLE'
 BOOL = 'BOOL'
 STRING = 'STRING'
