@@ -69,7 +69,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
 
         # --- INITIALIZATION ---
-        self.setWindowTitle("UrbanBEATS Planning Support Tool")
+        #self.setWindowTitle("UrbanBEATS Planning Support Tool")
+        self.setWindowTitle("规划模型")
         self.initialize_output_console()
         self.consoleobserver = ConsoleObserver()
 
@@ -503,7 +504,8 @@ class MainWindow(QtWidgets.QMainWindow):
         """Resets the Output Console by first clearing its contents and then reprinting the three starting lines"""
         self.ui.OutputConsole.clear()
         self.ui.OutputConsole.append("<b>=================================<b>")
-        self.ui.OutputConsole.append("<b>UrbanBEATS OUTPUT CONSOLE<b>")
+        #self.ui.OutputConsole.append("<b>UrbanBEATS OUTPUT CONSOLE<b>")
+        self.ui.OutputConsole.append("<b>输出控制台<b>")
         self.ui.OutputConsole.append("<b>=================================<b>\n")
 
     def setup_narrative_widget(self, condition):
@@ -1163,9 +1165,14 @@ if __name__ == "__main__":
     # File Naming Convention: Needs to follow <lang>_<region>.ts convention
     #   <lang> = ISO 639-1 (see https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) and
     #   <region> = ISO3166-1 (see https://en.wikipedia.org/wiki/ISO_3166-1)
-    #translator = QtCore.QTranslator()
-    #translator.load("i18n\\ubjapa")
-    #app.installTranslator(translator)
+    translator = QtCore.QTranslator()
+    translator.load("i18n\\zh_cn_urbanbeatsmaingui")
+    translator2 = QtCore.QTranslator()
+    translator2.load("i18n\\zh_cn_startscreen")
+    app.installTranslator(translator)
+    app.installTranslator(translator2)
+
+
 
     # --- SPLASH SCREEN ---
     splash_matrix = ["1", "2", "3", "4", "5"]
