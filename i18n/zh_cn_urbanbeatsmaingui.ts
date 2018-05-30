@@ -488,12 +488,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="urbanbeatsmaingui.py" line="1129"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Evaluation&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>version 2018-05-26 - Translated by Miao Wang</translatorcomment>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;评估&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="urbanbeatsmaingui.py" line="1178"/>
         <source>Performance</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>version 2018-05-26 - Translated by Miao Wang</translatorcomment>
+        <translation>性能</translation>
     </message>
     <message>
         <location filename="urbanbeatsmaingui.py" line="1133"/>

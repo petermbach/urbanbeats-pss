@@ -38,12 +38,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="startscreen.py" line="265"/>
         <source>Start a new project from scratch, customize simulation type, add</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>version 2018-05-26 translated by Miao Wang</translatorcomment>
+        <translation>重新开始一个新的项目，制定模型类型，</translation>
     </message>
     <message>
         <location filename="startscreen.py" line="266"/>
         <source>data and explore your urban environment.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>version 2018-05-26 translated by Miao Wang</translatorcomment>
+        <translation>添加数据并开发您城市的环境。</translation>
     </message>
     <message>
         <location filename="startscreen.py" line="267"/>
@@ -62,12 +64,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="startscreen.py" line="272"/>
         <source>Continue from where you left off in a different simulation, update</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>version 2018-05-26 translated by Miao Wang</translatorcomment>
+        <translation>从终止处重新开始一个新的模拟，</translation>
     </message>
     <message>
         <location filename="startscreen.py" line="273"/>
         <source>parameters and discover new insights.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>version 2018-05-26 translated by Miao Wang</translatorcomment>
+        <translation>更新参数并开发新的界面。</translation>
     </message>
     <message>
         <location filename="startscreen.py" line="274"/>
@@ -86,12 +90,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="startscreen.py" line="279"/>
         <source>Import a project into UrbanBEATS from a file or</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>version 2018-05-26 translated by Miao Wang</translatorcomment>
+        <translation>从本地导入文件，或从UrbanBEATS网站上导入</translation>
     </message>
     <message>
         <location filename="startscreen.py" line="280"/>
         <source>from UrbanBEATS online.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>version 2018-05-26 translated by Miao Wang</translatorcomment>
+        <translation>数据以开始新的项目。</translation>
     </message>
     <message>
         <location filename="startscreen.py" line="281"/>
@@ -110,12 +116,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="startscreen.py" line="286"/>
         <source>Keep yourself up to date with the latest developments. Learn</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>version 2018-05-26 translated by Miao Wang</translatorcomment>
+        <translation>保持了解最新的开发成果，在网上了</translation>
     </message>
     <message>
         <location filename="startscreen.py" line="287"/>
         <source>more about the model with the online Wiki.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>version 2018-05-26 translated by Miao Wang</translatorcomment>
+        <translation>解更多关于模型的信息。</translation>
     </message>
     <message>
         <location filename="startscreen.py" line="288"/>
