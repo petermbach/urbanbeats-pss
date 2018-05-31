@@ -45,11 +45,19 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.datalibrary = datalibrary
         self.log = simlog
 
-        # --- PARAMETER SETUP ---
+        # --- SIMULATION YEAR SETTINGS ---
+
+
+
 
 
 
         # --- SIGNALS AND SLOTS ---
+
+    def setup_gui_with_parameters(self):
+        """Sets all parameters in the GUI based on the current year."""
+        pass
+
 
 
     def save_values(self):

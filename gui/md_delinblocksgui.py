@@ -71,6 +71,9 @@ class Ui_Delinblocks_Dialog(object):
         self.year_combo.setObjectName("year_combo")
         self.year_combo.addItem("")
         self.verticalLayout_2.addWidget(self.year_combo)
+        self.autofillButton = QtWidgets.QPushButton(self.sidebar_widget)
+        self.autofillButton.setObjectName("autofillButton")
+        self.verticalLayout_2.addWidget(self.autofillButton)
         self.same_params = QtWidgets.QCheckBox(self.sidebar_widget)
         self.same_params.setObjectName("same_params")
         self.verticalLayout_2.addWidget(self.same_params)
@@ -587,7 +590,7 @@ class Ui_Delinblocks_Dialog(object):
         self.verticalLayout.addWidget(self.footer)
 
         self.retranslateUi(Delinblocks_Dialog)
-        self.parameters.setCurrentIndex(0)
+        self.parameters.setCurrentIndex(1)
         self.flowpath_combo.setCurrentIndex(1)
         self.buttonBox.accepted.connect(Delinblocks_Dialog.accept)
         self.buttonBox.rejected.connect(Delinblocks_Dialog.reject)
@@ -627,6 +630,7 @@ class Ui_Delinblocks_Dialog(object):
         self.subtitle.setText(_translate("Delinblocks_Dialog", "Determine geometric representation, establish spatial connectivity and define how to process input data."))
         self.sidebar_title.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">SCENARIO TIME STEP</span></p></body></html>"))
         self.year_combo.setItemText(0, _translate("Delinblocks_Dialog", "<startyear>"))
+        self.autofillButton.setText(_translate("Delinblocks_Dialog", "Autofill from previous"))
         self.same_params.setText(_translate("Delinblocks_Dialog", "Same Parameters"))
         self.description.setHtml(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
