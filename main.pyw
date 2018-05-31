@@ -239,6 +239,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def setup_scenario(self):
         """Called when the scenario setup dialog box has successfully closed. i.e. signal accepted()"""
         active_scenario = self.get_active_simulation_object().get_active_scenario()
+        active_scenario.setup_scenario()
         self.get_active_simulation_object().add_new_scenario(active_scenario)
         self.ui.ScenarioDock_Combo.addItem(active_scenario.get_metadata("name"))
         self.ui.ScenarioDock_Combo.setCurrentIndex(int(self.ui.ScenarioDock_Combo.count() - 1))

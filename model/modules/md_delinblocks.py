@@ -47,16 +47,24 @@ import model.progref.ubglobals as ubglobals
 
 
 # --- MODULE CLASS DEFINITION ---
+
 class DelinBlocks(UBModule):
     """ SPATIAL SETUP MODULE - Codename: DelinBlocks
     Loads the spatial maps into the model core and processes them into Blocks. Also performs spatial connectivity
     analysis and prepares all spatial input data in a ready-to-use format for all other modules. Links loaded data
     sets into the model.
     """
-    def __init__(self):
+    def __init__(self, activesim, scenario, datalibrary, projectlog, simulationyear):
         """Initialises UBModule followed by full parameter list definition."""
         UBModule.__init__(self)
         self.name = "Delineation and Spatial Setup Module"
+        self.simulationyear = simulationyear
+
+        # CONNECTIONS WITH CORE SIMULATION
+        self.activesim = activesim
+        self.scenario = scenario
+        self.datalibrary = datalibrary
+        self.projectlog = projectlog
 
         # PARAMETER LIST DEFINITION
         # (1) Parameters for Input Data

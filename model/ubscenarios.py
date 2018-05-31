@@ -78,10 +78,49 @@ class UrbanBeatsScenario(object):
                            "SOCIO" : [], "MAP": [], "REG": [], "INFRA": [], "PERF": [],
                            "IMPACT": [], "DECISION": []}
 
-    def setup_scenario(self, setupdata):
+        self.__dt_array = []
+        # A dictionary of arrays, containing modules, depending on scenario type
+
+    def setup_scenario(self):
         """Initializes the scenario with the setup data provided by the user."""
         print "setting up scenario"
-        pass
+        inputs = [self.simulation, self, self.datalibrary, self.projectlog]
+        self.__dt_array = []
+        if self.get_metadata("type") in ["STATIC", "BENCHMARK"]:
+            self.__dt_array.append(self.get_metadata("startyear"))
+        else:
+            currentyear = self.get_metadata("startyear")
+            while currentyear < self.get_metadata("endyear"):
+                self.__dt_array.append(currentyear)
+                currentyear += self.get_metadata("dt")
+        print self.__dt_array
+
+        # INSTANTIATE MODULES
+        for i in self.__dt_array:
+            if self.check_is_module_active("SPATIAL"):
+                self.__modules["SPATIAL"].append(
+                    md_delinblocks.DelinBlocks(inputs[0], inputs[1], inputs[2], inputs[3], i))
+            if self.check_is_module_active("CLIMATE"):
+                self.__modules["CLIMATE"].append("YES")
+            if self.check_is_module_active("URBDEV"):
+                self.__modules["URBDEV"].append("YES")
+            if self.check_is_module_active("URBPLAN"):
+                self.__modules["URBPLAN"].append("YES")
+            if self.check_is_module_active("SOCIO"):
+                self.__modules["SOCIO"].append("YES")
+            if self.check_is_module_active("MAP"):
+                self.__modules["MAP"].append("YES")
+            if self.check_is_module_active("REG"):
+                self.__modules["REG"].append("YES")
+            if self.check_is_module_active("INFRA"):
+                self.__modules["INFRA"].append("YES")
+            if self.check_is_module_active("PERF"):
+                self.__modules["PERF"].append("YES")
+            if self.check_is_module_active("IMPACT"):
+                self.__modules["IMPACT"].append("YES")
+            if self.check_is_module_active("DECISION"):
+                self.__modules["DECISION"].append("YES")
+        return True
 
     def add_data_reference(self, dataref):
         """Adds the data reference to the scenario's data store depending on its class."""
