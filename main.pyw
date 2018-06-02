@@ -652,6 +652,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.ui.Project.setHtml(ubreport.generate_project_overview_html(self.get_options(),
                                                                         activesimulation.get_project_info(),
+                                                                        activesimulation.get_project_boundary_info("all"),
                                                                         activesimulation.get_num_scenarios(),
                                                                         activesimulation.get_num_datasets()))
         self.ui.ScenarioDock_View.expandAll()
