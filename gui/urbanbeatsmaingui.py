@@ -22,7 +22,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.Progress_Widget.sizePolicy().hasHeightForWidth())
         self.Progress_Widget.setSizePolicy(sizePolicy)
-        self.Progress_Widget.setMinimumSize(QtCore.QSize(400, 0))
+        self.Progress_Widget.setMinimumSize(QtCore.QSize(450, 0))
         self.Progress_Widget.setObjectName("Progress_Widget")
         self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.Progress_Widget)
         self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)

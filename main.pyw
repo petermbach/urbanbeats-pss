@@ -52,8 +52,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from gui.urbanbeatsmaingui import Ui_MainWindow
 from gui.startscreen import Ui_StartDialog
 from gui import urbanbeatsdialogs as ubdialogs
-import gui.ubgui_spatialhandling as ubspatial
+import gui.ubgui_spatialhandling as gui_ubspatial
 import gui.ubgui_reporting as ubreport
+import model.ublibs.ubspatial as ubspatial
 
 from gui.md_delinblocksguic import DelinBlocksGuiLaunch
 
@@ -85,6 +86,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__activeScenario = None            # The active scenario
         self.__activeDataLibrary = None         # The active simulation's data library
         self.__activeProjectLog = None          # The active simulation's log file
+        self.__dataview_displaystate = "default"    # The display state of the Leaflet data view, allows tracking
 
         self.__datalibraryexpanded = 0      # STATE: is the data library browser fully expanded?
         self.__current_location = self.get_option("city")   # STATE: the current location
@@ -168,7 +170,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.ScenarioDock_View.itemClicked.connect(self.change_narrative_gui_tab)
 
         # Data View Interface
-        # self.ui.DataView_extent.clicked.connect()
+        self.ui.DataView_extent.clicked.connect(self.update_map_display)
         self.ui.DataView_meta.clicked.connect(self.show_metadata_dialog)
         self.ui.DataView_options.clicked.connect(lambda: self.show_options(2))
 
@@ -473,7 +475,18 @@ class MainWindow(QtWidgets.QMainWindow):
     def update_gui_elements(self):
         """Updates elements on the main window GUI depending on what has changed in the options menu. This
         includes the map viewer as well as others."""
-        self.reset_data_view_to_default()
+        self.update_map_display()
+
+    def update_map_display(self):
+        """Updates the leaflet map display depending on the display-state, this is called either when options
+        are changed or when the extent button is clicked."""
+        if self.__dataview_displaystate == "default":       # Uses the display state to call correct function
+            self.reset_data_view_to_default()
+        elif self.__dataview_displaystate == "boundary":
+            self.update_data_view("boundary")
+        else:
+            pass
+            # Do nothing
 
     # NEW PROJECT INSTANCE CREATION
     def create_new_project(self):
@@ -490,16 +503,26 @@ class MainWindow(QtWidgets.QMainWindow):
             coordinates = ubglobals.COORDINATES[self.__current_location]
 
         tileserver = ubglobals.TILESERVERS[self.get_option("mapstyle")]
-        leaflet_html = ubspatial.generate_initial_leaflet_map(coordinates, tileserver, UBEATSROOT)
-        self.ui.DataView_web.setHtml(leaflet_html)
 
-    def update_data_view(self, newdata):
+        leaflet_html = gui_ubspatial.generate_initial_leaflet_map(coordinates, tileserver, UBEATSROOT)
+        self.ui.DataView_web.setHtml(leaflet_html)
+        self.__dataview_displaystate = "default"
+
+    def update_data_view(self, maptype):
         """Updates the current leaflet map view to show base map and plot new data.
 
         :param newdata: The input data map, if the data map is of type SHP or .txt, leaflet will attempt to plot it.
         :return:
         """
-        pass    #[TO DO]
+        tileserver = ubglobals.TILESERVERS[self.get_option("mapstyle")]
+        projectdata = self.get_active_simulation_object().get_project_info()
+
+        if maptype == "boundary":
+            projboundarymap = self.get_active_simulation_object().get_project_parameter("boundaryshp")
+            coordinates, mapstats = ubspatial.get_bounding_polygon(projboundarymap, "leaflet", UBEATSROOT)
+            leaflet_html = gui_ubspatial.generate_leaflet_boundary_map(coordinates, mapstats, projectdata, tileserver, UBEATSROOT)
+            self.ui.DataView_web.setHtml(leaflet_html)
+            self.__dataview_displaystate = "boundary"
 
     def initialize_output_console(self):
         """Resets the Output Console by first clearing its contents and then reprinting the three starting lines"""
@@ -625,8 +648,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_active_project_log(activesimulation.get_project_log())
         self.__current_location = activesimulation.get_project_parameter("city")
 
-        projboundarymap = activesimulation.get_project_parameter("boundaryshp")
-        self.update_data_view(projboundarymap)
+        self.update_data_view("boundary")
 
         self.ui.Project.setHtml(ubreport.generate_project_overview_html(self.get_options(),
                                                                         activesimulation.get_project_info(),

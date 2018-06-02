@@ -40,6 +40,7 @@ import xml.etree.ElementTree as ET
 # --- URBANBEATS LIBRARY IMPORTS ---
 import ubdatalibrary
 import ubscenarios
+import ublibs.ubspatial as ubspatial
 import modules.md_decisionanalysis
 import modules.md_climatesetup
 import modules.md_delinblocks
@@ -102,6 +103,8 @@ class UrbanBeatsSim(threading.Thread):
             "keepcopy": 0
         }
 
+        self.__boundaryinfo = {}
+
         self.__datalibrary = None   # initialize the data library
         self.__projectlog = None    # initialize the project log
         self.__scenarios = {}       # initialize the scenarios
@@ -129,6 +132,32 @@ class UrbanBeatsSim(threading.Thread):
             pass    # [TO DO]
         elif condition == "import": # for importing a project
             pass    # [TO DO]
+
+        # Regardless of mode, all of them should now load the boundary map and get the details
+        self.update_project_boundaryinfo()
+
+    def update_project_boundaryinfo(self):
+        """Loads the boundary map shapefile, obtains coordinates of the bounding polygon and spatial
+        stats including simulation area, extents, etc. Information is saved to self.__boundaryinfo."""
+        boundaryshp = self.get_project_parameter("boundaryshp")
+        print boundaryshp
+        coordinates, mapstats = ubspatial.get_bounding_polygon(boundaryshp, "native", self.__rootpath)
+        self.__boundaryinfo = mapstats.copy()
+        self.__boundaryinfo["coordinates"] = coordinates
+        print self.__boundaryinfo
+        print mapstats
+        return True
+
+    def get_project_boundary_info(self, param):
+        """Retrieves spatial boundary information for the current project from the self.__boundarinfo variable.
+
+        :param param: the name of the key of self.__boundaryinfo.
+        :return: value if key is existent, None if not.
+        """
+        try:
+            return self.__boundaryinfo[param]
+        except KeyError:
+            return None
 
     def setup_project_folder_structure(self):
         """Sets up the base folder structure of the project based on the specified path. The folder
