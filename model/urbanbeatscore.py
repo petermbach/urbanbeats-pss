@@ -154,6 +154,8 @@ class UrbanBeatsSim(threading.Thread):
         :param param: the name of the key of self.__boundaryinfo.
         :return: value if key is existent, None if not.
         """
+        if param == "all":
+            return self.__boundaryinfo
         try:
             return self.__boundaryinfo[param]
         except KeyError:

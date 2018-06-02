@@ -34,6 +34,8 @@ def generate_initial_leaflet_map(coordinates, tileserver, rootpath):
    integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
    crossorigin=""
 
+    This is called when the program resets the interface. It sets the display state to "default"
+
     :param coordinates: list of two elements representing latitude and longitude, to be used as centre point of map
     :param resolution: the pixel resolution of the map, list of two elements W x H
     :return: html code for the initial leaflet map.
@@ -71,7 +73,8 @@ def generate_initial_leaflet_map(coordinates, tileserver, rootpath):
 
 
 def generate_leaflet_boundary_map(coordinates, mapstats, projectdata, tileserver, rootpath):
-    """Generates html text for a boundary shapefile on the leaflet display and adds some basic map data to this.
+    """Generates html text for a boundary shapefile on the leaflet display and adds some basic map data to this. The
+    function is called when the program needs a map of the 'boundary'. It sels the map's displaystate to 'boundary'.
 
     :param coordinates: latitudes and longitudes array (format: [[lat, lng], [lat, lng]])
     :param mapstats: dictionary of map stats
@@ -119,6 +122,5 @@ def generate_leaflet_boundary_map(coordinates, mapstats, projectdata, tileserver
             </script>
             </body>
             </html>"""
-    print leaflethtml
     return leaflethtml
 
