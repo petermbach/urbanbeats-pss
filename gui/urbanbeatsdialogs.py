@@ -242,6 +242,8 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.startyear_spin.setValue(int(self.scenario.get_metadata("startyear")))
         self.ui.endyear_spin.setValue(int(self.scenario.get_metadata("endyear")))
         self.ui.timestep_spin.setValue(int(self.scenario.get_metadata("dt")))
+        self.ui.timestep_irregular.setChecked(int(self.scenario.get_metadata("dt_irregular")))
+
         self.ui.benchmark_spin.setValue(int(self.scenario.get_metadata("benchmarks")))
 
         self.ui.naming_line.setText(self.scenario.get_metadata("filename"))

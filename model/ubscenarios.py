@@ -62,6 +62,8 @@ class UrbanBeatsScenario(object):
                                    "startyear": 2018,
                                    "endyear": 2068,
                                    "dt": 1,
+                                   "dt_irregular": 0,
+                                   "yearlist": [],
                                    "benchmarks": 100,
                                    "filename": "<enter a naming convention for outputs>",
                                    "usescenarioname": 0}
