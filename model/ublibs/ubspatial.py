@@ -86,10 +86,12 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
     point2.AddPoint(xmax, ymax)
 
     spatialref = layer.GetSpatialRef()
+    print spatialref
     inputprojcs = spatialref.GetAttrValue("PROJCS")
     if inputprojcs is None:
-        print "Warning, no spatial reference defined"
+        print "Warning, spatial reference epsg cannot be found"
         return []
+
 
     featurecount = layer.GetFeatureCount()
     print "Total number of features: ", featurecount
@@ -97,12 +99,19 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
     feature = layer.GetFeature(0)
     geom = feature.GetGeometryRef()
 
-    area =  geom.GetArea() / 1000000.0
+    area = geom.GetArea() / 1000000.0
 
-    inputepsg = get_epsg(inputprojcs, rootpath)
+    inputepsg1 = spatialref.GetAttrValue("AUTHORITY", 1)
+    inputepsg2 = get_epsg(inputprojcs, rootpath)
+    if int(inputepsg1) == int(inputepsg2):
+        inputepsg = inputepsg1
+    else:
+        inputepsg = inputepsg2
+        # Experimenting with Marsh Ck Case Study's boundary, the embedded EPSG was not
+        # correct. So I will have to default to this lookup config file.
 
     if option == "leaflet":
-        coordtrans = create_coord_transformation_leaflet(inputepsg)
+        coordtrans = create_coord_transformation_leaflet(int(inputepsg))
         geom.Transform(coordtrans)
         point1.Transform(coordtrans)
         point2.Transform(coordtrans)
