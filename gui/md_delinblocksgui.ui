@@ -209,7 +209,7 @@ p, li { white-space: pre-wrap; }
       <item>
        <widget class="QTabWidget" name="parameters">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="inputs_tab">
          <attribute name="title">
@@ -227,7 +227,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>537</width>
-               <height>348</height>
+               <height>411</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -254,12 +254,36 @@ p, li { white-space: pre-wrap; }
                  </widget>
                 </item>
                 <item>
+                 <widget class="Line" name="div1_2">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="essential_lbl">
+                  <property name="text">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Essential Spatial Data Sets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QWidget" name="datasets" native="true">
                   <layout class="QGridLayout" name="gridLayout_6">
+                   <item row="2" column="1">
+                    <widget class="QComboBox" name="pop_combo"/>
+                   </item>
                    <item row="1" column="0">
                     <widget class="QLabel" name="lu_lbl">
                      <property name="text">
                       <string>Land Use Map:</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="2">
+                    <widget class="QCheckBox" name="pop_fromurbandev">
+                     <property name="text">
+                      <string>from urban development</string>
                      </property>
                     </widget>
                    </item>
@@ -273,30 +297,6 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="2" column="1">
-                    <widget class="QComboBox" name="pop_combo"/>
-                   </item>
-                   <item row="2" column="2">
-                    <widget class="QCheckBox" name="pop_fromurbandev">
-                     <property name="text">
-                      <string>from urban development</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="0">
-                    <widget class="QLabel" name="pop_lbl">
-                     <property name="text">
-                      <string>Population:</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="4" column="0">
-                    <widget class="Line" name="div1">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                    </widget>
-                   </item>
                    <item row="3" column="1">
                     <widget class="QComboBox" name="elev_combo"/>
                    </item>
@@ -307,69 +307,121 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="4" column="1">
-                    <widget class="Line" name="div2">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="pop_lbl">
+                     <property name="text">
+                      <string>Population:</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="4" column="2">
-                    <widget class="Line" name="div3">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="geography_title">
+                  <property name="text">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Geopolitical Boundaries&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="geography_lbl">
+                  <property name="whatsThis">
+                   <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                  <property name="text">
+                   <string>Include municipal and suburban boundaries into the delineation to provide regional level information.</string>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QWidget" name="boundary_widget" native="true">
+                  <layout class="QGridLayout" name="gridLayout_9">
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="geopolitical_lbl_2">
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Map Attribute Label Name:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="1">
+                    <widget class="QComboBox" name="suburb_combo_2">
+                     <item>
+                      <property name="text">
+                       <string>&lt;no map selected&gt;</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="4" column="0">
+                    <widget class="QCheckBox" name="suburb_check_2">
+                     <property name="toolTip">
+                      <string>Checking this box will produce a CBD point on the &quot;block centres&quot; output map.</string>
+                     </property>
+                     <property name="whatsThis">
+                      <string>Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM's accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.
+
+Correction proceeds as follows:
+- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.
+- If tolerance limit is not met, cell's water is routed directly to catchment outlet.</string>
+                     </property>
+                     <property name="text">
+                      <string>Suburban Boundaries</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QCheckBox" name="geopolitical_check_2">
+                     <property name="toolTip">
+                      <string>Checking this box will produce a CBD point on the &quot;block centres&quot; output map.</string>
+                     </property>
+                     <property name="whatsThis">
+                      <string>Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM's accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.
+
+Correction proceeds as follows:
+- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.
+- If tolerance limit is not met, cell's water is routed directly to catchment outlet.</string>
+                     </property>
+                     <property name="text">
+                      <string>Municipal Boundaries</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="1">
+                    <widget class="QLineEdit" name="geopolitical_line_2">
+                     <property name="toolTip">
+                      <string>Units of decimal degrees</string>
                      </property>
                     </widget>
                    </item>
                    <item row="7" column="1">
-                    <widget class="QComboBox" name="loc_combo"/>
-                   </item>
-                   <item row="6" column="1">
-                    <widget class="QComboBox" name="emp_combo"/>
-                   </item>
-                   <item row="5" column="0">
-                    <widget class="QLabel" name="optional_lbl">
-                     <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Optional Spatial Data Sets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="6" column="0">
-                    <widget class="QLabel" name="emp_lbl">
-                     <property name="text">
-                      <string>Employment:</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="6" column="2">
-                    <widget class="QCheckBox" name="emp_fromurbandev">
-                     <property name="text">
-                      <string>from urban development</string>
+                    <widget class="QLineEdit" name="suburb_line_2">
+                     <property name="toolTip">
+                      <string>Units of decimal degrees.</string>
                      </property>
                     </widget>
                    </item>
                    <item row="7" column="0">
-                    <widget class="QLabel" name="loc_lbl">
+                    <widget class="QLabel" name="suburb_lbl_2">
                      <property name="text">
-                      <string>Locality Map:</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Map Attribute Label Name:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="8" column="0">
-                    <widget class="QLabel" name="soil_lbl">
-                     <property name="text">
-                      <string>Soil Map:</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="8" column="1">
-                    <widget class="QComboBox" name="soil_combo"/>
-                   </item>
-                   <item row="0" column="0">
-                    <widget class="QLabel" name="essential_lbl">
-                     <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Essential Spatial Data Sets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
+                   <item row="1" column="1">
+                    <widget class="QComboBox" name="geopolitical_combo_2">
+                     <item>
+                      <property name="text">
+                       <string>&lt;no map selected&gt;</string>
+                      </property>
+                     </item>
                     </widget>
                    </item>
                   </layout>
@@ -378,7 +430,7 @@ p, li { white-space: pre-wrap; }
                </layout>
               </item>
               <item>
-               <spacer name="verticalSpacer_5">
+               <spacer name="verticalSpacer">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
                 </property>
@@ -751,9 +803,9 @@ p, li { white-space: pre-wrap; }
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>-622</y>
+               <y>0</y>
                <width>538</width>
-               <height>898</height>
+               <height>673</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -762,172 +814,6 @@ p, li { white-space: pre-wrap; }
                 <property name="margin">
                  <number>9</number>
                 </property>
-                <item>
-                 <widget class="QLabel" name="geography_title">
-                  <property name="text">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Geopolitical Boundaries&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="geography_lbl">
-                  <property name="whatsThis">
-                   <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                  </property>
-                  <property name="text">
-                   <string>Customize which boundaries the simulation should consider relevant in the definition of stakeholder groups and the comparison of districts across the map.</string>
-                  </property>
-                  <property name="wordWrap">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QWidget" name="boundary_widget" native="true">
-                  <layout class="QGridLayout" name="gridLayout_5">
-                   <item row="3" column="1">
-                    <widget class="QLabel" name="geopolitical_lbl">
-                     <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Map Attribute Label Name:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="4" column="2">
-                    <widget class="QComboBox" name="suburb_combo">
-                     <item>
-                      <property name="text">
-                       <string>&lt;no map selected&gt;</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item row="4" column="1">
-                    <widget class="QCheckBox" name="suburb_check">
-                     <property name="toolTip">
-                      <string>Checking this box will produce a CBD point on the &quot;block centres&quot; output map.</string>
-                     </property>
-                     <property name="whatsThis">
-                      <string>Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM's accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.
-
-Correction proceeds as follows:
-- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.
-- If tolerance limit is not met, cell's water is routed directly to catchment outlet.</string>
-                     </property>
-                     <property name="text">
-                      <string>Suburban Boundaries</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="1">
-                    <widget class="QCheckBox" name="geopolitical_check">
-                     <property name="toolTip">
-                      <string>Checking this box will produce a CBD point on the &quot;block centres&quot; output map.</string>
-                     </property>
-                     <property name="whatsThis">
-                      <string>Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM's accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.
-
-Correction proceeds as follows:
-- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.
-- If tolerance limit is not met, cell's water is routed directly to catchment outlet.</string>
-                     </property>
-                     <property name="text">
-                      <string>Geopolitical Boundaries</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="8" column="1">
-                    <widget class="QCheckBox" name="watermgmt_check">
-                     <property name="toolTip">
-                      <string>Checking this box will produce a CBD point on the &quot;block centres&quot; output map.</string>
-                     </property>
-                     <property name="whatsThis">
-                      <string>Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM's accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.
-
-Correction proceeds as follows:
-- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.
-- If tolerance limit is not met, cell's water is routed directly to catchment outlet.</string>
-                     </property>
-                     <property name="text">
-                      <string>Water Management Boundaries</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="8" column="2">
-                    <widget class="QComboBox" name="watermgmt_combo">
-                     <item>
-                      <property name="text">
-                       <string>&lt;no map selected&gt;</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item row="9" column="2">
-                    <widget class="QLineEdit" name="watermgmt_line">
-                     <property name="toolTip">
-                      <string>Units of decimal degrees.</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="9" column="1">
-                    <widget class="QLabel" name="watermgmt_lbl">
-                     <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Map Attribute Label Name:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="3" column="2">
-                    <widget class="QLineEdit" name="geopolitical_line">
-                     <property name="toolTip">
-                      <string>Units of decimal degrees</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="2">
-                    <widget class="QComboBox" name="geopolitical_combo">
-                     <item>
-                      <property name="text">
-                       <string>&lt;no map selected&gt;</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item row="1" column="0">
-                    <spacer name="horizontalSpacer_13">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeType">
-                      <enum>QSizePolicy::Fixed</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item row="7" column="2">
-                    <widget class="QLineEdit" name="suburb_line">
-                     <property name="toolTip">
-                      <string>Units of decimal degrees.</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="7" column="1">
-                    <widget class="QLabel" name="suburb_lbl">
-                     <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Map Attribute Label Name:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
                 <item>
                  <widget class="QLabel" name="region_lbl">
                   <property name="text">
@@ -1563,10 +1449,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>pop_combo</tabstop>
   <tabstop>pop_fromurbandev</tabstop>
   <tabstop>elev_combo</tabstop>
-  <tabstop>emp_combo</tabstop>
-  <tabstop>emp_fromurbandev</tabstop>
-  <tabstop>loc_combo</tabstop>
-  <tabstop>soil_combo</tabstop>
   <tabstop>geometry_scrollArea</tabstop>
   <tabstop>rep_combo</tabstop>
   <tabstop>connectivity_scrollArea</tabstop>
