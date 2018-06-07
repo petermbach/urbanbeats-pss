@@ -1,0 +1,13 @@
+FORMS += adddatadialog.ui
+FORMS += newscenario.ui
+FORMS += preferencesdialog.ui
+FORMS += startnewprojectdialog.ui
+FORMS += startscreen.ui
+FORMS += urbanbeatsmaingui.ui
+SOURCES += adddatadialog.py
+SOURCES += newscenario.py
+SOURCES += preferencesdialog.py
+SOURCES += startnewprojectdialog.py
+SOURCES += startscreen.py
+SOURCES += urbanbeatsmaingui.py
+TRANSLATIONS += zh_CN.ts
