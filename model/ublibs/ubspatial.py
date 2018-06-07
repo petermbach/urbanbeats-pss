@@ -103,12 +103,15 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
 
     inputepsg1 = spatialref.GetAttrValue("AUTHORITY", 1)
     inputepsg2 = get_epsg(inputprojcs, rootpath)
-    if int(inputepsg1) == int(inputepsg2):
-        inputepsg = inputepsg1
-    else:
+    if inputepsg1 is None:
         inputepsg = inputepsg2
-        # Experimenting with Marsh Ck Case Study's boundary, the embedded EPSG was not
-        # correct. So I will have to default to this lookup config file.
+    else:
+        if int(inputepsg1) == int(inputepsg2):
+            inputepsg = inputepsg1
+        else:
+            inputepsg = inputepsg2
+            # Experimenting with Marsh Ck Case Study's boundary, the embedded EPSG was not
+            # correct. So I will have to default to this lookup config file.
 
     if option == "leaflet":
         coordtrans = create_coord_transformation_leaflet(int(inputepsg))
