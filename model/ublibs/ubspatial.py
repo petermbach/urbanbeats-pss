@@ -86,7 +86,7 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
     point2.AddPoint(xmax, ymax)
 
     spatialref = layer.GetSpatialRef()
-    print spatialref
+    # print spatialref  # Debug Comment - if you want to view shapefile metadata, use this
     inputprojcs = spatialref.GetAttrValue("PROJCS")
     if inputprojcs is None:
         print "Warning, spatial reference epsg cannot be found"
