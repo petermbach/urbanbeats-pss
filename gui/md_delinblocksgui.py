@@ -532,6 +532,9 @@ class Ui_Delinblocks_Dialog(object):
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.horizontalLayout.addWidget(self.buttonBox)
+        self.reset_button = QtWidgets.QPushButton(self.footer)
+        self.reset_button.setObjectName("reset_button")
+        self.horizontalLayout.addWidget(self.reset_button)
         self.help_button = QtWidgets.QPushButton(self.footer)
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap(":/icons/Help-icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -809,6 +812,8 @@ class Ui_Delinblocks_Dialog(object):
         self.supply_combo.setItemText(0, _translate("Delinblocks_Dialog", "<none>"))
         self.parameters.setTabText(self.parameters.indexOf(self.context_tab), _translate("Delinblocks_Dialog", "Spatial Context"))
         self.footer_lbl.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-style:italic;\">UrbanBEATS - md_delinblocks module</span></p></body></html>"))
+        self.reset_button.setWhatsThis(_translate("Delinblocks_Dialog", "<html><head/><body><p>Resets all parameters of this module in the current \'scenario time step\' to the default values.</p></body></html>"))
+        self.reset_button.setText(_translate("Delinblocks_Dialog", "Reset..."))
         self.help_button.setText(_translate("Delinblocks_Dialog", "Help"))
 
 import ubeats_rc
