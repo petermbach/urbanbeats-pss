@@ -79,14 +79,18 @@ class DelinBlocks(UBModule):
         self.landuse_fud = 0
         self.population_fud = 0
 
-        self.create_parameter("employment_map", STRING, "employment map filepath")
-        self.create_parameter("locality_map", STRING, "locality map filepath")
-        self.create_parameter("soil_map", STRING, "soil map filepath")
-        self.create_parameter("employment_fud", BOOL, "use urban development employment?")
-        self.employment_map = ""
-        self.locality_map = ""
-        self.soil_map = ""
-        self.employment_fud = 0
+        self.create_parameter("include_geopolitical", BOOL, "include geopolitical map?")
+        self.create_parameter("geopolitical_map", STRING, "geopolitical map filepath")
+        self.create_parameter("geopolitical_attref", STRING, "attribute name reference")
+        self.create_parameter("include_suburb", BOOL, "include suburban map?")
+        self.create_parameter("suburban_map", STRING, "suburban map filepath")
+        self.create_parameter("suburban_attref", STRING, "attribute name reference")
+        self.include_geopolitical = 0
+        self.geopolitical_map = ""
+        self.geopolitical_attref = ""
+        self.include_suburb = 0
+        self.suburban_map = ""
+        self.suburban_attref = ""
 
         # (2) Parameters for Geometric Delineation
         self.create_parameter("geometry_type", STRING, "block or future types of geometry e.g. hex")
@@ -95,7 +99,7 @@ class DelinBlocks(UBModule):
         self.create_parameter("neighbourhood", STRING, "type of neighbourhood to use, Moore or vN")
         self.create_parameter("patchdelin", BOOL, "delineate patches?")
         self.create_parameter("spatialmetrics", BOOL, "calculate spatial metrics?")
-        self.geometry_type = "BLOCKS"
+        self.geometry_type = "BLOCKS"       # BLOCKS, HEXAGONS
         self.blocksize = 500
         self.blocksize_auto = 0
         self.neighbourhood = "M"
@@ -103,25 +107,6 @@ class DelinBlocks(UBModule):
         self.spatialmetrics = 1
 
         # (3) Parameters for Spatial Context
-        self.create_parameter("include_geopolitical", BOOL, "include geopolitical map?")
-        self.create_parameter("geopolitical_map", STRING, "geopolitical map filepath")
-        self.create_parameter("geopolitical_attref", STRING, "attribute name reference")
-        self.create_parameter("include_suburb", BOOL, "include suburban map?")
-        self.create_parameter("suburban_map", STRING, "suburban map filepath")
-        self.create_parameter("suburban_attref", STRING, "attribute name reference")
-        self.create_parameter("include_watermgmt", BOOL, "include water management boundaries?")
-        self.create_parameter("watermgmt_map", STRING, "water management map fiepath")
-        self.create_parameter("watermgmt_attref", STRING, "attribute name reference")
-        self.include_geopolitical = 0
-        self.geopolitical_map = ""
-        self.geopolitical_attref = ""
-        self.include_suburb = 0
-        self.suburban_map = ""
-        self.suburban_attref = ""
-        self.include_watermgmt = 0
-        self.watermgmt_map = ""
-        self.watermgmt_attref = ""
-
         self.create_parameter("considerCBD", BOOL, "consider CBD Location?")
         self.create_parameter("locationOption", STRING, "method for inputting CBD location")
         self.create_parameter("locationCity", STRING, "city name")
@@ -133,6 +118,31 @@ class DelinBlocks(UBModule):
         self.locationLong = float(0.0)
         self.locationLat = float(0.0)
         self.marklocation = 0
+
+        self.create_parameter("include_rivers", BOOL, "include a rivers map into simulation?")
+        self.create_parameter("include_ponds", BOOL, "include a ponds and lakes map into simulation?")
+        self.create_parameter("calculate_wbdistance", BOOL, "calculate distance to closest water body?")
+        self.create_parameter("river_map", STRING, "river map filepath")
+        self.create_parameter("pond_map", STRING, "ponds and lake map filepath")
+        self.create_parameter("flowpath_method", STRING, "flowpath method to use")
+        self.create_parameter("dem_smooth", BOOL, "smooth DEM map before doing flowpath delineation?")
+        self.create_parameter("dem_passes", DOUBLE, "number of passes for smoothing")
+        self.create_parameter("guide_natural", BOOL, "guide flowpath delineation using pre-loaded natural feature?")
+        self.create_parameter("guide_built", BOOL, "guide flowpath delineation using built infrastructure?")
+        self.create_parameter("guide_natural_map", STRING, "filepath to natural features map to guide flowpaths")
+        self.create_parameter("guide_built_map", STRING, "filepath to built infrastructure map to guide flowpaths")
+        self.include_rivers = 0
+        self.include_ponds = 0
+        self.calculate_wbdistance = 0
+        self.river_map = ""
+        self.pond_map = ""
+        self.flowpath_method = "D8"
+        self.dem_smooth = 0
+        self.dem_passes = 1
+        self.guide_natural = 0
+        self.guide_built = 0
+        self.guide_natural_map = ""
+        self.guide_natural_built = ""
 
         # NON-VISIBLE PARAMETER LIST
         self.xllcorner = float(0.0)     # Obtained from the loaded raster data (elevation) upon run-time

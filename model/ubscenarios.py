@@ -83,6 +83,24 @@ class UrbanBeatsScenario(object):
         self.__dt_array = []
         # A dictionary of arrays, containing modules, depending on scenario type
 
+    def get_simulation_years(self):
+        """Retrieves the list of simulation years to use."""
+        return self.__dt_array
+
+    def get_module_object(self, modulecat, dt_index):
+        """Returns the active module instance from self.__modules based on the key 'modulecat' and the index from
+        self.__dt_array i.e. the simulation year. In the GUI, this directly corresponds to the combo box index.
+
+        :param modulecat: module category e.g. SPATIAL, CLIMATE, URBDEV, etc.
+        :param index: the list index to look up for the module.
+        :return: the instantiated module object e.g. DelinBlocks() or UrbPlanBB()
+        """
+        try:
+            return self.__modules[modulecat][dt_index]
+        except KeyError:
+            print "Error, cannot find module instance!"
+            return None
+
     def setup_scenario(self):
         """Initializes the scenario with the setup data provided by the user."""
         print "setting up scenario"
