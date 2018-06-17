@@ -76,6 +76,51 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
             self.ui.year_combo.addItem(str(simyears[0]))
         self.ui.year_combo.setCurrentIndex(0)   # Set to the first item on the list.
 
+        # --- SETUP ALL DYNAMIC COMBO BOXES ---
+        self.lumaps = self.get_dataref_array("spatial", "Land Use")  # Obtain the data ref array
+        self.ui.lu_combo.clear()  # Clear the combo box first before setting it up
+        # Set up the combo box (note: this also includes the no map option)
+        [self.ui.lu_combo.addItem(str(self.lumaps[0][i])) for i in range(len(self.lumaps[0]))]
+
+        self.popmaps = self.get_dataref_array("spatial", "Population")
+        self.ui.pop_combo.clear()
+        [self.ui.pop_combo.addItem(str(self.popmaps[0][i])) for i in range(len(self.popmaps[0]))]
+
+        self.elevmaps = self.get_dataref_array("spatial", "Elevation")
+        self.ui.elev_combo.clear()
+        [self.ui.elev_combo.addItem(str(self.elevmaps[0][i])) for i in range(len(self.elevmaps[0]))]
+
+        self.municipalmaps = self.get_dataref_array("spatial", "Boundaries", "Geopolitical")
+        self.ui.geopolitical_combo.clear()
+        [self.ui.geopolitical_combo.addItem(str(self.municipalmaps[0][i])) for i in range(len(self.municipalmaps[0]))]
+
+        self.suburbmaps = self.get_dataref_array("spatial", "Boundaries", "Suburban")
+        self.ui.suburb_combo.clear()
+        [self.ui.suburb_combo.addItem(str(self.suburbmaps[0][i])) for i in range(len(self.suburbmaps[0]))]
+
+        self.ui.city_combo.clear()
+        self.citynames = ubglobals.COORDINATES.keys()
+        self.citynames.sort()
+        [self.ui.city_combo.addItem(str(n)) for n in self.citynames]
+
+        self.rivermaps = self.get_dataref_array("spatial", "Water Bodies", "Rivers")
+        self.ui.rivers_combo.clear()
+        [self.ui.rivers_combo.addItem(str(self.rivermaps[0][i])) for i in range(len(self.rivermaps[0]))]
+
+        self.lakemaps = self.get_dataref_array("spatial", "Water Bodies", "Lakes")
+        self.ui.lakes_combo.clear()
+        [self.ui.lakes_combo.addItem(str(self.lakemaps[0][i])) for i in range(len(self.lakemaps[0]))]
+
+        self.natfeatures = self.get_dataref_array("spatial", "Water Bodies")
+        self.ui.natfeature_combo.clear()
+        [self.ui.natfeature_combo.addItem(str(self.natfeatures[0][i])) for i in range(len(self.natfeatures[0]))]
+
+        self.builtfeatures = self.get_dataref_array("spatial", "Built Infrastructure")
+        self.ui.infrastructure_combo.clear()
+        [self.ui.infrastructure_combo.addItem(str(self.builtfeatures[0][i])) for i in range(len(self.builtfeatures[0]))]
+
+        self.delin_methods = ["Dinf", "D8"]
+
         self.change_active_module()
 
         # --- SIGNALS AND SLOTS ---
@@ -96,6 +141,8 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.lakes_check.clicked.connect(self.enable_disable_guis)
         self.ui.natfeature_check.clicked.connect(self.enable_disable_guis)
         self.ui.infrastructure_check.clicked.connect(self.enable_disable_guis)
+
+        self.ui.buttonBox.accepted.connect(self.save_values)
 
     def update_module_parameters(self):
         """Saves the active values"""
@@ -124,53 +171,34 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
     def setup_gui_with_parameters(self):
         """Sets all parameters in the GUI based on the current year."""
         # --- INPUT MAPS TAB ---
-        spatialdata = self.active_scenario.get_data_reference("spatial")
-        print spatialdata
-
         # Dynamic setup of data combo boxes
-        lumaps = self.get_dataref_array("spatial", "Land Use")   # Obtain the data ref array
-        self.ui.lu_combo.clear()        # Clear the combo box first before setting it up
-        # Set up the combo box (note: this also includes the no map option)
-        [self.ui.lu_combo.addItem(str(lumaps[0][i])) for i in range(len(lumaps[0]))]
-        try:    # retrieve the dataID from module
-            self.ui.lu_combo.setCurrentIndex(lumaps[1].index(self.module.get_parameter("landuse_map")))
+        try:    # LAND USE COMBO - retrieve the dataID from module
+            self.ui.lu_combo.setCurrentIndex(self.lumaps[1].index(self.module.get_parameter("landuse_map")))
             # if dataID is available, set the combo box
         except ValueError:
             self.ui.lu_combo.setCurrentIndex(0) # else the map must've been removed, set combo to zero index
 
-        popmaps = self.get_dataref_array("spatial", "Population")
-        self.ui.pop_combo.clear()
-        [self.ui.pop_combo.addItem(str(popmaps[0][i])) for i in range(len(popmaps[0]))]
-        try:
-            self.ui.pop_combo.setCurrentIndex(popmaps[1].index(self.module.get_parameter("population_map")))
+        try:    # POPULATION COMBO
+            self.ui.pop_combo.setCurrentIndex(self.popmaps[1].index(self.module.get_parameter("population_map")))
         except ValueError:
             self.ui.pop_combo.setCurrentIndex(0)
 
-        elevmaps = self.get_dataref_array("spatial", "Elevation")
-        self.ui.elev_combo.clear()
-        [self.ui.elev_combo.addItem(str(elevmaps[0][i])) for i in range(len(elevmaps[0]))]
-        try:
-            self.ui.elev_combo.setCurrentIndex(elevmaps[1].index(self.module.get_parameter("elevation_map")))
+        try:    # ELEVATION COMBO
+            self.ui.elev_combo.setCurrentIndex(self.elevmaps[1].index(self.module.get_parameter("elevation_map")))
         except ValueError:
             self.ui.elev_combo.setCurrentIndex(0)
 
         self.ui.pop_fromurbandev.setChecked(int(self.module.get_parameter("population_fud")))
         self.ui.lu_fromurbandev.setChecked(int(self.module.get_parameter("landuse_fud")))
 
-        municipalmaps = self.get_dataref_array("spatial", "Boundaries", "Geopolitical")
-        self.ui.geopolitical_combo.clear()
-        [self.ui.geopolitical_combo.addItem(str(municipalmaps[0][i])) for i in range(len(municipalmaps[0]))]
-        try:
-            self.ui.geopolitical_combo.setCurrentIndex(municipalmaps[1].index(
+        try:    # MUNICIPAL BOUNDARY MAP COMBO
+            self.ui.geopolitical_combo.setCurrentIndex(self.municipalmaps[1].index(
                 self.module.get_parameter("geopolitical_map")))
         except ValueError:
             self.ui.geopolitical_combo.setCurrentIndex(0)
 
-        suburbmaps = self.get_dataref_array("spatial", "Boundaries", "Suburban")
-        self.ui.suburb_combo.clear()
-        [self.ui.suburb_combo.addItem(str(suburbmaps[0][i])) for i in range(len(suburbmaps[0]))]
-        try:
-            self.ui.suburb_combo.setCurrentIndex(suburbmaps[1].index(self.module.get_parameter("suburban_map")))
+        try:    # SUBURB BOUNDARY MAP COMBO
+            self.ui.suburb_combo.setCurrentIndex(self.suburbmaps[1].index(self.module.get_parameter("suburban_map")))
         except ValueError:
             self.ui.suburb_combo.setCurrentIndex(0)
 
@@ -198,58 +226,41 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         else:
             self.ui.cbdmanual_radio.setChecked(1)
 
-        self.ui.city_combo.clear()
-        citynames = ubglobals.COORDINATES.keys()
-        citynames.sort()
-        [self.ui.city_combo.addItem(str(n)) for n in citynames]
         project_city = self.simulation.get_project_parameter("city")
-        self.ui.city_combo.setCurrentIndex(citynames.index(project_city))
-
+        self.ui.city_combo.setCurrentIndex(self.citynames.index(project_city))
         self.ui.cbdlong_box.setText(str(self.module.get_parameter("locationLong")))
         self.ui.cbdlat_box.setText(str(self.module.get_parameter("locationLat")))
         self.ui.cbdmark_check.setChecked(self.module.get_parameter("marklocation"))
 
-        rivermaps = self.get_dataref_array("spatial", "Water Bodies", "Rivers")
-        self.ui.rivers_combo.clear()
-        [self.ui.rivers_combo.addItem(str(rivermaps[0][i])) for i in range(len(rivermaps[0]))]
-        try:
-            self.ui.rivers_combo.setCurrentIndex(rivermaps[1].index(self.module.get_parameter("river_map")))
+        try:    # RIVER COMBO
+            self.ui.rivers_combo.setCurrentIndex(self.rivermaps[1].index(self.module.get_parameter("river_map")))
         except ValueError:
             self.ui.rivers_combo.setCurrentIndex(0)
 
-        lakemaps = self.get_dataref_array("spatial", "Water Bodies", "Lakes")
-        self.ui.lakes_combo.clear()
-        [self.ui.lakes_combo.addItem(str(lakemaps[0][i])) for i in range(len(lakemaps[0]))]
-        try:
-            self.ui.lakes_combo.setCurrentIndex(lakemaps[1].index(self.module.get_parameter("pond_map")))
+        try:    # LAKES COMBO
+            self.ui.lakes_combo.setCurrentIndex(self.lakemaps[1].index(self.module.get_parameter("lake_map")))
         except ValueError:
             self.ui.lakes_combo.setCurrentIndex(0)
 
         self.ui.rivers_check.setChecked(self.module.get_parameter("include_rivers"))
-        self.ui.lakes_check.setChecked(self.module.get_parameter("include_ponds"))
+        self.ui.lakes_check.setChecked(self.module.get_parameter("include_lakes"))
         self.ui.waterbody_distance_check.setChecked(self.module.get_parameter("calculate_wbdistance"))
 
-        delin_methods = ["Dinf", "D8"]
-        self.ui.flowpath_combo.setCurrentIndex(delin_methods.index(self.module.get_parameter("flowpath_method")))
+        self.ui.flowpath_combo.setCurrentIndex(self.delin_methods.index(self.module.get_parameter("flowpath_method")))
+
         self.ui.demsmooth_check.setChecked(self.module.get_parameter("dem_smooth"))
         self.ui.demsmooth_spin.setValue(self.module.get_parameter("dem_passes"))
         self.ui.natfeature_check.setChecked(self.module.get_parameter("guide_natural"))
         self.ui.infrastructure_check.setChecked(self.module.get_parameter("guide_built"))
 
-        natfeatures = self.get_dataref_array("spatial", "Water Bodies")
-        self.ui.natfeature_combo.clear()
-        [self.ui.natfeature_combo.addItem(str(natfeatures[0][i])) for i in range(len(natfeatures[0]))]
-        try:
-            self.ui.natfeature_combo.setCurrentIndex(natfeatures.index(self.module.get_parameter("guide_natural_map")))
+        try:    # NATURAL FEATURES COMBO
+            self.ui.natfeature_combo.setCurrentIndex(self.natfeatures.index(self.module.get_parameter("guide_natural_map")))
         except ValueError:
             self.ui.natfeature_combo.setCurrentIndex(0)
 
-        builtfeatures = self.get_dataref_array("spatial", "Built Infrastructure")
-        self.ui.infrastructure_combo.clear()
-        [self.ui.infrastructure_combo.addItem(str(builtfeatures[0][i])) for i in range(len(builtfeatures[0]))]
-        try:
-            self.ui.infrastructure_combo.setCurrentIndex(builtfeatures.index(
-                self.module.get_parameter("guide_natural_built")))
+        try:    # BUILT FEATURES COMBO
+            self.ui.infrastructure_combo.setCurrentIndex(self.builtfeatures.index(
+                self.module.get_parameter("guide_built_map")))
         except ValueError:
             self.ui.infrastructure_combo.setCurrentIndex(0)
 
@@ -296,4 +307,54 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
     def save_values(self):
         """Saves all user-modified values for the module's parameters from the GUI
         into the simulation core."""
-        pass
+        # --- INPUT MAPS ---
+        self.module.set_parameter("landuse_map", self.lumaps[1][self.ui.lu_combo.currentIndex()])
+        self.module.set_parameter("population_map", self.popmaps[1][self.ui.pop_combo.currentIndex()])
+        self.module.set_parameter("elevation_map", self.elevmaps[1][self.ui.elev_combo.currentIndex()])
+        self.module.set_parameter("landuse_fud", int(self.ui.lu_fromurbandev.isChecked()))
+        self.module.set_parameter("population_fud", int(self.ui.pop_fromurbandev.isCheckable()))
+
+        self.module.set_parameter("include_geopolitical", int(self.ui.geopolitical_check.isChecked()))
+        self.module.set_parameter("geopolitical_map", self.municipalmaps[1][self.ui.geopolitical_combo.currentIndex()])
+        self.module.set_parameter("geopolitical_attref", self.ui.geopolitical_line.text())
+        self.module.set_parameter("include_suburb", int(self.ui.suburb_check.isChecked()))
+        self.module.set_parameter("suburban_map", self.suburbmaps[1][self.ui.suburb_combo.currentIndex()])
+        self.module.set_parameter("suburban_attref", self.ui.suburb_line.text())
+
+        # --- GEOMETRIC DELINEATION ---
+        if self.ui.rep_combo.currentIndex() == 0:
+            self.module.set_parameter("geometry_type", "BLOCKS")
+        elif self.ui.rep_combo.currentIndex() == 1:
+            self.module.set_parameter("geometry_type", "HEXAGONS")
+        self.module.set_parameter("blocksize", self.ui.resolution_spin.value())
+        self.module.set_parameter("blocksize_auto", int(self.ui.resolution_auto.isChecked()))
+        if self.ui.radio_moore.isChecked():
+            self.module.set_parameter("neighbourhood", "M")
+        else:
+            self.module.set_parameter("neighbourhood", "V")
+        self.module.set_parameter("patchdelin", int(self.ui.patchdelin_check.isChecked()))
+        self.module.set_parameter("spatialmetrics", int(self.ui.spatialindices_check.isChecked()))
+
+        # --- SPATIAL CONTEXT ---
+        self.module.set_parameter("considerCBD", int(self.ui.considergeo_check.isChecked()))
+        if self.ui.cbdknown_radio.isChecked():
+            self.module.set_parameter("locationOption", "S")
+        else:
+            self.module.set_parameter("locationOption", "C")
+        self.module.set_parameter("locationCity", self.citynames[self.ui.city_combo.currentIndex()])
+        self.module.set_parameter("locationLong", float(self.ui.cbdlong_box.text()))
+        self.module.set_parameter("locationLat", float(self.ui.cbdlat_box.text()))
+        self.module.set_parameter("marklocation", int(self.ui.cbdmark_check.isChecked()))
+
+        self.module.set_parameter("include_rivers", int(self.ui.rivers_check.isChecked()))
+        self.module.set_parameter("include_lakes", int(self.ui.lakes_check.isChecked()))
+        self.module.set_parameter("calculate_wbdistance", int(self.ui.waterbody_distance_check.isChecked()))
+        self.module.set_parameter("river_map", self.rivermaps[1][self.ui.rivers_combo.currentIndex()])
+        self.module.set_parameter("lake_map", self.lakemaps[1][self.ui.lakes_combo.currentIndex()])
+        self.module.set_parameter("flowpath_method", self.delin_methods[self.ui.flowpath_combo.currentIndex()])
+        self.module.set_parameter("dem_smooth", int(self.ui.demsmooth_check.isChecked()))
+        self.module.set_parameter("dem_passes", int(self.ui.demsmooth_spin.value()))
+        self.module.set_parameter("guide_natural", int(self.ui.natfeature_check.isChecked()))
+        self.module.set_parameter("guide_built", int(self.ui.infrastructure_check.isChecked()))
+        self.module.set_parameter("guide_natural_map", self.natfeatures[1][self.ui.natfeature_combo.currentIndex()])
+        self.module.set_parameter("guide_built_map", self.builtfeatures[1][self.ui.infrastructure_combo.currentIndex()])

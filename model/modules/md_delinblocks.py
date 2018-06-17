@@ -120,10 +120,10 @@ class DelinBlocks(UBModule):
         self.marklocation = 0
 
         self.create_parameter("include_rivers", BOOL, "include a rivers map into simulation?")
-        self.create_parameter("include_ponds", BOOL, "include a ponds and lakes map into simulation?")
+        self.create_parameter("include_lakes", BOOL, "include a ponds and lakes map into simulation?")
         self.create_parameter("calculate_wbdistance", BOOL, "calculate distance to closest water body?")
         self.create_parameter("river_map", STRING, "river map filepath")
-        self.create_parameter("pond_map", STRING, "ponds and lake map filepath")
+        self.create_parameter("lake_map", STRING, "ponds and lake map filepath")
         self.create_parameter("flowpath_method", STRING, "flowpath method to use")
         self.create_parameter("dem_smooth", BOOL, "smooth DEM map before doing flowpath delineation?")
         self.create_parameter("dem_passes", DOUBLE, "number of passes for smoothing")
@@ -132,17 +132,17 @@ class DelinBlocks(UBModule):
         self.create_parameter("guide_natural_map", STRING, "filepath to natural features map to guide flowpaths")
         self.create_parameter("guide_built_map", STRING, "filepath to built infrastructure map to guide flowpaths")
         self.include_rivers = 0
-        self.include_ponds = 0
+        self.include_lakes = 0
         self.calculate_wbdistance = 0
         self.river_map = ""
-        self.pond_map = ""
+        self.lake_map = ""
         self.flowpath_method = "D8"
         self.dem_smooth = 0
         self.dem_passes = 1
         self.guide_natural = 0
         self.guide_built = 0
         self.guide_natural_map = ""
-        self.guide_natural_built = ""
+        self.guide_built_map = ""
 
         # NON-VISIBLE PARAMETER LIST
         self.xllcorner = float(0.0)     # Obtained from the loaded raster data (elevation) upon run-time
