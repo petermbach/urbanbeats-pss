@@ -27,6 +27,7 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 # --- PYTHON LIBRARY IMPORTS ---
 
 # --- URBANBEATS LIBRARY IMPORTS ---
+import model.progref.ubglobals as ubglobals
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -38,11 +39,11 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
     def __init__(self, main, simulation, datalibrary, simlog, parent=None):
         """ Initialisation of the Block Delineation GUI, takes several input parameters.
 
-        :param main: The active simulation object
-        :param scenario:
-        :param datalibrary:
-        :param simlog:
-        :param parent:
+        :param main: The main runtime object --> the main GUI
+        :param simulation: The active simulation object --> main.get_active_simulation_object()
+        :param datalibrary: The active data library --> main.get_active_data_library()
+        :param simlog: The active log --> main.get_active_project_log()
+        :param parent: None
         """
         QtWidgets.QDialog.__init__(self, parent)
         self.ui = Ui_Delinblocks_Dialog()
@@ -73,14 +74,42 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
             self.ui.year_combo.setEnabled(0)
             self.ui.year_combo.clear()
             self.ui.year_combo.addItem(str(simyears[0]))
+        self.ui.year_combo.setCurrentIndex(0)   # Set to the first item on the list.
 
-        self.gui_state = "initial"
         self.change_active_module()
-        self.gui_state = "ready"
 
         # --- SIGNALS AND SLOTS ---
         self.ui.year_combo.currentIndexChanged.connect(self.change_active_module)
+        self.ui.autofillButton.clicked.connect(self.autofill_from_previous_year)
+        self.ui.same_params.clicked.connect(self.same_parameters_check)
         self.ui.reset_button.clicked.connect(self.reset_parameters_to_default)
+
+        self.ui.lu_fromurbandev.clicked.connect(self.enable_disable_guis)
+        self.ui.pop_fromurbandev.clicked.connect(self.enable_disable_guis)
+        self.ui.geopolitical_check.clicked.connect(self.enable_disable_guis)
+        self.ui.suburb_check.clicked.connect(self.enable_disable_guis)
+        self.ui.resolution_auto.clicked.connect(self.enable_disable_guis)
+        self.ui.considergeo_check.clicked.connect(self.enable_disable_guis)
+        self.ui.cbdknown_radio.clicked.connect(self.enable_disable_guis)
+        self.ui.cbdmanual_radio.clicked.connect(self.enable_disable_guis)
+        self.ui.rivers_check.clicked.connect(self.enable_disable_guis)
+        self.ui.lakes_check.clicked.connect(self.enable_disable_guis)
+        self.ui.natfeature_check.clicked.connect(self.enable_disable_guis)
+        self.ui.infrastructure_check.clicked.connect(self.enable_disable_guis)
+
+    def update_module_parameters(self):
+        """Saves the active values"""
+        pass
+
+    def same_parameters_check(self):
+        """Checks if the 'same parameters' checkbox is checked, automatically disables GUI time combobox, takes
+        current parameters in the GUI and saves to all modules when the GUI box is closed with accept() signal
+        (i.e. OK button pressed)."""
+        pass
+
+    def autofill_from_previous_year(self):
+        """Autofills all GUI parameters from the previous year's class instance."""
+        pass
 
     def reset_parameters_to_default(self):
         """Resets all parameters of the current module instance back to default values."""
@@ -88,23 +117,181 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
 
     def change_active_module(self):
         """Searches for the active module based on the simulation year combo box and updates the GUI."""
-        if self.gui_state != "initial":
-            self.update_module_parameters()     # Saves the current parameters
+        # Retrieve the DelinBlocks() Reference corresponding to the current year
         self.module = self.active_scenario.get_module_object("SPATIAL", self.ui.year_combo.currentIndex())
         self.setup_gui_with_parameters()
 
     def setup_gui_with_parameters(self):
         """Sets all parameters in the GUI based on the current year."""
         # --- INPUT MAPS TAB ---
+        spatialdata = self.active_scenario.get_data_reference("spatial")
+        print spatialdata
+
+        # Dynamic setup of data combo boxes
+        lumaps = self.get_dataref_array("spatial", "Land Use")   # Obtain the data ref array
+        self.ui.lu_combo.clear()        # Clear the combo box first before setting it up
+        # Set up the combo box (note: this also includes the no map option)
+        [self.ui.lu_combo.addItem(str(lumaps[0][i])) for i in range(len(lumaps[0]))]
+        try:    # retrieve the dataID from module
+            self.ui.lu_combo.setCurrentIndex(lumaps[1].index(self.module.get_parameter("landuse_map")))
+            # if dataID is available, set the combo box
+        except ValueError:
+            self.ui.lu_combo.setCurrentIndex(0) # else the map must've been removed, set combo to zero index
+
+        popmaps = self.get_dataref_array("spatial", "Population")
+        self.ui.pop_combo.clear()
+        [self.ui.pop_combo.addItem(str(popmaps[0][i])) for i in range(len(popmaps[0]))]
+        try:
+            self.ui.pop_combo.setCurrentIndex(popmaps[1].index(self.module.get_parameter("population_map")))
+        except ValueError:
+            self.ui.pop_combo.setCurrentIndex(0)
+
+        elevmaps = self.get_dataref_array("spatial", "Elevation")
+        self.ui.elev_combo.clear()
+        [self.ui.elev_combo.addItem(str(elevmaps[0][i])) for i in range(len(elevmaps[0]))]
+        try:
+            self.ui.elev_combo.setCurrentIndex(elevmaps[1].index(self.module.get_parameter("elevation_map")))
+        except ValueError:
+            self.ui.elev_combo.setCurrentIndex(0)
+
+        self.ui.pop_fromurbandev.setChecked(int(self.module.get_parameter("population_fud")))
+        self.ui.lu_fromurbandev.setChecked(int(self.module.get_parameter("landuse_fud")))
+
+        municipalmaps = self.get_dataref_array("spatial", "Boundaries", "Geopolitical")
+        self.ui.geopolitical_combo.clear()
+        [self.ui.geopolitical_combo.addItem(str(municipalmaps[0][i])) for i in range(len(municipalmaps[0]))]
+        try:
+            self.ui.geopolitical_combo.setCurrentIndex(municipalmaps[1].index(
+                self.module.get_parameter("geopolitical_map")))
+        except ValueError:
+            self.ui.geopolitical_combo.setCurrentIndex(0)
+
+        suburbmaps = self.get_dataref_array("spatial", "Boundaries", "Suburban")
+        self.ui.suburb_combo.clear()
+        [self.ui.suburb_combo.addItem(str(suburbmaps[0][i])) for i in range(len(suburbmaps[0]))]
+        try:
+            self.ui.suburb_combo.setCurrentIndex(suburbmaps[1].index(self.module.get_parameter("suburban_map")))
+        except ValueError:
+            self.ui.suburb_combo.setCurrentIndex(0)
+
+        self.ui.geopolitical_check.setChecked(self.module.get_parameter("include_geopolitical"))
+        self.ui.geopolitical_line.setText(self.module.get_parameter("geopolitical_attref"))
+        self.ui.suburb_check.setChecked(self.module.get_parameter("include_suburb"))
+        self.ui.suburb_line.setText(self.module.get_parameter("suburban_attref"))
 
         # --- GEOMETRIC REPRESENTATION TAB ---
+        spatial_ref = ["BLOCKS", "HEXAGONS"]
+        self.ui.rep_combo.setCurrentIndex(spatial_ref.index(self.module.get_parameter("geometry_type")))
+        self.ui.resolution_spin.setValue(self.module.get_parameter("blocksize"))
+        self.ui.resolution_auto.setChecked(int(self.module.get_parameter("blocksize_auto")))
+        if self.module.get_parameter("neighbourhood") == "M":
+            self.ui.radio_moore.setChecked(1)
+        else:
+            self.ui.radio_vonNeu.setChecked(1)
+        self.ui.spatialindices_check.setChecked(self.module.get_parameter("spatialmetrics"))
+        self.ui.patchdelin_check.setChecked(self.module.get_parameter("patchdelin"))
 
         # --- SPATIAL CONTEXT TAB ---
-        pass
+        self.ui.considergeo_check.setChecked(self.module.get_parameter("considerCBD"))
+        if self.module.get_parameter("locationOption") == "S":  # S = Selection, C = coordinates
+            self.ui.cbdknown_radio.setChecked(1)
+        else:
+            self.ui.cbdmanual_radio.setChecked(1)
 
-    def update_module_parameters(self):
-        """Saves the active values"""
-        pass
+        self.ui.city_combo.clear()
+        citynames = ubglobals.COORDINATES.keys()
+        citynames.sort()
+        [self.ui.city_combo.addItem(str(n)) for n in citynames]
+        project_city = self.simulation.get_project_parameter("city")
+        self.ui.city_combo.setCurrentIndex(citynames.index(project_city))
+
+        self.ui.cbdlong_box.setText(str(self.module.get_parameter("locationLong")))
+        self.ui.cbdlat_box.setText(str(self.module.get_parameter("locationLat")))
+        self.ui.cbdmark_check.setChecked(self.module.get_parameter("marklocation"))
+
+        rivermaps = self.get_dataref_array("spatial", "Water Bodies", "Rivers")
+        self.ui.rivers_combo.clear()
+        [self.ui.rivers_combo.addItem(str(rivermaps[0][i])) for i in range(len(rivermaps[0]))]
+        try:
+            self.ui.rivers_combo.setCurrentIndex(rivermaps[1].index(self.module.get_parameter("river_map")))
+        except ValueError:
+            self.ui.rivers_combo.setCurrentIndex(0)
+
+        lakemaps = self.get_dataref_array("spatial", "Water Bodies", "Lakes")
+        self.ui.lakes_combo.clear()
+        [self.ui.lakes_combo.addItem(str(lakemaps[0][i])) for i in range(len(lakemaps[0]))]
+        try:
+            self.ui.lakes_combo.setCurrentIndex(lakemaps[1].index(self.module.get_parameter("pond_map")))
+        except ValueError:
+            self.ui.lakes_combo.setCurrentIndex(0)
+
+        self.ui.rivers_check.setChecked(self.module.get_parameter("include_rivers"))
+        self.ui.lakes_check.setChecked(self.module.get_parameter("include_ponds"))
+        self.ui.waterbody_distance_check.setChecked(self.module.get_parameter("calculate_wbdistance"))
+
+        delin_methods = ["Dinf", "D8"]
+        self.ui.flowpath_combo.setCurrentIndex(delin_methods.index(self.module.get_parameter("flowpath_method")))
+        self.ui.demsmooth_check.setChecked(self.module.get_parameter("dem_smooth"))
+        self.ui.demsmooth_spin.setValue(self.module.get_parameter("dem_passes"))
+        self.ui.natfeature_check.setChecked(self.module.get_parameter("guide_natural"))
+        self.ui.infrastructure_check.setChecked(self.module.get_parameter("guide_built"))
+
+        natfeatures = self.get_dataref_array("spatial", "Water Bodies")
+        self.ui.natfeature_combo.clear()
+        [self.ui.natfeature_combo.addItem(str(natfeatures[0][i])) for i in range(len(natfeatures[0]))]
+        try:
+            self.ui.natfeature_combo.setCurrentIndex(natfeatures.index(self.module.get_parameter("guide_natural_map")))
+        except ValueError:
+            self.ui.natfeature_combo.setCurrentIndex(0)
+
+        builtfeatures = self.get_dataref_array("spatial", "Built Infrastructure")
+        self.ui.infrastructure_combo.clear()
+        [self.ui.infrastructure_combo.addItem(str(builtfeatures[0][i])) for i in range(len(builtfeatures[0]))]
+        try:
+            self.ui.infrastructure_combo.setCurrentIndex(builtfeatures.index(
+                self.module.get_parameter("guide_natural_built")))
+        except ValueError:
+            self.ui.infrastructure_combo.setCurrentIndex(0)
+
+        self.enable_disable_guis()
+
+    def enable_disable_guis(self):
+        """Enables and disabled the combox boxes based on the parameter values."""
+        self.ui.lu_combo.setEnabled(not(self.ui.lu_fromurbandev.isChecked()))
+        self.ui.pop_combo.setEnabled(not(self.ui.pop_fromurbandev.isChecked()))
+        self.ui.geopolitical_combo.setEnabled(self.ui.geopolitical_check.isChecked())
+        self.ui.suburb_combo.setEnabled(self.ui.suburb_check.isChecked())
+        self.ui.geopolitical_line.setEnabled(self.ui.geopolitical_check.isChecked())
+        self.ui.suburb_line.setEnabled(self.ui.suburb_check.isChecked())
+
+        self.ui.resolution_spin.setEnabled(not(self.ui.resolution_auto.isChecked()))
+        self.ui.city_combo.setEnabled(self.ui.cbdknown_radio.isChecked())
+        self.ui.cbdlong_box.setEnabled(self.ui.cbdmanual_radio.isChecked())
+        self.ui.cbdlat_box.setEnabled(self.ui.cbdmanual_radio.isChecked())
+        self.ui.cbdmark_check.setEnabled(self.ui.cbdmanual_radio.isChecked())
+        self.ui.region_widget.setEnabled(self.ui.considergeo_check.isChecked())
+        self.ui.rivers_combo.setEnabled(self.ui.rivers_check.isChecked())
+        self.ui.lakes_combo.setEnabled(self.ui.lakes_check.isChecked())
+        self.ui.waterbody_distance_check.setEnabled((self.ui.rivers_check.isChecked() or
+                                                     self.ui.lakes_check.isChecked()))
+        self.ui.natfeature_combo.setEnabled(self.ui.natfeature_check.isChecked())
+        self.ui.infrastructure_combo.setEnabled(self.ui.infrastructure_check.isChecked())
+
+    def get_dataref_array(self, dataclass, datatype, *args):
+        """Retrieves a list of data files loaded into the current scenario for display in the GUI
+
+        :param dataclass: the data class i.e. spatial, temporal, qualitative
+        :param datatype: the name that goes with the data class e.g. landuse, population, etc.
+        """
+        dataref_array = [["<no map selected>"], [None]]    # index 0:filenames, index 1:object_reference
+        for dref in self.active_scenario.get_data_reference(dataclass):
+            if dref.get_metadata("parent") == datatype:
+                if len(args) > 0 and datatype in ["Boundaries", "Water Bodies", "Built Infrastructure", "Overlays"]:
+                    if dref.get_metadata("sub") != args[0]:
+                        continue
+                dataref_array[0].append(dref.get_metadata("filename"))
+                dataref_array[1].append(dref.get_data_id())
+        return dataref_array
 
     def save_values(self):
         """Saves all user-modified values for the module's parameters from the GUI

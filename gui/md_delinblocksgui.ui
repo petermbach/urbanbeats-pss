@@ -352,7 +352,7 @@ p, li { white-space: pre-wrap; }
                     </widget>
                    </item>
                    <item row="4" column="1">
-                    <widget class="QComboBox" name="suburb_combo_2">
+                    <widget class="QComboBox" name="suburb_combo">
                      <item>
                       <property name="text">
                        <string>&lt;no map selected&gt;</string>
@@ -361,7 +361,7 @@ p, li { white-space: pre-wrap; }
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QCheckBox" name="suburb_check_2">
+                    <widget class="QCheckBox" name="suburb_check">
                      <property name="toolTip">
                       <string>Checking this box will produce a CBD point on the &quot;block centres&quot; output map.</string>
                      </property>
@@ -378,7 +378,7 @@ Correction proceeds as follows:
                     </widget>
                    </item>
                    <item row="1" column="0">
-                    <widget class="QCheckBox" name="geopolitical_check_2">
+                    <widget class="QCheckBox" name="geopolitical_check">
                      <property name="toolTip">
                       <string>Checking this box will produce a CBD point on the &quot;block centres&quot; output map.</string>
                      </property>
@@ -395,14 +395,14 @@ Correction proceeds as follows:
                     </widget>
                    </item>
                    <item row="3" column="1">
-                    <widget class="QLineEdit" name="geopolitical_line_2">
+                    <widget class="QLineEdit" name="geopolitical_line">
                      <property name="toolTip">
                       <string>Units of decimal degrees</string>
                      </property>
                     </widget>
                    </item>
                    <item row="7" column="1">
-                    <widget class="QLineEdit" name="suburb_line_2">
+                    <widget class="QLineEdit" name="suburb_line">
                      <property name="toolTip">
                       <string>Units of decimal degrees.</string>
                      </property>
@@ -416,7 +416,7 @@ Correction proceeds as follows:
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QComboBox" name="geopolitical_combo_2">
+                    <widget class="QComboBox" name="geopolitical_combo">
                      <item>
                       <property name="text">
                        <string>&lt;no map selected&gt;</string>
