@@ -121,7 +121,9 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
 
         self.delin_methods = ["Dinf", "D8"]
 
+        self.gui_state = "initial"
         self.change_active_module()
+        self.gui_state = "ready"
 
         # --- SIGNALS AND SLOTS ---
         self.ui.year_combo.currentIndexChanged.connect(self.change_active_module)
@@ -144,26 +146,39 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
 
         self.ui.buttonBox.accepted.connect(self.save_values)
 
-    def update_module_parameters(self):
-        """Saves the active values"""
-        pass
-
-    def same_parameters_check(self):
+    def same_parameters_check(self):    # TO DO
         """Checks if the 'same parameters' checkbox is checked, automatically disables GUI time combobox, takes
         current parameters in the GUI and saves to all modules when the GUI box is closed with accept() signal
         (i.e. OK button pressed)."""
-        pass
+        if self.ui.same_params.isChecked():
+            pass    # Functions if checked
+        else:
+            pass    # Functions if unchecked
 
-    def autofill_from_previous_year(self):
+    def autofill_from_previous_year(self):  # TO DO
         """Autofills all GUI parameters from the previous year's class instance."""
-        pass
+        pass    # Figure out some automatic parameter filling function that can be called in the delinblocks module
 
-    def reset_parameters_to_default(self):
+    def reset_parameters_to_default(self):  # TO DO
         """Resets all parameters of the current module instance back to default values."""
         pass
 
     def change_active_module(self):
         """Searches for the active module based on the simulation year combo box and updates the GUI."""
+        # Send message box to user to ask whether to save current parameters
+        if self.gui_state == "ready":
+            prompt_msg = "You are about to change the time period, do you wish to save changes made to your parameters " \
+                         "for the current time step?"
+            reply = QtWidgets.QMessageBox.question(self, "Changing Time Period", prompt_msg,
+                                           QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No |
+                                           QtWidgets.QMessageBox.Cancel, QtWidgets.QMessageBox.Cancel)
+            if reply == QtWidgets.QMessageBox.Yes:
+                self.save_values()
+            elif reply == QtWidgets.QMessageBox.No:
+                pass
+            else:
+                return
+
         # Retrieve the DelinBlocks() Reference corresponding to the current year
         self.module = self.active_scenario.get_module_object("SPATIAL", self.ui.year_combo.currentIndex())
         self.setup_gui_with_parameters()
