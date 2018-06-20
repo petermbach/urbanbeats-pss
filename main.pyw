@@ -69,6 +69,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        self.__gui_state = "idle"   # GUI States, allows changing of functionality during runtime
+        # The GUI state is introduced such that changes can be made when displaying different GUI elements during
+
         # --- INITIALIZATION ---
         self.setWindowTitle("UrbanBEATS Planning Support Tool")
         # self.setWindowTitle("规划模型")       #Chinese Translation - automate!
@@ -1036,10 +1039,16 @@ class MainWindow(QtWidgets.QMainWindow):
     def raise_ub_error_message(self, message):
         pass
 
+    def update_progress(self, value):
+        """Updates the progress bar of the Main GUI when the simulation is started/stopped/reset."""
+        self.ui.ProgressBar.setValue(value)
+
     def call_run_simulation(self):
         """Executes the run function for the current scenario that is active in the Scenario Browser."""
+        self.__gui_state = "Running"
         self.ui.actionRun.setEnabled(0)
         self.ui.SimDock_run.setEnabled(0)
+        self.update_progress(0)
         current_simulation = self.get_active_simulation_object()
         current_simulation.start()
 
@@ -1054,7 +1063,8 @@ class MainWindow(QtWidgets.QMainWindow):
     #ENABLERS and DISABLERS
     def enable_disable_main_interface(self, condition):
         """Enables and disables certain components of the main interface depending on the condition
-        specified.
+        specified. Note that this is somewhat different from self.__gui_state as that tracks general
+        behaviour throughout the program. The condition here is just what idle state the GUI should be in.
 
         :param condition: "startup", "new" or "scenario" will determine which buttons are enabled
         """
@@ -1085,7 +1095,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def enable_disable_module_icons(self, condition):
         """Enables and disables the module icons based on the conditions given. The input
         passed to this method is a list of booleans in the order of module buttons on the
-        main interface.
+        main interface. Note that this is somewhat different from self.__gui_state as that
+        tracks general behaviour throughout the program. The condition here is just what
+        idle state the GUI should be in.
 
         :param condition: [ ] list of booleans in order of module buttons on main window
         """

@@ -76,6 +76,7 @@ class UrbanBeatsSim(threading.Thread):
         self.__rootpath = rootpath          # the root path for UrbanBEATS' runtime
         self.__global_options = options     # global model options
         self.__runtime_method = "SF"
+        self.__runtime_progress = 0         # virtual progress bar
         self.__parent = parent
         # SF = Single Scenario, Full Simulation,
         # AF = All scenarios, full sim,
@@ -353,24 +354,29 @@ class UrbanBeatsSim(threading.Thread):
         for observer in self.__observers:
             observer.update_observer(str(message))
 
+    def update_runtime_progress(self, value):
+        """Can be called by the active_scenario to update the progress."""
+        self.__runtime_progress = value
+        self.__parent and self.__parent.update_progress(self.__runtime_progress)
+
     def run(self):
         """Runs the UrbanBEATS Simulation based on the active scenario, data library, project
         info and other information."""
-        print "Hello World"
         if self.__runtime_method == "SF":
             active_scenario = self.get_active_scenario()
             active_scenario.attach_observers(self.__observers)
             scenario_name = active_scenario.get_metadata("name")
             self.update_observers("Running Scenario: " + str(scenario_name))
+            self.update_runtime_progress(3)
             active_scenario.run()
             self.update_observers("Simulation Finished")
-
         elif self.__runtime_method == "AF":
-            pass
+            pass    # TO DO - ALL SCENARIOS FULL SIMULATION AT ONCE.
         elif self.__runtime_method == "SP":
-            pass
+            pass    # TO DO - Single Scenario - Performance ONLY
 
-        self.__parent and self.__parent.on_thread_finished()
+        self.__parent and self.__parent.on_thread_finished()    # CALLBACK to parent once the thread has finished.
+        threading.Thread.__init__(self)     # Reinitializes the thread so that it can be restarted.
 
 
 class UrbanBeatsLog(object):

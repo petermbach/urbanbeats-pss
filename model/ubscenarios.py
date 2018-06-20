@@ -284,7 +284,67 @@ class UrbanBeatsScenario(object):
     def run(self):
         # BEGIN THE SCENARIO'S SIMULATION
         self.update_observers("Scenario Start!")
-        time.sleep(4)
+        time.sleep(1)
+        if self.get_metadata("type") == "STATIC":
+            self.run_static_simulation()
+        elif self.get_metadata("type") == "DYNAMIC":
+            self.run_dynamic_simulation()
+        else:
+            self.run_benchmark_simulation()
+
+    def run_static_simulation(self):
+        """This function presents the logical module flow for a STATIC simulation."""
+        # --- STEP 0: Begin by setting up the basic global variables ---
+        self.update_observers("Scenario Type: STATIC")
+        temp_directory = self.simulation.get_global_options("tempdir")
+        self.update_observers("Current temp directory: "+str(temp_directory))
+        self.simulation.update_runtime_progress(5)
+        # self.resetAssets()    # reset the Assets Vector
+
+        # --- STATIC STEP 1: Block delineation ---
+        self.simulation.update_runtime_progress(10)
+        delinblocks = self.get_module_object("SPATIAL", 0)
+        print delinblocks
+
+        # --- STATIC STEP 2: Climate Setup ---
+
+        # --- STATIC STEP 3: Urban Planning ---
+
+        # --- STATIC STEP 4: Socio-Economic ---
+
+        # --- STATIC STEP 5: Spatial Mapping ---
+
+        # --- STATIC STEP 6: Regulation ---
+
+        # --- STATIC STEP 7: Infrastructure ---
+
+        # --- STATIC STEP 8: Performance ---
+
+        # --- STATIC STEP 9: Impact ---
+
+        # --- STATIC STEP 10: Decision Analysis ---
+
+        # --- DATA EXPORT AND CLEANUP STEPS ---
+
+        self.simulation.update_runtime_progress(100)
+
+    def run_dynamic_simulation(self):
+        """This function presents the logical module flow for a DYNAMIC simulation."""
+        pass
+        self.simulation.update_runtime_progress(100)
+
+    def run_benchmark_simulation(self):
+        """This function presents the logical module flow for a BENCHMARK simulation."""
+        pass
+        self.simulation.update_runtime_progress(100)
+
+
+
+
+
+
+
+
 
 
 
