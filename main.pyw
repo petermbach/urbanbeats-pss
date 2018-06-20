@@ -132,6 +132,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # SIMULATION MENU
         # Do this much later once GUIs for modules have been defined.
+        self.ui.actionRun.triggered.connect(self.call_run_simulation)
+        # Variant for calling only the performance assessment
+
         #
         # ADVANCED MENU
         # self.ui.actionModel_Calibration_Viewer.triggered.connect()
@@ -198,7 +201,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.SimDock_mapoptions.clicked.connect(self.show_map_export_settings)
         self.ui.SimDock_report.clicked.connect(self.show_reporting_settings)
         # self.ui.SimDock_resultsview.connect(self.show_results_viewer)
-        # self.ui.SimDock_run.connect(self.call_run_simulation)
+        self.ui.SimDock_run.clicked.connect(self.call_run_simulation)
 
     # SCENARIO CREATION AND MANAGEMENT FUNCTIONALITY
     def show_scenario_dialog(self, viewmode):
@@ -606,7 +609,8 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         self.set_active_simulation_object(None)  # Remove any existing active simulation
         self.reset_data_view_to_default()  # Restore the default Leaflet view
-        newsimulation = ubcore.UrbanBeatsSim(UBEATSROOT, self.__global_options)  # instantiate new simulation objective
+        newsimulation = ubcore.UrbanBeatsSim(UBEATSROOT, self.__global_options, self)  # instantiate new simulation objective
+        newsimulation.register_observer(self.consoleobserver)   # Add the observer
         self.set_active_simulation_object(newsimulation)
         self.reset_project_data_library_view()
 
@@ -1033,7 +1037,16 @@ class MainWindow(QtWidgets.QMainWindow):
         pass
 
     def call_run_simulation(self):
-        pass
+        """Executes the run function for the current scenario that is active in the Scenario Browser."""
+        self.ui.actionRun.setEnabled(0)
+        self.ui.SimDock_run.setEnabled(0)
+        current_simulation = self.get_active_simulation_object()
+        current_simulation.start()
+
+    def on_thread_finished(self):
+        """Callback function to reenable the run buttons once the current simulation has finished."""
+        self.ui.actionRun.setEnabled(1)
+        self.ui.SimDock_run.setEnabled(1)
 
     def call_run_simulation_perfonly(self):
         pass

@@ -30,6 +30,7 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 import threading
+import time
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 import modules.md_decisionanalysis as md_decisionanalysis
@@ -51,6 +52,7 @@ class UrbanBeatsScenario(object):
     this class and define the type of scenario (i.e. static, dynamic, benchmark)
     """
     def __init__(self, simulation, datalibrary, projectlog):
+        self.__observers = []
         self.simulation = simulation
         self.datalibrary = datalibrary
         self.projectlog = projectlog
@@ -270,6 +272,21 @@ class UrbanBeatsScenario(object):
                     return True
         return False    # Else, return false if all tests fail
 
+    def attach_observers(self, observers):
+        """Assigns an array of observers to the Scenario's self.__observers variable."""
+        self.__observers = observers
+
+    def update_observers(self, message):
+        """Sends the message to all observers contained in the core's observer list."""
+        for observer in self.__observers:
+            observer.update_observer(str(message))
+
     def run(self):
-        pass
+        # BEGIN THE SCENARIO'S SIMULATION
+        self.update_observers("Scenario Start!")
+        time.sleep(4)
+
+
+
+
 

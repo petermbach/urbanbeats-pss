@@ -60,7 +60,7 @@ class UrbanBeatsSim(threading.Thread):
     about scenarios, models, and other items. Contains the project info, reference
     to all modules, simulation settings and status of the current workflow.
     """
-    def __init__(self, rootpath, options):
+    def __init__(self, rootpath, options, parent=None):
         """Initialization for the class allowing the model to set up the simulation
         and required modules.
 
@@ -75,6 +75,11 @@ class UrbanBeatsSim(threading.Thread):
         # Initialize variables
         self.__rootpath = rootpath          # the root path for UrbanBEATS' runtime
         self.__global_options = options     # global model options
+        self.__runtime_method = "SF"
+        self.__parent = parent
+        # SF = Single Scenario, Full Simulation,
+        # AF = All scenarios, full sim,
+        # SP = single scenario, performance only
 
         #Initialize paths
         self.emptyBlockPath = self.__rootpath+"/ancillary/emptyblockmap.shp"
@@ -135,6 +140,11 @@ class UrbanBeatsSim(threading.Thread):
 
         # Regardless of mode, all of them should now load the boundary map and get the details
         self.update_project_boundaryinfo()
+
+    def register_observer(self, observerobj):
+        """Adds an observer references by observerobj to the self.__observers array. This uses the Observer design
+        pattern."""
+        self.__observers.append(observerobj)
 
     def update_project_boundaryinfo(self):
         """Loads the boundary map shapefile, obtains coordinates of the bounding polygon and spatial
@@ -338,10 +348,29 @@ class UrbanBeatsSim(threading.Thread):
         """Returns the active project log of type UrbanBeatsLog()"""
         return self.__projectlog
 
+    def update_observers(self, message):
+        """Sends the message to all observers contained in the core's observer list."""
+        for observer in self.__observers:
+            observer.update_observer(str(message))
+
     def run(self):
         """Runs the UrbanBEATS Simulation based on the active scenario, data library, project
         info and other information."""
-        pass
+        print "Hello World"
+        if self.__runtime_method == "SF":
+            active_scenario = self.get_active_scenario()
+            active_scenario.attach_observers(self.__observers)
+            scenario_name = active_scenario.get_metadata("name")
+            self.update_observers("Running Scenario: " + str(scenario_name))
+            active_scenario.run()
+            self.update_observers("Simulation Finished")
+
+        elif self.__runtime_method == "AF":
+            pass
+        elif self.__runtime_method == "SP":
+            pass
+
+        self.__parent and self.__parent.on_thread_finished()
 
 
 class UrbanBeatsLog(object):

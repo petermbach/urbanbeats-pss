@@ -438,6 +438,8 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionPerformance"/>
     <addaction name="actionImpact"/>
     <addaction name="actionDecision_Analysis"/>
+    <addaction name="separator"/>
+    <addaction name="actionRun"/>
    </widget>
    <widget class="QMenu" name="menuAdvanced">
     <property name="title">
@@ -2121,7 +2123,7 @@ p, li { white-space: pre-wrap; }
      <normaloff>:/icons/Play-icon.png</normaloff>:/icons/Play-icon.png</iconset>
    </property>
    <property name="text">
-    <string>Run</string>
+    <string>Run Current Scenario</string>
    </property>
    <property name="toolTip">
     <string>Run a Simulation</string>
