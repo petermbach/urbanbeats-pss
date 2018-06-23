@@ -44,7 +44,6 @@ import tempfile
 from ubmodule import *
 import model.ublibs.ubspatial as ubspatial
 import model.ublibs.ubmethods as ubmethods
-
 import model.ublibs.ubdatatypes as ubdata
 import model.progref.ubglobals as ubglobals
 
@@ -168,12 +167,14 @@ class DelinBlocks(UBModule):
         """
         self.notify("Start Spatial Delineation Module")     # Module start
         rand.seed()     # Seed the random number generator
+
+        # Check the neighbourhood rule and set the number of adjacent cells, nhd_type, accordingly
         if self.neighbourhood == "M":   # Determine number of neighbour cells depending on the neighbourhood
             nhd_type = 8    # 8 cardinal directions
         else:
             nhd_type = 4    # 4 adjacent cells NSEW
 
-        # Get Basic Raster Data Sets
+        # GET BASIC RASTER DATA SETS
         self.notify("Loading Basic Input Maps")
 
         # Load Land Use Map
@@ -182,6 +183,7 @@ class DelinBlocks(UBModule):
         self.notify("Loading: "+str(fullfilepath))
         landuseraster = ubspatial.import_ascii_raster(fullfilepath, self.landuse_map)
         self.notify("Load Complete!")
+        xllcorner, yllcorner = landuseraster.get_extents()  # Master xll/yll corner - the whole map is based on this
 
         # Load Population Map
         pop_dref = self.datalibrary.get_data_with_id(self.population_map)   # Retrieve the population data reference
@@ -189,6 +191,9 @@ class DelinBlocks(UBModule):
         self.notify("Loading: " + str(fullfilepath))
         populationraster = ubspatial.import_ascii_raster(fullfilepath, self.population_map)
         self.notify("Load Complete!")
+        pop_offset = ubspatial.calculate_offsets(landuseraster, populationraster, landuseraster.get_cellsize())
+        # Check Map Offset so that the data can be aligned
+        self.notify("Population map cell offsets: " + str(pop_offset[0]) + "," + str(pop_offset[1]))
 
         # Load Elevation Map
         elev_dref = self.datalibrary.get_data_with_id(self.elevation_map)     # Retrieves the elevation data ref
@@ -196,14 +201,16 @@ class DelinBlocks(UBModule):
         self.notify("Loading: " + str(fullfilepath))
         elevationraster = ubspatial.import_ascii_raster(fullfilepath, self.elevation_map)
         self.notify("Load Complete!")
+        elev_offset = ubspatial.calculate_offsets(landuseraster, elevationraster, landuseraster.get_cellsize())
+        self.notify("Elevation map cell offsets: "+str(elev_offset[0])+","+str(elev_offset[1]))
 
+        # START CREATING BLOCKS MAP
         self.notify("Creating Blocks Map!")
         inputres = landuseraster.get_cellsize()
         width = landuseraster.get_dimensions()[0] * inputres
         height = landuseraster.get_dimensions()[1] * inputres
-        xllcorner, yllcorner = landuseraster.get_extents()
 
-        # AUTO-SIZE Blocks?
+        # Step 1- AUTO-SIZE Blocks?
         if self.blocksize_auto:
             cs = ubmethods.autosize_blocks(width, height)
         else:

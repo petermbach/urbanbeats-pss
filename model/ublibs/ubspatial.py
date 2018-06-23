@@ -53,16 +53,12 @@ def import_ascii_raster(filepath, naming):
         metadata_line = f.readline().split()
         metadata[str(metadata_line[0]).lower()] = float(metadata_line[1])
 
-    print metadata
-
     try:    # Attempt to create the numpy array to store the data
         dataarray = np.full((int(metadata["nrows"]), int(metadata["ncols"])), metadata["nodata_value"])
         # Numpy Array is created by specifying the "ROWS" first then "COLUMNS"
     except KeyError:
         print "Error, ASCII data not correctly labelled"
         return 0
-
-    print dataarray
 
     irow = 0     # To track the rows - i-th row and j-th column below
     for lines in f:
@@ -72,12 +68,26 @@ def import_ascii_raster(filepath, naming):
         irow += 1
     f.close()
 
-    print irow
     # Create the UBRasterData() data type
     rasterdata = ubdata.UBRasterData(metadata, dataarray, False)     # Create the object as read-only
     rasterdata.set_name(naming)
     rasterdata.set_filepath(filepath)
     return rasterdata
+
+
+def calculate_offsets(raster_a, raster_b, cellsize):
+    """Calculates the map offset between two rasters, based on raster A. This is used particularly in block delineation
+    where the Land use Raster's extents are used and all other input maps are shifted and adjusted accordingly.
+
+    :param rasterA: UBRasterData() object with fully contained data
+    :param rasterB: UBRasterData() object with fully contained data
+    :param cellsize: the cellsize of the raster files, preferably raster A
+    """
+    xllA, yllA = raster_a.get_extents()
+    xllB, yllB = raster_b.get_extents()
+    offset = [xllA - xllB, yllA - yllB]
+    offset = [int(offset[0]/cellsize), int(offset[1]/cellsize)]
+    return offset
 
 
 def get_epsg(projcs, rootpath):
