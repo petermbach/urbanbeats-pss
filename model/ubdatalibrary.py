@@ -270,7 +270,7 @@ class UrbanBeatsDataReference(object):
         if self.__keepcopy:
             return self.__projectdatapath+"/datalib/"
         else:
-            return self.__originaldatapath
+            return self.__originaldatapath+"/"
 
     def get_original_data_path(self):
         return self.__originaldatapath

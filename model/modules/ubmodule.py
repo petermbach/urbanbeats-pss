@@ -72,7 +72,7 @@ class UBModule(object):
         :param updateMessage: message to be sent to all observers, gets converted to a string.
         :return: True
         """
-        self.__observers[0].updateObserver(str(updateMessage))
+        self.__observers[0].update_observer(str(updateMessage)) # [0] is the console observer
         return True
 
     def notify_progress(self, value):
