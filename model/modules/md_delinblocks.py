@@ -42,6 +42,8 @@ import tempfile
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 from ubmodule import *
+import model.ublibs.ubspatial as ubspat
+
 import model.ublibs.ubdatatypes as ubdata
 import model.progref.ubglobals as ubglobals
 
@@ -148,6 +150,13 @@ class DelinBlocks(UBModule):
         self.xllcorner = float(0.0)     # Obtained from the loaded raster data (elevation) upon run-time
         self.yllcorner = float(0.0)     # Spatial extents of the input map
 
+        self.elevation = 0
+        self.landuse = 0
+        self.population = 0
+
+        self.municipal_boundary = 0
+        self.suburban_boundary = 0
+
         # ----- END OF INPUT PARAMETER LIST -----
 
     def run(self):
@@ -156,11 +165,92 @@ class DelinBlocks(UBModule):
 
         :return: True upon successful completion
         """
-        pass
+        self.notify("Start Spatial Delineation Module")     # Module start
+        rand.seed()     # Seed the random number generator
+        if self.neighbourhood == "M":   # Determine number of neighbour cells depending on the neighbourhood
+            nhd_type = 8    # 8 cardinal directions
+        else:
+            nhd_type = 4    # 4 adjacent cells NSEW
 
-        return True
+        # Get Basic Raster Data Sets
+        self.notify("Loading Basic Input Maps")
+
+        # Load Land Use Map
+        lu_dref = self.datalibrary.get_data_with_id(self.landuse_map)       # Retrieve the land use data reference
+        fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
+        self.notify("Loading: "+str(fullfilepath))
+        landuseraster = ubspat.import_ascii_raster(fullfilepath, self.landuse_map)
+        self.notify("Load Complete!")
+
+        # Load Population Map
+        pop_dref = self.datalibrary.get_data_with_id(self.population_map)   # Retrieve the population data reference
+        fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
+        self.notify("Loading: " + str(fullfilepath))
+        populationraster = ubspat.import_ascii_raster(fullfilepath, self.population_map)
+        self.notify("Load Complete!")
+
+        # Load Elevation Map
+        elev_dref = self.datalibrary.get_data_with_id(self.elevation_map)     # Retrieves the elevation data ref
+        fullfilepath = elev_dref.get_data_file_path() + elev_dref.get_metadata("filename")
+        self.notify("Loading: " + str(fullfilepath))
+        elevationraster = ubspat.import_ascii_raster(fullfilepath, self.elevation_map)
+        self.notify("Load Complete!")
+
+        self.notify("Creating Blocks Map!")
+        inputres = landuseraster.get_cellsize()
+        width = landuseraster.get_dimensions()[0] * inputres
+        height = landuseraster.get_dimensions()[1] * inputres
+        xllcorner, yllcorner = landuseraster.get_extents()
+
+        # AUTO-SIZE Blocks?
+        if self.blocksize_auto:
+            cs = self.autosize_blocks(width, height)
+        else:
+            cs = self.blocksize
+        cellsinblock = int(cs/inputres)
+
+        self.notify("Width "+str(width))
+        self.notify("Height "+str(height))
+        self.notify("Block Size: "+str(cs))
+        self.notify("Cells in Block: "+str(cellsinblock))
 
     # Additional Module Functions
+    def autosize_blocks(self, width, height):
+        """Calculates the recommended Block Size dependent on the size of the case study determined by the input map
+        dimensions. Takes width and height and returns block size.
+
+        Rules:
+           - Based on experience from simulations, aims to reduce simulation times
+             while providing enough accuracy.
+           - Aim to simulate under 500 Blocks
+
+        :param width: the width of the input map in [m] - xmax - xmin
+        :param height: the height of the input map in [m] - ymax - ymin
+        :return auto-determined blocksize
+        """
+        blocklimit = 1000
+        totarea = width * height
+        idealblockarea = totarea / 500
+        idealblocksize = math.sqrt(idealblockarea)
+        print "IdBS:", idealblocksize
+
+        if idealblocksize <= 200:
+            blocksize = 200
+        elif idealblocksize <= 500:
+            blocksize = 500
+        elif idealblocksize <= 1000:
+            blocksize = 1000
+        elif idealblocksize <= 2000:
+            blocksize = 2000
+        elif idealblocksize / 1000 < 10:
+            blocksize = (int(idealblocksize / 1000) + 1) * 1000
+        else:
+            blocksize = (int(idealblocksize / 10000) + 1) * 10000
+
+        if blocksize >= 10000:
+            print "WARNING: Block Size is very large, it is recommended to use a smaller case study!"
+        return blocksize
+
     def otherfunctions(self):
         pass
         return True

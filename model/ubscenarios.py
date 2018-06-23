@@ -304,7 +304,9 @@ class UrbanBeatsScenario(object):
         # --- STATIC STEP 1: Block delineation ---
         self.simulation.update_runtime_progress(10)
         delinblocks = self.get_module_object("SPATIAL", 0)
-        print delinblocks
+        delinblocks.attach(self.__observers)
+        delinblocks.run()
+
 
         # --- STATIC STEP 2: Climate Setup ---
 
