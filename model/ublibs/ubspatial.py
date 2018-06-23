@@ -26,6 +26,58 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 
 import osgeo.osr as osr
 import osgeo.ogr as ogr
+import numpy as np
+
+# URBANBEATS IMPORT
+import ubdatatypes as ubdata
+
+
+def import_ascii_raster(filepath, naming):
+    """ Imports an ESRI ASCII format raster, i.e. text file format (different file extensions if created with ArcMap
+    or QGIS, but internal data structure is the same. Returns an output UBRasterData() object
+
+    The raster data loaded from this function is flipped to ensure that it conincides with the x and y. The indexing
+    of the raster data, however, starts from zero! So n_cols and n_rows indices should be subtracted by 1 if the
+    value is to be called from the file.
+
+    Specification:
+    http://resources.esri.com/help/9.3/arcgisdesktop/com/gp_toolref/spatial_analyst_tools/esri_ascii_raster_format.htm
+    NODATA_value is listed as 'optional', this function requires the NODATA value to be listed!
+
+    :param filepath: The full filepath to the ASCII raster data file
+    :return: UBRasterData() type
+    """
+    f = open(filepath, 'r')
+    metadata = {}
+    for i in range(6):
+        metadata_line = f.readline().split()
+        metadata[str(metadata_line[0]).lower()] = float(metadata_line[1])
+
+    print metadata
+
+    try:    # Attempt to create the numpy array to store the data
+        dataarray = np.full((int(metadata["nrows"]), int(metadata["ncols"])), metadata["nodata_value"])
+        # Numpy Array is created by specifying the "ROWS" first then "COLUMNS"
+    except KeyError:
+        print "Error, ASCII data not correctly labelled"
+        return 0
+
+    print dataarray
+
+    irow = 0     # To track the rows - i-th row and j-th column below
+    for lines in f:
+        a = lines.split()
+        for jcol in range(len(a)):
+            dataarray[irow, jcol] = a[jcol]
+        irow += 1
+    f.close()
+
+    print irow
+    # Create the UBRasterData() data type
+    rasterdata = ubdata.UBRasterData(metadata, dataarray, False)     # Create the object as read-only
+    rasterdata.set_name(naming)
+    rasterdata.set_filepath(filepath)
+    return rasterdata
 
 
 def get_epsg(projcs, rootpath):
@@ -144,6 +196,8 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
             coordinates[p] = [coordinates[p][1], coordinates[p][0]]
         mapstats["centroid"] = [(ymin + ymax) / 2.0, (xmin + xmax)/2.0]
     return coordinates, mapstats
+
+
 
 
 # TEST SCRIPT - get_bounding_polygon() function
