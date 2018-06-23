@@ -58,10 +58,8 @@ class UBRasterData(object):
         self.__yllcorner = float(metadata["yllcorner"])         # The y-coordinate of the raster data's corner extent
         self.__cellsize = float(metadata["cellsize"])           # Size of a raster cell (usually in [m])
         self.__nodatavalue = float(metadata["nodata_value"])    # The value used to represent 'no data'
-        self.__data = rasterdata    # a numpy array with dimensions nrows x ncols
+        self.__data = rasterdata    # a numpy array of the data with dimensions nrows x ncols
         self.__setdata_option = rw  # depending on the setting, it'll allow the program to read/write to this file
-        print "Created Raster Data Object"
-        # The actual data in the raster
 
     def set_name(self, raster_name):
         """Sets a name for the raster data. This may not necessarily be unique. Generally a string input."""
@@ -116,3 +114,46 @@ class UBRasterData(object):
         """Erases the data matrix (to free up memory), use only if necessary!"""
         self.__data = None
         return True
+
+class UBComponent(object):
+    """The most basic data container in UrbanBEATS, the UBComponent(), which can be used to store and manage
+    any form of non-spatial data, e.g. an attributes list. It has several functions that allows its children
+    to access when inherited.
+    """
+    def __init__(self):
+        """Only contains the attribute property, but this is a private dictionary and can only be accessed
+        through the class methods."""
+        self.__attributes = {}
+
+    def add_attribute(self, name, value):
+        """Adds attribute of name and value to the self.__attribute dictionary."""
+        self.__attributes[name] = value
+        return True
+
+    def set_attribute(self, name, value):
+        """Allows setting of the attribute 'name' value to value only if that attribute exists."""
+        try:
+            self.__attributes[name] = value
+        except KeyError:
+            print "WARNING NO ATTTRIBUTE NAMED: "+str(name)
+        return True
+
+    def change_attribute(self, name, value):
+        """Changes an attribute of the Component() with name and value, if the attribute doesn't exist, it adds it
+        to the list. The naming of this function is intentional even though it does the same thing as 'add attribute'
+        """
+        if name in self.__attributes.keys():
+            self.__attributes[name] = value
+        else:
+            self.__attributes[name] = value
+
+    def getAttribute(self, name):
+        """Tries to return the value of attribute by name, if KeyError, returns 0."""
+        try:
+            return self.__attributes[name]
+        except KeyError:
+            return 0
+
+    def getAllAttributes(self):
+        """Returns the entire dictionary, use sparingly or primarily for exporting data."""
+        return self.__attributes
