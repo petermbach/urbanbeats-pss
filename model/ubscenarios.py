@@ -78,12 +78,39 @@ class UrbanBeatsScenario(object):
         self.__time_series_data = []   # a list of time series data to be used in the scenario or stored.
         self.__qual_data = []   # a list of qualitative data to be used in the scenario
 
+        # A dictionary of arrays, containing modules, depending on scenario type
         self.__modules = {"SPATIAL" : [], "CLIMATE" : [], "URBDEV": [], "URBPLAN": [],
                            "SOCIO" : [], "MAP": [], "REG": [], "INFRA": [], "PERF": [],
                            "IMPACT": [], "DECISION": []}
 
         self.__dt_array = []
-        # A dictionary of arrays, containing modules, depending on scenario type
+
+        self.__assets = {}      # The collection of model assets that are stored for later retrieval, these
+        # can include: UBComponents(), Input Data, etc.
+
+        self.__active_assets = None  # Will hold a reference to the active asset dictionary based on current dt
+
+    def add_asset(self, name, asset):
+        """Adds a new asset object to the asset dictionary with the key 'name'."""
+        self.__assets[name] = asset
+        return True
+
+    def get_asset_with_name(self, name):
+        """Returns the asset within self.__assets with the key 'name'. Returns None if the asset does not exist."""
+        try:
+            return self.__assets[name]
+        except KeyError:
+            return None
+
+    def get_asset_with_identifier(self, idstring, **kwargs):
+        """Scans the complete Asset List and returns all assets with the idstring contained in their name
+        e.g. BlockID contained in the name "BlockID1", "BlockID2", etc.)
+
+        :param idstring: the part of the string to search the asset database for (e.g. "BlockID")
+        :param **kwargs: 'assetcol' = {} custom dictionary of assets
+        """
+
+
 
     def get_simulation_years(self):
         """Retrieves the list of simulation years to use."""
@@ -142,6 +169,9 @@ class UrbanBeatsScenario(object):
                 self.__modules["IMPACT"].append("YES")
             if self.check_is_module_active("DECISION"):
                 self.__modules["DECISION"].append("YES")
+
+            # CREATE ASSETS SUPERSTRUCTURE
+            self.__assets[str(i)] = {}
         return True
 
     def add_data_reference(self, dataref):
