@@ -45,7 +45,7 @@ import math
 # --- URBANBEATS LIBRARY IMPORTS ---
 
 
-def autosize_blocks(self, width, height):
+def autosize_blocks(width, height):
     """Calculates the recommended Block Size dependent on the size of the case study determined by the input map
     dimensions. Takes width and height and returns block size.
 
@@ -75,3 +75,12 @@ def autosize_blocks(self, width, height):
         blocksize = 5000    # Maximum Block Size will be 5000m x 5000m, we cannot simply afford to go higher
     return blocksize
 
+
+def reviewFileName(fname):
+    """Checks the filename for illegal characters, if there are illegal characters, function
+    removes them and modifies the filename so that the export function does not crash"""
+    illegal_char = ['\\', '/', ':', '*', '?', '"', '<', '>', '|']
+    for char in illegal_char:
+        if char in fname:
+            fname = fname.replace(char, '')
+    return fname
