@@ -46,6 +46,7 @@ from startnewprojectdialog import Ui_ProjectSetupDialog     # Start New Project 
 from logdialog import Ui_LogDialog         # Project Log Dialog
 from adddatadialog import Ui_AddDataDialog      # Add Data Dialog
 from newscenario import Ui_NewScenarioDialog    # Scenario Creation Dialog
+from newscenario_timestep import Ui_TimeStep_Dialog     # Irregular time step customization
 from mapexportoptions import Ui_MapExportDialog
 from reportoptions import Ui_ReportingDialog
 
@@ -243,6 +244,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.endyear_spin.setValue(int(self.scenario.get_metadata("endyear")))
         self.ui.timestep_spin.setValue(int(self.scenario.get_metadata("dt")))
         self.ui.timestep_irregular.setChecked(int(self.scenario.get_metadata("dt_irregular")))
+        self.timesteps = self.scenario.get_metadata("dt_array_parameter")  # Holds the full array of years to simulate.
 
         self.ui.benchmark_spin.setValue(int(self.scenario.get_metadata("benchmarks")))
 
@@ -263,6 +265,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.enable_disable_module_checkboxes()
         self.enable_disable_settings_tab()
         self.enable_disable_naming_line()
+        self.enable_disable_years_to_run_button()
 
         self.update_dialog_data_library()
 
@@ -284,11 +287,12 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.naming_check.clicked.connect(self.enable_disable_naming_line)
         self.ui.create_button.clicked.connect(self.create_scenario)
         self.ui.clear_button.clicked.connect(self.reset_interface)
-
+        self.ui.timestep_irregular.clicked.connect(self.enable_disable_years_to_run_button)
+        self.ui.timestep_irregular_button.clicked.connect(self.launch_timestep_window)
         self.ui.add_to_button.clicked.connect(self.add_datalibrary_to_scenariodata)
         self.ui.remove_from_button.clicked.connect(self.remove_scenariodata_entry)
 
-        if viewmode == 1:
+        if self.viewmode == 1:
             self.enable_disable_guis_for_editonly()
 
             dataclass = ["spatial", "temporal", "qualitative"]
@@ -301,6 +305,20 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
                     twi.setToolTip(0, str(dref.get_data_id())+" - "+str(dref.get_data_file_path()))
                     self.ui.scenariodata_tree.topLevelItem(i).addChild(twi)
 
+    def launch_timestep_window(self):
+        """Launches the 'select years' dialog window for irregular time step simulations."""
+        irregular_timestep_window = IrregularTimeStepDialogLaunch(self)
+        irregular_timestep_window.exec_()
+
+    def enable_disable_years_to_run_button(self):
+        """Disables the irregular time step selection button."""
+        if self.ui.timestep_irregular.isChecked():
+            self.ui.timestep_spin.setEnabled(0)
+            self.ui.timestep_irregular_button.setEnabled(1)
+        else:
+            self.ui.timestep_spin.setEnabled(1)
+            self.ui.timestep_irregular_button.setEnabled(0)
+
     def enable_disable_guis_for_editonly(self):
         """Disables certain features of the interface for editing mode."""
         self.ui.name_box.setEnabled(0)
@@ -311,6 +329,8 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.startyear_spin.setEnabled(0)
         self.ui.endyear_spin.setEnabled(0)
         self.ui.timestep_spin.setEnabled(0)
+        self.ui.timestep_irregular.setEnabled(0)
+        self.ui.timestep_irregular_button.setEnabled(self.ui.timestep_irregular.isChecked())
         self.ui.scrollArea.setEnabled(0)
         self.ui.naming_line.setEnabled(0)
         self.ui.naming_check.setEnabled(0)
@@ -423,6 +443,8 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.dynamic_radio.setEnabled(0)
         self.ui.timestep_widget.setEnabled(0)
         self.ui.timestep_widget_2.setEnabled(0)
+        self.ui.timestep_irregular_button.setEnabled(self.ui.timestep_irregular.isChecked())
+        self.ui.timestep_irregular.setEnabled(0)
         self.enable_disable_module_checkboxes(special="ALL")
 
     def enable_disable_settings_tab(self):
@@ -433,15 +455,20 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         """
         if self.ui.dynamic_radio.isChecked():
             self.ui.benchmark_spin.setEnabled(0)
-            self.ui.timestep_spin.setEnabled(1)
+            self.ui.timestep_irregular.setEnabled(1)
+            self.enable_disable_years_to_run_button()
             self.ui.endyear_spin.setEnabled(1)
         elif self.ui.benchmark_radio.isChecked():
             self.ui.benchmark_spin.setEnabled(1)
             self.ui.timestep_spin.setEnabled(0)
+            self.ui.timestep_irregular_button.setEnabled(0)
+            self.ui.timestep_irregular.setEnabled(0)
             self.ui.endyear_spin.setEnabled(0)
         elif self.ui.static_radio.isChecked():
             self.ui.benchmark_spin.setEnabled(0)
             self.ui.timestep_spin.setEnabled(0)
+            self.ui.timestep_irregular_button.setEnabled(0)
+            self.ui.timestep_irregular.setEnabled(0)
             self.ui.endyear_spin.setEnabled(0)
 
     def enable_disable_module_checkboxes(self, **kwargs):
@@ -526,6 +553,8 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.endyear_spin.setValue(2068)
         self.ui.startyear_spin.setValue(2018)
         self.ui.timestep_spin.setValue(1)
+        self.enable_disable_years_to_run_button()
+        self.timesteps = []
 
         # Refresh Modules
         self.uncheck_all_module_checkboxes()
@@ -611,11 +640,27 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
             self.scenario.remove_data_reference(dref.get_data_id())
             dref.remove_from_scenario(self.scenario.get_metadata("name"))
 
+    def raise_timestep_error(self):
+        """Catches the case in the UI where irregular time steps are used, but there are no years in the list because
+        the user may have changed the start and end years beyond the range. Cancels the create_scenario operation."""
+        prompt_msg = "Error, no time steps selected within start- and end-year range!"
+        QtWidgets.QMessageBox.warning(self, 'No time steps selected!', prompt_msg, QtWidgets.QMessageBox.Ok)
+
     def create_scenario(self):
         """Saves the newly created data to the scenario object and closes the window. Accept() signal
         calls core functions that then create the scenario."""
         if self.viewmode == 1:
             self.update_scenario_edit()
+
+        # Pre- accept() checks
+        if self.ui.timestep_irregular.isChecked():
+            revised_years = []
+            for i in self.timesteps:
+                if i >= self.ui.startyear_spin.value() and i <= self.ui.endyear_spin.value():
+                    revised_years.append(i)
+            if len(revised_years) == 0:
+                self.raise_timestep_error()
+                return False
 
         self.scenario.set_metadata("name", str(self.ui.name_box.text()))
         self.scenario.set_metadata("narrative", str(self.ui.narrative_box.toPlainText()))
@@ -630,6 +675,8 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.scenario.set_metadata("startyear", int(self.ui.startyear_spin.value()))
         self.scenario.set_metadata("endyear", int(self.ui.endyear_spin.value()))
         self.scenario.set_metadata("dt", int(self.ui.timestep_spin.value()))
+        self.scenario.set_metadata("dt_irregular", int(self.ui.timestep_irregular.isChecked()))
+        self.scenario.set_metadata("dt_array_parameter", self.timesteps)
         self.scenario.set_metadata("benchmarks", int(self.ui.benchmark_spin.value()))
 
         # Activate the modules
@@ -687,6 +734,51 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         else:
             # If cancel or close is called, ignore
             QtWidgets.QDialog.done(self, r)  # Call the parent's method instead of the override.
+
+
+# --- CUSTOM TIME STEPS DIALOG ---
+class IrregularTimeStepDialogLaunch(QtWidgets.QDialog):
+    """Class definition for the custom time step window, where users can select the years to simulate and create
+    irregular time steps. Connects the New Scenario GUI with the Irregular Time Step GUI."""
+    def __init__(self, newscenario_gui, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
+        self.ui = Ui_TimeStep_Dialog()
+        self.ui.setupUi(self)
+        self.newscenario_gui = newscenario_gui
+        self.fill_years()
+        self.accepted.connect(self.save_checked_years)
+
+    def fill_years(self):
+        """Fills the list widget with all the possible years to simulate."""
+        years_list = self.newscenario_gui.timesteps
+        self.startyear = self.newscenario_gui.ui.startyear_spin.value()
+        self.endyear = self.newscenario_gui.ui.endyear_spin.value()
+        self.ui.years_list.clear()
+        for i in range(self.endyear - self.startyear + 1):
+            curyear = self.startyear + i        # Get the current year
+            item = QtWidgets.QListWidgetItem()  # Create the QListWidgetItem()
+            item.setText(str(curyear))          # Set its text
+            if curyear in years_list:           # Check if the current year has been previously selected
+                item.setCheckState(QtCore.Qt.Checked)
+            else:                               # If No, then set as unchecked
+                item.setCheckState(QtCore.Qt.Unchecked)
+            if self.newscenario_gui.viewmode == 1:
+                # In ViewMode - we disable the ability to check the boxes. This allow users to still scroll through.
+                item.setFlags(item.flags() ^ QtCore.Qt.ItemIsUserCheckable)
+            self.ui.years_list.addItem(item)    # Add the item to the list
+
+    def save_checked_years(self):
+        """Saves only the checked years to the newscenario module's years array."""
+        if self.newscenario_gui.viewmode == 1:
+            pass
+        else:
+            years_list = []
+            for i in range(self.ui.years_list.count()):
+                item = self.ui.years_list.item(i)
+                if item.checkState():
+                    years_list.append(int(item.text()))
+            self.newscenario_gui.timesteps = years_list
+
 
 # --- MAP EXPORT DIALOG ---
 class MapExportDialogLaunch(QtWidgets.QDialog):

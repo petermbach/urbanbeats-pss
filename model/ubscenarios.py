@@ -65,6 +65,7 @@ class UrbanBeatsScenario(object):
                                    "endyear": 2068,
                                    "dt": 1,
                                    "dt_irregular": 0,
+                                   "dt_array_parameter": [],
                                    "yearlist": [],
                                    "benchmarks": 100,
                                    "filename": "<enter a naming convention for outputs>",
@@ -109,8 +110,7 @@ class UrbanBeatsScenario(object):
         :param idstring: the part of the string to search the asset database for (e.g. "BlockID")
         :param **kwargs: 'assetcol' = {} custom dictionary of assets
         """
-
-
+        pass
 
     def get_simulation_years(self):
         """Retrieves the list of simulation years to use."""
@@ -137,6 +137,8 @@ class UrbanBeatsScenario(object):
         self.__dt_array = []
         if self.get_metadata("type") in ["STATIC", "BENCHMARK"]:
             self.__dt_array.append(self.get_metadata("startyear"))
+        elif self.get_metadata("dt_irregular"):
+            self.__dt_array = self.get_metadata("dt_array_parameter")
         else:
             currentyear = self.get_metadata("startyear")
             while currentyear < self.get_metadata("endyear"):
