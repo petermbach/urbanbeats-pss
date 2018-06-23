@@ -42,7 +42,8 @@ import tempfile
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 from ubmodule import *
-import model.ublibs.ubspatial as ubspat
+import model.ublibs.ubspatial as ubspatial
+import model.ublibs.ubmethods as ubmethods
 
 import model.ublibs.ubdatatypes as ubdata
 import model.progref.ubglobals as ubglobals
@@ -179,21 +180,21 @@ class DelinBlocks(UBModule):
         lu_dref = self.datalibrary.get_data_with_id(self.landuse_map)       # Retrieve the land use data reference
         fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
         self.notify("Loading: "+str(fullfilepath))
-        landuseraster = ubspat.import_ascii_raster(fullfilepath, self.landuse_map)
+        landuseraster = ubspatial.import_ascii_raster(fullfilepath, self.landuse_map)
         self.notify("Load Complete!")
 
         # Load Population Map
         pop_dref = self.datalibrary.get_data_with_id(self.population_map)   # Retrieve the population data reference
         fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
         self.notify("Loading: " + str(fullfilepath))
-        populationraster = ubspat.import_ascii_raster(fullfilepath, self.population_map)
+        populationraster = ubspatial.import_ascii_raster(fullfilepath, self.population_map)
         self.notify("Load Complete!")
 
         # Load Elevation Map
         elev_dref = self.datalibrary.get_data_with_id(self.elevation_map)     # Retrieves the elevation data ref
         fullfilepath = elev_dref.get_data_file_path() + elev_dref.get_metadata("filename")
         self.notify("Loading: " + str(fullfilepath))
-        elevationraster = ubspat.import_ascii_raster(fullfilepath, self.elevation_map)
+        elevationraster = ubspatial.import_ascii_raster(fullfilepath, self.elevation_map)
         self.notify("Load Complete!")
 
         self.notify("Creating Blocks Map!")
@@ -204,7 +205,7 @@ class DelinBlocks(UBModule):
 
         # AUTO-SIZE Blocks?
         if self.blocksize_auto:
-            cs = self.autosize_blocks(width, height)
+            cs = ubmethods.autosize_blocks(width, height)
         else:
             cs = self.blocksize
         cellsinblock = int(cs/inputres)
@@ -215,41 +216,6 @@ class DelinBlocks(UBModule):
         self.notify("Cells in Block: "+str(cellsinblock))
 
     # Additional Module Functions
-    def autosize_blocks(self, width, height):
-        """Calculates the recommended Block Size dependent on the size of the case study determined by the input map
-        dimensions. Takes width and height and returns block size.
-
-        Rules:
-           - Based on experience from simulations, aims to reduce simulation times
-             while providing enough accuracy.
-           - Aim to simulate under 500 Blocks
-
-        :param width: the width of the input map in [m] - xmax - xmin
-        :param height: the height of the input map in [m] - ymax - ymin
-        :return auto-determined blocksize
-        """
-        blocklimit = 1000
-        totarea = width * height
-        idealblockarea = totarea / 500
-        idealblocksize = math.sqrt(idealblockarea)
-        print "IdBS:", idealblocksize
-
-        if idealblocksize <= 200:
-            blocksize = 200
-        elif idealblocksize <= 500:
-            blocksize = 500
-        elif idealblocksize <= 1000:
-            blocksize = 1000
-        elif idealblocksize <= 2000:
-            blocksize = 2000
-        elif idealblocksize / 1000 < 10:
-            blocksize = (int(idealblocksize / 1000) + 1) * 1000
-        else:
-            blocksize = (int(idealblocksize / 10000) + 1) * 10000
-
-        if blocksize >= 10000:
-            print "WARNING: Block Size is very large, it is recommended to use a smaller case study!"
-        return blocksize
 
     def otherfunctions(self):
         pass
