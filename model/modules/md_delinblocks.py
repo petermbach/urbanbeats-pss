@@ -222,8 +222,42 @@ class DelinBlocks(UBModule):
         self.notify("Block Size: "+str(cs))
         self.notify("Cells in Block: "+str(cellsinblock))
 
-    # Additional Module Functions
+        # Get the actual simulation area width and height, usually the width will not match the block dimensions
+        # perfectly, so we use a whfactor based on the Block Size to ensure that an extra amount of 'width' is added
+        # and we can then add an extra column or row of blocks to capture the edges.
+        whfactor = 1.0 - (1.0/(float(cs)*2.0))
+        widthnew = int(width/float(cs)+whfactor)
+        heightnew = int(height / float(cs) + whfactor)
+        numblocks = widthnew * heightnew
 
+        # MAP ATTRIBUTES - CREATE THE FIRST UBCOMPONENT() to save off basic map attributes.
+        map_attr = ubdata.UBComponent()
+        map_attr.add_attribute("NumBlocks", numblocks)
+        map_attr.add_attribute("WidthBlocks", widthnew)
+        map_attr.add_attribute("HeightBlocks", heightnew)  # Height of simulation area in # of blocks
+        map_attr.add_attribute("BlockSize", cs)  # Size of block [m]
+        map_attr.add_attribute("InputReso", inputres)  # Resolution of the input data [m]
+        map_attr.add_attribute("xllcorner", xllcorner)
+        map_attr.add_attribute("yllcorner", yllcorner)
+        map_attr.add_attribute("Neigh_Type", nhd_type)
+        map_attr.add_attribute("ConsiderCBD", self.considerCBD)
+        map_attr.add_attribute("patchdelin", self.patchdelin)
+        map_attr.add_attribute("spatialmetrics", self.spatialmetrics)
+        map_attr.add_attribute("considerCBD", self.considerCBD)
+
+        # Look up long and lat of CBD if need to be considered
+        if self.considerCBD:    # TO DO ----
+            # Grab CBD Coordinates and transform to the local coordinate system
+            pass
+
+        if self.marklocation:   # TO DO ----
+            # Mark locations on the map
+            pass
+
+        self.scenario.add_asset()
+
+
+    # Additional Module Functions
     def otherfunctions(self):
         pass
         return True
