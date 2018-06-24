@@ -45,6 +45,7 @@ import modules.md_techplacement as md_techplacement
 import modules.md_urbandev as md_urbandev
 import modules.md_urbplanbb as md_urbplanbb
 
+
 # --- SCENARIO CLASS DEFINITION ---
 class UrbanBeatsScenario(object):
     """The static parent class that contains the basic definition of the

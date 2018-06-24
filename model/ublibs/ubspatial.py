@@ -107,6 +107,18 @@ def get_epsg(projcs, rootpath):
     return epsg
 
 
+def get_epsg_all(rootpath):
+    """Returns a full list of all EPSG entries as a dictionary from ancillary/epsg.cfg"""
+    f = open(rootpath+"/ancillary/epsg.cfg", 'r')   # Open the EPSG.cfg file and extract all data
+    f.readline()
+    epsg_dict = {}
+    for lines in f:
+        epsg_line = lines.rstrip("\n").split(",")
+        epsg_dict[epsg_line[1]] = epsg_line[0]
+    f.close()
+    return epsg_dict
+
+
 def create_coord_transformation_leaflet(inputEPSG):
     """Creates the coordinate transformation variable for the leaflet map, uses OSR library. The leaflet
     EPSG code is 4326, which is WGS84, geographic coordinate system.

@@ -80,6 +80,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # --- GLOBAL OPTIONS ---
         self.__global_options = {}
+        self.epsg_dict = ubspatial.get_epsg_all(UBEATSROOT)
         self.set_options_from_config()
 
         # --- WORKFLOW VARIABLES ---

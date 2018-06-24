@@ -48,6 +48,9 @@
    </item>
    <item>
     <widget class="QListWidget" name="years_list">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="verticalScrollBarPolicy">
       <enum>Qt::ScrollBarAlwaysOn</enum>
      </property>

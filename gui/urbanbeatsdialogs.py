@@ -39,6 +39,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKit
 # --- URBANBEATS LIBRARY IMPORTS ---
 import model.progref.ubglobals as ubglobals
 import model.ubdatalibrary as ubdatalibrary
+import model.ublibs.ubspatial as ubspatial
 
 from aboutdialog import Ui_AboutDialog      # About UrbanBEATS Dialog
 from preferencesdialog import Ui_PreferencesDialog      # Preferences Dialog
@@ -78,6 +79,8 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
         self.ui = Ui_AddDataDialog()
         self.ui.setupUi(self)
 
+        self.epsg_dict = main.epsg_dict
+
         # --- INITIALIZE MAIN VARIABLES ---
         self.maingui = main    # the main runtime - for GUI changes
         self.simulation = simulation
@@ -88,17 +91,86 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
         # Update the category and sub-category combo boxes
         self.update_datacat_combo()
         self.update_datacatsub_combo()
+        self.update_coord_combo()
+        self.enable_disable_coordinate_ui()
+
+        # Enable Pop-up completion for the coordinate system combo box. Note that the combo box has to be editable!
+        self.ui.coord_combo.completer().setCompletionMode(QtWidgets.QCompleter.PopupCompletion)
 
         # --- SIGNALS AND SLOTS ---
         self.ui.adddatabrowse.clicked.connect(self.browse_for_data)
         self.ui.spatial_radio.clicked.connect(self.update_datacat_combo)
+        self.ui.spatial_radio.clicked.connect(self.enable_disable_coordinate_ui)
         self.ui.temporal_radio.clicked.connect(self.update_datacat_combo)
+        self.ui.temporal_radio.clicked.connect(self.enable_disable_coordinate_ui)
         self.ui.qualitative_radio.clicked.connect(self.update_datacat_combo)
+        self.ui.qualitative_radio.clicked.connect(self.enable_disable_coordinate_ui)
         self.ui.datacat_combo.currentIndexChanged.connect(self.update_datacatsub_combo)
+
+        self.timer_linedit = QtCore.QTimer()
+        self.timer_linedit.setSingleShot(True)
+        self.timer_linedit.setInterval(300)
+        self.timer_linedit.timeout.connect(self.update_combo_from_epsg)
+
+        self.ui.epsg_box.textChanged.connect(lambda: self.timer_linedit.start())
+        self.ui.coord_combo.currentIndexChanged.connect(self.update_epsg_from_combo)
+        self.ui.coord_select.clicked.connect(self.enable_disable_coordinate_ui)
+        self.ui.coord_epsg.clicked.connect(self.enable_disable_coordinate_ui)
 
         self.ui.adddata_button.clicked.connect(self.add_data_to_project)
         self.ui.cleardata_button.clicked.connect(self.clear_interface)
         self.ui.done_button.clicked.connect(self.close)
+
+    def update_coord_combo(self):
+        """Updates the coordinate system's combobox and the UI elements associated with it."""
+        self.ui.coord_select.setChecked(1)
+        self.ui.coord_combo.clear()
+        self.ui.coord_combo.addItem("<select coordinate system>")
+        names = self.epsg_dict.keys()
+        names.sort()
+        for i in names:
+            self.ui.coord_combo.addItem(i)
+        self.ui.coord_combo.addItem("Other...")
+        self.ui.coord_combo.setCurrentIndex(0)
+
+    def update_combo_from_epsg(self):
+        """Updates the coordinate system combo box based on the EPSG code entered in the text box, if the EPSG
+        does not exist in the dictionary, the combo box displays "Other...". """
+        names = self.epsg_dict.keys()
+        names.sort()
+        found = 0
+        try:
+            for name, epsg in self.epsg_dict.iteritems():
+                print name, epsg, self.ui.epsg_box.text()
+                if int(epsg) == int(self.ui.epsg_box.text()):
+                    curindex = names.index(name) + 1    # +1 to account for Index 0 < > text
+                    self.ui.coord_combo.setCurrentIndex(curindex)
+                    return True
+            self.ui.coord_combo.setCurrentIndex(len(names) + 1)  # Set to 'Other'
+        except ValueError:
+            self.ui.coord_combo.setCurrentIndex(len(names)+1)   # Set to 'Other'
+
+    def update_epsg_from_combo(self):
+        """Updates the EPSG text box based on the selected coordinate system in the combo box. If < >, index 0
+        or "Other ..." are selected, the EPSG box remains blank."""
+        try:
+            self.ui.epsg_box.setText(self.epsg_dict[self.ui.coord_combo.currentText()])
+        except KeyError:
+            pass
+
+    def enable_disable_coordinate_ui(self):
+        """Enable/disable feature for the coordinate system options."""
+        self.ui.coord_select.setEnabled(self.ui.spatial_radio.isChecked())
+        self.ui.coord_epsg.setEnabled(self.ui.spatial_radio.isChecked())
+        if self.ui.coord_select.isChecked() and self.ui.spatial_radio.isChecked():
+            self.ui.coord_combo.setEnabled(1)
+            self.ui.epsg_box.setEnabled(0)
+        elif self.ui.coord_epsg.isChecked() and self.ui.spatial_radio.isChecked():
+            self.ui.coord_combo.setEnabled(0)
+            self.ui.epsg_box.setEnabled(1)
+        else:
+            self.ui.coord_combo.setEnabled(0)
+            self.ui.epsg_box.setEnabled(0)
 
     def browse_for_data(self):
         """Allows the user to select a data file to load into the model's data library."""
