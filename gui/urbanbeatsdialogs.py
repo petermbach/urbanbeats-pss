@@ -112,7 +112,7 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
         self.timer_linedit.setInterval(300)
         self.timer_linedit.timeout.connect(self.update_combo_from_epsg)
 
-        self.ui.epsg_box.textChanged.connect(lambda: self.timer_linedit.start())
+        self.ui.epsg_box.textEdited.connect(lambda: self.timer_linedit.start())
         self.ui.coord_combo.currentIndexChanged.connect(self.update_epsg_from_combo)
         self.ui.coord_select.clicked.connect(self.enable_disable_coordinate_ui)
         self.ui.coord_epsg.clicked.connect(self.enable_disable_coordinate_ui)
@@ -141,7 +141,6 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
         found = 0
         try:
             for name, epsg in self.epsg_dict.iteritems():
-                print name, epsg, self.ui.epsg_box.text()
                 if int(epsg) == int(self.ui.epsg_box.text()):
                     curindex = names.index(name) + 1    # +1 to account for Index 0 < > text
                     self.ui.coord_combo.setCurrentIndex(curindex)
@@ -233,10 +232,13 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
     def clear_interface(self):
         """Clears the addData interface by removing the text in the browse box (setting it to <none>),
         checking one of the radio buttons and updating the combo boxes."""
+        self.ui.epsg_box.clear()
         self.ui.databox.setText("<none>")
         self.ui.spatial_radio.setChecked(1)
         self.update_datacat_combo()
         self.update_datacatsub_combo()
+        self.ui.coord_select.setChecked(1)
+        self.ui.coord_combo.setCurrentIndex(0)
 
     def add_data_to_project(self):
         """Adds the data to the project based on all the information provided. Checks for the validity
@@ -249,15 +251,40 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
         else:
             self.currentDataType = "qualitative"
 
-        if os.path.isfile(datafile):
-            if self.ui.datacat_combo.currentText() != "<undefined>":
+        if os.path.isfile(datafile):    # If the file exists
+            if self.ui.datacat_combo.currentText() != "<undefined>":    # If the current Text is NOT <undefined>
                 if self.ui.datacatsub_combo.isEnabled() == 0 \
-                        or self.ui.datacatsub_combo.currentIndex() != 0:
+                        or self.ui.datacatsub_combo.currentIndex() != 0:    # If sub-categorisation is enabled
                     datatype = []
                     datatype.append(self.currentDataType)   # index 0
                     datatype.append(self.ui.datacat_combo.currentText())    # index 1
                     datatype.append(self.ui.datacatsub_combo.currentText()) # index 2
                     datatype.append(os.path.splitext(datafile)[1])  # index 3
+                    if self.currentDataType == "spatial":       # only for spatial data
+                        if self.ui.coord_combo.currentText() not in ["Other...", "<select coordinate system>"]:
+                            # Case 1 - the coordinate system combo has a valid selection
+                            datatype.append(self.ui.coord_combo.currentText())  # index 4
+                            datatype.append(int(self.ui.epsg_box.text()))   # index 5
+                        else:
+                            try:    # Case 2 - the EPSG box can be converted to an integer and is not empty
+                                if self.ui.epsg_box != "":
+                                    datatype.append(self.ui.coord_combo.currentText())  # index 4
+                                    datatype.append(int(self.ui.epsg_box.text()))
+
+                                else:
+                                    prompt_msg = "Error, please select a valid coordinate system or EPSG code!"
+                                    QtWidgets.QMessageBox.warning(self, 'Invalid Coordinate System', prompt_msg,
+                                                                  QtWidgets.QMessageBox.Ok)
+                                    return True
+                            except ValueError:  # Case 3 - the EPSG box has illegal entry
+                                prompt_msg = "Error, please select a valid coordinate system or EPSG code!"
+                                QtWidgets.QMessageBox.warning(self, 'Invalid Coordinate System', prompt_msg,
+                                                              QtWidgets.QMessageBox.Ok)
+                                return True     # Exit function prematurely
+                    else:
+                        datatype.append(None)   # If not spatial data, then no coordinate system
+                        datatype.append(None)
+
                     dataref = ubdatalibrary.\
                         UrbanBeatsDataReference(datatype, datafile,
                                                 self.simulation.get_project_parameter("projectpath"),

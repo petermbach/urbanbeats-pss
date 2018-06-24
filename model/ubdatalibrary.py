@@ -223,6 +223,8 @@ class UrbanBeatsDataReference(object):
         self.__datasubtype = datatype[2]    # e.g. heritage, none, tech matrix
         self.__dataformat = datatype[3]  # e.g. .csv, .shp, .txt - so the model knows how to handle the data
         self.__notes = notes_text               # Further metadata or data description.
+        self.__coord_sys = datatype[4]  # e.g. "AGD_1966_AMG_Zone_48"
+        self.__coord_epsg = datatype[5] # e.g.  20248 (corresponding to AGD_1966...)
 
         # FILE LOCATION AND NAME
         self.__originaldatapath = os.path.dirname(fullfilepath)
