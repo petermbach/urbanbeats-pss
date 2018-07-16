@@ -154,18 +154,19 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
     xmin, xmax, ymin, ymax = layer.GetExtent()
     print xmin, xmax, ymin, ymax
 
+    # Get some Map Metadata - the extents of the map, this is displayed later on in the pop-up window.
     point1 = ogr.Geometry(ogr.wkbPoint)
     point1.AddPoint(xmin, ymin)
     point2 = ogr.Geometry(ogr.wkbPoint)
     point2.AddPoint(xmax, ymax)
 
+    # Get the spatial reference of the map
     spatialref = layer.GetSpatialRef()
     # print spatialref  # Debug Comment - if you want to view shapefile metadata, use this
     inputprojcs = spatialref.GetAttrValue("PROJCS")
     if inputprojcs is None:
         print "Warning, spatial reference epsg cannot be found"
         return []
-
 
     featurecount = layer.GetFeatureCount()
     print "Total number of features: ", featurecount
@@ -189,6 +190,7 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
 
     if option == "leaflet":
         coordtrans = create_coord_transformation_leaflet(int(inputepsg))
+        print coordtrans
         geom.Transform(coordtrans)
         point1.Transform(coordtrans)
         point2.Transform(coordtrans)
@@ -208,7 +210,17 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
     mapstats["coordsysname"] = inputprojcs
     coordinates = []
     ring = geom.GetGeometryRef(0)
+
+    if ring.GetGeometryType() == -2147483645:   # POLYGON25D
+        ring.FlattenTo2D()
+        ring = ring.GetGeometryRef(0)
+    # Need to test this on other Geometry Types including:
+    #   -2147483642 MultiPolygon25D
+    #   6 MultiPolygon
+    #   https://gist.github.com/walkermatt/7121427
+
     points = ring.GetPointCount()
+    print "Ring Points: ", points
     for i in range(points):
         coordinates.append([ring.GetX(i), ring.GetY(i)])
 
@@ -220,12 +232,9 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
     return coordinates, mapstats
 
 
-
-
 # TEST SCRIPT - get_bounding_polygon() function
 # MAPPATH = "C:/Users/peter/Documents/TempDocs/Files/Upperdandy/Boundary.shp"
 # coordinates, mapstats = get_bounding_polygon(MAPPATH, "leaflet",
 #                                              "C:/Users/peter/Documents/Coding Projects/UrbanBEATS-PSS")
 # print mapstats
 # print coordinates
-
