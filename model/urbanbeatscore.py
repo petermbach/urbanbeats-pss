@@ -243,10 +243,11 @@ class UrbanBeatsSim(threading.Thread):
         f = open(projectpath+"/"+projectname+"/info.xml", 'w')
         f.write('<URBANBEATSPROJECTCONFIG creator="Peter M. Bach" version="1.0">\n')
         f.write('\t<projectinfo>\n')
-        projinfo = self.get_project_info()
+        projinfo = self.get_all_project_info()
         for item in projinfo.keys():
             f.write("\t\t<"+str(item)+">"+str(projinfo[item])+"</"+str(item)+">\n")
-        f.write("\t</projectinfo>")
+        f.write("\t</projectinfo>\n")
+        f.write('</URBANBEATSPROJECTCONFIG>')
         f.close()
 
     # PROJECT PARAMETER SETTINGS
@@ -309,7 +310,7 @@ class UrbanBeatsSim(threading.Thread):
         pass    # [TO DO]
 
     # GETTERS AND SETTERS
-    def get_project_info(self):
+    def get_all_project_info(self):
         """Returns the full project information"""
         return self.__project_info
 

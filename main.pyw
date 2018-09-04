@@ -522,7 +522,7 @@ class MainWindow(QtWidgets.QMainWindow):
         :return:
         """
         tileserver = ubglobals.TILESERVERS[self.get_option("mapstyle")]
-        projectdata = self.get_active_simulation_object().get_project_info()
+        projectdata = self.get_active_simulation_object().get_all_project_info()
 
         if maptype == "boundary":
             projboundarymap = self.get_active_simulation_object().get_project_parameter("boundaryshp")
@@ -664,7 +664,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.update_data_view("boundary")
 
         self.ui.Project.setHtml(ubreport.generate_project_overview_html(self.get_options(),
-                                                                        activesimulation.get_project_info(),
+                                                                        activesimulation.get_all_project_info(),
                                                                         activesimulation.get_project_boundary_info("all"),
                                                                         activesimulation.get_num_scenarios(),
                                                                         activesimulation.get_num_datasets()))
@@ -1226,9 +1226,9 @@ if __name__ == "__main__":
     # File Naming Convention: Needs to follow <lang>_<region>.ts convention
     #   <lang> = ISO 639-1 (see https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) and
     #   <region> = ISO3166-1 (see https://en.wikipedia.org/wiki/ISO_3166-1)
-    # translator = QtCore.QTranslator()
-    # translator.load("i18n\\zh_CN")
-    # app.installTranslator(translator)
+    #translator = QtCore.QTranslator()
+    #translator.load("i18n\\zh_CN")
+    #app.installTranslator(translator)
 
     # --- SPLASH SCREEN ---
     splash_matrix = ["1", "2", "3", "4", "5"]
