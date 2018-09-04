@@ -34,6 +34,7 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 import sys
 import os
 import webbrowser
+import xml.etree.ElementTree as ET
 from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKit
 
 # --- URBANBEATS LIBRARY IMPORTS ---
@@ -44,6 +45,7 @@ import model.ublibs.ubspatial as ubspatial
 from aboutdialog import Ui_AboutDialog      # About UrbanBEATS Dialog
 from preferencesdialog import Ui_PreferencesDialog      # Preferences Dialog
 from startnewprojectdialog import Ui_ProjectSetupDialog     # Start New Project Dialog
+from openprojectdialog import Ui_OpenProjectDialog      # Open Existing Project Dialog
 from logdialog import Ui_LogDialog         # Project Log Dialog
 from adddatadialog import Ui_AddDataDialog      # Add Data Dialog
 from newscenario import Ui_NewScenarioDialog    # Scenario Creation Dialog
@@ -915,6 +917,70 @@ class ReportingDialogLaunch(QtWidgets.QDialog):
 
     def save_values(self):
         self.close()
+
+
+# --- OPEN PROJECT DIALOG ---
+class OpenProjectDialogLaunch(QtWidgets.QDialog):
+    """Class definition for the open existing project dialog window Ui_OpenProjectDialog with the
+    main window or startup dialog. This dialog helps the user select from an existing list of recent
+    projects or browse or a project location on the system."""
+    def __init__(self, simulation, viewer=3, parent=None):
+        """Initialization of class, takes several key parameters that allows the program to infill
+        information into the dialog window.
+
+        :param simulation: the simulation object
+        :param viewer: a viewmode, like with the New Project Launch dialog, its default value is set to 3 as this is
+        always going to be called in relation to opening a project.
+        """
+        QtWidgets.QDialog.__init__(self, parent)
+        self.ui = Ui_OpenProjectDialog()
+        self.ui.setupUi(self)
+        self.__viewer = viewer
+        self.simulation = simulation
+
+        # --- POPULATE RECENT PROJECTS TABLE ---
+        # The table is only populated if the user has pressed 'saved' during the project. This updates
+        # UrbanBEATS' config file with recent projects.
+        self.populate_table()
+
+        # --- SIGNALS & SLOTS ---
+        self.ui.projpath_button.clicked.connect(self.browse_project_path)
+
+    def browse_project_path(self):
+        """Opens a file dialog, which requests for a folder path of the project folder. """
+        message = "Browse for Project Folder Location..."
+        folderpath = QtWidgets.QFileDialog.getExistingDirectory(self, message)
+        if folderpath:
+            self.ui.projpath_line.setText(str(folderpath))
+
+    def populate_table(self):
+        """ Populates the recent projects table with recent projects undertaken by teh user. """
+        print "populating table"
+
+    def done(self, r):
+        """ Loads the project folder location's info file and other files to help set up the simulation
+        object self.simulation before exiting the GUI."""
+
+        # Check whether the project selected is valid.
+        if self.Accepted == r:      # Accepting to open the project
+            conditions_met = [1]
+            if os.path.isfile(self.ui.projpath_line.text()+"/info.xml"):    # Does the 'info.xml' file exist?
+                pass    # Yes, there is a valid UrbanBEATS file
+            else:
+                prompt_msg = "Please select a valid project path!"
+                QtWidgets.QMessageBox.warning(self, 'Invalid Path', prompt_msg, QtWidgets.QMessageBox.Ok)
+                conditions_met[0] = 0
+            if sum(conditions_met) == len(conditions_met):
+                self.load_project_info()        # Loads info.xml file and populates self.simulation with info
+                QtWidgets.QDialog.done(self, r)
+            else:
+                return
+        else:
+            QtWidgets.QDialog.done(self, r)  # Call the parent's method instead of the override.
+
+    def load_project_info(self):
+        """ Loads the info.xml file in the project folder and writes the basic information """
+        self.simulation.load_project_info_xml(self.ui.projpath_line.text())
 
 
 # --- SETUP NEW PROJECT DIALOG ---

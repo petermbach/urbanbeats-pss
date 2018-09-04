@@ -135,7 +135,22 @@ class UrbanBeatsSim(threading.Thread):
             projectlog = UrbanBeatsLog(self.__projectpath)
             self.set_project_log(projectlog)
         elif condition == "open":   # for opening a project
-            pass    # [TO DO]
+            print "Initialize an open project"
+            # Folder structure is already present
+            self.__projectpath = self.get_project_parameter("projectpath")+"/"+self.get_project_parameter("name")
+
+            # Create new data library
+            datalib = ubdatalibrary.UrbanBeatsDataLibrary(self.__projectpath,
+                                                          self.get_project_parameter("keepcopy"))
+            self.set_data_library(datalib) # Go through data library file and add the data entries to the data library
+            # [TO DO]
+
+            # Create a new project log
+            projectlog = UrbanBeatsLog(self.__projectpath)
+            self.set_project_log(projectlog)    # Go through existing project logs and update or add log info [TO DO]
+
+            # Go through scenarios and add the scenarios to the scenario manager
+
         elif condition == "import": # for importing a project
             pass    # [TO DO]
 
@@ -146,6 +161,33 @@ class UrbanBeatsSim(threading.Thread):
         """Adds an observer references by observerobj to the self.__observers array. This uses the Observer design
         pattern."""
         self.__observers.append(observerobj)
+
+    def load_project_info_xml(self, projectpath):
+        """Loads the project's info.xml file and writes the information into the simulation core."""
+        try:
+            projinfo = ET.parse(projectpath+"/info.xml")
+        except IOError:
+            return False
+        print projectpath + "/info.xml"
+        root = projinfo.getroot()
+        projdict = {}
+        projdata = root.find('projectinfo')
+        for child in projdata:
+            projdict[child.tag] = child.text
+
+        self.set_project_parameter("name", projdict["name"])
+        self.set_project_parameter("region", projdict["region"])
+        self.set_project_parameter("city", projdict["city"])
+        self.set_project_parameter("modeller", projdict["modeller"])
+        self.set_project_parameter("affiliation", projdict["affiliation"])
+        self.set_project_parameter("otherpersons", projdict["otherpersons"])
+        self.set_project_parameter("synopsis", projdict["synopsis"])
+        self.set_project_parameter("boundaryshp", projdict["boundaryshp"])
+        self.set_project_parameter("projectpath", projdict["projectpath"])
+        self.set_project_parameter("keepcopy", int(projdict["keepcopy"]))
+        self.set_project_parameter("logstyle", projdict["logstyle"])
+
+        return True
 
     def update_project_boundaryinfo(self):
         """Loads the boundary map shapefile, obtains coordinates of the bounding polygon and spatial
