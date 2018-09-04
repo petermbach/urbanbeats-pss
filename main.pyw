@@ -647,9 +647,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_save_project_state(False)  # Reverses the boolean on save project state
         if viewmode == 1:
             return
-        self.printc("New Project Initialized")
+
         activesimulation = self.get_active_simulation_object()
-        activesimulation.initialize_simulation("new")
+        if viewmode == 0:
+            self.printc("New Project Initialized")
+            activesimulation.initialize_simulation("new")
+        else:
+            self.printc("Loading Project "+ activesimulation.get_project_parameter("name"))
+            activesimulation.initialize_simulation("open")
 
         self.set_current_project_name(activesimulation.get_project_parameter("name"))
         self.set_active_data_library(activesimulation.get_data_library())
@@ -677,7 +682,13 @@ class MainWindow(QtWidgets.QMainWindow):
     def open_existing_project(self):
         """Opens an existing project folder and sets up the interface based on its information."""
         self.printc("OPEN AN EXISTING PROJECT")
-        pass    #[TO DO]
+        self.setup_main_gui()
+
+        # Open Project Dialog
+        openprojectdialog = ubdialogs.OpenProjectDialogLaunch(self.get_active_simulation_object(), 3)
+        openprojectdialog.rejected.connect(lambda: self.cancel_new_project_creation(0))     # Use viewmode 0
+        openprojectdialog.accepted.connect(lambda: self.initialize_new_project(3))
+        openprojectdialog.exec_()
 
     def import_existing_project(self):
         """Imports an UrbanBEATS Project File into the workspace, unpacks the file and sets up the folder
