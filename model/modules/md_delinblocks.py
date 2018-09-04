@@ -254,7 +254,9 @@ class DelinBlocks(UBModule):
             # Mark locations on the map
             pass
 
-        self.scenario.add_asset()
+        self.scenario.add_asset("MapAttributes", map_attr)
+
+        print "Simulation Finished up to this point!"
 
 
     # Additional Module Functions
