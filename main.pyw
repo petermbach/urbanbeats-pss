@@ -701,8 +701,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.printc("EXPORTING")
 
     def save_project(self):
-        """Saves the project's current state, overwriting the existing project."""
+        """Saves the project's current state, overwriting the existing project. This is a semi-save
+        operation as UrbanBEATS tracks the status of the project throughout the workflow."""
+
+        # Save the active data library
+        self.printc("Consolidating Data Library...")
+        if self.__activeDataLibrary != None:
+            self.__activeDataLibrary.consolidate_library()
+
         self.set_save_project_state(True)   #[TO DO]
+        self.printc("Project Save State Updated!")
 
     def save_as_project(self):
         """Saves the project's current state to a completely different location. Also modifies its info with

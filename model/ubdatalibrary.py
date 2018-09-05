@@ -55,7 +55,7 @@ class UrbanBeatsDataLibrary(object):
         self.__time_series_data = []    # List for data reference of time series data
         self.__qual_data = []           # List of data references for qualitative data
         self.__data_library_idcount = 0 # Tracks the current ID number
-        self.__projectpath = projectpath    # The active project path in case a copy needs to be kept
+        self.__projectpath = projectpath    # The active project path - includes project name
         self.__keepcopy = keepcopy  # Tracks whether to copy each data to the project folder
 
         # Create the data directory
@@ -64,6 +64,41 @@ class UrbanBeatsDataLibrary(object):
         else:
             os.mkdir(projectpath+"/datalib")
         self.__projectdatafolder = projectpath+"/datalib/"
+
+    def consolidate_library(self):
+        """Writes the data library information into the data library folder."""
+        f = open(self.__projectdatafolder+"/dataindex.xml", 'w')
+        f.write('<URBANBEATSDATALIBRARY creator="Peter M. Bach" version="1.0">\n')
+        f.write('\t<datalibmeta>\n')
+        f.write('\t\t<data_library_idcount>'+str(self.__data_library_idcount)
+                +'</data_library_idcount>\n')
+        f.write('\t</datalibmeta>\n')
+        f.write('\t<datasets>\n')
+        for dset in [self.__spatial_data, self.__time_series_data, self.__qual_data]:
+            for d in dset:
+                f.write('\t\t<dataref>\n')
+                f.write('\t\t\t<dataid>'+str(d.get_data_id())+'</dataid>\n')
+                f.write('\t\t\t<coord_epsg>' + str(d.get_metadata("coord_epsg")) + '</coord_epsg>\n')
+                f.write('\t\t\t<coord_sys>' + str(d.get_metadata("coord_sys")) + '</coord_sys>\n')
+                f.write('\t\t\t<dataclass>' + str(d.get_metadata("class")) + '</dataclass>\n')
+                f.write('\t\t\t<datafilename>' + str(d.get_metadata("filename")) + '</datafilename>\n')
+                f.write('\t\t\t<dataformat>' + str(d.get_metadata("format")) + '</dataformat>\n')
+                f.write('\t\t\t<datasubtype>' + str(d.get_metadata("sub")) + '</datasubtype>\n')
+                f.write('\t\t\t<datatype>' + str(d.get_metadata("parent")) + '</datatype>\n')
+                f.write('\t\t\t<notes>' + str(d.get_metadata("notes")) + '</notes>\n')
+                f.write('\t\t\t<originaldatapath>' + str(d.get_original_data_path()) + '</originaldatapath>\n')
+                f.write('\t\t\t<scenarionames>\n')
+                scenario_list = d.get_scenario_list()
+                if len(scenario_list) == 0:
+                    f.write('\t\t\t\t<scenario></scenario>\n')
+                for s in scenario_list:
+                    f.write('\t\t\t\t<scenario>'+ str(s) + '</scenario>\n')
+                f.write('\t\t\t</scenarionames>\n')
+            f.write('\t\t</dataref>\n')
+        f.write('\t</datasets>\n')
+        f.write('</URBANBEATSDATALIBRARY>')
+        f.close()
+        return True
 
     def import_data(self):
         pass    # [TO DO]
@@ -299,5 +334,11 @@ class UrbanBeatsDataReference(object):
             return self.__notes
         elif attribute == "filename":   # filename + extension.
             return self.__datafilename
+        elif attribute == "coord_epsg":
+            return self.__coord_epsg
+        elif attribute == "coord_sys":
+            return self.__coord_sys
+        elif attribute == "notes":
+            return self.__notes
         else:
             return None
