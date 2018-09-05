@@ -142,11 +142,7 @@ class UrbanBeatsSim(threading.Thread):
             datalib = ubdatalibrary.UrbanBeatsDataLibrary(self.__projectpath,
                                                           self.get_project_parameter("keepcopy"))
             datalib.setup_library_from_xml()
-
-            # Go through data library file and add the data entries to the data library
             self.set_data_library(datalib)
-
-            # [TO DO]
 
             # Create a new project log
             projectlog = UrbanBeatsLog(self.__projectpath)

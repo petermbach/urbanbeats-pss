@@ -102,8 +102,8 @@ class UrbanBeatsDataLibrary(object):
         return True
 
     def setup_library_from_xml(self):
-        """Sets up the library from an xml file and restores all objects based."""
-
+        """Sets up the library from an xml file and restores all data references based on the
+        information contained in the .xml file if it exists."""
         if os.path.isfile(self.__projectdatafolder + "/dataindex.xml"):
             dlib = ET.parse(self.__projectdatafolder + "/dataindex.xml")
             root = dlib.getroot()
@@ -133,7 +133,9 @@ class UrbanBeatsDataLibrary(object):
                                                    dataref["notes"])
                 new_dref.assign_id(dataref["dataid"])
                 self.add_data_to_library(new_dref, False)
-
+            return True
+        else:
+            return False
 
     def import_data(self):
         pass    # [TO DO]

@@ -668,6 +668,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                                                         activesimulation.get_project_boundary_info("all"),
                                                                         activesimulation.get_num_scenarios(),
                                                                         activesimulation.get_num_datasets()))
+
         self.ui.ScenarioDock_View.expandAll()
         self.update_data_library_view()
 

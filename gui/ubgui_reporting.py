@@ -30,6 +30,7 @@ def generate_project_overview_html(global_options, project_info, mapstats, num_s
 
     :param global_options: The dictionary containing global options
     :param project_info: The dictionary containing the project metadata
+    :param mapstats: data on the boundary map loaded into the project, calculated when shapefile processed.
     :param num_scenarios: The total number of scenarios in the active simulation
     :param data_sets: The total number of data sets in the active simulation's data library.
     """
@@ -45,7 +46,7 @@ def generate_project_overview_html(global_options, project_info, mapstats, num_s
 <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:8pt; font-weight:600;">METADATA</span></p>
 <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:8pt;"><strong>Project Location:</strong> """+project_info["region"]+""", """+project_info["city"]+"""</span></p>
 <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:8pt;"><strong>Coordinates:</strong> x """+str(mapstats["centroid"][0])+""", y """+str(mapstats["centroid"][1])+"""</span></p>
-<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:8pt;"><strong>Case Study Size:</strong> """+str(round(mapstats["area"],2))+""" km</span><span style=" font-size:8pt; vertical-align:super;">2</span></p>
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:8pt;"><strong>Case Study Size:</strong> """+str(round(mapstats["area"], 2))+""" km</span><span style=" font-size:8pt; vertical-align:super;">2</span></p>
 <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:8pt;"><strong>Other Participants:</strong> """+project_info["otherpersons"]+"""</span></p>
 <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:8pt;"><strong>Coordinate System:</strong> """+mapstats["coordsysname"]+""" ("""+str(mapstats["inputEPSG"])+""")</span></p>
 <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:8pt;"><strong>Project Path:</strong> """+project_info["projectpath"]+"""</span></p>
