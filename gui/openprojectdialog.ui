@@ -216,6 +216,26 @@
           </widget>
          </item>
          <item>
+          <widget class="QPushButton" name="clear_button">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clear Recent&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../graphics/ubeats.qrc">
+             <normaloff>:/icons/file-warning-icon.png</normaloff>:/icons/file-warning-icon.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>25</width>
+             <height>25</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="delete_button">
            <property name="toolTip">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete Project&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -256,6 +276,24 @@
         <property name="verticalScrollBarPolicy">
          <enum>Qt::ScrollBarAlwaysOn</enum>
         </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="sortingEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
         <column>
          <property name="text">
           <string>Project Name</string>
@@ -263,7 +301,7 @@
         </column>
         <column>
          <property name="text">
-          <string>Creator</string>
+          <string>Modeller</string>
          </property>
         </column>
         <column>

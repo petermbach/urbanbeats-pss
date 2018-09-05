@@ -687,7 +687,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setup_main_gui()
 
         # Open Project Dialog
-        openprojectdialog = ubdialogs.OpenProjectDialogLaunch(self.get_active_simulation_object(), 3)
+        recent_projects = self.load_recent_cfg()
+        openprojectdialog = ubdialogs.OpenProjectDialogLaunch(self.get_active_simulation_object(), 3, recent_projects)
         openprojectdialog.rejected.connect(lambda: self.cancel_new_project_creation(0))     # Use viewmode 0
         openprojectdialog.accepted.connect(lambda: self.initialize_new_project(3))
         openprojectdialog.exec_()
@@ -715,8 +716,55 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.__activeScenario is not None:
             self.__activeScenario.consolidate_scenario()
 
+        # Add project to the recent.cfg file
+        self.update_recent_cfg(self.__activeSimulationObject.get_project_parameter("name"),
+                               self.__activeSimulationObject.get_project_parameter("modeller"),
+                               self.__activeSimulationObject.get_project_path())
+
         self.set_save_project_state(True)   #[TO DO]
         self.printc("Project Save State Updated!")
+
+    def update_recent_cfg(self, project_name, modeller, project_path):
+        """Updates the recent.cfg file with new project information."""
+        projects = self.load_recent_cfg()
+        projects.append([str(project_name), str(modeller), str(project_path)])
+        self.save_recent_cfg(projects)
+
+    def save_recent_cfg(self, projects):
+        """Saves a new recent.cfg file with the updated information from projects array.
+
+        :param projects: an array of projects, each element is [project_name, modeller, path]
+        """
+        f = open(UBEATSROOT+"/recent.cfg", 'w')
+        f.write('<URBANBEATSRECENT creator="Peter M. Bach" version="1.0">\n')
+        f.write('\t<recentprojects>\n')
+        for p in projects:
+            f.write('\t\t<project>\n')
+            f.write('\t\t\t<name>'+str(p[0])+'</name>\n')
+            f.write('\t\t\t<modeller>'+str(p[1])+'</modeller>\n')
+            f.write('\t\t\t<path>'+str(p[2])+'</path>\n')
+            f.write('\t\t</project>\n')
+        f.write('\t</recentprojects>\n')
+        f.write('</URBANBEATSRECENT>')
+        f.close()
+        return True
+
+    def load_recent_cfg(self):
+        """Loads the information from the recent.cfg file and returns an array of project info
+        with the following structure: [project_name, modeller, path]."""
+        recent_projects = []
+        recent_cfg = ET.parse(UBEATSROOT+"/recent.cfg")
+        root = recent_cfg.getroot()
+        projects = root.find("recentprojects")
+        for child in projects:
+            projectdata = []
+            for att in child:
+                projectdata.append(att.text)
+            recent_projects.append(projectdata)
+        return recent_projects
+
+
+
 
     def save_as_project(self):
         """Saves the project's current state to a completely different location. Also modifies its info with

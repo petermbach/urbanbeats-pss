@@ -925,12 +925,13 @@ class OpenProjectDialogLaunch(QtWidgets.QDialog):
     """Class definition for the open existing project dialog window Ui_OpenProjectDialog with the
     main window or startup dialog. This dialog helps the user select from an existing list of recent
     projects or browse or a project location on the system."""
-    def __init__(self, simulation, viewer=3, parent=None):
+    def __init__(self, simulation, viewer=3, recent_projects=[], parent=None):
         """Initialization of class, takes several key parameters that allows the program to infill
         information into the dialog window.
 
         :param simulation: the simulation object
         :param viewer: a viewmode, like with the New Project Launch dialog, its default value is set to 3 as this is
+        :param recent_projects: a list of recent projects containing 3 attributes: [name, modeller, path]
         always going to be called in relation to opening a project.
         """
         QtWidgets.QDialog.__init__(self, parent)
@@ -938,10 +939,12 @@ class OpenProjectDialogLaunch(QtWidgets.QDialog):
         self.ui.setupUi(self)
         self.__viewer = viewer
         self.simulation = simulation
+        self.__recent = recent_projects
 
         # --- POPULATE RECENT PROJECTS TABLE ---
         # The table is only populated if the user has pressed 'saved' during the project. This updates
         # UrbanBEATS' config file with recent projects.
+        self.ui.project_table.setRowCount(0)
         self.populate_table()
 
         # --- SIGNALS & SLOTS ---
@@ -957,6 +960,13 @@ class OpenProjectDialogLaunch(QtWidgets.QDialog):
     def populate_table(self):
         """ Populates the recent projects table with recent projects undertaken by teh user. """
         print "populating table"
+        print self.__recent
+        for row in range(len(self.__recent)):
+            self.ui.project_table.insertRow(row)
+            for col in range(len(self.__recent[row])):
+                twi = QtWidgets.QTableWidgetItem(str(self.__recent[row][col]))
+                self.ui.project_table.setItem(row, col, twi)
+        self.ui.project_table.resizeColumnsToContents()
 
     def done(self, r):
         """ Loads the project folder location's info file and other files to help set up the simulation
