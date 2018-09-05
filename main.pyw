@@ -669,6 +669,8 @@ class MainWindow(QtWidgets.QMainWindow):
                                                                         activesimulation.get_num_scenarios(),
                                                                         activesimulation.get_num_datasets()))
         self.ui.ScenarioDock_View.expandAll()
+        self.update_data_library_view()
+
         # Scenario View - UNCHECK and DISABLE ALL MODULES
         moduleTree = self.ui.ScenarioDock_View.topLevelItem(3)
         moduleCount = moduleTree.childCount()

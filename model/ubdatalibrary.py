@@ -31,6 +31,7 @@ __copyright__ = "Copyright 2012. Peter M. Bach"
 # --- PYTHON LIBRARY IMPORTS ---
 import os
 import shutil
+import xml.etree.ElementTree as ET
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 import progref.ubglobals as ubglobals
@@ -94,11 +95,45 @@ class UrbanBeatsDataLibrary(object):
                 for s in scenario_list:
                     f.write('\t\t\t\t<scenario>'+ str(s) + '</scenario>\n')
                 f.write('\t\t\t</scenarionames>\n')
-            f.write('\t\t</dataref>\n')
+                f.write('\t\t</dataref>\n')
         f.write('\t</datasets>\n')
         f.write('</URBANBEATSDATALIBRARY>')
         f.close()
         return True
+
+    def setup_library_from_xml(self):
+        """Sets up the library from an xml file and restores all objects based."""
+
+        if os.path.isfile(self.__projectdatafolder + "/dataindex.xml"):
+            dlib = ET.parse(self.__projectdatafolder + "/dataindex.xml")
+            root = dlib.getroot()
+            metadata = {}
+            for child in root.find('datalibmeta'):      # Finding tag <datalibmeta> </datalibmeta>
+                metadata[child.tag] = child.text
+            self.__data_library_idcount = int(metadata["data_library_idcount"])
+
+            datasets = []
+            for child in root.find('datasets'):     # Finding tag <datasets> </datasets>
+                dataref = {}
+                for d in child:
+                    if d.tag == "scenarionames":
+                        scenarios = []
+                        for c in d:
+                            scenarios.append(c.text)
+                        dataref[d.tag] = scenarios
+                        continue
+                    dataref[d.tag] = d.text
+
+                # Create the Data Reference and add it to the data library
+                datatype = [dataref["dataclass"], dataref["datatype"], dataref["datasubtype"],
+                            dataref["dataformat"], dataref["coord_sys"], dataref["coord_epsg"]]
+                new_dref = UrbanBeatsDataReference(datatype,
+                                                   dataref["originaldatapath"]+"/"+dataref["datafilename"],
+                                                   self.__projectpath, self.__keepcopy,
+                                                   dataref["notes"])
+                new_dref.assign_id(dataref["dataid"])
+                self.add_data_to_library(new_dref, False)
+
 
     def import_data(self):
         pass    # [TO DO]
@@ -111,23 +146,29 @@ class UrbanBeatsDataLibrary(object):
         """Returns the total number of data files currently in the data library."""
         return len(self.__spatial_data)+len(self.__time_series_data)+len(self.__qual_data)
 
-    def add_data_to_library(self, dataref):
+    def add_data_to_library(self, dataref, count_incr):
         """Adds an UrbanBeatsDataReference() instance to the data library. The reference object
         is created in the import_data() method. Required for the
 
         :param dataref: The data reference object created by instantiating the
                         UrbanBeatsDataReference() class
+        :param count_incr: A boolean, if True, increase the counting increment and add an ID, if
+                        false, then don't increase the counting increment (used then restoring library)
         """
         dataclass = dataref.get_metadata("class")
-        dataref.assign_id("ID#ds_"+str(self.__data_library_idcount))
+        if count_incr: dataref.assign_id("ID#ds_"+str(self.__data_library_idcount))
+
         if dataclass == "spatial":
             self.__spatial_data.append(dataref)
         elif dataclass == "temporal":
             self.__time_series_data.append(dataref)
         elif dataclass == "qualitative":
             self.__qual_data.append(dataref)
-        self.__data_library_idcount += 1
-        self.copy_data_to_project_folder(dataref)
+
+        if count_incr:
+            self.__data_library_idcount += 1
+            self.copy_data_to_project_folder(dataref)
+
 
     def copy_data_to_project_folder(self, dataref):
         """Copies the different data formats to the project folder depending on what has been selected."""

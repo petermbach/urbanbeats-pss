@@ -135,14 +135,17 @@ class UrbanBeatsSim(threading.Thread):
             projectlog = UrbanBeatsLog(self.__projectpath)
             self.set_project_log(projectlog)
         elif condition == "open":   # for opening a project
-            print "Initialize an open project"
             # Folder structure is already present
             self.__projectpath = self.get_project_parameter("projectpath")+"/"+self.get_project_parameter("name")
 
             # Create new data library
             datalib = ubdatalibrary.UrbanBeatsDataLibrary(self.__projectpath,
                                                           self.get_project_parameter("keepcopy"))
-            self.set_data_library(datalib) # Go through data library file and add the data entries to the data library
+            datalib.setup_library_from_xml()
+
+            # Go through data library file and add the data entries to the data library
+            self.set_data_library(datalib)
+
             # [TO DO]
 
             # Create a new project log

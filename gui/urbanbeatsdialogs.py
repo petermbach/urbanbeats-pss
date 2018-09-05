@@ -289,10 +289,11 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
 
                     dataref = ubdatalibrary.\
                         UrbanBeatsDataReference(datatype, datafile,
-                                                self.simulation.get_project_parameter("projectpath"),
+                                                self.simulation.get_project_parameter("projectpath")+"/"+
+                                                self.simulation.get_project_parameter("name"),
                                                 self.simulation.get_project_parameter("keepcopy"),
                                                 self.ui.notes_box.toPlainText())
-                    self.datalibrary.add_data_to_library(dataref)
+                    self.datalibrary.add_data_to_library(dataref, True)
                     self.dataLibraryUpdated.emit()
                     self.clear_interface()
                 else:
