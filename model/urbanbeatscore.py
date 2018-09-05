@@ -228,6 +228,7 @@ class UrbanBeatsSim(threading.Thread):
             self.set_project_parameter("name", projectnewname)
         os.makedirs(projectpath+"/"+projectnewname)
         os.makedirs(projectpath+"/"+projectnewname+"/datalib")
+        os.makedirs(projectpath+"/"+projectnewname+"/scenarios")
         os.makedirs(projectpath+"/"+projectnewname+"/output")
         self.write_project_info_file()
         self.__projectpath = projectpath+"/"+projectnewname

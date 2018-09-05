@@ -291,43 +291,43 @@ class MainWindow(QtWidgets.QMainWindow):
             return
         active_scenario_name = self.ui.ScenarioDock_Combo.currentText()
         self.get_active_simulation_object().set_active_scenario(active_scenario_name)
-        active_scenario = self.get_active_simulation_object().get_active_scenario()
+        self.__activeScenario = self.get_active_simulation_object().get_active_scenario()
 
         # Tree Widget Info:
         twi = QtWidgets.QTreeWidgetItem()
-        twi.setText(0, str(active_scenario.get_metadata("narrative")[:100]+"..."))
-        twi.setToolTip(0, str(active_scenario.get_metadata("narrative")[:100] + "..."))
+        twi.setText(0, str(self.__activeScenario.get_metadata("narrative")[:100]+"..."))
+        twi.setToolTip(0, str(self.__activeScenario.get_metadata("narrative")[:100] + "..."))
 
         # Narrative
-        self.ui.Narrative.setPlainText(active_scenario.get_metadata("narrative"))
+        self.ui.Narrative.setPlainText(self.__activeScenario.get_metadata("narrative"))
 
         self.ui.ScenarioDock_View.topLevelItem(0).takeChildren()
         self.ui.ScenarioDock_View.topLevelItem(0).addChild(twi)
-        self.ui.ScenarioDock_View.topLevelItem(1).child(0).setText(0, "Type: "+active_scenario.get_metadata("type"))
+        self.ui.ScenarioDock_View.topLevelItem(1).child(0).setText(0, "Type: "+self.__activeScenario.get_metadata("type"))
         self.ui.ScenarioDock_View.topLevelItem(1).child(1).setText(0, "Status: "+"not simulated")
-        if active_scenario.get_metadata("type") == "DYNAMIC":
-            yeartext = str(active_scenario.get_metadata("startyear")) + " - " + str(active_scenario.get_metadata("endyear"))
-            dttext = str(active_scenario.get_metadata("dt")) + " year(s)"
+        if self.__activeScenario.get_metadata("type") == "DYNAMIC":
+            yeartext = str(self.__activeScenario.get_metadata("startyear")) + " - " + str(self.__activeScenario.get_metadata("endyear"))
+            dttext = str(self.__activeScenario.get_metadata("dt")) + " year(s)"
             benchtext = "N/A"
-        elif active_scenario.get_metadata("type") == "BENCHMARK":
-            yeartext = str(active_scenario.get_metadata("startyear"))
+        elif self.__activeScenario.get_metadata("type") == "BENCHMARK":
+            yeartext = str(self.__activeScenario.get_metadata("startyear"))
             dttext = "N/A"
-            benchtext = str(active_scenario.get_metadata("benchmarks"))
+            benchtext = str(self.__activeScenario.get_metadata("benchmarks"))
         else:
-            yeartext = str(active_scenario.get_metadata("startyear"))
+            yeartext = str(self.__activeScenario.get_metadata("startyear"))
             dttext = "N/A"
             benchtext = "N/A"
         self.ui.ScenarioDock_View.topLevelItem(1).child(2).setText(0, "Simulation Year(s): " + yeartext)
         self.ui.ScenarioDock_View.topLevelItem(1).child(3).setText(0, "Simulation Time Step: " + dttext)
         self.ui.ScenarioDock_View.topLevelItem(1).child(4).setText(0, "Benchmark Iterations: " + benchtext)
         self.ui.ScenarioDock_View.topLevelItem(4).\
-            child(0).setText(0, "File Naming: "+active_scenario.get_metadata("filename"))
+            child(0).setText(0, "File Naming: "+self.__activeScenario.get_metadata("filename"))
         project_path = self.get_active_simulation_object().get_project_path()
         self.ui.ScenarioDock_View.topLevelItem(4).child(1).setText(0, "Path: " + str(os.path.normpath(project_path)))
         self.ui.ScenarioDock_View.topLevelItem(4).child(1).setToolTip(0, str(os.path.normpath(project_path)))
 
         # LIST OF DATA SETS
-        datalist = active_scenario.create_dataset_file_list()
+        datalist = self.__activeScenario.create_dataset_file_list()
         self.ui.DataSummary.setRowCount(0)
         self.ui.ScenarioDock_View.topLevelItem(2).takeChildren()
         self.ui.DataSummary.setRowCount(0)
@@ -348,7 +348,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # MODULES
         modulebools = []    # Holds 1 and 0 booleans that represent different modules in the module dock
         for i in range(len(ubglobals.MODULENAMES)):
-            mbool = active_scenario.check_is_module_active(ubglobals.MODULENAMES[i])
+            mbool = self.__activeScenario.check_is_module_active(ubglobals.MODULENAMES[i])
             if mbool:
                 self.ui.ScenarioDock_View.topLevelItem(3).child(i).setDisabled(0)
                 self.ui.ScenarioDock_View.topLevelItem(3).child(i).setCheckState(0, 2)
@@ -668,7 +668,6 @@ class MainWindow(QtWidgets.QMainWindow):
                                                                         activesimulation.get_project_boundary_info("all"),
                                                                         activesimulation.get_num_scenarios(),
                                                                         activesimulation.get_num_datasets()))
-
         self.ui.ScenarioDock_View.expandAll()
         self.update_data_library_view()
 
@@ -709,8 +708,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Save the active data library
         self.printc("Consolidating Data Library...")
-        if self.__activeDataLibrary != None:
+        if self.__activeDataLibrary is not None:
             self.__activeDataLibrary.consolidate_library()
+        self.printc("Saving Active Scenario...")
+        print self.__activeScenario
+        if self.__activeScenario is not None:
+            self.__activeScenario.consolidate_scenario()
 
         self.set_save_project_state(True)   #[TO DO]
         self.printc("Project Save State Updated!")

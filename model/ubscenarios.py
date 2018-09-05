@@ -177,6 +177,39 @@ class UrbanBeatsScenario(object):
             self.__assets[str(i)] = {}
         return True
 
+    def consolidate_scenario(self):
+        """Creates an updated scenario_name.xml file of the current scenario including all module parameters."""
+        scenario_fname = self.projectpath+"/scenarios/"+self.__scenariometadata["name"].replace(" ", "_")+".xml"
+        print scenario_fname
+        f = open(scenario_fname, 'w')
+        f.write('<URBANBEATSSCENARIO creator="Peter M. Bach", version="1.0">\n')
+
+        f.write('\t<scenariometa>\n')
+        smeta = self.get_metadata("ALL")
+        for i in smeta.keys():
+            f.write('\t\t<'+str(i)+'>'+str(smeta[i])+'</'+str(i)+'>\n')
+        f.write('\t</scenariometa>\n')
+
+        f.write('\t<scenariodata>\n')
+        for i in [self.__spatial_data, self.__time_series_data, self.__qual_data]:
+            for dref in i:
+                f.write('<datarefid type="'+str(dref.get_metadata("class"))+'">'+str(dref.get_data_id())+'</datarefid>\n')
+        f.write('\t</scenariodata>\n')
+
+        f.write('\t<scenariomodules>\n')
+        f.write('\t\t<modulesetup>\n')
+        for i in self.__modulesbools.keys():
+            f.write('\t\t\t<'+str(i)+'>'+str(self.__modulesbools[i])+'</'+str(i)+'>\n')
+        f.write('\t\t</modulesetup>\n')
+        f.write('\t</scenariomodules>\n')
+
+        f.write('</URBANBEATSSCENARIO>')
+        f.close()
+
+        # NOTE TO SELF: when you read from the .xml file, there will be a string list e.g. '[2008, 2009, 2010, ...]'
+        # to convert this to a list, use import ast and then yearlist = ast.literal_eval('[2008, 2009, 2010, ...]')
+
+
     def add_data_reference(self, dataref):
         """Adds the data reference to the scenario's data store depending on its class."""
         if dataref.get_metadata("class") == "spatial":
@@ -268,6 +301,8 @@ class UrbanBeatsScenario(object):
 
         :param parname: parameter name of str type.
         """
+        if parname == "ALL":
+            return self.__scenariometadata
         try:
             return self.__scenariometadata[parname]
         except KeyError:
