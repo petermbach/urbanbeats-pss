@@ -127,7 +127,7 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
         """Updates the coordinate system's combobox and the UI elements associated with it."""
         self.ui.coord_select.setChecked(1)
         self.ui.coord_combo.clear()
-        self.ui.coord_combo.addItem("<select coordinate system>")
+        self.ui.coord_combo.addItem("(select coordinate system)")
         names = self.epsg_dict.keys()
         names.sort()
         for i in names:
@@ -194,33 +194,33 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
         format, then the selected file should no longer be valid and will disappear."""
         if self.ui.spatial_radio.isChecked():
             if self.currentDataType != "spatial":
-                self.ui.databox.setText("<none>")
+                self.ui.databox.setText("(none)")
             self.ui.datacat_combo.setEnabled(1)
             self.ui.datacat_combo.clear()
-            self.ui.datacat_combo.addItem("<undefined>")
+            self.ui.datacat_combo.addItem("(undefined)")
             for i in ubglobals.SPATIALDATA:
                 self.ui.datacat_combo.addItem(i)
         elif self.ui.temporal_radio.isChecked():
             if self.currentDataType != "temporal":
-                self.ui.databox.setText("<none>")
+                self.ui.databox.setText("(none)")
             self.ui.datacat_combo.setEnabled(1)
             self.ui.datacat_combo.clear()
-            self.ui.datacat_combo.addItem("<undefined>")
+            self.ui.datacat_combo.addItem("(undefined)")
             for i in ubglobals.TEMPORALDATA:
                 self.ui.datacat_combo.addItem(i)
         else:
             if self.currentDataType != "qualitative":
-                self.ui.databox.setText("<none>")
+                self.ui.databox.setText("(none)")
             self.ui.datacat_combo.setEnabled(0)
             self.ui.datacat_combo.clear()
-            self.ui.datacat_combo.addItem("<undefined>")
+            self.ui.datacat_combo.addItem("(undefined)")
         self.ui.datacat_combo.setCurrentIndex(1)
 
     def update_datacatsub_combo(self):
         """Updates the sub-category combo box based on the required sub-classification of various
         data sets."""
         self.ui.datacatsub_combo.clear()
-        self.ui.datacatsub_combo.addItem("<undefined>")
+        self.ui.datacatsub_combo.addItem("(undefined)")
         try:
             subcategories = ubglobals.SUBDATASETS[str(self.ui.datacat_combo.currentText())]
         except KeyError:
@@ -232,10 +232,10 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
         self.ui.datacatsub_combo.setCurrentIndex(0)
 
     def clear_interface(self):
-        """Clears the addData interface by removing the text in the browse box (setting it to <none>),
+        """Clears the addData interface by removing the text in the browse box (setting it to (none)),
         checking one of the radio buttons and updating the combo boxes."""
         self.ui.epsg_box.clear()
-        self.ui.databox.setText("<none>")
+        self.ui.databox.setText("(none)")
         self.ui.spatial_radio.setChecked(1)
         self.update_datacat_combo()
         self.update_datacatsub_combo()
@@ -254,7 +254,7 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
             self.currentDataType = "qualitative"
 
         if os.path.isfile(datafile):    # If the file exists
-            if self.ui.datacat_combo.currentText() != "<undefined>":    # If the current Text is NOT <undefined>
+            if self.ui.datacat_combo.currentText() != "(undefined)":    # If the current Text is NOT (undefined)
                 if self.ui.datacatsub_combo.isEnabled() == 0 \
                         or self.ui.datacatsub_combo.currentIndex() != 0:    # If sub-categorisation is enabled
                     datatype = []
@@ -263,7 +263,7 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
                     datatype.append(self.ui.datacatsub_combo.currentText()) # index 2
                     datatype.append(os.path.splitext(datafile)[1])  # index 3
                     if self.currentDataType == "spatial":       # only for spatial data
-                        if self.ui.coord_combo.currentText() not in ["Other...", "<select coordinate system>"]:
+                        if self.ui.coord_combo.currentText() not in ["Other...", "(select coordinate system)"]:
                             # Case 1 - the coordinate system combo has a valid selection
                             datatype.append(self.ui.coord_combo.currentText())  # index 4
                             datatype.append(int(self.ui.epsg_box.text()))   # index 5
@@ -442,7 +442,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
     def add_datalibrary_to_scenariodata(self):
         """Adds an entry in the data library to the scenario data tree widget."""
         selection = self.ui.datalibrary_tree.currentItem()
-        if selection.childCount() == 0 and selection.text(0) != "<no data>":
+        if selection.childCount() == 0 and selection.text(0) != "(no data)":
             # Then we have a data set
             dataID, filepath = selection.toolTip(0).split(" - ")
             filename = selection.text(0)
@@ -481,14 +481,14 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, spdata)
             twi_child = QtWidgets.QTreeWidgetItem()
-            twi_child.setText(0, "<no data>")
+            twi_child.setText(0, "(no data)")
             twi.addChild(twi_child)
             self.ui.datalibrary_tree.topLevelItem(0).addChild(twi)
         for tdata in ubglobals.TEMPORALDATA:
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, tdata)
             twi_child = QtWidgets.QTreeWidgetItem()
-            twi_child.setText(0, "<no data>")
+            twi_child.setText(0, "(no data)")
             twi.addChild(twi_child)
             self.ui.datalibrary_tree.topLevelItem(1).addChild(twi)
 
@@ -501,7 +501,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         for dref in datacol:
             dtype = dref.get_metadata("parent")  # Returns overall type (e.g. Land Use, Rainfall, etc.)
             dtypeindex = ubglobals.SPATIALDATA.index(dtype)  # Get the index in the tree-widget
-            if cur_toplevelitem.child(dtypeindex).child(0).text(0) == "<no data>":
+            if cur_toplevelitem.child(dtypeindex).child(0).text(0) == "(no data)":
                 cur_toplevelitem.child(dtypeindex).takeChild(0)
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, dref.get_metadata("filename"))
@@ -514,7 +514,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         for dref in datacol:
             dtype = dref.get_metadata("parent")
             dtypeindex = ubglobals.TEMPORALDATA.index(dtype)
-            if cur_toplevelitem.child(dtypeindex).child(0).text(0) == "<no data>":
+            if cur_toplevelitem.child(dtypeindex).child(0).text(0) == "(no data)":
                 cur_toplevelitem.child(dtypeindex).takeChild(0)
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, dref.get_metadata("filename"))
@@ -524,7 +524,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         # Update the Qualitative Data Set
         datacol = self.datalibrary.get_all_data_of_class("qualitative")
         for dref in datacol:
-            if self.ui.datalibrary_tree.topLevelItem(2).child(0).text(0) == "<no data>":
+            if self.ui.datalibrary_tree.topLevelItem(2).child(0).text(0) == "(no data)":
                 self.ui.datalibrary_tree.topLevelItem(2).takeChild(0)
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, dref.get_metadata("filename"))
@@ -649,8 +649,8 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.setup_widget.setCurrentIndex(0)
 
         # Refresh narrative tab
-        self.ui.name_box.setText("<enter scenario name>")
-        self.ui.narrative_box.setPlainText("<enter scenario description")
+        self.ui.name_box.setText("(enter scenario name)")
+        self.ui.narrative_box.setPlainText("(enter scenario description)")
         self.ui.static_radio.setChecked(1)
         self.ui.endyear_spin.setValue(2068)
         self.ui.startyear_spin.setValue(2018)
@@ -665,7 +665,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         # Refresh Data TreeWidgets
 
         # Refresh Output tab
-        self.ui.naming_line.setText("<enter a naming convention for outputs>")
+        self.ui.naming_line.setText("(enter a naming convention for outputs)")
         self.ui.naming_check.setChecked(0)
 
     def update_scenario_edit(self):
