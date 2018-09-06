@@ -122,7 +122,7 @@ class Ui_OpenProjectDialog(object):
         self.project_table = QtWidgets.QTableWidget(self.path_widget_2)
         self.project_table.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.project_table.setAlternatingRowColors(True)
-        self.project_table.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        self.project_table.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.project_table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.project_table.setWordWrap(True)
         self.project_table.setObjectName("project_table")

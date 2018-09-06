@@ -946,12 +946,74 @@ class OpenProjectDialogLaunch(QtWidgets.QDialog):
         # UrbanBEATS' config file with recent projects.
         self.ui.project_table.setRowCount(0)
         self.populate_table()
+        self.enable_disable_buttons()
 
         # --- SIGNALS & SLOTS ---
         self.ui.projpath_button.clicked.connect(self.browse_project_path)
+        self.ui.project_table.itemSelectionChanged.connect(self.table_selection_to_path_box)
+        self.ui.project_table.itemSelectionChanged.connect(self.enable_disable_buttons)
+
+        # --- BUTTONS ---
+        self.ui.info_button.clicked.connect(self.info_button_activate)
+        self.ui.clear_button.clicked.connect(self.clear_button_activate)
+        self.ui.delete_button.clicked.connect(self.delete_button_activate)
+        self.ui.import_button.clicked.connect(self.import_button_activate)
+        self.ui.export_button.clicked.connect(self.export_button_activate)
+
+
+    def enable_disable_buttons(self):
+        """Enables and disables the buttons based on what has been clicked on the project table."""
+        if self.ui.project_table.rowCount() == 0:       # Check if the table has rows
+            self.ui.info_button.setEnabled(0)
+            self.ui.export_button.setEnabled(0)
+            self.ui.clear_button.setEnabled(0)
+            self.ui.delete_button.setEnabled(0)
+        if len(self.ui.project_table.selectedItems()) == 0:     # If something has NOT been selected in the table
+            self.ui.info_button.setEnabled(0)
+            self.ui.export_button.setEnabled(0)
+            self.ui.delete_button.setEnabled(0)
+        elif len(self.ui.project_table.selectedItems()) > 0:    # Otherwise something has been selected!
+            self.ui.info_button.setEnabled(1)
+            self.ui.export_button.setEnabled(1)
+            self.ui.delete_button.setEnabled(1)
+
+    def info_button_activate(self):
+        """Called when the info button has been clicked."""
+        print "Info Button"
+        pass
+
+    def clear_button_activate(self):
+        """Called when the clear button has been clicked."""
+        print "Clear Button"
+        pass
+
+    def delete_button_activate(self):
+        """Called when the delete button has been clicked."""
+        print "Delete Button"
+        pass
+
+    def import_button_activate(self):
+        """Called when the import button has been clicked."""
+        print "Import Button"
+        pass
+
+    def export_button_activate(self):
+        """Called when the export button has been clicked."""
+        print "Export Button"
+        pass
+
+    def table_selection_to_path_box(self):
+        """Called when an item in the QTableWidget is clicked or unselected. The path box is altered with the path
+        of the selected project."""
+        tselection = self.ui.project_table.selectedItems()
+        if len(tselection) == 3:
+            self.ui.projpath_line.setText(str(tselection[2].text()))
+        else:
+            self.ui.projpath_line.setText("(none)")
 
     def browse_project_path(self):
         """Opens a file dialog, which requests for a folder path of the project folder. """
+        self.ui.project_table.clearSelection()
         message = "Browse for Project Folder Location..."
         folderpath = QtWidgets.QFileDialog.getExistingDirectory(self, message)
         if folderpath:
@@ -959,13 +1021,16 @@ class OpenProjectDialogLaunch(QtWidgets.QDialog):
 
     def populate_table(self):
         """ Populates the recent projects table with recent projects undertaken by teh user. """
-        print "populating table"
-        print self.__recent
+        rowindex = 0
         for row in range(len(self.__recent)):
-            self.ui.project_table.insertRow(row)
-            for col in range(len(self.__recent[row])):
-                twi = QtWidgets.QTableWidgetItem(str(self.__recent[row][col]))
-                self.ui.project_table.setItem(row, col, twi)
+            if os.path.isdir(self.__recent[row][2]):
+                self.ui.project_table.insertRow(rowindex)
+                for col in range(len(self.__recent[row])):
+                    twi = QtWidgets.QTableWidgetItem(str(self.__recent[row][col]))
+                    self.ui.project_table.setItem(rowindex, col, twi)
+                rowindex += 1
+            else:
+                continue
         self.ui.project_table.resizeColumnsToContents()
 
     def done(self, r):

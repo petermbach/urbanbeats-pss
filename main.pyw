@@ -712,7 +712,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.__activeDataLibrary is not None:
             self.__activeDataLibrary.consolidate_library()
         self.printc("Saving Active Scenario...")
-        print self.__activeScenario
+
         if self.__activeScenario is not None:
             self.__activeScenario.consolidate_scenario()
 
@@ -727,7 +727,8 @@ class MainWindow(QtWidgets.QMainWindow):
     def update_recent_cfg(self, project_name, modeller, project_path):
         """Updates the recent.cfg file with new project information."""
         projects = self.load_recent_cfg()
-        projects.append([str(project_name), str(modeller), str(project_path)])
+        if [str(project_name), str(modeller), str(project_path)] not in projects:
+            projects.append([str(project_name), str(modeller), str(project_path)])
         self.save_recent_cfg(projects)
 
     def save_recent_cfg(self, projects):
@@ -739,11 +740,12 @@ class MainWindow(QtWidgets.QMainWindow):
         f.write('<URBANBEATSRECENT creator="Peter M. Bach" version="1.0">\n')
         f.write('\t<recentprojects>\n')
         for p in projects:
-            f.write('\t\t<project>\n')
-            f.write('\t\t\t<name>'+str(p[0])+'</name>\n')
-            f.write('\t\t\t<modeller>'+str(p[1])+'</modeller>\n')
-            f.write('\t\t\t<path>'+str(p[2])+'</path>\n')
-            f.write('\t\t</project>\n')
+            if os.path.isdir(str(p[2])):
+                f.write('\t\t<project>\n')
+                f.write('\t\t\t<name>'+str(p[0])+'</name>\n')
+                f.write('\t\t\t<modeller>'+str(p[1])+'</modeller>\n')
+                f.write('\t\t\t<path>'+str(p[2])+'</path>\n')
+                f.write('\t\t</project>\n')
         f.write('\t</recentprojects>\n')
         f.write('</URBANBEATSRECENT>')
         f.close()
@@ -762,9 +764,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 projectdata.append(att.text)
             recent_projects.append(projectdata)
         return recent_projects
-
-
-
 
     def save_as_project(self):
         """Saves the project's current state to a completely different location. Also modifies its info with
