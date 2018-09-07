@@ -182,7 +182,7 @@ class UrbanBeatsScenario(object):
         scenario_fname = self.projectpath+"/scenarios/"+self.__scenariometadata["name"].replace(" ", "_")+".xml"
         print scenario_fname
         f = open(scenario_fname, 'w')
-        f.write('<URBANBEATSSCENARIO creator="Peter M. Bach", version="1.0">\n')
+        f.write('<URBANBEATSSCENARIO creator="Peter M. Bach" version="1.0">\n')
 
         f.write('\t<scenariometa>\n')
         smeta = self.get_metadata("ALL")
@@ -197,9 +197,21 @@ class UrbanBeatsScenario(object):
         f.write('\t</scenariodata>\n')
 
         f.write('\t<scenariomodules>\n')
-        f.write('\t\t<modulesetup>\n')
+        f.write('\t\t<modulesetup>\n')      # Obtain module information and parameters al all modules
         for i in self.__modulesbools.keys():
-            f.write('\t\t\t<'+str(i)+'>'+str(self.__modulesbools[i])+'</'+str(i)+'>\n')
+            # Data for all the modules. This includes: active/in-active, number of instances, parameters
+            f.write('\t\t\t<' + str(i) + '>\n')     # <MODULENAME>
+            f.write('\t\t\t\t<active>'+str(self.__modulesbools[i])+'</active>\n')
+            f.write('\t\t\t\t<count>'+str(len(self.__modules[i]))+'</count>\n')
+            for j in range(len(self.__modules[i])):     # Loop across keys to get the module objects for parameters
+                f.write('\t\t\t\t<parameters index='+str(j)+'>\n')
+                curmod = self.__modules[i][j]   # The current module object
+                parlist = curmod.get_module_parameter_list()
+                for par in parlist.keys():
+                    f.write('\t\t\t\t\t<'+str(par)+'>'+str(curmod.get_parameter(par))+'</'+str(par)+'>\n')
+                f.write('\t\t\t\t</parameters>\n')
+
+            f.write('\t\t\t</' + str(i) + '>\n')
         f.write('\t\t</modulesetup>\n')
         f.write('\t</scenariomodules>\n')
 
