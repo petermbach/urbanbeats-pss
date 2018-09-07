@@ -327,7 +327,7 @@ class Ui_ProjectSetupDialog(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Lead Modeller</p></body></html>"))
-        self.otherpersons_box.setPlainText(_translate("ProjectSetupDialog", "<none>"))
+        self.otherpersons_box.setPlainText(_translate("ProjectSetupDialog", "(none)"))
         self.otherpersons_lbl2.setWhatsThis(_translate("ProjectSetupDialog", "Width of the square cell in the city grid in metres"))
         self.otherpersons_lbl2.setText(_translate("ProjectSetupDialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
@@ -351,7 +351,7 @@ class Ui_ProjectSetupDialog(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Please specify the shapefile showing the project boundary</p></body></html>"))
         self.projectboundary_lbl2.setText(_translate("ProjectSetupDialog", "Boundary (.shp)"))
         self.projectboundary_browse.setText(_translate("ProjectSetupDialog", "Browse..."))
-        self.projectboundary_line.setText(_translate("ProjectSetupDialog", "<none>"))
+        self.projectboundary_line.setText(_translate("ProjectSetupDialog", "(none)"))
         self.projectlog_lbl.setText(_translate("ProjectSetupDialog", "<html><head/><body><p><span style=\" font-weight:600;\">Project Logging</span></p></body></html>"))
         self.projectlog_lbl2.setWhatsThis(_translate("ProjectSetupDialog", "Width of the square cell in the city grid in metres"))
         self.projectlog_lbl2.setText(_translate("ProjectSetupDialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
@@ -370,7 +370,7 @@ class Ui_ProjectSetupDialog(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Path where UrbanBEATS will create the project folder.</p></body></html>"))
         self.projpath_lbl.setText(_translate("ProjectSetupDialog", "Project Path:"))
         self.projpath_button.setText(_translate("ProjectSetupDialog", "Browse..."))
-        self.projpath_line.setText(_translate("ProjectSetupDialog", "<none>"))
+        self.projpath_line.setText(_translate("ProjectSetupDialog", "(none)"))
         self.keepcopy_check.setText(_translate("ProjectSetupDialog", "Keep a copy of data sets wtihin project path"))
         self.setup_tabs.setTabText(self.setup_tabs.indexOf(self.projectinfo_tab), _translate("ProjectSetupDialog", "Project Information"))
 

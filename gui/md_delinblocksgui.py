@@ -552,8 +552,7 @@ class Ui_Delinblocks_Dialog(object):
         Delinblocks_Dialog.setTabOrder(self.year_combo, self.same_params)
         Delinblocks_Dialog.setTabOrder(self.same_params, self.description)
         Delinblocks_Dialog.setTabOrder(self.description, self.parameters)
-        Delinblocks_Dialog.setTabOrder(self.parameters, self.inputs_scrollArea)
-        Delinblocks_Dialog.setTabOrder(self.inputs_scrollArea, self.lu_combo)
+        Delinblocks_Dialog.setTabOrder(self.parameters, self.lu_combo)
         Delinblocks_Dialog.setTabOrder(self.lu_combo, self.lu_fromurbandev)
         Delinblocks_Dialog.setTabOrder(self.lu_fromurbandev, self.pop_combo)
         Delinblocks_Dialog.setTabOrder(self.pop_combo, self.pop_fromurbandev)
@@ -603,7 +602,7 @@ class Ui_Delinblocks_Dialog(object):
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p></body></html>"))
         self.geography_lbl.setText(_translate("Delinblocks_Dialog", "Include municipal and suburban boundaries into the delineation to provide regional level information."))
         self.geopolitical_lbl_2.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p align=\"right\">Map Attribute Label Name:</p></body></html>"))
-        self.suburb_combo.setItemText(0, _translate("Delinblocks_Dialog", "<no map selected>"))
+        self.suburb_combo.setItemText(0, _translate("Delinblocks_Dialog", "(no map selected)"))
         self.suburb_check.setToolTip(_translate("Delinblocks_Dialog", "Checking this box will produce a CBD point on the \"block centres\" output map."))
         self.suburb_check.setWhatsThis(_translate("Delinblocks_Dialog", "Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM\'s accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.\n"
 "\n"
@@ -621,7 +620,7 @@ class Ui_Delinblocks_Dialog(object):
         self.geopolitical_line.setToolTip(_translate("Delinblocks_Dialog", "Units of decimal degrees"))
         self.suburb_line.setToolTip(_translate("Delinblocks_Dialog", "Units of decimal degrees."))
         self.suburb_lbl_2.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p align=\"right\">Map Attribute Label Name:</p></body></html>"))
-        self.geopolitical_combo.setItemText(0, _translate("Delinblocks_Dialog", "<no map selected>"))
+        self.geopolitical_combo.setItemText(0, _translate("Delinblocks_Dialog", "(no map selected)"))
         self.parameters.setTabText(self.parameters.indexOf(self.inputs_tab), _translate("Delinblocks_Dialog", "Input Maps"))
         self.geometry_title.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">Setup Spatial Geometry</span></p></body></html>"))
         self.geometry_lbl1.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p>Setup rules for delineation of the raw data into UrbanBEATS\' vector files.</p></body></html>"))
@@ -661,7 +660,7 @@ class Ui_Delinblocks_Dialog(object):
         self.region_lbl.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">Regional Context</span></p></body></html>"))
         self.considergeo_check.setToolTip(_translate("Delinblocks_Dialog", "Checking this box will have the model to calculate distance from CBD (based on a selected city using its central point of reference)."))
         self.considergeo_check.setText(_translate("Delinblocks_Dialog", "Consider location of nearest Central Business District in Simulation"))
-        self.city_combo.setItemText(0, _translate("Delinblocks_Dialog", "<default city of project>"))
+        self.city_combo.setItemText(0, _translate("Delinblocks_Dialog", "(default city of project)"))
         self.cbdlat_box.setToolTip(_translate("Delinblocks_Dialog", "Units of decimal degrees."))
         self.cbdmark_check.setToolTip(_translate("Delinblocks_Dialog", "Checking this box will produce a CBD point on the \"block centres\" output map."))
         self.cbdmark_check.setWhatsThis(_translate("Delinblocks_Dialog", "Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM\'s accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.\n"
@@ -704,8 +703,8 @@ class Ui_Delinblocks_Dialog(object):
 "- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.\n"
 "- If tolerance limit is not met, cell\'s water is routed directly to catchment outlet."))
         self.rivers_check.setText(_translate("Delinblocks_Dialog", "Rivers and Creeks"))
-        self.lakes_combo.setItemText(0, _translate("Delinblocks_Dialog", "<no map selected>"))
-        self.rivers_combo.setItemText(0, _translate("Delinblocks_Dialog", "<no map selected>"))
+        self.lakes_combo.setItemText(0, _translate("Delinblocks_Dialog", "(no map selected)"))
+        self.rivers_combo.setItemText(0, _translate("Delinblocks_Dialog", "(no map selected)"))
         self.waterbody_distance_check.setToolTip(_translate("Delinblocks_Dialog", "Checking this box will produce a CBD point on the \"block centres\" output map."))
         self.waterbody_distance_check.setWhatsThis(_translate("Delinblocks_Dialog", "Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM\'s accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.\n"
 "\n"
@@ -775,10 +774,10 @@ class Ui_Delinblocks_Dialog(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Applies a weighted average smoothing filter over the DEM layer. </span></p></body></html>"))
         self.infrastructure_check.setText(_translate("Delinblocks_Dialog", "Use built infrastructure as a guide (select data):"))
-        self.natfeature_combo.setItemText(0, _translate("Delinblocks_Dialog", "<none>"))
-        self.infrastructure_combo.setItemText(0, _translate("Delinblocks_Dialog", "<none>"))
+        self.natfeature_combo.setItemText(0, _translate("Delinblocks_Dialog", "(none)"))
+        self.infrastructure_combo.setItemText(0, _translate("Delinblocks_Dialog", "(none)"))
         self.connectivity_lbl2.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">Spatial Connectivity - Built Network Infrastructure</span></p></body></html>"))
-        self.sewer_combo.setItemText(0, _translate("Delinblocks_Dialog", "<none>"))
+        self.sewer_combo.setItemText(0, _translate("Delinblocks_Dialog", "(none)"))
         self.sewer_check.setToolTip(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -809,7 +808,7 @@ class Ui_Delinblocks_Dialog(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Applies a weighted average smoothing filter over the DEM layer. </span></p></body></html>"))
         self.supply_check.setText(_translate("Delinblocks_Dialog", "Water Supply Network (coming soon)"))
-        self.supply_combo.setItemText(0, _translate("Delinblocks_Dialog", "<none>"))
+        self.supply_combo.setItemText(0, _translate("Delinblocks_Dialog", "(none)"))
         self.parameters.setTabText(self.parameters.indexOf(self.context_tab), _translate("Delinblocks_Dialog", "Spatial Context"))
         self.footer_lbl.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-style:italic;\">UrbanBEATS - md_delinblocks module</span></p></body></html>"))
         self.reset_button.setWhatsThis(_translate("Delinblocks_Dialog", "<html><head/><body><p>Resets all parameters of this module in the current \'scenario time step\' to the default values.</p></body></html>"))

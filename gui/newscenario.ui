@@ -89,7 +89,7 @@
          <bool>true</bool>
         </property>
         <property name="text">
-         <string>&lt;enter scenario name&gt;</string>
+         <string>(enter scenario name)</string>
         </property>
         <property name="readOnly">
          <bool>false</bool>
@@ -189,7 +189,7 @@
             <string/>
            </property>
            <property name="plainText">
-            <string>&lt;enter scenario description&gt;</string>
+            <string>(enter scenario description)</string>
            </property>
           </widget>
          </item>
@@ -954,7 +954,7 @@
              <bool>true</bool>
             </property>
             <property name="text">
-             <string>&lt;enter a naming convention for outputs&gt;</string>
+             <string>(enter a naming convention for outputs)</string>
             </property>
             <property name="readOnly">
              <bool>false</bool>

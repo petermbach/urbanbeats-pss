@@ -126,7 +126,7 @@
          <bool>true</bool>
         </property>
         <property name="text">
-         <string>&lt;none&gt;</string>
+         <string>(none)</string>
         </property>
         <property name="readOnly">
          <bool>true</bool>
@@ -182,7 +182,7 @@
         </property>
         <item>
          <property name="text">
-          <string>&lt;undefined&gt;</string>
+          <string>(undefined)</string>
          </property>
         </item>
        </widget>
@@ -194,7 +194,7 @@
         </property>
         <item>
          <property name="text">
-          <string>&lt;undefined&gt;</string>
+          <string>(undefined)</string>
          </property>
         </item>
        </widget>
@@ -279,7 +279,7 @@
         </property>
         <item>
          <property name="text">
-          <string>&lt;undefined&gt;</string>
+          <string>(undefined)</string>
          </property>
         </item>
        </widget>

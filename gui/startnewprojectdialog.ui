@@ -35,7 +35,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="graphics/ubeats.qrc">:/icons/new-file-icon.png</pixmap>
+         <pixmap resource="../graphics/ubeats.qrc">:/icons/new-file-icon.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -357,7 +357,7 @@ p, li { white-space: pre-wrap; }
                  <string/>
                 </property>
                 <property name="plainText">
-                 <string>&lt;none&gt;</string>
+                 <string>(none)</string>
                 </property>
                </widget>
               </item>
@@ -478,7 +478,7 @@ p, li { white-space: pre-wrap; }
               <item row="1" column="1">
                <widget class="QLineEdit" name="projectboundary_line">
                 <property name="text">
-                 <string>&lt;none&gt;</string>
+                 <string>(none)</string>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -570,7 +570,7 @@ p, li { white-space: pre-wrap; }
               <item row="1" column="1">
                <widget class="QLineEdit" name="projpath_line">
                 <property name="text">
-                 <string>&lt;none&gt;</string>
+                 <string>(none)</string>
                 </property>
                 <property name="readOnly">
                  <bool>true</bool>
@@ -672,6 +672,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../graphics/ubeats.qrc"/>
   <include location="graphics/ubeats.qrc"/>
  </resources>
  <connections>

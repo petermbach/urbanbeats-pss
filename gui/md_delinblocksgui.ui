@@ -355,7 +355,7 @@ p, li { white-space: pre-wrap; }
                     <widget class="QComboBox" name="suburb_combo">
                      <item>
                       <property name="text">
-                       <string>&lt;no map selected&gt;</string>
+                       <string>(no map selected)</string>
                       </property>
                      </item>
                     </widget>
@@ -419,7 +419,7 @@ Correction proceeds as follows:
                     <widget class="QComboBox" name="geopolitical_combo">
                      <item>
                       <property name="text">
-                       <string>&lt;no map selected&gt;</string>
+                       <string>(no map selected)</string>
                       </property>
                      </item>
                     </widget>
@@ -841,7 +841,7 @@ p, li { white-space: pre-wrap; }
                     <widget class="QComboBox" name="city_combo">
                      <item>
                       <property name="text">
-                       <string>&lt;default city of project&gt;</string>
+                       <string>(default city of project)</string>
                       </property>
                      </item>
                     </widget>
@@ -1009,7 +1009,7 @@ Correction proceeds as follows:
                     <widget class="QComboBox" name="lakes_combo">
                      <item>
                       <property name="text">
-                       <string>&lt;no map selected&gt;</string>
+                       <string>(no map selected)</string>
                       </property>
                      </item>
                     </widget>
@@ -1018,7 +1018,7 @@ Correction proceeds as follows:
                     <widget class="QComboBox" name="rivers_combo">
                      <item>
                       <property name="text">
-                       <string>&lt;no map selected&gt;</string>
+                       <string>(no map selected)</string>
                       </property>
                      </item>
                     </widget>
@@ -1254,7 +1254,7 @@ p, li { white-space: pre-wrap; }
                     <widget class="QComboBox" name="natfeature_combo">
                      <item>
                       <property name="text">
-                       <string>&lt;none&gt;</string>
+                       <string>(none)</string>
                       </property>
                      </item>
                     </widget>
@@ -1263,7 +1263,7 @@ p, li { white-space: pre-wrap; }
                     <widget class="QComboBox" name="infrastructure_combo">
                      <item>
                       <property name="text">
-                       <string>&lt;none&gt;</string>
+                       <string>(none)</string>
                       </property>
                      </item>
                     </widget>
@@ -1288,7 +1288,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                      <item>
                       <property name="text">
-                       <string>&lt;none&gt;</string>
+                       <string>(none)</string>
                       </property>
                      </item>
                     </widget>
@@ -1356,7 +1356,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                      <item>
                       <property name="text">
-                       <string>&lt;none&gt;</string>
+                       <string>(none)</string>
                       </property>
                      </item>
                     </widget>
@@ -1453,7 +1453,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>same_params</tabstop>
   <tabstop>description</tabstop>
   <tabstop>parameters</tabstop>
-  <tabstop>inputs_scrollArea</tabstop>
   <tabstop>lu_combo</tabstop>
   <tabstop>lu_fromurbandev</tabstop>
   <tabstop>pop_combo</tabstop>

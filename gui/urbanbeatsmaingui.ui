@@ -909,17 +909,17 @@ p, li { white-space: pre-wrap; }
           </property>
           <item>
            <property name="text">
-            <string>Type: &lt;static&gt;</string>
+            <string>Type: (static)</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>Status: &lt;none&gt;</string>
+            <string>Status: (none)</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>Simulation Year(s): &lt;year&gt;</string>
+            <string>Simulation Year(s): (year)</string>
            </property>
           </item>
           <item>
@@ -943,7 +943,7 @@ p, li { white-space: pre-wrap; }
           </property>
           <item>
            <property name="text">
-            <string>&lt;no files&gt;</string>
+            <string>(no files)</string>
            </property>
           </item>
          </item>
@@ -1104,12 +1104,12 @@ p, li { white-space: pre-wrap; }
           </property>
           <item>
            <property name="text">
-            <string>File Naming: &lt;name&gt;</string>
+            <string>File Naming: (name)</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>Path: &lt;path&gt;</string>
+            <string>Path: (path)</string>
            </property>
           </item>
          </item>
