@@ -35,19 +35,30 @@ import gc
 import tempfile
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-
+from ubmodule import *
 
 
 # --- MODULE CLASS DEFINITION ---
-class ClimateSetup():
+class ClimateSetup(UBModule):
     """ CLIMATE SETUP MODULE
     Responsible for pre-processing and modifying the climate data for the
     simulation. This includes scaling of the data, tallying up the relevant
     statistics and identifying relevant information for later modules.
     """
-    def __init__(self):
+    def __init__(self, activesim, scenario, datalibrary, projectlog, simulationyear):
+        UBModule.__init__(self)
         self.name = "Climate Module for UrbanBEATS"
-        pass
+        self.simulationyear = simulationyear
+
+        # CONNECTIONS WITH CORE SIMULATION
+        self.activesim = activesim
+        self.scenario = scenario
+        self.datalibrary = datalibrary
+        self.projectlog = projectlog
+
+        # PARAMETER LIST DEFINITION
+        self.create_parameter("simulate_climate", BOOL, "simulate future climate")
+        self.simulate_climate = 0
 
     def run(self):
         pass

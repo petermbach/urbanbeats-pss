@@ -35,17 +35,29 @@ import gc
 import tempfile
 
 # --- URBANBEATS LIBRARY IMPORTS ---
+from ubmodule import *
+
 
 # --- MODULE CLASS DEFINITION ---
-class UrbanPlanning():
+class UrbanPlanning(UBModule):
     """ URBAN FORM PLANNING AND ABSTRACTION MODULE
     Creates and abstraction and procedural generation of the urban form
     for further analysis in later modules.
     """
-
-    def __init__(self):
+    def __init__(self, activesim, scenario, datalibrary, projectlog, simulationyear):
+        UBModule.__init__(self)
         self.name = "Urban Planning Module for UrbanBEATS"
-        pass
+        self.simulationyear = simulationyear
+
+        # CONNECTIONS WITH CORE SIMULATION
+        self.activesim = activesim
+        self.scenario = scenario
+        self.datalibrary = datalibrary
+        self.projectlog = projectlog
+
+        # PARAMETER LIST DEFINITION
+        self.create_parameter("dummy", BOOL, "dummy parameter for testing")
+        self.dummy = 0
 
     def run(self):
         pass

@@ -35,18 +35,30 @@ import gc
 import tempfile
 
 # --- URBANBEATS LIBRARY IMPORTS ---
+from ubmodule import *
+
 
 # --- MODULE CLASS DEFINITION ---
-class ImpactAssess():
+class ImpactAssess(UBModule):
     """ IMPACT ASSESSMENT MODULE
     Undertakes an impact assessment of the current scenario based on the
     various impacts labelled. The model performs various assessments and outputs
     useful indicators showing the before-after situations of different scenarios
     """
-
-    def __init__(self):
+    def __init__(self, activesim, scenario, datalibrary, projectlog, simulationyear):
+        UBModule.__init__(self)
         self.name = "Impact Assessment Module"
-        pass
+        self.simulationyear = simulationyear
+
+        # CONNECTIONS WITH CORE SIMULATION
+        self.activesim = activesim
+        self.scenario = scenario
+        self.datalibrary = datalibrary
+        self.projectlog = projectlog
+
+        # PARAMETER LIST DEFINITION
+        self.create_parameter("dummy", BOOL, "dummy parameter for testing")
+        self.dummy = 0
 
     def run(self):
         pass

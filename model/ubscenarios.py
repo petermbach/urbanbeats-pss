@@ -153,25 +153,35 @@ class UrbanBeatsScenario(object):
                 self.__modules["SPATIAL"].append(
                     md_delinblocks.DelinBlocks(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("CLIMATE"):
-                self.__modules["CLIMATE"].append("YES")
+                self.__modules["CLIMATE"].append(
+                    md_climatesetup.ClimateSetup(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("URBDEV"):
-                self.__modules["URBDEV"].append("YES")
+                self.__modules["URBDEV"].append(
+                    md_urbandev.UrbanDevelopment(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("URBPLAN"):
-                self.__modules["URBPLAN"].append("YES")
+                self.__modules["URBPLAN"].append(
+                    md_urbplanbb.UrbanPlanning(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("SOCIO"):
-                self.__modules["SOCIO"].append("YES")
+                self.__modules["SOCIO"].append(
+                    md_socioecon.SocioEconomics(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("MAP"):
-                self.__modules["MAP"].append("YES")
+                self.__modules["MAP"].append(
+                    md_spatialmapping.SpatialMapping(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("REG"):
-                self.__modules["REG"].append("YES")
+                self.__modules["REG"].append(
+                    md_regulation.RegulationModule(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("INFRA"):
-                self.__modules["INFRA"].append("YES")
+                self.__modules["INFRA"].append(
+                    md_techplacement.Techplacement(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("PERF"):
-                self.__modules["PERF"].append("YES")
+                self.__modules["PERF"].append(
+                    md_perfassess.PerformanceAssessment(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("IMPACT"):
-                self.__modules["IMPACT"].append("YES")
+                self.__modules["IMPACT"].append(
+                    md_impactasess.ImpactAssess(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("DECISION"):
-                self.__modules["DECISION"].append("YES")
+                self.__modules["DECISION"].append(
+                    md_decisionanalysis.DecisionAnalysis(inputs[0], inputs[1], inputs[2], inputs[3], i))
 
             # CREATE ASSETS SUPERSTRUCTURE
             self.__assets[str(i)] = {}

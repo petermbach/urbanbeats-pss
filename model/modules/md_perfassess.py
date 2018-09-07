@@ -35,18 +35,30 @@ import gc
 import tempfile
 
 # --- URBANBEATS LIBRARY IMPORTS ---
+from ubmodule import *
+
 
 # --- MODULE CLASS DEFINITION ---
-class PerformanceAssessment():
+class PerformanceAssessment(UBModule):
     """ PERFORMANCE ASSESSMENT MODULE
     Contains a mish-mash of performance assessment scripts. Its difference
     to the impact module is that it conducts a straight up simulation of
     performance of a particular.
     """
-
-    def __init__(self):
+    def __init__(self, activesim, scenario, datalibrary, projectlog, simulationyear):
+        UBModule.__init__(self)
         self.name = "Performance Assessment Module for UrbanBEATS"
-        pass
+        self.simulationyear = simulationyear
+
+        # CONNECTIONS WITH CORE SIMULATION
+        self.activesim = activesim
+        self.scenario = scenario
+        self.datalibrary = datalibrary
+        self.projectlog = projectlog
+
+        # PARAMETER LIST DEFINITION
+        self.create_parameter("dummy", BOOL, "dummy parameter for testing")
+        self.dummy = 0
 
     def run(self):
         pass

@@ -35,18 +35,30 @@ import gc
 import tempfile
 
 # --- URBANBEATS LIBRARY IMPORTS ---
+from ubmodule import *
+
 
 # --- MODULE CLASS DEFINITION ---
-class SocioEconomics():
+class SocioEconomics(UBModule):
     """ SOCIO-ECONOMICS MODULE
     Undertakes an assessment of the socio-economics of the planning process
     including financial information for the assessment and stakeholder definition
     so that the model can better understand the main players involved.
     """
-
-    def __init__(self):
+    def __init__(self, activesim, scenario, datalibrary, projectlog, simulationyear):
+        UBModule.__init__(self)
         self.name = "Socio-Economics Module for UrbanBEATS"
-        pass
+        self.simulationyear = simulationyear
+
+        # CONNECTIONS WITH CORE SIMULATION
+        self.activesim = activesim
+        self.scenario = scenario
+        self.datalibrary = datalibrary
+        self.projectlog = projectlog
+
+        # PARAMETER LIST DEFINITION
+        self.create_parameter("dummy", BOOL, "dummy parameter for testing")
+        self.dummy = 0
 
     def run(self):
         pass

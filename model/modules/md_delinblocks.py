@@ -146,7 +146,7 @@ class DelinBlocks(UBModule):
         self.guide_natural_map = ""
         self.guide_built_map = ""
 
-        # NON-VISIBLE PARAMETER LIST
+        # NON-VISIBLE PARAMETER LIST - USED THROUGHOUT THE SIMULATION
         self.xllcorner = float(0.0)     # Obtained from the loaded raster data (elevation) upon run-time
         self.yllcorner = float(0.0)     # Spatial extents of the input map
 

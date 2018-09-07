@@ -35,18 +35,30 @@ import gc
 import tempfile
 
 # --- URBANBEATS LIBRARY IMPORTS ---
+from ubmodule import *
+
 
 # --- MODULE CLASS DEFINITION ---
-class DecisionAnalysis():
+class DecisionAnalysis(UBModule):
     """ DECISION ANALYSIS MODULE
     Performs the filtering and narrowing of options within the technology
     portfolio. The module also contains relevant information that other modules
     may ask for.
     """
-
-    def __init__(self):
+    def __init__(self, activesim, scenario, datalibrary, projectlog, simulationyear):
+        UBModule.__init__(self)
         self.name = "Decision Analysis Module for UrbanBEATS"
-        pass
+        self.simulationyear = simulationyear
+
+        # CONNECTIONS WITH CORE SIMULATION
+        self.activesim = activesim
+        self.scenario = scenario
+        self.datalibrary = datalibrary
+        self.projectlog = projectlog
+
+        # PARAMETER LIST DEFINITION
+        self.create_parameter("dummy", BOOL, "dummy parameter for testing")
+        self.dummy = 0
 
     def run(self):
         pass
