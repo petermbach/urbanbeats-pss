@@ -30,7 +30,10 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 import threading
+import os
 import time
+import xml.etree.ElementTree as ET  # XML parsing for loading scenario files
+import ast  # Used for converting a string of a list into a list e.g. "[1, 2, 3, 4]" --> [1, 2, 3, 4]
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 import modules.md_decisionanalysis as md_decisionanalysis
@@ -203,26 +206,24 @@ class UrbanBeatsScenario(object):
         f.write('\t<scenariodata>\n')
         for i in [self.__spatial_data, self.__time_series_data, self.__qual_data]:
             for dref in i:
-                f.write('<datarefid type="'+str(dref.get_metadata("class"))+'">'+str(dref.get_data_id())+'</datarefid>\n')
+                f.write('\t\t<datarefid type="'+str(dref.get_metadata("class"))+'">'+str(dref.get_data_id())+'</datarefid>\n')
         f.write('\t</scenariodata>\n')
 
         f.write('\t<scenariomodules>\n')
-        f.write('\t\t<modulesetup>\n')      # Obtain module information and parameters al all modules
         for i in self.__modulesbools.keys():
             # Data for all the modules. This includes: active/in-active, number of instances, parameters
-            f.write('\t\t\t<' + str(i) + '>\n')     # <MODULENAME>
-            f.write('\t\t\t\t<active>'+str(self.__modulesbools[i])+'</active>\n')
-            f.write('\t\t\t\t<count>'+str(len(self.__modules[i]))+'</count>\n')
+            f.write('\t\t<' + str(i) + '>\n')     # <MODULENAME>
+            f.write('\t\t\t<active>'+str(self.__modulesbools[i])+'</active>\n')
+            f.write('\t\t\t<count>'+str(len(self.__modules[i]))+'</count>\n')
             for j in range(len(self.__modules[i])):     # Loop across keys to get the module objects for parameters
-                f.write('\t\t\t\t<parameters index='+str(j)+'>\n')
+                f.write('\t\t\t<parameters index="'+str(j)+'">\n')
                 curmod = self.__modules[i][j]   # The current module object
                 parlist = curmod.get_module_parameter_list()
                 for par in parlist.keys():
-                    f.write('\t\t\t\t\t<'+str(par)+'>'+str(curmod.get_parameter(par))+'</'+str(par)+'>\n')
-                f.write('\t\t\t\t</parameters>\n')
+                    f.write('\t\t\t\t<'+str(par)+'>'+str(curmod.get_parameter(par))+'</'+str(par)+'>\n')
+                f.write('\t\t\t</parameters>\n')
 
-            f.write('\t\t\t</' + str(i) + '>\n')
-        f.write('\t\t</modulesetup>\n')
+            f.write('\t\t</' + str(i) + '>\n')
         f.write('\t</scenariomodules>\n')
 
         f.write('</URBANBEATSSCENARIO>')
@@ -231,6 +232,53 @@ class UrbanBeatsScenario(object):
         # NOTE TO SELF: when you read from the .xml file, there will be a string list e.g. '[2008, 2009, 2010, ...]'
         # to convert this to a list, use import ast and then yearlist = ast.literal_eval('[2008, 2009, 2010, ...]')
 
+    def setup_scenario_from_xml(self, filename):
+        """Scans the scenarios folder and restores all scenarios based on the information contained in the .xml
+        files if they exist."""
+        print self.projectpath + "/scenarios/" + filename
+        f = ET.parse(self.projectpath+"/scenarios/"+filename)
+        root = f.getroot()
+
+        # Load metadata of the scenario
+        metadata = {}       # Fill out self.__scenariometadata
+        for child in root.find("scenariometa"):
+            if child.tag in ["dt_array_parameter", "yearlist"]:
+                metadata[child.tag] = ast.literal_eval(child.text)
+            elif child.tag in ["startyear", "endyear", "dt", "dt_irregular", "usescenarioname", "benchmarks"]:
+                metadata[child.tag] = int(child.text)
+            else:
+                metadata[child.tag] = child.text
+
+        self.__scenariometadata = metadata
+
+        # Collect data from data library, which should have been loaded by now
+        for child in root.find("scenariodata"):
+            if child.attrib["type"] == "spatial":
+                self.__spatial_data.append(self.datalibrary.get_data_with_id(child.text))
+            elif child.attrib["type"] == "temporal":
+                self.__time_series_data.append(self.datalibrary.get_data_with_id(child.text))
+            else:
+                self.__qual_data.append(self.datalibrary.get_data_with_id(child.text))
+
+        # Create modules and fill out the modules with parameters
+        mdata = root.find("scenariomodules")
+        for modname in self.__modulesbools.keys():
+            mbool = int(mdata.find(modname).find("active").text)
+            self.__modulesbools[modname] = mbool
+        self.setup_scenario()   # Instantiates all modules
+
+        # Loop through module information and set parameters [TO DO]
+        # for modname in self.__modules.keys():
+        #     print modname
+        #     for mod in mdata.find(modname):
+        #         print mod
+        #         if mod.tag in ["active", "count"]:
+        #             continue
+        #         print self.__modules
+        #         print mod.attrib
+        #         modobject = self.get_module_object(modname, int(mod.attrib))
+        #         for parameter in mod:
+        #             print mod.tag, mod.text
 
     def add_data_reference(self, dataref):
         """Adds the data reference to the scenario's data store depending on its class."""

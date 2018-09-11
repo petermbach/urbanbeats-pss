@@ -149,6 +149,15 @@ class UrbanBeatsSim(threading.Thread):
             self.set_project_log(projectlog)    # Go through existing project logs and update or add log info [TO DO]
 
             # Go through scenarios and add the scenarios to the scenario manager
+            scenariofiles = os.listdir(self.get_project_parameter("projectpath")+"/"+self.get_project_parameter("name")
+                                       + "/scenarios/")
+            for sf in scenariofiles:
+                if ".xml" not in sf:
+                    continue
+                else:
+                    self.create_new_scenario()
+                    self.__activescenario.setup_scenario_from_xml(sf)
+                    self.add_new_scenario(self.__activescenario)
 
         elif condition == "import": # for importing a project
             pass    # [TO DO]

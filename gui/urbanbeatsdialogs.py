@@ -804,7 +804,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.update_scenario_datasets()
 
         # Outputs
-        self.scenario.set_metadata("usescenarioname", self.ui.naming_check.isChecked())
+        self.scenario.set_metadata("usescenarioname", int(self.ui.naming_check.isChecked()))
         if self.ui.naming_check.isChecked():
             self.scenario.set_metadata("filename", self.ui.name_box.text().replace(" ", "_"))
         else:
