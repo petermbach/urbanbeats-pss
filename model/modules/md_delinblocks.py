@@ -117,6 +117,7 @@ class DelinBlocks(UBModule):
         self.create_parameter("marklocation", BOOL, "mark location on output map")
         self.considerCBD = 0
         self.locationOption = "S"   # S = Selection, C = coordinates
+        self.locationCity = self.activesim.get_project_parameter("city")
         self.locationLong = float(0.0)
         self.locationLat = float(0.0)
         self.marklocation = 0

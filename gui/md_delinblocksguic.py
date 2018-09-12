@@ -327,7 +327,7 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("population_map", self.popmaps[1][self.ui.pop_combo.currentIndex()])
         self.module.set_parameter("elevation_map", self.elevmaps[1][self.ui.elev_combo.currentIndex()])
         self.module.set_parameter("landuse_fud", int(self.ui.lu_fromurbandev.isChecked()))
-        self.module.set_parameter("population_fud", int(self.ui.pop_fromurbandev.isCheckable()))
+        self.module.set_parameter("population_fud", int(self.ui.pop_fromurbandev.isChecked()))
 
         self.module.set_parameter("include_geopolitical", int(self.ui.geopolitical_check.isChecked()))
         self.module.set_parameter("geopolitical_map", self.municipalmaps[1][self.ui.geopolitical_combo.currentIndex()])

@@ -136,7 +136,7 @@ class UrbanBeatsScenario(object):
 
     def setup_scenario(self):
         """Initializes the scenario with the setup data provided by the user."""
-        print "setting up scenario"
+        # print "setting up scenario"
         inputs = [self.simulation, self, self.datalibrary, self.projectlog]
         self.__dt_array = []
         if self.get_metadata("type") in ["STATIC", "BENCHMARK"]:
@@ -148,7 +148,6 @@ class UrbanBeatsScenario(object):
             while currentyear < self.get_metadata("endyear"):
                 self.__dt_array.append(currentyear)
                 currentyear += self.get_metadata("dt")
-        print self.__dt_array
 
         # INSTANTIATE MODULES
         for i in self.__dt_array:
@@ -193,7 +192,7 @@ class UrbanBeatsScenario(object):
     def consolidate_scenario(self):
         """Creates an updated scenario_name.xml file of the current scenario including all module parameters."""
         scenario_fname = self.projectpath+"/scenarios/"+self.__scenariometadata["name"].replace(" ", "_")+".xml"
-        print scenario_fname
+
         f = open(scenario_fname, 'w')
         f.write('<URBANBEATSSCENARIO creator="Peter M. Bach" version="1.0">\n')
 
@@ -235,7 +234,7 @@ class UrbanBeatsScenario(object):
     def setup_scenario_from_xml(self, filename):
         """Scans the scenarios folder and restores all scenarios based on the information contained in the .xml
         files if they exist."""
-        print self.projectpath + "/scenarios/" + filename
+        # print self.projectpath + "/scenarios/" + filename
         f = ET.parse(self.projectpath+"/scenarios/"+filename)
         root = f.getroot()
 
