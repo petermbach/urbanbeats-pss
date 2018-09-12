@@ -231,7 +231,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def change_narrative_gui_tab(self):
         """Changes the current tab in the Scenario Narrative based on what is clicked in the Scenario Description
         tree view widget. Only updates if a top level item has been clicked."""
-        print self.ui.ScenarioDock_View.selectedItems()[0].text(0)
+        # print self.ui.ScenarioDock_View.selectedItems()[0].text(0)
         if self.ui.ScenarioDock_View.selectedItems()[0].text(0) == "Narrative":
             self.ui.ScenarioView_Widget.setCurrentIndex(1)
         elif self.ui.ScenarioDock_View.selectedItems()[0].text(0) == "Simulation Details":
