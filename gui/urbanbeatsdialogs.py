@@ -241,6 +241,7 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
         self.update_datacatsub_combo()
         self.ui.coord_select.setChecked(1)
         self.ui.coord_combo.setCurrentIndex(0)
+        self.ui.notes_box.setPlainText("none")
 
     def add_data_to_project(self):
         """Adds the data to the project based on all the information provided. Checks for the validity
