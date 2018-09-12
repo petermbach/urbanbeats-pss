@@ -309,7 +309,7 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         :param dataclass: the data class i.e. spatial, temporal, qualitative
         :param datatype: the name that goes with the data class e.g. landuse, population, etc.
         """
-        dataref_array = [["<no map selected>"], [None]]    # index 0:filenames, index 1:object_reference
+        dataref_array = [["(no map selected)"], [""]]    # index 0:filenames, index 1:object_reference
         for dref in self.active_scenario.get_data_reference(dataclass):
             if dref.get_metadata("parent") == datatype:
                 if len(args) > 0 and datatype in ["Boundaries", "Water Bodies", "Built Infrastructure", "Overlays"]:

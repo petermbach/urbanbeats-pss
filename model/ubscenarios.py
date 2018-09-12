@@ -267,18 +267,14 @@ class UrbanBeatsScenario(object):
             self.__modulesbools[modname] = mbool
         self.setup_scenario()   # Instantiates all modules
 
-        # Loop through module information and set parameters [TO DO]
-        # for modname in self.__modules.keys():
-        #     print modname
-        #     for mod in mdata.find(modname):
-        #         print mod
-        #         if mod.tag in ["active", "count"]:
-        #             continue
-        #         print self.__modules
-        #         print mod.attrib
-        #         modobject = self.get_module_object(modname, int(mod.attrib))
-        #         for parameter in mod:
-        #             print mod.tag, mod.text
+        # Loop through module information and set parameters
+        for modname in self.__modules.keys():
+            for instance in mdata.find(modname).findall("parameters"):
+                m = self.get_module_object(modname, int(instance.attrib["index"]))
+                for child in instance:
+                    # Currently this does some explicit type casting based on the parameter types defined
+                    m.set_parameter(child.tag, type(m.get_parameter(child.tag))(child.text))
+
 
     def add_data_reference(self, dataref):
         """Adds the data reference to the scenario's data store depending on its class."""

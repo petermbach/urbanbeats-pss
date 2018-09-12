@@ -672,11 +672,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.update_data_library_view()
 
         # Scenario View - UNCHECK and DISABLE ALL MODULES
-        moduleTree = self.ui.ScenarioDock_View.topLevelItem(3)
-        moduleCount = moduleTree.childCount()
-        for twi_module in range(moduleCount):
-            moduleTree.child(twi_module).setDisabled(1)
-            moduleTree.child(twi_module).setCheckState(0, False)
+        if viewmode == 0:
+            moduleTree = self.ui.ScenarioDock_View.topLevelItem(3)
+            moduleCount = moduleTree.childCount()
+            for twi_module in range(moduleCount):
+                moduleTree.child(twi_module).setDisabled(1)
+                moduleTree.child(twi_module).setCheckState(0, False)
+        else:
+            # Prepare Scenario View by simply adding the names based on the active simulation's scenario names
+            scenarionames = activesimulation.get_scenario_names()
+            for n in scenarionames:
+                self.ui.ScenarioDock_Combo.addItem(n)   # Adds the names to the Dock
+                self.ui.ScenarioDock_Combo.setCurrentIndex(0)
 
         # Update Main Window Title
         self.setWindowTitle("UrbanBEATS Planning Support Tool - "+str(self.get_current_project_name()))

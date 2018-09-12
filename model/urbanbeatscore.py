@@ -287,6 +287,10 @@ class UrbanBeatsSim(threading.Thread):
         """Returns the active scenario in the core simulation."""
         return self.__activescenario
 
+    def get_scenario_names(self):
+        """Returns all scenario names"""
+        return self.__scenarios.keys()
+
     def get_scenario_by_name(self, scenario_name):
         """Returns the scenario with the specified name."""
         try:
