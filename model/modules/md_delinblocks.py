@@ -257,10 +257,185 @@ class DelinBlocks(UBModule):
 
         self.scenario.add_asset("MapAttributes", map_attr)
 
+        x_adj = 0       # Track the position of the 'draw cursor', these offset the cursor
+        y_adj = 0       # can be used to offset the map completely from (0,0)
+
+        # --- DRAW BLOCKS AND ASSIGN THE MAP INFO ---
+        blockIDcount = 1    # Counter for BlockID, initialized here
+        for y in range(heightnew):
+            for x in range(widthnew):
+                self.notify("Current BLOCK ID: "+str(blockIDcount))
+
+                # - STEP 1 - CREATE BLOCK GEOMETRY
+                block_attr = self.create_block_face(x, y, cs, x_adj, y_adj, blockIDcount)
+                xcentre = x * cs + 0.5 * cs
+                ycentre = y * cs + 0.5 * cs
+
+                x_start = x * cellsinblock
+                y_start = y * cellsinblock
+
+                xorigin = (x + x_adj) * cs
+                yorigin = (y + y_adj) * cs
+
+                block_attr.add_attribute("CentreX", xcentre)
+                block_attr.add_attribute("CentreY", ycentre)
+                block_attr.add_attribute("LocateX", x + 1)
+                block_attr.add_attribute("LocateY", y + 1)
+                block_attr.add_attribute("OriginX", xorigin)
+                block_attr.add_attribute("OriginY", yorigin)
+                offset = [(x + x_adj) * cs, (y + y_adj) * cs]
+
+                # - STEP 2 - FIND BLOCK NEIGHBOURHOOD
+                blockNHD = self.find_neighbourhood(blockIDcount, x, y, numblocks, widthnew, heightnew)
+                block_attr.add_attribute("Nhd_N", blockNHD[0])  # North neighbour Block ID
+                block_attr.add_attribute("Nhd_S", blockNHD[1])  # South neighbour Block ID
+                block_attr.add_attribute("Nhd_W", blockNHD[2])  # West neighbour Block ID
+                block_attr.add_attribute("Nhd_E", blockNHD[3])  # East neighbour Block ID
+                block_attr.add_attribute("Nhd_NE", blockNHD[4])  # Northeast neighbour Block ID
+                block_attr.add_attribute("Nhd_NW", blockNHD[5])  # Northwest neighbour Block ID
+                block_attr.add_attribute("Nhd_SE", blockNHD[6])  # Southeast neighbour Block ID
+                block_attr.add_attribute("Nhd_SW", blockNHD[7])  # Southwest neighbour Block ID
+
+
+
+                blockIDcount += 1
+
         print "Simulation Finished up to this point!"
 
 
-    # Additional Module Functions
-    def otherfunctions(self):
-        pass
-        return True
+    # ADDITIONAL MODULE FUNCTIONS
+    def create_block_face(self, x, y, cs, x_adj, y_adj, ID):
+        """Creates the Block Face, the polygon of the block as a UBVector
+
+        :param x:
+        :param y:
+        :param cs:
+        :param x_adj:
+        :param y_adj:
+        :param ID: the current ID number to be assigned to the Block
+        :return: UBVector object containing the BlockID attribute and geometry
+        """
+        n1 = ((x + x_adj) * cs, (y + y_adj) * cs, 0)
+        n2 = ((x + x_adj + 1) * cs, (y + y_adj) * cs, 0)
+        n3 = ((x + x_adj + 1) * cs, (y + y_adj + 1) * cs, 0)
+        n4 = ((x + x_adj) * cs, (y + y_adj + 1) * cs, 0)
+
+        # Define the UrbanBEATS Vector Asset
+        block_attr = ubdata.UBVector([n1, n2, n3, n4, n1])
+        block_attr.add_attribute("BlockID", int(ID))
+
+        return block_attr
+
+    def find_neighbourhood(self, ID, x, y, numblocks, widthnew, heightnew):
+        """Search for all 8 (or 4) neighbours around a given Block ID. Encodes
+        the results into an array [N, S, W, E, NE, NW, SE, SW]
+
+        :param ID: Block ID currently being looked at
+        :param x: x
+        """
+        neighbour_assign = 0
+        # check neighbour IDs
+        # check for corner pieces
+        if ID - 1 == 0:  # bottom left
+            neighbour_assign = 1
+            N_neighbour = ID + widthnew
+            S_neighbour = 0
+            W_neighbour = 0
+            E_neighbour = ID + 1
+            NE_neighbour = N_neighbour + 1
+            NW_neighbour = 0
+            SE_neighbour = 0
+            SW_neighbour = 0
+        if ID + 1 == numblocks + 1:  # top right
+            neighbour_assign = 1
+            N_neighbour = 0
+            S_neighbour = ID - widthnew
+            W_neighbour = ID - 1
+            E_neighbour = 0
+            NE_neighbour = 0
+            NW_neighbour = 0
+            SE_neighbour = 0
+            SW_neighbour = S_neighbour - 1
+        if ID - widthnew == 0:  # bottom right
+            neighbour_assign = 1
+            N_neighbour = ID + widthnew
+            S_neighbour = 0
+            W_neighbour = ID - 1
+            E_neighbour = 0
+            NE_neighbour = 0
+            NW_neighbour = N_neighbour - 1
+            SE_neighbour = 0
+            SW_neighbour = 0
+        if ID + widthnew == numblocks + 1:  # top left
+            neighbour_assign = 1
+            N_neighbour = 0
+            S_neighbour = ID - widthnew
+            W_neighbour = 0
+            E_neighbour = ID + 1
+            NE_neighbour = 0
+            NW_neighbour = 0
+            SE_neighbour = S_neighbour + 1
+            SW_neighbour = 0
+
+        # check for edge piece
+        if neighbour_assign == 1:
+            pass
+        else:
+            if float(ID) / widthnew == y + 1:  # East edge
+                neighbour_assign = 1
+                N_neighbour = ID + widthnew
+                S_neighbour = ID - widthnew
+                W_neighbour = ID - 1
+                E_neighbour = 0
+                NE_neighbour = 0
+                NW_neighbour = N_neighbour - 1
+                SE_neighbour = 0
+                SW_neighbour = S_neighbour - 1
+            if float(ID - 1) / widthnew == y:  # West edge
+                neighbour_assign = 1
+                N_neighbour = ID + widthnew
+                S_neighbour = ID - widthnew
+                W_neighbour = 0
+                E_neighbour = ID + 1
+                NE_neighbour = N_neighbour + 1
+                NW_neighbour = 0
+                SE_neighbour = S_neighbour + 1
+                SW_neighbour = 0
+            if ID - widthnew < 0:  # South edge
+                neighbour_assign = 1
+                N_neighbour = ID + widthnew
+                S_neighbour = 0
+                W_neighbour = ID - 1
+                E_neighbour = ID + 1
+                NE_neighbour = N_neighbour + 1
+                NW_neighbour = N_neighbour - 1
+                SE_neighbour = 0
+                SW_neighbour = 0
+            if ID + widthnew > numblocks + 1:  # North edge
+                neighbour_assign = 1
+                N_neighbour = 0
+                S_neighbour = ID - widthnew
+                W_neighbour = ID - 1
+                E_neighbour = ID + 1
+                NE_neighbour = 0
+                NW_neighbour = 0
+                SE_neighbour = S_neighbour + 1
+                SW_neighbour = S_neighbour - 1
+
+        # if there is still no neighbours assigned then assume standard cross
+        if neighbour_assign == 1:
+            pass
+        else:
+            neighbour_assign = 1
+            N_neighbour = ID + widthnew
+            S_neighbour = ID - widthnew
+            W_neighbour = ID - 1
+            E_neighbour = ID + 1
+            NE_neighbour = N_neighbour + 1
+            NW_neighbour = N_neighbour - 1
+            SE_neighbour = S_neighbour + 1
+            SW_neighbour = S_neighbour - 1
+
+        blockNHD = [N_neighbour, S_neighbour, W_neighbour, E_neighbour, NE_neighbour, NW_neighbour, SE_neighbour,
+                    SW_neighbour]
+        return blockNHD
