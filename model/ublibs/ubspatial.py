@@ -152,7 +152,7 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
 
     layer = datasource.GetLayer(0)  # Get the first layer, which should be the only layer!
     xmin, xmax, ymin, ymax = layer.GetExtent()
-    print xmin, xmax, ymin, ymax
+    # print xmin, xmax, ymin, ymax
 
     # Get some Map Metadata - the extents of the map, this is displayed later on in the pop-up window.
     point1 = ogr.Geometry(ogr.wkbPoint)
@@ -169,7 +169,7 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
         return []
 
     featurecount = layer.GetFeatureCount()
-    print "Total number of features: ", featurecount
+    # print "Total number of features: ", featurecount
 
     feature = layer.GetFeature(0)
     geom = feature.GetGeometryRef()
@@ -190,7 +190,6 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
 
     if option == "leaflet":
         coordtrans = create_coord_transformation_leaflet(int(inputepsg))
-        print coordtrans
         geom.Transform(coordtrans)
         point1.Transform(coordtrans)
         point2.Transform(coordtrans)
@@ -198,7 +197,7 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
         ymin = point1.GetY()
         xmax = point2.GetX()
         ymax = point2.GetY()
-        print xmin, xmax, ymin, ymax
+        # print xmin, xmax, ymin, ymax
 
     mapstats["xmin"] = xmin
     mapstats["xmax"] = xmax
@@ -220,7 +219,7 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
     #   https://gist.github.com/walkermatt/7121427
 
     points = ring.GetPointCount()
-    print "Ring Points: ", points
+    # print "Ring Points: ", points
     for i in range(points):
         coordinates.append([ring.GetX(i), ring.GetY(i)])
 
