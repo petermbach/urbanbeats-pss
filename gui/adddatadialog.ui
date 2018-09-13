@@ -156,8 +156,8 @@
    <item>
     <widget class="QWidget" name="datacat_widget" native="true">
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="1" column="0">
-       <widget class="QLabel" name="datacatsub_lbl">
+      <item row="0" column="0">
+       <widget class="QLabel" name="datacat_lbl">
         <property name="minimumSize">
          <size>
           <width>200</width>
@@ -168,7 +168,7 @@
          <string>Rainfall time series, obtain data from weather station or climate authority of your city. Time series should be in rainfall depth and have units millimetres.</string>
         </property>
         <property name="text">
-         <string>Data Sub-Type:</string>
+         <string>Data Category:</string>
         </property>
        </widget>
       </item>
@@ -199,8 +199,8 @@
         </item>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="datacat_lbl">
+      <item row="1" column="0">
+       <widget class="QLabel" name="datacatsub_lbl">
         <property name="minimumSize">
          <size>
           <width>200</width>
@@ -211,87 +211,39 @@
          <string>Rainfall time series, obtain data from weather station or climate authority of your city. Time series should be in rainfall depth and have units millimetres.</string>
         </property>
         <property name="text">
-         <string>Data Category:</string>
+         <string>Data Sub-Type:</string>
         </property>
        </widget>
       </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="data_coord_lbl">
-     <property name="whatsThis">
-      <string>Rainfall time series, obtain data from weather station or climate authority of your city. Time series should be in rainfall depth and have units millimetres.</string>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Coordinate System (Spatial Data only)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="datacat_widget_2" native="true">
-     <layout class="QGridLayout" name="gridLayout_4">
       <item row="2" column="0">
-       <widget class="QRadioButton" name="coord_epsg">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+       <widget class="QLabel" name="spatial_units">
         <property name="minimumSize">
          <size>
           <width>200</width>
           <height>0</height>
          </size>
         </property>
+        <property name="whatsThis">
+         <string>Rainfall time series, obtain data from weather station or climate authority of your city. Time series should be in rainfall depth and have units millimetres.</string>
+        </property>
         <property name="text">
-         <string>Manually Enter EPSG Code:</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Spatial Units (&lt;span style=&quot; font-style:italic;&quot;&gt;maps only&lt;/span&gt;):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QRadioButton" name="coord_select">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Select Coordinate System or...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QComboBox" name="coord_combo">
-        <property name="editable">
-         <bool>true</bool>
+      <item row="2" column="2">
+       <widget class="QComboBox" name="spatial_units_combo">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
         <property name="currentIndex">
          <number>0</number>
         </property>
         <item>
          <property name="text">
-          <string>(undefined)</string>
+          <string>metres</string>
          </property>
         </item>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLineEdit" name="epsg_box">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
        </widget>
       </item>
      </layout>
