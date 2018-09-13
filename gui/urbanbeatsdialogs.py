@@ -81,8 +81,6 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
         self.ui = Ui_AddDataDialog()
         self.ui.setupUi(self)
 
-        self.epsg_dict = main.epsg_dict
-
         # --- INITIALIZE MAIN VARIABLES ---
         self.maingui = main    # the main runtime - for GUI changes
         self.simulation = simulation
@@ -93,85 +91,17 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
         # Update the category and sub-category combo boxes
         self.update_datacat_combo()
         self.update_datacatsub_combo()
-        self.update_coord_combo()
-        self.enable_disable_coordinate_ui()
-
-        # Enable Pop-up completion for the coordinate system combo box. Note that the combo box has to be editable!
-        self.ui.coord_combo.completer().setCompletionMode(QtWidgets.QCompleter.PopupCompletion)
 
         # --- SIGNALS AND SLOTS ---
         self.ui.adddatabrowse.clicked.connect(self.browse_for_data)
         self.ui.spatial_radio.clicked.connect(self.update_datacat_combo)
-        self.ui.spatial_radio.clicked.connect(self.enable_disable_coordinate_ui)
         self.ui.temporal_radio.clicked.connect(self.update_datacat_combo)
-        self.ui.temporal_radio.clicked.connect(self.enable_disable_coordinate_ui)
         self.ui.qualitative_radio.clicked.connect(self.update_datacat_combo)
-        self.ui.qualitative_radio.clicked.connect(self.enable_disable_coordinate_ui)
         self.ui.datacat_combo.currentIndexChanged.connect(self.update_datacatsub_combo)
-
-        self.timer_linedit = QtCore.QTimer()
-        self.timer_linedit.setSingleShot(True)
-        self.timer_linedit.setInterval(300)
-        self.timer_linedit.timeout.connect(self.update_combo_from_epsg)
-
-        self.ui.epsg_box.textEdited.connect(lambda: self.timer_linedit.start())
-        self.ui.coord_combo.currentIndexChanged.connect(self.update_epsg_from_combo)
-        self.ui.coord_select.clicked.connect(self.enable_disable_coordinate_ui)
-        self.ui.coord_epsg.clicked.connect(self.enable_disable_coordinate_ui)
 
         self.ui.adddata_button.clicked.connect(self.add_data_to_project)
         self.ui.cleardata_button.clicked.connect(self.clear_interface)
         self.ui.done_button.clicked.connect(self.close)
-
-    def update_coord_combo(self):
-        """Updates the coordinate system's combobox and the UI elements associated with it."""
-        self.ui.coord_select.setChecked(1)
-        self.ui.coord_combo.clear()
-        self.ui.coord_combo.addItem("(select coordinate system)")
-        names = self.epsg_dict.keys()
-        names.sort()
-        for i in names:
-            self.ui.coord_combo.addItem(i)
-        self.ui.coord_combo.addItem("Other...")
-        self.ui.coord_combo.setCurrentIndex(0)
-
-    def update_combo_from_epsg(self):
-        """Updates the coordinate system combo box based on the EPSG code entered in the text box, if the EPSG
-        does not exist in the dictionary, the combo box displays "Other...". """
-        names = self.epsg_dict.keys()
-        names.sort()
-        found = 0
-        try:
-            for name, epsg in self.epsg_dict.iteritems():
-                if int(epsg) == int(self.ui.epsg_box.text()):
-                    curindex = names.index(name) + 1    # +1 to account for Index 0 < > text
-                    self.ui.coord_combo.setCurrentIndex(curindex)
-                    return True
-            self.ui.coord_combo.setCurrentIndex(len(names) + 1)  # Set to 'Other'
-        except ValueError:
-            self.ui.coord_combo.setCurrentIndex(len(names)+1)   # Set to 'Other'
-
-    def update_epsg_from_combo(self):
-        """Updates the EPSG text box based on the selected coordinate system in the combo box. If < >, index 0
-        or "Other ..." are selected, the EPSG box remains blank."""
-        try:
-            self.ui.epsg_box.setText(self.epsg_dict[self.ui.coord_combo.currentText()])
-        except KeyError:
-            pass
-
-    def enable_disable_coordinate_ui(self):
-        """Enable/disable feature for the coordinate system options."""
-        self.ui.coord_select.setEnabled(self.ui.spatial_radio.isChecked())
-        self.ui.coord_epsg.setEnabled(self.ui.spatial_radio.isChecked())
-        if self.ui.coord_select.isChecked() and self.ui.spatial_radio.isChecked():
-            self.ui.coord_combo.setEnabled(1)
-            self.ui.epsg_box.setEnabled(0)
-        elif self.ui.coord_epsg.isChecked() and self.ui.spatial_radio.isChecked():
-            self.ui.coord_combo.setEnabled(0)
-            self.ui.epsg_box.setEnabled(1)
-        else:
-            self.ui.coord_combo.setEnabled(0)
-            self.ui.epsg_box.setEnabled(0)
 
     def browse_for_data(self):
         """Allows the user to select a data file to load into the model's data library."""
@@ -234,13 +164,10 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
     def clear_interface(self):
         """Clears the addData interface by removing the text in the browse box (setting it to (none)),
         checking one of the radio buttons and updating the combo boxes."""
-        self.ui.epsg_box.clear()
         self.ui.databox.setText("(none)")
         self.ui.spatial_radio.setChecked(1)
         self.update_datacat_combo()
         self.update_datacatsub_combo()
-        self.ui.coord_select.setChecked(1)
-        self.ui.coord_combo.setCurrentIndex(0)
         self.ui.notes_box.setPlainText("none")
 
     def add_data_to_project(self):
@@ -263,30 +190,6 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
                     datatype.append(self.ui.datacat_combo.currentText())    # index 1
                     datatype.append(self.ui.datacatsub_combo.currentText()) # index 2
                     datatype.append(os.path.splitext(datafile)[1])  # index 3
-                    if self.currentDataType == "spatial":       # only for spatial data
-                        if self.ui.coord_combo.currentText() not in ["Other...", "(select coordinate system)"]:
-                            # Case 1 - the coordinate system combo has a valid selection
-                            datatype.append(self.ui.coord_combo.currentText())  # index 4
-                            datatype.append(int(self.ui.epsg_box.text()))   # index 5
-                        else:
-                            try:    # Case 2 - the EPSG box can be converted to an integer and is not empty
-                                if self.ui.epsg_box != "":
-                                    datatype.append(self.ui.coord_combo.currentText())  # index 4
-                                    datatype.append(int(self.ui.epsg_box.text()))
-
-                                else:
-                                    prompt_msg = "Error, please select a valid coordinate system or EPSG code!"
-                                    QtWidgets.QMessageBox.warning(self, 'Invalid Coordinate System', prompt_msg,
-                                                                  QtWidgets.QMessageBox.Ok)
-                                    return True
-                            except ValueError:  # Case 3 - the EPSG box has illegal entry
-                                prompt_msg = "Error, please select a valid coordinate system or EPSG code!"
-                                QtWidgets.QMessageBox.warning(self, 'Invalid Coordinate System', prompt_msg,
-                                                              QtWidgets.QMessageBox.Ok)
-                                return True     # Exit function prematurely
-                    else:
-                        datatype.append(None)   # If not spatial data, then no coordinate system
-                        datatype.append(None)
 
                     dataref = ubdatalibrary.\
                         UrbanBeatsDataReference(datatype, datafile,
@@ -1065,7 +968,7 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
     """Class definition for launching the setup of a new project dialog window Ui_ProjectSetupDialog
     with the main window or startup dialog. This dialog helps the user set up a new project from
     scratch and includes the essential elements for creating the initial project folder."""
-    def __init__(self, simulation, viewer, parent=None):
+    def __init__(self, main, simulation, viewer, parent=None):
         """Initialization of class, takes two key parameters that differentiate the dialog window's
         use as a viewer or a setup dialog.
 
@@ -1077,6 +980,7 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         self.ui.setupUi(self)
         self.__viewer = viewer
         self.simulation = simulation
+        self.epsg_dict = main.epsg_dict
 
         # --- PRE-FILLING GUI SETUP ---
         if self.__viewer == 1:     # Edit Project Details
@@ -1092,20 +996,72 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         self.ui.affiliation_box.setText(self.simulation.get_project_parameter("affiliation"))
         self.ui.otherpersons_box.setPlainText(self.simulation.get_project_parameter("otherpersons"))
         self.ui.synopsis_box.setPlainText(self.simulation.get_project_parameter("synopsis"))
-        self.ui.projectboundary_line.setText(self.simulation.get_project_parameter("boundaryshp"))
+
+        self.ui.projpath_line.setText(self.simulation.get_project_parameter("projectpath"))
+        self.ui.keepcopy_check.setChecked(int(self.simulation.get_project_parameter("keepcopy")))
 
         if self.simulation.get_project_parameter("logstyle") == "comprehensive":
             self.ui.projectlog_compreh.setChecked(1)
         else:
             self.ui.projectlog_simple.setChecked(1)
 
-        self.ui.projpath_line.setText(self.simulation.get_project_parameter("projectpath"))
-        self.ui.keepcopy_check.setChecked(int(self.simulation.get_project_parameter("keepcopy")))
+        self.ui.projectboundary_line.setText(self.simulation.get_project_parameter("boundaryshp"))
+
+        # - COORDINATE SYSTEM
+        self.update_coord_combo()
+        self.ui.epsg_line.setText(self.simulation.get_project_parameter("project_epsg"))
+        self.update_combo_from_epsg()
+
+        # Enable Pop-up completion for the coordinate system combo box. Note that the combo box has to be editable!
+        self.ui.coords_combo.completer().setCompletionMode(QtWidgets.QCompleter.PopupCompletion)
 
         # --- SIGNALS AND SLOTS ---
         self.ui.projectboundary_browse.clicked.connect(self.browse_boundary_file)
         self.ui.projpath_button.clicked.connect(self.browse_project_path)
         self.accepted.connect(self.run_setup_project)
+
+        # - SIGNALS AND SLOTS FOR COORDINATE SYSTEMS
+        self.timer_linedit = QtCore.QTimer()
+        self.timer_linedit.setSingleShot(True)
+        self.timer_linedit.setInterval(300)
+        self.timer_linedit.timeout.connect(self.update_combo_from_epsg)
+
+        self.ui.epsg_line.textEdited.connect(lambda: self.timer_linedit.start())
+        self.ui.coords_combo.currentIndexChanged.connect(self.update_epsg_from_combo)
+
+    def update_coord_combo(self):
+        """Updates the coordinate system's combobox and the UI elements associated with it."""
+        self.ui.coords_combo.clear()
+        self.ui.coords_combo.addItem("(select coordinate system)")
+        names = self.epsg_dict.keys()
+        names.sort()
+        for i in names:
+            self.ui.coords_combo.addItem(i)
+        self.ui.coords_combo.addItem("Other...")
+        self.ui.coords_combo.setCurrentIndex(0)
+
+    def update_combo_from_epsg(self):
+        """Updates the coordinate system combo box based on the EPSG code entered in the text box, if the EPSG
+        does not exist in the dictionary, the combo box displays "Other...". """
+        names = self.epsg_dict.keys()
+        names.sort()
+        try:
+            for name, epsg in self.epsg_dict.iteritems():
+                if int(epsg) == int(self.ui.epsg_line.text()):
+                    curindex = names.index(name) + 1    # +1 to account for Index 0 < > text
+                    self.ui.coords_combo.setCurrentIndex(curindex)
+                    return True
+            self.ui.coords_combo.setCurrentIndex(len(names) + 1)  # Set to 'Other'
+        except ValueError:
+            self.ui.coords_combo.setCurrentIndex(len(names)+1)   # Set to 'Other'
+
+    def update_epsg_from_combo(self):
+        """Updates the EPSG text box based on the selected coordinate system in the combo box. If < >, index 0
+        or "Other ..." are selected, the EPSG box remains blank."""
+        try:
+            self.ui.epsg_line.setText(self.epsg_dict[self.ui.coords_combo.currentText()])
+        except KeyError:
+            pass
 
     def browse_boundary_file(self):
         """Opens a file dialog, which requests a shapefile of the case study boundary. UrbanBEATS
@@ -1166,19 +1122,47 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         :return: Nothing if all conditions are fine, warning message box if not.
         """
         if self.Accepted == r:
-            conditions_met = [1, 1]
+            conditions_met = [1, 1, 1]
+
+            # CONDITIONS FOR A VALID PROJECT PATH - conditions_met[0]
             if os.path.isdir(self.ui.projpath_line.text()):
                 pass
             else:
                 prompt_msg = "Please select a valid project path!"
                 QtWidgets.QMessageBox.warning(self, 'Invalid Path', prompt_msg, QtWidgets.QMessageBox.Ok)
                 conditions_met[0] = 0
+
+            # CONDITION FOR A VALID BOUNDARY SHAPEFILE - conditions_met[1]
             if os.path.isfile(self.ui.projectboundary_line.text()):
                 pass
             else:
                 prompt_msg = "Please select a valid boundary shapefile!"
                 QtWidgets.QMessageBox.warning(self, 'Invalid Boundary File', prompt_msg, QtWidgets.QMessageBox.Ok)
                 conditions_met[1] = 0
+
+            # CONDITIONS FOR THE COORDINATE SYSTEM SELECTION - conditions_met[2]
+            if self.ui.coords_combo.currentText() not in ["Other...", "(select coordinate system)"]:
+                # Case 1 - the coordinate system combo has a valid selection
+                pass
+                # datatype.append(self.ui.coord_combo.currentText())  # index 4
+                # datatype.append(int(self.ui.epsg_box.text()))  # index 5
+            else:
+                try:  # Case 2 - the EPSG box can be converted to an integer and is not empty
+                    if self.ui.epsg_line != "":
+                        epsg = int(self.ui.epsg_line.text())
+                        # datatype.append(self.ui.coord_combo.currentText())  # index 4
+                        # datatype.append(int(self.ui.epsg_box.text()))
+                    else:
+                        prompt_msg = "Error, please select a valid coordinate system or EPSG code!"
+                        QtWidgets.QMessageBox.warning(self, 'Invalid Coordinate System', prompt_msg,
+                                                      QtWidgets.QMessageBox.Ok)
+                        conditions_met[2] = 0
+                except ValueError:  # Case 3 - the EPSG box has illegal entry
+                    prompt_msg = "Error, please select a valid coordinate system or EPSG code!"
+                    QtWidgets.QMessageBox.warning(self, 'Invalid Coordinate System', prompt_msg,
+                                                  QtWidgets.QMessageBox.Ok)
+                    conditions_met[2] = 0
+
             if sum(conditions_met) == len(conditions_met):
                 self.save_values()
                 QtWidgets.QDialog.done(self, r)
@@ -1199,6 +1183,8 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         self.simulation.set_project_parameter("boundaryshp", self.ui.projectboundary_line.text())
         self.simulation.set_project_parameter("projectpath", self.ui.projpath_line.text())
         self.simulation.set_project_parameter("keepcopy", int(self.ui.keepcopy_check.isChecked()))
+        self.simulation.set_project_parameter("project_coord_sys", self.ui.coords_combo.currentText())
+        self.simulation.set_project_parameter("project_epsg", int(self.ui.epsg_line.text()))
 
         if self.ui.projectlog_compreh.isChecked():
             self.simulation.set_project_parameter("logstyle", "comprehensive")
@@ -1216,7 +1202,7 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         QtWidgets.QDialog.__init__(self, parent)
         self.ui = Ui_PreferencesDialog()
         self.ui.setupUi(self)
-
+        self.epsg_dict = main.epsg_dict
         self.ui.options_tabs.setCurrentIndex(tabindex)
 
         self.module = main
@@ -1258,9 +1244,19 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         self.ui.cache_check.setChecked(bool(self.options["cachetiles"]))
         self.ui.offline_check.setChecked(bool(self.options["offline"]))
 
-        self.ui.coords_combo.setCurrentIndex(ubglobals.COORDINATESYSTEMS.index(self.options["defaultcoordsys"]))
+        # DEFAULT COORDINATE SYSTEM
+        self.update_coord_combo()
         self.ui.epsg_line.setText(self.options["customepsg"])
-        self.ui_epsg_line_enabledisable()
+        self.update_combo_from_epsg()
+        self.ui.coords_combo.completer().setCompletionMode(QtWidgets.QCompleter.PopupCompletion)
+
+        self.timer_linedit = QtCore.QTimer()
+        self.timer_linedit.setSingleShot(True)
+        self.timer_linedit.setInterval(300)
+        self.timer_linedit.timeout.connect(self.update_combo_from_epsg)
+
+        self.ui.epsg_line.textEdited.connect(lambda: self.timer_linedit.start())
+        self.ui.coords_combo.currentIndexChanged.connect(self.update_epsg_from_combo)
 
         # EXTERNAL TAB
         self.ui.epanetpath_line.setText(self.options["epanetpath"])
@@ -1278,10 +1274,43 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         self.ui.projpath_button.clicked.connect(lambda: self.get_path("P"))
         self.ui.temppath_button.clicked.connect(lambda: self.get_path("T"))
         self.ui.mapstyle_combo.currentIndexChanged.connect(self.ui_setmapstyle_pixmap)
-        self.ui.coords_combo.currentIndexChanged.connect(self.ui_epsg_line_enabledisable)
         self.ui.epanetpath_button.clicked.connect(lambda: self.get_path("E"))
         self.ui.swmmpath_button.clicked.connect(lambda: self.get_path("S"))
         self.ui.musicpath_button.clicked.connect(lambda: self.get_path("M"))
+
+    def update_coord_combo(self):
+        """Updates the coordinate system's combobox and the UI elements associated with it."""
+        self.ui.coords_combo.clear()
+        self.ui.coords_combo.addItem("(select coordinate system)")
+        names = self.epsg_dict.keys()
+        names.sort()
+        for i in names:
+            self.ui.coords_combo.addItem(i)
+        self.ui.coords_combo.addItem("Other...")
+        self.ui.coords_combo.setCurrentIndex(0)
+
+    def update_combo_from_epsg(self):
+        """Updates the coordinate system combo box based on the EPSG code entered in the text box, if the EPSG
+        does not exist in the dictionary, the combo box displays "Other...". """
+        names = self.epsg_dict.keys()
+        names.sort()
+        try:
+            for name, epsg in self.epsg_dict.iteritems():
+                if int(epsg) == int(self.ui.epsg_line.text()):
+                    curindex = names.index(name) + 1    # +1 to account for Index 0 < > text
+                    self.ui.coords_combo.setCurrentIndex(curindex)
+                    return True
+            self.ui.coords_combo.setCurrentIndex(len(names) + 1)  # Set to 'Other'
+        except ValueError:
+            self.ui.coords_combo.setCurrentIndex(len(names)+1)   # Set to 'Other'
+
+    def update_epsg_from_combo(self):
+        """Updates the EPSG text box based on the selected coordinate system in the combo box. If < >, index 0
+        or "Other ..." are selected, the EPSG box remains blank."""
+        try:
+            self.ui.epsg_line.setText(self.epsg_dict[self.ui.coords_combo.currentText()])
+        except KeyError:
+            pass
 
     def get_path(self, path_type):
         """Opens a browse window in search for a folder path based on the input path_type. After user
@@ -1386,7 +1415,7 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         self.options["tileserverURL"] = str(self.ui.tileserver_line.text())
         self.options["cachetiles"] = int(self.ui.cache_check.isChecked())
         self.options["offline"] = int(self.ui.offline_check.isChecked())
-        self.options["defaultcoordsys"] = str(ubglobals.COORDINATESYSTEMS[self.ui.coords_combo.currentIndex()])
+        self.options["defaultcoordsys"] = str(self.ui.coords_combo.currentText())
         self.options["customepsg"] = str(self.ui.epsg_line.text())
 
         # EXTERNAL TAB

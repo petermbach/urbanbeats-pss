@@ -106,7 +106,9 @@ class UrbanBeatsSim(threading.Thread):
             "boundaryshp": "no file selected",
             "logstyle": self.__global_options["projectlogstyle"],
             "projectpath": self.__global_options["defaultpath"],
-            "keepcopy": 0
+            "keepcopy": 0,
+            "project_coord_sys": self.__global_options["defaultcoordsys"],
+            "project_epsg": self.__global_options["customepsg"]
         }
 
         self.__boundaryinfo = {}
@@ -182,19 +184,8 @@ class UrbanBeatsSim(threading.Thread):
         projdata = root.find('projectinfo')
         for child in projdata:
             projdict[child.tag] = child.text
-
-        self.set_project_parameter("name", projdict["name"])
-        self.set_project_parameter("region", projdict["region"])
-        self.set_project_parameter("city", projdict["city"])
-        self.set_project_parameter("modeller", projdict["modeller"])
-        self.set_project_parameter("affiliation", projdict["affiliation"])
-        self.set_project_parameter("otherpersons", projdict["otherpersons"])
-        self.set_project_parameter("synopsis", projdict["synopsis"])
-        self.set_project_parameter("boundaryshp", projdict["boundaryshp"])
-        self.set_project_parameter("projectpath", projdict["projectpath"])
-        self.set_project_parameter("keepcopy", int(projdict["keepcopy"]))
-        self.set_project_parameter("logstyle", projdict["logstyle"])
-
+        for k in projdict.keys():
+            self.set_project_parameter(k, type(self.get_project_parameter(k))(projdict[k]))
         return True
 
     def update_project_boundaryinfo(self):
@@ -271,7 +262,7 @@ class UrbanBeatsSim(threading.Thread):
         """Adds a new scenario to the simulation by creating a UrbanBeatsScenario() instance and initializing
         it."""
         if scenario_object.get_metadata("name") not in self.__scenarios.keys():
-            self.__scenarios[scenario_object.get_metadata("name")] = scenario_object    # [TO DO]
+            self.__scenarios[scenario_object.get_metadata("name")] = scenario_object
             return True
         else:
             return False    # Cannot have two scenarios of the same name!

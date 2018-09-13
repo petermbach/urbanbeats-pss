@@ -79,8 +79,6 @@ class UrbanBeatsDataLibrary(object):
             for d in dset:
                 f.write('\t\t<dataref>\n')
                 f.write('\t\t\t<dataid>'+str(d.get_data_id())+'</dataid>\n')
-                f.write('\t\t\t<coord_epsg>' + str(d.get_metadata("coord_epsg")) + '</coord_epsg>\n')
-                f.write('\t\t\t<coord_sys>' + str(d.get_metadata("coord_sys")) + '</coord_sys>\n')
                 f.write('\t\t\t<dataclass>' + str(d.get_metadata("class")) + '</dataclass>\n')
                 f.write('\t\t\t<datafilename>' + str(d.get_metadata("filename")) + '</datafilename>\n')
                 f.write('\t\t\t<dataformat>' + str(d.get_metadata("format")) + '</dataformat>\n')
@@ -126,7 +124,7 @@ class UrbanBeatsDataLibrary(object):
 
                 # Create the Data Reference and add it to the data library
                 datatype = [dataref["dataclass"], dataref["datatype"], dataref["datasubtype"],
-                            dataref["dataformat"], dataref["coord_sys"], dataref["coord_epsg"]]
+                            dataref["dataformat"]]
                 new_dref = UrbanBeatsDataReference(datatype,
                                                    dataref["originaldatapath"]+"/"+dataref["datafilename"],
                                                    self.__projectpath, self.__keepcopy,
@@ -301,8 +299,6 @@ class UrbanBeatsDataReference(object):
         self.__datasubtype = datatype[2]    # e.g. heritage, none, tech matrix
         self.__dataformat = datatype[3]  # e.g. .csv, .shp, .txt - so the model knows how to handle the data
         self.__notes = notes_text               # Further metadata or data description.
-        self.__coord_sys = datatype[4]  # e.g. "AGD_1966_AMG_Zone_48"
-        self.__coord_epsg = datatype[5] # e.g.  20248 (corresponding to AGD_1966...)
 
         # FILE LOCATION AND NAME
         self.__originaldatapath = os.path.dirname(fullfilepath)
@@ -377,10 +373,6 @@ class UrbanBeatsDataReference(object):
             return self.__notes
         elif attribute == "filename":   # filename + extension.
             return self.__datafilename
-        elif attribute == "coord_epsg":
-            return self.__coord_epsg
-        elif attribute == "coord_sys":
-            return self.__coord_sys
         elif attribute == "notes":
             return self.__notes
         else:

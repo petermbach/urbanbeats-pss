@@ -64,7 +64,7 @@ class UrbanBeatsScenario(object):
 
         self.__scenariometadata = {"name": "My UrbanBEATS Scenario",
                                    "type": "STATIC",
-                                   "narrative": "<A description of my scenario>",
+                                   "narrative": "(A description of my scenario)",
                                    "startyear": 2018,
                                    "endyear": 2068,
                                    "dt": 1,
@@ -72,7 +72,7 @@ class UrbanBeatsScenario(object):
                                    "dt_array_parameter": [],
                                    "yearlist": [],
                                    "benchmarks": 100,
-                                   "filename": "<enter a naming convention for outputs>",
+                                   "filename": "(enter a naming convention for outputs)",
                                    "usescenarioname": 0}
 
         self.__modulesbools = {"SPATIAL": 1, "CLIMATE": 1, "URBDEV": 0, "URBPLAN": 0,
