@@ -287,21 +287,12 @@ class DelinBlocks(UBModule):
 
                 # - STEP 2 - FIND BLOCK NEIGHBOURHOOD
                 blockNHD = self.find_neighbourhood(blockIDcount, x, y, numblocks, widthnew, heightnew)
-                block_attr.add_attribute("Nhd_N", blockNHD[0])  # North neighbour Block ID
-                block_attr.add_attribute("Nhd_S", blockNHD[1])  # South neighbour Block ID
-                block_attr.add_attribute("Nhd_W", blockNHD[2])  # West neighbour Block ID
-                block_attr.add_attribute("Nhd_E", blockNHD[3])  # East neighbour Block ID
-                block_attr.add_attribute("Nhd_NE", blockNHD[4])  # Northeast neighbour Block ID
-                block_attr.add_attribute("Nhd_NW", blockNHD[5])  # Northwest neighbour Block ID
-                block_attr.add_attribute("Nhd_SE", blockNHD[6])  # Southeast neighbour Block ID
-                block_attr.add_attribute("Nhd_SW", blockNHD[7])  # Southwest neighbour Block ID
 
 
 
                 blockIDcount += 1
 
-        print "Simulation Finished up to this point!"
-
+        pass
 
     # ADDITIONAL MODULE FUNCTIONS
     def create_block_face(self, x, y, cs, x_adj, y_adj, ID):
@@ -315,10 +306,17 @@ class DelinBlocks(UBModule):
         :param ID: the current ID number to be assigned to the Block
         :return: UBVector object containing the BlockID attribute and geometry
         """
+        # Define points
         n1 = ((x + x_adj) * cs, (y + y_adj) * cs, 0)
         n2 = ((x + x_adj + 1) * cs, (y + y_adj) * cs, 0)
         n3 = ((x + x_adj + 1) * cs, (y + y_adj + 1) * cs, 0)
         n4 = ((x + x_adj) * cs, (y + y_adj + 1) * cs, 0)
+
+        # Define edges
+        e1 = (n1, n2)
+        e2 = (n2, n3)
+        e3 = (n3, n4)
+        e4 = (n4, n1)
 
         # Define the UrbanBEATS Vector Asset
         block_attr = ubdata.UBVector([n1, n2, n3, n4, n1])

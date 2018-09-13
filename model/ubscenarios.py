@@ -91,9 +91,39 @@ class UrbanBeatsScenario(object):
         self.__dt_array = []
 
         self.__assets = {}      # The collection of model assets that are stored for later retrieval, these
+        self.__global_edge_list = []
+        self.__global_point_list = []
         # can include: UBComponents(), Input Data, etc.
 
         self.__active_assets = None  # Will hold a reference to the active asset dictionary based on current dt
+
+    def append_point(self, pt):
+        """ Adds a point tuple (x, y) to the global point list."""
+        if pt not in self.__global_point_list:
+            self.__global_point_list.append(pt)
+
+    def get_point_list_id(self, pt):
+        """Returns the index of the point pt in the global point list."""
+        try:
+            return self.__global_point_list.index(pt)
+        except ValueError:
+            return None
+
+    def append_edge(self, ed):
+        """ Adds an edge tuple ((x1, y1), (x2, y2)) to the global edge list."""
+        if (ed[0], ed[1]) not in self.__global_edge_list or (ed[1], ed[0]) not in self.__global_edge_list:
+            self.__global_edge_list.append(ed)
+
+    def get_edge_id(self, ed):
+        """Tries to locate the edge in the global edge list and return the index i.e. the ID of the edge. Tries
+        both ((x1, y1), (x2, y2)) and ((x2, y2), (x1, y1))."""
+        try:
+            return self.__global_edge_list.index(ed)
+        except ValueError:
+            try:
+                return self.__global_edge_list.index((ed[1], ed[0]))
+            except ValueError:
+                return None
 
     def add_asset(self, name, asset):
         """Adds a new asset object to the asset dictionary with the key 'name'."""

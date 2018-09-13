@@ -200,7 +200,6 @@ class UBVector(UBComponent):
                 self.__dtype = "POLYLINE"
         return True
 
-
 class UBCollection(object):
     """The UrbanBEATS Collection class structure. A collection stores a whole array of assets
     from the modelling outputs. It ca be used to organise geometric and non-geometric assets based
