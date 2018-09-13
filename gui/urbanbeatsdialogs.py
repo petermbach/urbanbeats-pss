@@ -863,6 +863,7 @@ class OpenProjectDialogLaunch(QtWidgets.QDialog):
         self.ui.delete_button.clicked.connect(self.delete_button_activate)
         self.ui.import_button.clicked.connect(self.import_button_activate)
         self.ui.export_button.clicked.connect(self.export_button_activate)
+        self.ui.project_table.itemDoubleClicked.connect(self.accept)
 
 
     def enable_disable_buttons(self):
