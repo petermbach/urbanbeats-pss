@@ -91,6 +91,10 @@ class UBRasterData(object):
         except IndexError:
             return self.__nodatavalue
 
+    def get_data(self):
+        """Returns the full numpy raster array."""
+        return self.__data
+
     def set_value(self, col, row, value):
         """Sets the value in the given column 'col' (x) and row (y) to the provided 'value'. If the raster
         is read-only, it does not carry out this operation and simply ends the function."""
@@ -147,13 +151,70 @@ class UBComponent(object):
         else:
             self.__attributes[name] = value
 
-    def getAttribute(self, name):
-        """Tries to return the value of attribute by name, if KeyError, returns 0."""
+    def get_attribute(self, name):
+        """Tries to return the value of attribute by name, if KeyError, returns None."""
         try:
             return self.__attributes[name]
         except KeyError:
-            return 0
+            return None
 
-    def getAllAttributes(self):
+    def get_all_attributes(self):
         """Returns the entire dictionary, use sparingly or primarily for exporting data."""
         return self.__attributes
+
+
+class UBVector(UBComponent):
+    """UrbanBEATS Vector Data Format, inherited from UBComponent, it stores geometric information
+    for polygons, lines and points along with the ability to hold attributes."""
+    def __init__(self, coordinates):
+        UBComponent.__init__(self)
+        self.__dtype = ""
+        self.__coordinates = coordinates
+        self.determine_geometry(self.__coordinates)
+
+    def change_coordintaes(self, coordinates):
+        """Allows for the current coordinates to be changed, this may lead to a change in geometry
+        which is communicated as a warning."""
+        currentgeometry = self.__dtype
+        self.__coordinates = coordinates
+        self.determine_geometry(self.__coordinates)
+        if currentgeometry != self.__dtype:
+            print "WARNING: GEOMETRY TYPE HAS CHANGED!"
+
+    def get_coordinates(self):
+        """Returns an array of points (tuples), each having (x, y, z) sets of
+        coordinates"""
+        return self.__coordinates
+
+    def determine_geometry(self, coordinates):
+        """Determines what kind of geometry the current instance is and stores the type in
+        the self.__dtype attribute."""
+        if len(coordinates) == 1:
+            self.__dtype = "POINT"
+        elif len(coordinates) == 2:
+            self.__dtype = "LINE"
+        elif len(coordinates) > 2:
+            if coordinates[0] == coordinates[len(coordinates) - 1]:
+                self.__dtype = "FACE"
+            else:
+                self.__dtype = "POLYLINE"
+        return True
+
+
+class UBCollection(object):
+    """The UrbanBEATS Collection class structure. A collection stores a whole array of assets
+    from the modelling outputs. It ca be used to organise geometric and non-geometric assets based
+    on scenarios or other aspects of the spatial environment."""
+    def __init__(self):
+        self.__assetcount = 0
+        self.__assets = []
+
+    def append_asset(self, asset):
+        """Adds an asset object to the collection."""
+        self.__assets.append(asset)
+        return True
+
+    def get_asset_by_attribute(self, attribute, value):
+        """Scans all assets for the attribute and returns the ones with the correct attribute and value."""
+        # TO DO
+        return True
