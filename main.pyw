@@ -376,6 +376,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.Narrative.clear()
         self.ui.DataSummary.setRowCount(0)
         self.ui.Simulation.clear()
+        self.enable_disable_module_icons([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
     # MAIN INTERFACE FUNCTIONALITY
     def printc(self, textmessage):
@@ -562,7 +563,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         :param viewmode: integer value that determins how GUI behaves, 0=newproject, 1=edit, 2=view
         """
-        newprojectdialog = ubdialogs.NewProjectDialogLaunch(self.get_active_simulation_object(), viewmode)
+        newprojectdialog = ubdialogs.NewProjectDialogLaunch(self, self.get_active_simulation_object(), viewmode)
         newprojectdialog.rejected.connect(lambda: self.cancel_new_project_creation(viewmode))
         newprojectdialog.accepted.connect(lambda: self.initialize_new_project(viewmode))
         newprojectdialog.exec_()
@@ -684,6 +685,7 @@ class MainWindow(QtWidgets.QMainWindow):
             for n in scenarionames:
                 self.ui.ScenarioDock_Combo.addItem(n)   # Adds the names to the Dock
                 self.ui.ScenarioDock_Combo.setCurrentIndex(0)
+                activesimulation.set_active_scenario(None)
 
         # Update Main Window Title
         self.setWindowTitle("UrbanBEATS Planning Support Tool - "+str(self.get_current_project_name()))
@@ -1125,6 +1127,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def call_run_simulation(self):
         """Executes the run function for the current scenario that is active in the Scenario Browser."""
+        if self.get_active_simulation_object().get_active_scenario() == None:
+            self.printc("No active scenario...")
+            return
         self.__gui_state = "Running"
         self.ui.actionRun.setEnabled(0)
         self.ui.SimDock_run.setEnabled(0)
