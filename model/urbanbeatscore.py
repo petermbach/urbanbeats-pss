@@ -35,6 +35,7 @@ import time
 import os
 import sys
 import xml.etree.ElementTree as ET
+import gc
 
 
 # --- URBANBEATS LIBRARY IMPORTS ---
@@ -208,6 +209,9 @@ class UrbanBeatsSim(threading.Thread):
         """
         if param == "all":
             return self.__boundaryinfo
+        if param == "mapextents":
+            return self.__boundaryinfo["xmin"], self.__boundaryinfo["xmax"], \
+                   self.__boundaryinfo["ymin"], self.__boundaryinfo["ymax"]
         try:
             return self.__boundaryinfo[param]
         except KeyError:
@@ -410,21 +414,38 @@ class UrbanBeatsSim(threading.Thread):
         """Runs the UrbanBEATS Simulation based on the active scenario, data library, project
         info and other information."""
         if self.__runtime_method == "SF":
+            #self.update_runtime_progress(0)
             active_scenario = self.get_active_scenario()
             active_scenario.attach_observers(self.__observers)
             scenario_name = active_scenario.get_metadata("name")
             self.update_observers("Running Scenario: " + str(scenario_name))
             self.update_runtime_progress(3)
-            active_scenario.run()
+            # while active_scenario.run():
+            #     pass
+            # print "Simulation Finishing 0.8"
             self.update_observers("Simulation Finished")
+            self.update_runtime_progress(100)
         elif self.__runtime_method == "AF":
             pass    # TO DO - ALL SCENARIOS FULL SIMULATION AT ONCE.
         elif self.__runtime_method == "SP":
             pass    # TO DO - Single Scenario - Performance ONLY
-
+        print "Simulation Finished Ending 2"
         self.__parent and self.__parent.on_thread_finished()    # CALLBACK to parent once the thread has finished.
-        threading.Thread.__init__(self)     # Reinitializes the thread so that it can be restarted.
 
+    def check_runtime_state(self):
+        """Returns the current runtime progress value."""
+        return self.__runtime_progress
+
+    def reinitialize_runtime(self):
+        """ Resets the simulation thread such that the simulation can be run again """
+        self.__runtime_progress = 0
+        print "Need to Reset Runtime"
+        try:
+            threading.Thread.__init__(self)  # Reinitializes the thread so that it can be restarted.
+            print "Thread reset worked!"
+        except:
+            print sys.exc_info()[0]
+        # self.get_active_scenario().reset_scenario_runtime()     # Resets the assets in the active scenario
 
 class UrbanBeatsLog(object):
     """Class for logging the UrbanBEATS workflow, the log manages the history of the project

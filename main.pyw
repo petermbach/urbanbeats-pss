@@ -612,6 +612,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         :return: None
         """
+        self.ui.ProgressBar.setValue(0)
         self.set_active_simulation_object(None)  # Remove any existing active simulation
         self.reset_data_view_to_default()  # Restore the default Leaflet view
         newsimulation = ubcore.UrbanBeatsSim(UBEATSROOT, self.__global_options, self)  # instantiate new simulation objective
@@ -1127,20 +1128,27 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def call_run_simulation(self):
         """Executes the run function for the current scenario that is active in the Scenario Browser."""
-        if self.get_active_simulation_object().get_active_scenario() == None:
+        if self.get_active_simulation_object().get_active_scenario() is None:
             self.printc("No active scenario...")
             return
-        self.__gui_state = "Running"
-        self.ui.actionRun.setEnabled(0)
-        self.ui.SimDock_run.setEnabled(0)
-        self.update_progress(0)
-        current_simulation = self.get_active_simulation_object()
-        current_simulation.start()
+        else:
+            if self.get_active_simulation_object().check_runtime_state() == 100:
+                self.get_active_simulation_object().reinitialize_runtime()
+                self.printc("Scenario Runtime Reset Performed!")
+            print "Reinitialization finished!"
+            self.__gui_state = "Running"
+            self.ui.actionRun.setEnabled(0)
+            self.ui.SimDock_run.setEnabled(0)
+            current_simulation = self.get_active_simulation_object()
+            current_simulation.start()
 
     def on_thread_finished(self):
         """Callback function to reenable the run buttons once the current simulation has finished."""
+        print "On_threadfinished"
+        time.sleep(1)
         self.ui.actionRun.setEnabled(1)
         self.ui.SimDock_run.setEnabled(1)
+        self.__gui_state = "Idle"
 
     def call_run_simulation_perfonly(self):
         pass

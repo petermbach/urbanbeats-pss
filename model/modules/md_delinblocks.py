@@ -39,6 +39,9 @@ import threading
 import os
 import gc
 import tempfile
+import math
+import time
+from shapely.geometry import Polygon
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 from ubmodule import *
@@ -160,7 +163,7 @@ class DelinBlocks(UBModule):
 
         # ----- END OF INPUT PARAMETER LIST -----
 
-    def run(self):
+    def run_module(self):
         """Contains the main algorithm for the module, links with all other functions thereafter. This is called by
         UrbanBEATSSim() simulation's scenario manager depending on which scenario is currently being simulated.
 
@@ -169,130 +172,151 @@ class DelinBlocks(UBModule):
         self.notify("Start Spatial Delineation Module")     # Module start
         rand.seed()     # Seed the random number generator
 
+        # --- SECTION 1 - PREPARATION FOR CREATING THE BLOCKS MAP BASED ON THE INPUT BOUNDARY MAP ---
+
         # Check the neighbourhood rule and set the number of adjacent cells, nhd_type, accordingly
         if self.neighbourhood == "M":   # Determine number of neighbour cells depending on the neighbourhood
             nhd_type = 8    # 8 cardinal directions
         else:
             nhd_type = 4    # 4 adjacent cells NSEW
 
-        # GET BASIC RASTER DATA SETS
-        self.notify("Loading Basic Input Maps")
+        # GET BOUNDARY EXTENTS AND WORK OUT THE MAP DIMENSIONS
+        xmin, xmax, ymin, ymax = self.activesim.get_project_boundary_info("mapextents")
+        mapwidth = xmax - xmin      # width of the map [m]
+        mapheight = ymax - ymin     # height of map [m]
 
-        # Load Land Use Map
-        lu_dref = self.datalibrary.get_data_with_id(self.landuse_map)       # Retrieve the land use data reference
-        fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
-        self.notify("Loading: "+str(fullfilepath))
-        landuseraster = ubspatial.import_ascii_raster(fullfilepath, self.landuse_map)
-        self.notify("Load Complete!")
-        xllcorner, yllcorner = landuseraster.get_extents()  # Master xll/yll corner - the whole map is based on this
+        Amap_rect = mapwidth * mapheight    # Total area of the rectangular extents [m]
+        if self.blocksize_auto:     # AUTO-SIZE Blocks
+            cs = ubmethods.autosize_blocks(mapwidth, mapheight)
+        else:
+            cs = self.blocksize
 
-        # Load Population Map
-        pop_dref = self.datalibrary.get_data_with_id(self.population_map)   # Retrieve the population data reference
-        fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
-        self.notify("Loading: " + str(fullfilepath))
-        populationraster = ubspatial.import_ascii_raster(fullfilepath, self.population_map)
-        self.notify("Load Complete!")
-        pop_offset = ubspatial.calculate_offsets(landuseraster, populationraster, landuseraster.get_cellsize())
-        # Check Map Offset so that the data can be aligned
-        self.notify("Population map cell offsets: " + str(pop_offset[0]) + "," + str(pop_offset[1]))
-
-        # Load Elevation Map
-        elev_dref = self.datalibrary.get_data_with_id(self.elevation_map)     # Retrieves the elevation data ref
-        fullfilepath = elev_dref.get_data_file_path() + elev_dref.get_metadata("filename")
-        self.notify("Loading: " + str(fullfilepath))
-        elevationraster = ubspatial.import_ascii_raster(fullfilepath, self.elevation_map)
-        self.notify("Load Complete!")
-        elev_offset = ubspatial.calculate_offsets(landuseraster, elevationraster, landuseraster.get_cellsize())
-        self.notify("Elevation map cell offsets: "+str(elev_offset[0])+","+str(elev_offset[1]))
+        self.notify("Map Width [km] = "+str(mapwidth/1000.0))
+        self.notify("Map Height [km] = "+str(mapheight/1000.0))
+        self.notify("Final Block Size [m] = "+str(cs))
+        self.notify("---===---")
 
         # START CREATING BLOCKS MAP
         self.notify("Creating Blocks Map!")
-        inputres = landuseraster.get_cellsize()
-        width = landuseraster.get_dimensions()[0] * inputres
-        height = landuseraster.get_dimensions()[1] * inputres
 
-        # Step 1- AUTO-SIZE Blocks?
-        if self.blocksize_auto:
-            cs = ubmethods.autosize_blocks(width, height)
-        else:
-            cs = self.blocksize
-        cellsinblock = int(cs/inputres)
+        # ADJUST SIMULATION AREA DIMENSIONS
+        blocks_wide = int(math.ceil(mapwidth / float(cs)))      # To figure out how many blocks wide and tall, we use
+        blocks_tall = int(math.ceil(mapheight / float(cs)))     # math.ceil(), which rounds the number up.
+        numblocks = blocks_wide * blocks_tall
 
-        self.notify("Width "+str(width))
-        self.notify("Height "+str(height))
-        self.notify("Block Size: "+str(cs))
-        self.notify("Cells in Block: "+str(cellsinblock))
+        self.notify("Blocks wide: "+str(blocks_wide))
+        self.notify("Blocks tall: "+str(blocks_tall))
+        self.notify("Total number of Blocks: "+str(numblocks))
 
-        # Get the actual simulation area width and height, usually the width will not match the block dimensions
-        # perfectly, so we use a whfactor based on the Block Size to ensure that an extra amount of 'width' is added
-        # and we can then add an extra column or row of blocks to capture the edges.
-        whfactor = 1.0 - (1.0/(float(cs)*2.0))
-        widthnew = int(width/float(cs)+whfactor)
-        heightnew = int(height / float(cs) + whfactor)
-        numblocks = widthnew * heightnew
+        # CBD DISTANCE CALCULATIONS [TO DO]
+        # Look up long and lat of CBD if need to be considered
+        if self.considerCBD:
+            # Grab CBD Coordinates and transform to the local coordinate system
+            pass
+
+        if self.marklocation:
+            # Mark locations on the map
+            pass
 
         # MAP ATTRIBUTES - CREATE THE FIRST UBCOMPONENT() to save off basic map attributes.
         map_attr = ubdata.UBComponent()
         map_attr.add_attribute("NumBlocks", numblocks)
-        map_attr.add_attribute("WidthBlocks", widthnew)
-        map_attr.add_attribute("HeightBlocks", heightnew)  # Height of simulation area in # of blocks
+        map_attr.add_attribute("BlocksWide", blocks_wide)
+        map_attr.add_attribute("BlocksTall", blocks_tall)  # Height of simulation area in # of blocks
         map_attr.add_attribute("BlockSize", cs)  # Size of block [m]
-        map_attr.add_attribute("InputReso", inputres)  # Resolution of the input data [m]
-        map_attr.add_attribute("xllcorner", xllcorner)
-        map_attr.add_attribute("yllcorner", yllcorner)
+        map_attr.add_attribute("xllcorner", xmin)
+        map_attr.add_attribute("yllcorner", ymin)
         map_attr.add_attribute("Neigh_Type", nhd_type)
         map_attr.add_attribute("ConsiderCBD", self.considerCBD)
         map_attr.add_attribute("patchdelin", self.patchdelin)
         map_attr.add_attribute("spatialmetrics", self.spatialmetrics)
         map_attr.add_attribute("considerCBD", self.considerCBD)
-
-        # Look up long and lat of CBD if need to be considered
-        if self.considerCBD:    # TO DO ----
-            # Grab CBD Coordinates and transform to the local coordinate system
-            pass
-
-        if self.marklocation:   # TO DO ----
-            # Mark locations on the map
-            pass
-
         self.scenario.add_asset("MapAttributes", map_attr)
 
+        # --- SECTION 2 - DRAW THE MAP OF BLOCKS AND DETERMINE ACTIVE AND INACTIVE BLOCKS , NEIGHBOURHOODS ---
+        # Get the coordinates for the boundary of the map, this is used to check if the Block is active or inactive
+        boundarygeom = self.activesim.get_project_boundary_info("coordinates")
+        boundarygeom_zeroorigin = []    # Contains the polygon's coordinates shifted to the zero origin
+        for coord in boundarygeom:      # Shift the map to (0,0) origin
+            boundarygeom_zeroorigin.append(( coord[0] - xmin, coord[1] - ymin))
+        boundarypoly = Polygon(boundarygeom_zeroorigin)     # Test intersect with Block Polygon later using
+        print "Shifted Boundary Coordinates", boundarygeom_zeroorigin
+
+        # Begin drawing the Block Polygons
         x_adj = 0       # Track the position of the 'draw cursor', these offset the cursor
         y_adj = 0       # can be used to offset the map completely from (0,0)
-
-        # --- DRAW BLOCKS AND ASSIGN THE MAP INFO ---
         blockIDcount = 1    # Counter for BlockID, initialized here
-        for y in range(heightnew):
-            for x in range(widthnew):
+        self.notify("Creating Block Geometry...")
+        for y in range(blocks_tall):        # Loop across the number of blocks tall and blocks wide
+            for x in range(blocks_wide):
+                print "BlockID: ", blockIDcount
                 self.notify("Current BLOCK ID: "+str(blockIDcount))
-
-                # - STEP 1 - CREATE BLOCK GEOMETRY
-                block_attr = self.create_block_face(x, y, cs, x_adj, y_adj, blockIDcount)
-                xcentre = x * cs + 0.5 * cs
-                ycentre = y * cs + 0.5 * cs
-
-                x_start = x * cellsinblock
-                y_start = y * cellsinblock
-
-                xorigin = (x + x_adj) * cs
-                yorigin = (y + y_adj) * cs
-
-                block_attr.add_attribute("CentreX", xcentre)
-                block_attr.add_attribute("CentreY", ycentre)
-                block_attr.add_attribute("LocateX", x + 1)
-                block_attr.add_attribute("LocateY", y + 1)
-                block_attr.add_attribute("OriginX", xorigin)
-                block_attr.add_attribute("OriginY", yorigin)
-                offset = [(x + x_adj) * cs, (y + y_adj) * cs]
-
-                # - STEP 2 - FIND BLOCK NEIGHBOURHOOD
-                blockNHD = self.find_neighbourhood(blockIDcount, x, y, numblocks, widthnew, heightnew)
-
-
-
                 blockIDcount += 1
+                # - STEP 1 - CREATE BLOCK GEOMETRY
 
+                # block_attr = self.create_block_face(x, y, cs, x_adj, y_adj, blockIDcount)
+                # xcentre = x * cs + 0.5 * cs
+                # ycentre = y * cs + 0.5 * cs
+                #
+                # x_start = x * cellsinblock
+                # y_start = y * cellsinblock
+                #
+                # xorigin = (x + x_adj) * cs
+                # yorigin = (y + y_adj) * cs
+
+                # block_attr.add_attribute("CentreX", xcentre)
+                # block_attr.add_attribute("CentreY", ycentre)
+                # block_attr.add_attribute("LocateX", x + 1)
+                # block_attr.add_attribute("LocateY", y + 1)
+                # block_attr.add_attribute("OriginX", xorigin)
+                # block_attr.add_attribute("OriginY", yorigin)
+                # offset = [(x + x_adj) * cs, (y + y_adj) * cs]
+                #
+                # # - STEP 2 - FIND BLOCK NEIGHBOURHOOD
+                # blockNHD = self.find_neighbourhood(blockIDcount, x, y, numblocks, widthnew, heightnew)
+                #
+                #
+                #
+                pass
+            pass
         pass
+        print "Simulation Finished Ending 0"
+        # # GET BASIC RASTER DATA SETS
+        # self.notify("Loading Basic Input Maps")
+        # cellsinblock = int(cs / inputres)
+        #
+        # # Load Land Use Map
+        # lu_dref = self.datalibrary.get_data_with_id(self.landuse_map)       # Retrieve the land use data reference
+        # fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
+        # self.notify("Loading: "+str(fullfilepath))
+        # landuseraster = ubspatial.import_ascii_raster(fullfilepath, self.landuse_map)
+        # self.notify("Load Complete!")
+        # xllcorner, yllcorner = landuseraster.get_extents()  # Master xll/yll corner - the whole map is based on this
+        #
+        # # Load Population Map
+        # pop_dref = self.datalibrary.get_data_with_id(self.population_map)   # Retrieve the population data reference
+        # fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
+        # self.notify("Loading: " + str(fullfilepath))
+        # populationraster = ubspatial.import_ascii_raster(fullfilepath, self.population_map)
+        # self.notify("Load Complete!")
+        # pop_offset = ubspatial.calculate_offsets(landuseraster, populationraster, landuseraster.get_cellsize())
+        # # Check Map Offset so that the data can be aligned
+        # self.notify("Population map cell offsets: " + str(pop_offset[0]) + "," + str(pop_offset[1]))
+        #
+        # # Load Elevation Map
+        # elev_dref = self.datalibrary.get_data_with_id(self.elevation_map)     # Retrieves the elevation data ref
+        # fullfilepath = elev_dref.get_data_file_path() + elev_dref.get_metadata("filename")
+        # self.notify("Loading: " + str(fullfilepath))
+        # elevationraster = ubspatial.import_ascii_raster(fullfilepath, self.elevation_map)
+        # self.notify("Load Complete!")
+        # elev_offset = ubspatial.calculate_offsets(landuseraster, elevationraster, landuseraster.get_cellsize())
+        # self.notify("Elevation map cell offsets: "+str(elev_offset[0])+","+str(elev_offset[1]))
+        #
+        # inputres = landuseraster.get_cellsize()
+        # width = landuseraster.get_dimensions()[0] * inputres
+        # height = landuseraster.get_dimensions()[1] * inputres
+        self.notify("Simulation Finished for now")
+        return False
 
     # ADDITIONAL MODULE FUNCTIONS
     def create_block_face(self, x, y, cs, x_adj, y_adj, ID):
@@ -323,117 +347,3 @@ class DelinBlocks(UBModule):
         block_attr.add_attribute("BlockID", int(ID))
 
         return block_attr
-
-    def find_neighbourhood(self, ID, x, y, numblocks, widthnew, heightnew):
-        """Search for all 8 (or 4) neighbours around a given Block ID. Encodes
-        the results into an array [N, S, W, E, NE, NW, SE, SW]
-
-        :param ID: Block ID currently being looked at
-        :param x: x
-        """
-        neighbour_assign = 0
-        # check neighbour IDs
-        # check for corner pieces
-        if ID - 1 == 0:  # bottom left
-            neighbour_assign = 1
-            N_neighbour = ID + widthnew
-            S_neighbour = 0
-            W_neighbour = 0
-            E_neighbour = ID + 1
-            NE_neighbour = N_neighbour + 1
-            NW_neighbour = 0
-            SE_neighbour = 0
-            SW_neighbour = 0
-        if ID + 1 == numblocks + 1:  # top right
-            neighbour_assign = 1
-            N_neighbour = 0
-            S_neighbour = ID - widthnew
-            W_neighbour = ID - 1
-            E_neighbour = 0
-            NE_neighbour = 0
-            NW_neighbour = 0
-            SE_neighbour = 0
-            SW_neighbour = S_neighbour - 1
-        if ID - widthnew == 0:  # bottom right
-            neighbour_assign = 1
-            N_neighbour = ID + widthnew
-            S_neighbour = 0
-            W_neighbour = ID - 1
-            E_neighbour = 0
-            NE_neighbour = 0
-            NW_neighbour = N_neighbour - 1
-            SE_neighbour = 0
-            SW_neighbour = 0
-        if ID + widthnew == numblocks + 1:  # top left
-            neighbour_assign = 1
-            N_neighbour = 0
-            S_neighbour = ID - widthnew
-            W_neighbour = 0
-            E_neighbour = ID + 1
-            NE_neighbour = 0
-            NW_neighbour = 0
-            SE_neighbour = S_neighbour + 1
-            SW_neighbour = 0
-
-        # check for edge piece
-        if neighbour_assign == 1:
-            pass
-        else:
-            if float(ID) / widthnew == y + 1:  # East edge
-                neighbour_assign = 1
-                N_neighbour = ID + widthnew
-                S_neighbour = ID - widthnew
-                W_neighbour = ID - 1
-                E_neighbour = 0
-                NE_neighbour = 0
-                NW_neighbour = N_neighbour - 1
-                SE_neighbour = 0
-                SW_neighbour = S_neighbour - 1
-            if float(ID - 1) / widthnew == y:  # West edge
-                neighbour_assign = 1
-                N_neighbour = ID + widthnew
-                S_neighbour = ID - widthnew
-                W_neighbour = 0
-                E_neighbour = ID + 1
-                NE_neighbour = N_neighbour + 1
-                NW_neighbour = 0
-                SE_neighbour = S_neighbour + 1
-                SW_neighbour = 0
-            if ID - widthnew < 0:  # South edge
-                neighbour_assign = 1
-                N_neighbour = ID + widthnew
-                S_neighbour = 0
-                W_neighbour = ID - 1
-                E_neighbour = ID + 1
-                NE_neighbour = N_neighbour + 1
-                NW_neighbour = N_neighbour - 1
-                SE_neighbour = 0
-                SW_neighbour = 0
-            if ID + widthnew > numblocks + 1:  # North edge
-                neighbour_assign = 1
-                N_neighbour = 0
-                S_neighbour = ID - widthnew
-                W_neighbour = ID - 1
-                E_neighbour = ID + 1
-                NE_neighbour = 0
-                NW_neighbour = 0
-                SE_neighbour = S_neighbour + 1
-                SW_neighbour = S_neighbour - 1
-
-        # if there is still no neighbours assigned then assume standard cross
-        if neighbour_assign == 1:
-            pass
-        else:
-            neighbour_assign = 1
-            N_neighbour = ID + widthnew
-            S_neighbour = ID - widthnew
-            W_neighbour = ID - 1
-            E_neighbour = ID + 1
-            NE_neighbour = N_neighbour + 1
-            NW_neighbour = N_neighbour - 1
-            SE_neighbour = S_neighbour + 1
-            SW_neighbour = S_neighbour - 1
-
-        blockNHD = [N_neighbour, S_neighbour, W_neighbour, E_neighbour, NE_neighbour, NW_neighbour, SE_neighbour,
-                    SW_neighbour]
-        return blockNHD

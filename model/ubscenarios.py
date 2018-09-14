@@ -29,7 +29,7 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 # --- --- --- --- --- ---
 
 # --- PYTHON LIBRARY IMPORTS ---
-import threading
+import gc
 import os
 import time
 import xml.etree.ElementTree as ET  # XML parsing for loading scenario files
@@ -96,6 +96,13 @@ class UrbanBeatsScenario(object):
         # can include: UBComponents(), Input Data, etc.
 
         self.__active_assets = None  # Will hold a reference to the active asset dictionary based on current dt
+
+    def reset_scenario_runtime(self):
+        """Resets the scenario such that runtime can be carried ou again"""
+        self.__assets = {}
+        self.__global_edge_list = []
+        self.__global_point_list = []
+        gc.collect()
 
     def append_point(self, pt):
         """ Adds a point tuple (x, y) to the global point list."""
@@ -444,12 +451,14 @@ class UrbanBeatsScenario(object):
         for observer in self.__observers:
             observer.update_observer(str(message))
 
-    def run(self):
+    def run_scenario(self):
         # BEGIN THE SCENARIO'S SIMULATION
         self.update_observers("Scenario Start!")
-        time.sleep(1)
+        # time.sleep(1)
         if self.get_metadata("type") == "STATIC":
-            self.run_static_simulation()
+            while self.run_static_simulation():
+                pass
+            return False
         elif self.get_metadata("type") == "DYNAMIC":
             self.run_dynamic_simulation()
         else:
@@ -461,37 +470,27 @@ class UrbanBeatsScenario(object):
         self.update_observers("Scenario Type: STATIC")
         temp_directory = self.simulation.get_global_options("tempdir")
         self.update_observers("Current temp directory: "+str(temp_directory))
-        self.simulation.update_runtime_progress(5)
+        #self.simulation.update_runtime_progress(5)
         # self.resetAssets()    # reset the Assets Vector
 
         # --- STATIC STEP 1: Block delineation ---
-        self.simulation.update_runtime_progress(10)
+        #self.simulation.update_runtime_progress(10)
         delinblocks = self.get_module_object("SPATIAL", 0)
         delinblocks.attach(self.__observers)
-        delinblocks.run()
-
+        delinblocks.run_module()
 
         # --- STATIC STEP 2: Climate Setup ---
-
         # --- STATIC STEP 3: Urban Planning ---
-
         # --- STATIC STEP 4: Socio-Economic ---
-
         # --- STATIC STEP 5: Spatial Mapping ---
-
         # --- STATIC STEP 6: Regulation ---
-
         # --- STATIC STEP 7: Infrastructure ---
-
         # --- STATIC STEP 8: Performance ---
-
         # --- STATIC STEP 9: Impact ---
-
         # --- STATIC STEP 10: Decision Analysis ---
-
         # --- DATA EXPORT AND CLEANUP STEPS ---
 
-        self.simulation.update_runtime_progress(100)
+        #self.simulation.update_runtime_progress(100)
 
     def run_dynamic_simulation(self):
         """This function presents the logical module flow for a DYNAMIC simulation."""
