@@ -221,7 +221,7 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
     points = ring.GetPointCount()
     # print "Ring Points: ", points
     for i in range(points):
-        coordinates.append([ring.GetX(i), ring.GetY(i)])
+        coordinates.append((ring.GetX(i), ring.GetY(i)))
 
     if option == "leaflet":
         # Reverse the x, y to form lat, long because in ESRI's case, lat almost always Y and long almost always X
