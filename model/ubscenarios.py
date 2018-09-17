@@ -29,8 +29,9 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 # --- --- --- --- --- ---
 
 # --- PYTHON LIBRARY IMPORTS ---
+import threading
+import sys
 import gc
-import os
 import time
 import xml.etree.ElementTree as ET  # XML parsing for loading scenario files
 import ast  # Used for converting a string of a list into a list e.g. "[1, 2, 3, 4]" --> [1, 2, 3, 4]
@@ -50,17 +51,19 @@ import modules.md_urbplanbb as md_urbplanbb
 
 
 # --- SCENARIO CLASS DEFINITION ---
-class UrbanBeatsScenario(object):
+class UrbanBeatsScenario(threading.Thread):
     """The static parent class that contains the basic definition of the
     scenario for UrbanBEATS simulations. Other scenario classes inherit from
     this class and define the type of scenario (i.e. static, dynamic, benchmark)
     """
     def __init__(self, simulation, datalibrary, projectlog):
+        threading.Thread.__init__(self)
         self.__observers = []
         self.simulation = simulation
         self.datalibrary = datalibrary
         self.projectlog = projectlog
         self.projectpath = simulation.get_project_path()
+        self.runstate = False
 
         self.__scenariometadata = {"name": "My UrbanBEATS Scenario",
                                    "type": "STATIC",
@@ -464,17 +467,42 @@ class UrbanBeatsScenario(object):
         else:
             self.run_benchmark_simulation()
 
+    def reinitialize(self):
+        """Reinitializes the thread, resets the assets, edges and point lists and runs a garbage collection."""
+        try:
+            threading.Thread.__init__(self)
+        except:
+            print sys.exc_info()[0]
+
+        print "Resetting Assets"
+        self.__assets = {}
+        self.__global_edge_list = []
+        self.__global_point_list = []
+        gc.collect()
+        return False
+
+    def run(self):
+        """Overrides the thread.run() function, called when thread.start() is used. Determines, which kind of
+        simulation to run."""
+        self.runstate = True
+        if self.get_metadata("type") == "STATIC":
+            self.run_static_simulation()
+        elif self.get_metadata("type") == "DYNAMIC":
+            self.run_dynamic_simulation()
+        else:
+            self.run_benchmark_simulation()
+        self.simulation.on_thread_finished()
+
     def run_static_simulation(self):
         """This function presents the logical module flow for a STATIC simulation."""
         # --- STEP 0: Begin by setting up the basic global variables ---
         self.update_observers("Scenario Type: STATIC")
         temp_directory = self.simulation.get_global_options("tempdir")
         self.update_observers("Current temp directory: "+str(temp_directory))
-        #self.simulation.update_runtime_progress(5)
-        # self.resetAssets()    # reset the Assets Vector
+        self.simulation.update_runtime_progress(5)
 
         # --- STATIC STEP 1: Block delineation ---
-        #self.simulation.update_runtime_progress(10)
+        self.simulation.update_runtime_progress(10)
         delinblocks = self.get_module_object("SPATIAL", 0)
         delinblocks.attach(self.__observers)
         delinblocks.run_module()
@@ -489,8 +517,7 @@ class UrbanBeatsScenario(object):
         # --- STATIC STEP 9: Impact ---
         # --- STATIC STEP 10: Decision Analysis ---
         # --- DATA EXPORT AND CLEANUP STEPS ---
-
-        #self.simulation.update_runtime_progress(100)
+        self.simulation.update_runtime_progress(100)
 
     def run_dynamic_simulation(self):
         """This function presents the logical module flow for a DYNAMIC simulation."""

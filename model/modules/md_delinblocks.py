@@ -249,8 +249,8 @@ class DelinBlocks(UBModule):
         self.notify("Creating Block Geometry...")
         for y in range(blocks_tall):        # Loop across the number of blocks tall and blocks wide
             for x in range(blocks_wide):
-                print "BlockID: ", blockIDcount
                 self.notify("Current BLOCK ID: "+str(blockIDcount))
+                time.sleep(0.01)
                 blockIDcount += 1
                 # - STEP 1 - CREATE BLOCK GEOMETRY
 
@@ -280,7 +280,6 @@ class DelinBlocks(UBModule):
                 pass
             pass
         pass
-        print "Simulation Finished Ending 0"
         # # GET BASIC RASTER DATA SETS
         # self.notify("Loading Basic Input Maps")
         # cellsinblock = int(cs / inputres)

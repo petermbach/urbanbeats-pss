@@ -2341,6 +2341,18 @@ p, li { white-space: pre-wrap; }
     <string>Ctrl+W</string>
    </property>
   </action>
+  <action name="actionActionReset">
+   <property name="icon">
+    <iconset resource="../graphics/ubeats.qrc">
+     <normaloff>:/icons/Refresh-icon.png</normaloff>:/icons/Refresh-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>actionReset</string>
+   </property>
+   <property name="toolTip">
+    <string>Reset the scenario's simulation state.</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

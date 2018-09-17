@@ -1128,27 +1128,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def call_run_simulation(self):
         """Executes the run function for the current scenario that is active in the Scenario Browser."""
-        if self.get_active_simulation_object().get_active_scenario() is None:
-            self.printc("No active scenario...")
-            return
-        else:
-            if self.get_active_simulation_object().check_runtime_state() == 100:
-                self.get_active_simulation_object().reinitialize_runtime()
-                self.printc("Scenario Runtime Reset Performed!")
-            print "Reinitialization finished!"
-            self.__gui_state = "Running"
-            self.ui.actionRun.setEnabled(0)
-            self.ui.SimDock_run.setEnabled(0)
-            current_simulation = self.get_active_simulation_object()
-            current_simulation.start()
+        self.get_active_simulation_object().run()
 
-    def on_thread_finished(self):
-        """Callback function to reenable the run buttons once the current simulation has finished."""
-        print "On_threadfinished"
-        time.sleep(1)
-        self.ui.actionRun.setEnabled(1)
-        self.ui.SimDock_run.setEnabled(1)
-        self.__gui_state = "Idle"
+    def enable_disable_run_controls(self, state):
+        """Enabels or Disables the run button controls depending on run state."""
+        self.ui.actionRun.setEnabled(state)
+        self.ui.SimDock_run.setEnabled(state)
 
     def call_run_simulation_perfonly(self):
         pass
@@ -1280,6 +1265,16 @@ class StartScreenLaunch(QtWidgets.QDialog):
         self.accept()
         sys.exit()
 
+
+sys._excepthook = sys.excepthook
+
+
+def exception_hook(exctype, value, traceback):
+    print(exctype, value, traceback)
+    sys._excepthook(exctype, value, traceback)
+    sys.exit(1)
+
+sys.excepthook = exception_hook
 
 # --- MAIN PROGRAM RUNTIME ---
 if __name__ == "__main__":

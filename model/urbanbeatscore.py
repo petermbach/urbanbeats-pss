@@ -29,7 +29,6 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 # --- --- --- --- --- ---
 
 # --- PYTHON LIBRARY IMPORTS ---
-import threading
 import random
 import time
 import os
@@ -56,7 +55,7 @@ import modules.md_urbplanbb
 
 
 # --- URBANBEATS SIMULATION CLASS DEFINITION ---
-class UrbanBeatsSim(threading.Thread):
+class UrbanBeatsSim(object):
     """The simulation class for UrbanBEATS, which contains all the information
     about scenarios, models, and other items. Contains the project info, reference
     to all modules, simulation settings and status of the current workflow.
@@ -69,8 +68,6 @@ class UrbanBeatsSim(threading.Thread):
         :param options: a dictionary of global options. The core of the model uses only several of these options including
                         ["maxiterations"] ...
         """
-        threading.Thread.__init__(self)
-
         random.seed()  # Seed the random numbers
 
         # Initialize variables
@@ -261,6 +258,7 @@ class UrbanBeatsSim(threading.Thread):
         """Creates a new scenario object and sets it as the active scenario."""
         newscenario = ubscenarios.UrbanBeatsScenario(self, self.__datalibrary, self.__projectlog)
         self.__activescenario = newscenario     # Set the active scenario's name
+        print "Created"
 
     def add_new_scenario(self, scenario_object):
         """Adds a new scenario to the simulation by creating a UrbanBeatsScenario() instance and initializing
@@ -413,39 +411,36 @@ class UrbanBeatsSim(threading.Thread):
     def run(self):
         """Runs the UrbanBEATS Simulation based on the active scenario, data library, project
         info and other information."""
+        if self.get_active_scenario() is None:
+            self.update_observers("No active scenario selected!")
+            return
+        self.__parent and self.__parent.enable_disable_run_controls(0)
         if self.__runtime_method == "SF":
-            #self.update_runtime_progress(0)
-            active_scenario = self.get_active_scenario()
-            active_scenario.attach_observers(self.__observers)
-            scenario_name = active_scenario.get_metadata("name")
+            active_scenario = self.get_active_scenario()        # Get the active scenario
+            self.update_runtime_progress(0)                     # Reset progress bar
+            if active_scenario.runstate:                        # If active scenario has been run, reinitialize it
+                self.__parent and self.__parent.initialize_output_console()
+                while active_scenario.reinitialize():
+                    pass
+            active_scenario.attach_observers(self.__observers)      # Attach the observers
+            scenario_name = active_scenario.get_metadata("name")    # Get the name and report
             self.update_observers("Running Scenario: " + str(scenario_name))
-            self.update_runtime_progress(3)
-            # while active_scenario.run():
-            #     pass
-            # print "Simulation Finishing 0.8"
-            self.update_observers("Simulation Finished")
-            self.update_runtime_progress(100)
+            active_scenario.start()     # Start the active scenario thread      # Start the thread
+
         elif self.__runtime_method == "AF":
             pass    # TO DO - ALL SCENARIOS FULL SIMULATION AT ONCE.
         elif self.__runtime_method == "SP":
             pass    # TO DO - Single Scenario - Performance ONLY
-        print "Simulation Finished Ending 2"
-        self.__parent and self.__parent.on_thread_finished()    # CALLBACK to parent once the thread has finished.
+
+    def on_thread_finished(self):
+        """Called when the thread is finished."""
+        self.update_observers("Scenario Finished")
+        self.__parent and self.__parent.enable_disable_run_controls(1)
 
     def check_runtime_state(self):
         """Returns the current runtime progress value."""
         return self.__runtime_progress
 
-    def reinitialize_runtime(self):
-        """ Resets the simulation thread such that the simulation can be run again """
-        self.__runtime_progress = 0
-        print "Need to Reset Runtime"
-        try:
-            threading.Thread.__init__(self)  # Reinitializes the thread so that it can be restarted.
-            print "Thread reset worked!"
-        except:
-            print sys.exc_info()[0]
-        # self.get_active_scenario().reset_scenario_runtime()     # Resets the assets in the active scenario
 
 class UrbanBeatsLog(object):
     """Class for logging the UrbanBEATS workflow, the log manages the history of the project
