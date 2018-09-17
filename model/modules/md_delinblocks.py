@@ -224,8 +224,8 @@ class DelinBlocks(UBModule):
         map_attr.add_attribute("BlocksWide", blocks_wide)
         map_attr.add_attribute("BlocksTall", blocks_tall)  # Height of simulation area in # of blocks
         map_attr.add_attribute("BlockSize", cs)  # Size of block [m]
-        map_attr.add_attribute("xllcorner", xmin)
-        map_attr.add_attribute("yllcorner", ymin)
+        map_attr.add_attribute("xllcorner", xmin)       # The geographic coordinate x-pos of the actual map
+        map_attr.add_attribute("yllcorner", ymin)       # The geographic coordinate y-pos of the actual map
         map_attr.add_attribute("Neigh_Type", nhd_type)
         map_attr.add_attribute("ConsiderCBD", self.considerCBD)
         map_attr.add_attribute("patchdelin", self.patchdelin)
@@ -240,57 +240,67 @@ class DelinBlocks(UBModule):
         for coord in boundarygeom:      # Shift the map to (0,0) origin
             boundarygeom_zeroorigin.append(( coord[0] - xmin, coord[1] - ymin))
         boundarypoly = Polygon(boundarygeom_zeroorigin)     # Test intersect with Block Polygon later using
-        print "Shifted Boundary Coordinates", boundarygeom_zeroorigin
 
-        # Begin drawing the Block Polygons
-        x_adj = 0       # Track the position of the 'draw cursor', these offset the cursor
-        y_adj = 0       # can be used to offset the map completely from (0,0)
         blockIDcount = 1    # Counter for BlockID, initialized here
+        blockslist = []
         self.notify("Creating Block Geometry...")
         for y in range(blocks_tall):        # Loop across the number of blocks tall and blocks wide
             for x in range(blocks_wide):
-                self.notify("Current BLOCK ID: "+str(blockIDcount))
-                time.sleep(0.01)
-                blockIDcount += 1
+                # self.notify("Current BLOCK ID: "+str(blockIDcount))
+
                 # - STEP 1 - CREATE BLOCK GEOMETRY
+                block_attr = self.create_block_face(x, y, cs, blockIDcount, boundarypoly)
+                if block_attr is None:
+                    blockIDcount += 1  # Increase the Block ID Count by one
+                    continue
 
-                # block_attr = self.create_block_face(x, y, cs, x_adj, y_adj, blockIDcount)
-                # xcentre = x * cs + 0.5 * cs
-                # ycentre = y * cs + 0.5 * cs
-                #
-                # x_start = x * cellsinblock
-                # y_start = y * cellsinblock
-                #
-                # xorigin = (x + x_adj) * cs
-                # yorigin = (y + y_adj) * cs
+                xcentre = x * cs + 0.5 * cs
+                ycentre = y * cs + 0.5 * cs
 
-                # block_attr.add_attribute("CentreX", xcentre)
-                # block_attr.add_attribute("CentreY", ycentre)
-                # block_attr.add_attribute("LocateX", x + 1)
-                # block_attr.add_attribute("LocateY", y + 1)
-                # block_attr.add_attribute("OriginX", xorigin)
-                # block_attr.add_attribute("OriginY", yorigin)
-                # offset = [(x + x_adj) * cs, (y + y_adj) * cs]
-                #
-                # # - STEP 2 - FIND BLOCK NEIGHBOURHOOD
-                # blockNHD = self.find_neighbourhood(blockIDcount, x, y, numblocks, widthnew, heightnew)
-                #
-                #
-                #
-                pass
-            pass
-        pass
-        # # GET BASIC RASTER DATA SETS
-        # self.notify("Loading Basic Input Maps")
+                xorigin = x * cs
+                yorigin = y * cs
+
+                block_attr.add_attribute("CentreX", xcentre)    # ATTRIBUTE: geographic information
+                block_attr.add_attribute("CentreY", ycentre)
+                block_attr.add_attribute("OriginX", xorigin)
+                block_attr.add_attribute("OriginY", yorigin)
+
+                self.scenario.add_asset("BlockID"+str(blockIDcount), block_attr)     # Add the asset to the scenario
+                blockslist.append(block_attr)
+                blockIDcount += 1       # Increase the Block ID Count by one
+
+        # - STEP 2 - FIND BLOCK NEIGHBOURHOOD
+        self.notify("Establishing neighbourhoods")
+        for i in range(len(blockslist)):    # Loop across current Blocks
+            curblock = blockslist[i]
+            curblock_id = curblock.get_attribute("BlockID")
+            nhd = []
+            for j in range(len(blockslist)):    # Loop across blocks again
+                comp_block_id = blockslist[j].get_attribute("BlockID")
+                if comp_block_id == curblock_id:  # If the IDs are identical, then skip
+                    continue
+                if nhd_type == 8:  # 8 neighbours, search based on points
+                    if curblock.shares_geometry(blockslist[j], "points"):
+                        nhd.append(comp_block_id)
+                elif nhd_type == 4: # 4 neighbours, search based on edges
+                    if curblock.shares_geometry(blockslist[j], "edges"):
+                        nhd.append(comp_block_id)
+            curblock.add_attribute("Neighbours", nhd)   # ATTRIBUTE: neighbourhood type<list> - [ Block IDs ]
+
+        # - STEP 3 - GET BASIC RASTER DATA SETS
+        self.notify("Loading Basic Input Maps")
+
+        # Load Land Use Map
+        lu_dref = self.datalibrary.get_data_with_id(self.landuse_map)       # Retrieve the land use data reference
+        fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
+        self.notify("Loading: "+str(fullfilepath))
+        landuseraster = ubspatial.import_ascii_raster(fullfilepath, self.landuse_map)
+        self.notify("Load Complete!")
+        xllcorner, yllcorner = landuseraster.get_extents()  # Master xll/yll corner - the whole map is based on this
+
+        # x_start = x * cellsinblock
+        # y_start = y * cellsinblock
         # cellsinblock = int(cs / inputres)
-        #
-        # # Load Land Use Map
-        # lu_dref = self.datalibrary.get_data_with_id(self.landuse_map)       # Retrieve the land use data reference
-        # fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
-        # self.notify("Loading: "+str(fullfilepath))
-        # landuseraster = ubspatial.import_ascii_raster(fullfilepath, self.landuse_map)
-        # self.notify("Load Complete!")
-        # xllcorner, yllcorner = landuseraster.get_extents()  # Master xll/yll corner - the whole map is based on this
         #
         # # Load Population Map
         # pop_dref = self.datalibrary.get_data_with_id(self.population_map)   # Retrieve the population data reference
@@ -317,32 +327,39 @@ class DelinBlocks(UBModule):
         self.notify("Simulation Finished for now")
         return False
 
-    # ADDITIONAL MODULE FUNCTIONS
-    def create_block_face(self, x, y, cs, x_adj, y_adj, ID):
+    # ------------------------------------------------
+    # |-    ADDITIONAL MODULE FUNCTIONS             -|
+    # ------------------------------------------------
+    def create_block_face(self, x, y, cs, ID, boundary):
         """Creates the Block Face, the polygon of the block as a UBVector
 
-        :param x:
-        :param y:
-        :param cs:
-        :param x_adj:
-        :param y_adj:
+        :param x: The starting x coordinate (on 0,0 origin)
+        :param y: The starting y coordinate (on 0,0 origin)
+        :param cs: Block size [m]
         :param ID: the current ID number to be assigned to the Block
+        :param boundary: A Shapely polygon object, used to test if the block face intersects
+        with it. Also determines whether to save the Block or not.
         :return: UBVector object containing the BlockID attribute and geometry
         """
         # Define points
-        n1 = ((x + x_adj) * cs, (y + y_adj) * cs, 0)
-        n2 = ((x + x_adj + 1) * cs, (y + y_adj) * cs, 0)
-        n3 = ((x + x_adj + 1) * cs, (y + y_adj + 1) * cs, 0)
-        n4 = ((x + x_adj) * cs, (y + y_adj + 1) * cs, 0)
+        n1 = (x * cs, y * cs, 0)        # Bottom left (x, y, z)
+        n2 = ((x + 1)*cs, y * cs, 0)    # Bottom right
+        n3 = ((x + 1)*cs, (y + 1)*cs, 0)   # Top right
+        n4 = (x * cs, (y + 1) * cs, 0)    # Top left
 
-        # Define edges
-        e1 = (n1, n2)
-        e2 = (n2, n3)
-        e3 = (n3, n4)
-        e4 = (n4, n1)
+        # Create the Shapely Polygon and test against the boundary to determine active/inactive.
+        blockpoly = Polygon((n1[:2], n2[:2], n3[:2], n4[:2]))
+        if Polygon.intersects(boundary, blockpoly):
+            # Define edges
+            e1 = (n1, n2)   # Bottom left to bottom right
+            e2 = (n2, n3)   # Bottom right to top right
+            e3 = (n3, n4)   # Top right to top left
+            e4 = (n4, n1)   # Top left to bottom left
 
-        # Define the UrbanBEATS Vector Asset
-        block_attr = ubdata.UBVector([n1, n2, n3, n4, n1])
-        block_attr.add_attribute("BlockID", int(ID))
-
-        return block_attr
+            # Define the UrbanBEATS Vector Asset
+            block_attr = ubdata.UBVector((n1, n2, n3, n4, n1), (e1, e2, e3, e4))
+            block_attr.add_attribute("BlockID", int(ID))    # ATTRIBUTE: Block Identification
+            return block_attr
+        else:
+            # Block not within boundary, do not return anything
+            return None

@@ -100,13 +100,6 @@ class UrbanBeatsScenario(threading.Thread):
 
         self.__active_assets = None  # Will hold a reference to the active asset dictionary based on current dt
 
-    def reset_scenario_runtime(self):
-        """Resets the scenario such that runtime can be carried ou again"""
-        self.__assets = {}
-        self.__global_edge_list = []
-        self.__global_point_list = []
-        gc.collect()
-
     def append_point(self, pt):
         """ Adds a point tuple (x, y) to the global point list."""
         if pt not in self.__global_point_list:
@@ -147,14 +140,37 @@ class UrbanBeatsScenario(threading.Thread):
         except KeyError:
             return None
 
-    def get_asset_with_identifier(self, idstring, **kwargs):
+    def get_assets_with_identifier(self, idstring, **kwargs):
         """Scans the complete Asset List and returns all assets with the idstring contained in their name
         e.g. BlockID contained in the name "BlockID1", "BlockID2", etc.)
 
         :param idstring: the part of the string to search the asset database for (e.g. "BlockID")
         :param **kwargs: 'assetcol' = {} custom dictionary of assets
         """
-        pass
+        assetcollection = []
+        try:
+            tempassetcol = kwargs["assetcol"]
+        except KeyError:
+            tempassetcol = self.__assets
+        for i in tempassetcol:
+            if idstring in i:
+                assetcollection.append(tempassetcol[i])
+        return assetcollection
+
+    def remove_asset_by_name(self, name):
+        """Removes an asset from the collection based on the name specified
+
+        :param name: the key of the asset in the self.__assets dictionary.
+        """
+        try:
+            del self.__assets[name]
+        except KeyError:
+            return True
+
+    def reset_assets(self):
+        """Erases all assets, leaves an empty assets dictionary. Carried out when resetting the simulation."""
+        self.__assets = {}
+        gc.collect()
 
     def get_simulation_years(self):
         """Retrieves the list of simulation years to use."""
@@ -474,11 +490,7 @@ class UrbanBeatsScenario(threading.Thread):
         except:
             print sys.exc_info()[0]
 
-        print "Resetting Assets"
-        self.__assets = {}
-        self.__global_edge_list = []
-        self.__global_point_list = []
-        gc.collect()
+        self.reset_assets()
         return False
 
     def run(self):

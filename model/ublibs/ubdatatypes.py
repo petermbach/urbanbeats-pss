@@ -166,25 +166,55 @@ class UBComponent(object):
 class UBVector(UBComponent):
     """UrbanBEATS Vector Data Format, inherited from UBComponent, it stores geometric information
     for polygons, lines and points along with the ability to hold attributes."""
-    def __init__(self, coordinates):
+    def __init__(self, points, edges=None):
         UBComponent.__init__(self)
         self.__dtype = ""
-        self.__coordinates = coordinates
-        self.determine_geometry(self.__coordinates)
+        self.__points = points     # Required to draw the geometry
+        self.__edges = edges
+        # self.__edges has None type if the data type is a point otherwise a tuple array of edges
+        # of format ( ( (x1, y1, 0), (x2, y2, 0) ), ( ... ),  ... )
 
-    def change_coordintaes(self, coordinates):
+        self.determine_geometry(self.__points)
+
+    def change_coordintaes(self, points):
         """Allows for the current coordinates to be changed, this may lead to a change in geometry
         which is communicated as a warning."""
         currentgeometry = self.__dtype
-        self.__coordinates = coordinates
-        self.determine_geometry(self.__coordinates)
+        self.__points = points
+        self.determine_geometry(self.__points)
         if currentgeometry != self.__dtype:
             print "WARNING: GEOMETRY TYPE HAS CHANGED!"
 
-    def get_coordinates(self):
+    def get_points(self):
         """Returns an array of points (tuples), each having (x, y, z) sets of
         coordinates"""
-        return self.__coordinates
+        return self.__points
+
+    def get_edges(self):
+        """Returns an array of edges (tuples), each having two pts with (x, y, z) sets of coordinates."""
+        return self.__edges
+
+    def shares_geometry(self, geom_object, geom_type="points"):
+        """Determines whether the current geometry shares similar geometry with another UBVector object
+        based on either points or edges.
+
+        :param geom_object: the input UBVector object
+        :param geom_type: check whether they share "points" or "edges"
+        :return: True if the geometries share at least one point/edge, false if they don't
+        """
+        if geom_type == "points":
+            checkpoints = geom_object.get_points()
+            for pt in self.__points:
+                if pt in checkpoints:
+                    return True
+        elif geom_type == "edges":
+            checkedges = geom_object.get_edges()
+            for ed in self.__edges:
+                if ed in checkedges:
+                    return True
+        else:
+            pass
+        return False
 
     def determine_geometry(self, coordinates):
         """Determines what kind of geometry the current instance is and stores the type in
@@ -199,6 +229,7 @@ class UBVector(UBComponent):
             else:
                 self.__dtype = "POLYLINE"
         return True
+
 
 class UBCollection(object):
     """The UrbanBEATS Collection class structure. A collection stores a whole array of assets
