@@ -485,15 +485,14 @@ class UrbanBeatsScenario(threading.Thread):
 
     def reinitialize(self):
         """Reinitializes the thread, resets the assets, edges and point lists and runs a garbage collection."""
-        try:
-            threading.Thread.__init__(self)
-        except:
-            print sys.exc_info()[0]
-
+        # try:
+        #     threading.Thread.__init__(self)
+        # except:
+        #     print sys.exc_info()[0]
         self.reset_assets()
         return False
 
-    def run(self):
+    def run_scenario(self):
         """Overrides the thread.run() function, called when thread.start() is used. Determines, which kind of
         simulation to run."""
         self.runstate = True
@@ -515,6 +514,7 @@ class UrbanBeatsScenario(threading.Thread):
 
         # --- STATIC STEP 1: Block delineation ---
         self.simulation.update_runtime_progress(10)
+        time.sleep(2)
         delinblocks = self.get_module_object("SPATIAL", 0)
         delinblocks.attach(self.__observers)
         delinblocks.run_module()
@@ -528,7 +528,11 @@ class UrbanBeatsScenario(threading.Thread):
         # --- STATIC STEP 8: Performance ---
         # --- STATIC STEP 9: Impact ---
         # --- STATIC STEP 10: Decision Analysis ---
+
         # --- DATA EXPORT AND CLEANUP STEPS ---
+        self.simulation.update_runtime_progress(95)
+
+
         self.simulation.update_runtime_progress(100)
 
     def run_dynamic_simulation(self):

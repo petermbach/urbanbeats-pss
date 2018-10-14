@@ -425,7 +425,8 @@ class UrbanBeatsSim(object):
             active_scenario.attach_observers(self.__observers)      # Attach the observers
             scenario_name = active_scenario.get_metadata("name")    # Get the name and report
             self.update_observers("Running Scenario: " + str(scenario_name))
-            active_scenario.start()     # Start the active scenario thread      # Start the thread
+            # active_scenario.start()     # Start the active scenario thread      # Start the thread
+            active_scenario.run_scenario()
 
         elif self.__runtime_method == "AF":
             pass    # TO DO - ALL SCENARIOS FULL SIMULATION AT ONCE.

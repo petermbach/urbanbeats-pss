@@ -288,9 +288,14 @@ class DelinBlocks(UBModule):
             curblock.add_attribute("Neighbours", nhd)   # ATTRIBUTE: neighbourhood type<list> - [ Block IDs ]
 
         # - STEP 3 - GET BASIC RASTER DATA SETS
+        # Depending on what's available, certain options can be chosen
+        #   - Land use: + population, will allow the model to do urban planning
+        #   - Elevation: will allow the model to do Flowpath delineation
         self.notify("Loading Basic Input Maps")
 
         # Load Land Use Map
+
+
         lu_dref = self.datalibrary.get_data_with_id(self.landuse_map)       # Retrieve the land use data reference
         fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
         self.notify("Loading: "+str(fullfilepath))
