@@ -169,7 +169,6 @@ class DelinBlocks(UBModule):
 
         :return: True upon successful completion
         """
-        print "Hello World 3"
         self.notify("Start Spatial Delineation Module")     # Module start
         rand.seed()     # Seed the random number generator
 
@@ -188,22 +187,22 @@ class DelinBlocks(UBModule):
 
         Amap_rect = mapwidth * mapheight    # Total area of the rectangular extents [m]
         if self.blocksize_auto:     # AUTO-SIZE Blocks
-            cs = ubmethods.autosize_blocks(mapwidth, mapheight)
+            bs = ubmethods.autosize_blocks(mapwidth, mapheight)
         else:
-            cs = self.blocksize
+            bs = self.blocksize
 
         self.notify("Map Width [km] = "+str(mapwidth/1000.0))
         self.notify("Map Height [km] = "+str(mapheight/1000.0))
         self.notify("Extent Area WxH [km2] = "+str(Amap_rect/1000000.0))
-        self.notify("Final Block Size [m] = "+str(cs))
+        self.notify("Final Block Size [m] = "+str(bs))
         self.notify("---===---")
 
         # START CREATING BLOCKS MAP
         self.notify("Creating Blocks Map!")
 
         # ADJUST SIMULATION AREA DIMENSIONS
-        blocks_wide = int(math.ceil(mapwidth / float(cs)))      # To figure out how many blocks wide and tall, we use
-        blocks_tall = int(math.ceil(mapheight / float(cs)))     # math.ceil(), which rounds the number up.
+        blocks_wide = int(math.ceil(mapwidth / float(bs)))      # To figure out how many blocks wide and tall, we use
+        blocks_tall = int(math.ceil(mapheight / float(bs)))     # math.ceil(), which rounds the number up.
         numblocks = blocks_wide * blocks_tall
 
         self.notify("Blocks wide: "+str(blocks_wide))
@@ -233,7 +232,7 @@ class DelinBlocks(UBModule):
         map_attr.add_attribute("NumBlocks", numblocks)
         map_attr.add_attribute("BlocksWide", blocks_wide)
         map_attr.add_attribute("BlocksTall", blocks_tall)  # Height of simulation area in # of blocks
-        map_attr.add_attribute("BlockSize", cs)  # Size of block [m]
+        map_attr.add_attribute("BlockSize", bs)  # Size of block [m]
 
         self.scenario.add_asset("MapAttributes", map_attr)
 
@@ -253,24 +252,24 @@ class DelinBlocks(UBModule):
                 # self.notify("Current BLOCK ID: "+str(blockIDcount))
 
                 # - STEP 1 - CREATE BLOCK GEOMETRY
-                block_attr = self.create_block_face(x, y, cs, blockIDcount, boundarypoly)
-                if block_attr is None:
+                current_block = self.create_block_face(x, y, bs, blockIDcount, boundarypoly)
+                if current_block is None:
                     blockIDcount += 1  # Increase the Block ID Count by one
                     continue
 
-                xcentre = x * cs + 0.5 * cs
-                ycentre = y * cs + 0.5 * cs
+                xcentre = x * bs + 0.5 * bs
+                ycentre = y * bs + 0.5 * bs
 
-                xorigin = x * cs
-                yorigin = y * cs
+                xorigin = x * bs
+                yorigin = y * bs
 
-                block_attr.add_attribute("CentreX", xcentre)    # ATTRIBUTE: geographic information
-                block_attr.add_attribute("CentreY", ycentre)
-                block_attr.add_attribute("OriginX", xorigin)
-                block_attr.add_attribute("OriginY", yorigin)
+                current_block.add_attribute("CentreX", xcentre)    # ATTRIBUTE: geographic information
+                current_block.add_attribute("CentreY", ycentre)
+                current_block.add_attribute("OriginX", xorigin)
+                current_block.add_attribute("OriginY", yorigin)
 
-                self.scenario.add_asset("BlockID"+str(blockIDcount), block_attr)     # Add the asset to the scenario
-                blockslist.append(block_attr)
+                self.scenario.add_asset("BlockID"+str(blockIDcount), current_block)     # Add the asset to the scenario
+                blockslist.append(current_block)
                 blockIDcount += 1       # Increase the Block ID Count by one
 
         # - STEP 2 - FIND BLOCK NEIGHBOURHOOD
@@ -297,41 +296,141 @@ class DelinBlocks(UBModule):
         #   - Elevation: will allow the model to do Flowpath delineation
         self.notify("Loading Basic Input Maps")
 
-        # Load Land Use Map
+        # STEP 3.1 :: Load Land Use Map
+        if self.landuse_map:
+            lu_dref = self.datalibrary.get_data_with_id(self.landuse_map)       # Retrieve the land use data reference
+            fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
+            self.notify("Loading: "+str(fullfilepath))
+            landuseraster = ubspatial.import_ascii_raster(fullfilepath, self.landuse_map)
+            self.notify("Load Complete!")
+            landuse_offset = ubspatial.calculate_offsets(landuseraster, map_attr)
+            luc_res = landuseraster.get_cellsize()
+            csc = int(bs / luc_res)  # csc = cell selection count - knowing how many cells wide and tall
 
-        # lu_dref = self.datalibrary.get_data_with_id(self.landuse_map)       # Retrieve the land use data reference
-        # fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
-        # self.notify("Loading: "+str(fullfilepath))
-        # landuseraster = ubspatial.import_ascii_raster(fullfilepath, self.landuse_map)
-        # self.notify("Load Complete!")
-        # xllcorner, yllcorner = landuseraster.get_extents()  # Master xll/yll corner - the whole map is based on this
+            # STEP 3.2 :: Assign land use to Blocks
+            for i in range(len(blockslist)):
+                current_block = blockslist[i]
+                col_origin = int(current_block.get_attribute("OriginX") / luc_res)
+                row_origin = int(current_block.get_attribute("OriginY") / luc_res)
+                lucdatamatrix = landuseraster.get_data_square(col_origin, row_origin, csc, csc)
 
-        # x_start = x * cellsinblock
-        # y_start = y * cellsinblock
-        # cellsinblock = int(cs / inputres)
-        #
-        # # Load Population Map
-        # pop_dref = self.datalibrary.get_data_with_id(self.population_map)   # Retrieve the population data reference
-        # fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
-        # self.notify("Loading: " + str(fullfilepath))
-        # populationraster = ubspatial.import_ascii_raster(fullfilepath, self.population_map)
-        # self.notify("Load Complete!")
-        # pop_offset = ubspatial.calculate_offsets(landuseraster, populationraster, landuseraster.get_cellsize())
-        # # Check Map Offset so that the data can be aligned
-        # self.notify("Population map cell offsets: " + str(pop_offset[0]) + "," + str(pop_offset[1]))
-        #
-        # # Load Elevation Map
-        # elev_dref = self.datalibrary.get_data_with_id(self.elevation_map)     # Retrieves the elevation data ref
-        # fullfilepath = elev_dref.get_data_file_path() + elev_dref.get_metadata("filename")
-        # self.notify("Loading: " + str(fullfilepath))
-        # elevationraster = ubspatial.import_ascii_raster(fullfilepath, self.elevation_map)
-        # self.notify("Load Complete!")
-        # elev_offset = ubspatial.calculate_offsets(landuseraster, elevationraster, landuseraster.get_cellsize())
-        # self.notify("Elevation map cell offsets: "+str(elev_offset[0])+","+str(elev_offset[1]))
-        #
-        # inputres = landuseraster.get_cellsize()
-        # width = landuseraster.get_dimensions()[0] * inputres
-        # height = landuseraster.get_dimensions()[1] * inputres
+                # STEP 3.2.1 - Tally Frequency of Land uses
+                landclassprop, activity = self.calculate_frequency_of_lu_classes(lucdatamatrix)
+
+                # print current_block.get_attribute("BlockID"), "LUC Props: ", landclassprop
+                if activity == 0:
+                    blockstatus = 0
+                else:
+                    blockstatus = 1
+
+                current_block.add_attribute("Status", blockstatus)
+                current_block.add_attribute("Active", activity)
+
+                # Land use proportions in block (multiply with block area to get Area
+                current_block.add_attribute("pLU_RES", landclassprop[0])    # RES = Residential
+                current_block.add_attribute("pLU_COM", landclassprop[1])    # COM = Commercial
+                current_block.add_attribute("pLU_ORC", landclassprop[2])    # ORC = Mixed Office/Res Development
+                current_block.add_attribute("pLU_LI", landclassprop[3])     # LI = Light Industry
+                current_block.add_attribute("pLU_HI", landclassprop[4])     # HI = Heavy Industry
+                current_block.add_attribute("pLU_CIV", landclassprop[5])    # CIV = Civic
+                current_block.add_attribute("pLU_SVU", landclassprop[6])    # SVU = Service & Utility Land
+                current_block.add_attribute("pLU_RD", landclassprop[7])     # RD = Road
+                current_block.add_attribute("pLU_TR", landclassprop[8])     # TR = Transport Facility
+                current_block.add_attribute("pLU_PG", landclassprop[9])     # PG = Parks & Garden
+                current_block.add_attribute("pLU_REF", landclassprop[10])   # REF = Reserves & Floodways
+                current_block.add_attribute("pLU_UND", landclassprop[11])   # UND = Undeveloped
+                current_block.add_attribute("pLU_NA", landclassprop[12])    # NA = Unclassified
+                map_attr.set_attribute("HasLUC", 1)
+
+                # STEP 3.2.2 - Calculate Spatial Metrics
+                if self.spatialmetrics:     # Using the land class proportions
+                    richness = self.calculate_metric_richness(landclassprop)
+                    shdiv, shdom, sheven = self.calculate_metric_shannon(landclassprop, richness)
+                    current_block.add_attribute("Rich", richness)
+                    current_block.add_attribute("ShDiv", shdiv)
+                    current_block.add_attribute("ShDom", shdom)
+                    current_block.add_attribute("ShEven", sheven)
+                    map_attr.add_attribute("HasSPATIALMETRICS", 1)
+        else:
+            landuseraster = None    # Indicate that the simulation has no land use data, limits what can be done
+            map_attr.set_attribute("HasLUC", 0)
+            map_attr.add_attribute("HasSPATIALMETRICS", 0)
+
+        # STEP 3.3 :: Load Population Map
+        if self.population_map:
+            pop_dref = self.datalibrary.get_data_with_id(self.population_map)   # Retrieve the population data reference
+            fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
+            self.notify("Loading: " + str(fullfilepath))
+            populationraster = ubspatial.import_ascii_raster(fullfilepath, self.population_map)
+            self.notify("Load Complete!")
+            population_offset = ubspatial.calculate_offsets(populationraster, map_attr)
+            pop_res = populationraster.get_cellsize()
+            csc = int(bs / pop_res)  # csc = cell selection count - knowing how many cells wide and tall
+
+            # STEP 3.4 :: ASSIGN POPULATION TO BLOCKS
+            for i in range(len(blockslist)):
+                current_block = blockslist[i]
+                col_origin = int(current_block.get_attribute("OriginX") / pop_res)
+                row_origin = int(current_block.get_attribute("OriginY") / pop_res)
+                popdatamatrix = populationraster.get_data_square(col_origin, row_origin, csc, csc)
+
+                # STEP 3.4.1 - Tally up total population
+                if pop_dref.get_metadata("sub") == "Density":
+                    popfactor = (float(pop_res) * float(pop_res)) / 10000.0   # Area of a single cell (persons/ha)
+                elif pop_dref.get_metadata("sub") == "Count":
+                    popfactor = 1.0   # No multiplication
+                else:
+                    print "Pop factor is incorrectly assigned, something wrong"
+                    popfactor = 1.0
+
+                population_array = []
+                for row in range(len(popdatamatrix)):
+                    for col in range(len(popdatamatrix[0])):
+                        if popdatamatrix[row, col] == populationraster.get_nodatavalue():
+                            continue
+                        else:
+                            population_array.append(float(popdatamatrix[row, col]) * popfactor)
+
+                current_block.add_attribute("Population", sum(population_array))
+                map_attr.add_attribute("HasPOP", 1)
+        else:
+            populationraster = None     # Indicates that the simulation has no population data, limits features
+            map_attr.set_attribute("HasPOP", 0)
+
+        # STEP 3.5 :: Load Elevation Map
+        if self.elevation_map:
+            elev_dref = self.datalibrary.get_data_with_id(self.elevation_map)     # Retrieves the elevation data ref
+            fullfilepath = elev_dref.get_data_file_path() + elev_dref.get_metadata("filename")
+            self.notify("Loading: " + str(fullfilepath))
+            elevationraster = ubspatial.import_ascii_raster(fullfilepath, self.elevation_map)
+            self.notify("Load Complete!")
+            elevation_offset = ubspatial.calculate_offsets(elevationraster, map_attr)
+            elev_res = elevationraster.get_cellsize()
+            csc = int(bs / elev_res)
+
+            # STEP 3.6 :: ASSIGN ELEVATION TO BLOCKS
+            for i in range(len(blockslist)):
+                current_block = blockslist[i]
+                col_origin = int(current_block.get_attribute("OriginX") / elev_res)
+                row_origin = int(current_block.get_attribute("OriginY") / elev_res)
+                elevdatamatrix = elevationraster.get_data_square(col_origin, row_origin, csc, csc)
+
+                # STEP 3.6.1 - Calculate elevation metrics for the Block
+                elevationpoints = []
+                for row in range(len(elevdatamatrix)):
+                    for col in range(len(elevdatamatrix[0])):
+                        if elevdatamatrix[row, col] == elevationraster.get_nodatavalue():
+                            continue
+                        else:
+                            elevationpoints.append(float(elevdatamatrix[row, col]))
+                current_block.add_attribute("AvgElev", sum(elevationpoints)/len(elevationpoints))
+                current_block.add_attribute("MaxElev", max(elevationpoints))
+                current_block.add_attribute("MinElev", min(elevationpoints))
+                map_attr.add_attribute("HasELEV", 1)
+        else:
+            elevationraster = None  # Indicates that the simulation has no elevation data, many water features disabled
+            map_attr.set_attribute("HasELEV", 0)
+
         self.notify("Simulation Finished for now")
         return False
 
@@ -371,3 +470,64 @@ class DelinBlocks(UBModule):
         else:
             # Block not within boundary, do not return anything
             return None
+
+    def calculate_frequency_of_lu_classes(self, lucdatamatrix):
+        """ Tallies the frequency of land use classes within the given Block/Hex. Returns the 'Activity'
+        attribute and a list of LUC frequencies.
+
+        :param lucdatamatrix: the two-dimensional matrix extracted from the LU raster UBRaster() object
+        :return a list of all 13 classes and their relative proportion, activity, the total data coverage.
+        """
+        # Step 1 - Order all data entries into a lit of 13 elements
+        # Categories: 'RES', 'COM', 'ORC', 'LI', 'HI', 'CIV', 'SVU', 'RD', 'TR', 'PG', 'REF', 'UND', 'NA'
+        lucprop = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        total_n_luc = 0     # Counts the total elements of valid land use classes i.e. skips counting NODATA
+        matrix_size = 0     # Counts total elements in the 2D array
+        for i in range(len(lucdatamatrix)):
+            for j in range(len(lucdatamatrix[0])):
+                matrix_size += 1
+                landclass = lucdatamatrix[i, j]     # numpy array
+                if int(landclass) == -9999:
+                    pass
+                else:
+                    lucprop[int(landclass) - 1] += 1
+                    total_n_luc += 1
+
+        # Step 2 - Convert frequency to proportion
+        if total_n_luc == 0:
+            return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 0
+        for i in range(len(lucprop)):
+            lucprop[i] = float(lucprop[i]) / float(total_n_luc)
+        activity = float(total_n_luc) / float(matrix_size)
+        return lucprop, activity
+
+    def calculate_metric_richness(self, landclassprop):
+        richness = 0
+        for i in landclassprop:
+            if i != 0:
+                richness += 1
+        return richness
+
+    def calculate_metric_shannon(self, landclassprop, richness):
+        if richness == 0:
+            return 0, 0, 0
+
+        # Shannon Diversity Index (Shannon, 1948) - measures diversity in categorical data, the information entropy of
+        # the distribution: H = -sum(pi ln(pi))
+        shandiv = 0
+        for sdiv in landclassprop:
+            if sdiv != 0:
+                shandiv += sdiv * math.log(sdiv)
+        shandiv = -1 * shandiv
+
+        # Shannon Dominance Index: The degree to which a single class dominates in the area, 0 = evenness
+        shandom = math.log(richness) - shandiv
+
+        # Shannon Evenness Index: Similar to dominance, the level of evenness among the land classes
+        if richness == 1:
+            shaneven = 1
+        else:
+            shaneven = shandiv / math.log(richness)
+
+        return shandiv, shandom, shaneven
+

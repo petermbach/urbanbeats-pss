@@ -515,9 +515,7 @@ class UrbanBeatsScenario(threading.Thread):
         # --- STATIC STEP 1: Block delineation ---
         self.simulation.update_runtime_progress(10)
         delinblocks = self.get_module_object("SPATIAL", 0)
-        print "Hello World 1"
         delinblocks.attach(self.__observers)
-        print "Hellow WOrld 2"
         delinblocks.run_module()
 
         # --- STATIC STEP 2: Climate Setup ---
@@ -548,6 +546,7 @@ class UrbanBeatsScenario(threading.Thread):
 
         # [TO DO] Export options - Blocks yes/no
         ubspatial.export_block_assets_to_gis_shapefile(self.get_assets_with_identifier("BlockID"),
+                                                       self.get_asset_with_name("MapAttributes"),
                                                        self.projectpath+"/output", file_basename + "_Blocks",
                                                        int(epsg), xmin, ymin)
 

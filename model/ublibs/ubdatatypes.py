@@ -85,15 +85,28 @@ class UBRasterData(object):
             return False
 
     def get_value(self, col, row):
-        """Returns the cells value of the given column 'col' (x) and row (y)"""
+        """Returns the cells value of the given column 'col' (x) and row (y), if there is an index error,
+        then function return the corresponding 'nodata value'."""
         try:
             return self.__data[row, col]  # data[y][x]
         except IndexError:
-            return self.__nodatavalue
+            return "ERROR" #self.__nodatavalue
 
     def get_data(self):
         """Returns the full numpy raster array."""
         return self.__data
+
+    def get_data_square(self, col_start, row_start, cells_wide, cells_tall):
+        """Returns an entire rectangular section of the raster at the given coordinates.
+
+        :param col_start: the starting column index
+        :param row_start: the starting row index
+        :param cells_wide: number of cells along columns
+        :param cells_tall: number of cells along rows
+        :return a matrix of raster data.
+        """
+        datamatrix = self.__data[row_start:row_start + cells_tall, col_start:col_start+cells_wide]
+        return datamatrix
 
     def set_value(self, col, row, value):
         """Sets the value in the given column 'col' (x) and row (y) to the provided 'value'. If the raster
@@ -101,6 +114,10 @@ class UBRasterData(object):
         if self.__setdata_option:
             self.__data[row, col] = value
         return True
+
+    def get_nodatavalue(self):
+        """Returns the nodata value for the raster."""
+        return self.__nodatavalue
 
     def get_dimensions(self):
         """Returns a vector [x,y] number of columns, number of rows"""

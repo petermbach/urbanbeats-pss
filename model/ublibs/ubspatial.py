@@ -55,7 +55,7 @@ def import_ascii_raster(filepath, naming):
         metadata[str(metadata_line[0]).lower()] = float(metadata_line[1])
 
     try:    # Attempt to create the numpy array to store the data
-        dataarray = np.full((int(metadata["nrows"]), int(metadata["ncols"])), metadata["nodata_value"])
+        dataarray = np.empty([int(metadata["nrows"]), int(metadata["ncols"])])
         # Numpy Array is created by specifying the "ROWS" first then "COLUMNS"
     except KeyError:
         print "Error, ASCII data not correctly labelled"
@@ -69,6 +69,9 @@ def import_ascii_raster(filepath, naming):
         irow += 1
     f.close()
 
+    # Flip the raster data
+    dataarray = np.flip(dataarray, 0)
+
     # Create the UBRasterData() data type
     rasterdata = ubdata.UBRasterData(metadata, dataarray, False)     # Create the object as read-only
     rasterdata.set_name(naming)
@@ -76,17 +79,17 @@ def import_ascii_raster(filepath, naming):
     return rasterdata
 
 
-def calculate_offsets(raster_a, raster_b, cellsize):
+def calculate_offsets(map_input, global_extents):
     """Calculates the map offset between two rasters, based on raster A. This is used particularly in block delineation
     where the Land use Raster's extents are used and all other input maps are shifted and adjusted accordingly.
 
-    :param rasterA: UBRasterData() object with fully contained data
-    :param rasterB: UBRasterData() object with fully contained data
-    :param cellsize: the cellsize of the raster files, preferably raster A
+    :param map_input: UBRasterData() object with fully contained data
+    :param global_extents: map_attributes asset object with fully contained data
     """
-    xllA, yllA = raster_a.get_extents()
-    xllB, yllB = raster_b.get_extents()
-    offset = [xllA - xllB, yllA - yllB]
+    xll_map, yll_map = map_input.get_extents()
+    cellsize = float(map_input.get_cellsize())
+    offset = [xll_map - global_extents.get_attribute("xllcorner"),
+              yll_map - global_extents.get_attribute("yllcorner")]
     offset = [int(offset[0]/cellsize), int(offset[1]/cellsize)]
     return offset
 
@@ -232,11 +235,16 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
     return coordinates, mapstats
 
 
-def export_block_assets_to_gis_shapefile(asset_col, filepath, filename, epsg, xmin, ymin):
+def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg, xmin, ymin):
     """Exports all the assets in 'asset_col' to a GIS Shapefile based on the current filepath.
 
     :param asset_col: a list containing all assets to be exported to a shapefile
+    :param map_attr: the global map attributes to track attribute
     :param filepath: the active filepath to export these assets to
+    :param filename: name of the file to export (without the 'shp' extension)
+    :param epsg: the EPSG code for the coordinate system to use
+    :param xmin: the minimum X coordinate of the bounding map for positioning
+    :param ymin: the minimum Y coordinate of the bounding map for positioning
     """
     fullname = filepath + "/" +filename
     print fullname
@@ -251,7 +259,6 @@ def export_block_assets_to_gis_shapefile(asset_col, filepath, filename, epsg, xm
     while os.path.exists(str(usefilename+".shp")):
         fileduplicate_counter += 1
         usefilename = fullname + "(" + str(fileduplicate_counter) + ")"
-        print usefilename
     shapefile = driver.CreateDataSource(str(usefilename)+".shp")
 
     layer = shapefile.CreateLayer('layer1', spatialRef, ogr.wkbPolygon)
@@ -263,8 +270,38 @@ def export_block_assets_to_gis_shapefile(asset_col, filepath, filename, epsg, xm
     fielddefmatrix.append(ogr.FieldDefn("BlockID", ogr.OFTInteger))
     fielddefmatrix.append(ogr.FieldDefn("CentreX", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("CentreY", ogr.OFTReal))
-    # fielddefmatrix.append(ogr.FieldDefn("Neighbours", ogr.OFTString))
-    # fielddefmatrix.append(ogr.FieldDefn("Active", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("Neighbours", ogr.OFTString))
+    # fielddefmatrix.append(ogr.FieldDefn("Status", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("Active", ogr.OFTReal))
+
+    if map_attr.get_attribute("HasLUC"):
+        fielddefmatrix.append(ogr.FieldDefn("pLU_RES", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("pLU_COM", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("pLU_ORC", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("pLU_LI", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("pLU_HI", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("pLU_CIV", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("pLU_SVU", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("pLU_RD", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("pLU_TR", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("pLU_PG", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("pLU_REF", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("pLU_UND", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("pLU_NA", ogr.OFTReal))
+
+        if map_attr.get_attribute("HasSPATIALMETRICS"):
+            fielddefmatrix.append(ogr.FieldDefn("Rich", ogr.OFTReal))
+            fielddefmatrix.append(ogr.FieldDefn("ShDiv", ogr.OFTReal))
+            fielddefmatrix.append(ogr.FieldDefn("ShDom", ogr.OFTReal))
+            fielddefmatrix.append(ogr.FieldDefn("ShEven", ogr.OFTReal))
+
+    if map_attr.get_attribute("HasPOP"):
+        fielddefmatrix.append(ogr.FieldDefn("Population", ogr.OFTInteger))
+
+    if map_attr.get_attribute("HasELEV"):
+        fielddefmatrix.append(ogr.FieldDefn("AvgElev", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("MaxElev", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("MinElev", ogr.OFTReal))
 
     # More attributes to come in future
     # Create the fields
@@ -275,6 +312,8 @@ def export_block_assets_to_gis_shapefile(asset_col, filepath, filename, epsg, xm
     # Get Blocks Data
     for i in range(len(asset_col)):
         currentAttList = asset_col[i]
+        if currentAttList.get_attribute("Status") == 0:
+            continue
 
         # Draw Geometry
         line = ogr.Geometry(ogr.wkbPolygon)
@@ -292,6 +331,38 @@ def export_block_assets_to_gis_shapefile(asset_col, filepath, filename, epsg, xm
         feature.SetField("BlockID", int(currentAttList.get_attribute("BlockID")))
         feature.SetField("CentreX", float(currentAttList.get_attribute("CentreX")))
         feature.SetField("CentreY", float(currentAttList.get_attribute("CentreY")))
+        feature.SetField("Neighbours", str(",".join(map(str, currentAttList.get_attribute("Neighbours")))))
+        # feature.SetField("Status", float(currentAttList.get_attribute("Status")))
+        feature.SetField("Active", float(currentAttList.get_attribute("Active")))
+
+        if map_attr.get_attribute("HasLUC"):
+            feature.SetField("pLU_RES", float(currentAttList.get_attribute("pLU_RES")))
+            feature.SetField("pLU_COM", float(currentAttList.get_attribute("pLU_COM")))
+            feature.SetField("pLU_ORC", float(currentAttList.get_attribute("pLU_ORC")))
+            feature.SetField("pLU_LI", float(currentAttList.get_attribute("pLU_LI")))
+            feature.SetField("pLU_HI", float(currentAttList.get_attribute("pLU_HI")))
+            feature.SetField("pLU_CIV", float(currentAttList.get_attribute("pLU_CIV")))
+            feature.SetField("pLU_SVU", float(currentAttList.get_attribute("pLU_SVU")))
+            feature.SetField("pLU_RD", float(currentAttList.get_attribute("pLU_RD")))
+            feature.SetField("pLU_TR", float(currentAttList.get_attribute("pLU_TR")))
+            feature.SetField("pLU_PG", float(currentAttList.get_attribute("pLU_PG")))
+            feature.SetField("pLU_REF", float(currentAttList.get_attribute("pLU_REF")))
+            feature.SetField("pLU_UND", float(currentAttList.get_attribute("pLU_UND")))
+            feature.SetField("pLU_NA", float(currentAttList.get_attribute("pLU_NA")))
+
+            if map_attr.get_attribute("HasSPATIALMETRICS"):
+                feature.SetField("Rich", float(currentAttList.get_attribute("Rich")))
+                feature.SetField("ShDiv", float(currentAttList.get_attribute("ShDiv")))
+                feature.SetField("ShDom", float(currentAttList.get_attribute("ShDom")))
+                feature.SetField("ShEven", float(currentAttList.get_attribute("ShEven")))
+
+        if map_attr.get_attribute("HasPOP"):
+            feature.SetField("Population", float(currentAttList.get_attribute("Population")))
+
+        if map_attr.get_attribute("HasELEV"):
+            feature.SetField("AvgElev", float(currentAttList.get_attribute("AvgElev")))
+            feature.SetField("MaxElev", float(currentAttList.get_attribute("MaxElev")))
+            feature.SetField("MinElev", float(currentAttList.get_attribute("MinElev")))
 
         layer.CreateFeature(feature)
 
