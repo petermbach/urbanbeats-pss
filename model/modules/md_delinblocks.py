@@ -359,7 +359,7 @@ class DelinBlocks(UBModule):
         # STEP 3.3 :: Load Population Map
         if self.population_map:
             pop_dref = self.datalibrary.get_data_with_id(self.population_map)   # Retrieve the population data reference
-            fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
+            fullfilepath = pop_dref.get_data_file_path() + pop_dref.get_metadata("filename")
             self.notify("Loading: " + str(fullfilepath))
             populationraster = ubspatial.import_ascii_raster(fullfilepath, self.population_map)
             self.notify("Load Complete!")
@@ -375,23 +375,21 @@ class DelinBlocks(UBModule):
                 popdatamatrix = populationraster.get_data_square(col_origin, row_origin, csc, csc)
 
                 # STEP 3.4.1 - Tally up total population
+                popfactor = 1.0
                 if pop_dref.get_metadata("sub") == "Density":
                     popfactor = (float(pop_res) * float(pop_res)) / 10000.0   # Area of a single cell (persons/ha)
                 elif pop_dref.get_metadata("sub") == "Count":
                     popfactor = 1.0   # No multiplication
-                else:
-                    print "Pop factor is incorrectly assigned, something wrong"
-                    popfactor = 1.0
 
-                population_array = []
+                total_population = 0
                 for row in range(len(popdatamatrix)):
                     for col in range(len(popdatamatrix[0])):
                         if popdatamatrix[row, col] == populationraster.get_nodatavalue():
                             continue
                         else:
-                            population_array.append(float(popdatamatrix[row, col]) * popfactor)
+                            total_population += (float(popdatamatrix[row, col]) * popfactor)
 
-                current_block.add_attribute("Population", sum(population_array))
+                current_block.add_attribute("Population", total_population)
                 map_attr.add_attribute("HasPOP", 1)
         else:
             populationraster = None     # Indicates that the simulation has no population data, limits features

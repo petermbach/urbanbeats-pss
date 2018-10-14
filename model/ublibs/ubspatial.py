@@ -296,7 +296,7 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
             fielddefmatrix.append(ogr.FieldDefn("ShEven", ogr.OFTReal))
 
     if map_attr.get_attribute("HasPOP"):
-        fielddefmatrix.append(ogr.FieldDefn("Population", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("Population", ogr.OFTReal))
 
     if map_attr.get_attribute("HasELEV"):
         fielddefmatrix.append(ogr.FieldDefn("AvgElev", ogr.OFTReal))
