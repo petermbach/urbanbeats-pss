@@ -190,12 +190,9 @@ class UrbanBeatsSim(object):
         """Loads the boundary map shapefile, obtains coordinates of the bounding polygon and spatial
         stats including simulation area, extents, etc. Information is saved to self.__boundaryinfo."""
         boundaryshp = self.get_project_parameter("boundaryshp")
-        print boundaryshp
         coordinates, mapstats = ubspatial.get_bounding_polygon(boundaryshp, "native", self.__rootpath)
         self.__boundaryinfo = mapstats.copy()
         self.__boundaryinfo["coordinates"] = coordinates
-        print self.__boundaryinfo
-        print mapstats
         return True
 
     def get_project_boundary_info(self, param):
@@ -434,7 +431,8 @@ class UrbanBeatsSim(object):
             pass    # TO DO - Single Scenario - Performance ONLY
 
     def on_thread_finished(self):
-        """Called when the thread is finished."""
+        """Called when the scenario has finished running. It updates the observes with the scenario finished message.
+        and re-enables the run controls."""
         self.update_observers("Scenario Finished")
         self.__parent and self.__parent.enable_disable_run_controls(1)
 

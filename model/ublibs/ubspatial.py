@@ -27,6 +27,7 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 import osgeo.osr as osr
 import osgeo.ogr as ogr
 import numpy as np
+import os
 
 # URBANBEATS IMPORT
 import ubdatatypes as ubdata
@@ -229,6 +230,74 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
             coordinates[p] = [coordinates[p][1], coordinates[p][0]]
         mapstats["centroid"] = [(ymin + ymax) / 2.0, (xmin + xmax)/2.0]
     return coordinates, mapstats
+
+
+def export_block_assets_to_gis_shapefile(asset_col, filepath, filename, epsg, xmin, ymin):
+    """Exports all the assets in 'asset_col' to a GIS Shapefile based on the current filepath.
+
+    :param asset_col: a list containing all assets to be exported to a shapefile
+    :param filepath: the active filepath to export these assets to
+    """
+    fullname = filepath + "/" +filename
+    print fullname
+
+    spatialRef = osr.SpatialReference()
+    spatialRef.ImportFromEPSG(epsg)
+
+    driver = ogr.GetDriverByName('ESRI Shapefile')
+
+    usefilename = fullname  # A placeholder filename
+    fileduplicate_counter = 0   # Tracks the number of duplicates
+    while os.path.exists(str(usefilename+".shp")):
+        fileduplicate_counter += 1
+        usefilename = fullname + "(" + str(fileduplicate_counter) + ")"
+        print usefilename
+    shapefile = driver.CreateDataSource(str(usefilename)+".shp")
+
+    layer = shapefile.CreateLayer('layer1', spatialRef, ogr.wkbPolygon)
+    layerDefinition = layer.GetLayerDefn()
+
+    fielddefmatrix = []
+
+    # >>> FROM DELINBLOCKS
+    fielddefmatrix.append(ogr.FieldDefn("BlockID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("CentreX", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("CentreY", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("Neighbours", ogr.OFTString))
+    # fielddefmatrix.append(ogr.FieldDefn("Active", ogr.OFTReal))
+
+    # More attributes to come in future
+    # Create the fields
+    for field in fielddefmatrix:
+        layer.CreateField(field)
+        layer.GetLayerDefn()
+
+    # Get Blocks Data
+    for i in range(len(asset_col)):
+        currentAttList = asset_col[i]
+
+        # Draw Geometry
+        line = ogr.Geometry(ogr.wkbPolygon)
+        ring = ogr.Geometry(ogr.wkbLinearRing)
+        nl = currentAttList.get_points()
+        for point in nl:
+            ring.AddPoint(point[0]+xmin, point[1]+ymin)
+        line.AddGeometry(ring)
+
+        feature = ogr.Feature(layerDefinition)
+        feature.SetGeometry(line)
+        feature.SetFID(0)
+
+        # Add Attributes
+        feature.SetField("BlockID", int(currentAttList.get_attribute("BlockID")))
+        feature.SetField("CentreX", float(currentAttList.get_attribute("CentreX")))
+        feature.SetField("CentreY", float(currentAttList.get_attribute("CentreY")))
+
+        layer.CreateFeature(feature)
+
+    shapefile.Destroy()
+    return True
+
 
 
 # TEST SCRIPT - get_bounding_polygon() function

@@ -169,10 +169,11 @@ class DelinBlocks(UBModule):
 
         :return: True upon successful completion
         """
+        print "Hello World 3"
         self.notify("Start Spatial Delineation Module")     # Module start
         rand.seed()     # Seed the random number generator
 
-        # --- SECTION 1 - PREPARATION FOR CREATING THE BLOCKS MAP BASED ON THE INPUT BOUNDARY MAP ---
+        # --- SECTION 1 - PREPARATION FOR CREATING THE GRIDDED MAP BASED ON THE INPUT BOUNDARY MAP ---
 
         # Check the neighbourhood rule and set the number of adjacent cells, nhd_type, accordingly
         if self.neighbourhood == "M":   # Determine number of neighbour cells depending on the neighbourhood
@@ -193,6 +194,7 @@ class DelinBlocks(UBModule):
 
         self.notify("Map Width [km] = "+str(mapwidth/1000.0))
         self.notify("Map Height [km] = "+str(mapheight/1000.0))
+        self.notify("Extent Area WxH [km2] = "+str(Amap_rect/1000000.0))
         self.notify("Final Block Size [m] = "+str(cs))
         self.notify("---===---")
 
@@ -210,7 +212,7 @@ class DelinBlocks(UBModule):
 
         # CBD DISTANCE CALCULATIONS [TO DO]
         # Look up long and lat of CBD if need to be considered
-        if self.considerCBD:
+        if self.considerCBD:        # [TO DO]
             # Grab CBD Coordinates and transform to the local coordinate system
             pass
 
@@ -220,17 +222,19 @@ class DelinBlocks(UBModule):
 
         # MAP ATTRIBUTES - CREATE THE FIRST UBCOMPONENT() to save off basic map attributes.
         map_attr = ubdata.UBComponent()
+        map_attr.add_attribute("xllcorner", xmin)       # The geographic coordinate x-pos of the actual map
+        map_attr.add_attribute("yllcorner", ymin)       # The geographic coordinate y-pos of the actual map
+        map_attr.add_attribute("Neigh_Type", nhd_type)
+        map_attr.add_attribute("spatialmetrics", self.spatialmetrics)
+        map_attr.add_attribute("considerCBD", self.considerCBD)
+        map_attr.add_attribute("patchdelin", self.patchdelin)  # Optional with Blocks and Hexes
+
+        # Attributes for Block-based Representation
         map_attr.add_attribute("NumBlocks", numblocks)
         map_attr.add_attribute("BlocksWide", blocks_wide)
         map_attr.add_attribute("BlocksTall", blocks_tall)  # Height of simulation area in # of blocks
         map_attr.add_attribute("BlockSize", cs)  # Size of block [m]
-        map_attr.add_attribute("xllcorner", xmin)       # The geographic coordinate x-pos of the actual map
-        map_attr.add_attribute("yllcorner", ymin)       # The geographic coordinate y-pos of the actual map
-        map_attr.add_attribute("Neigh_Type", nhd_type)
-        map_attr.add_attribute("ConsiderCBD", self.considerCBD)
-        map_attr.add_attribute("patchdelin", self.patchdelin)
-        map_attr.add_attribute("spatialmetrics", self.spatialmetrics)
-        map_attr.add_attribute("considerCBD", self.considerCBD)
+
         self.scenario.add_asset("MapAttributes", map_attr)
 
         # --- SECTION 2 - DRAW THE MAP OF BLOCKS AND DETERMINE ACTIVE AND INACTIVE BLOCKS , NEIGHBOURHOODS ---
@@ -295,13 +299,12 @@ class DelinBlocks(UBModule):
 
         # Load Land Use Map
 
-
-        lu_dref = self.datalibrary.get_data_with_id(self.landuse_map)       # Retrieve the land use data reference
-        fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
-        self.notify("Loading: "+str(fullfilepath))
-        landuseraster = ubspatial.import_ascii_raster(fullfilepath, self.landuse_map)
-        self.notify("Load Complete!")
-        xllcorner, yllcorner = landuseraster.get_extents()  # Master xll/yll corner - the whole map is based on this
+        # lu_dref = self.datalibrary.get_data_with_id(self.landuse_map)       # Retrieve the land use data reference
+        # fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
+        # self.notify("Loading: "+str(fullfilepath))
+        # landuseraster = ubspatial.import_ascii_raster(fullfilepath, self.landuse_map)
+        # self.notify("Load Complete!")
+        # xllcorner, yllcorner = landuseraster.get_extents()  # Master xll/yll corner - the whole map is based on this
 
         # x_start = x * cellsinblock
         # y_start = y * cellsinblock

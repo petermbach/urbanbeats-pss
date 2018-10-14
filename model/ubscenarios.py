@@ -48,6 +48,7 @@ import modules.md_spatialmapping as md_spatialmapping
 import modules.md_techplacement as md_techplacement
 import modules.md_urbandev as md_urbandev
 import modules.md_urbplanbb as md_urbplanbb
+import ublibs.ubspatial as ubspatial
 
 
 # --- SCENARIO CLASS DEFINITION ---
@@ -473,7 +474,6 @@ class UrbanBeatsScenario(threading.Thread):
     def run_scenario(self):
         # BEGIN THE SCENARIO'S SIMULATION
         self.update_observers("Scenario Start!")
-        # time.sleep(1)
         if self.get_metadata("type") == "STATIC":
             while self.run_static_simulation():
                 pass
@@ -485,8 +485,8 @@ class UrbanBeatsScenario(threading.Thread):
 
     def reinitialize(self):
         """Reinitializes the thread, resets the assets, edges and point lists and runs a garbage collection."""
-        # try:
-        #     threading.Thread.__init__(self)
+        # try:                                      # DEV-NOTE: need to figure out how to call simulation in a thread
+        #     threading.Thread.__init__(self)       # and then restart the thread without the program crashing
         # except:
         #     print sys.exc_info()[0]
         self.reset_assets()
@@ -514,9 +514,10 @@ class UrbanBeatsScenario(threading.Thread):
 
         # --- STATIC STEP 1: Block delineation ---
         self.simulation.update_runtime_progress(10)
-        time.sleep(2)
         delinblocks = self.get_module_object("SPATIAL", 0)
+        print "Hello World 1"
         delinblocks.attach(self.__observers)
+        print "Hellow WOrld 2"
         delinblocks.run_module()
 
         # --- STATIC STEP 2: Climate Setup ---
@@ -531,6 +532,28 @@ class UrbanBeatsScenario(threading.Thread):
 
         # --- DATA EXPORT AND CLEANUP STEPS ---
         self.simulation.update_runtime_progress(95)
+
+        # Export the data maps available - first check scenario name
+        if int(self.get_metadata("usescenarioname")):
+            file_basename = self.get_metadata("name").replace(" ", "_")
+        else:
+            file_basename = self.get_metadata("filename")
+
+        print self.projectpath
+        map_attributes = self.get_asset_with_name("MapAttributes")
+        xmin = map_attributes.get_attribute("xllcorner")
+        ymin = map_attributes.get_attribute("yllcorner")
+        epsg = self.simulation.get_project_parameter("project_epsg")
+        print xmin, ymin, epsg
+
+        # [TO DO] Export options - Blocks yes/no
+        ubspatial.export_block_assets_to_gis_shapefile(self.get_assets_with_identifier("BlockID"),
+                                                       self.projectpath+"/output", file_basename + "_Blocks",
+                                                       int(epsg), xmin, ymin)
+
+        # [TO DO] Export options - Networks yes/no
+        # [TO DO] Export options - WSUD Systems
+        # [TO DO] Export options - centrepoints
 
 
         self.simulation.update_runtime_progress(100)
