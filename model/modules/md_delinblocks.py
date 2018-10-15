@@ -41,7 +41,7 @@ import gc
 import tempfile
 import math
 import time
-from shapely.geometry import Polygon
+from shapely.geometry import Polygon, Point
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 from ubmodule import *
@@ -421,7 +421,7 @@ class DelinBlocks(UBModule):
                             continue
                         else:
                             elevationpoints.append(float(elevdatamatrix[row, col]))
-                current_block.add_attribute("AvgElev", sum(elevationpoints)/len(elevationpoints))
+                current_block.add_attribute("AvgElev", sum(elevationpoints)/max(float(len(elevationpoints)), 1.0))
                 current_block.add_attribute("MaxElev", max(elevationpoints))
                 current_block.add_attribute("MinElev", min(elevationpoints))
                 map_attr.add_attribute("HasELEV", 1)
@@ -429,7 +429,88 @@ class DelinBlocks(UBModule):
             elevationraster = None  # Indicates that the simulation has no elevation data, many water features disabled
             map_attr.set_attribute("HasELEV", 0)
 
-        self.notify("Simulation Finished for now")
+        # - STEP 4 - Assign Municipal Regions and Suburban Regions to Blocks
+        municipalities = []
+        self.notify("Loading Municipality Map")
+        if self.include_geopolitical:
+            map_attr.add_attribute("HasGEOPOLITICAL", 1)
+            geopol_map = self.datalibrary.get_data_with_id(self.geopolitical_map)
+            fullfilepath = geopol_map.get_data_file_path() + geopol_map.get_metadata("filename")
+            municipalities = ubspatial.import_polygonal_map(fullfilepath, "native", "Municipality",
+                                                            (map_attr.get_attribute("xllcorner"),
+                                                             map_attr.get_attribute("yllcorner")))
+            for i in range(len(municipalities)):
+                self.scenario.add_asset(municipalities[i].get_attribute("Map_Naming"), municipalities[i])
+        else:
+            map_attr.add_attribute("HasGEOPOLITICAL", 0)
+
+        suburbs = []
+        self.notify("Loading Suburb Map")
+        if self.include_suburb:
+            map_attr.add_attribute("HasSUBURBS", 1)
+            suburb_map = self.datalibrary.get_data_with_id(self.suburban_map)
+            fullfilepath = suburb_map.get_data_file_path() + suburb_map.get_metadata("filename")
+            suburbs = ubspatial.import_polygonal_map(fullfilepath, "native", "Suburb",
+                                                     (map_attr.get_attribute("xllcorner"),
+                                                      map_attr.get_attribute("yllcorner")))
+            print "Suburbs: ", len(suburbs)
+            for i in range(len(suburbs)):
+                self.scenario.add_asset(suburbs[i].get_attribute("Map_Naming"), suburbs[i])
+                print suburbs[i].get_attribute("NAME")
+        else:
+            map_attr.add_attribute("HasSUBURBS", 0)
+
+        # Future [TO DO] Catchment Map
+
+        # Check intersection with blocks - assign the LGA and suburb based on the Block Centroid
+        for i in range(len(blockslist)):
+            current_block = blockslist[i]
+            coordinates = current_block.get_points()
+            coordinates = [c[:2] for c in coordinates]
+            blockpoly = Polygon(coordinates)
+
+            # Keep searching (search = 1), block Centroid within municipality and suburb? Until found (search = 0)
+            intersectarea = 0
+            intersectname = ""
+            for m in municipalities:
+                featpoly = Polygon(m.get_points())
+                if not featpoly.intersects(blockpoly):  # If there is no intersection...
+                    continue
+                newisectionarea = featpoly.intersection(blockpoly).area
+                if newisectionarea > intersectarea:
+                    intersectarea = newisectionarea
+                    intersectname = m.get_attribute(self.geopolitical_attref)
+
+            if intersectname != "" and intersectarea > 0:
+                current_block.add_attribute("Region", intersectname)
+            else:
+                current_block.add_attribute("Region", "Unassigned")
+
+            intersectarea = 0
+            intersectname = ""
+            for m in suburbs:
+                featpoly = Polygon(m.get_points())
+                if not blockpoly.intersects(featpoly):
+                    continue
+                newisectionarea = blockpoly.intersection(featpoly).area
+                if newisectionarea > intersectarea:
+                    intersectarea = newisectionarea
+                    intersectname = m.get_attribute(self.suburban_attref)
+
+            if intersectname != "" and intersectarea > 0:
+                current_block.add_attribute("Suburb", intersectname)
+            else:
+                current_block.add_attribute("Suburb", "Unassigned")
+
+        # - STEP 5 - Load Rivers and Lakes, assign to Blocks and calculate closest distance
+
+        # - STEP 6 - Delineate Patches (Blocks and Hexes only)
+
+        # - STEP 7 - Delineate Flow Paths and Drainage Basins
+
+        # - CLEAN-UP - RESET ALL VARIABLES FOR GARBAGE COLLECTOR
+
+        self.notify("End of Delinblocks")
         return False
 
     # ------------------------------------------------

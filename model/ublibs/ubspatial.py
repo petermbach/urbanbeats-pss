@@ -79,6 +79,85 @@ def import_ascii_raster(filepath, naming):
     return rasterdata
 
 
+def import_polygonal_map(filepath, option, naming, global_offsets):
+    """Imports a polygonal map and saves the information into a UBVector format. Returns a list [ ] of UBVector()
+    objects.
+
+    :param filepath: full filepath to the file
+    :param option: can obtain coordinates either in the input coordinate system or EPSG4326
+    :param naming: naming convention of type str() to be used.
+    :param global_offsets: (x, y) coordinates that are used to offset the map's coordinates to 0,0 system
+    """
+    driver = ogr.GetDriverByName('ESRI Shapefile')  # Load the shapefile driver and data source
+    datasource = driver.Open(filepath)
+    if datasource is None:
+        print "Could not open shapefile!"
+        return None
+
+    layer = datasource.GetLayer(0)
+    layerDefinition = layer.GetLayerDefn()
+    attributecount = layerDefinition.GetFieldCount()
+    attnames = []
+    for a in range(attributecount):
+        attnames.append(layerDefinition.GetFieldDefn(a).GetName())
+
+    spatialref = layer.GetSpatialRef()
+    inputprojcs = spatialref.GetAttrValue("PROJCS")
+    if inputprojcs is None:
+        print "Warning, spatial reference epsg cannot be found!"
+        return None
+
+    geometry_collection = []
+    featurecount = layer.GetFeatureCount()
+    # print "Feature Count in Map: ", featurecount  # For Debugging
+    # print attnames    # For Debugging
+
+    for i in range(featurecount):
+        feature = layer.GetFeature(i)
+        geom = feature.GetGeometryRef()
+        area = geom.GetArea() / 1000000.0   # Conversion to km2
+        # print "Name", str(naming) + "_ID" + str(i + 1)    # For Debugging
+        # print "Area: ", area  # For Debugging
+
+        # Projection    check for later... [TO DO]
+        if option == "leaflet":     # [TO DO]
+            pass
+
+        if geom.GetGeometryName() == "MULTIPOLYGON":
+            for g in geom:
+                ring = g.GetGeometryRef(0)
+                points = ring.GetPointCount()
+                coordinates = []
+                for j in range(points):
+                    coordinates.append((ring.GetX(j) - global_offsets[0], ring.GetY(j) - global_offsets[1]))
+                polygon = ubdata.UBVector(coordinates)
+                polygon.determine_geometry(coordinates)
+                polygon.add_attribute("Map_Naming", str(naming)+"_ID"+str(i+1)+"-"+str(j+1))
+                polygon.add_attribute("Area_sqkm", area)
+                for n in attnames:
+                    polygon.add_attribute(str(n), feature.GetFieldAsString(n))
+                geometry_collection.append(polygon)
+        else:
+            ring = geom.GetGeometryRef(0)
+            if ring.GetGeometryType() == -2147483645:   # POLYGON25D
+                ring.FlattenTo2D()
+                ring = ring.GetGeometryRef(0)
+
+            points = ring.GetPointCount()
+            coordinates = []
+            for j in range(points):
+                coordinates.append((ring.GetX(j) - global_offsets[0], ring.GetY(j) - global_offsets[1]))
+
+            polygon = ubdata.UBVector(coordinates)
+            polygon.determine_geometry(coordinates)
+            polygon.add_attribute("Map_Naming", str(naming)+"_ID"+str(i+1))
+            polygon.add_attribute("Area_sqkm", area)
+            for n in attnames:
+                polygon.add_attribute(str(n), feature.GetFieldAsString(n))
+            geometry_collection.append(polygon)
+    return geometry_collection
+
+
 def calculate_offsets(map_input, global_extents):
     """Calculates the map offset between two rasters, based on raster A. This is used particularly in block delineation
     where the Land use Raster's extents are used and all other input maps are shifted and adjusted accordingly.
@@ -271,10 +350,10 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
     fielddefmatrix.append(ogr.FieldDefn("CentreX", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("CentreY", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("Neighbours", ogr.OFTString))
-    # fielddefmatrix.append(ogr.FieldDefn("Status", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("Active", ogr.OFTReal))
 
     if map_attr.get_attribute("HasLUC"):
+        # fielddefmatrix.append(ogr.FieldDefn("Status", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("Active", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("pLU_RES", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("pLU_COM", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("pLU_ORC", ogr.OFTReal))
@@ -302,6 +381,13 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
         fielddefmatrix.append(ogr.FieldDefn("AvgElev", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("MaxElev", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("MinElev", ogr.OFTReal))
+
+    if map_attr.get_attribute("HasGEOPOLITICAL"):
+        fielddefmatrix.append(ogr.FieldDefn("Region", ogr.OFTString))
+
+    if map_attr.get_attribute("HasSUBURBS"):
+        fielddefmatrix.append(ogr.FieldDefn("Suburb", ogr.OFTString))
+
 
     # More attributes to come in future
     # Create the fields
@@ -332,10 +418,10 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
         feature.SetField("CentreX", float(currentAttList.get_attribute("CentreX")))
         feature.SetField("CentreY", float(currentAttList.get_attribute("CentreY")))
         feature.SetField("Neighbours", str(",".join(map(str, currentAttList.get_attribute("Neighbours")))))
-        # feature.SetField("Status", float(currentAttList.get_attribute("Status")))
-        feature.SetField("Active", float(currentAttList.get_attribute("Active")))
 
         if map_attr.get_attribute("HasLUC"):
+            # feature.SetField("Status", float(currentAttList.get_attribute("Status")))
+            feature.SetField("Active", float(currentAttList.get_attribute("Active")))
             feature.SetField("pLU_RES", float(currentAttList.get_attribute("pLU_RES")))
             feature.SetField("pLU_COM", float(currentAttList.get_attribute("pLU_COM")))
             feature.SetField("pLU_ORC", float(currentAttList.get_attribute("pLU_ORC")))
@@ -363,6 +449,13 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
             feature.SetField("AvgElev", float(currentAttList.get_attribute("AvgElev")))
             feature.SetField("MaxElev", float(currentAttList.get_attribute("MaxElev")))
             feature.SetField("MinElev", float(currentAttList.get_attribute("MinElev")))
+
+        if map_attr.get_attribute("HasGEOPOLITICAL"):
+            feature.SetField("Region", str(currentAttList.get_attribute("Region")))
+
+        if map_attr.get_attribute("HasSUBURBS"):
+            feature.SetField("Suburb", str(currentAttList.get_attribute("Suburb")))
+
 
         layer.CreateFeature(feature)
 
