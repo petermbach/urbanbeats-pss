@@ -418,6 +418,7 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
         feature.SetField("CentreX", float(currentAttList.get_attribute("CentreX")))
         feature.SetField("CentreY", float(currentAttList.get_attribute("CentreY")))
         feature.SetField("Neighbours", str(",".join(map(str, currentAttList.get_attribute("Neighbours")))))
+        # Neighbourhood attribute converts the [ ] array of BlockIDs to a comma-separated list "#,#,#,#"
 
         if map_attr.get_attribute("HasLUC"):
             # feature.SetField("Status", float(currentAttList.get_attribute("Status")))

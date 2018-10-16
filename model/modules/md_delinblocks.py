@@ -351,6 +351,27 @@ class DelinBlocks(UBModule):
                     current_block.add_attribute("ShDom", shdom)
                     current_block.add_attribute("ShEven", sheven)
                     map_attr.add_attribute("HasSPATIALMETRICS", 1)
+
+                # STEP 3.2.3 - Delineate Patches if necessary
+                if self.patchdelin:
+                    blockpatches = ubmethods.patchdelin_landscape_patch_delineation(lucdatamatrix,
+                                                                                    landuseraster.get_nodatavalue())
+                    for p in range(len(blockpatches)):
+                        if blockpatches[p]["Landuse"] == landuseraster.get_nodatavalue():
+                            continue
+                        patchxy = (blockpatches[p]["Centroid"][1] * luc_res + current_block.get_attribute("OriginX"),
+                                   blockpatches[p]["Centroid"][0] * luc_res + current_block.get_attribute("OriginY"))
+                        patch_attr = ubdata.UBVector(patchxy)
+                        patch_attr.add_attribute("PatchID", str(current_block.get_attribute("BlockID"))+"-"+
+                                                 str(blockpatches["PatchID"]))   # PatchID = BlockID-PatchID
+                        patch_attr.add_attribute("PatchIndices", blockpatches["PatchIndices"])
+                        patch_attr.add_attribute("Landuse", blockpatches["Landuse"])
+                        patch_attr.add_attribute("CentroidX", patchxy[0])
+                        patch_attr.add_attribute("CentroidY", patchxy[1])
+                        patch_attr.add_attribute("AspectRatio", blockpatches["AspectRatio"])
+                        patch_attr.add_attribute("PatchSize", blockpatches["PatchSize"])
+                        patch_attr.add_attribute("PatchArea", blockpatches["PatchSize"] * luc_res)
+                        self.scenario.add_asset(patch_attr)     # Save the patch to the scenario
         else:
             landuseraster = None    # Indicate that the simulation has no land use data, limits what can be done
             map_attr.set_attribute("HasLUC", 0)
@@ -425,6 +446,9 @@ class DelinBlocks(UBModule):
                 current_block.add_attribute("MaxElev", max(elevationpoints))
                 current_block.add_attribute("MinElev", min(elevationpoints))
                 map_attr.add_attribute("HasELEV", 1)
+
+                # STEP 3.6.2 - Map elevation data onto Block Patches
+                pass
         else:
             elevationraster = None  # Indicates that the simulation has no elevation data, many water features disabled
             map_attr.set_attribute("HasELEV", 0)
@@ -453,10 +477,8 @@ class DelinBlocks(UBModule):
             suburbs = ubspatial.import_polygonal_map(fullfilepath, "native", "Suburb",
                                                      (map_attr.get_attribute("xllcorner"),
                                                       map_attr.get_attribute("yllcorner")))
-            print "Suburbs: ", len(suburbs)
             for i in range(len(suburbs)):
                 self.scenario.add_asset(suburbs[i].get_attribute("Map_Naming"), suburbs[i])
-                print suburbs[i].get_attribute("NAME")
         else:
             map_attr.add_attribute("HasSUBURBS", 0)
 
@@ -504,9 +526,7 @@ class DelinBlocks(UBModule):
 
         # - STEP 5 - Load Rivers and Lakes, assign to Blocks and calculate closest distance
 
-        # - STEP 6 - Delineate Patches (Blocks and Hexes only)
-
-        # - STEP 7 - Delineate Flow Paths and Drainage Basins
+        # - STEP 6 - Delineate Flow Paths and Drainage Basins
 
         # - CLEAN-UP - RESET ALL VARIABLES FOR GARBAGE COLLECTOR
 
