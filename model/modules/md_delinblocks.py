@@ -362,8 +362,7 @@ class DelinBlocks(UBModule):
                         patchxy = (blockpatches[p]["Centroid"][1] * luc_res + current_block.get_attribute("OriginX"),
                                    blockpatches[p]["Centroid"][0] * luc_res + current_block.get_attribute("OriginY"))
                         patch_attr = ubdata.UBVector(patchxy)
-                        patch_attr.add_attribute("PatchID", str(current_block.get_attribute("BlockID"))+"-"+
-                                                 str(blockpatches["PatchID"]))   # PatchID = BlockID-PatchID
+                        patch_attr.add_attribute("PatchID", blockpatches["PatchID"])   # PatchID counts from 1 to N
                         patch_attr.add_attribute("PatchIndices", blockpatches["PatchIndices"])
                         patch_attr.add_attribute("Landuse", blockpatches["Landuse"])
                         patch_attr.add_attribute("CentroidX", patchxy[0])
@@ -371,6 +370,7 @@ class DelinBlocks(UBModule):
                         patch_attr.add_attribute("AspectRatio", blockpatches["AspectRatio"])
                         patch_attr.add_attribute("PatchSize", blockpatches["PatchSize"])
                         patch_attr.add_attribute("PatchArea", blockpatches["PatchSize"] * luc_res)
+                        patch_attr.add_attribute("BlockID", current_block.get_attribute("BlockID"))
                         self.scenario.add_asset(patch_attr)     # Save the patch to the scenario
         else:
             landuseraster = None    # Indicate that the simulation has no land use data, limits what can be done

@@ -539,16 +539,13 @@ class UrbanBeatsScenario(threading.Thread):
 
         print self.projectpath
         map_attributes = self.get_asset_with_name("MapAttributes")
-        xmin = map_attributes.get_attribute("xllcorner")
-        ymin = map_attributes.get_attribute("yllcorner")
         epsg = self.simulation.get_project_parameter("project_epsg")
-        print xmin, ymin, epsg
 
         # [TO DO] Export options - Blocks yes/no
         ubspatial.export_block_assets_to_gis_shapefile(self.get_assets_with_identifier("BlockID"),
                                                        self.get_asset_with_name("MapAttributes"),
                                                        self.projectpath+"/output", file_basename + "_Blocks",
-                                                       int(epsg), xmin, ymin)
+                                                       int(epsg))
 
         # [TO DO] Export options - Networks yes/no
         # [TO DO] Export options - WSUD Systems

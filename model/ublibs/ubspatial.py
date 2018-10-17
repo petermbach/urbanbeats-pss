@@ -31,6 +31,7 @@ import os
 
 # URBANBEATS IMPORT
 import ubdatatypes as ubdata
+from ..progref import ubglobals
 
 
 def import_ascii_raster(filepath, naming):
@@ -314,19 +315,92 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
     return coordinates, mapstats
 
 
-def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg, xmin, ymin):
-    """Exports all the assets in 'asset_col' to a GIS Shapefile based on the current filepath.
+def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg):
+    """Exports all the patches in the asset_col list to a GIS Shapefile based on the current filepath.
 
-    :param asset_col: a list containing all assets to be exported to a shapefile
-    :param map_attr: the global map attributes to track attribute
+    :param asset_col: [] list containing all UBVector patch objects
+    :param map_attr: global map attributes to track any relevant information
     :param filepath: the active filepath to export these assets to
     :param filename: name of the file to export (without the 'shp' extension)
     :param epsg: the EPSG code for the coordinate system to use
-    :param xmin: the minimum X coordinate of the bounding map for positioning
-    :param ymin: the minimum Y coordinate of the bounding map for positioning
+    :return:
     """
+    if map_attr.get_attribute("patchdelin") != 1 or map_attr.get_attribute("HasLUC") != 1:
+        return True
+
+    xmin = map_attr.get_attribute("xllcorner")
+    ymin = map_attr.get_attribute("yllcorner")
+
+    fullname = filepath + "/" + filename
+
+    spatial_ref = osr.SpatialReference()
+    spatial_ref.ImportFromEPSG(epsg)
+
+    driver = ogr.GetDriverByName('ESRI Shapefile')
+
+    usefilename = fullname      # A placeholder filename
+    fileduplicate_counter = 0   # Tracks the number of duplicates
+    while os.path.exists(str(usefilename+".shp")):
+        fileduplicate_counter += 1
+        usefilename = fullname + "(" + str(fileduplicate_counter) + ")"
+    shapefile = driver.CreateDataSource(str(usefilename)+".shp")
+
+    layer = shapefile.CreateLayer('layer1', spatial_ref, ogr.wkbPoint)
+    layerDefinition = layer.GetLayerDefn()
+
+    fielddefmatrix = []
+    fielddefmatrix.append(ogr.FieldDefn("PatchID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("BlockID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("Landuse", ogr.OFTString))
+    fielddefmatrix.append(ogr.FieldDefn("AspectRatio", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("PatchSize", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("PatchArea", ogr.OFTReal))
+
+    if map_attr.get_attribute("HasELEV"):
+        fielddefmatrix.append(ogr.FieldDefn("Elevation", ogr.OFTReal))
+
+    for field in fielddefmatrix:
+        layer.CreateField(field)
+        layer.GetLayerDefn()
+
+    for i in range(len(asset_col)):
+        current_patch = asset_col[i]
+        patchpoint = current_patch.get_points()
+        centroid = ogr.Geometry(ogr.wkbPoint)
+        centroid.AddPoint(patchpoint[0] + xmin, patchpoint[1] + ymin)
+
+        feature = ogr.Feature(layerDefinition)
+        feature.SetGeometry(centroid)
+        feature.SetFID(0)
+
+        feature.SetField("PatchID", int(current_patch.get_attribute("PatchID")))
+        feature.SetField("BlockID", int(current_patch.get_attribute("BlockID")))
+        feature.SetField("Landuse", ubglobals.LANDUSENAMES[int(current_patch.get_attribute("Landuse"))])
+        feature.SetField("AspectRatio", float(current_patch.get_attribute("AspectRatio")))
+        feature.SetField("PatchSize", int(current_patch.get_attribute("PatchSize")))
+        feature.SetField("PatchArea", float(current_patch.get_attribute("PatchArea")))
+
+        if map_attr.get_attribute("HasELEV"):
+            feature.SetField("Elevation", float(current_patch.get_attribute("Elevation")))
+
+        layer.CreateFeature(feature)
+
+    shapefile.Destroy()
+    return True
+
+def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg):
+    """Exports all the assets in 'asset_col' to a GIS Shapefile based on the current filepath.
+
+    :param asset_col: a list containing all assets to be exported to a shapefile
+    :param map_attr: the global map attributes to track any relevant information
+    :param filepath: the active filepath to export these assets to
+    :param filename: name of the file to export (without the 'shp' extension)
+    :param epsg: the EPSG code for the coordinate system to use
+    """
+    xmin = map_attr.get_attribute("xllcorner")
+    ymin = map_attr.get_attribute("yllcorner")
+
     fullname = filepath + "/" +filename
-    print fullname
 
     spatialRef = osr.SpatialReference()
     spatialRef.ImportFromEPSG(epsg)
