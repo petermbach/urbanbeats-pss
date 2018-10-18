@@ -41,7 +41,7 @@ import gc
 import tempfile
 import math
 import time
-from shapely.geometry import Polygon, Point
+from shapely.geometry import Polygon
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 from ubmodule import *
@@ -359,19 +359,24 @@ class DelinBlocks(UBModule):
                     for p in range(len(blockpatches)):
                         if blockpatches[p]["Landuse"] == landuseraster.get_nodatavalue():
                             continue
-                        patchxy = (blockpatches[p]["Centroid"][1] * luc_res + current_block.get_attribute("OriginX"),
-                                   blockpatches[p]["Centroid"][0] * luc_res + current_block.get_attribute("OriginY"))
+                        patchxy = (blockpatches[p]["Centroid_xy"][0] * luc_res + current_block.get_attribute("OriginX"),
+                                   blockpatches[p]["Centroid_xy"][1] * luc_res + current_block.get_attribute("OriginY"))
+                        # Points X and Y are based on the Centroid, calculated
+
                         patch_attr = ubdata.UBVector(patchxy)
-                        patch_attr.add_attribute("PatchID", blockpatches["PatchID"])   # PatchID counts from 1 to N
-                        patch_attr.add_attribute("PatchIndices", blockpatches["PatchIndices"])
-                        patch_attr.add_attribute("Landuse", blockpatches["Landuse"])
+                        patch_attr.add_attribute("PatchID", blockpatches[p]["PatchID"])   # PatchID counts from 1 to N
+                        patch_attr.add_attribute("PatchIndices", blockpatches[p]["PatchIndices"])
+                        patch_attr.add_attribute("Landuse", blockpatches[p]["Landuse"])
                         patch_attr.add_attribute("CentroidX", patchxy[0])
                         patch_attr.add_attribute("CentroidY", patchxy[1])
-                        patch_attr.add_attribute("AspectRatio", blockpatches["AspectRatio"])
-                        patch_attr.add_attribute("PatchSize", blockpatches["PatchSize"])
-                        patch_attr.add_attribute("PatchArea", blockpatches["PatchSize"] * luc_res)
-                        patch_attr.add_attribute("BlockID", current_block.get_attribute("BlockID"))
-                        self.scenario.add_asset(patch_attr)     # Save the patch to the scenario
+                        patch_attr.add_attribute("AspRatio", blockpatches[p]["AspRatio"])
+                        patch_attr.add_attribute("PatchSize", blockpatches[p]["PatchSize"])
+                        patch_attr.add_attribute("PatchArea", blockpatches[p]["PatchSize"] * luc_res)
+
+                        # Save the patch to the scenario as B#_PatchID#
+                        bID = current_block.get_attribute("BlockID")
+                        patch_attr.add_attribute("BlockID", bID)
+                        self.scenario.add_asset("B"+str(bID)+"_PatchID"+str(blockpatches[p]["PatchID"]), patch_attr)
         else:
             landuseraster = None    # Indicate that the simulation has no land use data, limits what can be done
             map_attr.set_attribute("HasLUC", 0)
@@ -449,6 +454,7 @@ class DelinBlocks(UBModule):
 
                 # STEP 3.6.2 - Map elevation data onto Block Patches
                 pass
+
         else:
             elevationraster = None  # Indicates that the simulation has no elevation data, many water features disabled
             map_attr.set_attribute("HasELEV", 0)
@@ -525,17 +531,77 @@ class DelinBlocks(UBModule):
                 current_block.add_attribute("Suburb", "Unassigned")
 
         # - STEP 5 - Load Rivers and Lakes, assign to Blocks and calculate closest distance
+        if self.include_rivers:
+            #DO stuff
+            pass
+        else:
+            map_attr.add_attribute("HasRIVERS", 0)
+
+        if self.include_lakes:
+            #DO Stuff
+            pass
+        else:
+            map_attr.add_attribute("HasLAKES", 0)
+
 
         # - STEP 6 - Delineate Flow Paths and Drainage Basins
+        if map_attr.get_attribute("HasELEV"):
+            #Delineate flow paths
+            if self.dem_smooth:
+                self.perform_smooth_dem(blockslist)
+
+            self.delineate_flow_paths(blockslist, map_attr)
+            # Create hash table
+            # Find the basins
+            # Write this to the map attributes
+
+            map_attr.add_attribute("HasFLOWPATHS", 1)
+        else:
+            map_attr.add_attribute("HasFLOWPATHS", 0)
+
+        # - STEP 7 - Spatial Connectivity
+        # 7.1 - Open Space Distances
+        # 7.2 - Open Space Network
+        # 7.3 - Sewer and Water Supply Systems (COMING SOON) [TO DO]
 
         # - CLEAN-UP - RESET ALL VARIABLES FOR GARBAGE COLLECTOR
-
         self.notify("End of Delinblocks")
         return False
 
     # ------------------------------------------------
     # |-    ADDITIONAL MODULE FUNCTIONS             -|
     # ------------------------------------------------
+    def delineate_flow_paths(self, blockslist, map_attr):
+        """Delineates the flow paths according to the chosen method and saves the information to the blocks.
+
+        :param blockslist: a list [] of UBVector instances representing the Blocks
+        :param map_attr:  the global map attributes object
+        :return: all data is saved to the UBVector instances as new Block data.
+        """
+        pass
+
+    def perform_smooth_dem(self, blockslist):
+        """Performs a smoothing of the DEM on the Blocks map. This is only necessary if the DEM is quite
+        tricky to work with and flowpaths are not behaving the way you intend for them to behave.
+
+        :param blockslist: a list [] of the block assets in UBVector objects.
+        """
+        for i in range(len(self.dem_passes)):
+            new_elevs = {}
+            for b in range(len(blockslist)):
+                current_block = blockslist[i]
+                elevs = [current_block.get_attribute("Elevation")]
+                neighbours = current_block.get_attribute("Neighbours")
+                for n in neighbours:
+                    ne_block = self.scenario.get_asset_with_name("BlockID"+str(n)).get_attribute("Elevation")
+                    elevs.append(ne_block)
+                print elevs
+                print float(sum(elevs)/len(elevs))
+                new_elevs[str(current_block.get_attribute("BlockID"))] = float(sum(elevs) / len(elevs))
+            for b in range(len(blockslist)):
+                blockslist[i].set_attribute("Elevation", new_elevs[str(blockslist[i].get_attribute("BlockID"))])
+        return True
+
     def create_block_face(self, x, y, cs, ID, boundary):
         """Creates the Block Face, the polygon of the block as a UBVector
 

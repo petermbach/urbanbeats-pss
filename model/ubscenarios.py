@@ -546,6 +546,11 @@ class UrbanBeatsScenario(threading.Thread):
                                                        self.get_asset_with_name("MapAttributes"),
                                                        self.projectpath+"/output", file_basename + "_Blocks",
                                                        int(epsg))
+        ubspatial.export_patches_to_gis_shapefile(self.get_assets_with_identifier("PatchID"),
+                                                  self.get_asset_with_name("MapAttributes"),
+                                                  self.projectpath+"/output", file_basename + "_Patches",
+                                                  int(epsg))
+
 
         # [TO DO] Export options - Networks yes/no
         # [TO DO] Export options - WSUD Systems

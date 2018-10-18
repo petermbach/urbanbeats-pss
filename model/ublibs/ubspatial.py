@@ -352,9 +352,11 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
     fielddefmatrix.append(ogr.FieldDefn("PatchID", ogr.OFTInteger))
     fielddefmatrix.append(ogr.FieldDefn("BlockID", ogr.OFTInteger))
     fielddefmatrix.append(ogr.FieldDefn("Landuse", ogr.OFTString))
-    fielddefmatrix.append(ogr.FieldDefn("AspectRatio", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("AspRatio", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("PatchSize", ogr.OFTInteger))
     fielddefmatrix.append(ogr.FieldDefn("PatchArea", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("CentroidX", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("CentroidY", ogr.OFTReal))
 
     if map_attr.get_attribute("HasELEV"):
         fielddefmatrix.append(ogr.FieldDefn("Elevation", ogr.OFTReal))
@@ -375,18 +377,21 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
 
         feature.SetField("PatchID", int(current_patch.get_attribute("PatchID")))
         feature.SetField("BlockID", int(current_patch.get_attribute("BlockID")))
-        feature.SetField("Landuse", ubglobals.LANDUSENAMES[int(current_patch.get_attribute("Landuse"))])
-        feature.SetField("AspectRatio", float(current_patch.get_attribute("AspectRatio")))
+        feature.SetField("Landuse", ubglobals.LANDUSENAMES[int(current_patch.get_attribute("Landuse"))-1])
+        feature.SetField("AspRatio", float(current_patch.get_attribute("AspRatio")))
         feature.SetField("PatchSize", int(current_patch.get_attribute("PatchSize")))
         feature.SetField("PatchArea", float(current_patch.get_attribute("PatchArea")))
+        feature.SetField("CentroidX", float(current_patch.get_attribute("CentroidX")))
+        feature.SetField("CentroidY", float(current_patch.get_attribute("CentroidY")))
 
-        if map_attr.get_attribute("HasELEV"):
-            feature.SetField("Elevation", float(current_patch.get_attribute("Elevation")))
+        # if map_attr.get_attribute("HasELEV"):
+        #     feature.SetField("Elevation", float(current_patch.get_attribute("Elevation")))
 
         layer.CreateFeature(feature)
 
     shapefile.Destroy()
     return True
+
 
 def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg):
     """Exports all the assets in 'asset_col' to a GIS Shapefile based on the current filepath.

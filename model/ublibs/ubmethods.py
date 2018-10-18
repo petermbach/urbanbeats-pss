@@ -95,15 +95,15 @@ def patchdelin_landscape_patch_delineation(landuse, nodatavalue):
     :return patches, contains all patches
     """
     # Test condition for delineation:
-    # LU Types: [0, 'RES', 'COM', 'ORC', 'LI', 'HI', 'CIV', 'SVU', 'RD', 'TR', 'PG', 'REF', 'UND', 'NA']
-    landusetypes = []
     landusecount = 0
     landusetypes = landuse.flatten()    # Flatten the 2D array to a single 1D list
     landusetypes, landusecounts = np.unique(landusetypes, return_counts=True)   # Get all unique values + frequency
+
     if nodatavalue in landusetypes:     # Calculate richness
         richness = len(landusetypes) - 1
     else:
         richness = len(landusetypes)
+
     for e in range(len(landusetypes)):      # Count the number of non-nodata values
         if landusetypes[e] == nodatavalue:
             continue
@@ -131,9 +131,9 @@ def patchdelin_landscape_patch_delineation(landuse, nodatavalue):
         patchdict["PatchID"] = 1
         patchdict["PatchIndices"] = patchpoints
         patchdict["Landuse"] = patchlanduse
-        patchdict["Centroid"] = (float(sum(centroidX))/float(len(centroidX)),
+        patchdict["Centroid_xy"] = (float(sum(centroidX))/float(len(centroidX)),
                                  float(sum(centroidY))/float(len(centroidY)))
-        patchdict["AspectRatio"] = float(max(centroidX) - min(centroidX) + 1) / float(max(centroidY) - min(centroidY)+1)
+        patchdict["AspRatio"] = float(max(centroidX) - min(centroidX) + 1) / float(max(centroidY) - min(centroidY)+1)
         patchdict["PatchSize"] = len(patchpoints)
         return [patchdict]
     else:
@@ -156,7 +156,7 @@ def patchdelin_landscape_patch_delineation(landuse, nodatavalue):
 
         # Step 2: Conduct Grid Scan from irow, jcol
         statusmatrix[irow, jcol] = 1            # mark out this position on the status matrix
-        patchdict = patchdelin_grids_scan(landuse, irow, jcol, statusmatrix)  # Run the grid-scan algorithm
+        patchdict = patchdelin_grid_scan(landuse, irow, jcol, statusmatrix)  # Run the grid-scan algorithm
 
         # Step 3: Update status matrix with new data from the patchdictionary and process patch data
         patch_id_counter += 1
@@ -170,7 +170,7 @@ def patchdelin_landscape_patch_delineation(landuse, nodatavalue):
     return patches
 
 
-def patchdelin_grid_scan(landusematrix, irow, icol, statusmatrix):
+def patchdelin_grid_scan(landusematrix, irow, jcol, statusmatrix):
     """Conducts the grid_scan algorithm to find the exact continuous patch within the landuse matrix.
     Returns a full patch dictionary.
 
@@ -181,59 +181,84 @@ def patchdelin_grid_scan(landusematrix, irow, icol, statusmatrix):
     :return: a patch dictionary containing all patch data
     """
     current_lu = landusematrix[irow, jcol]   # Define the current land use
-    i = len(landusematrix)
-    j = len(landusematrix[0])
 
-    scanmatrix = np.zeros([i, j])
-    scanmatrix[irow, icol] = 1
+    scanmatrix = np.zeros([len(landusematrix), len(landusematrix[0])])
+    scanmatrix[irow, jcol] = 1
 
-    patchpoints = []
-    centroidX = []
-    centroidY = []
+    patchpoints = [(irow, jcol)]
+    centroidX = [jcol]
+    centroidY = [irow]
 
-    for irow in range(len(scanmatrix)):
-        for jcol in range(len(scanmatrix[0])):
-            # Check if current cell's value is identical to current_ca_lu
-            if statusmatrix[irow, jcol] == 1 or landusematrix[irow, jcol] != current_lu:
-                # position already marked in status matrix OR land use at position not the current category
-                continue
+    patch_area_previous = 0
+    patch_area_current = -9999   # Need to go through the loop multiple times
 
-            # Get Cell's Neighbourhood
-            if jcol == 0:    # x-axis neighbours
-                dx = [0, 1]  # if we have first column then only forward
-            elif jcol == (len(scanmatrix[0]) - 1):
-                dx = [-1, 0]  # if we have last column then only backward
-            else:
-                dx = [-1, 0, 1]  # otherwise allow both
-            if irow == 0:    # y-axis neighbours
-                dy = [0, 1]  # if we have top row, only move down
-            elif irow == (len(scanmatrix[0]) - 1):
-                dy = [-1, 0]  # if we have bottom row, only move up
-            else:
-                dy = [-1, 0, 1]  # otherwise allow both
+    while patch_area_current != patch_area_previous:
+        patch_area_previous = patch_area_current
 
-            # Transfer Function - obtain the total sum of neighbours
-            total_neighbour_sum = 0
-            for a in dy:        # dy --> rows
-                for b in dx:    # dx --> columns
-                    total_neighbour_sum += scanmatrix[(irow + a), (jcol + b)]
+        for i in range(len(scanmatrix)):
+            for j in range(len(scanmatrix[0])):
+                # Check if current cell's value is identical to current_ca_lu
+                if statusmatrix[i, j] == 1 or landusematrix[i, j] != current_lu:
+                    # position already marked in status matrix OR land use at position not the current category
+                    continue
 
-            # Determine if the cell belongs to the patch or not
-            if total_neighbour_sum >= 1:    # meaning there is at least one neighbour adjacent and part of patch
-                scanmatrix[irow, jcol] = 1    # mark it in the array for the next iteration
-                patchpoints.append((irow, jcol))
-                centroidX.append(jcol)
-                centroidY.append(irow)
-            else:
-                scanmatrix[irow, jcol] = 0
+                # Get Cell's Neighbourhood
+                if j == 0:    # x-axis neighbours
+                    dx = [0, 1]  # if we have first column then only forward
+                elif j == (len(scanmatrix[0]) - 1):
+                    dx = [-1, 0]  # if we have last column then only backward
+                else:
+                    dx = [-1, 0, 1]  # otherwise allow both
+                if i == 0:    # y-axis neighbours
+                    dy = [0, 1]  # if we have top row, only move down
+                elif i == (len(scanmatrix) - 1):
+                    dy = [-1, 0]  # if we have bottom row, only move up
+                else:
+                    dy = [-1, 0, 1]  # otherwise allow both
+
+                # Transfer Function - obtain the total sum of neighbours
+                total_neighbour_sum = 0
+                total_neighbour_count = 0
+                for a in dy:        # dy --> rows
+                    for b in dx:    # dx --> columns
+                        total_neighbour_count += 1
+                        total_neighbour_sum += scanmatrix[(i + a), (j + b)]
+
+                # Determine if the cell belongs to the patch or not
+                if total_neighbour_sum >= 1:    # meaning there is at least one neighbour adjacent and part of patch
+                    scanmatrix[i, j] = 1    # mark it in the array for the next iteration
+                    patchpoints.append((i, j))
+                    centroidX.append(j)
+                    centroidY.append(i)
+                else:
+                    scanmatrix[i, j] = 0
+
+        patch_area_current = 0
+        for i in range(len(scanmatrix)):
+            patch_area_current += sum(scanmatrix[i])
+        # Update the current patch size, if the patch is still being scanned, it should grow
+        # if the patch has finished being delineated, then the algorithm should terminate
 
     # No PatchID yet, main loop will allocate it
     patchdict = {}
     patchdict["PatchIndices"] = patchpoints
     patchdict["Landuse"] = current_lu
-    patchdict["Centroid"] = (float(sum(centroidX))/float(len(centroidX)),
-                         float(sum(centroidY))/float(len(centroidY)))
-    patchdict["AspectRatio"] = float(max(centroidX) - min(centroidX) + 1) / float(max(centroidY) - min(centroidY)+1)
+
+    # CENTROID OF THE PATCH - 3 methods - unsure as to which one is really superior...
+    # METHOD 1 - Using the xmin/xmax, ymin/ymax mid-points - simple and fast, but probably most inaccurate as it is not
+    # ---------- necessarily a true reflection of how to calculate a centroid
+    # patchdict["Centroid_xy"] = ((max(centroidX)+min(centroidX))/2.0, (max(centroidY) + min(centroidY))/2.0)
+
+    # METHOD 2 - Taking the median of all X-coordinates and Y-coordinates, fairly good a capturing centroids of patches
+    # ---------- and fast. Also considers the data spread for distorted shapes.
+    patchdict["Centroid_xy"] = (np.median(centroidX), np.median(centroidY))
+
+    # METHOD 3 - Calculating the average X and average Y-coordinate from all of the patch's points, both internal and
+    # ---------- external. Not as fast, but still pretty accurate.
+    # patchdict["Centroid_xy"] = ((float(sum(centroidX))/float(len(centroidX))),
+    #                             (float(sum(centroidY))/float(len(centroidY))))
+    
+    patchdict["AspRatio"] = float(max(centroidX) - min(centroidX) + 1) / float(max(centroidY) - min(centroidY)+1)
     patchdict["PatchSize"] = len(patchpoints)   # Simply the number of cells, need to multiply by resolution
     return patchdict
 
