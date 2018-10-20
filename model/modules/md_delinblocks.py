@@ -153,6 +153,7 @@ class DelinBlocks(UBModule):
         # NON-VISIBLE PARAMETER LIST - USED THROUGHOUT THE SIMULATION
         self.xllcorner = float(0.0)     # Obtained from the loaded raster data (elevation) upon run-time
         self.yllcorner = float(0.0)     # Spatial extents of the input map
+        self.final_bs = self.blocksize  # Final_bs = final block size - this is determined at the start
 
         self.elevation = 0
         self.landuse = 0
@@ -188,8 +189,10 @@ class DelinBlocks(UBModule):
         Amap_rect = mapwidth * mapheight    # Total area of the rectangular extents [m]
         if self.blocksize_auto:     # AUTO-SIZE Blocks
             bs = ubmethods.autosize_blocks(mapwidth, mapheight)
+            self.final_bs = bs
         else:
             bs = self.blocksize
+            self.final_bs = bs
 
         self.notify("Map Width [km] = "+str(mapwidth/1000.0))
         self.notify("Map Height [km] = "+str(mapheight/1000.0))
@@ -267,6 +270,7 @@ class DelinBlocks(UBModule):
                 current_block.add_attribute("CentreY", ycentre)
                 current_block.add_attribute("OriginX", xorigin)
                 current_block.add_attribute("OriginY", yorigin)
+                current_block.add_attribute("Status", 1)    # Start with Status = 1 by default
 
                 self.scenario.add_asset("BlockID"+str(blockIDcount), current_block)     # Add the asset to the scenario
                 blockslist.append(current_block)
@@ -323,7 +327,7 @@ class DelinBlocks(UBModule):
                 else:
                     blockstatus = 1
 
-                current_block.add_attribute("Status", blockstatus)
+                current_block.set_attribute("Status", blockstatus)
                 current_block.add_attribute("Active", activity)
 
                 # Land use proportions in block (multiply with block area to get Area
@@ -407,13 +411,17 @@ class DelinBlocks(UBModule):
                 elif pop_dref.get_metadata("sub") == "Count":
                     popfactor = 1.0   # No multiplication
 
-                total_population = 0
-                for row in range(len(popdatamatrix)):
-                    for col in range(len(popdatamatrix[0])):
-                        if popdatamatrix[row, col] == populationraster.get_nodatavalue():
-                            continue
-                        else:
-                            total_population += (float(popdatamatrix[row, col]) * popfactor)
+                pop_values = popdatamatrix.flatten()    # Flatten to a single array
+                pop_values[pop_values == populationraster.get_nodatavalue()] = 0    # Remove all no-data values
+                total_population = float(sum(pop_values) * popfactor)
+                #
+                # pop_values = 0
+                # for row in range(len(popdatamatrix)):
+                #     for col in range(len(popdatamatrix[0])):
+                #         if popdatamatrix[row, col] == populationraster.get_nodatavalue():
+                #             continue
+                #         else:
+                #             total_population += (float(popdatamatrix[row, col]) * popfactor)
 
                 current_block.add_attribute("Population", total_population)
                 map_attr.add_attribute("HasPOP", 1)
@@ -447,10 +455,14 @@ class DelinBlocks(UBModule):
                             continue
                         else:
                             elevationpoints.append(float(elevdatamatrix[row, col]))
-                current_block.add_attribute("AvgElev", sum(elevationpoints)/max(float(len(elevationpoints)), 1.0))
-                current_block.add_attribute("MaxElev", max(elevationpoints))
-                current_block.add_attribute("MinElev", min(elevationpoints))
-                map_attr.add_attribute("HasELEV", 1)
+                if len(elevationpoints) == 0:
+                    current_block.set_attribute("Status", 0)
+                else:
+                    current_block.set_attribute("Status", 1)
+                    current_block.add_attribute("AvgElev", sum(elevationpoints)/max(float(len(elevationpoints)), 1.0))
+                    current_block.add_attribute("MaxElev", max(elevationpoints))
+                    current_block.add_attribute("MinElev", min(elevationpoints))
+                    map_attr.add_attribute("HasELEV", 1)
 
                 # STEP 3.6.2 - Map elevation data onto Block Patches
                 pass
@@ -462,7 +474,7 @@ class DelinBlocks(UBModule):
         # - STEP 4 - Assign Municipal Regions and Suburban Regions to Blocks
         municipalities = []
         self.notify("Loading Municipality Map")
-        if self.include_geopolitical:
+        if self.include_geopolitical:                       # LOAD MUNICIPALITY MAP
             map_attr.add_attribute("HasGEOPOLITICAL", 1)
             geopol_map = self.datalibrary.get_data_with_id(self.geopolitical_map)
             fullfilepath = geopol_map.get_data_file_path() + geopol_map.get_metadata("filename")
@@ -476,7 +488,7 @@ class DelinBlocks(UBModule):
 
         suburbs = []
         self.notify("Loading Suburb Map")
-        if self.include_suburb:
+        if self.include_suburb:                             # LOAD SUBURBAN MAP
             map_attr.add_attribute("HasSUBURBS", 1)
             suburb_map = self.datalibrary.get_data_with_id(self.suburban_map)
             fullfilepath = suburb_map.get_data_file_path() + suburb_map.get_metadata("filename")
@@ -543,18 +555,17 @@ class DelinBlocks(UBModule):
         else:
             map_attr.add_attribute("HasLAKES", 0)
 
-
         # - STEP 6 - Delineate Flow Paths and Drainage Basins
         if map_attr.get_attribute("HasELEV"):
-            #Delineate flow paths
+            # Delineate flow paths
             if self.dem_smooth:
                 self.perform_smooth_dem(blockslist)
 
-            self.delineate_flow_paths(blockslist, map_attr)
-            # Create hash table
-            # Find the basins
-            # Write this to the map attributes
+            self.delineate_flow_paths(blockslist, map_attr)     # Delineates the flow directions
+            totalbasins = self.delineate_basin_structures(blockslist)   # Delineates the sub-catchments
 
+            # Write details to map attributes
+            map_attr.add_attribute("TotalBasins", totalbasins)
             map_attr.add_attribute("HasFLOWPATHS", 1)
         else:
             map_attr.add_attribute("HasFLOWPATHS", 0)
@@ -571,6 +582,99 @@ class DelinBlocks(UBModule):
     # ------------------------------------------------
     # |-    ADDITIONAL MODULE FUNCTIONS             -|
     # ------------------------------------------------
+    def create_block_flow_hashtable(self, blockslist):
+        """Creates a hash table of BlockIDs for quick lookup, this allows the basin delineation algorithm to rapidly
+        delineate the sub-catchment
+
+        :param blockslist: the list of UBVector() instances of all blocks in the map
+        :return: a 2D list [ [upstreamID], [downstreamID] ]
+        """
+        hash_table = [[], []]     # COL#1: BlockID (upstream), COL#2: BlockID (downstream)
+        for i in range(len(blockslist)):
+            current_block = blockslist[i]
+            current_id = current_block.get_attribute("BlockID")
+            if current_block.get_attribute("Status") == 0:
+                continue
+            hash_table[0].append(int(current_id))
+            hash_table[1].append(int(current_block.get_attribute("downID")))    # [ID or -2]
+        return hash_table
+
+    def delineate_basin_structures(self, blockslist):
+        """Delineates sub-basins across the entire blocksmap specified by the collection of blocks in 'blockslist'.
+        Returns the number of sub-basins in the map, but also writes BasinID information to each Block. Delineation is
+        carried out by creating a hash table of BlockID and downstream ID.
+
+        Each block is scanned and all its upstream and downstream Block IDs identified, each is also assigned a
+        BasinID.
+
+        :param blocklist: the list [] of UBVector() instances that represent Blocks
+        :return: number of total basins. Also writes the "BasinID" attribute to each Block.
+        """
+        hash_table = self.create_block_flow_hashtable(blockslist)    # Start by creating a hash tables
+        basin_id = 0    # Set Basin ID to zero, it will start counting up as soon as basins are found
+
+        for i in range(len(blockslist)):    # Loop  across all Blocks
+            current_block = blockslist[i]
+            if current_block.get_attribute("Status") == 0:
+                continue    # Skip if Status = 0
+
+            # Check if the Block is a single-basin Block
+            current_id = current_block.get_attribute("BlockID")
+            if current_id not in hash_table[1]:                 # If the current Block not downstream of something...
+                current_block.add_attribute("UpstrIDs", [])     # ...then it has NO upstream IDs (empty list)
+                if current_id in hash_table[0]:                 # ... if it is in the first column of the hash table
+                    if hash_table[1][hash_table[0].index(current_id)] == -2:    # if its second column is -2
+                        self.notify("Found a single block basin at BlockID"+str(current_id))
+                        basin_id += 1   # Then we have found a single-block Basin
+                        current_block.add_attribute("BasinID", basin_id)
+                        current_block.add_attribute("DownstrIDs", [])
+                        current_block.add_attribute("Outlet", 1)
+                        continue
+
+            # Search the current Block for its upstream IDs
+            upstream_ids = [current_id]         # Otherwise current ID DOES have upstream blocks
+            for uid in upstream_ids:             # Begin scanning! Note that upstream_ids will grow in length!
+                for j in range(len(hash_table[1])):
+                    if uid == hash_table[1][j]:
+                        if hash_table[0][j] not in upstream_ids:    # Only want unique upstream_ids!
+                            upstream_ids.append(hash_table[0][j])   # Slowly append more IDs to the hash_table
+
+            # Once scan is complete, remove the current Block's ID from the list as it is NOT upstream of itself.
+            upstream_ids.remove(current_id)
+            self.notify("BlockID"+str(current_id)+" Upstream: "+str(upstream_ids))
+            current_block.add_attribute("UpstrIDs", upstream_ids)
+
+            # Repeat the whole process now for the downstream IDs
+            downstream_ids = [current_id]
+            for uid in downstream_ids:
+                for j in range(len(hash_table[0])):
+                    if uid == hash_table[0][j]:
+                        if hash_table[1][j] not in downstream_ids:
+                            downstream_ids.append(hash_table[1][j])
+
+            # Once scan is complete, remove the current Block's ID from the list as it is NOT downstream of itself.
+            downstream_ids.remove(current_id)
+            downstream_ids.remove(-2)   # Also remove the -2, which is specified if the Outlet Block is found
+            self.notify("BlockID"+str(current_id)+" DownstreamL "+str(downstream_ids))
+            current_block.add_attribute("DownstrIDs", downstream_ids)
+
+            print "Finding Basins now!"
+
+            # Now assign Basin IDs, do this if the current Block has downstream ID -2
+            if hash_table[1][hash_table[0].index(current_id)] == -2:    # If the block is an outlet
+                print "Found a basin outlet at BlockID" + str(current_id)
+                self.notify("Found a basin outlet at BlockID"+str(current_id))
+                basin_id += 1
+                current_block.add_attribute("BasinID", basin_id)    # Set the current Basin ID
+                current_block.add_attribute("Outlet", 1)            # Outlet = TRUE at current Block
+                for j in upstream_ids:
+                    upblock = self.scenario.get_asset_with_name("BlockID"+str(int(j)))
+                    upblock.add_attribute("BasinID", basin_id)      # Assign basin ID to all upstream blocks
+                    upblock.add_attribute("Outlet", 0)              # Upstream blocks are NOT outlets!
+
+        self.notify("Total Basins in the Case Study: "+str(basin_id))
+        return basin_id     # The final count indicates how many basins were found
+
     def delineate_flow_paths(self, blockslist, map_attr):
         """Delineates the flow paths according to the chosen method and saves the information to the blocks.
 
@@ -578,7 +682,274 @@ class DelinBlocks(UBModule):
         :param map_attr:  the global map attributes object
         :return: all data is saved to the UBVector instances as new Block data.
         """
-        pass
+        sink_ids = []
+        river_ids = []
+        lake_ids = []
+
+        for i in range(len(blockslist)):
+            current_block = blockslist[i]
+            current_blockid = current_block.get_attribute("BlockID")
+
+            # SKIP CONDITION 1 - Block has zero status
+            if current_block.get_attribute("Status") == 0:
+                continue
+
+            # SKIP CONDITION 2 - Block already contains a river
+            if current_block.get_attribute("HasRiver"):
+                current_block.add_attribute("downID", -2)   # Immediately assign it the -2 value for downID
+                river_ids.append(current_blockid)
+                continue
+
+            # SKIP CONDITION 3 - Block contains a lake
+            if current_block.get_attribute("HasLake"):
+                current_block.add_attribute("downID", -2)  # Immediately assign it the -2 value for downID
+                lake_ids.append(current_blockid)
+                continue
+
+            z = current_block.get_attribute("AvgElev")
+            neighbours_z = self.scenario.retrieve_attribute_value_list("Block", "AvgElev",
+                                                                       current_block.get_attribute("Neighbours"))
+            # print "Neighbour Z: ", neighbours_z
+
+            # Find the downstream block unless it's a sink
+            if self.flowpath_method == "D8":
+                flow_id, max_zdrop = self.find_downstream_d8(z, neighbours_z)
+            elif self.flowpath_method == "DI" and self.neighbourhood == "M":
+                # Only works for the Moore neighbourhood
+                flow_id, max_zdrop = self.find_downstream_dinf(z, neighbours_z)
+            else:
+                self.flowpath_method = "D8"     # Reset to D8 by default
+                flow_id, max_zdrop = self.find_downstream_d8(z, neighbours_z)
+
+            if flow_id == -9999:     # if no flowpath has been found
+                sink_ids.append(current_blockid)
+                downstream_id = -1  # Block is a possible sink. if -2 --> block is a catchment outlet
+            else:
+                downstream_id = flow_id
+
+            # Grab distances / slope between two Block IDs
+            if flow_id == -9999:
+                avg_slope = 0
+            else:
+                down_block = self.scenario.get_asset_with_name("BlockID"+str(downstream_id))
+                dx = current_block.get_attribute("CentreX") - down_block.get_attribute("CentreX")
+                dy = current_block.get_attribute("CentreY") - down_block.get_attribute("CentreY")
+                dist = float(math.sqrt((dx * dx) + (dy * dy)))
+                avg_slope = max_zdrop / dist
+
+            # Add attributes
+            current_block.add_attribute("downID", downstream_id)
+            current_block.add_attribute("max_dz", max_zdrop)
+            current_block.add_attribute("avg_slope", avg_slope)
+            current_block.add_attribute("h_pond", 0)    # Only for sink blocks will height of ponding h_pond > 0
+
+            # Draw Networks
+            if downstream_id != -1 and downstream_id != 0:
+                network_link = self.draw_flow_path(current_block, 1)
+                self.scenario.add_asset("FlowID"+str(current_blockid), network_link)
+
+        # Unblock the Sinks
+        self.unblock_sinks(sink_ids)
+
+        if map_attr.get_attribute("HasRIVER"):
+            self.connect_river_blocks(blockslist)   # [TO DO]
+        return True
+
+    def connect_river_blocks(self, blockslist):
+        """Scans the blocks for those containing a river system and connects them based on adjacency and river
+        rules.
+
+        :param blockslist: the list () of block UBVector instances.
+        :return: Each block is given a new attribute specifying the Block containing a river that it drains into
+        """
+        pass    # Scan block list, if HasRiver true, then check neighbours, if they have river and river name is
+                # identical, connect, otherwise specify -1 as unconnected
+        return True # [TO DO]
+
+    def unblock_sinks(self, sink_ids):
+        """Runs the algorithm for scanning all sink blocks and attempting to find a flowpath beyond them.
+        This function may also identify certain sinks as definitive catchment outlets.
+
+        :param blockslist: the list [] of block UBVector instances
+        :param sink_ids: a list of BlockIDs where a sink is believe to exist based on the flowpath method.
+        :return: adds new assets to the scenario if a flowpath has been found for the sinks
+        """
+        for i in range(len(sink_ids)):
+            current_sinkid = sink_ids[i]
+            self.notify("Attemtping to unblock flow from BlockID"+str(current_sinkid))
+            current_block = self.scenario.get_asset_with_name("BlockID"+str(current_sinkid))
+
+            z = current_block.get_attribute("AvgElev")
+            nhd = current_block.get_attribute("Neighbours")
+            possible_id_drains = []
+            possible_id_z = []
+            possibility = 0
+
+            for j in nhd:
+                nhd_blk = self.scenario.get_asset_with_name("BlockID"+str(j))
+                if nhd_blk.get_attribute("Status") == 0:
+                    continue    # Continue if nhd block has zero status
+
+                nhd_downid = nhd_blk.get_attribute("downID")
+                if nhd_downid not in [current_sinkid, -1] and nhd_downid not in nhd:
+                    possible_id_drains.append(j)
+                    possible_id_z.append(nhd_blk.get_attribute("AvgElev") - z)
+                    possibility += 1
+
+            if possibility > 0:
+                sink_path = min(possible_id_z)
+                sink_to_id = possible_id_drains[possible_id_z.index(sink_path)]
+
+                current_block.set_attribute("downID", sink_to_id)   # Overwrite -1 to new ID
+                current_block.set_attribute("h_pond", sink_path)    # If ponding depth > 0, then there was a sink
+                network_link = self.draw_flow_path(current_block, "Ponded")
+                self.scenario.add_asset("FlowID" + str(current_block.get_attribute("BlockID")), network_link)
+            else:
+                current_block.set_attribute("downID", -2)   # signifies that Block is an outlet
+        return True
+
+    def draw_flow_path(self, current_block, flow_type):
+        """Creates the flowpath geometry and returns a line asset, which can be saved to the scenario.
+
+        :param current_block: current ID of the block that the flowpath is being drawn for
+        :param flow_type: type of flowpath e.g. "Regular", "Ponded"
+        :return: UBVector() instance of a network link
+        """
+        current_id = current_block.get_attribute("BlockID")
+        downstream_id = current_block.get_attribute("downID")
+        down_block = self.scenario.get_asset_with_name("BlockID"+str(downstream_id))
+
+        x_up = current_block.get_attribute("CentreX")
+        y_up = current_block.get_attribute("CentreY")
+        z_up = current_block.get_attribute("AvgElev")
+        up_point = (x_up, y_up, z_up)
+
+        x_down = down_block.get_attribute("CentreX")
+        y_down = down_block.get_attribute("CentreY")
+        z_down = down_block.get_attribute("AvgElev")
+        down_point = (x_down, y_down, z_down)
+
+        network_link = ubdata.UBVector((up_point, down_point))
+        network_link.determine_geometry((up_point, down_point))
+        network_link.add_attribute("FlowID", current_id)
+        network_link.add_attribute("BlockID", current_id)
+        network_link.add_attribute("DownID", downstream_id)
+        network_link.add_attribute("Z_up", z_up)
+        network_link.add_attribute("Z_down", z_down)
+        network_link.add_attribute("max_zdrop", current_block.get_attribute("max_dz"))
+        network_link.add_attribute("LinkType", flow_type)
+        network_link.add_attribute("AvgSlope", current_block.get_attribute("avg_slope"))
+        network_link.add_attribute("h_pond", current_block.get_attribute("h_pond"))
+        return network_link
+
+    def find_downstream_d8(self, z, nhd_z):
+        """Uses the standard D8 method to find the downstream neighbouring block. Return the BlockID
+        and the delta-Z value of the drop. Elevation difference is calculated as dz = [NHD_Z - Z] and is
+        negative if the neighbouring Block has a lower elevation than the central Block.
+
+        :param z: elevation of the current central Block
+        :param nhd_z: elevation of all its neighbours and corresponding IDs [[IDs], [Z-values]]
+        :return: down_id: block ID that water drains to, min(dz) the largest elevation difference.
+        """
+        dz = []
+        for i in range(len(nhd_z[1])):
+            dz.append(nhd_z[1][i] - z)     # Calculate the elevation difference
+        if min(dz) <= 0:    # If there is a drop in elevation
+            down_id = nhd_z[0][dz.index(min(dz))]    # The ID corresponds to the minimum elevation difference
+        else:
+            down_id = -9999 # Otherwise there is a sink in the current Block
+        return down_id, min(dz)
+
+    def find_downstream_dinf(self, z, nhd_z):
+        """Adapted D-infinity method to only direct water in one direction based on the steepest slope
+        of the 8 triangular facets surrounding a Block's neighbourhood and a probabilistic choice weighted
+        by the propotioning of flow. This is the stochastic option of flowpath delineation for UrbanBEATS
+        and ONLY works with the Moore neighbourhood.
+
+        :param z: elevation of the current central Block
+        :param nhd_z: :param nhd_z: elevation of all its neighbours and corresponding IDs [[IDs], [Z-values]]
+        :return:
+        """
+        pass    # [TO DO]
+
+        # FROM LEGACY CODE
+        # facetdict = {}  # Stores all the information about the 8 facets
+        # facetdict["e1"] = ["E", "N", "N", "W", "W", "S", "S", "E"]
+        # facetdict["e2"] = ["NE", "NE", "NW", "NW", "SW", "SW", "SE", "SE"]
+        # facetdict["ac"] = [0, 1, 1, 2, 2, 3, 3, 4]
+        # facetdict["af"] = [1, -1, 1, -1, 1, -1, 1, -1]
+        # cardin = {"E": 0, "NE": 1, "N": 2, "NW": 3, "W": 4, "SW": 5, "S": 6, "SE": 7}
+        #
+        # e0 = currentZ  # CONSTANT PARAMETERS (because of constant block grid and centre point)
+        # d1 = blocksize
+        # d2 = d1
+        # facetangles = [0, math.pi / 4, math.pi / 2, 3 * math.pi / 4, math.pi, 5 * math.pi / 4, 3 * math.pi / 2,
+        #                7 * math.pi / 4]
+        #
+        # # Re-sort the neighbours matrix based on polar angle
+        # sortedneighb = [neighboursZ[3], neighboursZ[4], neighboursZ[0], neighboursZ[5], neighboursZ[2], neighboursZ[7],
+        #                 neighboursZ[1], neighboursZ[6]]
+        # rmatrix = []
+        # smatrix = []
+        #
+        # for i in range(len(sortedneighb)):  # Calculate slopes of all 8 facets
+        #     currentfacet = i
+        #
+        #     e1 = sortedneighb[
+        #         cardin[facetdict["e1"][currentfacet]]]  # e1 elevation:  (1) get cardinal direction from dictionary,
+        #     #               (2) get the index from cardin and
+        #     e2 = sortedneighb[cardin[facetdict["e2"][currentfacet]]]  # (3) get the value from neighbz
+        #
+        #     ac = facetdict["ac"][currentfacet]
+        #     af = facetdict["af"][currentfacet]
+        #
+        #     s1 = (e0 - e1) / d1
+        #     s2 = (e1 - e2) / d2
+        #     r = math.atan(s2 / s1)
+        #     s = math.sqrt(math.pow(s1, 2) + math.pow(s2, 2))
+        #
+        #     if r < 0:
+        #         r = 0
+        #         s = s1
+        #     elif r > math.atan(d2 / d1):
+        #         r = math.atan(d2 / d1)
+        #         s = (e0 - e2) / math.sqrt(math.pow(d1, 2) + math.pow(d2, 2))
+        #
+        #     rmatrix.append(r)
+        #     smatrix.append(s)
+        #
+        # # Find the maximum slope and get the angle
+        # rmax = max(rmatrix)
+        # rg = af * rmax + ac * math.pi / 2.0
+        #
+        # # Find the facet
+        # for i in range(len(facetangles)):
+        #     if rg > facetangles[i]:
+        #         continue
+        #     else:
+        #         facet = i - 1
+        #         theta1 = facetangles[i - 1]
+        #         theta2 = facetangles[i]
+        # # Adjust angles based on rg to get proportions
+        # alpha1 = rg - theta1
+        # alpha2 = theta2 - rg
+        # p1 = alpha1 / (alpha1 + alpha2)
+        # p2 = alpha2 / (alpha2 + alpha1)
+        #
+        # print "Proportioned Flows:", p1, p2
+        #
+        # if rand.random() < p1:
+        #     choice = p1
+        #     directionfacet = int(theta1 / (math.pi / 4))
+        # else:
+        #     choice = p2
+        #     directionfacet = int(theta2 / (math.pi / 4))
+        #
+        # print "Choice:", choice
+        #
+        # direction = neighboursZ.index(sortedneighb[directionfacet - 1])
+        # return direction, max_Zdrop
+        return True
 
     def perform_smooth_dem(self, blockslist):
         """Performs a smoothing of the DEM on the Blocks map. This is only necessary if the DEM is quite
@@ -667,6 +1038,12 @@ class DelinBlocks(UBModule):
         return lucprop, activity
 
     def calculate_metric_richness(self, landclassprop):
+        """Calculates the Richness metric, which is simply the total number of unique categories in the provided
+        land use proportions list
+
+        :param landclassprop: A list [] specifying the relative proportions of land use categories. Sum = 1
+        :return: the richness index
+        """
         richness = 0
         for i in landclassprop:
             if i != 0:
@@ -674,6 +1051,13 @@ class DelinBlocks(UBModule):
         return richness
 
     def calculate_metric_shannon(self, landclassprop, richness):
+        """Calculates the Shannon diversity, dominance and evenness indices based on the proportion of different land
+        use classes and the richness.
+
+        :param landclassprop: A list [] specifying the relative proportions of land use categories. Sum = 1
+        :param richness: the richness index, which is the number of unique land use classes in the area
+        :return: shandiv (Diversity index), shandom (Dominance index) and shaneven (Evenness index)
+        """
         if richness == 0:
             return 0, 0, 0
 
@@ -695,4 +1079,3 @@ class DelinBlocks(UBModule):
             shaneven = shandiv / math.log(richness)
 
         return shandiv, shandom, shaneven
-

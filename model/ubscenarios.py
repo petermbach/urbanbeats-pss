@@ -158,6 +158,28 @@ class UrbanBeatsScenario(threading.Thread):
                 assetcollection.append(tempassetcol[i])
         return assetcollection
 
+    def retrieve_attribute_value_list(self, asset_identifier, attribute_name, asset_ids):
+        """Returns a list [] of the attribute value specified by "attribute_name" for all asset of type "asset_identifier"
+        with the IDs "asset_ids". Note that with asset identifiers, use only the legal identifiers, refer to ubglobals
+
+        :param asset_identifier: str() of the asset identifier e.g. "BlockID" or "PatchID", etc.
+        :param attribute_name: str() name of the attribute to get the data for
+        :param asset_ids: list() of all ID numbers to search for
+        :return: list() object containing all values in the ascending order of asset_ids
+        """
+        assetcol = self.get_assets_with_identifier(asset_identifier)
+        if "ID" in asset_identifier:        # e.g. if someone wrote "BlockID" as the asset identifier...
+            nameid = asset_identifier
+        else:
+            nameid = asset_identifier+"ID"
+
+        attribute_values = [[],[]]  # Asset ID, Asset Value
+        for asset in assetcol:
+            if asset.get_attribute(nameid) in asset_ids:
+                attribute_values[0].append(asset.get_attribute(nameid))
+                attribute_values[1].append(asset.get_attribute(attribute_name))
+        return attribute_values     # returned in ascending order of the asset_ids
+
     def remove_asset_by_name(self, name):
         """Removes an asset from the collection based on the name specified
 
@@ -541,18 +563,15 @@ class UrbanBeatsScenario(threading.Thread):
         map_attributes = self.get_asset_with_name("MapAttributes")
         epsg = self.simulation.get_project_parameter("project_epsg")
 
-        # [TO DO] Export options - Blocks yes/no
-        ubspatial.export_block_assets_to_gis_shapefile(self.get_assets_with_identifier("BlockID"),
-                                                       self.get_asset_with_name("MapAttributes"),
+        ubspatial.export_block_assets_to_gis_shapefile(self.get_assets_with_identifier("BlockID"), map_attributes,
                                                        self.projectpath+"/output", file_basename + "_Blocks",
                                                        int(epsg))
-        ubspatial.export_patches_to_gis_shapefile(self.get_assets_with_identifier("PatchID"),
-                                                  self.get_asset_with_name("MapAttributes"),
+        ubspatial.export_patches_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
                                                   self.projectpath+"/output", file_basename + "_Patches",
                                                   int(epsg))
-
-
-        # [TO DO] Export options - Networks yes/no
+        ubspatial.export_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("FlowID"), map_attributes,
+                                                    self.projectpath + "/output", file_basename + "_Flowpaths",
+                                                    int(epsg), "Blocks")  # Export Block FlowPaths
         # [TO DO] Export options - WSUD Systems
         # [TO DO] Export options - centrepoints
 

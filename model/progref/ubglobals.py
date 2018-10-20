@@ -105,3 +105,20 @@ LANDUSEABBR = ['RES', 'COM', 'ORC', 'LI', 'HI', 'CIV', 'SVU', 'RD', 'TR', 'PG', 
 LANDUSENAMES = ['Residential', 'Commercial', 'Offices Res Mix', 'Light Industry', 'Heavy Industry',
                 'Civic', 'Service and Utility', 'Road', 'Transport', 'Parks and Gardens', 'Reserves and Floodway',
                 'Undeveloped', 'Unclassified']
+
+# --- ASSET IDENTIFIERS ---
+ASSET_IDENTIFIERS = {"Block": "The most basic building block of the city in UrbanBEATS, the square cell containing all"
+                              "relevant geodata",
+                     "Patch": "An area of uniform land use at the sub-grid level delineated using the Block grid as"
+                              "a baseline, represented either by its centroid or as a full polygon.",
+                     "BlockCentre": "Centroid of a Block, simply for reference and distance calculations",
+                     "Flow": "The link between two Blocks representing the water flow directions.",
+                     "FlowP": "The link between two Patches representing the water flow directions.",
+                     "ParkLink": "The link between open space and other land uses representing distance between",
+                     "ParkNet": "The link between open space land uses representing interconnectivity of spaces",
+                     "UrbanCell": "The cell at 50m or 100m resolution on which the urban modelling and cellular "
+                                  "automata is conducted is run. UrbanCells are aggregated to Blocks later on.",
+                     "Basin": "The collection of Blocks or Patches that make up the urban catchment.",
+                     "Locality": "Location of a civic, transport, landmark or other urban facility of interest in"
+                                 "the modelling."
+                     }

@@ -315,6 +315,84 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
     return coordinates, mapstats
 
 
+def export_flowpaths_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg, fptype):
+    """Exports all flowpaths in the asset_col list to a GIS Shapefile based on the current filepath.
+
+    :param asset_col: [] list containing all UBVector() Flowpath objects
+    :param map_attr: global map attributes to track any relevant information
+    :param filepath: the active filepath to export these assets to
+    :param filename: name of the file to export (without the 'shp' extension)
+    :param epsg: the EPSG code for the coordinate system to use
+    :param fptype: type of Flowpath ("Blocks", "Patches")
+    :return:
+    """
+    print fptype
+    if map_attr.get_attribute("HasFLOWPATHS") != 1:
+        return True
+
+    xmin = map_attr.get_attribute("xllcorner")
+    ymin = map_attr.get_attribute("yllcorner")
+
+    fullname = filepath + "/" + filename
+
+    spatial_ref = osr.SpatialReference()
+    spatial_ref.ImportFromEPSG(epsg)
+
+    driver = ogr.GetDriverByName('ESRI Shapefile')
+
+    usefilename = fullname      # Placeholder filename
+    fileduplicate_counter = 0
+    while os.path.exists(str(usefilename+".shp")):
+        fileduplicate_counter += 1
+        usefilename = fullname + "(" + str(fileduplicate_counter) + ")"
+    shapefile = driver.CreateDataSource(str(usefilename)+".shp")
+
+    layer = shapefile.CreateLayer('layer1', spatial_ref, ogr.wkbLineString)
+    layerDefinition = layer.GetLayerDefn()
+
+    fielddefmatrix = []
+    fielddefmatrix.append(ogr.FieldDefn("FlowID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("BlockID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("DownID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("Z_up", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("Z_down", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("max_zdrop", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("LinkType", ogr.OFTString))
+    fielddefmatrix.append(ogr.FieldDefn("AvgSlope", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("h_pond", ogr.OFTReal))
+
+    for field in fielddefmatrix:
+        layer.CreateField(field)
+        layer.GetLayerDefn()
+
+    for i in range(len(asset_col)):
+        current_path = asset_col[i]
+        linepoints = current_path.get_points()
+        line = ogr.Geometry(ogr.wkbLineString)
+        p1 = linepoints[0]
+        p2 = linepoints[1]
+        line.AddPoint(p1[0] + xmin, p1[1] + ymin)
+        line.AddPoint(p2[0] + xmin, p2[1] + ymin)
+
+        feature = ogr.Feature(layerDefinition)
+        feature.SetGeometry(line)
+        feature.SetFID(0)
+
+        feature.SetField("FlowID", int(current_path.get_attribute("FlowID")))
+        feature.SetField("BlockID", int(current_path.get_attribute("BlockID")))
+        feature.SetField("DownID", int(current_path.get_attribute("DownID")))
+        feature.SetField("Z_up", float(current_path.get_attribute("Z_up")))
+        feature.SetField("Z_down", float(current_path.get_attribute("Z_down")))
+        feature.SetField("max_zdrop", float(current_path.get_attribute("max_zdrop")))
+        feature.SetField("LinkType", str(current_path.get_attribute("LinkType")))
+        feature.SetField("AvgSlope", float(current_path.get_attribute("AvgSlope")))
+        feature.SetField("h_pond", float(current_path.get_attribute("h_pond")))
+
+        layer.CreateFeature(feature)
+
+    shapefile.Destroy()
+
+
 def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg):
     """Exports all the patches in the asset_col list to a GIS Shapefile based on the current filepath.
 
@@ -426,6 +504,10 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
 
     # >>> FROM DELINBLOCKS
     fielddefmatrix.append(ogr.FieldDefn("BlockID", ogr.OFTInteger))
+
+    if map_attr.get_attribute("HasELEV"):
+        fielddefmatrix.append(ogr.FieldDefn("BasinID", ogr.OFTInteger))
+
     fielddefmatrix.append(ogr.FieldDefn("CentreX", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("CentreY", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("Neighbours", ogr.OFTString))
@@ -460,13 +542,17 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
         fielddefmatrix.append(ogr.FieldDefn("AvgElev", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("MaxElev", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("MinElev", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("downID", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("max_dz", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("avg_slope", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("h_pond", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("Outlet", ogr.OFTInteger))
 
     if map_attr.get_attribute("HasGEOPOLITICAL"):
         fielddefmatrix.append(ogr.FieldDefn("Region", ogr.OFTString))
 
     if map_attr.get_attribute("HasSUBURBS"):
         fielddefmatrix.append(ogr.FieldDefn("Suburb", ogr.OFTString))
-
 
     # More attributes to come in future
     # Create the fields
@@ -494,6 +580,10 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
 
         # Add Attributes
         feature.SetField("BlockID", int(currentAttList.get_attribute("BlockID")))
+
+        if map_attr.get_attribute("HasELEV"):
+            feature.SetField("BasinID", int(currentAttList.get_attribute("BasinID")))
+
         feature.SetField("CentreX", float(currentAttList.get_attribute("CentreX")))
         feature.SetField("CentreY", float(currentAttList.get_attribute("CentreY")))
         feature.SetField("Neighbours", str(",".join(map(str, currentAttList.get_attribute("Neighbours")))))
@@ -529,6 +619,11 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
             feature.SetField("AvgElev", float(currentAttList.get_attribute("AvgElev")))
             feature.SetField("MaxElev", float(currentAttList.get_attribute("MaxElev")))
             feature.SetField("MinElev", float(currentAttList.get_attribute("MinElev")))
+            feature.SetField("downID", int(currentAttList.get_attribute("downID")))
+            feature.SetField("max_dz", float(currentAttList.get_attribute("max_dz")))
+            feature.SetField("avg_slope", float(currentAttList.get_attribute("avg_slope")))
+            feature.SetField("h_pond", float(currentAttList.get_attribute("h_pond")))
+            feature.SetField("Outlet", int(currentAttList.get_attribute("Outlet")))
 
         if map_attr.get_attribute("HasGEOPOLITICAL"):
             feature.SetField("Region", str(currentAttList.get_attribute("Region")))
