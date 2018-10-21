@@ -1,0 +1,1348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Delinblocks_Dialog</class>
+ <widget class="QDialog" name="Delinblocks_Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>780</width>
+    <height>645</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QFrame" name="title_frame">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>65</height>
+      </size>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0" rowspan="3">
+       <widget class="QLabel" name="module_logo">
+        <property name="minimumSize">
+         <size>
+          <width>40</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>40</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="../graphics/ubeats.qrc">:/images/images/md_urbandev.png</pixmap>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="title">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Urban Development</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="subtitle">
+        <property name="text">
+         <string>Setup the urban model for simulating land use change, neighbourhood interactions, population and employment dynamics</string>
+        </property>
+        <property name="wordWrap">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="title_line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="module_widget" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <item>
+       <widget class="QWidget" name="sidebar_widget" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QLabel" name="sidebar_title">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;SCENARIO TIME STEP&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="year_combo">
+           <property name="minimumSize">
+            <size>
+             <width>100</width>
+             <height>0</height>
+            </size>
+           </property>
+           <item>
+            <property name="text">
+             <string>&lt;startyear&gt;</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="autofillButton">
+           <property name="text">
+            <string>Autofill from previous</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="same_params">
+           <property name="text">
+            <string>Same Parameters</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="Line" name="sidebar_line">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="module_img">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>140</width>
+             <height>100</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>140</width>
+             <height>100</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="../graphics/ubeats.qrc">:/images/images/md_urbdevelop.jpg</pixmap>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTextBrowser" name="description">
+           <property name="minimumSize">
+            <size>
+             <width>140</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>140</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="html">
+            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;A simplified spatial representation of the urban environment. In this module, settings are made to the geometry that is used to represent the urban information, spatial connectivity and geography.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTabWidget" name="parameters">
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="inputs_tab">
+         <attribute name="title">
+          <string>General</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_10">
+          <item>
+           <widget class="QScrollArea" name="inputs_scrollArea">
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="inputs_contents">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>537</width>
+               <height>641</height>
+              </rect>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_12">
+              <item>
+               <widget class="QLabel" name="descr1">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;BASE YEAR INPUT MAPS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="emp_lbl_2">
+                <property name="text">
+                 <string>This may include employment data, localities</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="datasets" native="true">
+                <layout class="QGridLayout" name="gridLayout_6">
+                 <item row="3" column="1">
+                  <widget class="QComboBox" name="locality_combo"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="emp_lbl">
+                   <property name="text">
+                    <string>Base year land use map:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QComboBox" name="employment_combo"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="descr3">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Optional Spatial Data Sets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_32">
+                   <property name="text">
+                    <string>Base year population map:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="0">
+                  <widget class="QLabel" name="label_36">
+                   <property name="text">
+                    <string>Base year employment map:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="1">
+                  <widget class="QComboBox" name="locality_combo_5"/>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="descr1_7">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;GENERAL MODEL SETTINGS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="emp_lbl_3">
+                <property name="text">
+                 <string>Set modelling resolution, etc.</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="datasets_7" native="true">
+                <layout class="QGridLayout" name="gridLayout_9">
+                 <item row="3" column="1">
+                  <widget class="QComboBox" name="locality_combo_2"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="emp_lbl_4">
+                   <property name="text">
+                    <string>Employment:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QComboBox" name="employment_combo_2"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="descr3_2">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Optional Spatial Data Sets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QCheckBox" name="emp_fromurbandev_2">
+                   <property name="text">
+                    <string>from urban development</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_33">
+                   <property name="text">
+                    <string>Locality Map:</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="descr1_8">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;GLOBAL POPULATION AND EMPLOYMENT DYNAMICS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="emp_lbl_5">
+                <property name="text">
+                 <string>Set modelling resolution, etc.</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="datasets_13" native="true">
+                <layout class="QGridLayout" name="gridLayout_18">
+                 <item row="3" column="1">
+                  <widget class="QComboBox" name="locality_combo_14"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="emp_lbl_26">
+                   <property name="text">
+                    <string>Employment:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QComboBox" name="employment_combo_13"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="descr3_13">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Optional Spatial Data Sets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QCheckBox" name="emp_fromurbandev_13">
+                   <property name="text">
+                    <string>from urban development</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_45">
+                   <property name="text">
+                    <string>Locality Map:</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="descr1_14">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;CELLULAR AUTOMATA SETTINGS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="datasets_14" native="true">
+                <layout class="QGridLayout" name="gridLayout_19">
+                 <item row="3" column="1">
+                  <widget class="QComboBox" name="locality_combo_15"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="emp_lbl_28">
+                   <property name="text">
+                    <string>Employment:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QComboBox" name="employment_combo_14"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="descr3_14">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Optional Spatial Data Sets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QCheckBox" name="emp_fromurbandev_14">
+                   <property name="text">
+                    <string>from urban development</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_46">
+                   <property name="text">
+                    <string>Locality Map:</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="emp_lbl_27">
+                <property name="text">
+                 <string>Set modelling resolution, etc.</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="datasets_15" native="true">
+                <layout class="QGridLayout" name="gridLayout_20">
+                 <item row="3" column="1">
+                  <widget class="QComboBox" name="locality_combo_16"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="emp_lbl_29">
+                   <property name="text">
+                    <string>Employment:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QComboBox" name="employment_combo_15"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="descr3_15">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Optional Spatial Data Sets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QCheckBox" name="emp_fromurbandev_15">
+                   <property name="text">
+                    <string>from urban development</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_47">
+                   <property name="text">
+                    <string>Locality Map:</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_5">
+         <attribute name="title">
+          <string>Spatial Interaction</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
+           <widget class="QScrollArea" name="inputs_scrollArea_6">
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="inputs_contents_6">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>554</width>
+               <height>438</height>
+              </rect>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_17">
+              <item>
+               <widget class="QLabel" name="descr1_6">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;ZONING RULES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="emp_lbl_22">
+                <property name="text">
+                 <string>Customize Development Zoning Rules and determine Active, Passive and Constrained Land uses</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="datasets_6" native="true">
+                <layout class="QGridLayout" name="gridLayout_16">
+                 <item row="3" column="1">
+                  <widget class="QComboBox" name="locality_combo_12"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="emp_lbl_23">
+                   <property name="text">
+                    <string>Employment:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QComboBox" name="employment_combo_11"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="descr3_11">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Optional Spatial Data Sets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QCheckBox" name="emp_fromurbandev_11">
+                   <property name="text">
+                    <string>from urban development</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_43">
+                   <property name="text">
+                    <string>Locality Map:</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="descr1_13">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;ACCESSIBILITY RULES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="emp_lbl_24">
+                <property name="text">
+                 <string>Setup general rules for defining accessibility within the model environment</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="datasets_12" native="true">
+                <layout class="QGridLayout" name="gridLayout_17">
+                 <item row="3" column="1">
+                  <widget class="QComboBox" name="locality_combo_13"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="emp_lbl_25">
+                   <property name="text">
+                    <string>Employment:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QComboBox" name="employment_combo_12"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="descr3_12">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Optional Spatial Data Sets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QCheckBox" name="emp_fromurbandev_12">
+                   <property name="text">
+                    <string>from urban development</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_44">
+                   <property name="text">
+                    <string>Locality Map:</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_10">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_2">
+         <attribute name="title">
+          <string>Suitability</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QScrollArea" name="inputs_scrollArea_3">
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="inputs_contents_3">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>554</width>
+               <height>438</height>
+              </rect>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_14">
+              <item>
+               <widget class="QLabel" name="descr1_3">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;ZONING RULES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="emp_lbl_10">
+                <property name="text">
+                 <string>Customize Development Zoning Rules and determine Active, Passive and Constrained Land uses</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="datasets_3" native="true">
+                <layout class="QGridLayout" name="gridLayout_8">
+                 <item row="3" column="1">
+                  <widget class="QComboBox" name="locality_combo_6"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="emp_lbl_11">
+                   <property name="text">
+                    <string>Employment:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QComboBox" name="employment_combo_5"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="descr3_5">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Optional Spatial Data Sets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QCheckBox" name="emp_fromurbandev_5">
+                   <property name="text">
+                    <string>from urban development</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_37">
+                   <property name="text">
+                    <string>Locality Map:</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="descr1_10">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;ACCESSIBILITY RULES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="emp_lbl_12">
+                <property name="text">
+                 <string>Setup general rules for defining accessibility within the model environment</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="datasets_9" native="true">
+                <layout class="QGridLayout" name="gridLayout_11">
+                 <item row="3" column="1">
+                  <widget class="QComboBox" name="locality_combo_7"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="emp_lbl_13">
+                   <property name="text">
+                    <string>Employment:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QComboBox" name="employment_combo_6"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="descr3_6">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Optional Spatial Data Sets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QCheckBox" name="emp_fromurbandev_6">
+                   <property name="text">
+                    <string>from urban development</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_38">
+                   <property name="text">
+                    <string>Locality Map:</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_7">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab">
+         <attribute name="title">
+          <string>Zoning</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QScrollArea" name="inputs_scrollArea_2">
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="inputs_contents_2">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>554</width>
+               <height>438</height>
+              </rect>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_13">
+              <item>
+               <widget class="QLabel" name="descr1_2">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;ZONING RULES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="emp_lbl_6">
+                <property name="text">
+                 <string>Customize Development Zoning Rules and determine Active, Passive and Constrained Land uses</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="datasets_2" native="true">
+                <layout class="QGridLayout" name="gridLayout_7">
+                 <item row="3" column="1">
+                  <widget class="QComboBox" name="locality_combo_3"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="emp_lbl_7">
+                   <property name="text">
+                    <string>Employment:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QComboBox" name="employment_combo_3"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="descr3_3">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Optional Spatial Data Sets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QCheckBox" name="emp_fromurbandev_3">
+                   <property name="text">
+                    <string>from urban development</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_34">
+                   <property name="text">
+                    <string>Locality Map:</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="descr1_9">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;ACCESSIBILITY RULES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="emp_lbl_8">
+                <property name="text">
+                 <string>Setup general rules for defining accessibility within the model environment</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="datasets_8" native="true">
+                <layout class="QGridLayout" name="gridLayout_10">
+                 <item row="3" column="1">
+                  <widget class="QComboBox" name="locality_combo_4"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="emp_lbl_9">
+                   <property name="text">
+                    <string>Employment:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QComboBox" name="employment_combo_4"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="descr3_4">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Optional Spatial Data Sets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QCheckBox" name="emp_fromurbandev_4">
+                   <property name="text">
+                    <string>from urban development</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_35">
+                   <property name="text">
+                    <string>Locality Map:</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_6">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_3">
+         <attribute name="title">
+          <string>Accessibility</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QScrollArea" name="inputs_scrollArea_4">
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="inputs_contents_4">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>554</width>
+               <height>438</height>
+              </rect>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_15">
+              <item>
+               <widget class="QLabel" name="descr1_4">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;ZONING RULES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="emp_lbl_14">
+                <property name="text">
+                 <string>Customize Development Zoning Rules and determine Active, Passive and Constrained Land uses</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="datasets_4" native="true">
+                <layout class="QGridLayout" name="gridLayout_12">
+                 <item row="3" column="1">
+                  <widget class="QComboBox" name="locality_combo_8"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="emp_lbl_15">
+                   <property name="text">
+                    <string>Employment:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QComboBox" name="employment_combo_7"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="descr3_7">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Optional Spatial Data Sets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QCheckBox" name="emp_fromurbandev_7">
+                   <property name="text">
+                    <string>from urban development</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_39">
+                   <property name="text">
+                    <string>Locality Map:</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="descr1_11">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;ACCESSIBILITY RULES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="emp_lbl_16">
+                <property name="text">
+                 <string>Setup general rules for defining accessibility within the model environment</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="datasets_10" native="true">
+                <layout class="QGridLayout" name="gridLayout_13">
+                 <item row="3" column="1">
+                  <widget class="QComboBox" name="locality_combo_9"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="emp_lbl_17">
+                   <property name="text">
+                    <string>Employment:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QComboBox" name="employment_combo_8"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="descr3_8">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Optional Spatial Data Sets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QCheckBox" name="emp_fromurbandev_8">
+                   <property name="text">
+                    <string>from urban development</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_40">
+                   <property name="text">
+                    <string>Locality Map:</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_8">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_4">
+         <attribute name="title">
+          <string>Neighbourhood Effect</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <widget class="QScrollArea" name="inputs_scrollArea_5">
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="inputs_contents_5">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>554</width>
+               <height>438</height>
+              </rect>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_16">
+              <item>
+               <widget class="QLabel" name="descr1_5">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;ZONING RULES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="emp_lbl_18">
+                <property name="text">
+                 <string>Customize Development Zoning Rules and determine Active, Passive and Constrained Land uses</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="datasets_5" native="true">
+                <layout class="QGridLayout" name="gridLayout_14">
+                 <item row="3" column="1">
+                  <widget class="QComboBox" name="locality_combo_10"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="emp_lbl_19">
+                   <property name="text">
+                    <string>Employment:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QComboBox" name="employment_combo_9"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="descr3_9">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Optional Spatial Data Sets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QCheckBox" name="emp_fromurbandev_9">
+                   <property name="text">
+                    <string>from urban development</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_41">
+                   <property name="text">
+                    <string>Locality Map:</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="descr1_12">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;ACCESSIBILITY RULES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="emp_lbl_20">
+                <property name="text">
+                 <string>Setup general rules for defining accessibility within the model environment</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="datasets_11" native="true">
+                <layout class="QGridLayout" name="gridLayout_15">
+                 <item row="3" column="1">
+                  <widget class="QComboBox" name="locality_combo_11"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="emp_lbl_21">
+                   <property name="text">
+                    <string>Employment:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QComboBox" name="employment_combo_10"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="descr3_10">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Optional Spatial Data Sets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QCheckBox" name="emp_fromurbandev_10">
+                   <property name="text">
+                    <string>from urban development</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_42">
+                   <property name="text">
+                    <string>Locality Map:</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_9">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="footer" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>40</height>
+      </size>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="footer_lbl">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;UrbanBEATS - md_urbplanbb module&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QDialogButtonBox" name="buttonBox">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="standardButtons">
+         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="help_button">
+        <property name="text">
+         <string>Help</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../graphics/ubeats.qrc">
+          <normaloff>:/icons/Help-icon.png</normaloff>:/icons/Help-icon.png</iconset>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>year_combo</tabstop>
+  <tabstop>same_params</tabstop>
+  <tabstop>description</tabstop>
+  <tabstop>parameters</tabstop>
+  <tabstop>inputs_scrollArea</tabstop>
+  <tabstop>employment_combo</tabstop>
+  <tabstop>locality_combo</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>help_button</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../graphics/ubeats.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>Delinblocks_Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>Delinblocks_Dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
