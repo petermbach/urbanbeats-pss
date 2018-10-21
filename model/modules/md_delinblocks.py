@@ -72,7 +72,7 @@ class DelinBlocks(UBModule):
         self.projectlog = projectlog
 
         # PARAMETER LIST DEFINITION
-        # (1) Parameters for Input Data
+        # (Tab 1.1) ESSENTIAL SPATIAL DATA SETS
         self.create_parameter("landuse_map", STRING, "land use map filepath")
         self.create_parameter("population_map", STRING, "population map filepath")
         self.create_parameter("elevation_map", STRING, "elevation map filepath")
@@ -84,6 +84,27 @@ class DelinBlocks(UBModule):
         self.landuse_fud = 0
         self.population_fud = 0
 
+        # (Tab 1.2) SPATIAL GEOMETRY
+        self.create_parameter("geometry_type", STRING, "block or future types of geometry e.g. hex")
+        self.geometry_type = "BLOCKS"  # BLOCKS, HEXAGONS, VECTORPATCH
+
+        # 1.2.1 BLOCKS
+        self.create_parameter("blocksize", DOUBLE, "resolution of the discretisation grid")
+        self.create_parameter("blocksize_auto", BOOL, "determine resolution automatically?")
+        self.create_parameter("neighbourhood", STRING, "type of neighbourhood to use, Moore or vN")
+        self.create_parameter("patchdelin", BOOL, "delineate patches?")
+        self.create_parameter("spatialmetrics", BOOL, "calculate spatial metrics?")
+        self.blocksize = 500
+        self.blocksize_auto = 0
+        self.neighbourhood = "M"
+        self.patchdelin = 1
+        self.spatialmetrics = 1
+
+        # 1.2.2 HEXAGONS    [TO DO]
+        # 1.2.3 VECTORPATCHES [TO DO]
+
+
+        # (Tab 2.1) JURISDICTIONAL AND SUBURBAN BOUNDARIES
         self.create_parameter("include_geopolitical", BOOL, "include geopolitical map?")
         self.create_parameter("geopolitical_map", STRING, "geopolitical map filepath")
         self.create_parameter("geopolitical_attref", STRING, "attribute name reference")
@@ -97,21 +118,7 @@ class DelinBlocks(UBModule):
         self.suburban_map = ""
         self.suburban_attref = ""
 
-        # (2) Parameters for Geometric Delineation
-        self.create_parameter("geometry_type", STRING, "block or future types of geometry e.g. hex")
-        self.create_parameter("blocksize", DOUBLE, "resolution of the discretisation grid")
-        self.create_parameter("blocksize_auto", BOOL, "determine resolution automatically?")
-        self.create_parameter("neighbourhood", STRING, "type of neighbourhood to use, Moore or vN")
-        self.create_parameter("patchdelin", BOOL, "delineate patches?")
-        self.create_parameter("spatialmetrics", BOOL, "calculate spatial metrics?")
-        self.geometry_type = "BLOCKS"       # BLOCKS, HEXAGONS
-        self.blocksize = 500
-        self.blocksize_auto = 0
-        self.neighbourhood = "M"
-        self.patchdelin = 1
-        self.spatialmetrics = 1
-
-        # (3) Parameters for Spatial Context
+        # (Tab 2.2) CENTRAL BUSINESS DISTRICT
         self.create_parameter("considerCBD", BOOL, "consider CBD Location?")
         self.create_parameter("locationOption", STRING, "method for inputting CBD location")
         self.create_parameter("locationCity", STRING, "city name")
@@ -125,11 +132,31 @@ class DelinBlocks(UBModule):
         self.locationLat = float(0.0)
         self.marklocation = 0
 
+        # (Tab 2.3) OPEN SPACE NETWORK
+        self.create_parameter("osnet_accessibility", BOOL, "Calculate accessibility?")
+        self.create_parameter("osnet_network", BOOL, "Delineate open space network?")
+        self.osnet_accessibility = 0
+        self.osnet_network = 0
+
+        # (Tab 3.1) MAJOR WATER FEATURES
         self.create_parameter("include_rivers", BOOL, "include a rivers map into simulation?")
         self.create_parameter("include_lakes", BOOL, "include a ponds and lakes map into simulation?")
         self.create_parameter("calculate_wbdistance", BOOL, "calculate distance to closest water body?")
         self.create_parameter("river_map", STRING, "river map filepath")
+        self.create_parameter("river_attname", STRING, "river map identifier attribute name")
         self.create_parameter("lake_map", STRING, "ponds and lake map filepath")
+        self.create_parameter("lake_attname", STRING, "lake map identifier attribute name")
+        self.include_rivers = 0
+        self.include_lakes = 0
+        self.calculate_wbdistance = 0
+        self.river_map = ""
+        self.river_attname = ""
+        self.lake_map = ""
+        self.lake_attname = ""
+
+        # (Tab 3.2) BUILT WATER INFRASTRUCTURE #[TO DO]
+
+        # (Tab 3.3) DRAINAGE FLOW PATHS
         self.create_parameter("flowpath_method", STRING, "flowpath method to use")
         self.create_parameter("dem_smooth", BOOL, "smooth DEM map before doing flowpath delineation?")
         self.create_parameter("dem_passes", DOUBLE, "number of passes for smoothing")
@@ -137,11 +164,6 @@ class DelinBlocks(UBModule):
         self.create_parameter("guide_built", BOOL, "guide flowpath delineation using built infrastructure?")
         self.create_parameter("guide_natural_map", STRING, "filepath to natural features map to guide flowpaths")
         self.create_parameter("guide_built_map", STRING, "filepath to built infrastructure map to guide flowpaths")
-        self.include_rivers = 0
-        self.include_lakes = 0
-        self.calculate_wbdistance = 0
-        self.river_map = ""
-        self.lake_map = ""
         self.flowpath_method = "D8"
         self.dem_smooth = 0
         self.dem_passes = 1
@@ -709,7 +731,7 @@ class DelinBlocks(UBModule):
             z = current_block.get_attribute("AvgElev")
             neighbours_z = self.scenario.retrieve_attribute_value_list("Block", "AvgElev",
                                                                        current_block.get_attribute("Neighbours"))
-            # print "Neighbour Z: ", neighbours_z
+            print "Neighbour Z: ", neighbours_z
 
             # Find the downstream block unless it's a sink
             if self.flowpath_method == "D8":
@@ -852,6 +874,7 @@ class DelinBlocks(UBModule):
         :return: down_id: block ID that water drains to, min(dz) the largest elevation difference.
         """
         dz = []
+        print nhd_z
         for i in range(len(nhd_z[1])):
             dz.append(nhd_z[1][i] - z)     # Calculate the elevation difference
         if min(dz) <= 0:    # If there is a drop in elevation

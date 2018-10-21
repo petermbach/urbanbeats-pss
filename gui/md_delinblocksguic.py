@@ -185,7 +185,7 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
 
     def setup_gui_with_parameters(self):
         """Sets all parameters in the GUI based on the current year."""
-        # --- INPUT MAPS TAB ---
+        # --- ESSENTIAL SPATIAL DATA SETS ---
         # Dynamic setup of data combo boxes
         try:    # LAND USE COMBO - retrieve the dataID from module
             self.ui.lu_combo.setCurrentIndex(self.lumaps[1].index(self.module.get_parameter("landuse_map")))
@@ -206,6 +206,19 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.pop_fromurbandev.setChecked(int(self.module.get_parameter("population_fud")))
         self.ui.lu_fromurbandev.setChecked(int(self.module.get_parameter("landuse_fud")))
 
+        # --- SPATIAL GEOMETRY ---
+        spatial_ref = ["BLOCKS", "HEXAGONS"]
+        self.ui.rep_combo.setCurrentIndex(spatial_ref.index(self.module.get_parameter("geometry_type")))
+        self.ui.resolution_spin.setValue(self.module.get_parameter("blocksize"))
+        self.ui.resolution_auto.setChecked(int(self.module.get_parameter("blocksize_auto")))
+        if self.module.get_parameter("neighbourhood") == "M":
+            self.ui.radio_moore.setChecked(1)
+        else:
+            self.ui.radio_vonNeu.setChecked(1)
+        self.ui.spatialindices_check.setChecked(self.module.get_parameter("spatialmetrics"))
+        self.ui.patchdelin_check.setChecked(self.module.get_parameter("patchdelin"))
+
+        # --- JURISDICTIONAL AND SUBURBAN BOUNDARIES ---
         try:    # MUNICIPAL BOUNDARY MAP COMBO
             self.ui.geopolitical_combo.setCurrentIndex(self.municipalmaps[1].index(
                 self.module.get_parameter("geopolitical_map")))
@@ -222,19 +235,7 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.suburb_check.setChecked(self.module.get_parameter("include_suburb"))
         self.ui.suburb_line.setText(self.module.get_parameter("suburban_attref"))
 
-        # --- GEOMETRIC REPRESENTATION TAB ---
-        spatial_ref = ["BLOCKS", "HEXAGONS"]
-        self.ui.rep_combo.setCurrentIndex(spatial_ref.index(self.module.get_parameter("geometry_type")))
-        self.ui.resolution_spin.setValue(self.module.get_parameter("blocksize"))
-        self.ui.resolution_auto.setChecked(int(self.module.get_parameter("blocksize_auto")))
-        if self.module.get_parameter("neighbourhood") == "M":
-            self.ui.radio_moore.setChecked(1)
-        else:
-            self.ui.radio_vonNeu.setChecked(1)
-        self.ui.spatialindices_check.setChecked(self.module.get_parameter("spatialmetrics"))
-        self.ui.patchdelin_check.setChecked(self.module.get_parameter("patchdelin"))
-
-        # --- SPATIAL CONTEXT TAB ---
+        # --- CENTRAL BUSINESS DISTRICT ---
         self.ui.considergeo_check.setChecked(self.module.get_parameter("considerCBD"))
         if self.module.get_parameter("locationOption") == "S":  # S = Selection, C = coordinates
             self.ui.cbdknown_radio.setChecked(1)
@@ -247,6 +248,11 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.cbdlat_box.setText(str(self.module.get_parameter("locationLat")))
         self.ui.cbdmark_check.setChecked(self.module.get_parameter("marklocation"))
 
+        # --- OPEN SPACE NETWORK ---
+        self.ui.osnet_accessibility_check.setChecked(self.module.get_parameter("osnet_accessibility"))
+        self.ui.osnet_spacenet_check.setChecked(self.module.get_parameter("osnet_network"))
+
+        # --- MAJOR WATER FEATURES ---
         try:    # RIVER COMBO
             self.ui.rivers_combo.setCurrentIndex(self.rivermaps[1].index(self.module.get_parameter("river_map")))
         except ValueError:
@@ -261,8 +267,10 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.lakes_check.setChecked(self.module.get_parameter("include_lakes"))
         self.ui.waterbody_distance_check.setChecked(self.module.get_parameter("calculate_wbdistance"))
 
-        self.ui.flowpath_combo.setCurrentIndex(self.delin_methods.index(self.module.get_parameter("flowpath_method")))
+        # --- BUILT WATER INFRASTRUCTURE ---
 
+        # --- FLOWPATH DELINEATION ---
+        self.ui.flowpath_combo.setCurrentIndex(self.delin_methods.index(self.module.get_parameter("flowpath_method")))
         self.ui.demsmooth_check.setChecked(self.module.get_parameter("dem_smooth"))
         self.ui.demsmooth_spin.setValue(self.module.get_parameter("dem_passes"))
         self.ui.natfeature_check.setChecked(self.module.get_parameter("guide_natural"))
@@ -322,21 +330,14 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
     def save_values(self):
         """Saves all user-modified values for the module's parameters from the GUI
         into the simulation core."""
-        # --- INPUT MAPS ---
+        # --- ESSENTIAL SPATIAL DATA SETS ---
         self.module.set_parameter("landuse_map", self.lumaps[1][self.ui.lu_combo.currentIndex()])
         self.module.set_parameter("population_map", self.popmaps[1][self.ui.pop_combo.currentIndex()])
         self.module.set_parameter("elevation_map", self.elevmaps[1][self.ui.elev_combo.currentIndex()])
         self.module.set_parameter("landuse_fud", int(self.ui.lu_fromurbandev.isChecked()))
         self.module.set_parameter("population_fud", int(self.ui.pop_fromurbandev.isChecked()))
 
-        self.module.set_parameter("include_geopolitical", int(self.ui.geopolitical_check.isChecked()))
-        self.module.set_parameter("geopolitical_map", self.municipalmaps[1][self.ui.geopolitical_combo.currentIndex()])
-        self.module.set_parameter("geopolitical_attref", self.ui.geopolitical_line.text())
-        self.module.set_parameter("include_suburb", int(self.ui.suburb_check.isChecked()))
-        self.module.set_parameter("suburban_map", self.suburbmaps[1][self.ui.suburb_combo.currentIndex()])
-        self.module.set_parameter("suburban_attref", self.ui.suburb_line.text())
-
-        # --- GEOMETRIC DELINEATION ---
+        # --- SPATIAL GEOMETRY ---
         if self.ui.rep_combo.currentIndex() == 0:
             self.module.set_parameter("geometry_type", "BLOCKS")
         elif self.ui.rep_combo.currentIndex() == 1:
@@ -350,7 +351,15 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("patchdelin", int(self.ui.patchdelin_check.isChecked()))
         self.module.set_parameter("spatialmetrics", int(self.ui.spatialindices_check.isChecked()))
 
-        # --- SPATIAL CONTEXT ---
+        # --- JURISDICTIONAL AND SUBURBAN BOUNDARIES ---
+        self.module.set_parameter("include_geopolitical", int(self.ui.geopolitical_check.isChecked()))
+        self.module.set_parameter("geopolitical_map", self.municipalmaps[1][self.ui.geopolitical_combo.currentIndex()])
+        self.module.set_parameter("geopolitical_attref", self.ui.geopolitical_line.text())
+        self.module.set_parameter("include_suburb", int(self.ui.suburb_check.isChecked()))
+        self.module.set_parameter("suburban_map", self.suburbmaps[1][self.ui.suburb_combo.currentIndex()])
+        self.module.set_parameter("suburban_attref", self.ui.suburb_line.text())
+
+        # --- CENTRAL BUSINESS DISTRICT ---
         self.module.set_parameter("considerCBD", int(self.ui.considergeo_check.isChecked()))
         if self.ui.cbdknown_radio.isChecked():
             self.module.set_parameter("locationOption", "S")
@@ -361,11 +370,20 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("locationLat", float(self.ui.cbdlat_box.text()))
         self.module.set_parameter("marklocation", int(self.ui.cbdmark_check.isChecked()))
 
+        # --- OPEN SPACE NETWORK ---
+        self.module.set_parameter("osnet_accessibility", int(self.ui.osnet_accessibility_check.isChecked()))
+        self.module.set_parameter("osnet_network", int(self.ui.osnet_spacenet_check.isChecked()))
+
+        # --- MAJOR WATER FEATURES ---
         self.module.set_parameter("include_rivers", int(self.ui.rivers_check.isChecked()))
         self.module.set_parameter("include_lakes", int(self.ui.lakes_check.isChecked()))
         self.module.set_parameter("calculate_wbdistance", int(self.ui.waterbody_distance_check.isChecked()))
         self.module.set_parameter("river_map", self.rivermaps[1][self.ui.rivers_combo.currentIndex()])
         self.module.set_parameter("lake_map", self.lakemaps[1][self.ui.lakes_combo.currentIndex()])
+
+        # --- BUILT WATER INFRASTRUCTURE ---
+
+        # --- FLOW PATH DELINEATION ---
         self.module.set_parameter("flowpath_method", self.delin_methods[self.ui.flowpath_combo.currentIndex()])
         self.module.set_parameter("dem_smooth", int(self.ui.demsmooth_check.isChecked()))
         self.module.set_parameter("dem_passes", int(self.ui.demsmooth_spin.value()))
