@@ -298,31 +298,13 @@ class DelinBlocks(UBModule):
                 blockslist.append(current_block)
                 blockIDcount += 1       # Increase the Block ID Count by one
 
-        # - STEP 2 - FIND BLOCK NEIGHBOURHOOD
-        self.notify("Establishing neighbourhoods")
-        for i in range(len(blockslist)):    # Loop across current Blocks
-            curblock = blockslist[i]
-            curblock_id = curblock.get_attribute("BlockID")
-            nhd = []
-            for j in range(len(blockslist)):    # Loop across blocks again
-                comp_block_id = blockslist[j].get_attribute("BlockID")
-                if comp_block_id == curblock_id:  # If the IDs are identical, then skip
-                    continue
-                if nhd_type == 8:  # 8 neighbours, search based on points
-                    if curblock.shares_geometry(blockslist[j], "points"):
-                        nhd.append(comp_block_id)
-                elif nhd_type == 4: # 4 neighbours, search based on edges
-                    if curblock.shares_geometry(blockslist[j], "edges"):
-                        nhd.append(comp_block_id)
-            curblock.add_attribute("Neighbours", nhd)   # ATTRIBUTE: neighbourhood type<list> - [ Block IDs ]
-
-        # - STEP 3 - GET BASIC RASTER DATA SETS
+        # - STEP 2 - GET BASIC RASTER DATA SETS
         # Depending on what's available, certain options can be chosen
         #   - Land use: + population, will allow the model to do urban planning
         #   - Elevation: will allow the model to do Flowpath delineation
         self.notify("Loading Basic Input Maps")
 
-        # STEP 3.1 :: Load Land Use Map
+        # STEP 2.1 :: Load Land Use Map
         if self.landuse_map:
             lu_dref = self.datalibrary.get_data_with_id(self.landuse_map)       # Retrieve the land use data reference
             fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
@@ -333,14 +315,14 @@ class DelinBlocks(UBModule):
             luc_res = landuseraster.get_cellsize()
             csc = int(bs / luc_res)  # csc = cell selection count - knowing how many cells wide and tall
 
-            # STEP 3.2 :: Assign land use to Blocks
+            # STEP 2.2 :: Assign land use to Blocks
             for i in range(len(blockslist)):
                 current_block = blockslist[i]
                 col_origin = int(current_block.get_attribute("OriginX") / luc_res)
                 row_origin = int(current_block.get_attribute("OriginY") / luc_res)
                 lucdatamatrix = landuseraster.get_data_square(col_origin, row_origin, csc, csc)
 
-                # STEP 3.2.1 - Tally Frequency of Land uses
+                # STEP 2.2.1 - Tally Frequency of Land uses
                 landclassprop, activity = self.calculate_frequency_of_lu_classes(lucdatamatrix)
 
                 # print current_block.get_attribute("BlockID"), "LUC Props: ", landclassprop
@@ -368,7 +350,7 @@ class DelinBlocks(UBModule):
                 current_block.add_attribute("pLU_NA", landclassprop[12])    # NA = Unclassified
                 map_attr.set_attribute("HasLUC", 1)
 
-                # STEP 3.2.2 - Calculate Spatial Metrics
+                # STEP 2.2.2 - Calculate Spatial Metrics
                 if self.spatialmetrics:     # Using the land class proportions
                     richness = self.calculate_metric_richness(landclassprop)
                     shdiv, shdom, sheven = self.calculate_metric_shannon(landclassprop, richness)
@@ -378,7 +360,7 @@ class DelinBlocks(UBModule):
                     current_block.add_attribute("ShEven", sheven)
                     map_attr.add_attribute("HasSPATIALMETRICS", 1)
 
-                # STEP 3.2.3 - Delineate Patches if necessary
+                # STEP 2.2.3 - Delineate Patches if necessary
                 if self.patchdelin:
                     blockpatches = ubmethods.patchdelin_landscape_patch_delineation(lucdatamatrix,
                                                                                     landuseraster.get_nodatavalue())
@@ -408,7 +390,7 @@ class DelinBlocks(UBModule):
             map_attr.set_attribute("HasLUC", 0)
             map_attr.add_attribute("HasSPATIALMETRICS", 0)
 
-        # STEP 3.3 :: Load Population Map
+        # STEP 2.3 :: Load Population Map
         if self.population_map:
             pop_dref = self.datalibrary.get_data_with_id(self.population_map)   # Retrieve the population data reference
             fullfilepath = pop_dref.get_data_file_path() + pop_dref.get_metadata("filename")
@@ -419,7 +401,7 @@ class DelinBlocks(UBModule):
             pop_res = populationraster.get_cellsize()
             csc = int(bs / pop_res)  # csc = cell selection count - knowing how many cells wide and tall
 
-            # STEP 3.4 :: ASSIGN POPULATION TO BLOCKS
+            # STEP 2.4 :: ASSIGN POPULATION TO BLOCKS
             for i in range(len(blockslist)):
                 current_block = blockslist[i]
                 col_origin = int(current_block.get_attribute("OriginX") / pop_res)
@@ -451,7 +433,7 @@ class DelinBlocks(UBModule):
             populationraster = None     # Indicates that the simulation has no population data, limits features
             map_attr.set_attribute("HasPOP", 0)
 
-        # STEP 3.5 :: Load Elevation Map
+        # STEP 2.5 :: Load Elevation Map
         if self.elevation_map:
             elev_dref = self.datalibrary.get_data_with_id(self.elevation_map)     # Retrieves the elevation data ref
             fullfilepath = elev_dref.get_data_file_path() + elev_dref.get_metadata("filename")
@@ -462,14 +444,14 @@ class DelinBlocks(UBModule):
             elev_res = elevationraster.get_cellsize()
             csc = int(bs / elev_res)
 
-            # STEP 3.6 :: ASSIGN ELEVATION TO BLOCKS
+            # STEP 2.6 :: ASSIGN ELEVATION TO BLOCKS
             for i in range(len(blockslist)):
                 current_block = blockslist[i]
                 col_origin = int(current_block.get_attribute("OriginX") / elev_res)
                 row_origin = int(current_block.get_attribute("OriginY") / elev_res)
                 elevdatamatrix = elevationraster.get_data_square(col_origin, row_origin, csc, csc)
 
-                # STEP 3.6.1 - Calculate elevation metrics for the Block
+                # STEP 2.6.1 - Calculate elevation metrics for the Block
                 elevationpoints = []
                 for row in range(len(elevdatamatrix)):
                     for col in range(len(elevdatamatrix[0])):
@@ -486,12 +468,34 @@ class DelinBlocks(UBModule):
                     current_block.add_attribute("MinElev", min(elevationpoints))
                     map_attr.add_attribute("HasELEV", 1)
 
-                # STEP 3.6.2 - Map elevation data onto Block Patches
+                # STEP 2.6.2 - Map elevation data onto Block Patches
                 pass
 
         else:
             elevationraster = None  # Indicates that the simulation has no elevation data, many water features disabled
             map_attr.set_attribute("HasELEV", 0)
+
+        # - STEP 3 - FIND BLOCK NEIGHBOURHOOD
+        self.notify("Establishing neighbourhoods")
+        for i in range(len(blockslist)):  # Loop across current Blocks
+            curblock = blockslist[i]
+            if curblock.get_attribute("Status") == 0:
+                continue    # If the block has zero status, don't consider
+
+            curblock_id = curblock.get_attribute("BlockID")
+            nhd = []
+            for j in range(len(blockslist)):  # Loop across blocks again
+                comp_block_id = blockslist[j].get_attribute("BlockID")
+                if comp_block_id == curblock_id or blockslist[j].get_attribute("Status") == 0:
+                    # If the IDs are identical or the Block has zero status, then skip
+                    continue
+                if nhd_type == 8:  # 8 neighbours, search based on points
+                    if curblock.shares_geometry(blockslist[j], "points"):
+                        nhd.append(comp_block_id)
+                elif nhd_type == 4:  # 4 neighbours, search based on edges
+                    if curblock.shares_geometry(blockslist[j], "edges"):
+                        nhd.append(comp_block_id)
+            curblock.add_attribute("Neighbours", nhd)  # ATTRIBUTE: neighbourhood type<list> - [ Block IDs ]
 
         # - STEP 4 - Assign Municipal Regions and Suburban Regions to Blocks
         municipalities = []
@@ -676,7 +680,7 @@ class DelinBlocks(UBModule):
 
             # Once scan is complete, remove the current Block's ID from the list as it is NOT downstream of itself.
             downstream_ids.remove(current_id)
-            downstream_ids.remove(-2)   # Also remove the -2, which is specified if the Outlet Block is found
+            # downstream_ids.remove(-2)   # Also remove the -2, which is specified if the Outlet Block is found
             self.notify("BlockID"+str(current_id)+" DownstreamL "+str(downstream_ids))
             current_block.add_attribute("DownstrIDs", downstream_ids)
 
@@ -731,7 +735,7 @@ class DelinBlocks(UBModule):
             z = current_block.get_attribute("AvgElev")
             neighbours_z = self.scenario.retrieve_attribute_value_list("Block", "AvgElev",
                                                                        current_block.get_attribute("Neighbours"))
-            print "Neighbour Z: ", neighbours_z
+            # print "Neighbour Z: ", neighbours_z
 
             # Find the downstream block unless it's a sink
             if self.flowpath_method == "D8":
@@ -874,10 +878,10 @@ class DelinBlocks(UBModule):
         :return: down_id: block ID that water drains to, min(dz) the largest elevation difference.
         """
         dz = []
-        print nhd_z
+        # print nhd_z
         for i in range(len(nhd_z[1])):
             dz.append(nhd_z[1][i] - z)     # Calculate the elevation difference
-        if min(dz) <= 0:    # If there is a drop in elevation
+        if min(dz) < 0:    # If there is a drop in elevation - this also means the area cannot be flat!
             down_id = nhd_z[0][dz.index(min(dz))]    # The ID corresponds to the minimum elevation difference
         else:
             down_id = -9999 # Otherwise there is a sink in the current Block
@@ -989,8 +993,8 @@ class DelinBlocks(UBModule):
                 for n in neighbours:
                     ne_block = self.scenario.get_asset_with_name("BlockID"+str(n)).get_attribute("Elevation")
                     elevs.append(ne_block)
-                print elevs
-                print float(sum(elevs)/len(elevs))
+                # print elevs
+                # print float(sum(elevs)/len(elevs))
                 new_elevs[str(current_block.get_attribute("BlockID"))] = float(sum(elevs) / len(elevs))
             for b in range(len(blockslist)):
                 blockslist[i].set_attribute("Elevation", new_elevs[str(blockslist[i].get_attribute("BlockID"))])
