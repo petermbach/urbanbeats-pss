@@ -66,10 +66,10 @@ class DelinBlocks(UBModule):
         self.simulationyear = simulationyear
 
         # CONNECTIONS WITH CORE SIMULATION
-        self.activesim = activesim
-        self.scenario = scenario
-        self.datalibrary = datalibrary
-        self.projectlog = projectlog
+        self.activesim = activesim      # The current active UBSimulation() object from urbanbeatscore.py
+        self.scenario = scenario        # The current active UBScenario() object
+        self.datalibrary = datalibrary  # The active data library UBDataLibrary()
+        self.projectlog = projectlog    # Active project log
 
         # PARAMETER LIST DEFINITION
         # (Tab 1.1) ESSENTIAL SPATIAL DATA SETS
@@ -96,7 +96,7 @@ class DelinBlocks(UBModule):
         self.create_parameter("spatialmetrics", BOOL, "calculate spatial metrics?")
         self.blocksize = 500
         self.blocksize_auto = 0
-        self.neighbourhood = "M"
+        self.neighbourhood = "M"    # M (Moore) or V (von Neumann)
         self.patchdelin = 1
         self.spatialmetrics = 1
 
@@ -198,6 +198,7 @@ class DelinBlocks(UBModule):
         # --- SECTION 1 - PREPARATION FOR CREATING THE GRIDDED MAP BASED ON THE INPUT BOUNDARY MAP ---
 
         # Check the neighbourhood rule and set the number of adjacent cells, nhd_type, accordingly
+        # This is only used for attribute saving, i.e. could remove this and use "M" and "V" instead.
         if self.neighbourhood == "M":   # Determine number of neighbour cells depending on the neighbourhood
             nhd_type = 8    # 8 cardinal directions
         else:
@@ -278,7 +279,7 @@ class DelinBlocks(UBModule):
 
                 # - STEP 1 - CREATE BLOCK GEOMETRY
                 current_block = self.create_block_face(x, y, bs, blockIDcount, boundarypoly)
-                if current_block is None:
+                if current_block is None:       # current_block is UBVector() type otherwise
                     blockIDcount += 1  # Increase the Block ID Count by one
                     continue
 
@@ -1086,22 +1087,22 @@ class DelinBlocks(UBModule):
                 blockslist[i].set_attribute("Elevation", new_elevs[str(blockslist[i].get_attribute("BlockID"))])
         return True
 
-    def create_block_face(self, x, y, cs, ID, boundary):
+    def create_block_face(self, x, y, bs, ID, boundary):
         """Creates the Block Face, the polygon of the block as a UBVector
 
         :param x: The starting x coordinate (on 0,0 origin)
         :param y: The starting y coordinate (on 0,0 origin)
-        :param cs: Block size [m]
+        :param bs: Block size [m]
         :param ID: the current ID number to be assigned to the Block
         :param boundary: A Shapely polygon object, used to test if the block face intersects
         with it. Also determines whether to save the Block or not.
         :return: UBVector object containing the BlockID attribute and geometry
         """
         # Define points
-        n1 = (x * cs, y * cs, 0)        # Bottom left (x, y, z)
-        n2 = ((x + 1)*cs, y * cs, 0)    # Bottom right
-        n3 = ((x + 1)*cs, (y + 1)*cs, 0)   # Top right
-        n4 = (x * cs, (y + 1) * cs, 0)    # Top left
+        n1 = (x * bs, y * bs, 0)        # Bottom left (x, y, z)
+        n2 = ((x + 1) * bs, y * bs, 0)    # Bottom right
+        n3 = ((x + 1) * bs, (y + 1) * bs, 0)   # Top right
+        n4 = (x * bs, (y + 1) * bs, 0)    # Top left
 
         # Create the Shapely Polygon and test against the boundary to determine active/inactive.
         blockpoly = Polygon((n1[:2], n2[:2], n3[:2], n4[:2]))
