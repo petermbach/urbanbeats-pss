@@ -264,7 +264,9 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
             self.ui.lakes_combo.setCurrentIndex(0)
 
         self.ui.rivers_check.setChecked(self.module.get_parameter("include_rivers"))
+        self.ui.rivers_attname.setText(self.module.get_parameter("river_attname"))
         self.ui.lakes_check.setChecked(self.module.get_parameter("include_lakes"))
+        self.ui.lakes_attname.setText(self.module.get_parameter("lake_attname"))
         self.ui.waterbody_distance_check.setChecked(self.module.get_parameter("calculate_wbdistance"))
 
         # --- BUILT WATER INFRASTRUCTURE ---
@@ -380,6 +382,8 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("calculate_wbdistance", int(self.ui.waterbody_distance_check.isChecked()))
         self.module.set_parameter("river_map", self.rivermaps[1][self.ui.rivers_combo.currentIndex()])
         self.module.set_parameter("lake_map", self.lakemaps[1][self.ui.lakes_combo.currentIndex()])
+        self.module.set_parameter("river_attname", str(self.ui.rivers_attname.text()))
+        self.module.set_parameter("lake_attname", str(self.ui.lakes_attname.text()))
 
         # --- BUILT WATER INFRASTRUCTURE ---
 
