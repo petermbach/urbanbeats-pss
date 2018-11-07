@@ -25,15 +25,17 @@ __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2012. Peter M. Bach"
 
 # --- GENERAL ---
-NOCHARS = ["<", ">", ":", '"', "/", "\\", "|", "?", "*"]
+NOCHARS = ["<", ">", ":", '"', "/", "\\", "|", "?", "*"]    # Illegal characters for filenames
 
 # --- LANGUAGE ---
-LANGUAGECOMBO = ["DE", "EN", "ES", "FR", "PO", "CN", "JP"]
+LANGUAGECOMBO = ["DE", "EN", "ES", "FR", "PO", "CN", "JP"]      # Abbreviations for foreign languages used
 
 # --- DATA LIBRARY ---
-DATACATEGORIES = ["Spatial Data", "Time Series Data", "Qualitative Data"]
+DATACATEGORIES = ["Spatial Data", "Time Series Data", "Qualitative Data"]       # Naming convention for data categories
+
 SPATIALDATA = ["Boundaries", "Built Infrastructure", "Elevation", "Employment", "Land Use",
-               "Locality Maps", "Overlays", "Population", "Soil", "Water Bodies"]
+               "Locality Maps", "Overlays", "Population", "Soil", "Water Bodies"]   # Naming conventions for Spatial
+
 SUBDATASETS = {"Boundaries": ["Geopolitical", "Suburban", "Catchment"],
                "Population": ["Count", "Density"],
                "Soil": ["Classification", "Infiltration Rate"],
@@ -41,8 +43,9 @@ SUBDATASETS = {"Boundaries": ["Geopolitical", "Suburban", "Catchment"],
                "Overlays": ["Planning", "Groundwater", "Environmental", "Heritage", "Regulatory"],
                "Water Bodies": ["Rivers", "Lakes"],
                "Built Infrastructure": ["Rail Network", "Road Network", "Water Network", "WSUD"]
-               }
-TEMPORALDATA = ["Rainfall", "Evapotranspiration", "Solar Radiation", "Temperature"]
+               }    # Naming convention for sub-categories of spatial data
+
+TEMPORALDATA = ["Rainfall", "Evapotranspiration", "Solar Radiation", "Temperature"] # Naming convention
 
 # SHAPEFILEEXT
 # If we are dealing with a shapefile, need to copy all possible files across, file formats
@@ -51,10 +54,10 @@ SHAPEFILEEXT = [".shp", ".shx", ".dbf", ".prj", ".sbn", ".sbx", ".fbn", ".fbx", 
                                 ".aih", ".ixs", ".mxs", ".atx", ".shp.xml", ".cpg", ".qix"]
 
 # --- LOCATION & MAPS ---
-COORDINATESYSTEMS = ["GDA", "UTM", "Other"]
+COORDINATESYSTEMS = ["GDA", "UTM", "Other"]     # Short-form abbreviation for key coordinate system types
 
 CITIES = ["Adelaide", "Brisbane", "Innsbruck", "Melbourne", "Nanjing", "Perth",
-                  "SanFrancisco", "Sydney", "Zurich", "Other"]
+                  "SanFrancisco", "Sydney", "Zurich", "Other"]      # Spelling and naming for cities
 MAPSTYLES = ["CARTO", "ESRI", "OSM", "TONER", "TERRAIN"]
 
 COORDINATES = {"Adelaide": [-34.9285, 138.6007],
@@ -120,5 +123,6 @@ ASSET_IDENTIFIERS = {"Block": "The most basic building block of the city in Urba
                                   "automata is conducted is run. UrbanCells are aggregated to Blocks later on.",
                      "Basin": "The collection of Blocks or Patches that make up the urban catchment.",
                      "Locality": "Location of a civic, transport, landmark or other urban facility of interest in"
-                                 "the modelling."
+                                 "the modelling.",
+                     "MapAttributes": "Global attributes of the simulation map that all modules are working on."
                      }

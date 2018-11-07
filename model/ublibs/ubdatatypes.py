@@ -156,7 +156,7 @@ class UBComponent(object):
         try:
             self.__attributes[name] = value
         except KeyError:
-            print "WARNING NO ATTTRIBUTE NAMED: "+str(name)
+            print "WARNING NO ATTRIBUTE NAMED: "+str(name)
         return True
 
     def change_attribute(self, name, value):

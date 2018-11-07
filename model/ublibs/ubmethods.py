@@ -42,7 +42,7 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 # --- PYTHON LIBRARY IMPORTS ---
 import math
 import numpy as np
-
+from ..progref import ubglobals
 # --- URBANBEATS LIBRARY IMPORTS ---
 
 
@@ -58,7 +58,7 @@ def autosize_blocks(width, height):
     :param height: the height of the input map in [m] - ymax - ymin
     :return auto-determined blocksize
     """
-    block_limit = 2000   # maximum number of Blocks permissible in the case study
+    block_limit = 2000   # maximum number of Blocks permissible in the case study - Make an option in future.
     tot_area = width * height
     ideal_blocksize = math.sqrt(tot_area / float(block_limit))
 
@@ -74,14 +74,13 @@ def autosize_blocks(width, height):
         blocksize = 2000
     else:
         blocksize = 5000    # Maximum Block Size will be 5000m x 5000m, we cannot simply afford to go higher
-    return blocksize
+    return blocksize        # because of data resolution, etc.
 
 
 def reviewFileName(fname):
     """Checks the filename for illegal characters, if there are illegal characters, function
     removes them and modifies the filename so that the export function does not crash"""
-    illegal_char = ['\\', '/', ':', '*', '?', '"', '<', '>', '|']
-    for char in illegal_char:
+    for char in ubglobals.NOCHARS:
         if char in fname:
             fname = fname.replace(char, '')
     return fname

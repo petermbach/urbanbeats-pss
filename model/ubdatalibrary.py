@@ -152,8 +152,8 @@ class UrbanBeatsDataLibrary(object):
 
         :param dataref: The data reference object created by instantiating the
                         UrbanBeatsDataReference() class
-        :param count_incr: A boolean, if True, increase the counting increment and add an ID, if
-                        false, then don't increase the counting increment (used then restoring library)
+        :param count_incr: A boolean, if True, increase the counting increment and adds an ID, if
+                        false, then don't increase the counting increment (used when restoring library)
         """
         dataclass = dataref.get_metadata("class")
         if count_incr: dataref.assign_id("ID#ds_"+str(self.__data_library_idcount))
