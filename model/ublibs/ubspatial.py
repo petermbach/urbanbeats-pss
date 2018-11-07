@@ -159,6 +159,91 @@ def import_polygonal_map(filepath, option, naming, global_offsets):
     return geometry_collection
 
 
+def import_linear_network(filename, format, global_offsets, **kwargs):
+    """Imports the shapefile containing the line data and transfers the information into an array of tuples.
+    The import algorithm checks the shapefile's geometry and Segmentizes Lines and MultiLine geometry. The function
+    should be called on operations involving rivers, water infrastructure, roads and other types of networks. If a
+    UBVector() object is returned, then all attributes from the original shapefile will be contained therein.
+
+    :param filename: Full filepath to the shapefile to be imported
+    :param format: Data format to be returned by the function "Points" or "Lines" or "Leaflet"
+    :param global_offsets: The global xmin/ymin to convert the data to (0,0) origin
+    :param kwargs: "Segmentmax" - specifies the number of segmentations if using POINTS format, usually Blocksize / 4
+    :return: A list of tuples containing all points of the river (POINTS) or a list of UBVector() instances.
+    """
+    driver = ogr.GetDriverByName('ESRI Shapefile')  # Open the file and get the total number of features
+    data = driver.Open(filename, 0)
+    if data is None:
+        return None
+    layer = data.GetLayer()
+    totfeatures = layer.GetFeatureCount()
+
+    spatial_ref = layer.GetSpatialRef()     # Obtain spatial reference
+    inputprojcs = spatial_ref.GetAttrValue("PROJCS")
+    if inputprojcs is None:
+        print "Warning, spatial reference epsg cannot be found!"
+        return None
+
+    layerDef = layer.GetLayerDefn()
+    attnames = []
+    for f in range(layerDef.GetFieldCount()):
+        attnames.append(layerDef.GetFieldDefn(f).GetName())
+
+    # LEAFLET FORMAT , need to do Projection [TO DO]
+    if format == "LEAFLET":  # [TO DO]
+        pass
+
+    if format == "POINTS":      # We only care about the coordinates, but not the actual lines and attributes
+        try:
+            segmentmax = kwargs["Segments"]     # Checks the segments, if this hasn't been specified, continue
+        except KeyError:
+            print "Error, no segments specified."
+            return None
+        featurepoints = []
+        for i in range(totfeatures):
+            currentfeature = layer.GetFeature(i)
+            geometry = currentfeature.GetGeometryRef()
+            if geometry.GetGeometryType() == 2:  # LINE
+                geometry.Segmentize(segmentmax)
+                for j in range(geometry.GetPointCount()):  # Get points
+                    featurepoints.append((geometry.GetX(j) - global_offsets[0], geometry.GetY(j) - global_offsets[1]))
+            elif geometry.GetGeometryType() == 5:  # MULTILINESTRING
+                for j in range(geometry.GetGeometryCount()):  # Loop through geometries
+                    linestring = geometry.GetGeometryRef(j)
+                    linestring.Segmentize(segmentmax)
+                    for k in range(linestring.GetPointCount()):  # Get points
+                        featurepoints.append((linestring.GetX(k) - global_offsets[0],
+                                              linestring.GetY(k) - global_offsets[1]))
+        return featurepoints
+    elif format == "LINES":     # We want UBVector() instances of line objects to do geometric operations with
+        linefeatures = []
+        for i in range(totfeatures):
+            currentfeature = layer.GetFeature(i)
+            geometry = currentfeature.GetGeometryRef()
+            if geometry.GetGeometryType() == 2:
+                coordinates = []
+                for j in range(geometry.GetPointCount()):
+                    coordinates.append((geometry.GetX(j) - global_offsets[0], geometry.GetY(j) - global_offsets[1]))
+                linefeature = ubdata.UBVector(coordinates)
+                linefeature.determine_geometry(coordinates)
+                for a in attnames:
+                    linefeature.add_attribute(str(a), currentfeature.GetFieldAsString(a))
+                linefeatures.append(linefeature)
+            elif geometry.GetGeometryType() == 5:
+                for j in range(geometry.GetGeometryCount()):
+                    linestring = geometry.GetGeometryRef(j)
+                    coordinates = []
+                    for k in range(linestring.GetPointCount()):
+                        coordinates.append((linestring.GetX(k) - global_offsets[0],
+                                            linestring.GetY(k) - global_offsets[1]))
+                    linefeature = ubdata.UBVector(coordinates)
+                    linefeature.determine_geometry(coordinates)
+                    for a in attnames:
+                        linefeature.add_attribute(str(a), currentfeature.GetFieldAsString(a))
+                    linefeatures.append(linefeature)
+        return linefeatures
+
+
 def calculate_offsets(map_input, global_extents):
     """Calculates the map offset between two rasters, based on raster A. This is used particularly in block delineation
     where the Land use Raster's extents are used and all other input maps are shifted and adjusted accordingly.
