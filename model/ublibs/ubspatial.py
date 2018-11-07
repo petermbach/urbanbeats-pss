@@ -639,6 +639,14 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
     if map_attr.get_attribute("HasSUBURBS"):
         fielddefmatrix.append(ogr.FieldDefn("Suburb", ogr.OFTString))
 
+    if map_attr.get_attribute("HasRIVERS"):
+        fielddefmatrix.append(ogr.FieldDefn("HasRiver", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("RiverNames", ogr.OFTString))
+
+    if map_attr.get_attribute("HasLAKES"):
+        fielddefmatrix.append(ogr.FieldDefn("HasLake", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("LakeNames", ogr.OFTString))
+
     # More attributes to come in future
     # Create the fields
     for field in fielddefmatrix:
@@ -716,6 +724,13 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
         if map_attr.get_attribute("HasSUBURBS"):
             feature.SetField("Suburb", str(currentAttList.get_attribute("Suburb")))
 
+        if map_attr.get_attribute("HasRIVERS"):
+            feature.SetField("HasRiver", int(currentAttList.get_attribute("HasRiver")))
+            feature.SetField("RiverNames", str(",".join(map(str, currentAttList.get_attribute("RiverNames")))))
+
+        if map_attr.get_attribute("HasLAKES"):
+            feature.SetField("HasLake", int(currentAttList.get_attribute("HasLake")))
+            feature.SetField("LakeNames", str(",".join(map(str, currentAttList.get_attribute("LakeNames")))))
 
         layer.CreateFeature(feature)
 

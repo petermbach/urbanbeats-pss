@@ -41,7 +41,7 @@ import gc
 import tempfile
 import math
 import time
-from shapely.geometry import Polygon
+from shapely.geometry import Polygon, LineString
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 from ubmodule import *
@@ -570,14 +570,24 @@ class DelinBlocks(UBModule):
 
         # - STEP 5 - Load Rivers and Lakes, assign to Blocks and calculate closest distance
         if self.include_rivers:
-            #DO stuff
-            pass
+            map_attr.add_attribute("HasRIVERS", 1)
+            river_map = self.datalibrary.get_data_with_id(self.river_map)
+            fullfilepath = river_map.get_data_file_path() + river_map.get_metadata("filename")
+            rivers = ubspatial.import_linear_network(fullfilepath, "LINES",
+                                                     (map_attr.get_attribute("xllcorner"),
+                                                      map_attr.get_attribute("yllcorner")))
+            self.detect_rivers_in_blocks(blockslist, rivers)
         else:
             map_attr.add_attribute("HasRIVERS", 0)
 
         if self.include_lakes:
-            #DO Stuff
-            pass
+            map_attr.add_attribute("HasLAKES", 1)
+            lake_map = self.datalibrary.get_data_with_id(self.lake_map)
+            fullfilepath = lake_map.get_data_file_path() + lake_map.get_metadata("filename")
+            lakes = ubspatial.import_polygonal_map(fullfilepath, "native", "Lake",
+                                                   (map_attr.get_attribute("xllcorner"),
+                                                    map_attr.get_attribute("yllcorner")))
+            self.detect_lakes_in_blocks(blockslist, lakes)
         else:
             map_attr.add_attribute("HasLAKES", 0)
 
@@ -608,6 +618,75 @@ class DelinBlocks(UBModule):
     # ------------------------------------------------
     # |-    ADDITIONAL MODULE FUNCTIONS             -|
     # ------------------------------------------------
+    def detect_lakes_in_blocks(self, blockslist, lakeslist):
+        """Intersects all blocks with all lakes and transfers lake name to each Block.
+
+        :param blockslist: the list of active Blocks in the simulation
+        :param lakeslist: loaded UBVector() objects of lake polygons.
+        :return: modifies the existing UBVector() Block objects with "HasLake" and "LakeNames" attributes.
+        """
+        for i in range(len(blockslist)):
+            curblock = blockslist[i]
+            if curblock.get_attribute("Status") == 0:
+                continue
+            coordinates = curblock.get_points()
+            coordinates = [c[:2] for c in coordinates]
+            blockpoly = Polygon(coordinates)
+
+            haslake = 0
+            lakenames = []
+            for j in range(len(lakeslist)):
+                lakepoly = Polygon(lakeslist[j].get_points())
+                if not lakepoly.intersects(blockpoly):
+                    continue
+                lakename = lakeslist[j].get_attribute(self.lake_attname)
+                if lakename not in lakenames:
+                    lakenames.append(lakename)
+                haslake = 1
+
+            if haslake:
+                curblock.add_attribute("HasLake", 1)
+                curblock.add_attribute("LakeNames", lakenames)
+            else:
+                curblock.add_attribute("HasLake", 0)
+                curblock.add_attribute("LakeNames", [])
+        return True
+
+    def detect_rivers_in_blocks(self, blockslist, riverslist):
+        """Intersects all Blocks with all rivers and transfers river information to each Block.
+
+        :param blockslist: the list of active Blocks in the simulation
+        :param riverslist: loaded UBVector() objects of rivers.
+        :return: modifies all existing UBVector() Block Objects with "HasRiver" and "RiverNames" attributes.
+        """
+        for i in range(len(blockslist)):
+            curblock = blockslist[i]
+            if curblock.get_attribute("Status") == 0:
+                continue
+            coordinates = curblock.get_points()
+            coordinates = [c[:2] for c in coordinates]
+            blockpoly = Polygon(coordinates)
+
+            hasriver = 0
+            rivernames = []
+            for j in range(len(riverslist)):
+                path = LineString(riverslist[j].get_points())
+                if not path.intersects(blockpoly):
+                    continue
+                # If the current linestring intersects with the Block, then...
+                rivername = riverslist[j].get_attribute(self.river_attname)
+                if rivername not in rivernames:
+                    rivernames.append(rivername)
+                hasriver = 1
+
+            if hasriver:
+                curblock.add_attribute("HasRiver", 1)
+                curblock.add_attribute("RiverNames", rivernames)
+            else:
+                curblock.add_attribute("HasRiver", 0)
+                curblock.add_attribute("RiverNames", [])
+        return True
+
     def create_block_flow_hashtable(self, blockslist):
         """Creates a hash table of BlockIDs for quick lookup, this allows the basin delineation algorithm to rapidly
         delineate the sub-catchment
@@ -709,7 +788,7 @@ class DelinBlocks(UBModule):
         :return: all data is saved to the UBVector instances as new Block data.
         """
         sink_ids = []
-        river_ids = []
+        river_blocks = []
         lake_ids = []
 
         for i in range(len(blockslist)):
@@ -723,12 +802,18 @@ class DelinBlocks(UBModule):
             # SKIP CONDITION 2 - Block already contains a river
             if current_block.get_attribute("HasRiver"):
                 current_block.add_attribute("downID", -2)   # Immediately assign it the -2 value for downID
-                river_ids.append(current_blockid)
+                current_block.add_attribute("max_dz", 0)
+                current_block.add_attribute("avg_slope", 0)
+                current_block.add_attribute("h_pond", 0)  # Only for sink blocks will height of ponding h_pond > 0
+                river_blocks.append(current_block)
                 continue
 
             # SKIP CONDITION 3 - Block contains a lake
             if current_block.get_attribute("HasLake"):
                 current_block.add_attribute("downID", -2)  # Immediately assign it the -2 value for downID
+                current_block.add_attribute("max_dz", 0)
+                current_block.add_attribute("avg_slope", 0)
+                current_block.add_attribute("h_pond", 0)  # Only for sink blocks will height of ponding h_pond > 0
                 lake_ids.append(current_blockid)
                 continue
 
@@ -778,16 +863,17 @@ class DelinBlocks(UBModule):
         self.unblock_sinks(sink_ids)
 
         if map_attr.get_attribute("HasRIVER"):
-            self.connect_river_blocks(blockslist)   # [TO DO]
+            self.connect_river_blocks(river_blocks)   # [TO DO]
         return True
 
-    def connect_river_blocks(self, blockslist):
+    def connect_river_blocks(self, river_blocks):
         """Scans the blocks for those containing a river system and connects them based on adjacency and river
         rules.
 
-        :param blockslist: the list () of block UBVector instances.
+        :param river_blocks: the list () of block UBVector() instances with HasRiver == 1.
         :return: Each block is given a new attribute specifying the Block containing a river that it drains into
         """
+        # Connect blocks in logical order, probably based on the linestrings of the river
         pass    # Scan block list, if HasRiver true, then check neighbours, if they have river and river name is
                 # identical, connect, otherwise specify -1 as unconnected
         return True # [TO DO]
