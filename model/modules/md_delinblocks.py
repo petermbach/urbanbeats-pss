@@ -162,14 +162,12 @@ class DelinBlocks(UBModule):
         self.create_parameter("dem_passes", DOUBLE, "number of passes for smoothing")
         self.create_parameter("guide_natural", BOOL, "guide flowpath delineation using pre-loaded natural feature?")
         self.create_parameter("guide_built", BOOL, "guide flowpath delineation using built infrastructure?")
-        self.create_parameter("guide_natural_map", STRING, "filepath to natural features map to guide flowpaths")
         self.create_parameter("guide_built_map", STRING, "filepath to built infrastructure map to guide flowpaths")
         self.flowpath_method = "D8"
         self.dem_smooth = 0
         self.dem_passes = 1
         self.guide_natural = 0
         self.guide_built = 0
-        self.guide_natural_map = ""
         self.guide_built_map = ""
 
         # NON-VISIBLE PARAMETER LIST - USED THROUGHOUT THE SIMULATION
@@ -443,7 +441,7 @@ class DelinBlocks(UBModule):
             self.notify("Load Complete!")
             elevation_offset = ubspatial.calculate_offsets(elevationraster, map_attr)
             elev_res = elevationraster.get_cellsize()
-            csc = int(bs / elev_res)
+            csc = int(bs / elev_res)    # Figure out how many cells wide and cells tall in the elevation raster
 
             # STEP 2.6 :: ASSIGN ELEVATION TO BLOCKS
             for i in range(len(blockslist)):
@@ -479,12 +477,12 @@ class DelinBlocks(UBModule):
         # - STEP 3 - FIND BLOCK NEIGHBOURHOOD
         self.notify("Establishing neighbourhoods")
         for i in range(len(blockslist)):  # Loop across current Blocks
-            curblock = blockslist[i]
+            curblock = blockslist[i]    # curblock is the reference to the UBVector() instance in blockslist
             if curblock.get_attribute("Status") == 0:
                 continue    # If the block has zero status, don't consider
 
             curblock_id = curblock.get_attribute("BlockID")
-            nhd = []
+            nhd = []    # Will contain all block IDs in the Neighbourhood (nhd)
             for j in range(len(blockslist)):  # Loop across blocks again
                 comp_block_id = blockslist[j].get_attribute("BlockID")
                 if comp_block_id == curblock_id or blockslist[j].get_attribute("Status") == 0:
@@ -529,10 +527,12 @@ class DelinBlocks(UBModule):
 
         # Future [TO DO] Catchment Map
 
-        # Check intersection with blocks - assign the LGA and suburb based on the Block Centroid
+        # Check intersection with blocks - assign the municipality and suburb based on the Block Centroid
         for i in range(len(blockslist)):
             current_block = blockslist[i]
             coordinates = current_block.get_points()
+            # List comprehension: creates a list of coordinates with only
+            # x, y points. I.e. removes the Z-coordinate
             coordinates = [c[:2] for c in coordinates]
             blockpoly = Polygon(coordinates)
 
@@ -595,7 +595,7 @@ class DelinBlocks(UBModule):
         # - STEP 6 - Delineate Flow Paths and Drainage Basins
         if map_attr.get_attribute("HasELEV"):
             # Delineate flow paths
-            if self.dem_smooth:
+            if self.dem_smooth:     # If the user wishes to smooth the DEM, then perform the smoothing passes
                 self.perform_smooth_dem(blockslist)
 
             self.delineate_flow_paths(blockslist, map_attr)     # Delineates the flow directions

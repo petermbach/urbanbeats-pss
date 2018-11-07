@@ -111,10 +111,6 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.lakes_combo.clear()
         [self.ui.lakes_combo.addItem(str(self.lakemaps[0][i])) for i in range(len(self.lakemaps[0]))]
 
-        self.natfeatures = self.get_dataref_array("spatial", "Water Bodies")
-        self.ui.natfeature_combo.clear()
-        [self.ui.natfeature_combo.addItem(str(self.natfeatures[0][i])) for i in range(len(self.natfeatures[0]))]
-
         self.builtfeatures = self.get_dataref_array("spatial", "Built Infrastructure")
         self.ui.infrastructure_combo.clear()
         [self.ui.infrastructure_combo.addItem(str(self.builtfeatures[0][i])) for i in range(len(self.builtfeatures[0]))]
@@ -141,7 +137,6 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.cbdmanual_radio.clicked.connect(self.enable_disable_guis)
         self.ui.rivers_check.clicked.connect(self.enable_disable_guis)
         self.ui.lakes_check.clicked.connect(self.enable_disable_guis)
-        self.ui.natfeature_check.clicked.connect(self.enable_disable_guis)
         self.ui.infrastructure_check.clicked.connect(self.enable_disable_guis)
 
         self.ui.buttonBox.accepted.connect(self.save_values)
@@ -278,11 +273,6 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.natfeature_check.setChecked(self.module.get_parameter("guide_natural"))
         self.ui.infrastructure_check.setChecked(self.module.get_parameter("guide_built"))
 
-        try:    # NATURAL FEATURES COMBO
-            self.ui.natfeature_combo.setCurrentIndex(self.natfeatures.index(self.module.get_parameter("guide_natural_map")))
-        except ValueError:
-            self.ui.natfeature_combo.setCurrentIndex(0)
-
         try:    # BUILT FEATURES COMBO
             self.ui.infrastructure_combo.setCurrentIndex(self.builtfeatures.index(
                 self.module.get_parameter("guide_built_map")))
@@ -310,7 +300,6 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.lakes_combo.setEnabled(self.ui.lakes_check.isChecked())
         self.ui.waterbody_distance_check.setEnabled((self.ui.rivers_check.isChecked() or
                                                      self.ui.lakes_check.isChecked()))
-        self.ui.natfeature_combo.setEnabled(self.ui.natfeature_check.isChecked())
         self.ui.infrastructure_combo.setEnabled(self.ui.infrastructure_check.isChecked())
 
     def get_dataref_array(self, dataclass, datatype, *args):
@@ -393,5 +382,4 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("dem_passes", int(self.ui.demsmooth_spin.value()))
         self.module.set_parameter("guide_natural", int(self.ui.natfeature_check.isChecked()))
         self.module.set_parameter("guide_built", int(self.ui.infrastructure_check.isChecked()))
-        self.module.set_parameter("guide_natural_map", self.natfeatures[1][self.ui.natfeature_combo.currentIndex()])
         self.module.set_parameter("guide_built_map", self.builtfeatures[1][self.ui.infrastructure_combo.currentIndex()])

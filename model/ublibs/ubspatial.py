@@ -98,7 +98,7 @@ def import_polygonal_map(filepath, option, naming, global_offsets):
     layer = datasource.GetLayer(0)
     layerDefinition = layer.GetLayerDefn()
     attributecount = layerDefinition.GetFieldCount()
-    attnames = []
+    attnames = []   # Will contain all the names of attributes in the Shapefile
     for a in range(attributecount):
         attnames.append(layerDefinition.GetFieldDefn(a).GetName())
 
@@ -135,7 +135,7 @@ def import_polygonal_map(filepath, option, naming, global_offsets):
                 polygon.determine_geometry(coordinates)
                 polygon.add_attribute("Map_Naming", str(naming)+"_ID"+str(i+1)+"-"+str(j+1))
                 polygon.add_attribute("Area_sqkm", area)
-                for n in attnames:
+                for n in attnames:      # Assign all attribute data to the UBVector() instance
                     polygon.add_attribute(str(n), feature.GetFieldAsString(n))
                 geometry_collection.append(polygon)
         else:
@@ -220,7 +220,7 @@ def import_linear_network(filename, format, global_offsets, **kwargs):
         for i in range(totfeatures):
             currentfeature = layer.GetFeature(i)
             geometry = currentfeature.GetGeometryRef()
-            if geometry.GetGeometryType() == 2:
+            if geometry.GetGeometryType() == 2:     # LINESTRING
                 coordinates = []
                 for j in range(geometry.GetPointCount()):
                     coordinates.append((geometry.GetX(j) - global_offsets[0], geometry.GetY(j) - global_offsets[1]))
@@ -229,7 +229,7 @@ def import_linear_network(filename, format, global_offsets, **kwargs):
                 for a in attnames:
                     linefeature.add_attribute(str(a), currentfeature.GetFieldAsString(a))
                 linefeatures.append(linefeature)
-            elif geometry.GetGeometryType() == 5:
+            elif geometry.GetGeometryType() == 5:   # MULTILINESTRING
                 for j in range(geometry.GetGeometryCount()):
                     linestring = geometry.GetGeometryRef(j)
                     coordinates = []

@@ -603,7 +603,7 @@ class Ui_Delinblocks_Dialog(object):
         self.connectivity_scrollArea_2.setWidgetResizable(True)
         self.connectivity_scrollArea_2.setObjectName("connectivity_scrollArea_2")
         self.connectivity_contents_2 = QtWidgets.QWidget()
-        self.connectivity_contents_2.setGeometry(QtCore.QRect(0, 0, 537, 591))
+        self.connectivity_contents_2.setGeometry(QtCore.QRect(0, 0, 537, 588))
         self.connectivity_contents_2.setObjectName("connectivity_contents_2")
         self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.connectivity_contents_2)
         self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)
@@ -745,10 +745,6 @@ class Ui_Delinblocks_Dialog(object):
         self.infrastructure_check = QtWidgets.QCheckBox(self.flowpath_guide_widget)
         self.infrastructure_check.setObjectName("infrastructure_check")
         self.gridLayout_12.addWidget(self.infrastructure_check, 2, 0, 1, 1)
-        self.natfeature_combo = QtWidgets.QComboBox(self.flowpath_guide_widget)
-        self.natfeature_combo.setObjectName("natfeature_combo")
-        self.natfeature_combo.addItem("")
-        self.gridLayout_12.addWidget(self.natfeature_combo, 1, 1, 1, 1)
         self.infrastructure_combo = QtWidgets.QComboBox(self.flowpath_guide_widget)
         self.infrastructure_combo.setObjectName("infrastructure_combo")
         self.infrastructure_combo.addItem("")
@@ -1116,7 +1112,7 @@ class Ui_Delinblocks_Dialog(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Applies a weighted average smoothing filter over the DEM layer. </span></p></body></html>"))
-        self.natfeature_check.setText(_translate("Delinblocks_Dialog", "Use natural feature as a guide (select data):"))
+        self.natfeature_check.setText(_translate("Delinblocks_Dialog", "Use natural feature as a guide to guide flowpaths"))
         self.flowpath_lbl2.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -1138,7 +1134,6 @@ class Ui_Delinblocks_Dialog(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Applies a weighted average smoothing filter over the DEM layer. </span></p></body></html>"))
         self.infrastructure_check.setText(_translate("Delinblocks_Dialog", "Use built infrastructure as a guide (select data):"))
-        self.natfeature_combo.setItemText(0, _translate("Delinblocks_Dialog", "(none)"))
         self.infrastructure_combo.setItemText(0, _translate("Delinblocks_Dialog", "(none)"))
         self.parameters.setTabText(self.parameters.indexOf(self.tab), _translate("Delinblocks_Dialog", "Hydrology and Water Infrastructure"))
         self.footer_lbl.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-style:italic;\">UrbanBEATS - md_delinblocks module</span></p></body></html>"))

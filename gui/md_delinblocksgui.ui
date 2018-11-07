@@ -1562,7 +1562,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>537</width>
-               <height>591</height>
+               <height>588</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1963,7 +1963,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Applies a weighted average smoothing filter over the DEM layer. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                      <property name="text">
-                      <string>Use natural feature as a guide (select data):</string>
+                      <string>Use natural feature as a guide to guide flowpaths</string>
                      </property>
                     </widget>
                    </item>
@@ -2004,15 +2004,6 @@ p, li { white-space: pre-wrap; }
                      <property name="text">
                       <string>Use built infrastructure as a guide (select data):</string>
                      </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="1">
-                    <widget class="QComboBox" name="natfeature_combo">
-                     <item>
-                      <property name="text">
-                       <string>(none)</string>
-                      </property>
-                     </item>
                     </widget>
                    </item>
                    <item row="2" column="1">
