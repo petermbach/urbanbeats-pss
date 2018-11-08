@@ -1161,7 +1161,7 @@ p, li { white-space: pre-wrap; }
         </widget>
         <widget class="QWidget" name="context_tab">
          <attribute name="title">
-          <string>Urban Context</string>
+          <string>Urban Space</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
@@ -1548,7 +1548,7 @@ p, li { white-space: pre-wrap; }
         </widget>
         <widget class="QWidget" name="tab">
          <attribute name="title">
-          <string>Hydrology and Water Infrastructure</string>
+          <string>Water Context</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_8">
           <item>
@@ -1562,7 +1562,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>537</width>
-               <height>588</height>
+               <height>784</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1605,32 +1605,6 @@ p, li { white-space: pre-wrap; }
                 <item>
                  <widget class="QWidget" name="proximity_widget" native="true">
                   <layout class="QGridLayout" name="gridLayout_10">
-                   <item row="4" column="0">
-                    <widget class="QCheckBox" name="lakes_check">
-                     <property name="toolTip">
-                      <string>Checking this box will produce a CBD point on the &quot;block centres&quot; output map.</string>
-                     </property>
-                     <property name="whatsThis">
-                      <string>Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM's accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.
-
-Correction proceeds as follows:
-- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.
-- If tolerance limit is not met, cell's water is routed directly to catchment outlet.</string>
-                     </property>
-                     <property name="text">
-                      <string>Ponds and Lakes</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="4" column="1">
-                    <widget class="QComboBox" name="lakes_combo">
-                     <item>
-                      <property name="text">
-                       <string>(no map selected)</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
                    <item row="1" column="0">
                     <widget class="QCheckBox" name="rivers_check">
                      <property name="toolTip">
@@ -1648,7 +1622,40 @@ Correction proceeds as follows:
                      </property>
                     </widget>
                    </item>
-                   <item row="6" column="0">
+                   <item row="3" column="0">
+                    <widget class="QCheckBox" name="lakes_check">
+                     <property name="toolTip">
+                      <string>Checking this box will produce a CBD point on the &quot;block centres&quot; output map.</string>
+                     </property>
+                     <property name="whatsThis">
+                      <string>Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM's accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.
+
+Correction proceeds as follows:
+- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.
+- If tolerance limit is not met, cell's water is routed directly to catchment outlet.</string>
+                     </property>
+                     <property name="text">
+                      <string>Ponds and Lakes</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="1">
+                    <widget class="QComboBox" name="lakes_combo">
+                     <item>
+                      <property name="text">
+                       <string>(no map selected)</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="4" column="1">
+                    <widget class="QLineEdit" name="lakes_attname">
+                     <property name="text">
+                      <string>&lt;water body identifier field name&gt;</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="8" column="0">
                     <widget class="QCheckBox" name="waterbody_distance_check">
                      <property name="toolTip">
                       <string>Checking this box will produce a CBD point on the &quot;block centres&quot; output map.</string>
@@ -1665,15 +1672,6 @@ Correction proceeds as follows:
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="1">
-                    <widget class="QComboBox" name="rivers_combo">
-                     <item>
-                      <property name="text">
-                       <string>(no map selected)</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
                    <item row="2" column="1">
                     <widget class="QLineEdit" name="rivers_attname">
                      <property name="text">
@@ -1681,11 +1679,13 @@ Correction proceeds as follows:
                      </property>
                     </widget>
                    </item>
-                   <item row="5" column="1">
-                    <widget class="QLineEdit" name="lakes_attname">
-                     <property name="text">
-                      <string>&lt;water body identifier field name&gt;</string>
-                     </property>
+                   <item row="1" column="1">
+                    <widget class="QComboBox" name="rivers_combo">
+                     <item>
+                      <property name="text">
+                       <string>(no map selected)</string>
+                      </property>
+                     </item>
                     </widget>
                    </item>
                   </layout>
@@ -1724,19 +1724,10 @@ p, li { white-space: pre-wrap; }
                 </item>
                 <item>
                  <widget class="QWidget" name="infrastructure_widget" native="true">
-                  <layout class="QGridLayout" name="gridLayout_13">
-                   <item row="0" column="1">
-                    <widget class="QComboBox" name="sewer_combo">
-                     <property name="enabled">
-                      <bool>false</bool>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>(none)</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
+                  <layout class="QFormLayout" name="formLayout">
+                   <property name="fieldGrowthPolicy">
+                    <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                   </property>
                    <item row="0" column="0">
                     <widget class="QCheckBox" name="sewer_check">
                      <property name="enabled">
@@ -1763,6 +1754,18 @@ p, li { white-space: pre-wrap; }
                      <property name="text">
                       <string>Sewer Network (coming soon)</string>
                      </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QComboBox" name="sewer_combo">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>(none)</string>
+                      </property>
+                     </item>
                     </widget>
                    </item>
                    <item row="1" column="0">
@@ -1805,13 +1808,39 @@ p, li { white-space: pre-wrap; }
                      </item>
                     </widget>
                    </item>
+                   <item row="2" column="0">
+                    <widget class="QCheckBox" name="storm_check">
+                     <property name="toolTip">
+                      <string>Checking this box will produce a CBD point on the &quot;block centres&quot; output map.</string>
+                     </property>
+                     <property name="whatsThis">
+                      <string>Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM's accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.
+
+Correction proceeds as follows:
+- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.
+- If tolerance limit is not met, cell's water is routed directly to catchment outlet.</string>
+                     </property>
+                     <property name="text">
+                      <string>Stormwater Drainage Infrastructure</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="QComboBox" name="storm_combo">
+                     <item>
+                      <property name="text">
+                       <string>(none)</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
                   </layout>
                  </widget>
                 </item>
                 <item>
                  <widget class="QLabel" name="connectivity_title">
                   <property name="text">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;DRAINAGE FLOW PATHS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;STORMWATER DRAINAGE FLOW PATHS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                  </widget>
                 </item>
@@ -1942,45 +1971,6 @@ p, li { white-space: pre-wrap; }
                 <item>
                  <widget class="QWidget" name="flowpath_guide_widget" native="true">
                   <layout class="QGridLayout" name="gridLayout_12">
-                   <item row="1" column="0">
-                    <widget class="QCheckBox" name="natfeature_check">
-                     <property name="toolTip">
-                      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM's accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Correction proceeds as follows:&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;- If tolerance limit is not met, cell's water is routed directly to catchment outlet.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                     <property name="whatsThis">
-                      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Applies a weighted average smoothing filter over the DEM layer. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                     <property name="text">
-                      <string>Use natural feature as a guide to guide flowpaths</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="0">
-                    <widget class="QLabel" name="flowpath_lbl2">
-                     <property name="whatsThis">
-                      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;How many blocks to consider when determining drainage fluxes (the greater the number, the greater the computational burden).&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                     <property name="text">
-                      <string>Flow Path Guides:</string>
-                     </property>
-                    </widget>
-                   </item>
                    <item row="2" column="0">
                     <widget class="QCheckBox" name="infrastructure_check">
                      <property name="toolTip">
@@ -1998,21 +1988,165 @@ p, li { white-space: pre-wrap; }
                       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Applies a weighted average smoothing filter over the DEM layer. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If available, then the program will bias the flow directions towards Blocks with built stormwater draingae infrastructure e.g. channelized drains and pipe network. This will only happen if the above option to include stormwater infrastruture has been enabled and a map has been specified.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                      <property name="text">
-                      <string>Use built infrastructure as a guide (select data):</string>
+                      <string>Use stormwater drainage infrastructure as a guide for flow path delineation</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="2" column="1">
-                    <widget class="QComboBox" name="infrastructure_combo">
-                     <item>
-                      <property name="text">
-                       <string>(none)</string>
-                      </property>
-                     </item>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="flowpath_lbl2">
+                     <property name="whatsThis">
+                      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;How many blocks to consider when determining drainage fluxes (the greater the number, the greater the computational burden).&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="text">
+                      <string>Flow Path Guides:</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QCheckBox" name="natfeature_check">
+                     <property name="toolTip">
+                      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM's accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Correction proceeds as follows:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;- If tolerance limit is not met, cell's water is routed directly to catchment outlet.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="whatsThis">
+                      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If available, then the program will bias the flow directions towards Blocks with natural features e.g. a river, creek or lake. This will only happen if the above option to include a river or lake feature has been enabled and a map has been specified.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="text">
+                      <string>Use natural water features as a guide for flow path delineation</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QWidget" name="flowpath_guide_widget_3" native="true">
+                  <layout class="QGridLayout" name="gridLayout_15">
+                   <item row="2" column="0">
+                    <widget class="QCheckBox" name="ignore_lakes_check">
+                     <property name="toolTip">
+                      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM's accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Correction proceeds as follows:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;- If tolerance limit is not met, cell's water is routed directly to catchment outlet.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="whatsThis">
+                      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Ignores lake features in the landscape. This means that delineation continues until the lowest elevation point has been detected. Select this option if the lakes you have included are not major drainage outlets e.g. a large lake vs. a retarding basin. If the lake features regularly spill downstream, then check this option to ensure that the catchment delineation continues beyond the lake.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="text">
+                      <string>Ignore Lake features when determining catchment outlets</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="outlet_title">
+                     <property name="whatsThis">
+                      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;How many blocks to consider when determining drainage fluxes (the greater the number, the greater the computational burden).&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="text">
+                      <string>Catchment Outlets:</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QCheckBox" name="ignore_rivers_check">
+                     <property name="toolTip">
+                      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM's accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Correction proceeds as follows:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;- If tolerance limit is not met, cell's water is routed directly to catchment outlet.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="whatsThis">
+                      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Ignores river features in the landscape. This means that delineation continues until the lowest elevation point has been detected. Select this option if your river features do not directly determine the catchment e.g. you are including a creek in the catchment, but do not want to subdivide the catchment based on inflow points to the creek.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="text">
+                      <string>Ignore River features when determining catchment outlets</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="connectivity_title_2">
+                  <property name="text">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;WASTEWATER FLOW PATHS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="Line" name="div3_4">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="connectivity_lbl_2">
+                  <property name="text">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Customize options for delineating flow directions of wastewater throughout the network&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QWidget" name="flowpath_guide_widget_2" native="true">
+                  <layout class="QGridLayout" name="gridLayout_13">
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="flowpath_lbl2_2">
+                     <property name="whatsThis">
+                      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;How many blocks to consider when determining drainage fluxes (the greater the number, the greater the computational burden).&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="text">
+                      <string>coming soon</string>
+                     </property>
                     </widget>
                    </item>
                   </layout>

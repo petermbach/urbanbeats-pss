@@ -603,7 +603,7 @@ class Ui_Delinblocks_Dialog(object):
         self.connectivity_scrollArea_2.setWidgetResizable(True)
         self.connectivity_scrollArea_2.setObjectName("connectivity_scrollArea_2")
         self.connectivity_contents_2 = QtWidgets.QWidget()
-        self.connectivity_contents_2.setGeometry(QtCore.QRect(0, 0, 537, 588))
+        self.connectivity_contents_2.setGeometry(QtCore.QRect(0, 0, 537, 784))
         self.connectivity_contents_2.setObjectName("connectivity_contents_2")
         self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.connectivity_contents_2)
         self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)
@@ -628,29 +628,29 @@ class Ui_Delinblocks_Dialog(object):
         self.gridLayout_10 = QtWidgets.QGridLayout(self.proximity_widget)
         self.gridLayout_10.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_10.setObjectName("gridLayout_10")
-        self.lakes_check = QtWidgets.QCheckBox(self.proximity_widget)
-        self.lakes_check.setObjectName("lakes_check")
-        self.gridLayout_10.addWidget(self.lakes_check, 4, 0, 1, 1)
-        self.lakes_combo = QtWidgets.QComboBox(self.proximity_widget)
-        self.lakes_combo.setObjectName("lakes_combo")
-        self.lakes_combo.addItem("")
-        self.gridLayout_10.addWidget(self.lakes_combo, 4, 1, 1, 1)
         self.rivers_check = QtWidgets.QCheckBox(self.proximity_widget)
         self.rivers_check.setObjectName("rivers_check")
         self.gridLayout_10.addWidget(self.rivers_check, 1, 0, 1, 1)
+        self.lakes_check = QtWidgets.QCheckBox(self.proximity_widget)
+        self.lakes_check.setObjectName("lakes_check")
+        self.gridLayout_10.addWidget(self.lakes_check, 3, 0, 1, 1)
+        self.lakes_combo = QtWidgets.QComboBox(self.proximity_widget)
+        self.lakes_combo.setObjectName("lakes_combo")
+        self.lakes_combo.addItem("")
+        self.gridLayout_10.addWidget(self.lakes_combo, 3, 1, 1, 1)
+        self.lakes_attname = QtWidgets.QLineEdit(self.proximity_widget)
+        self.lakes_attname.setObjectName("lakes_attname")
+        self.gridLayout_10.addWidget(self.lakes_attname, 4, 1, 1, 1)
         self.waterbody_distance_check = QtWidgets.QCheckBox(self.proximity_widget)
         self.waterbody_distance_check.setObjectName("waterbody_distance_check")
-        self.gridLayout_10.addWidget(self.waterbody_distance_check, 6, 0, 1, 1)
+        self.gridLayout_10.addWidget(self.waterbody_distance_check, 8, 0, 1, 1)
+        self.rivers_attname = QtWidgets.QLineEdit(self.proximity_widget)
+        self.rivers_attname.setObjectName("rivers_attname")
+        self.gridLayout_10.addWidget(self.rivers_attname, 2, 1, 1, 1)
         self.rivers_combo = QtWidgets.QComboBox(self.proximity_widget)
         self.rivers_combo.setObjectName("rivers_combo")
         self.rivers_combo.addItem("")
         self.gridLayout_10.addWidget(self.rivers_combo, 1, 1, 1, 1)
-        self.rivers_attname = QtWidgets.QLineEdit(self.proximity_widget)
-        self.rivers_attname.setObjectName("rivers_attname")
-        self.gridLayout_10.addWidget(self.rivers_attname, 2, 1, 1, 1)
-        self.lakes_attname = QtWidgets.QLineEdit(self.proximity_widget)
-        self.lakes_attname.setObjectName("lakes_attname")
-        self.gridLayout_10.addWidget(self.lakes_attname, 5, 1, 1, 1)
         self.verticalLayout_17.addWidget(self.proximity_widget)
         self.waterinfra_lbl = QtWidgets.QLabel(self.connectivity_contents_2)
         self.waterinfra_lbl.setObjectName("waterinfra_lbl")
@@ -666,27 +666,35 @@ class Ui_Delinblocks_Dialog(object):
         self.verticalLayout_17.addWidget(self.waterinfra_lbl2)
         self.infrastructure_widget = QtWidgets.QWidget(self.connectivity_contents_2)
         self.infrastructure_widget.setObjectName("infrastructure_widget")
-        self.gridLayout_13 = QtWidgets.QGridLayout(self.infrastructure_widget)
-        self.gridLayout_13.setContentsMargins(0, 0, 0, 0)
-        self.gridLayout_13.setObjectName("gridLayout_13")
+        self.formLayout = QtWidgets.QFormLayout(self.infrastructure_widget)
+        self.formLayout.setFieldGrowthPolicy(QtWidgets.QFormLayout.AllNonFixedFieldsGrow)
+        self.formLayout.setContentsMargins(0, 0, 0, 0)
+        self.formLayout.setObjectName("formLayout")
+        self.sewer_check = QtWidgets.QCheckBox(self.infrastructure_widget)
+        self.sewer_check.setEnabled(False)
+        self.sewer_check.setObjectName("sewer_check")
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.sewer_check)
         self.sewer_combo = QtWidgets.QComboBox(self.infrastructure_widget)
         self.sewer_combo.setEnabled(False)
         self.sewer_combo.setObjectName("sewer_combo")
         self.sewer_combo.addItem("")
-        self.gridLayout_13.addWidget(self.sewer_combo, 0, 1, 1, 1)
-        self.sewer_check = QtWidgets.QCheckBox(self.infrastructure_widget)
-        self.sewer_check.setEnabled(False)
-        self.sewer_check.setObjectName("sewer_check")
-        self.gridLayout_13.addWidget(self.sewer_check, 0, 0, 1, 1)
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.sewer_combo)
         self.supply_check = QtWidgets.QCheckBox(self.infrastructure_widget)
         self.supply_check.setEnabled(False)
         self.supply_check.setObjectName("supply_check")
-        self.gridLayout_13.addWidget(self.supply_check, 1, 0, 1, 1)
+        self.formLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.supply_check)
         self.supply_combo = QtWidgets.QComboBox(self.infrastructure_widget)
         self.supply_combo.setEnabled(False)
         self.supply_combo.setObjectName("supply_combo")
         self.supply_combo.addItem("")
-        self.gridLayout_13.addWidget(self.supply_combo, 1, 1, 1, 1)
+        self.formLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.supply_combo)
+        self.storm_check = QtWidgets.QCheckBox(self.infrastructure_widget)
+        self.storm_check.setObjectName("storm_check")
+        self.formLayout.setWidget(2, QtWidgets.QFormLayout.LabelRole, self.storm_check)
+        self.storm_combo = QtWidgets.QComboBox(self.infrastructure_widget)
+        self.storm_combo.setObjectName("storm_combo")
+        self.storm_combo.addItem("")
+        self.formLayout.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.storm_combo)
         self.verticalLayout_17.addWidget(self.infrastructure_widget)
         self.connectivity_title = QtWidgets.QLabel(self.connectivity_contents_2)
         self.connectivity_title.setObjectName("connectivity_title")
@@ -736,20 +744,52 @@ class Ui_Delinblocks_Dialog(object):
         self.gridLayout_12 = QtWidgets.QGridLayout(self.flowpath_guide_widget)
         self.gridLayout_12.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_12.setObjectName("gridLayout_12")
-        self.natfeature_check = QtWidgets.QCheckBox(self.flowpath_guide_widget)
-        self.natfeature_check.setObjectName("natfeature_check")
-        self.gridLayout_12.addWidget(self.natfeature_check, 1, 0, 1, 1)
-        self.flowpath_lbl2 = QtWidgets.QLabel(self.flowpath_guide_widget)
-        self.flowpath_lbl2.setObjectName("flowpath_lbl2")
-        self.gridLayout_12.addWidget(self.flowpath_lbl2, 0, 0, 1, 1)
         self.infrastructure_check = QtWidgets.QCheckBox(self.flowpath_guide_widget)
         self.infrastructure_check.setObjectName("infrastructure_check")
         self.gridLayout_12.addWidget(self.infrastructure_check, 2, 0, 1, 1)
-        self.infrastructure_combo = QtWidgets.QComboBox(self.flowpath_guide_widget)
-        self.infrastructure_combo.setObjectName("infrastructure_combo")
-        self.infrastructure_combo.addItem("")
-        self.gridLayout_12.addWidget(self.infrastructure_combo, 2, 1, 1, 1)
+        self.flowpath_lbl2 = QtWidgets.QLabel(self.flowpath_guide_widget)
+        self.flowpath_lbl2.setObjectName("flowpath_lbl2")
+        self.gridLayout_12.addWidget(self.flowpath_lbl2, 0, 0, 1, 1)
+        self.natfeature_check = QtWidgets.QCheckBox(self.flowpath_guide_widget)
+        self.natfeature_check.setObjectName("natfeature_check")
+        self.gridLayout_12.addWidget(self.natfeature_check, 1, 0, 1, 1)
         self.verticalLayout_17.addWidget(self.flowpath_guide_widget)
+        self.flowpath_guide_widget_3 = QtWidgets.QWidget(self.connectivity_contents_2)
+        self.flowpath_guide_widget_3.setObjectName("flowpath_guide_widget_3")
+        self.gridLayout_15 = QtWidgets.QGridLayout(self.flowpath_guide_widget_3)
+        self.gridLayout_15.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_15.setObjectName("gridLayout_15")
+        self.ignore_lakes_check = QtWidgets.QCheckBox(self.flowpath_guide_widget_3)
+        self.ignore_lakes_check.setObjectName("ignore_lakes_check")
+        self.gridLayout_15.addWidget(self.ignore_lakes_check, 2, 0, 1, 1)
+        self.outlet_title = QtWidgets.QLabel(self.flowpath_guide_widget_3)
+        self.outlet_title.setObjectName("outlet_title")
+        self.gridLayout_15.addWidget(self.outlet_title, 0, 0, 1, 1)
+        self.ignore_rivers_check = QtWidgets.QCheckBox(self.flowpath_guide_widget_3)
+        self.ignore_rivers_check.setObjectName("ignore_rivers_check")
+        self.gridLayout_15.addWidget(self.ignore_rivers_check, 1, 0, 1, 1)
+        self.verticalLayout_17.addWidget(self.flowpath_guide_widget_3)
+        self.connectivity_title_2 = QtWidgets.QLabel(self.connectivity_contents_2)
+        self.connectivity_title_2.setObjectName("connectivity_title_2")
+        self.verticalLayout_17.addWidget(self.connectivity_title_2)
+        self.div3_4 = QtWidgets.QFrame(self.connectivity_contents_2)
+        self.div3_4.setFrameShape(QtWidgets.QFrame.HLine)
+        self.div3_4.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.div3_4.setObjectName("div3_4")
+        self.verticalLayout_17.addWidget(self.div3_4)
+        self.connectivity_lbl_2 = QtWidgets.QLabel(self.connectivity_contents_2)
+        self.connectivity_lbl_2.setWordWrap(True)
+        self.connectivity_lbl_2.setObjectName("connectivity_lbl_2")
+        self.verticalLayout_17.addWidget(self.connectivity_lbl_2)
+        self.flowpath_guide_widget_2 = QtWidgets.QWidget(self.connectivity_contents_2)
+        self.flowpath_guide_widget_2.setObjectName("flowpath_guide_widget_2")
+        self.gridLayout_13 = QtWidgets.QGridLayout(self.flowpath_guide_widget_2)
+        self.gridLayout_13.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_13.setObjectName("gridLayout_13")
+        self.flowpath_lbl2_2 = QtWidgets.QLabel(self.flowpath_guide_widget_2)
+        self.flowpath_lbl2_2.setObjectName("flowpath_lbl2_2")
+        self.gridLayout_13.addWidget(self.flowpath_lbl2_2, 0, 0, 1, 1)
+        self.verticalLayout_17.addWidget(self.flowpath_guide_widget_2)
         self.verticalLayout_7.addLayout(self.verticalLayout_17)
         spacerItem12 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_7.addItem(spacerItem12)
@@ -1000,7 +1040,7 @@ class Ui_Delinblocks_Dialog(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Applies a weighted average smoothing filter over the DEM layer. </span></p></body></html>"))
         self.osnet_spacenet_check.setText(_translate("Delinblocks_Dialog", "Delineate open space network and determine connectivity"))
-        self.parameters.setTabText(self.parameters.indexOf(self.context_tab), _translate("Delinblocks_Dialog", "Urban Context"))
+        self.parameters.setTabText(self.parameters.indexOf(self.context_tab), _translate("Delinblocks_Dialog", "Urban Space"))
         self.proximity_lbl.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">MAJOR WATER FEATURES</span></p></body></html>"))
         self.proximity_lbl_2.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
@@ -1008,6 +1048,13 @@ class Ui_Delinblocks_Dialog(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p></body></html>"))
         self.proximity_lbl_2.setText(_translate("Delinblocks_Dialog", "Customise whether UrbanBEATS should  load and link major surface water features with the Blocks map."))
+        self.rivers_check.setToolTip(_translate("Delinblocks_Dialog", "Checking this box will produce a CBD point on the \"block centres\" output map."))
+        self.rivers_check.setWhatsThis(_translate("Delinblocks_Dialog", "Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM\'s accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.\n"
+"\n"
+"Correction proceeds as follows:\n"
+"- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.\n"
+"- If tolerance limit is not met, cell\'s water is routed directly to catchment outlet."))
+        self.rivers_check.setText(_translate("Delinblocks_Dialog", "Rivers and Creeks"))
         self.lakes_check.setToolTip(_translate("Delinblocks_Dialog", "Checking this box will produce a CBD point on the \"block centres\" output map."))
         self.lakes_check.setWhatsThis(_translate("Delinblocks_Dialog", "Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM\'s accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.\n"
 "\n"
@@ -1016,13 +1063,7 @@ class Ui_Delinblocks_Dialog(object):
 "- If tolerance limit is not met, cell\'s water is routed directly to catchment outlet."))
         self.lakes_check.setText(_translate("Delinblocks_Dialog", "Ponds and Lakes"))
         self.lakes_combo.setItemText(0, _translate("Delinblocks_Dialog", "(no map selected)"))
-        self.rivers_check.setToolTip(_translate("Delinblocks_Dialog", "Checking this box will produce a CBD point on the \"block centres\" output map."))
-        self.rivers_check.setWhatsThis(_translate("Delinblocks_Dialog", "Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM\'s accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.\n"
-"\n"
-"Correction proceeds as follows:\n"
-"- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.\n"
-"- If tolerance limit is not met, cell\'s water is routed directly to catchment outlet."))
-        self.rivers_check.setText(_translate("Delinblocks_Dialog", "Rivers and Creeks"))
+        self.lakes_attname.setText(_translate("Delinblocks_Dialog", "<water body identifier field name>"))
         self.waterbody_distance_check.setToolTip(_translate("Delinblocks_Dialog", "Checking this box will produce a CBD point on the \"block centres\" output map."))
         self.waterbody_distance_check.setWhatsThis(_translate("Delinblocks_Dialog", "Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM\'s accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.\n"
 "\n"
@@ -1030,9 +1071,8 @@ class Ui_Delinblocks_Dialog(object):
 "- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.\n"
 "- If tolerance limit is not met, cell\'s water is routed directly to catchment outlet."))
         self.waterbody_distance_check.setText(_translate("Delinblocks_Dialog", "Calculate distance to closest water body"))
-        self.rivers_combo.setItemText(0, _translate("Delinblocks_Dialog", "(no map selected)"))
         self.rivers_attname.setText(_translate("Delinblocks_Dialog", "<water body identifier field name>"))
-        self.lakes_attname.setText(_translate("Delinblocks_Dialog", "<water body identifier field name>"))
+        self.rivers_combo.setItemText(0, _translate("Delinblocks_Dialog", "(no map selected)"))
         self.waterinfra_lbl.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">BUILT WATER INFRASTRUCTURE</span></p></body></html>"))
         self.waterinfra_lbl2.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
@@ -1040,7 +1080,6 @@ class Ui_Delinblocks_Dialog(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p></body></html>"))
         self.waterinfra_lbl2.setText(_translate("Delinblocks_Dialog", "Include pre-existing water infrastructure into the simulation for coupling or retrofitting."))
-        self.sewer_combo.setItemText(0, _translate("Delinblocks_Dialog", "(none)"))
         self.sewer_check.setToolTip(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -1056,6 +1095,7 @@ class Ui_Delinblocks_Dialog(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Applies a weighted average smoothing filter over the DEM layer. </span></p></body></html>"))
         self.sewer_check.setText(_translate("Delinblocks_Dialog", "Sewer Network (coming soon)"))
+        self.sewer_combo.setItemText(0, _translate("Delinblocks_Dialog", "(none)"))
         self.supply_check.setToolTip(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -1072,7 +1112,15 @@ class Ui_Delinblocks_Dialog(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Applies a weighted average smoothing filter over the DEM layer. </span></p></body></html>"))
         self.supply_check.setText(_translate("Delinblocks_Dialog", "Water Supply Network (coming soon)"))
         self.supply_combo.setItemText(0, _translate("Delinblocks_Dialog", "(none)"))
-        self.connectivity_title.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">DRAINAGE FLOW PATHS</span></p></body></html>"))
+        self.storm_check.setToolTip(_translate("Delinblocks_Dialog", "Checking this box will produce a CBD point on the \"block centres\" output map."))
+        self.storm_check.setWhatsThis(_translate("Delinblocks_Dialog", "Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM\'s accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.\n"
+"\n"
+"Correction proceeds as follows:\n"
+"- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.\n"
+"- If tolerance limit is not met, cell\'s water is routed directly to catchment outlet."))
+        self.storm_check.setText(_translate("Delinblocks_Dialog", "Stormwater Drainage Infrastructure"))
+        self.storm_combo.setItemText(0, _translate("Delinblocks_Dialog", "(none)"))
+        self.connectivity_title.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">STORMWATER DRAINAGE FLOW PATHS</span></p></body></html>"))
         self.connectivity_lbl.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p>Select and customise methodology for identifying water drainage paths across Blocks.</p></body></html>"))
         self.flowpath_lbl.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
@@ -1098,27 +1146,6 @@ class Ui_Delinblocks_Dialog(object):
         self.flowpath_combo.setItemText(0, _translate("Delinblocks_Dialog", "Adapted version of D-infinity (Tarboton, 1997)"))
         self.flowpath_combo.setItemText(1, _translate("Delinblocks_Dialog", "D8 (O\'Callaghan & Mark, 1984)"))
         self.demsmooth_spin.setToolTip(_translate("Delinblocks_Dialog", "Select the number of times the smoothing algorithm should be applied. A higher number will lead to a much smoother map, but can result in possible issues with finding flow paths."))
-        self.natfeature_check.setToolTip(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM\'s accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Correction proceeds as follows:</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If tolerance limit is not met, cell\'s water is routed directly to catchment outlet.</span></p></body></html>"))
-        self.natfeature_check.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Applies a weighted average smoothing filter over the DEM layer. </span></p></body></html>"))
-        self.natfeature_check.setText(_translate("Delinblocks_Dialog", "Use natural feature as a guide to guide flowpaths"))
-        self.flowpath_lbl2.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">How many blocks to consider when determining drainage fluxes (the greater the number, the greater the computational burden).</span></p></body></html>"))
-        self.flowpath_lbl2.setText(_translate("Delinblocks_Dialog", "Flow Path Guides:"))
         self.infrastructure_check.setToolTip(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -1131,11 +1158,75 @@ class Ui_Delinblocks_Dialog(object):
         self.infrastructure_check.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">If available, then the program will bias the flow directions towards Blocks with built stormwater draingae infrastructure e.g. channelized drains and pipe network. This will only happen if the above option to include stormwater infrastruture has been enabled and a map has been specified.</p></body></html>"))
+        self.infrastructure_check.setText(_translate("Delinblocks_Dialog", "Use stormwater drainage infrastructure as a guide for flow path delineation"))
+        self.flowpath_lbl2.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Applies a weighted average smoothing filter over the DEM layer. </span></p></body></html>"))
-        self.infrastructure_check.setText(_translate("Delinblocks_Dialog", "Use built infrastructure as a guide (select data):"))
-        self.infrastructure_combo.setItemText(0, _translate("Delinblocks_Dialog", "(none)"))
-        self.parameters.setTabText(self.parameters.indexOf(self.tab), _translate("Delinblocks_Dialog", "Hydrology and Water Infrastructure"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">How many blocks to consider when determining drainage fluxes (the greater the number, the greater the computational burden).</span></p></body></html>"))
+        self.flowpath_lbl2.setText(_translate("Delinblocks_Dialog", "Flow Path Guides:"))
+        self.natfeature_check.setToolTip(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM\'s accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Correction proceeds as follows:</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If tolerance limit is not met, cell\'s water is routed directly to catchment outlet.</span></p></body></html>"))
+        self.natfeature_check.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">If available, then the program will bias the flow directions towards Blocks with natural features e.g. a river, creek or lake. This will only happen if the above option to include a river or lake feature has been enabled and a map has been specified.</p></body></html>"))
+        self.natfeature_check.setText(_translate("Delinblocks_Dialog", "Use natural water features as a guide for flow path delineation"))
+        self.ignore_lakes_check.setToolTip(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM\'s accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Correction proceeds as follows:</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If tolerance limit is not met, cell\'s water is routed directly to catchment outlet.</span></p></body></html>"))
+        self.ignore_lakes_check.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Ignores lake features in the landscape. This means that delineation continues until the lowest elevation point has been detected. Select this option if the lakes you have included are not major drainage outlets e.g. a large lake vs. a retarding basin. If the lake features regularly spill downstream, then check this option to ensure that the catchment delineation continues beyond the lake.</p></body></html>"))
+        self.ignore_lakes_check.setText(_translate("Delinblocks_Dialog", "Ignore Lake features when determining catchment outlets"))
+        self.outlet_title.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">How many blocks to consider when determining drainage fluxes (the greater the number, the greater the computational burden).</span></p></body></html>"))
+        self.outlet_title.setText(_translate("Delinblocks_Dialog", "Catchment Outlets:"))
+        self.ignore_rivers_check.setToolTip(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM\'s accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Correction proceeds as follows:</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If tolerance limit is not met, cell\'s water is routed directly to catchment outlet.</span></p></body></html>"))
+        self.ignore_rivers_check.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Ignores river features in the landscape. This means that delineation continues until the lowest elevation point has been detected. Select this option if your river features do not directly determine the catchment e.g. you are including a creek in the catchment, but do not want to subdivide the catchment based on inflow points to the creek.</p></body></html>"))
+        self.ignore_rivers_check.setText(_translate("Delinblocks_Dialog", "Ignore River features when determining catchment outlets"))
+        self.connectivity_title_2.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">WASTEWATER FLOW PATHS</span></p></body></html>"))
+        self.connectivity_lbl_2.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p>Customize options for delineating flow directions of wastewater throughout the network</p></body></html>"))
+        self.flowpath_lbl2_2.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">How many blocks to consider when determining drainage fluxes (the greater the number, the greater the computational burden).</span></p></body></html>"))
+        self.flowpath_lbl2_2.setText(_translate("Delinblocks_Dialog", "coming soon"))
+        self.parameters.setTabText(self.parameters.indexOf(self.tab), _translate("Delinblocks_Dialog", "Water Context"))
         self.footer_lbl.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-style:italic;\">UrbanBEATS - md_delinblocks module</span></p></body></html>"))
         self.reset_button.setWhatsThis(_translate("Delinblocks_Dialog", "<html><head/><body><p>Resets all parameters of this module in the current \'scenario time step\' to the default values.</p></body></html>"))
         self.reset_button.setText(_translate("Delinblocks_Dialog", "Reset..."))

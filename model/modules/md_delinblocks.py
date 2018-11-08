@@ -142,9 +142,9 @@ class DelinBlocks(UBModule):
         self.create_parameter("include_rivers", BOOL, "include a rivers map into simulation?")
         self.create_parameter("include_lakes", BOOL, "include a ponds and lakes map into simulation?")
         self.create_parameter("calculate_wbdistance", BOOL, "calculate distance to closest water body?")
-        self.create_parameter("river_map", STRING, "river map filepath")
+        self.create_parameter("river_map", STRING, "river map data reference ID")
         self.create_parameter("river_attname", STRING, "river map identifier attribute name")
-        self.create_parameter("lake_map", STRING, "ponds and lake map filepath")
+        self.create_parameter("lake_map", STRING, "ponds and lake map data reference ID")
         self.create_parameter("lake_attname", STRING, "lake map identifier attribute name")
         self.include_rivers = 0
         self.include_lakes = 0
@@ -155,20 +155,37 @@ class DelinBlocks(UBModule):
         self.lake_attname = ""
 
         # (Tab 3.2) BUILT WATER INFRASTRUCTURE #[TO DO]
+        self.create_parameter("include_storm", BOOL, "include stormwater drainage infrastructure")
+        self.create_parameter("include_sewer", BOOL, "include wastewater infrastructure")
+        self.create_parameter("include_supply", BOOL, "include water supply infrastructure")
+        self.create_parameter("storm_map", STRING, "stormwater drainage infrastructure map data reference ID")
+        self.create_parameter("sewer_map", STRING, "sewer infrastructure map data reference ID")
+        self.create_parameter("supply_map", STRING, "water supply map data reference ID")
+        self.include_storm = 0
+        self.include_sewer = 0
+        self.include_supply = 0
+        self.storm_map = ""
+        self.sewer_map = ""
+        self.supply_map = ""
 
-        # (Tab 3.3) DRAINAGE FLOW PATHS
+        # (Tab 3.3) STORMWATER DRAINAGE FLOW PATHS
         self.create_parameter("flowpath_method", STRING, "flowpath method to use")
         self.create_parameter("dem_smooth", BOOL, "smooth DEM map before doing flowpath delineation?")
         self.create_parameter("dem_passes", DOUBLE, "number of passes for smoothing")
         self.create_parameter("guide_natural", BOOL, "guide flowpath delineation using pre-loaded natural feature?")
         self.create_parameter("guide_built", BOOL, "guide flowpath delineation using built infrastructure?")
-        self.create_parameter("guide_built_map", STRING, "filepath to built infrastructure map to guide flowpaths")
+        self.create_parameter("ignore_rivers", BOOL, "ignore river features in the delineation of outlets")
+        self.create_parameter("ignore_lakes", BOOL, "ignore lake features in the delineation of outlets")
         self.flowpath_method = "D8"
         self.dem_smooth = 0
         self.dem_passes = 1
         self.guide_natural = 0
         self.guide_built = 0
-        self.guide_built_map = ""
+        self.ignore_rivers = 0
+        self.ignore_lakes = 0
+
+        # (Tab 3.3) WASTEWATER FLOW DIRECTIONS
+        # Coming Soon
 
         # NON-VISIBLE PARAMETER LIST - USED THROUGHOUT THE SIMULATION
         self.xllcorner = float(0.0)     # Obtained from the loaded raster data (elevation) upon run-time
@@ -322,7 +339,7 @@ class DelinBlocks(UBModule):
                 lucdatamatrix = landuseraster.get_data_square(col_origin, row_origin, csc, csc)
 
                 # STEP 2.2.1 - Tally Frequency of Land uses
-                landclassprop, activity = self.calculate_frequency_of_lu_classes(lucdatamatrix)
+                landclassprop, activity = ubmethods.calculate_frequency_of_lu_classes(lucdatamatrix)
 
                 # print current_block.get_attribute("BlockID"), "LUC Props: ", landclassprop
                 if activity == 0:
@@ -351,8 +368,8 @@ class DelinBlocks(UBModule):
 
                 # STEP 2.2.2 - Calculate Spatial Metrics
                 if self.spatialmetrics:     # Using the land class proportions
-                    richness = self.calculate_metric_richness(landclassprop)
-                    shdiv, shdom, sheven = self.calculate_metric_shannon(landclassprop, richness)
+                    richness = ubmethods.calculate_metric_richness(landclassprop)
+                    shdiv, shdom, sheven = ubmethods.calculate_metric_shannon(landclassprop, richness)
                     current_block.add_attribute("Rich", richness)
                     current_block.add_attribute("ShDiv", shdiv)
                     current_block.add_attribute("ShDom", shdom)
@@ -417,14 +434,6 @@ class DelinBlocks(UBModule):
                 pop_values = popdatamatrix.flatten()    # Flatten to a single array
                 pop_values[pop_values == populationraster.get_nodatavalue()] = 0    # Remove all no-data values
                 total_population = float(sum(pop_values) * popfactor)
-                #
-                # pop_values = 0
-                # for row in range(len(popdatamatrix)):
-                #     for col in range(len(popdatamatrix[0])):
-                #         if popdatamatrix[row, col] == populationraster.get_nodatavalue():
-                #             continue
-                #         else:
-                #             total_population += (float(popdatamatrix[row, col]) * popfactor)
 
                 current_block.add_attribute("Population", total_population)
                 map_attr.add_attribute("HasPOP", 1)
@@ -592,6 +601,23 @@ class DelinBlocks(UBModule):
         else:
             map_attr.add_attribute("HasLAKES", 0)
 
+        if self.include_storm:      # Their sole purpose is to support the delineation of stormwater flow paths
+            map_attr.add_attribute("HasSTORMDRAINS", 1)
+            storm_map = self.datalibrary.get_data_with_id(self.storm_map)
+            fullfilepath = storm_map.get_data_file_path() + storm_map.get_metadata("filename")
+            stormdrains = ubspatial.import_linear_network(fullfilepath, "LINES",
+                                                          (map_attr.get_attribute("xllcorner"),
+                                                           map_attr.get_attribute("yllcorner")))
+            self.detect_stormdrains_in_blocks(blockslist, stormdrains)
+        else:
+            map_attr.add_attribute("HasSTORMDRAINS", 0)
+
+        # if self.include_sewer:      # Wastewater sewer network - coming soon!
+        #     pass
+
+        # if self.include_supply          # Water distribution network - coming soon!
+        #     pass
+
         # - STEP 6 - Delineate Flow Paths and Drainage Basins
         if map_attr.get_attribute("HasELEV"):
             # Delineate flow paths
@@ -686,6 +712,33 @@ class DelinBlocks(UBModule):
             else:
                 curblock.add_attribute("HasRiver", 0)
                 curblock.add_attribute("RiverNames", [])
+        return True
+
+    def detect_stormdrains_in_blocks(self, blockslist, stormdrains):
+        """Intersects all Blocks with all stormwater drains and transfers drainage information to each Block.
+
+        :param blockslist: the list of active Blocks in the simulation
+        :param stormdrains: loaded UBVector() objects of stormwater drains
+        :return: modifies all existing UBVector() Block Objects with the "HasSWDrain" attribute.
+        """
+        for i in range(len(blockslist)):
+            curblock = blockslist[i]
+            if curblock.get_attribute("Status") == 0:
+                continue
+            coordinates = curblock.get_points()
+            coordinates = [(c[0], c[1]) for c in coordinates]
+            blockpoly = Polygon(coordinates)
+
+            hasdrain = 0
+            for j in range(len(stormdrains)):
+                path = LineString(stormdrains[j].get_points())
+                if not path.intersects(blockpoly):
+                    continue
+                hasdrain = 1
+            if hasdrain:
+                curblock.add_attribute("HasSWDrain", 1)
+            else:
+                curblock.add_attribute("HasSWDrain", 0)
         return True
 
     def create_block_flow_hashtable(self, blockslist):
@@ -801,7 +854,7 @@ class DelinBlocks(UBModule):
                 continue
 
             # SKIP CONDITION 2 - Block already contains a river
-            if current_block.get_attribute("HasRiver"):
+            if current_block.get_attribute("HasRiver") and not self.ignore_rivers:
                 current_block.add_attribute("downID", -2)   # Immediately assign it the -2 value for downID
                 current_block.add_attribute("max_dz", 0)
                 current_block.add_attribute("avg_slope", 0)
@@ -810,7 +863,7 @@ class DelinBlocks(UBModule):
                 continue
 
             # SKIP CONDITION 3 - Block contains a lake
-            if current_block.get_attribute("HasLake"):
+            if current_block.get_attribute("HasLake") and not self.ignore_lakes:
                 current_block.add_attribute("downID", -2)  # Immediately assign it the -2 value for downID
                 current_block.add_attribute("max_dz", 0)
                 current_block.add_attribute("avg_slope", 0)
@@ -819,8 +872,20 @@ class DelinBlocks(UBModule):
                 continue
 
             z = current_block.get_attribute("AvgElev")
-            neighbours_z = self.scenario.retrieve_attribute_value_list("Block", "AvgElev",
-                                                                       current_block.get_attribute("Neighbours"))
+
+            # Get the neighbouring elevations. This is either the full neighbourhood if we are not using natural or
+            # built features as a guide, or the full neighbourhood if neither features are in adjacent neighbour blocks.
+            # Otherwise the neighbour_z array will have only as many options as there are neighbours with natural or
+            # built features.
+            if self.guide_natural or self.guide_built:      # If we use natural or built features as a guide, then...
+                neighbours_z = self.get_modified_neighbours_z(current_block)    # Returns [[BlockID], [Elevation]]
+                if neighbours_z is None:        # If the current block has no natural or built features adjacent...
+                    neighbours_z = self.scenario.retrieve_attribute_value_list("Block", "AvgElev",
+                                                                               current_block.get_attribute(
+                                                                                   "Neighbours"))
+            else:
+                neighbours_z = self.scenario.retrieve_attribute_value_list("Block", "AvgElev",
+                                                                           current_block.get_attribute("Neighbours"))
             # print "Neighbour Z: ", neighbours_z
 
             # Find the downstream block unless it's a sink
@@ -866,6 +931,31 @@ class DelinBlocks(UBModule):
         if map_attr.get_attribute("HasRIVER"):
             self.connect_river_blocks(river_blocks)   # [TO DO]
         return True
+
+    def get_modified_neighbours_z(self, curblock):
+        """Retrieves the z-values of all adjacent blocks within the current block's neighbourhood accounting for
+        the presence of drainage infrastructure or natural features.
+
+        :param curblock: the current block UBVector() instance
+        :return: a list of z-values for all the block's neighbours [ [BlockID], [Z-value] ], None otherwise
+        """
+        nhd = curblock.get_attribute("Neighbours")
+        nhd_z = [[],[]]
+        # Scan neighbourhood for Blocks with Rivers/Lakes
+        for n in nhd:
+            nblock = self.scenario.get_asset_with_name("BlockID"+str(n))
+            if self.guide_natural:
+                if nblock.get_attribute("HasRiver") or nblock.get_attribute("HasLake"):
+                    nhd_z[0].append(n)
+                    nhd_z[1].append(nblock.get_attribute("AvgElev"))
+            if self.guide_built:
+                if nblock.get_attribute("HasSWDrain") and n not in nhd_z[0]:
+                    nhd_z[0].append(n)
+                    nhd_z[1].append(nblock.get_attribute("AvgElev"))
+        if len(nhd_z[0]) == 0:
+            return None
+        else:
+            return nhd_z
 
     def connect_river_blocks(self, river_blocks):
         """Scans the blocks for those containing a river system and connects them based on adjacency and river
@@ -965,7 +1055,6 @@ class DelinBlocks(UBModule):
         :return: down_id: block ID that water drains to, min(dz) the largest elevation difference.
         """
         dz = []
-        # print nhd_z
         for i in range(len(nhd_z[1])):
             dz.append(nhd_z[1][i] - z)     # Calculate the elevation difference
         if min(dz) < 0:    # If there is a drop in elevation - this also means the area cannot be flat!
@@ -985,7 +1074,6 @@ class DelinBlocks(UBModule):
         :return:
         """
         pass    # [TO DO]
-
         # FROM LEGACY CODE
         # facetdict = {}  # Stores all the information about the 8 facets
         # facetdict["e1"] = ["E", "N", "N", "W", "W", "S", "S", "E"]
@@ -1120,76 +1208,3 @@ class DelinBlocks(UBModule):
         else:
             # Block not within boundary, do not return anything
             return None
-
-    def calculate_frequency_of_lu_classes(self, lucdatamatrix):
-        """ Tallies the frequency of land use classes within the given Block/Hex. Returns the 'Activity'
-        attribute and a list of LUC frequencies.
-
-        :param lucdatamatrix: the two-dimensional matrix extracted from the LU raster UBRaster() object
-        :return a list of all 13 classes and their relative proportion, activity, the total data coverage.
-        """
-        # Step 1 - Order all data entries into a lit of 13 elements
-        # Categories: 'RES', 'COM', 'ORC', 'LI', 'HI', 'CIV', 'SVU', 'RD', 'TR', 'PG', 'REF', 'UND', 'NA'
-        lucprop = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        total_n_luc = 0     # Counts the total elements of valid land use classes i.e. skips counting NODATA
-        matrix_size = 0     # Counts total elements in the 2D array
-        for i in range(len(lucdatamatrix)):
-            for j in range(len(lucdatamatrix[0])):
-                matrix_size += 1
-                landclass = lucdatamatrix[i, j]     # numpy array
-                if int(landclass) == -9999:
-                    pass
-                else:
-                    lucprop[int(landclass) - 1] += 1
-                    total_n_luc += 1
-
-        # Step 2 - Convert frequency to proportion
-        if total_n_luc == 0:
-            return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 0
-        for i in range(len(lucprop)):
-            lucprop[i] = float(lucprop[i]) / float(total_n_luc)
-        activity = float(total_n_luc) / float(matrix_size)
-        return lucprop, activity
-
-    def calculate_metric_richness(self, landclassprop):
-        """Calculates the Richness metric, which is simply the total number of unique categories in the provided
-        land use proportions list
-
-        :param landclassprop: A list [] specifying the relative proportions of land use categories. Sum = 1
-        :return: the richness index
-        """
-        richness = 0
-        for i in landclassprop:
-            if i != 0:
-                richness += 1
-        return richness
-
-    def calculate_metric_shannon(self, landclassprop, richness):
-        """Calculates the Shannon diversity, dominance and evenness indices based on the proportion of different land
-        use classes and the richness.
-
-        :param landclassprop: A list [] specifying the relative proportions of land use categories. Sum = 1
-        :param richness: the richness index, which is the number of unique land use classes in the area
-        :return: shandiv (Diversity index), shandom (Dominance index) and shaneven (Evenness index)
-        """
-        if richness == 0:
-            return 0, 0, 0
-
-        # Shannon Diversity Index (Shannon, 1948) - measures diversity in categorical data, the information entropy of
-        # the distribution: H = -sum(pi ln(pi))
-        shandiv = 0
-        for sdiv in landclassprop:
-            if sdiv != 0:
-                shandiv += sdiv * math.log(sdiv)
-        shandiv = -1 * shandiv
-
-        # Shannon Dominance Index: The degree to which a single class dominates in the area, 0 = evenness
-        shandom = math.log(richness) - shandiv
-
-        # Shannon Evenness Index: Similar to dominance, the level of evenness among the land classes
-        if richness == 1:
-            shaneven = 1
-        else:
-            shaneven = shandiv / math.log(richness)
-
-        return shandiv, shandom, shaneven

@@ -29,10 +29,17 @@ individual modules, but are better off modularised within this particular script
 Index of Functions + locations of their use:
 
 ---------------------------------------------------------------------------------------------------------------
-Name                Description                                         Modules used
+Name                                    Description                                         Modules used
 ---------------------------------------------------------------------------------------------------------------
-autosize_blocks     determines block size automatically                 delinblocks
-
+autosize_blocks                         determines block size automatically                 delinblocks
+calculate_frequency_of_lu_classes       tallies frequency of land use classes               delinblocks
+calculate_metric_richness               calculates the richness of categories               delinblocks
+calculate_metric_shannon                calcualtes Shannon Spatial Indices                  delinblocks
+review_filename                          reviews standard file naming for illegal characters delinblocks
+patchdelin_landscape_patch_delineation  main patch delineation function                     delinblocks
+patchdelin_grid_scan                    scans the input grid for a patch                    delinblocks
+patchdelin_find_next_start              finds the next scan start position in a grid        delinblocks
+patchdelin_obtain_patch_from_indices    obtains patch from indices specified                delinblocks
 ---------------------------------------------------------------------------------------------------------------
 """
 
@@ -77,7 +84,82 @@ def autosize_blocks(width, height):
     return blocksize        # because of data resolution, etc.
 
 
-def reviewFileName(fname):
+def calculate_frequency_of_lu_classes(lucdatamatrix):
+    """ Tallies the frequency of land use classes within the given Block/Hex. Returns the 'Activity'
+    attribute and a list of LUC frequencies.
+
+    :param lucdatamatrix: the two-dimensional matrix extracted from the LU raster UBRaster() object
+    :return a list of all 13 classes and their relative proportion, activity, the total data coverage.
+    """
+    # Step 1 - Order all data entries into a lit of 13 elements
+    # Categories: 'RES', 'COM', 'ORC', 'LI', 'HI', 'CIV', 'SVU', 'RD', 'TR', 'PG', 'REF', 'UND', 'NA'
+    lucprop = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    total_n_luc = 0     # Counts the total elements of valid land use classes i.e. skips counting NODATA
+    matrix_size = 0     # Counts total elements in the 2D array
+    for i in range(len(lucdatamatrix)):
+        for j in range(len(lucdatamatrix[0])):
+            matrix_size += 1
+            landclass = lucdatamatrix[i, j]     # numpy array
+            if int(landclass) == -9999:
+                pass
+            else:
+                lucprop[int(landclass) - 1] += 1
+                total_n_luc += 1
+
+    # Step 2 - Convert frequency to proportion
+    if total_n_luc == 0:
+        return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 0
+    for i in range(len(lucprop)):
+        lucprop[i] = float(lucprop[i]) / float(total_n_luc)
+    activity = float(total_n_luc) / float(matrix_size)
+    return lucprop, activity
+
+
+def calculate_metric_richness(landclassprop):
+    """Calculates the Richness metric, which is simply the total number of unique categories in the provided
+    land use proportions list
+
+    :param landclassprop: A list [] specifying the relative proportions of land use categories. Sum = 1
+    :return: the richness index
+    """
+    richness = 0
+    for i in landclassprop:
+        if i != 0:
+            richness += 1
+    return richness
+
+
+def calculate_metric_shannon(landclassprop, richness):
+    """Calculates the Shannon diversity, dominance and evenness indices based on the proportion of different land
+    use classes and the richness.
+
+    :param landclassprop: A list [] specifying the relative proportions of land use categories. Sum = 1
+    :param richness: the richness index, which is the number of unique land use classes in the area
+    :return: shandiv (Diversity index), shandom (Dominance index) and shaneven (Evenness index)
+    """
+    if richness == 0:
+        return 0, 0, 0
+
+    # Shannon Diversity Index (Shannon, 1948) - measures diversity in categorical data, the information entropy of
+    # the distribution: H = -sum(pi ln(pi))
+    shandiv = 0
+    for sdiv in landclassprop:
+        if sdiv != 0:
+            shandiv += sdiv * math.log(sdiv)
+    shandiv = -1 * shandiv
+
+    # Shannon Dominance Index: The degree to which a single class dominates in the area, 0 = evenness
+    shandom = math.log(richness) - shandiv
+
+    # Shannon Evenness Index: Similar to dominance, the level of evenness among the land classes
+    if richness == 1:
+        shaneven = 1
+    else:
+        shaneven = shandiv / math.log(richness)
+    return shandiv, shandom, shaneven
+
+
+def review_filename(fname):
     """Checks the filename for illegal characters, if there are illegal characters, function
     removes them and modifies the filename so that the export function does not crash"""
     for char in ubglobals.NOCHARS:
@@ -296,13 +378,7 @@ def patchdelin_obtain_patch_from_indices(datamatrix, dataresolution, indices, or
         scalefactor = float(originalresolution) / float(dataresolution)
         # Obtain patches using duplicate rule
 
-
-
-
     else:   # data resolution < original resolution - multiple cells per index
         pass
         # Do something with indices...
-
-
-
-
+    return True

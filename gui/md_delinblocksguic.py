@@ -111,9 +111,15 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.lakes_combo.clear()
         [self.ui.lakes_combo.addItem(str(self.lakemaps[0][i])) for i in range(len(self.lakemaps[0]))]
 
-        self.builtfeatures = self.get_dataref_array("spatial", "Built Infrastructure")
-        self.ui.infrastructure_combo.clear()
-        [self.ui.infrastructure_combo.addItem(str(self.builtfeatures[0][i])) for i in range(len(self.builtfeatures[0]))]
+        self.builtwaterfeatures = self.get_dataref_array("spatial", "Built Infrastructure", "Water Network")
+        self.ui.storm_combo.clear()
+        [self.ui.storm_combo.addItem(str(self.builtwaterfeatures[0][i])) for i in range(len(self.builtwaterfeatures[0]))]
+
+        # self.ui.supply_combo.clear()
+        # [self.ui.supply_combo.addItem(str(self.builtwaterfeatures[0][i])) for i in range(len(self.builtwaterfeatures[0]))]
+        #
+        # self.ui.sewer_combo.clear()
+        # [self.ui.sewer_combo.addItem(str(self.builtwaterfeatures[0][i])) for i in range(len(self.builtwaterfeatures[0]))]
 
         self.delin_methods = ["Dinf", "D8"]
 
@@ -137,7 +143,9 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.cbdmanual_radio.clicked.connect(self.enable_disable_guis)
         self.ui.rivers_check.clicked.connect(self.enable_disable_guis)
         self.ui.lakes_check.clicked.connect(self.enable_disable_guis)
-        self.ui.infrastructure_check.clicked.connect(self.enable_disable_guis)
+        self.ui.storm_check.clicked.connect(self.enable_disable_guis)
+        # self.ui.sewer_check.clicked.connect(self.enable_disable_guis)
+        # self.ui.supply_check.clicked.connect(self.enable_disable_guis)
 
         self.ui.buttonBox.accepted.connect(self.save_values)
 
@@ -265,6 +273,27 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.waterbody_distance_check.setChecked(self.module.get_parameter("calculate_wbdistance"))
 
         # --- BUILT WATER INFRASTRUCTURE ---
+        self.ui.storm_check.setChecked(self.module.get_parameter("include_storm"))
+        # self.ui.sewer_check.setChecked(self.module.get_parameter("include_sewer"))
+        # self.ui.supply_check.setChecked(self.module.get_parameter("include_supply"))
+
+        try:    # STORMWATER DRAINAGE FEATURES COMBO
+            self.ui.storm_combo.setCurrentIndex(self.builtwaterfeatures[1].index(
+                self.module.get_parameter("storm_map")))
+        except ValueError:
+            self.ui.storm_combo.setCurrentIndex(0)
+
+        # try:    # SEWER SYSTEM FEATURES COMBO
+        #     self.ui.sewer_combo.setCurrentIndex(self.builtwaterfeatures[1].index(
+        #         self.module.get_parameter("sewer_map")))
+        # except ValueError:
+        #     self.ui.storm_combo.setCurrentIndex(0)
+        #
+        # try:    # SUPPLY FEATURES COMBO
+        #     self.ui.supply_combo.setCurrentIndex(self.builtwaterfeatures[1].index(
+        #         self.module.get_parameter("supply_map")))
+        # except ValueError:
+        #     self.ui.supply_combo.setCurrentIndex(0)
 
         # --- FLOWPATH DELINEATION ---
         self.ui.flowpath_combo.setCurrentIndex(self.delin_methods.index(self.module.get_parameter("flowpath_method")))
@@ -272,12 +301,8 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.demsmooth_spin.setValue(self.module.get_parameter("dem_passes"))
         self.ui.natfeature_check.setChecked(self.module.get_parameter("guide_natural"))
         self.ui.infrastructure_check.setChecked(self.module.get_parameter("guide_built"))
-
-        try:    # BUILT FEATURES COMBO
-            self.ui.infrastructure_combo.setCurrentIndex(self.builtfeatures.index(
-                self.module.get_parameter("guide_built_map")))
-        except ValueError:
-            self.ui.infrastructure_combo.setCurrentIndex(0)
+        self.ui.ignore_rivers_check.setChecked(self.module.get_parameter("ignore_rivers"))
+        self.ui.ignore_lakes_check.setChecked(self.module.get_parameter("ignore_lakes"))
 
         self.enable_disable_guis()
 
@@ -300,7 +325,15 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.lakes_combo.setEnabled(self.ui.lakes_check.isChecked())
         self.ui.waterbody_distance_check.setEnabled((self.ui.rivers_check.isChecked() or
                                                      self.ui.lakes_check.isChecked()))
-        self.ui.infrastructure_combo.setEnabled(self.ui.infrastructure_check.isChecked())
+        self.ui.natfeature_check.setEnabled((self.ui.rivers_check.isChecked() or
+                                             self.ui.lakes_check.isChecked()))
+        self.ui.storm_combo.setEnabled(self.ui.storm_check.isChecked())
+        # self.ui.sewer_combo.setEnabled(self.ui.sewer_check.isChecked())
+        # self.ui.supply_combo.setEnabled(self.ui.supply_check.isChecked())
+
+        self.ui.ignore_rivers_check.setEnabled(self.ui.rivers_check.isChecked())
+        self.ui.ignore_lakes_check.setEnabled(self.ui.lakes_check.isChecked())
+
 
     def get_dataref_array(self, dataclass, datatype, *args):
         """Retrieves a list of data files loaded into the current scenario for display in the GUI
@@ -375,6 +408,13 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("lake_attname", str(self.ui.lakes_attname.text()))
 
         # --- BUILT WATER INFRASTRUCTURE ---
+        self.module.set_parameter("include_storm", int(self.ui.storm_check.isChecked()))
+        self.module.set_parameter("storm_map", self.builtwaterfeatures[1][self.ui.storm_combo.currentIndex()])
+        print self.builtwaterfeatures, self.builtwaterfeatures[1][self.ui.storm_combo.currentIndex()]
+        # self.module.set_parameter("include_sewer", int(self.ui.sewer_check.isChecked()))
+        # self.module.set_parameter("sewer_map", self.builtwaterfeatures[1][self.ui.sewer_combo.currentIndex()])
+        # self.module.set_parameter("include_supply", int(self.ui.supply_check.isChecked()))
+        # self.module.set_parameter("supply_map", self.builtwaterfeatures[1][self.ui.supply_combo.currentIndex()])
 
         # --- FLOW PATH DELINEATION ---
         self.module.set_parameter("flowpath_method", self.delin_methods[self.ui.flowpath_combo.currentIndex()])
@@ -382,4 +422,5 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("dem_passes", int(self.ui.demsmooth_spin.value()))
         self.module.set_parameter("guide_natural", int(self.ui.natfeature_check.isChecked()))
         self.module.set_parameter("guide_built", int(self.ui.infrastructure_check.isChecked()))
-        self.module.set_parameter("guide_built_map", self.builtfeatures[1][self.ui.infrastructure_combo.currentIndex()])
+        self.module.set_parameter("ignore_rivers", int(self.ui.ignore_rivers_check.isChecked()))
+        self.module.set_parameter("ignore_lakes", int(self.ui.ignore_lakes_check.isChecked()))
