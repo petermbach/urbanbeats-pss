@@ -578,7 +578,8 @@ class DelinBlocks(UBModule):
             else:
                 current_block.add_attribute("Suburb", "Unassigned")
 
-        # - STEP 5 - Load Rivers and Lakes, assign to Blocks and calculate closest distance
+        # - STEP 5 - Load Rivers, Lakes and built infrastructure, assign to Blocks and calculate closest distance
+        # STEP 5.1 :: Grab maps and assign their data to Blocks
         if self.include_rivers:
             map_attr.add_attribute("HasRIVERS", 1)
             river_map = self.datalibrary.get_data_with_id(self.river_map)
@@ -601,6 +602,11 @@ class DelinBlocks(UBModule):
         else:
             map_attr.add_attribute("HasLAKES", 0)
 
+        # STEP 5.2 :: Calculate distance to closest water body if the user wants
+        if self.calculate_wbdistance:
+            self.calculate_closest_waterbody(blockslist)
+
+        # STEP 5.3 :: Load other built infrastructure data
         if self.include_storm:      # Their sole purpose is to support the delineation of stormwater flow paths
             map_attr.add_attribute("HasSTORMDRAINS", 1)
             storm_map = self.datalibrary.get_data_with_id(self.storm_map)
@@ -645,6 +651,39 @@ class DelinBlocks(UBModule):
     # ------------------------------------------------
     # |-    ADDITIONAL MODULE FUNCTIONS             -|
     # ------------------------------------------------
+    def calculate_closest_waterbody(self, blockslist):
+        """Calculates the distance to the closest water body and the location of the closest water body.
+
+        :param blockslist: The list of active Blocks (UBVector() instances) within the simulation
+        :return: updates each Block with the "WBloc" and "WBdist" attributes.
+        """
+        wb_blocks = []
+        # Step 1 - Determine all river and lake blocks and set their distances to zero and their location to their own
+        for b in blockslist:
+            if b.get_attribute("HasRiver") or b.get_attribute("HasLake"):
+                b.add_attribute("WBdist", 0)
+                b.add_attribute("WBloc", b.get_attribute("BlockID"))
+                wb_blocks.append(b)     # Append this block to a list of water body blocks for scanning later
+
+        # Step 2 - Now calculate for all remaining blocks these distances and locations
+        for b in blockslist:
+            if b.get_attribute("HasRiver") or b.get_attribute("HasLake"):
+                continue
+            else:
+                prev_distance = 9999999999.9
+                bx = b.get_attribute("CentreX")
+                by = b.get_attribute("CentreY")
+                for c in wb_blocks:
+                    # Calculate distances from Block Centroids
+                    cx = c.get_attribute("CentreX")
+                    cy = c.get_attribute("CentreY")
+                    cur_distance = math.sqrt(pow(cx-bx, 2) + pow(cy-by, 2))
+                    if cur_distance < prev_distance:
+                        prev_distance = cur_distance
+                        b.add_attribute("WBdist", cur_distance)
+                        b.add_attribute("WBloc", c.get_attribute("BlockID"))
+        return True
+
     def detect_lakes_in_blocks(self, blockslist, lakeslist):
         """Intersects all blocks with all lakes and transfers lake name to each Block.
 
