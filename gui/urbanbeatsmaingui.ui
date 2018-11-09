@@ -453,9 +453,17 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionUrban_Planning_Settings"/>
      <addaction name="actionFacilities_Data"/>
     </widget>
+    <widget class="QMenu" name="menuPlugins">
+     <property name="title">
+      <string>Plugins</string>
+     </property>
+     <addaction name="actionLand_Use_Reclassifier"/>
+     <addaction name="actionSSANTO"/>
+    </widget>
     <addaction name="menuUrban_Modules"/>
     <addaction name="actionWater_Modules"/>
     <addaction name="actionModel_Calibration_Viewer"/>
+    <addaction name="menuPlugins"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
@@ -2351,6 +2359,19 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="toolTip">
     <string>Reset the scenario's simulation state.</string>
+   </property>
+  </action>
+  <action name="actionSSANTO">
+   <property name="text">
+    <string>SSANTO</string>
+   </property>
+  </action>
+  <action name="actionLand_Use_Reclassifier">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Land Use Reclassifier</string>
    </property>
   </action>
  </widget>
