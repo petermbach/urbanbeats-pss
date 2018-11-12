@@ -472,7 +472,140 @@ def export_flowpaths_to_gis_shapefile(asset_col, map_attr, filepath, filename, e
         feature.SetField("LinkType", str(current_path.get_attribute("LinkType")))
         feature.SetField("AvgSlope", float(current_path.get_attribute("AvgSlope")))
         feature.SetField("h_pond", float(current_path.get_attribute("h_pond")))
+        layer.CreateFeature(feature)
+    shapefile.Destroy()
 
+
+def export_osnet_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg):
+    """Exports the open space network links to a GIS shapefile based on all OSNetID assets in the
+    asset collection.
+
+    :param asset_col: [] list containing all UBVector() OSNetID objects
+    :param map_attr: global map attributes to track any relevant information
+    :param filepath: active filepath to export these assets to
+    :param filename: name of the file to export (without any .shp extension)
+    :param epsg: the EPSG code for the coordinate system to use.
+    :return:
+    """
+    if map_attr.get_attribute("HasOSNET") != 1:
+        return True
+
+    xmin = map_attr.get_attribute("xllcorner")
+    ymin = map_attr.get_attribute("yllcorner")
+
+    fullname = filepath + "/" + filename
+
+    spatial_ref = osr.SpatialReference()
+    spatial_ref.ImportFromEPSG(epsg)
+
+    driver = ogr.GetDriverByName('ESRI Shapefile')
+
+    usefilename = fullname  # Placeholder filename
+    fileduplicate_counter = 0
+    while os.path.exists(str(usefilename + ".shp")):
+        fileduplicate_counter += 1
+        usefilename = fullname + "(" + str(fileduplicate_counter) + ")"
+    shapefile = driver.CreateDataSource(str(usefilename) + ".shp")
+
+    layer = shapefile.CreateLayer('layer1', spatial_ref, ogr.wkbLineString)
+    layerDefinition = layer.GetLayerDefn()
+
+    fielddefmatrix = []
+    fielddefmatrix.append(ogr.FieldDefn("OSNetID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("NodeA", ogr.OFTString))
+    fielddefmatrix.append(ogr.FieldDefn("NodeB", ogr.OFTString))
+    fielddefmatrix.append(ogr.FieldDefn("Distance", ogr.OFTReal))
+
+    for field in fielddefmatrix:
+        layer.CreateField(field)
+        layer.GetLayerDefn()
+
+    for i in range(len(asset_col)):
+        current_path = asset_col[i]
+        linepoints = current_path.get_points()
+        line = ogr.Geometry(ogr.wkbLineString)
+        p1 = linepoints[0]
+        p2 = linepoints[1]
+        line.AddPoint(p1[0] + xmin, p1[1] + ymin)
+        line.AddPoint(p2[0] + xmin, p2[1] + ymin)
+
+        feature = ogr.Feature(layerDefinition)
+        feature.SetGeometry(line)
+        feature.SetFID(0)
+
+        feature.SetField("OSNetID", int(current_path.get_attribute("OSNetID")))
+        feature.SetField("NodeA", str(current_path.get_attribute("NodeA")))
+        feature.SetField("NodeB", str(current_path.get_attribute("NodeB")))
+        feature.SetField("Distance", float(current_path.get_attribute("Distance")))
+        layer.CreateFeature(feature)
+
+    shapefile.Destroy()
+
+
+def export_oslink_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg):
+    """Exports all flowpaths in the asset_col list to a GIS Shapefile based on the current filepath.
+
+    :param asset_col: [] list containing all UBVector() OSLinkID objects
+    :param map_attr: global map attributes to track any relevant information
+    :param filepath: the active filepath to export these assets to
+    :param filename: name of the file to export (without the 'shp' extension)
+    :param epsg: the EPSG code for the coordinate system to use
+    :return:
+    """
+    if map_attr.get_attribute("HasOSLINK") != 1:
+        return True
+
+    xmin = map_attr.get_attribute("xllcorner")
+    ymin = map_attr.get_attribute("yllcorner")
+
+    fullname = filepath + "/" + filename
+
+    spatial_ref = osr.SpatialReference()
+    spatial_ref.ImportFromEPSG(epsg)
+
+    driver = ogr.GetDriverByName('ESRI Shapefile')
+
+    usefilename = fullname  # Placeholder filename
+    fileduplicate_counter = 0
+    while os.path.exists(str(usefilename + ".shp")):
+        fileduplicate_counter += 1
+        usefilename = fullname + "(" + str(fileduplicate_counter) + ")"
+    shapefile = driver.CreateDataSource(str(usefilename) + ".shp")
+
+    layer = shapefile.CreateLayer('layer1', spatial_ref, ogr.wkbLineString)
+    layerDefinition = layer.GetLayerDefn()
+
+    fielddefmatrix = []
+    fielddefmatrix.append(ogr.FieldDefn("OSLinkID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("Distance", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("Location", ogr.OFTString))
+    fielddefmatrix.append(ogr.FieldDefn("Landuse", ogr.OFTString))
+    fielddefmatrix.append(ogr.FieldDefn("AreaAccess", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("OS_Size", ogr.OFTReal))
+
+    for field in fielddefmatrix:
+        layer.CreateField(field)
+        layer.GetLayerDefn()
+
+    for i in range(len(asset_col)):
+        current_path = asset_col[i]
+        linepoints = current_path.get_points()
+        line = ogr.Geometry(ogr.wkbLineString)
+        p1 = linepoints[0]
+        p2 = linepoints[1]
+        line.AddPoint(p1[0] + xmin, p1[1] + ymin)
+        line.AddPoint(p2[0] + xmin, p2[1] + ymin)
+
+        feature = ogr.Feature(layerDefinition)
+        feature.SetGeometry(line)
+        feature.SetFID(0)
+
+        feature.SetField("OSLinkID", int(current_path.get_attribute("OSLinkID")))
+        feature.SetField("Distance", float(current_path.get_attribute("Distance")))
+        feature.SetField("Location", str(current_path.get_attribute("Location")))
+        feature.SetField("Landuse", str(ubglobals.LANDUSENAMES[int(current_path.get_attribute("Landuse")) - 1]))
+        feature.SetField("AreaAccess", float(current_path.get_attribute("AreaAccess")))
+        feature.SetField("OS_Size", float(current_path.get_attribute("OS_Size")))
         layer.CreateFeature(feature)
 
     shapefile.Destroy()
@@ -520,6 +653,12 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
     fielddefmatrix.append(ogr.FieldDefn("PatchArea", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("CentroidX", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("CentroidY", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("GSD_Dist", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("GSD_Loc", ogr.OFTString))
+    fielddefmatrix.append(ogr.FieldDefn("GSD_Deg", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("GSD_ACon", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("OSNet_Deg", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("OSNet_MinD", ogr.OFTReal))
 
     if map_attr.get_attribute("HasELEV"):
         fielddefmatrix.append(ogr.FieldDefn("Elevation", ogr.OFTReal))
@@ -546,6 +685,12 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
         feature.SetField("PatchArea", float(current_patch.get_attribute("PatchArea")))
         feature.SetField("CentroidX", float(current_patch.get_attribute("CentroidX")))
         feature.SetField("CentroidY", float(current_patch.get_attribute("CentroidY")))
+        feature.SetField("GSD_Dist", float(current_patch.get_attribute("GSD_Dist")))
+        feature.SetField("GSD_Loc", str(current_patch.get_attribute("GSD_Loc")))
+        feature.SetField("GSD_Deg", int(current_patch.get_attribute("GSD_Deg")))
+        feature.SetField("GSD_ACon", float(current_patch.get_attribute("GSD_ACon")))
+        feature.SetField("OSNet_Deg", int(current_patch.get_attribute("OSNet_Deg")))
+        feature.SetField("OSNet_MinD", float(current_patch.get_attribute("OSNet_MinD")))
 
         # if map_attr.get_attribute("HasELEV"):
         #     feature.SetField("Elevation", float(current_patch.get_attribute("Elevation")))

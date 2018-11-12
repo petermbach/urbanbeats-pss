@@ -640,8 +640,29 @@ class DelinBlocks(UBModule):
             map_attr.add_attribute("HasFLOWPATHS", 0)
 
         # - STEP 7 - Spatial Connectivity
-        # 7.1 - Open Space Distances
-        # 7.2 - Open Space Network
+        if self.patchdelin:
+            green_patches, grey_patches, non_patches = self.retrieve_patch_groups()
+            if len(green_patches) > 0:
+                # 7.1 - Open Space Distances
+                if self.osnet_accessibility:
+                    self.find_open_space_distances(green_patches, grey_patches, non_patches)
+                    map_attr.add_attribute("HasOSLINK", 1)
+                else:
+                    map_attr.add_attribute("HasOSLINK", 0)
+                # 7.2 - Open Space Network
+                if self.osnet_network:
+                    # The minimum acceptable distance to connect the network is taken as the final block size, if two
+                    # entire Block patches exist, they are adjacent and connected by Block centroid
+                    min_dist = self.final_bs
+                    self.delineate_open_space_network(green_patches, grey_patches, non_patches, min_dist)
+                    map_attr.add_attribute("HasOSNET", 1)
+                else:
+                    map_attr.add_attribute("HasOSNET", 0)
+            else:
+                self.notify("Warning, no open spaces in map, cannot check for links")
+                map_attr.add_attribute("HasOSLINK", 0)
+                map_attr.add_attribute("HasOSNET", 0)
+
         # 7.3 - Sewer and Water Supply Systems (COMING SOON) [TO DO]
 
         # - CLEAN-UP - RESET ALL VARIABLES FOR GARBAGE COLLECTOR
@@ -651,6 +672,141 @@ class DelinBlocks(UBModule):
     # ------------------------------------------------
     # |-    ADDITIONAL MODULE FUNCTIONS             -|
     # ------------------------------------------------
+    def find_open_space_distances(self, green_patches, grey_patches, non_patches):
+        """Calculates the location of the closest green space within the map. Considers PG and REF land uses. Distances
+        are calculated between the grey patches, which is a list of non-park patches and green patches.
+
+        :param green_patches: list containing UBVector() instances of all PG/REF patches in the map
+        :param grey_patches: list containing UBVector() instances fo all non PG/REF patches
+        :param non_patches: list containing UBVector() instances fo all patches that should not be considered
+        :return: Modifies the existing patch UBVector() instance and adds OSLink assets to the scenario
+        """
+        # Find the distance to nearest green space in all grey patches
+        oslink_id = 1
+        for grey in grey_patches:
+            prev_dist = 9999999999999999    # Initialize
+            pts_current = (0, 0)        # Initialize
+            current_green = None     # Initialize
+            pts1 = grey.get_points()
+
+            for green in green_patches:
+                pts2 = green.get_points()
+                current_dist = math.sqrt(pow(pts1[0] - pts2[0], 2) + pow(pts1[1] - pts2[1],2))
+                if current_dist < prev_dist:
+                    prev_dist = current_dist
+                    pts_current = pts2
+                    current_green = green
+                    grey.add_attribute("GSD_Dist", prev_dist)
+                    grey.add_attribute("GSD_Loc", str(green.get_attribute("BlockID"))+"_"+
+                                       str(green.get_attribute("PatchID")))
+                    grey.add_attribute("GSD_Deg", 0)
+                    grey.add_attribute("GSD_ACon", 0)
+
+            # Draw the link line
+            dist_line = ubdata.UBVector(((pts1[0], pts1[1]), (pts_current[0], pts_current[1])))
+            dist_line.add_attribute("OSLinkID", oslink_id)
+            dist_line.add_attribute("Distance", prev_dist)
+            dist_line.add_attribute("Location", grey.get_attribute("GSD_Loc"))
+            dist_line.add_attribute("Landuse", grey.get_attribute("Landuse"))
+            dist_line.add_attribute("AreaAccess", grey.get_attribute("PatchArea"))
+            dist_line.add_attribute("OS_Size", current_green.get_attribute("PatchArea"))
+            self.scenario.add_asset("OSLinkID"+str(oslink_id), dist_line)
+            oslink_id += 1
+
+        # For all green patches, write the same attributes and calculate the degree of connection
+        for green in green_patches:
+            patch_name = str(green.get_attribute("BlockID"))+"_"+str(green.get_attribute("PatchID"))
+            degree = 0
+            urban_area_connected = 0
+            for grey in grey_patches:
+                if grey.get_attribute("GSD_Loc") == patch_name:
+                    degree += 1
+                    urban_area_connected += grey.get_attribute("PatchArea")
+
+            green.add_attribute("GSD_Dist", 0)
+            green.add_attribute("GSD_Loc", str(green.get_attribute("BlockID"))+"_"+
+                                str(green.get_attribute("PatchID")))
+            green.add_attribute("GSD_Deg", degree)
+            green.add_attribute("GSD_ACon", urban_area_connected)
+
+        # For non-patches, add all default attributes
+        for non in non_patches:
+            non.add_attribute("GSD_Dist", -1)
+            non.add_attribute("GSD_Loc", "")
+            non.add_attribute("GSD_Deg", 0)
+            non.add_attribute("GSD_ACon", 0)
+        return True
+
+    def retrieve_patch_groups(self):
+        """Scans the simulation's patches and subdivides them into three groups based on land use. Returns three lists,
+        each containing all references to UBVector() objects with corresponding patch type.
+
+        :return: greenpatches (list of all PG and REF land use patchs), roadpatches (list of all RD patches), and
+                 greypathces (everything else)
+        """
+        # Get all patches in the collection
+        patches = self.scenario.get_assets_with_identifier("PatchID")     # Retrieves all patches
+
+        # From all the patches, sort out the open space patches as a separate array
+        greenpatches = []
+        greypatches = []
+        roadpatches = []
+        for i in patches:
+            if i.get_attribute("Landuse") in [10, 11]:
+                greenpatches.append(i)
+            elif i.get_attribute("Landuse") in [8]:
+                roadpatches.append(i)
+            else:
+                greypatches.append(i)
+        return greenpatches, greypatches, roadpatches
+
+    def delineate_open_space_network(self, green_patches, grey_patches, non_patches, min_dist):
+        """Create a network of open spaces, only considers Parks and Reserves/Floodways
+
+        :param green_patches: a list containing UBVector() instances of green patches
+        :param grey_patches: a list of UBVector() instances of grey patches
+        :param non_patches: a list of UBVector() instances representing road patches
+        :return: modifies the existing patch data and adds OSNet assets to the scenario
+        """
+        osnet_id = 1
+        for g in green_patches:             # For each green patch, find the next closest patch
+            degrees = 0
+            pts1 = g.get_points()   # Get the patchXY
+            prev_dist = -1
+            for h in green_patches:
+                if h.get_attribute("BlockID") == g.get_attribute("BlockID") \
+                        and h.get_attribute("PatchID") == g.get_attribute("PatchID"):
+                    continue    # If it's the same patch, don't do anything!!
+                pts2 = h.get_points()
+                current_dist = math.sqrt(pow(pts1[0]-pts2[0], 2) + pow(pts1[1]-pts2[1], 2))
+                if current_dist <= min_dist:
+                    degrees += 1
+
+                    link = ubdata.UBVector(((pts1[0], pts1[1]), (pts2[0], pts2[1])))
+                    link.add_attribute("OSNetID", osnet_id)
+                    link.add_attribute("NodeA", str(g.get_attribute("BlockID")) + "_" +
+                                       str(g.get_attribute("PatchID")))
+                    link.add_attribute("NodeB", str(h.get_attribute("BlockID")) + "_" +
+                                       str(h.get_attribute("PatchID")))
+                    link.add_attribute("Distance", current_dist)
+                    self.scenario.add_asset("OSNetID" + str(osnet_id), link)
+                    osnet_id += 1
+
+                    if prev_dist == -1 or current_dist < prev_dist:
+                        prev_dist = current_dist
+
+            g.add_attribute("OSNet_Deg", degrees)
+            g.add_attribute("OSNet_MinD", prev_dist)
+
+        # Add the new attributes to all patches that aren't parks for completeness
+        for g in grey_patches:
+            g.add_attribute("OSNet_Deg", 0)
+            g.add_attribute("OSNet_MinD", -1)
+        for n in non_patches:
+            n.add_attribute("OSNet_Deg", 0)
+            n.add_attribute("OSNet_MinD", -1)
+        return True
+
     def calculate_closest_waterbody(self, blockslist):
         """Calculates the distance to the closest water body and the location of the closest water body.
 

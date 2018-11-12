@@ -117,8 +117,8 @@ ASSET_IDENTIFIERS = {"Block": "The most basic building block of the city in Urba
                      "BlockCentre": "Centroid of a Block, simply for reference and distance calculations",
                      "Flow": "The link between two Blocks representing the water flow directions.",
                      "FlowP": "The link between two Patches representing the water flow directions.",
-                     "ParkLink": "The link between open space and other land uses representing distance between",
-                     "ParkNet": "The link between open space land uses representing interconnectivity of spaces",
+                     "OSLink": "The link between open space and other land uses representing distance between",
+                     "OSNet": "The link between open space land uses representing interconnectivity of spaces",
                      "UrbanCell": "The cell at 50m or 100m resolution on which the urban modelling and cellular "
                                   "automata is conducted is run. UrbanCells are aggregated to Blocks later on.",
                      "Basin": "The collection of Blocks or Patches that make up the urban catchment.",
