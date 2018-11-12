@@ -4049,26 +4049,6 @@ p, li { white-space: pre-wrap; }
                     <string/>
                    </property>
                   </widget>
-                  <zorder>w_arterial_lbl2</zorder>
-                  <zorder>w_arterial_max_box</zorder>
-                  <zorder>w_arterial_lbl</zorder>
-                  <zorder>arterial_crossfall_lbl</zorder>
-                  <zorder>w_arterial_min_box</zorder>
-                  <zorder>w_arterial_med_check</zorder>
-                  <zorder>arterial_crossfall_box</zorder>
-                  <zorder>w_arterialmed_lbl</zorder>
-                  <zorder>w_arterialmed_minbox</zorder>
-                  <zorder>w_arterialmed_nodev_check</zorder>
-                  <zorder>highway_buffer_check</zorder>
-                  <zorder>w_arterialmed_lbl2</zorder>
-                  <zorder>w_arterialmed_maxbox</zorder>
-                  <zorder>w_arterialmed_med_check</zorder>
-                  <zorder>w_arterialsh_lbl_2</zorder>
-                  <zorder>w_arterialsh_maxbox</zorder>
-                  <zorder>w_arterialsh_lbl2</zorder>
-                  <zorder>w_arterialsh_med_check</zorder>
-                  <zorder>w_arterialsh_minbox</zorder>
-                  <zorder>collector_info_lbl</zorder>
                  </widget>
                 </item>
                 <item>
@@ -5179,21 +5159,6 @@ p, li { white-space: pre-wrap; }
                     </rect>
                    </property>
                   </widget>
-                  <zorder>unc_merge_check</zorder>
-                  <zorder>unc_merge2pg_check</zorder>
-                  <zorder>unc_merge2trans_check</zorder>
-                  <zorder>unc_custom_check</zorder>
-                  <zorder>unc_areathresh_spin</zorder>
-                  <zorder>unc_customthresh_lbl</zorder>
-                  <zorder>unc_customimp_lbl</zorder>
-                  <zorder>unc_customimp_spin</zorder>
-                  <zorder>unc_merge2pg_spin</zorder>
-                  <zorder>unc_merge2trans_spin</zorder>
-                  <zorder>unc_mergeweight_lbl</zorder>
-                  <zorder>unc_customirrigate_check</zorder>
-                  <zorder>unc_merge2ref_check</zorder>
-                  <zorder>unc_merge2ref_spin</zorder>
-                  <zorder>oth_parameters</zorder>
                  </widget>
                 </item>
                 <item>
