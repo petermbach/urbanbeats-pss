@@ -351,6 +351,7 @@ class UrbanBeatsScenario(threading.Thread):
                 m = self.get_module_object(modname, int(instance.attrib["index"]))
                 for child in instance:
                     # Currently this does some explicit type casting based on the parameter types defined
+                    print child.tag, child.text   # DEBUG WITH THIS IN CASE PROGRAM CRASHES ON LOADING
                     m.set_parameter(child.tag, type(m.get_parameter(child.tag))(child.text))
 
 
@@ -493,18 +494,6 @@ class UrbanBeatsScenario(threading.Thread):
         for observer in self.__observers:
             observer.update_observer(str(message))
 
-    def run_scenario(self):
-        # BEGIN THE SCENARIO'S SIMULATION
-        self.update_observers("Scenario Start!")
-        if self.get_metadata("type") == "STATIC":
-            while self.run_static_simulation():
-                pass
-            return False
-        elif self.get_metadata("type") == "DYNAMIC":
-            self.run_dynamic_simulation()
-        else:
-            self.run_benchmark_simulation()
-
     def reinitialize(self):
         """Reinitializes the thread, resets the assets, edges and point lists and runs a garbage collection."""
         # try:                                      # DEV-NOTE: need to figure out how to call simulation in a thread
@@ -517,9 +506,14 @@ class UrbanBeatsScenario(threading.Thread):
     def run_scenario(self):
         """Overrides the thread.run() function, called when thread.start() is used. Determines, which kind of
         simulation to run."""
+        # BEGIN THE SCENARIO'S SIMULATION
+        self.update_observers("Scenario Start!")
         self.runstate = True
         if self.get_metadata("type") == "STATIC":
             self.run_static_simulation()
+            # while self.run_static_simulation():
+            #     pass
+            # return False
         elif self.get_metadata("type") == "DYNAMIC":
             self.run_dynamic_simulation()
         else:
@@ -563,6 +557,7 @@ class UrbanBeatsScenario(threading.Thread):
         map_attributes = self.get_asset_with_name("MapAttributes")
         epsg = self.simulation.get_project_parameter("project_epsg")
 
+        # SHAPEFILE EXPORT FUNCTIONS
         ubspatial.export_block_assets_to_gis_shapefile(self.get_assets_with_identifier("BlockID"), map_attributes,
                                                        self.projectpath+"/output", file_basename + "_Blocks",
                                                        int(epsg))
@@ -572,6 +567,12 @@ class UrbanBeatsScenario(threading.Thread):
         ubspatial.export_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("FlowID"), map_attributes,
                                                     self.projectpath + "/output", file_basename + "_Flowpaths",
                                                     int(epsg), "Blocks")  # Export Block FlowPaths
+        ubspatial.export_oslink_to_gis_shapefile(self.get_assets_with_identifier("OSLinkID"), map_attributes,
+                                                    self.projectpath + "/output", file_basename + "_OSLink",
+                                                    int(epsg))
+        ubspatial.export_osnet_to_gis_shapefile(self.get_assets_with_identifier("OSNetID"), map_attributes,
+                                                    self.projectpath + "/output", file_basename + "_OSNet",
+                                                    int(epsg))
         # [TO DO] Export options - WSUD Systems
         # [TO DO] Export options - centrepoints
 
