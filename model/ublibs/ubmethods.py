@@ -231,7 +231,7 @@ def patchdelin_landscape_patch_delineation(landuse, nodatavalue):
         # Step 1: Find the start position and note the coordinate
         irow, jcol = patchdelin_find_next_start(statusmatrix)   # Returns positions in matrix if point found, else -1
 
-        if irow == -1:  # Check whether delineation has completed
+        if irow == -1 and jcol == -1:  # Check whether delineation has completed
             finished_sign = 1
             continue
 
@@ -262,14 +262,8 @@ def patchdelin_grid_scan(landusematrix, irow, jcol, statusmatrix):
     :return: a patch dictionary containing all patch data
     """
     current_lu = landusematrix[irow, jcol]   # Define the current land use
-
     scanmatrix = np.zeros([len(landusematrix), len(landusematrix[0])])
     scanmatrix[irow, jcol] = 1
-
-    patchpoints = [(irow, jcol)]
-    centroidX = [jcol]
-    centroidY = [irow]
-
     patch_area_previous = 0
     patch_area_current = -9999   # Need to go through the loop multiple times
 
@@ -308,9 +302,10 @@ def patchdelin_grid_scan(landusematrix, irow, jcol, statusmatrix):
                 # Determine if the cell belongs to the patch or not
                 if total_neighbour_sum >= 1:    # meaning there is at least one neighbour adjacent and part of patch
                     scanmatrix[i, j] = 1    # mark it in the array for the next iteration
-                    patchpoints.append((i, j))
-                    centroidX.append(j)
-                    centroidY.append(i)
+                    # if (i, j) not in patchpoints:
+                    #     patchpoints.append((i, j))
+                    #     centroidX.append(j)
+                    #     centroidY.append(i)
                 else:
                     scanmatrix[i, j] = 0
 
@@ -321,6 +316,16 @@ def patchdelin_grid_scan(landusematrix, irow, jcol, statusmatrix):
         # if the patch has finished being delineated, then the algorithm should terminate
 
     # No PatchID yet, main loop will allocate it
+    patchpoints = []        # Grab all patch points and the centroid point
+    centroidX = []          # and calculate size of the patch.
+    centroidY = []
+    for i in range(len(scanmatrix)):
+        for j in range(len(scanmatrix[0])):
+            if scanmatrix[i, j] == 1:
+                patchpoints.append((i, j))
+                centroidX.append(j)
+                centroidY.append(i)
+
     patchdict = {}
     patchdict["PatchIndices"] = patchpoints
     patchdict["Landuse"] = current_lu
@@ -340,7 +345,7 @@ def patchdelin_grid_scan(landusematrix, irow, jcol, statusmatrix):
     #                             (float(sum(centroidY))/float(len(centroidY))))
     
     patchdict["AspRatio"] = float(max(centroidX) - min(centroidX) + 1) / float(max(centroidY) - min(centroidY)+1)
-    patchdict["PatchSize"] = len(patchpoints)   # Simply the number of cells, need to multiply by resolution
+    patchdict["PatchSize"] = len(patchpoints)   # Simply the number of cells, need to multiply by unit area
     return patchdict
 
 
@@ -350,16 +355,11 @@ def patchdelin_find_next_start(statusmatrix):
 
     :param statusmatrix: a 2D array of zeroes corresponding to the size of the landusematrix
     """
-    point_found = 0
     for irow in range(len(statusmatrix)):    # for rows
         for jcol in range(len(statusmatrix[0])):  # for columns
-            if point_found == 1:
-                break
             if statusmatrix[irow, jcol] == 0:
-                point_found = 1
                 return irow, jcol
-    if point_found == 0:
-        return -1, -1   # -1st row and -1st column signals that all areas have been searched
+    return -1, -1   # -1st row and -1st column signals that all areas have been searched
 
 
 def patchdelin_obtain_patch_from_indices(datamatrix, dataresolution, indices, originalresolution):

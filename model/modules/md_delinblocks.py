@@ -387,6 +387,9 @@ class DelinBlocks(UBModule):
                                    blockpatches[p]["Centroid_xy"][1] * luc_res + current_block.get_attribute("OriginY"))
                         # Points X and Y are based on the Centroid, calculated
 
+                        patcharea = blockpatches[p]["PatchSize"] * luc_res * luc_res
+                        patch_buffer_radius = math.sqrt(patcharea / math.pi)
+
                         patch_attr = ubdata.UBVector(patchxy)
                         patch_attr.add_attribute("PatchID", blockpatches[p]["PatchID"])   # PatchID counts from 1 to N
                         patch_attr.add_attribute("PatchIndices", blockpatches[p]["PatchIndices"])
@@ -395,7 +398,8 @@ class DelinBlocks(UBModule):
                         patch_attr.add_attribute("CentroidY", patchxy[1])
                         patch_attr.add_attribute("AspRatio", blockpatches[p]["AspRatio"])
                         patch_attr.add_attribute("PatchSize", blockpatches[p]["PatchSize"])
-                        patch_attr.add_attribute("PatchArea", blockpatches[p]["PatchSize"] * luc_res)
+                        patch_attr.add_attribute("PatchArea", patcharea)
+                        patch_attr.add_attribute("BuffRadius", patch_buffer_radius)
 
                         # Save the patch to the scenario as B#_PatchID#
                         bID = current_block.get_attribute("BlockID")
@@ -653,7 +657,7 @@ class DelinBlocks(UBModule):
                 if self.osnet_network:
                     # The minimum acceptable distance to connect the network is taken as the final block size, if two
                     # entire Block patches exist, they are adjacent and connected by Block centroid
-                    min_dist = self.final_bs
+                    min_dist = self.final_bs*math.sqrt(2)
                     self.delineate_open_space_network(green_patches, grey_patches, non_patches, min_dist)
                     map_attr.add_attribute("HasOSNET", 1)
                 else:
