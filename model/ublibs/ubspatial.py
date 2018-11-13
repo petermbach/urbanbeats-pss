@@ -610,6 +610,7 @@ def export_oslink_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg
 
     shapefile.Destroy()
 
+
 def export_patch_buffers_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg):
     """Exports buffers for all open space patches in the asset_col list to a GIS Shapefile based on the
     current filepath.
