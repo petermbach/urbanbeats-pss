@@ -58,6 +58,40 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
         # The active scenario is already set when the GUI is launched because the user could only click it if
         # a scenario is active. This active scenario will inform the rest of the GUI.
         self.module = None  # Initialize the variable to hold the active module object
+        self.pixmap_ref = [":/images/images/md_urbplanbb_general.jpg",
+                           ":/images/images/md_urbplanbb_residential.jpg",
+                           ":/images/images/md_urbplanbb_nonres.jpg",
+                           ":/images/images/md_urbplanbb_roads.jpg",
+                           ":/images/images/md_urbplanbb_openspaces.jpg",
+                           ":/images/images/md_urbplanbb_others.jpg"]
+        self.adjust_module_img()
+
+        self.set_module_parameters()
+
+        # --- SIGNALS AND SLOTS ---
+        self.ui.parameters.currentChanged.connect(self.adjust_module_img)   # Changes the module's image
+        self.ui.buttonBox.accepted.connect(self.save_values)
+
+    def adjust_module_img(self):
+        """Changes the module's image based on the currently selected tab in the GUI."""
+        self.ui.module_img.setPixmap(QtGui.QPixmap(self.pixmap_ref[self.ui.parameters.currentIndex()]))
+
+    def setup_gui_with_parameters(self):
+        """Fills in all parameters belonging to the module for the current year."""
+        # TAB 1 - GENERAL PARAMETERS
+
+        # TAB 2 - RESIDENTIAL PLANNING PARAMETERS
+
+        # TAB 3 - NON-RESIDENTIAL PLANNING PARAMETERS
+
+        # TAB 4 - TRANSPORT PLANNING PARAMETERS
+
+        # TAB 5 - OPEN SPACES PLANNING PARAMETERS
+
+        # TAB 6 - OTHER LAND USES
+        pass
 
     def save_values(self):
+        """Saves current values to the corresponding module's instance in the active scenario."""
+        print "Save Values"
         pass

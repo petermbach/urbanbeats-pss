@@ -8,13 +8,13 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Ui_Delinblocks_Dialog(object):
-    def setupUi(self, Delinblocks_Dialog):
-        Delinblocks_Dialog.setObjectName("Delinblocks_Dialog")
-        Delinblocks_Dialog.resize(780, 500)
-        self.verticalLayout = QtWidgets.QVBoxLayout(Delinblocks_Dialog)
+class Ui_Urbplanbb_Dialog(object):
+    def setupUi(self, Urbplanbb_Dialog):
+        Urbplanbb_Dialog.setObjectName("Urbplanbb_Dialog")
+        Urbplanbb_Dialog.resize(780, 500)
+        self.verticalLayout = QtWidgets.QVBoxLayout(Urbplanbb_Dialog)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.title_frame = QtWidgets.QFrame(Delinblocks_Dialog)
+        self.title_frame = QtWidgets.QFrame(Urbplanbb_Dialog)
         self.title_frame.setMaximumSize(QtCore.QSize(16777215, 65))
         self.title_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.title_frame.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -41,12 +41,12 @@ class Ui_Delinblocks_Dialog(object):
         self.subtitle.setObjectName("subtitle")
         self.gridLayout.addWidget(self.subtitle, 1, 2, 1, 1)
         self.verticalLayout.addWidget(self.title_frame)
-        self.title_line = QtWidgets.QFrame(Delinblocks_Dialog)
+        self.title_line = QtWidgets.QFrame(Urbplanbb_Dialog)
         self.title_line.setFrameShape(QtWidgets.QFrame.HLine)
         self.title_line.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.title_line.setObjectName("title_line")
         self.verticalLayout.addWidget(self.title_line)
-        self.module_widget = QtWidgets.QWidget(Delinblocks_Dialog)
+        self.module_widget = QtWidgets.QWidget(Urbplanbb_Dialog)
         self.module_widget.setObjectName("module_widget")
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout(self.module_widget)
         self.horizontalLayout_6.setContentsMargins(0, 0, 0, 0)
@@ -1552,7 +1552,7 @@ class Ui_Delinblocks_Dialog(object):
         self.parameters.addTab(self.tab_2, "")
         self.horizontalLayout_6.addWidget(self.parameters)
         self.verticalLayout.addWidget(self.module_widget)
-        self.footer = QtWidgets.QWidget(Delinblocks_Dialog)
+        self.footer = QtWidgets.QWidget(Urbplanbb_Dialog)
         self.footer.setMinimumSize(QtCore.QSize(0, 40))
         self.footer.setMaximumSize(QtCore.QSize(16777215, 40))
         self.footer.setObjectName("footer")
@@ -1575,541 +1575,541 @@ class Ui_Delinblocks_Dialog(object):
         self.horizontalLayout.addWidget(self.help_button)
         self.verticalLayout.addWidget(self.footer)
 
-        self.retranslateUi(Delinblocks_Dialog)
+        self.retranslateUi(Urbplanbb_Dialog)
         self.parameters.setCurrentIndex(0)
         self.jobs_define_stack.setCurrentIndex(0)
-        self.buttonBox.accepted.connect(Delinblocks_Dialog.accept)
-        self.buttonBox.rejected.connect(Delinblocks_Dialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(Delinblocks_Dialog)
-        Delinblocks_Dialog.setTabOrder(self.year_combo, self.same_params)
-        Delinblocks_Dialog.setTabOrder(self.same_params, self.description)
-        Delinblocks_Dialog.setTabOrder(self.description, self.inputs_scrollArea)
-        Delinblocks_Dialog.setTabOrder(self.inputs_scrollArea, self.employment_combo)
-        Delinblocks_Dialog.setTabOrder(self.employment_combo, self.emp_fromurbandev)
-        Delinblocks_Dialog.setTabOrder(self.emp_fromurbandev, self.locality_combo)
-        Delinblocks_Dialog.setTabOrder(self.locality_combo, self.buttonBox)
-        Delinblocks_Dialog.setTabOrder(self.buttonBox, self.help_button)
+        self.buttonBox.accepted.connect(Urbplanbb_Dialog.accept)
+        self.buttonBox.rejected.connect(Urbplanbb_Dialog.reject)
+        QtCore.QMetaObject.connectSlotsByName(Urbplanbb_Dialog)
+        Urbplanbb_Dialog.setTabOrder(self.year_combo, self.same_params)
+        Urbplanbb_Dialog.setTabOrder(self.same_params, self.description)
+        Urbplanbb_Dialog.setTabOrder(self.description, self.inputs_scrollArea)
+        Urbplanbb_Dialog.setTabOrder(self.inputs_scrollArea, self.employment_combo)
+        Urbplanbb_Dialog.setTabOrder(self.employment_combo, self.emp_fromurbandev)
+        Urbplanbb_Dialog.setTabOrder(self.emp_fromurbandev, self.locality_combo)
+        Urbplanbb_Dialog.setTabOrder(self.locality_combo, self.buttonBox)
+        Urbplanbb_Dialog.setTabOrder(self.buttonBox, self.help_button)
 
-    def retranslateUi(self, Delinblocks_Dialog):
+    def retranslateUi(self, Urbplanbb_Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Delinblocks_Dialog.setWindowTitle(_translate("Delinblocks_Dialog", "Dialog"))
-        self.title.setText(_translate("Delinblocks_Dialog", "Urban Planning"))
-        self.subtitle.setText(_translate("Delinblocks_Dialog", "Create an abstraction of the urban form from a set of planning rules or experiment with how planning rules may alter the urban environment"))
-        self.sidebar_title.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">SCENARIO TIME STEP</span></p></body></html>"))
-        self.year_combo.setItemText(0, _translate("Delinblocks_Dialog", "<startyear>"))
-        self.autofillButton.setText(_translate("Delinblocks_Dialog", "Autofill from previous"))
-        self.same_params.setText(_translate("Delinblocks_Dialog", "Same Parameters"))
-        self.description.setHtml(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        Urbplanbb_Dialog.setWindowTitle(_translate("Urbplanbb_Dialog", "Dialog"))
+        self.title.setText(_translate("Urbplanbb_Dialog", "Urban Planning"))
+        self.subtitle.setText(_translate("Urbplanbb_Dialog", "Create an abstraction of the urban form from a set of planning rules or experiment with how planning rules may alter the urban environment"))
+        self.sidebar_title.setText(_translate("Urbplanbb_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">SCENARIO TIME STEP</span></p></body></html>"))
+        self.year_combo.setItemText(0, _translate("Urbplanbb_Dialog", "<startyear>"))
+        self.autofillButton.setText(_translate("Urbplanbb_Dialog", "Autofill from previous"))
+        self.same_params.setText(_translate("Urbplanbb_Dialog", "Same Parameters"))
+        self.description.setHtml(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">A simplified spatial representation of the urban environment. In this module, settings are made to the geometry that is used to represent the urban information, spatial connectivity and geography.</span></p></body></html>"))
-        self.descr1.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">SET ADDITIONAL INPUT MAPS</span></p></body></html>"))
-        self.emp_lbl_2.setText(_translate("Delinblocks_Dialog", "This may include employment data, localities"))
-        self.emp_lbl.setText(_translate("Delinblocks_Dialog", "Employment:"))
-        self.descr3.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-weight:600; font-style:italic;\">Optional Spatial Data Sets</span></p></body></html>"))
-        self.emp_fromurbandev.setText(_translate("Delinblocks_Dialog", "from urban development"))
-        self.label_32.setText(_translate("Delinblocks_Dialog", "Locality Map:"))
-        self.descr1_2.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">GENERAL PLANNING METRICS, RULES AND CONSTRAINTS</span></p></body></html>"))
-        self.citysprawl_spin.setSuffix(_translate("Delinblocks_Dialog", " km"))
-        self.citypoly_radio.setText(_translate("Delinblocks_Dialog", "Poly-Centric"))
-        self.citysprawl_lbl2.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.descr1.setText(_translate("Urbplanbb_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">SET ADDITIONAL INPUT MAPS</span></p></body></html>"))
+        self.emp_lbl_2.setText(_translate("Urbplanbb_Dialog", "This may include employment data, localities"))
+        self.emp_lbl.setText(_translate("Urbplanbb_Dialog", "Employment:"))
+        self.descr3.setText(_translate("Urbplanbb_Dialog", "<html><head/><body><p><span style=\" font-weight:600; font-style:italic;\">Optional Spatial Data Sets</span></p></body></html>"))
+        self.emp_fromurbandev.setText(_translate("Urbplanbb_Dialog", "from urban development"))
+        self.label_32.setText(_translate("Urbplanbb_Dialog", "Locality Map:"))
+        self.descr1_2.setText(_translate("Urbplanbb_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">GENERAL PLANNING METRICS, RULES AND CONSTRAINTS</span></p></body></html>"))
+        self.citysprawl_spin.setSuffix(_translate("Urbplanbb_Dialog", " km"))
+        self.citypoly_radio.setText(_translate("Urbplanbb_Dialog", "Poly-Centric"))
+        self.citysprawl_lbl2.setWhatsThis(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Site cover refers to building footprint. Any area that is occupied by a structure that covers an open space with a roof. (Typical restriction: 60%)</span></p></body></html>"))
-        self.citysprawl_lbl2.setText(_translate("Delinblocks_Dialog", "(from main CBD)"))
-        self.cityarchetype_lbl.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.citysprawl_lbl2.setText(_translate("Urbplanbb_Dialog", "(from main CBD)"))
+        self.cityarchetype_lbl.setWhatsThis(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Site cover refers to building footprint. Any area that is occupied by a structure that covers an open space with a roof. (Typical restriction: 60%)</span></p></body></html>"))
-        self.cityarchetype_lbl.setText(_translate("Delinblocks_Dialog", "City Archetype:"))
-        self.citysprawl_lbl.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.cityarchetype_lbl.setText(_translate("Urbplanbb_Dialog", "City Archetype:"))
+        self.citysprawl_lbl.setWhatsThis(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Site cover refers to building footprint. Any area that is occupied by a structure that covers an open space with a roof. (Typical restriction: 60%)</span></p></body></html>"))
-        self.citysprawl_lbl.setText(_translate("Delinblocks_Dialog", "Approximate Urban Sprawl Radius:"))
-        self.mun_localmap_check.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.citysprawl_lbl.setText(_translate("Urbplanbb_Dialog", "Approximate Urban Sprawl Radius:"))
+        self.mun_localmap_check.setWhatsThis(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Check this box if information on the facilities is available on the locality map provided to the model. If no locality map has been given, you may choose to customise the rules for each of the facilities. If no locality map is given or facility is checked and not indicated on the map, radius of influence methodology will be used.</span></p></body></html>"))
-        self.mun_localmap_check.setText(_translate("Delinblocks_Dialog", "Municipal and Transport Facilities available on locality map"))
-        self.citymono_radio.setText(_translate("Delinblocks_Dialog", "Mono-Centric"))
-        self.label_78.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.mun_localmap_check.setText(_translate("Urbplanbb_Dialog", "Municipal and Transport Facilities available on locality map"))
+        self.citymono_radio.setText(_translate("Urbplanbb_Dialog", "Mono-Centric"))
+        self.label_78.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">BLOCK REDEVELOPMENT DYNAMICS DECISION VARIABLES</span></p></body></html>"))
-        self.lucredevelop_lbl.setText(_translate("Delinblocks_Dialog", "Tolerance Threshold"))
-        self.lucredevelop_check.setText(_translate("Delinblocks_Dialog", "Redevelop Block if Land Classes differ by a significant amount?"))
-        self.popredevelop_check.setText(_translate("Delinblocks_Dialog", "Redevelop Block if Population differs by a significant amount?"))
-        self.popredevelop_lbl.setText(_translate("Delinblocks_Dialog", "Tolerance Threshold"))
-        self.noredevelop_check.setText(_translate("Delinblocks_Dialog", "Do not Redevelop Blocks regardless of changes"))
-        self.lucredevelop_spin.setSuffix(_translate("Delinblocks_Dialog", "%"))
-        self.popredevelop_spin.setSuffix(_translate("Delinblocks_Dialog", "%"))
-        self.parameters.setTabText(self.parameters.indexOf(self.inputs_tab), _translate("Delinblocks_Dialog", "General"))
-        self.label_14.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.lucredevelop_lbl.setText(_translate("Urbplanbb_Dialog", "Tolerance Threshold"))
+        self.lucredevelop_check.setText(_translate("Urbplanbb_Dialog", "Redevelop Block if Land Classes differ by a significant amount?"))
+        self.popredevelop_check.setText(_translate("Urbplanbb_Dialog", "Redevelop Block if Population differs by a significant amount?"))
+        self.popredevelop_lbl.setText(_translate("Urbplanbb_Dialog", "Tolerance Threshold"))
+        self.noredevelop_check.setText(_translate("Urbplanbb_Dialog", "Do not Redevelop Blocks regardless of changes"))
+        self.lucredevelop_spin.setSuffix(_translate("Urbplanbb_Dialog", "%"))
+        self.popredevelop_spin.setSuffix(_translate("Urbplanbb_Dialog", "%"))
+        self.parameters.setTabText(self.parameters.indexOf(self.inputs_tab), _translate("Urbplanbb_Dialog", "General"))
+        self.label_14.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">SINGLE/SEMI-DETACHED RESIDENTIAL DWELLINGS</span></p></body></html>"))
-        self.person_space_lbl.setText(_translate("Delinblocks_Dialog", "Personal Space [sqm/person]"))
-        self.occup_avg_lbl.setText(_translate("Delinblocks_Dialog", "Avg. Occupancy [pax]"))
-        self.extra_comm_area_lbl.setText(_translate("Delinblocks_Dialog", "Extra Communal Area [%]"))
-        self.occup_max_lbl.setText(_translate("Delinblocks_Dialog", "Max. Occupancy [persons]"))
-        self.setback_f_to.setText(_translate("Delinblocks_Dialog", "to"))
-        self.lineEdit_7.setText(_translate("Delinblocks_Dialog", "2"))
-        self.setback_f_lbl.setText(_translate("Delinblocks_Dialog", "Front Setback Range [m]"))
-        self.label_16.setText(_translate("Delinblocks_Dialog", "Minimum Rear Setback [m]"))
-        self.setback_s_to.setText(_translate("Delinblocks_Dialog", "to"))
-        self.setback_s_lbl.setText(_translate("Delinblocks_Dialog", "Side Setback Range [m]"))
-        self.fsetbackmed_check.setText(_translate("Delinblocks_Dialog", "Use median"))
-        self.ssetbackmed_check.setText(_translate("Delinblocks_Dialog", "Use median"))
-        self.w_driveway_min_lbl.setText(_translate("Delinblocks_Dialog", "Minimum Driveway Width [m]"))
-        self.carports_max_lbl.setText(_translate("Delinblocks_Dialog", "Max. No. of Car Ports"))
-        self.garage_incl_box.setText(_translate("Delinblocks_Dialog", "Include Garage?"))
-        self.patio_area_max_lbl.setText(_translate("Delinblocks_Dialog", "Maximum Patio Area [sqm]"))
-        self.patio_covered_box.setText(_translate("Delinblocks_Dialog", "Patio is covered?"))
-        self.floor_num_max_lbl.setText(_translate("Delinblocks_Dialog", "Maximum No. Floors [floors]"))
-        self.label_18.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.person_space_lbl.setText(_translate("Urbplanbb_Dialog", "Personal Space [sqm/person]"))
+        self.occup_avg_lbl.setText(_translate("Urbplanbb_Dialog", "Avg. Occupancy [pax]"))
+        self.extra_comm_area_lbl.setText(_translate("Urbplanbb_Dialog", "Extra Communal Area [%]"))
+        self.occup_max_lbl.setText(_translate("Urbplanbb_Dialog", "Max. Occupancy [persons]"))
+        self.setback_f_to.setText(_translate("Urbplanbb_Dialog", "to"))
+        self.lineEdit_7.setText(_translate("Urbplanbb_Dialog", "2"))
+        self.setback_f_lbl.setText(_translate("Urbplanbb_Dialog", "Front Setback Range [m]"))
+        self.label_16.setText(_translate("Urbplanbb_Dialog", "Minimum Rear Setback [m]"))
+        self.setback_s_to.setText(_translate("Urbplanbb_Dialog", "to"))
+        self.setback_s_lbl.setText(_translate("Urbplanbb_Dialog", "Side Setback Range [m]"))
+        self.fsetbackmed_check.setText(_translate("Urbplanbb_Dialog", "Use median"))
+        self.ssetbackmed_check.setText(_translate("Urbplanbb_Dialog", "Use median"))
+        self.w_driveway_min_lbl.setText(_translate("Urbplanbb_Dialog", "Minimum Driveway Width [m]"))
+        self.carports_max_lbl.setText(_translate("Urbplanbb_Dialog", "Max. No. of Car Ports"))
+        self.garage_incl_box.setText(_translate("Urbplanbb_Dialog", "Include Garage?"))
+        self.patio_area_max_lbl.setText(_translate("Urbplanbb_Dialog", "Maximum Patio Area [sqm]"))
+        self.patio_covered_box.setText(_translate("Urbplanbb_Dialog", "Patio is covered?"))
+        self.floor_num_max_lbl.setText(_translate("Urbplanbb_Dialog", "Maximum No. Floors [floors]"))
+        self.label_18.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">HIGH DENSITY RESIDENTIAL HOUSING</span></p></body></html>"))
-        self.occup_flat_avg_lbl.setText(_translate("Delinblocks_Dialog", "Avg. Flat Occupancy [pax]"))
-        self.flat_area_max_lbl.setText(_translate("Delinblocks_Dialog", "Avg. Apartment Size [sqm]"))
-        self.commspace_indoor_lbl.setText(_translate("Delinblocks_Dialog", "Indoor Communal Area"))
-        self.commspace_outdoor_lbl.setText(_translate("Delinblocks_Dialog", "Outdoor Communal Area"))
-        self.setback_HDR_avg_lbl.setText(_translate("Delinblocks_Dialog", "Avg. Site Setback [m]"))
-        self.OSR_parks_include.setText(_translate("Delinblocks_Dialog", "Leverage nearby parks to fulfill Outdoor Open Space Requirements?"))
-        self.setback_HDR_avg_lbl_2.setText(_translate("Delinblocks_Dialog", "Parking Arrangement:"))
-        self.parking_on.setText(_translate("Delinblocks_Dialog", "On-site"))
-        self.parking_none.setText(_translate("Delinblocks_Dialog", "None"))
-        self.parking_off.setText(_translate("Delinblocks_Dialog", "Off-site"))
-        self.indoor_com_spin.setSuffix(_translate("Delinblocks_Dialog", "%"))
-        self.outdoor_com_spin.setSuffix(_translate("Delinblocks_Dialog", "%"))
-        self.comspace_lbl.setText(_translate("Delinblocks_Dialog", "(% of total floor space)"))
-        self.parking_vary.setText(_translate("Delinblocks_Dialog", "Vary"))
-        self.floor_num_max_lbl_2.setText(_translate("Delinblocks_Dialog", "Maximum No. Floors [floors]"))
-        self.label_19.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.occup_flat_avg_lbl.setText(_translate("Urbplanbb_Dialog", "Avg. Flat Occupancy [pax]"))
+        self.flat_area_max_lbl.setText(_translate("Urbplanbb_Dialog", "Avg. Apartment Size [sqm]"))
+        self.commspace_indoor_lbl.setText(_translate("Urbplanbb_Dialog", "Indoor Communal Area"))
+        self.commspace_outdoor_lbl.setText(_translate("Urbplanbb_Dialog", "Outdoor Communal Area"))
+        self.setback_HDR_avg_lbl.setText(_translate("Urbplanbb_Dialog", "Avg. Site Setback [m]"))
+        self.OSR_parks_include.setText(_translate("Urbplanbb_Dialog", "Leverage nearby parks to fulfill Outdoor Open Space Requirements?"))
+        self.setback_HDR_avg_lbl_2.setText(_translate("Urbplanbb_Dialog", "Parking Arrangement:"))
+        self.parking_on.setText(_translate("Urbplanbb_Dialog", "On-site"))
+        self.parking_none.setText(_translate("Urbplanbb_Dialog", "None"))
+        self.parking_off.setText(_translate("Urbplanbb_Dialog", "Off-site"))
+        self.indoor_com_spin.setSuffix(_translate("Urbplanbb_Dialog", "%"))
+        self.outdoor_com_spin.setSuffix(_translate("Urbplanbb_Dialog", "%"))
+        self.comspace_lbl.setText(_translate("Urbplanbb_Dialog", "(% of total floor space)"))
+        self.parking_vary.setText(_translate("Urbplanbb_Dialog", "Vary"))
+        self.floor_num_max_lbl_2.setText(_translate("Urbplanbb_Dialog", "Maximum No. Floors [floors]"))
+        self.label_19.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">Drainage Properties for Residential Lots</span></p></body></html>"))
-        self.roof_connected_radiovary.setText(_translate("Delinblocks_Dialog", "Variable (adjust likelihood of roof disconnection)"))
-        self.roof_connected_lbl.setText(_translate("Delinblocks_Dialog", "Configure roof drainage connection (affects effective imperviousness)?"))
-        self.roof_connected_radiodisc.setText(_translate("Delinblocks_Dialog", "Disconnect all downpipes in all houses (unless a raintank is present)"))
-        self.roof_connected_radiodirect.setText(_translate("Delinblocks_Dialog", "Directly connected downpipe in all houses"))
-        self.imperv_prop_dced_lbl.setText(_translate("Delinblocks_Dialog", "Average % of Ground Imperviousness Disconnected:"))
-        self.avg_imp_dced_spin.setSuffix(_translate("Delinblocks_Dialog", "%"))
-        self.roofdced_vary_spin.setSuffix(_translate("Delinblocks_Dialog", "%"))
-        self.parameters.setTabText(self.parameters.indexOf(self.geometry_tab), _translate("Delinblocks_Dialog", "Residential"))
-        self.ComInd_title.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.roof_connected_radiovary.setText(_translate("Urbplanbb_Dialog", "Variable (adjust likelihood of roof disconnection)"))
+        self.roof_connected_lbl.setText(_translate("Urbplanbb_Dialog", "Configure roof drainage connection (affects effective imperviousness)?"))
+        self.roof_connected_radiodisc.setText(_translate("Urbplanbb_Dialog", "Disconnect all downpipes in all houses (unless a raintank is present)"))
+        self.roof_connected_radiodirect.setText(_translate("Urbplanbb_Dialog", "Directly connected downpipe in all houses"))
+        self.imperv_prop_dced_lbl.setText(_translate("Urbplanbb_Dialog", "Average % of Ground Imperviousness Disconnected:"))
+        self.avg_imp_dced_spin.setSuffix(_translate("Urbplanbb_Dialog", "%"))
+        self.roofdced_vary_spin.setSuffix(_translate("Urbplanbb_Dialog", "%"))
+        self.parameters.setTabText(self.parameters.indexOf(self.geometry_tab), _translate("Urbplanbb_Dialog", "Residential"))
+        self.ComInd_title.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">INDUSTRIAL AND COMMERCIAL ZONES</span></p></body></html>"))
-        self.jobs_title.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.jobs_title.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600; font-style:italic;\">Employment</span></p></body></html>"))
-        self.nres_setback_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.nres_setback_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Minimum Front Setback [m]</span></p></body></html>"))
-        self.jobs_direct_radio.setWhatsThis(_translate("Delinblocks_Dialog", "Employment is defined by the employment map input data. The model will use this information to determine the number of jobs in each block of the map."))
-        self.jobs_direct_radio.setText(_translate("Delinblocks_Dialog", "Spatial Input"))
-        self.jobs_total_radio.setWhatsThis(_translate("Delinblocks_Dialog", "Using a single value of employment for the entire simulation region, the model determines the possible distribution of jobs. Use this option only if spatially explicit data is unavailable and statuatory regulations are difficult to determine or generalize across the simulation region and only a single value is known."))
-        self.jobs_total_radio.setText(_translate("Delinblocks_Dialog", "Single Value"))
-        self.nres_setback_auto.setText(_translate("Delinblocks_Dialog", "Determine automatically"))
-        self.jobs_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.jobs_direct_radio.setWhatsThis(_translate("Urbplanbb_Dialog", "Employment is defined by the employment map input data. The model will use this information to determine the number of jobs in each block of the map."))
+        self.jobs_direct_radio.setText(_translate("Urbplanbb_Dialog", "Spatial Input"))
+        self.jobs_total_radio.setWhatsThis(_translate("Urbplanbb_Dialog", "Using a single value of employment for the entire simulation region, the model determines the possible distribution of jobs. Use this option only if spatially explicit data is unavailable and statuatory regulations are difficult to determine or generalize across the simulation region and only a single value is known."))
+        self.jobs_total_radio.setText(_translate("Urbplanbb_Dialog", "Single Value"))
+        self.nres_setback_auto.setText(_translate("Urbplanbb_Dialog", "Determine automatically"))
+        self.jobs_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Define employment:</span></p></body></html>"))
-        self.site_title.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.site_title.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600; font-style:italic;\">Land Subdivision and Site Layout</span></p></body></html>"))
-        self.nres_maxfloors_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.nres_maxfloors_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Max. Allowable Floors above Ground:</span></p></body></html>"))
-        self.lscape_hsbalance_soft.setText(_translate("Delinblocks_Dialog", "Soft"))
-        self.lscape_hsbalance_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.lscape_hsbalance_soft.setText(_translate("Urbplanbb_Dialog", "Soft"))
+        self.lscape_hsbalance_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Balance of Hard and Soft Landscaping</span></p></body></html>"))
-        self.lscape_hsbalance_hard.setText(_translate("Delinblocks_Dialog", "Hard"))
-        self.carpark_dim_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.lscape_hsbalance_hard.setText(_translate("Urbplanbb_Dialog", "Hard"))
+        self.carpark_dim_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Minimum Parking Lot Dimensions [m]</span></p></body></html>"))
-        self.carpark_dimW_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.carpark_dimW_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">W</span></p></body></html>"))
-        self.parking_title.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.parking_title.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600; font-style:italic;\">Car Parking and Loading Bay</span></p></body></html>"))
-        self.carpark_dimD_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.carpark_dimD_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">D</span></p></body></html>"))
-        self.carpark_imp_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.carpark_imp_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Avg. Imperviousness of Parking Area</span></p></body></html>"))
-        self.lscape_title.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.lscape_title.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600; font-style:italic;\">Landscaping and Drainage</span></p></body></html>"))
-        self.carpark_imp_spin.setSuffix(_translate("Delinblocks_Dialog", "%"))
-        self.lscape_impdced_lbl.setText(_translate("Delinblocks_Dialog", "Average % of Imperviousness Disconnected"))
-        self.jobs_dist_radio.setWhatsThis(_translate("Delinblocks_Dialog", "Employment is defined as a ratio of employees per net developable hectare. User specifies a range of ratios for industrial and commercial areas. The model uses this to compute the total employment for the area and plan out the urban form appropriately. (Use this if employment data is unavailable but statuatory planning regulations are fairly consistent across the simulation region)."))
-        self.jobs_dist_radio.setText(_translate("Delinblocks_Dialog", "Distribution"))
-        self.groupBox.setTitle(_translate("Delinblocks_Dialog", "Spatial Input"))
-        self.jobs_direct_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.carpark_imp_spin.setSuffix(_translate("Urbplanbb_Dialog", "%"))
+        self.lscape_impdced_lbl.setText(_translate("Urbplanbb_Dialog", "Average % of Imperviousness Disconnected"))
+        self.jobs_dist_radio.setWhatsThis(_translate("Urbplanbb_Dialog", "Employment is defined as a ratio of employees per net developable hectare. User specifies a range of ratios for industrial and commercial areas. The model uses this to compute the total employment for the area and plan out the urban form appropriately. (Use this if employment data is unavailable but statuatory planning regulations are fairly consistent across the simulation region)."))
+        self.jobs_dist_radio.setText(_translate("Urbplanbb_Dialog", "Distribution"))
+        self.groupBox.setTitle(_translate("Urbplanbb_Dialog", "Spatial Input"))
+        self.jobs_direct_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">no further input required here...</span></p></body></html>"))
-        self.groupBox_2.setTitle(_translate("Delinblocks_Dialog", "Distribution of Employment"))
-        self.dist_ind_units.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.groupBox_2.setTitle(_translate("Urbplanbb_Dialog", "Distribution of Employment"))
+        self.dist_ind_units.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">employees/ha</span></p></body></html>"))
-        self.dist_ind_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.dist_ind_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Industrial Zones</span></p></body></html>"))
-        self.dist_com_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.dist_com_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Commercial Zones</span></p></body></html>"))
-        self.dist_com_units.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.dist_com_units.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">employees/ha</span></p></body></html>"))
-        self.dist_explain.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.dist_explain.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-style:italic;\">(indicate typical employment density on net developable area)</span></p></body></html>"))
-        self.dist_orc_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.dist_orc_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Offices</span></p></body></html>"))
-        self.dist_orc_units.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.dist_orc_units.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">employees/ha</span></p></body></html>"))
-        self.jobs_define_box.setTitle(_translate("Delinblocks_Dialog", "Single Value of Employment"))
-        self.totjobs_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.jobs_define_box.setTitle(_translate("Urbplanbb_Dialog", "Single Value of Employment"))
+        self.totjobs_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Total jobs in simulation area [thousands]:</span></p></body></html>"))
-        self.totjobs_explain.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.totjobs_explain.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-style:italic;\">(enter a rough estimate for the total region, the model will</span></p></body></html>"))
-        self.totjobs_explain_2.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.totjobs_explain_2.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-style:italic;\">attempt to rescale it according to the proportions of different</span></p></body></html>"))
-        self.totjobs_explain_3.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.totjobs_explain_3.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-style:italic;\">non-residential areas within the map)</span></p></body></html>"))
-        self.nres_maxfloors_nolimit.setText(_translate("Delinblocks_Dialog", "No Limit"))
-        self.plotratio_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.nres_maxfloors_nolimit.setText(_translate("Urbplanbb_Dialog", "No Limit"))
+        self.plotratio_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Maximum Plot Ratios:</span></p></body></html>"))
-        self.plotratio_ind_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.plotratio_ind_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Industrial Estates</span></p></body></html>"))
-        self.plotratio_com_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.plotratio_com_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Commercial Estates</span></p></body></html>"))
-        self.carpark_allocate_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.carpark_allocate_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Parking Requirements</span></p></body></html>"))
-        self.carpark_ind_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.carpark_ind_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Industrial Estates</span></p></body></html>"))
-        self.carparking_com_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.carparking_com_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Commercial Estates</span></p></body></html>"))
-        self.carpark_com_units.setText(_translate("Delinblocks_Dialog", "[bays/100sqm floor area]"))
-        self.carpark_ind_units.setText(_translate("Delinblocks_Dialog", "[bays/employee]"))
-        self.loadingbay_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.carpark_com_units.setText(_translate("Urbplanbb_Dialog", "[bays/100sqm floor area]"))
+        self.carpark_ind_units.setText(_translate("Urbplanbb_Dialog", "[bays/employee]"))
+        self.loadingbay_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Area allocation for Loading Bay [sqm/100sqm floor area]</span></p></body></html>"))
-        self.lscape_impdced_spin.setSuffix(_translate("Delinblocks_Dialog", "%"))
-        self.plotratio_ind_minlbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.lscape_impdced_spin.setSuffix(_translate("Urbplanbb_Dialog", "%"))
+        self.plotratio_ind_minlbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">0.1</span></p></body></html>"))
-        self.plotratio_ind_maxlbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.plotratio_ind_maxlbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">1.0</span></p></body></html>"))
-        self.plotratio_com_minlbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.plotratio_com_minlbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">0.1</span></p></body></html>"))
-        self.plotratio_com_maxlbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.plotratio_com_maxlbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">1.0</span></p></body></html>"))
-        self.landsubd_title.setWhatsThis(_translate("Delinblocks_Dialog", "An area threshold, which the model uses to subdivide the land into separate land districts  within the block. These districts are bounded by local streets. This information is independent of patch data as subdivision on individual patches may occur since their size exceeds the threshold. "))
-        self.landsubd_title.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.landsubd_title.setWhatsThis(_translate("Urbplanbb_Dialog", "An area threshold, which the model uses to subdivide the land into separate land districts  within the block. These districts are bounded by local streets. This information is independent of patch data as subdivision on individual patches may occur since their size exceeds the threshold. "))
+        self.landsubd_title.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Land Parcel Subdivision Thresholds (specify range)</span></p></body></html>"))
-        self.com_subd_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.com_subd_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Commercial Land [ha/parcel]</span></p></body></html>"))
-        self.ind_subd_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.ind_subd_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Industrial Land [ha/parcel]</span></p></body></html>"))
-        self.ind_subd_lbl2.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.ind_subd_lbl2.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">to</span></p></body></html>"))
-        self.com_subd_lbl2.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.com_subd_lbl2.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">to</span></p></body></html>"))
-        self.civ_title.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.civ_title.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">Civic Facilities</span></p></body></html>"))
-        self.civ_clinic_box.setText(_translate("Delinblocks_Dialog", "Health Clinic"))
-        self.civ_fire_box.setText(_translate("Delinblocks_Dialog", "Fire Station"))
-        self.civ_race_box.setText(_translate("Delinblocks_Dialog", "Racing Track"))
-        self.civ_leisure_box.setText(_translate("Delinblocks_Dialog", "Community/Leisure Centre"))
-        self.civ_religion_box.setText(_translate("Delinblocks_Dialog", "Places of Worship"))
-        self.edu_uni_box.setText(_translate("Delinblocks_Dialog", "University Campus"))
-        self.civ_jail_box.setText(_translate("Delinblocks_Dialog", "City Jail"))
-        self.edu_school_box.setText(_translate("Delinblocks_Dialog", "School (Pre-/Primary-/Secondary-)"))
-        self.civ_dead_box.setText(_translate("Delinblocks_Dialog", "Cemetery"))
-        self.civ_police_box.setText(_translate("Delinblocks_Dialog", "Police Station"))
-        self.civ_sports_box.setText(_translate("Delinblocks_Dialog", "Sports Stadium"))
-        self.civ_hospital_box.setText(_translate("Delinblocks_Dialog", "Hospital"))
-        self.edu_customise.setText(_translate("Delinblocks_Dialog", "Customise..."))
-        self.edu_lib_box.setText(_translate("Delinblocks_Dialog", "Public Library"))
-        self.mun_customise.setText(_translate("Delinblocks_Dialog", "Customise..."))
-        self.civ_museum_box.setText(_translate("Delinblocks_Dialog", "Museum"))
-        self.edu_facilities_lbl.setText(_translate("Delinblocks_Dialog", "Education Facilities within simulation bounds"))
-        self.civ_zoo_box.setText(_translate("Delinblocks_Dialog", "Public Zoo"))
-        self.mun_facilities_lbl.setText(_translate("Delinblocks_Dialog", "Municipal Facilities within simulation bounds"))
-        self.civ_consider_check.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.civ_clinic_box.setText(_translate("Urbplanbb_Dialog", "Health Clinic"))
+        self.civ_fire_box.setText(_translate("Urbplanbb_Dialog", "Fire Station"))
+        self.civ_race_box.setText(_translate("Urbplanbb_Dialog", "Racing Track"))
+        self.civ_leisure_box.setText(_translate("Urbplanbb_Dialog", "Community/Leisure Centre"))
+        self.civ_religion_box.setText(_translate("Urbplanbb_Dialog", "Places of Worship"))
+        self.edu_uni_box.setText(_translate("Urbplanbb_Dialog", "University Campus"))
+        self.civ_jail_box.setText(_translate("Urbplanbb_Dialog", "City Jail"))
+        self.edu_school_box.setText(_translate("Urbplanbb_Dialog", "School (Pre-/Primary-/Secondary-)"))
+        self.civ_dead_box.setText(_translate("Urbplanbb_Dialog", "Cemetery"))
+        self.civ_police_box.setText(_translate("Urbplanbb_Dialog", "Police Station"))
+        self.civ_sports_box.setText(_translate("Urbplanbb_Dialog", "Sports Stadium"))
+        self.civ_hospital_box.setText(_translate("Urbplanbb_Dialog", "Hospital"))
+        self.edu_customise.setText(_translate("Urbplanbb_Dialog", "Customise..."))
+        self.edu_lib_box.setText(_translate("Urbplanbb_Dialog", "Public Library"))
+        self.mun_customise.setText(_translate("Urbplanbb_Dialog", "Customise..."))
+        self.civ_museum_box.setText(_translate("Urbplanbb_Dialog", "Museum"))
+        self.edu_facilities_lbl.setText(_translate("Urbplanbb_Dialog", "Education Facilities within simulation bounds"))
+        self.civ_zoo_box.setText(_translate("Urbplanbb_Dialog", "Public Zoo"))
+        self.mun_facilities_lbl.setText(_translate("Urbplanbb_Dialog", "Municipal Facilities within simulation bounds"))
+        self.civ_consider_check.setWhatsThis(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">If detailed consideration of these facilities is to be included in the model, check this box to enable further options. Otherwise this land use will simply be treated as commercial/industrial land use.</span></p></body></html>"))
-        self.civ_consider_check.setText(_translate("Delinblocks_Dialog", "Consider Civic Facilities explicitly"))
-        self.parameters.setTabText(self.parameters.indexOf(self.geography_tab), _translate("Delinblocks_Dialog", "Non-Residential"))
-        self.frontage_info_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.civ_consider_check.setText(_translate("Urbplanbb_Dialog", "Consider Civic Facilities explicitly"))
+        self.parameters.setTabText(self.parameters.indexOf(self.geography_tab), _translate("Urbplanbb_Dialog", "Non-Residential"))
+        self.frontage_info_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">FRONTAGE AND PEDESTRIAN INFORMATION</span></p></body></html>"))
-        self.w_resnaturestrip_lbl.setText(_translate("Delinblocks_Dialog", "Nature strip width (range) [m]"))
-        self.w_resfootpath_lbl.setText(_translate("Delinblocks_Dialog", "Footpath width  (range) [m]"))
-        self.w_resnaturestrip_lbl2.setText(_translate("Delinblocks_Dialog", "to"))
-        self.w_resfootpath_lbl2.setText(_translate("Delinblocks_Dialog", "to"))
-        self.w_resfootpath_med_check.setText(_translate("Delinblocks_Dialog", "Use median"))
-        self.w_resnaturestrip_med_check.setText(_translate("Delinblocks_Dialog", "Use median"))
-        self.w_resfrontage_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.w_resnaturestrip_lbl.setText(_translate("Urbplanbb_Dialog", "Nature strip width (range) [m]"))
+        self.w_resfootpath_lbl.setText(_translate("Urbplanbb_Dialog", "Footpath width  (range) [m]"))
+        self.w_resnaturestrip_lbl2.setText(_translate("Urbplanbb_Dialog", "to"))
+        self.w_resfootpath_lbl2.setText(_translate("Urbplanbb_Dialog", "to"))
+        self.w_resfootpath_med_check.setText(_translate("Urbplanbb_Dialog", "Use median"))
+        self.w_resnaturestrip_med_check.setText(_translate("Urbplanbb_Dialog", "Use median"))
+        self.w_resfrontage_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600; font-style:italic;\">Residential Districts</span></p></body></html>"))
-        self.w_comfootpath_lbl.setText(_translate("Delinblocks_Dialog", "Footpath width  (range) [m]"))
-        self.w_comfrontage_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.w_comfootpath_lbl.setText(_translate("Urbplanbb_Dialog", "Footpath width  (range) [m]"))
+        self.w_comfrontage_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600; font-style:italic;\">Non-Residential Districts</span></p></body></html>"))
-        self.w_comnaturestrip_lbl.setText(_translate("Delinblocks_Dialog", "Nature strip width (range) [m]"))
-        self.w_comnaturestrip_med_check.setText(_translate("Delinblocks_Dialog", "Use median"))
-        self.w_comnaturestrip_lbl2.setText(_translate("Delinblocks_Dialog", "to"))
-        self.w_comfootpath_lbl2.setText(_translate("Delinblocks_Dialog", "to"))
-        self.w_comfootpath_med_check.setText(_translate("Delinblocks_Dialog", "Use median"))
-        self.collector_info_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.w_comnaturestrip_lbl.setText(_translate("Urbplanbb_Dialog", "Nature strip width (range) [m]"))
+        self.w_comnaturestrip_med_check.setText(_translate("Urbplanbb_Dialog", "Use median"))
+        self.w_comnaturestrip_lbl2.setText(_translate("Urbplanbb_Dialog", "to"))
+        self.w_comfootpath_lbl2.setText(_translate("Urbplanbb_Dialog", "to"))
+        self.w_comfootpath_med_check.setText(_translate("Urbplanbb_Dialog", "Use median"))
+        self.collector_info_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">LOCAL ACCESS/SERVICE/COLLECTOR ROADS</span></p></body></html>"))
-        self.w_collectlane_lbl.setText(_translate("Delinblocks_Dialog", "Lane width (range) [m]"))
-        self.w_collectlane_med_check.setText(_translate("Delinblocks_Dialog", "Use median"))
-        self.w_collectlane_lbl2.setText(_translate("Delinblocks_Dialog", "to"))
-        self.collect_crossfall_lbl.setText(_translate("Delinblocks_Dialog", "Average crossfall [%]"))
-        self.arterial_info_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.w_collectlane_lbl.setText(_translate("Urbplanbb_Dialog", "Lane width (range) [m]"))
+        self.w_collectlane_med_check.setText(_translate("Urbplanbb_Dialog", "Use median"))
+        self.w_collectlane_lbl2.setText(_translate("Urbplanbb_Dialog", "to"))
+        self.collect_crossfall_lbl.setText(_translate("Urbplanbb_Dialog", "Average crossfall [%]"))
+        self.arterial_info_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">MAJOR ARTERIALS AND HIGHWAYS</span></p></body></html>"))
-        self.w_arterial_lbl2.setText(_translate("Delinblocks_Dialog", "to"))
-        self.w_arterial_lbl.setText(_translate("Delinblocks_Dialog", "Lane width (range) [m]"))
-        self.arterial_crossfall_lbl.setText(_translate("Delinblocks_Dialog", "Average crossfall [%]"))
-        self.w_arterial_med_check.setText(_translate("Delinblocks_Dialog", "Use median"))
-        self.w_arterialmed_lbl.setText(_translate("Delinblocks_Dialog", "Median Width (range) [m]"))
-        self.w_arterialmed_nodev_check.setWhatsThis(_translate("Delinblocks_Dialog", "If the median area cannot be developed at all, check this box to restrict any activity on this part of the infrastructure."))
-        self.w_arterialmed_nodev_check.setText(_translate("Delinblocks_Dialog", "Median Area reserved for future road widening"))
-        self.highway_buffer_check.setWhatsThis(_translate("Delinblocks_Dialog", "Check this box to influence the likelihood of parks and highways in the neighbourhood being arranged alongside each other (results in higher likelihood of linear parks that run along highways, typical of Melbourne)."))
-        self.highway_buffer_check.setText(_translate("Delinblocks_Dialog", "Incorporate Open Spaces as road buffers if nearby"))
-        self.w_arterialmed_lbl2.setText(_translate("Delinblocks_Dialog", "to"))
-        self.w_arterialmed_med_check.setText(_translate("Delinblocks_Dialog", "Use median"))
-        self.w_arterialsh_lbl_2.setText(_translate("Delinblocks_Dialog", "Buffer Width (range) [m]"))
-        self.w_arterialsh_lbl2.setText(_translate("Delinblocks_Dialog", "to"))
-        self.w_arterialsh_med_check.setText(_translate("Delinblocks_Dialog", "Use median"))
-        self.othertrans_info_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.w_arterial_lbl2.setText(_translate("Urbplanbb_Dialog", "to"))
+        self.w_arterial_lbl.setText(_translate("Urbplanbb_Dialog", "Lane width (range) [m]"))
+        self.arterial_crossfall_lbl.setText(_translate("Urbplanbb_Dialog", "Average crossfall [%]"))
+        self.w_arterial_med_check.setText(_translate("Urbplanbb_Dialog", "Use median"))
+        self.w_arterialmed_lbl.setText(_translate("Urbplanbb_Dialog", "Median Width (range) [m]"))
+        self.w_arterialmed_nodev_check.setWhatsThis(_translate("Urbplanbb_Dialog", "If the median area cannot be developed at all, check this box to restrict any activity on this part of the infrastructure."))
+        self.w_arterialmed_nodev_check.setText(_translate("Urbplanbb_Dialog", "Median Area reserved for future road widening"))
+        self.highway_buffer_check.setWhatsThis(_translate("Urbplanbb_Dialog", "Check this box to influence the likelihood of parks and highways in the neighbourhood being arranged alongside each other (results in higher likelihood of linear parks that run along highways, typical of Melbourne)."))
+        self.highway_buffer_check.setText(_translate("Urbplanbb_Dialog", "Incorporate Open Spaces as road buffers if nearby"))
+        self.w_arterialmed_lbl2.setText(_translate("Urbplanbb_Dialog", "to"))
+        self.w_arterialmed_med_check.setText(_translate("Urbplanbb_Dialog", "Use median"))
+        self.w_arterialsh_lbl_2.setText(_translate("Urbplanbb_Dialog", "Buffer Width (range) [m]"))
+        self.w_arterialsh_lbl2.setText(_translate("Urbplanbb_Dialog", "to"))
+        self.w_arterialsh_med_check.setText(_translate("Urbplanbb_Dialog", "Use median"))
+        self.othertrans_info_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">TRANSPORTATION FACILITIES</span></p></body></html>"))
-        self.trans_facilities_lbl.setText(_translate("Delinblocks_Dialog", "Transport Facilities within simulation boundary"))
-        self.trans_airport_box.setText(_translate("Delinblocks_Dialog", "Airport"))
-        self.trans_seaport_box.setText(_translate("Delinblocks_Dialog", "Seaport"))
-        self.trans_busdepot_box.setText(_translate("Delinblocks_Dialog", "Bus Depot"))
-        self.trans_rail_box.setText(_translate("Delinblocks_Dialog", "Major Rail Terminal"))
-        self.trans_customise.setText(_translate("Delinblocks_Dialog", "Customise..."))
-        self.trans_on_off_check.setWhatsThis(_translate("Delinblocks_Dialog", "If detailed consideration of these facilities is to be included in the model, check this box to enable further options. Otherwise this land use will simply be treated as commercial/industrial land use."))
-        self.trans_on_off_check.setText(_translate("Delinblocks_Dialog", "Consider Other Transportation Facilities explicitly"))
-        self.parameters.setTabText(self.parameters.indexOf(self.tab), _translate("Delinblocks_Dialog", "Transport"))
-        self.park_title.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.trans_facilities_lbl.setText(_translate("Urbplanbb_Dialog", "Transport Facilities within simulation boundary"))
+        self.trans_airport_box.setText(_translate("Urbplanbb_Dialog", "Airport"))
+        self.trans_seaport_box.setText(_translate("Urbplanbb_Dialog", "Seaport"))
+        self.trans_busdepot_box.setText(_translate("Urbplanbb_Dialog", "Bus Depot"))
+        self.trans_rail_box.setText(_translate("Urbplanbb_Dialog", "Major Rail Terminal"))
+        self.trans_customise.setText(_translate("Urbplanbb_Dialog", "Customise..."))
+        self.trans_on_off_check.setWhatsThis(_translate("Urbplanbb_Dialog", "If detailed consideration of these facilities is to be included in the model, check this box to enable further options. Otherwise this land use will simply be treated as commercial/industrial land use."))
+        self.trans_on_off_check.setText(_translate("Urbplanbb_Dialog", "Consider Other Transportation Facilities explicitly"))
+        self.parameters.setTabText(self.parameters.indexOf(self.tab), _translate("Urbplanbb_Dialog", "Transport"))
+        self.park_title.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">PARKS, SQUARES AND GARDENS</span></p></body></html>"))
-        self.pg_ggratio_lbl.setText(_translate("Delinblocks_Dialog", "Ratio of green to grey spaces"))
-        self.pg_clustering_low_lbl.setText(_translate("Delinblocks_Dialog", "Low"))
-        self.pg_clustering_high_lbl.setText(_translate("Delinblocks_Dialog", "High"))
-        self.pg_clustering_med_lbl.setText(_translate("Delinblocks_Dialog", "Medium"))
-        self.pg_clustering_low_lbl_2.setText(_translate("Delinblocks_Dialog", "Grey"))
-        self.pg_clustering_low_lbl_3.setText(_translate("Delinblocks_Dialog", "Green"))
-        self.pg_usable_lbl.setText(_translate("Delinblocks_Dialog", "Average % of unused space in Parks & Gardens"))
-        self.pg_usable_spin.setSuffix(_translate("Delinblocks_Dialog", "%"))
-        self.pg_usable_prohibit.setText(_translate("Delinblocks_Dialog", "Restrict Park Space Usage for Technologies"))
-        self.pg_dist_lbl.setText(_translate("Delinblocks_Dialog", "Distribution of squares and green space:"))
-        self.pg_dist_mix_radio.setText(_translate("Delinblocks_Dialog", "Combined/Mixed"))
-        self.pg_dist_sep_radio.setText(_translate("Delinblocks_Dialog", "Separate/Distinct"))
-        self.rfw_svu_title.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.pg_ggratio_lbl.setText(_translate("Urbplanbb_Dialog", "Ratio of green to grey spaces"))
+        self.pg_clustering_low_lbl.setText(_translate("Urbplanbb_Dialog", "Low"))
+        self.pg_clustering_high_lbl.setText(_translate("Urbplanbb_Dialog", "High"))
+        self.pg_clustering_med_lbl.setText(_translate("Urbplanbb_Dialog", "Medium"))
+        self.pg_clustering_low_lbl_2.setText(_translate("Urbplanbb_Dialog", "Grey"))
+        self.pg_clustering_low_lbl_3.setText(_translate("Urbplanbb_Dialog", "Green"))
+        self.pg_usable_lbl.setText(_translate("Urbplanbb_Dialog", "Average % of unused space in Parks & Gardens"))
+        self.pg_usable_spin.setSuffix(_translate("Urbplanbb_Dialog", "%"))
+        self.pg_usable_prohibit.setText(_translate("Urbplanbb_Dialog", "Restrict Park Space Usage for Technologies"))
+        self.pg_dist_lbl.setText(_translate("Urbplanbb_Dialog", "Distribution of squares and green space:"))
+        self.pg_dist_mix_radio.setText(_translate("Urbplanbb_Dialog", "Combined/Mixed"))
+        self.pg_dist_sep_radio.setText(_translate("Urbplanbb_Dialog", "Separate/Distinct"))
+        self.rfw_svu_title.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">RESERVES, FLOODWAYS AND LAND FOR SERVICES AND UTILITIES</span></p></body></html>"))
-        self.ref_usable_check.setText(_translate("Delinblocks_Dialog", "Usable area in Reserves/Floodways:"))
-        self.ref_usable_spin.setSuffix(_translate("Delinblocks_Dialog", "%"))
-        self.ref_usable_lbl.setText(_translate("Delinblocks_Dialog", "of total area"))
-        self.ref_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.ref_usable_check.setText(_translate("Urbplanbb_Dialog", "Usable area in Reserves/Floodways:"))
+        self.ref_usable_spin.setSuffix(_translate("Urbplanbb_Dialog", "%"))
+        self.ref_usable_lbl.setText(_translate("Urbplanbb_Dialog", "of total area"))
+        self.ref_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600; font-style:italic;\">Reserves &amp; Floodways</span></p></body></html>"))
-        self.svu_supply_check.setText(_translate("Delinblocks_Dialog", "Water Supply Utilities"))
-        self.svu_waste_check.setText(_translate("Delinblocks_Dialog", "Wastewater Utilities"))
-        self.svu_storm_check.setText(_translate("Delinblocks_Dialog", "Stormwater Drainage"))
-        self.svu_lbl.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.svu_supply_check.setText(_translate("Urbplanbb_Dialog", "Water Supply Utilities"))
+        self.svu_waste_check.setText(_translate("Urbplanbb_Dialog", "Wastewater Utilities"))
+        self.svu_storm_check.setText(_translate("Urbplanbb_Dialog", "Stormwater Drainage"))
+        self.svu_lbl.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600; font-style:italic;\">Services &amp; Utilities Land Use</span></p></body></html>"))
-        self.ref_limit_check.setText(_translate("Delinblocks_Dialog", "Limit use of land for stormwater management"))
-        self.svu_supply_spin.setSuffix(_translate("Delinblocks_Dialog", "%"))
-        self.svu_waste_spin.setSuffix(_translate("Delinblocks_Dialog", "%"))
-        self.svu_storm_spin.setSuffix(_translate("Delinblocks_Dialog", "%"))
-        self.svu_allocate_lbl.setText(_translate("Delinblocks_Dialog", "Allocation of area to following services (adjust the slider)"))
-        self.svu_nonwat_lbl.setText(_translate("Delinblocks_Dialog", "Non-Water Services"))
-        self.svu_wat_lbl.setText(_translate("Delinblocks_Dialog", "Water Services"))
-        self.svu_breakdown_lbl.setText(_translate("Delinblocks_Dialog", "Breakdown of Area Allocation for Water-related Services"))
-        self.svu_nonwat_lbl_2.setText(_translate("Delinblocks_Dialog", "%"))
-        self.svu_nonwat_lbl_3.setText(_translate("Delinblocks_Dialog", "%"))
-        self.parameters.setTabText(self.parameters.indexOf(self.connectivity_tab), _translate("Delinblocks_Dialog", "Open Spaces"))
-        self.unc_title.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.ref_limit_check.setText(_translate("Urbplanbb_Dialog", "Limit use of land for stormwater management"))
+        self.svu_supply_spin.setSuffix(_translate("Urbplanbb_Dialog", "%"))
+        self.svu_waste_spin.setSuffix(_translate("Urbplanbb_Dialog", "%"))
+        self.svu_storm_spin.setSuffix(_translate("Urbplanbb_Dialog", "%"))
+        self.svu_allocate_lbl.setText(_translate("Urbplanbb_Dialog", "Allocation of area to following services (adjust the slider)"))
+        self.svu_nonwat_lbl.setText(_translate("Urbplanbb_Dialog", "Non-Water Services"))
+        self.svu_wat_lbl.setText(_translate("Urbplanbb_Dialog", "Water Services"))
+        self.svu_breakdown_lbl.setText(_translate("Urbplanbb_Dialog", "Breakdown of Area Allocation for Water-related Services"))
+        self.svu_nonwat_lbl_2.setText(_translate("Urbplanbb_Dialog", "%"))
+        self.svu_nonwat_lbl_3.setText(_translate("Urbplanbb_Dialog", "%"))
+        self.parameters.setTabText(self.parameters.indexOf(self.connectivity_tab), _translate("Urbplanbb_Dialog", "Open Spaces"))
+        self.unc_title.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">UNCLASSIFIED LAND</span></p></body></html>"))
-        self.unc_merge_check.setText(_translate("Delinblocks_Dialog", "Merge/Mimic other Land Zones if areas are small"))
-        self.unc_merge2pg_check.setText(_translate("Delinblocks_Dialog", "Treat as part of Parks & Garden Open Space"))
-        self.unc_merge2trans_check.setText(_translate("Delinblocks_Dialog", "Treat as part of road (e.g. medians, islands)"))
-        self.unc_custom_check.setText(_translate("Delinblocks_Dialog", "Define surface cover if area exceeds a given threshold?"))
-        self.unc_areathresh_spin.setSuffix(_translate("Delinblocks_Dialog", "%"))
-        self.unc_customthresh_lbl.setText(_translate("Delinblocks_Dialog", "Threshold (% of block size)"))
-        self.unc_customimp_lbl.setText(_translate("Delinblocks_Dialog", "Surface imperviousness"))
-        self.unc_customimp_spin.setSuffix(_translate("Delinblocks_Dialog", "%"))
-        self.unc_mergeweight_lbl.setText(_translate("Delinblocks_Dialog", "Weight"))
-        self.unc_customirrigate_check.setText(_translate("Delinblocks_Dialog", "Land is part of public irrigation"))
-        self.unc_merge2ref_check.setText(_translate("Delinblocks_Dialog", "Treat as part of Reserves & Floodways Open Space"))
-        self.und_title.setText(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.unc_merge_check.setText(_translate("Urbplanbb_Dialog", "Merge/Mimic other Land Zones if areas are small"))
+        self.unc_merge2pg_check.setText(_translate("Urbplanbb_Dialog", "Treat as part of Parks & Garden Open Space"))
+        self.unc_merge2trans_check.setText(_translate("Urbplanbb_Dialog", "Treat as part of road (e.g. medians, islands)"))
+        self.unc_custom_check.setText(_translate("Urbplanbb_Dialog", "Define surface cover if area exceeds a given threshold?"))
+        self.unc_areathresh_spin.setSuffix(_translate("Urbplanbb_Dialog", "%"))
+        self.unc_customthresh_lbl.setText(_translate("Urbplanbb_Dialog", "Threshold (% of block size)"))
+        self.unc_customimp_lbl.setText(_translate("Urbplanbb_Dialog", "Surface imperviousness"))
+        self.unc_customimp_spin.setSuffix(_translate("Urbplanbb_Dialog", "%"))
+        self.unc_mergeweight_lbl.setText(_translate("Urbplanbb_Dialog", "Weight"))
+        self.unc_customirrigate_check.setText(_translate("Urbplanbb_Dialog", "Land is part of public irrigation"))
+        self.unc_merge2ref_check.setText(_translate("Urbplanbb_Dialog", "Treat as part of Reserves & Floodways Open Space"))
+        self.und_title.setText(_translate("Urbplanbb_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">UNDEVELOPED LAND</span></p></body></html>"))
-        self.und_state_lbl.setText(_translate("Delinblocks_Dialog", "State of Undeveloped Land:"))
-        self.und_statemanual_radio.setText(_translate("Delinblocks_Dialog", "Select Manually for entire area"))
-        self.und_stateauto_radio.setText(_translate("Delinblocks_Dialog", "Determine based on location (distance from city centres)"))
-        self.und_statemanual_combo.setItemText(0, _translate("Delinblocks_Dialog", "Greenfield"))
-        self.und_statemanual_combo.setItemText(1, _translate("Delinblocks_Dialog", "Brownfield"))
-        self.und_statemanual_combo.setItemText(2, _translate("Delinblocks_Dialog", "Agriculture"))
-        self.und_allowdev_check.setText(_translate("Delinblocks_Dialog", "Allow usage of land space for large water infrastructure?"))
-        self.parameters.setTabText(self.parameters.indexOf(self.tab_2), _translate("Delinblocks_Dialog", "Other Uses"))
-        self.footer_lbl.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-style:italic;\">UrbanBEATS - md_urbplanbb module</span></p></body></html>"))
-        self.help_button.setText(_translate("Delinblocks_Dialog", "Help"))
+        self.und_state_lbl.setText(_translate("Urbplanbb_Dialog", "State of Undeveloped Land:"))
+        self.und_statemanual_radio.setText(_translate("Urbplanbb_Dialog", "Select Manually for entire area"))
+        self.und_stateauto_radio.setText(_translate("Urbplanbb_Dialog", "Determine based on location (distance from city centres)"))
+        self.und_statemanual_combo.setItemText(0, _translate("Urbplanbb_Dialog", "Greenfield"))
+        self.und_statemanual_combo.setItemText(1, _translate("Urbplanbb_Dialog", "Brownfield"))
+        self.und_statemanual_combo.setItemText(2, _translate("Urbplanbb_Dialog", "Agriculture"))
+        self.und_allowdev_check.setText(_translate("Urbplanbb_Dialog", "Allow usage of land space for large water infrastructure?"))
+        self.parameters.setTabText(self.parameters.indexOf(self.tab_2), _translate("Urbplanbb_Dialog", "Other Uses"))
+        self.footer_lbl.setText(_translate("Urbplanbb_Dialog", "<html><head/><body><p><span style=\" font-style:italic;\">UrbanBEATS - md_urbplanbb module</span></p></body></html>"))
+        self.help_button.setText(_translate("Urbplanbb_Dialog", "Help"))
 
 import ubeats_rc

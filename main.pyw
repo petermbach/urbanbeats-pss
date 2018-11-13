@@ -57,6 +57,7 @@ import gui.ubgui_reporting as ubreport
 import model.ublibs.ubspatial as ubspatial
 
 from gui.md_delinblocksguic import DelinBlocksGuiLaunch
+from gui.md_urbplanbbguic import UrbplanbbGuiLaunch
 
 
 # --- MAIN GUI FUNCTION ---
@@ -1036,13 +1037,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # MODULE BAR - LAUNCHING ALL MODULES
     def launch_spatialsetup_modulegui(self):
-        """Launches the spatial setup module's user interface and fills in relevant parameters.
-
-        :return: None
-        """
+        """Launches the spatial setup module's user interface and fills in relevant parameters."""
         delinblocksgui = DelinBlocksGuiLaunch(self, self.get_active_simulation_object(),
                                               self.get_active_data_library(), self.get_active_project_log())
-
         delinblocksgui.exec_()
 
     def launch_climatesetup_modulegui(self):
@@ -1060,11 +1057,10 @@ class MainWindow(QtWidgets.QMainWindow):
         pass
 
     def launch_urbanplan_modulegui(self):
-        """
-
-        :return:
-        """
-        pass
+        """Launches the urban planning modules user interface and pre-fills all relevant parameters."""
+        urbplanbbgui = UrbplanbbGuiLaunch(self, self.get_active_simulation_object(),
+                                          self.get_active_data_library(), self.get_active_project_log())
+        urbplanbbgui.exec_()
 
     def launch_socioeconomic_modulegui(self):
         """
