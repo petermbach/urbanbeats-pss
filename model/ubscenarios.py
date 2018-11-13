@@ -573,6 +573,9 @@ class UrbanBeatsScenario(threading.Thread):
         ubspatial.export_osnet_to_gis_shapefile(self.get_assets_with_identifier("OSNetID"), map_attributes,
                                                     self.projectpath + "/output", file_basename + "_OSNet",
                                                     int(epsg))
+        ubspatial.export_patch_buffers_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
+                                                    self.projectpath + "/output", file_basename + "_OSBuffer",
+                                                    int(epsg))
         # [TO DO] Export options - WSUD Systems
         # [TO DO] Export options - centrepoints
 

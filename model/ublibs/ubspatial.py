@@ -610,6 +610,83 @@ def export_oslink_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg
 
     shapefile.Destroy()
 
+def export_patch_buffers_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg):
+    """Exports buffers for all open space patches in the asset_col list to a GIS Shapefile based on the
+    current filepath.
+
+    :param asset_col: [] list containing all UBVector patch objects
+    :param map_attr: global map attributes to track any relevant information
+    :param filepath: the active filepath to export these assets to
+    :param filename: name of the file to export (without the 'shp' extension)
+    :param epsg: the EPSG code for the coordinate system to use
+    :return:
+    """
+    if map_attr.get_attribute("HasOSNET") != 1 or map_attr.get_attribute("HasOSLINK") != 1:
+        return True
+
+    xmin = map_attr.get_attribute("xllcorner")
+    ymin = map_attr.get_attribute("yllcorner")
+
+    fullname = filepath + "/" + filename
+
+    spatial_ref = osr.SpatialReference()
+    spatial_ref.ImportFromEPSG(epsg)
+
+    driver = ogr.GetDriverByName('ESRI Shapefile')
+
+    usefilename = fullname  # A placeholder filename
+    fileduplicate_counter = 0  # Tracks the number of duplicates
+    while os.path.exists(str(usefilename + ".shp")):
+        fileduplicate_counter += 1
+        usefilename = fullname + "(" + str(fileduplicate_counter) + ")"
+    shapefile = driver.CreateDataSource(str(usefilename) + ".shp")
+
+    layer = shapefile.CreateLayer('layer1', spatial_ref, ogr.wkbPolygon)
+    layerDefinition = layer.GetLayerDefn()
+
+    fielddefmatrix = []
+    fielddefmatrix.append(ogr.FieldDefn("PatchID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("BlockID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("Landuse", ogr.OFTString))
+    fielddefmatrix.append(ogr.FieldDefn("PatchArea", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("BuffRadius", ogr.OFTReal))
+
+    if map_attr.get_attribute("HasOSNET"):
+        fielddefmatrix.append(ogr.FieldDefn("OSNet_Deg", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("OSNet_MinD", ogr.OFTReal))
+
+    for field in fielddefmatrix:
+        layer.CreateField(field)
+        layer.GetLayerDefn()
+
+    for i in range(len(asset_col)):
+        current_patch = asset_col[i]
+        if current_patch.get_attribute("Landuse") not in [10, 11]:
+            continue
+        patchpoint = current_patch.get_points()
+
+        wkt = "POINT (" + str(patchpoint[0]+xmin) + " " + str(patchpoint[1]+ymin) + ")"
+        pt = ogr.CreateGeometryFromWkt(wkt)
+        buffer_radius = current_patch.get_attribute("BuffRadius")
+        poly = pt.Buffer(buffer_radius)
+
+        feature = ogr.Feature(layerDefinition)
+        feature.SetGeometry(poly)
+        feature.SetFID(0)
+
+        feature.SetField("PatchID", int(current_patch.get_attribute("PatchID")))
+        feature.SetField("BlockID", int(current_patch.get_attribute("BlockID")))
+        feature.SetField("Landuse", ubglobals.LANDUSENAMES[int(current_patch.get_attribute("Landuse")) - 1])
+        feature.SetField("PatchArea", float(current_patch.get_attribute("PatchArea")))
+        feature.SetField("BuffRadius", float(current_patch.get_attribute("BuffRadius")))
+
+        if map_attr.get_attribute("HasOSNET"):
+            feature.SetField("OSNet_Deg", int(current_patch.get_attribute("OSNet_Deg")))
+            feature.SetField("OSNet_MinD", float(current_patch.get_attribute("OSNet_MinD")))
+
+        layer.CreateFeature(feature)
+    shapefile.Destroy()
+
 
 def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg):
     """Exports all the patches in the asset_col list to a GIS Shapefile based on the current filepath.
@@ -651,6 +728,7 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
     fielddefmatrix.append(ogr.FieldDefn("AspRatio", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("PatchSize", ogr.OFTInteger))
     fielddefmatrix.append(ogr.FieldDefn("PatchArea", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("BuffRadius", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("CentroidX", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("CentroidY", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("GSD_Dist", ogr.OFTReal))
@@ -683,6 +761,7 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
         feature.SetField("AspRatio", float(current_patch.get_attribute("AspRatio")))
         feature.SetField("PatchSize", int(current_patch.get_attribute("PatchSize")))
         feature.SetField("PatchArea", float(current_patch.get_attribute("PatchArea")))
+        feature.SetField("BuffRadius", float(current_patch.get_attribute("BuffRadius")))
         feature.SetField("CentroidX", float(current_patch.get_attribute("CentroidX")))
         feature.SetField("CentroidY", float(current_patch.get_attribute("CentroidY")))
         feature.SetField("GSD_Dist", float(current_patch.get_attribute("GSD_Dist")))
@@ -696,7 +775,6 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
         #     feature.SetField("Elevation", float(current_patch.get_attribute("Elevation")))
 
         layer.CreateFeature(feature)
-
     shapefile.Destroy()
     return True
 
