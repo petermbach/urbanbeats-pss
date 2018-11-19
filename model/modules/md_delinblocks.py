@@ -1016,8 +1016,6 @@ class DelinBlocks(UBModule):
             self.notify("BlockID"+str(current_id)+" DownstreamL "+str(downstream_ids))
             current_block.add_attribute("DownstrIDs", downstream_ids)
 
-            print "Finding Basins now!"
-
             # Now assign Basin IDs, do this if the current Block has downstream ID -2
             if hash_table[1][hash_table[0].index(current_id)] == -2:    # If the block is an outlet
                 print "Found a basin outlet at BlockID" + str(current_id)

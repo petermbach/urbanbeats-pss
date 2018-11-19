@@ -185,6 +185,7 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         # Retrieve the DelinBlocks() Reference corresponding to the current year
         self.module = self.active_scenario.get_module_object("SPATIAL", self.ui.year_combo.currentIndex())
         self.setup_gui_with_parameters()
+        return True
 
     def setup_gui_with_parameters(self):
         """Sets all parameters in the GUI based on the current year."""
