@@ -66,30 +66,507 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
                            ":/images/images/md_urbplanbb_others.jpg"]
         self.adjust_module_img()
 
-        self.set_module_parameters()
+        # --- SIMULATION YEAR SETTINGS ---
+        simyears = self.active_scenario.get_simulation_years()  # gets the simulation years
+        if len(simyears) > 1:
+            self.ui.year_combo.setEnabled(1)  # if more than one year, enables the box for selection
+            self.ui.autofillButton.setEnabled(1)
+            self.ui.same_params.setEnabled(1)
+            self.ui.year_combo.clear()
+            for yr in simyears:
+                self.ui.year_combo.addItem(str(yr))
+        else:
+            self.ui.autofillButton.setEnabled(0)  # if static or benchmark, then only one year is available
+            self.ui.same_params.setEnabled(0)  # so all of the sidebar buttons get disabled.
+            self.ui.year_combo.setEnabled(0)
+            self.ui.year_combo.clear()
+            self.ui.year_combo.addItem(str(simyears[0]))
+        self.ui.year_combo.setCurrentIndex(0)  # Set to the first item on the list.
+
+        # --- SETUP ALL DYNAMIC COMBO BOXES ---
+        self.employmaps = self.get_dataref_array("spatial", "Employment")  # Obtain the data ref array
+        self.ui.employment_combo.clear()  # Clear the combo box first before setting it up
+        # Set up the combo box (note: this also includes the no map option)
+        [self.ui.employment_combo.addItem(str(self.employmaps[0][i])) for i in range(len(self.employmaps[0]))]
+
+        self.localitymaps = self.get_dataref_array("spatial", "Employment")  # Obtain the data ref array
+        self.ui.locality_combo.clear()  # Clear the combo box first before setting it up
+        # Set up the combo box (note: this also includes the no map option)
+        [self.ui.locality_combo.addItem(str(self.localitymaps[0][i])) for i in range(len(self.localitymaps[0]))]
+
+        self.roadmaps = self.get_dataref_array("spatial", "Built Infrastructure", "Road Network")
+        self.ui.roadnet_combo.clear()   # Clear the combo box first before setting it up
+        # Set up the combo box (note: this also includes the 'no map' option)
+        [self.ui.roadnet_combo.addItem(str(self.roadmaps[0][i])) for i in range(len(self.roadmaps[0]))]
+
+        self.gui_state = "initial"
+        self.change_active_module()
+        self.gui_state = "ready"
 
         # --- SIGNALS AND SLOTS ---
         self.ui.parameters.currentChanged.connect(self.adjust_module_img)   # Changes the module's image
+
+        # Tab 1 - General
+        self.ui.lucredevelop_check.clicked.connect(self.enable_disable_devchecks)
+        self.ui.popredevelop_check.clicked.connect(self.enable_disable_devchecks)
+        self.ui.noredevelop_check.clicked.connect(self.enable_disable_devchecks)
+        self.ui.emp_fud.clicked.connect(self.enable_disable_devchecks)
+
+        # Tab 2 - Residential
+        self.ui.allot_depth_check.clicked.connect(self.enable_disable_residential)
+        self.ui.drainage_rule_check.clicked.connect(self.enable_disable_residential)
+        self.ui.roof_connected_radiodirect.clicked.connect(self.enable_disable_residential)
+        self.ui.roof_connected_radiodisc.clicked.connect(self.enable_disable_residential)
+        self.ui.roof_connected_radiovary.clicked.connect(self.enable_disable_residential)
+
+        # Tab 3 - Non-Residential
+        self.ui.jobs_direct_radio.clicked.connect(self.adjust_employment_stack)
+        self.ui.jobs_dist_radio.clicked.connect(self.adjust_employment_stack)
+        self.ui.jobs_total_radio.clicked.connect(self.adjust_employment_stack)
+        self.ui.nres_setback_auto.clicked.connect(self.enable_disable_nonres)
+        self.ui.nres_maxfloors_nolimit.clicked.connect(self.enable_disable_nonres)
+        self.ui.plotratio_ind_slider.valueChanged.connect(self.set_nonres_plotratio_boxupdate)
+        self.ui.plotratio_com_slider.valueChanged.connect(self.set_nonres_plotratio_boxupdate)
+        self.ui.civ_consider_check.clicked.connect(self.enable_disable_civic)
+        self.ui.civ_customise.clicked.connect(self.launch_civ_customisation_gui)
+
+        # Tab 5 - Open Spaces
+        self.ui.pg_ggratio_slide.valueChanged.connect(self.set_greengreyratio_boxupdate)
+        self.ui.svu_slider.valueChanged.connect(self.set_svu_waternonwater_boxupdate)
+        self.ui.ref_usable_check.clicked.connect(self.enable_disable_openspaces)
+        self.ui.svu_supply_check.clicked.connect(self.enable_disable_openspaces)
+        self.ui.svu_waste_check.clicked.connect(self.enable_disable_openspaces)
+        self.ui.svu_storm_check.clicked.connect(self.enable_disable_openspaces)
+
+        # Tabe 6 - Other Uses
+        QtCore.QObject.connect(self.ui.unc_merge_check, QtCore.SIGNAL("clicked()"), self.unc_merge_enable)
+        QtCore.QObject.connect(self.ui.unc_merge2pg_check, QtCore.SIGNAL("clicked()"), self.unc_merge2pg_enable)
+        QtCore.QObject.connect(self.ui.unc_merge2ref_check, QtCore.SIGNAL("clicked()"), self.unc_merge2ref_enable)
+        QtCore.QObject.connect(self.ui.unc_merge2trans_check, QtCore.SIGNAL("clicked()"), self.unc_merge2trans_enable)
+        QtCore.QObject.connect(self.ui.unc_custom_check, QtCore.SIGNAL("clicked()"), self.unc_custom_check_enable)
+        QtCore.QObject.connect(self.ui.und_statemanual_radio, QtCore.SIGNAL("clicked()"), self.und_typeEnable)
+        QtCore.QObject.connect(self.ui.und_stateauto_radio, QtCore.SIGNAL("clicked()"), self.und_typeEnable)
+
+
+        # Others
         self.ui.buttonBox.accepted.connect(self.save_values)
 
     def adjust_module_img(self):
         """Changes the module's image based on the currently selected tab in the GUI."""
         self.ui.module_img.setPixmap(QtGui.QPixmap(self.pixmap_ref[self.ui.parameters.currentIndex()]))
 
+    def launch_civ_customisation_gui(self):
+        """Launches the advanced options for customising Civic Facilities in UrbanBEATS."""
+        pass    # [TO DO]
+
+    def enable_disable_residential(self):
+        """Enables and disables respective GUI elements depending on what the user clicks."""
+        if self.ui.allot_depth_check.isChecked():
+            self.ui.allot_depth_box.setText("40.0")
+            self.ui.allot_depth_box.setEnabled(0)
+        else:
+            self.ui.allot_depth_box.setEnabled(1)
+
+        if self.ui.drainage_rule_check.isChecked():
+            self.ui.roof_connected_radiodirect.setEnabled(1)
+            self.ui.roof_connected_radiodisc.setEnabled(1)
+            self.ui.roof_connected_radiovary.setEnabled(1)
+            self.ui.avg_imp_dced_spin.setEnabled(1)
+            self.ui.roofdced_vary_spin.setEnabled(self.ui.roof_connected_radiovary.isChecked())
+        else:
+            self.ui.roof_connected_radiodirect.setEnabled(0)
+            self.ui.roof_connected_radiodisc.setEnabled(0)
+            self.ui.roof_connected_radiovary.setEnabled(0)
+            self.ui.avg_imp_dced_spin.setEnabled(0)
+            self.ui.roofdced_vary_spin.setEnabled(0)
+
+    def enable_disable_devchecks(self):
+        """Enables or disables the Block redevelopment features based on the state of the checkboxes. General Tab."""
+        self.ui.employment_combo.setEnabled(int(not self.ui.emp_fud.isChecked()))
+        if self.ui.noredevelop_check.isChecked():
+            self.ui.lucredevelop_check.setEnabled(0)
+            self.ui.popredevelop_check.setEnabled(0)
+            self.ui.lucredevelop_spin.setEnabled(0)
+            self.ui.popredevelop_spin.setEnabled(0)
+        else:
+            self.ui.lucredevelop_check.setEnabled(1)
+            self.ui.popredevelop_check.setEnabled(1)
+            self.ui.lucredevelop_spin.setEnabled(self.ui.lucredevelop_check.isChecked())
+            self.ui.popredevelop_spin.setEnabled(self.ui.popredevelop_check.isChecked())
+        return True
+
+    def get_dataref_array(self, dataclass, datatype, *args):
+        """Retrieves a list of data files loaded into the current scenario for display in the GUI
+
+        :param dataclass: the data class i.e. spatial, temporal, qualitative
+        :param datatype: the name that goes with the data class e.g. landuse, population, etc.
+        """
+        dataref_array = [["(no map selected)"], [""]]    # index 0:filenames, index 1:object_reference
+        for dref in self.active_scenario.get_data_reference(dataclass):
+            if dref.get_metadata("parent") == datatype:
+                if len(args) > 0 and datatype in ["Boundaries", "Water Bodies", "Built Infrastructure", "Overlays"]:
+                    if dref.get_metadata("sub") != args[0]:
+                        continue
+                dataref_array[0].append(dref.get_metadata("filename"))
+                dataref_array[1].append(dref.get_data_id())
+        return dataref_array
+
+    def change_active_module(self):
+        """Searches for the active module based on the simulation year combo box and updates the GUI."""
+        # Send message box to user to ask whether to save current parameters
+        if self.gui_state == "ready":
+            prompt_msg = "You are about to change the time period, do you wish to save changes made to your parameters " \
+                         "for the current time step?"
+            reply = QtWidgets.QMessageBox.question(self, "Changing Time Period", prompt_msg,
+                                           QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No |
+                                           QtWidgets.QMessageBox.Cancel, QtWidgets.QMessageBox.Cancel)
+            if reply == QtWidgets.QMessageBox.Yes:
+                self.save_values()
+            elif reply == QtWidgets.QMessageBox.No:
+                pass
+            else:
+                return
+
+        # Retrieve the Urbplanbb() Reference corresponding to the current year
+        self.module = self.active_scenario.get_module_object("URBPLAN", self.ui.year_combo.currentIndex())
+        self.setup_gui_with_parameters()
+        return True
+
     def setup_gui_with_parameters(self):
         """Fills in all parameters belonging to the module for the current year."""
         # TAB 1 - GENERAL PARAMETERS
+        try:    # EMPLOYMENT COMBO - retrieve the dataID from module
+            self.ui.employment_combo.setCurrentIndex(self.employmaps[1].index(self.module.get_parameter("emp_map")))
+        except ValueError:
+            self.ui.employment_combo.setCurrentIndex(0)     # else the map must've been removed, set combo to zero index
+
+        try:    # LOCALITY COMBO - retrieve the dataID from module
+            self.ui.locality_combo.setCurrentIndex(self.localitymaps[1].index(self.module.get_parameter("local_map")))
+        except ValueError:
+            self.ui.locality_combo.setCurrentIndex(0)   # else the map must've been removed, set combo to zero index
+
+        try:    # ROADMAP COMBO - retrieve the dataID from module
+            self.ui.roadnet_combo.setCurrentIndex(self.roadmaps[1].index(self.module.get_parameter("roadnet_map")))
+        except ValueError:
+            self.ui.roadnet_combo.setCurrentIndex(0)
+
+        self.ui.emp_fud.setChecked(int(self.module.get_parameter("emp_fud")))
+        self.ui.locality_attref.setText(str(self.module.get_parameter("local_attref")))
+        self.ui.roadnet_attref.setText(str(self.module.get_parameter("roadnet_attref")))
+
+        if self.module.get_parameter("cityarchetype") == "MC":
+            self.ui.citymono_radio.setChecked(1)
+        else:
+            self.ui.citypoly_radio.setChecked(1)
+
+        self.ui.citysprawl_spin.setValue(float(self.module.get_parameter("citysprawl")))
+
+        # --> Decision Variables for Block Dynamics
+        self.ui.lucredevelop_check.setChecked(int(self.module.get_parameter("lucredev")))
+        self.ui.popredevelop_check.setChecked(int(self.module.get_parameter("popredev")))
+        self.ui.noredevelop_check.setChecked(int(self.module.get_parameter("noredev")))
+        self.ui.lucredevelop_spin.setValue(int(self.module.get_parameter("lucredev_thresh")))
+        self.ui.popredevelop_spin.setValue(int(self.module.get_parameter("popredev_thresh")))
+        self.enable_disable_devchecks()
 
         # TAB 2 - RESIDENTIAL PLANNING PARAMETERS
+        self.ui.occup_avg_box.setText(str(self.module.get_parameter("occup_avg")))
+        self.ui.occup_max_box.setText(str(self.module.get_parameter("occup_max")))
+        self.ui.person_space_box.setText(str(self.module.get_parameter("person_space")))
+        self.ui.extra_comm_area_box.setText(str(self.module.get_parameter("extra_comm_area")))
+        self.ui.allot_depth_box.setText(str(self.module.get_parameter("avg_allot_depth")))
+        self.ui.allot_depth_check.setChecked(int(self.module.get_parameter("allot_depth_default")))
+        self.ui.house_floors.setValue(int(self.module.get_parameter("floor_num_max")))
+        self.ui.patio_area_max_box.setText(str(self.module.get_parameter("patio_area_max")))
+        self.ui.patio_covered_box.setChecked(bool(int(self.module.get_parameter("patio_covered"))))
+        self.ui.carports_max_box.setText(str(self.module.get_parameter("carports_max")))
+        self.ui.garage_incl_box.setChecked(int(self.module.get_parameter("garage_incl")))
+        self.ui.w_driveway_min_box.setText(str(self.module.get_parameter("w_driveway_min")))
+
+        self.ui.setback_f_min_box.setText(str(self.module.get_parameter("setback_f_min")))
+        self.ui.setback_f_max_box.setText(str(self.module.get_parameter("setback_f_max")))
+        self.ui.setback_s_min_box.setText(str(self.module.get_parameter("setback_s_min")))
+        self.ui.setback_s_max_box.setText(str(self.module.get_parameter("setback_s_max")))
+        self.ui.fsetbackmed_check.setChecked(bool(int(self.module.get_parameter("setback_f_med"))))
+        self.ui.ssetbackmed_check.setChecked(bool(int(self.module.get_parameter("setback_s_med"))))
+
+        self.ui.occup_flat_avg_box.setText(str(self.module.get_parameter("occup_flat_avg")))
+        self.ui.flat_area_max_box.setText(str(self.module.get_parameter("flat_area_max")))
+        self.ui.indoor_com_spin.setValue(int(self.module.get_parameter("commspace_indoor")))
+        self.ui.outdoor_com_spin.setValue(int(self.module.get_parameter("commspace_outdoor")))
+        self.ui.aptbldg_floors.setValue(int(self.module.get_parameter("floor_num_HDRmax")))
+        self.ui.setback_HDR_avg_box.setText(str(self.module.get_parameter("setback_HDR_avg")))
+
+        if self.module.get_parameter("parking_HDR") == "On":
+            self.ui.parking_on.setChecked(1)
+        elif self.module.get_parameter("parking_HDR") == "Off":
+            self.ui.parking_off.setChecked(1)
+        elif self.module.get_parameter("parking_HDR") == "Var":
+            self.ui.parking_vary.setChecked(1)
+        elif self.module.get_parameter("parking_HDR") == "NA":
+            self.ui.parking_none.setChecked(1)
+
+        self.ui.OSR_parks_include.setChecked(int(self.module.get_parameter("park_OSR")))
+
+        self.ui.w_resfootpath_min_box.setText(str(self.module.get_parameter("res_fpwmin")))
+        self.ui.w_resfootpath_max_box.setText(str(self.module.get_parameter("res_fpwmax")))
+        self.ui.w_resnaturestrip_min_box.setText(str(self.module.get_parameter("res_nswmin")))
+        self.ui.w_resnaturestrip_max_box.setText(str(self.module.get_parameter("res_nswmax")))
+        self.ui.w_resfootpath_med_check.setChecked(bool(int(self.module.get_parameter("res_fpmed"))))
+        self.ui.w_resnaturestrip_med_check.setChecked(bool(int(self.module.get_parameter("res_nsmed"))))
+        self.ui.w_reslane_min_box.setText(str(self.module.get_parameter("res_lanemin")))
+        self.ui.w_reslane_max_box.setText(str(self.module.get_parameter("res_lanemax")))
+        self.ui.w_reslane_med_check.setChecked(bool(int(self.module.get_parameter("res_lanemed"))))
+
+        self.ui.drainage_rule_check.setChecked(int(self.module.get_parameter("define_drainage_rule")))
+
+        if self.module.get_parameter("roof_connected") == "Direct":
+            self.ui.roof_connected_radiodirect.setChecked(1)
+        elif self.module.get_parameter("roof_connected") == "Disconnect":
+            self.ui.roof_connected_radiodisc.setChecked(1)
+        elif self.module.get_parameter("roof_connected") == "Vary":
+            self.ui.roof_connected_radiovary.setChecked(1)
+
+        self.ui.roofdced_vary_spin.setValue(int(self.module.get_parameter("roof_dced_p")))
+        self.ui.avg_imp_dced_spin.setValue(int(self.module.get_parameter("imperv_prop_dced")))
+        self.enable_disable_residential()
 
         # TAB 3 - NON-RESIDENTIAL PLANNING PARAMETERS
+        if self.module.get_parameter("employment_mode") == "I":
+            self.ui.jobs_direct_radio.setChecked(1)
+        elif self.module.get_parameter("employment_mode") == "D":
+            self.ui.jobs_dist_radio.setChecked(1)
+        elif self.module.get_parameter("employment_mode") == "S":
+            self.ui.jobs_total_radio.setChecked(1)
+        self.adjust_employment_stack()
+
+        self.ui.dist_ind_spin.setValue(int(self.module.get_parameter("ind_edist")))
+        self.ui.dist_com_spin.setValue(int(self.module.get_parameter("com_edist")))
+        self.ui.dist_orc_spin.setValue(int(self.module.get_parameter("orc_edist")))
+        self.ui.totjobs_box.setText(str(self.module.get_parameter("employment_total")))
+
+        self.ui.ind_subd_min.setText(str(self.module.get_parameter("ind_subd_min")))
+        self.ui.ind_subd_max.setText(str(self.module.get_parameter("ind_subd_max")))
+        self.ui.com_subd_min.setText(str(self.module.get_parameter("com_subd_min")))
+        self.ui.com_subd_max.setText(str(self.module.get_parameter("com_subd_max")))
+
+        self.ui.nres_setback_box.setText(str(self.module.get_parameter("nres_minfsetback")))
+        self.ui.nres_setback_auto.setChecked(int(self.module.get_parameter("nres_setback_auto")))
+
+        self.ui.plotratio_ind_slider.setValue(int(self.module.get_parameter("maxplotratio_ind")))
+        self.ui.plotratio_com_slider.setValue(int(self.module.get_parameter("maxplotratio_com")))
+        self.ui.nres_maxfloors_spin.setValue(int(self.module.get_parameter("nres_maxfloors")))
+        self.ui.nres_maxfloors_nolimit.setChecked(int(self.module.get_parameter("nres_nolimit_floors")))
+
+        self.ui.carpark_dimW_box.setText(str(self.module.get_parameter("carpark_Wmin")))
+        self.ui.carpark_dimD_box.setText(str(self.module.get_parameter("carpark_Dmin")))
+        self.ui.carpark_imp_spin.setValue(int(self.module.get_parameter("carpark_imp")))
+        self.ui.carpark_ind_box.setText(str(self.module.get_parameter("carpark_ind")))
+        self.ui.carpark_com_box.setText(str(self.module.get_parameter("carpark_com")))
+        self.ui.loadingbay_box.setText(str(self.module.get_parameter("loadingbay_A")))
+
+        self.ui.lscape_hsbalance_slide.setValue(int(self.module.get_parameter("lscape_hsbalance")))
+        self.ui.lscape_impdced_spin.setValue(int(self.module.get_parameter("lscape_impdced")))
+
+        self.ui.w_nresfootpath_min_box.setText(str(self.module.get_parameter("nres_fpwmin")))
+        self.ui.w_nresfootpath_max_box.setText(str(self.module.get_parameter("nres_fpwmax")))
+        self.ui.w_nresnaturestrip_min_box.setText(str(self.module.get_parameter("nres_nswmin")))
+        self.ui.w_nresnaturestrip_max_box.setText(str(self.module.get_parameter("nres_nswmax")))
+        self.ui.w_nresfootpath_med_check.setChecked(bool(int(self.module.get_parameter("nres_fpmed"))))
+        self.ui.w_nresnaturestrip_med_check.setChecked(bool(int(self.module.get_parameter("nres_nsmed"))))
+        self.ui.w_nreslane_min_box.setText(str(self.module.get_parameter("nres_lanemin")))
+        self.ui.w_nreslane_max_box.setText(str(self.module.get_parameter("nres_lanemax")))
+        self.ui.w_nreslane_med_check.setChecked(bool(int(self.module.get_parameter("nres_lanemed"))))
+
+        # --> Municipal Facilities
+        self.ui.civ_school.setChecked(bool(int(self.module.get_parameter("civ_school"))))
+        self.ui.civ_university.setChecked(bool(int(self.module.get_parameter("civ_uni"))))
+        self.ui.civ_library.setChecked(bool(int(self.module.get_parameter("civ_lib"))))
+        self.ui.civ_hospital.setChecked(bool(int(self.module.get_parameter("civ_hospital"))))
+        self.ui.civ_clinic.setChecked(bool(int(self.module.get_parameter("civ_clinic"))))
+        self.ui.civ_police.setChecked(bool(int(self.module.get_parameter("civ_police"))))
+        self.ui.civ_fire.setChecked(bool(int(self.module.get_parameter("civ_fire"))))
+        self.ui.civ_jail.setChecked(bool(int(self.module.get_parameter("civ_jail"))))
+        self.ui.civ_worship.setChecked(bool(int(self.module.get_parameter("civ_worship"))))
+        self.ui.civ_leisure.setChecked(bool(int(self.module.get_parameter("civ_leisure"))))
+        self.ui.civ_museum.setChecked(bool(int(self.module.get_parameter("civ_museum"))))
+        self.ui.civ_zoo.setChecked(bool(int(self.module.get_parameter("civ_zoo"))))
+        self.ui.civ_stadium.setChecked(bool(int(self.module.get_parameter("civ_stadium"))))
+        self.ui.civ_racing.setChecked(bool(int(self.module.get_parameter("civ_racing"))))
+        self.ui.civ_cemetery.setChecked(bool(int(self.module.get_parameter("civ_cemetery"))))
+        self.ui.civ_cityhall.setChecked(bool(int(self.module.get_parameter("civ_cityhall"))))
+
+        self.enable_disable_nonres()
+        self.enable_disable_civic()
+        self.set_nonres_plotratio_boxupdate()
+
+        # Advanced Parameters
+        self.nonres_far = {}
+        self.nonres_far["LI"] = 70.0
+        self.nonres_far["HI"] = 150.0
+        self.nonres_far["COM"] = 220.0
+        self.nonres_far["ORC"] = 110.0
 
         # TAB 4 - TRANSPORT PLANNING PARAMETERS
+        
+
+        self.enable_disable_majorarterials()
+        self.enable_disable_highways()
+        self.enable_disable_transport()
 
         # TAB 5 - OPEN SPACES PLANNING PARAMETERS
+        self.ui.pg_ggratio_slide.setValue(int(self.module.get_parameter("pg_greengrey_ratio")))
+        self.ui.pg_usable_spin.setValue(int(self.module.get_parameter("pg_unused_space")))
+        self.ui.pg_fac_restaurant.setChecked(int(self.module.get_parameter("pg_fac_restaurant")))
+        self.ui.pg_fac_fitness.setChecked(int(self.module.get_parameter("pg_fac_fitness")))
+        self.ui.pg_fac_bbq.setChecked(int(self.module.get_parameter("pg_fac_bbq")))
+        self.ui.pg_fac_sports.setChecked(int(self.module.get_parameter("pg_fac_sports")))
+
+        self.ui.ref_usable_check.setChecked(int(self.module.get_parameter("ref_usable")))
+        self.ui.ref_usable_spin.setValue(int(self.module.get_parameter("ref_usable_percent")))
+
+        self.ui.svu_slider.setValue(int(self.module.get_parameter("svu_water")))
+        self.ui.svu_supply_check.setChecked(self.module.get_parameter("svu4supply"))
+        self.ui.svu_waste_check.setChecked(self.module.get_parameter("svu4waste"))
+        self.ui.svu_storm_check.setChecked(self.module.get_parameter("svu4storm"))
+
+        self.ui.svu_supply_spin.setValue(int(self.module.get_parameter("svu4supply_prop")))
+        self.ui.svu_waste_spin.setValue(int(self.module.get_parameter("svu4waste_prop")))
+        self.ui.svu_storm_spin.setValue(int(self.module.get_parameter("svu4storm_prop")))
+
+        self.set_greengreyratio_boxupdate()
+        self.set_svu_waternonwater_boxupdate()
+        self.enable_disable_openspaces()
 
         # TAB 6 - OTHER LAND USES
+        self.ui.unc_merge_check.setChecked(int(self.module.get_parameter("unc_merge")))
+        self.ui.unc_merge2pg_check.setChecked(int(self.module.get_parameter("unc_pgmerge")))
+        self.ui.unc_merge2ref_check.setChecked(int(self.module.get_parameter("unc_refmerge")))
+        self.ui.unc_merge2trans_check.setChecked(int(self.module.get_parameter("unc_rdmerge")))
+        self.ui.unc_merge2ref_spin.setValue(float(self.module.get_parameter("unc_refmerge_w")))
+        self.ui.unc_merge2pg_spin.setValue(float(self.module.get_parameter("unc_pgmerge_w")))
+        self.ui.unc_merge2trans_spin.setValue(float(self.module.get_parameter("unc_rdmerge_w")))
+        self.ui.unc_custom_check.setChecked(self.module.get_parameter("unc_custom"))
+        self.ui.unc_areathresh_spin.setValue(float(self.module.get_parameter("unc_customthresh")))
+        self.ui.unc_customimp_spin.setValue(float(self.module.get_parameter("unc_customimp")))
+        self.ui.unc_customirrigate_check.setChecked(int(self.module.get_parameter("unc_landirrigate")))
+
+        if self.module.get_parameter("und_state") == "M":
+            self.ui.und_statemanual_radio.setChecked(1)
+        else:
+            self.ui.und_stateauto_radio.setChecked(1)
+
+        undev_type = self.module.get_parameter("und_type_manual")
+        undevindex = ubglobals.UNDEVSTATES.index(undev_type)
+        self.ui.und_statemanual_combo.setCurrentIndex(int(undevindex))
+        self.ui.und_allowdev_check.setChecked(int(self.module.get_parameter("und_allowdev")))
+
+        # END OF FILING IN GUI VALUES
+        return True
+
+    def enable_disable_majorarterials(self):
+        """        """
+
         pass
+        return True
+
+    def enable_disable_highways(self):
+        """        """
+
+        pass
+        return True
+
+    def enable_disable_transport(self):
+        """        """
+
+        pass
+        return True
+
+    def enable_disable_others(self):
+        """Enables and disables the 'Others' land use tab GUI items."""
+        self.ui.und_statemanual_combo.setEnabled(self.ui.und_statemanual_radio.isChecked())
+        if self.ui.unc_merge_check.isChecked():
+            self.ui.unc_merge2ref_check.setEnabled(1)
+            self.ui.unc_merge2pg_check.setEnabled(1)
+            self.ui.unc_merge2trans_check.setEnabled(1)
+            self.ui.unc_merge2ref_spin.setEnabled(self.ui.unc_merge2ref_check.isChecked())
+            self.ui.unc_merge2pg_spin.setEnabled(self.ui.unc_merge2pg_check.isChecked())
+            self.ui.unc_merge2trans_spin.setEnabled(self.ui.unc_merge2trans_check.isChecked())
+        else:
+            self.ui.unc_merge2ref_check.setEnabled(0)
+            self.ui.unc_merge2pg_check.setEnabled(0)
+            self.ui.unc_merge2trans_check.setEnabled(0)
+            self.ui.unc_merge2ref_spin.setEnabled(0)
+            self.ui.unc_merge2pg_spin.setEnabled(0)
+            self.ui.unc_merge2trans_spin.setEnabled(0)
+
+        if self.ui.unc_custom_check.isChecked():
+            self.ui.unc_areathresh_spin.setEnabled(1)
+            self.ui.unc_customimp_spin.setEnabled(1)
+            self.ui.unc_customirrigate_check.setEnabled(1)
+        else:
+            self.ui.unc_areathresh_spin.setEnabled(0)
+            self.ui.unc_customimp_spin.setEnabled(0)
+            self.ui.unc_customirrigate_check.setEnabled(0)
+
+    def enable_disable_openspaces(self):
+        """Enables and disables the open spaces GUI elements based on conditions defined by the user parameters."""
+        self.ui.ref_usable_spin.setEnabled(self.ui.ref_usable_check.isChecked())
+        self.ui.svu_supply_spin.setEnabled(self.ui.svu_supply_check.isChecked())
+        self.ui.svu_waste_spin.setEnabled(self.ui.svu_waste_check.isChecked())
+        self.ui.svu_storm_spin.setEnabled(self.ui.svu_storm_check.isChecked())
+
+    def set_svu_waternonwater_boxupdate(self):
+        """Updates the two text boxes on either side of the services and utility slider widget."""
+        svu_water = int(self.ui.svu_slider.value())
+        svu_nonwater = 100 - svu_water
+        self.ui.svu_wat_box.setText(str(svu_water))
+        self.ui.svu_nonwat_box.setText(str(svu_nonwater))
+
+    def set_greengreyratio_boxupdate(self):
+        """Updates the text box for green grey ratio based on the slider value."""
+        self.ui.pg_ggratio_box.setText(str(self.ui.pg_ggratio_slide.value()))
+
+    def set_nonres_plotratio_boxupdate(self):
+        """Sets the values of the plot ratio boxes depending on the plot ratio """
+        self.ui.plotratio_ind_box.setText(str(float(self.ui.plotratio_ind_slider.value()) / 100.0))
+        self.ui.plotratio_com_box.setText(str(float(self.ui.plotratio_com_slider.value()) / 100.0))
+
+    def enable_disable_nonres(self):
+        """Enables and disables non-residential GUI elements based on user-defined options and actions."""
+        self.ui.nres_setback_box.setEnabled(not self.ui.nres_setback_auto.isChecked())
+        self.ui.nres_maxfloors_spin.setEnabled(not self.ui.nres_maxfloors_nolimit.isChecked())
+
+    def enable_disable_civic(self):
+        """Enables and disables the civic facilities features in the GUI based on whether the user wants to consider
+        these explicitly in the modelling."""
+        self.ui.civ_cemetery.setEnabled(self.ui.civ_consider_check.isChecked())
+        self.ui.civ_cityhall.setEnabled(self.ui.civ_consider_check.isChecked())
+        self.ui.civ_clinic.setEnabled(self.ui.civ_consider_check.isChecked())
+        self.ui.civ_customise.setEnabled(self.ui.civ_consider_check.isChecked())
+        self.ui.civ_fire.setEnabled(self.ui.civ_consider_check.isChecked())
+        self.ui.civ_hospital.setEnabled(self.ui.civ_consider_check.isChecked())
+        self.ui.civ_jail.setEnabled(self.ui.civ_consider_check.isChecked())
+        self.ui.civ_leisure.setEnabled(self.ui.civ_consider_check.isChecked())
+        self.ui.civ_library.setEnabled(self.ui.civ_consider_check.isChecked())
+        self.ui.civ_museum.setEnabled(self.ui.civ_consider_check.isChecked())
+        self.ui.civ_police.setEnabled(self.ui.civ_consider_check.isChecked())
+        self.ui.civ_racing.setEnabled(self.ui.civ_consider_check.isChecked())
+        self.ui.civ_school.setEnabled(self.ui.civ_consider_check.isChecked())
+        self.ui.civ_stadium.setEnabled(self.ui.civ_consider_check.isChecked())
+        self.ui.civ_university.setEnabled(self.ui.civ_consider_check.isChecked())
+        self.ui.civ_worship.setEnabled(self.ui.civ_consider_check.isChecked())
+        self.ui.civ_zoo.setEnabled(self.ui.civ_consider_check.isChecked())
+        return True
+
+    def adjust_employment_stack(self):
+        """Changes the current index of the employment stack widget based on the selected radio button."""
+        if self.ui.jobs_direct_radio.isChecked():
+            self.ui.jobs_define_stack.setCurrentIndex(0)
+        elif self.ui.jobs_dist_radio.isChecked():
+            self.ui.jobs_define_stack.setCurrentIndex(1)
+        else:
+            self.ui.jobs_define_stack.setCurrentIndex(2)
 
     def save_values(self):
         """Saves current values to the corresponding module's instance in the active scenario."""

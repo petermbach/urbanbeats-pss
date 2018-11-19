@@ -60,13 +60,25 @@ class UrbanPlanning(UBModule):
         self.projectlog = projectlog
 
         # INPUT PARAMETER LIST
+        # Additional Data Sets
+        self.create_parameter("emp_map", STRING, "Data reference ID for using an employment map")
+        self.create_parameter("emp_fud", BOOL, "Obtain employment from the urban development module?")
+        self.create_parameter("local_map", STRING, "Data reference ID for the locality map")
+        self.create_parameter("local_attref", STRING, "The attribute name that contains the keys for features.")
+        self.create_parameter("roadnet_map", STRING, "Data reference ID for using a road network map")
+        self.create_parameter("roadnet_attref", STRING, "Data reference ID for the attribute name for road type")
+        self.emp_map = ""
+        self.emp_fud = 0
+        self.local_map = ""
+        self.local_attref = ""
+        self.roadnet_map = ""
+        self.roadnet_attref = ""
+
         # General City Structure
         self.create_parameter("cityarchetype", STRING, "")
         self.create_parameter("citysprawl", DOUBLE, "")
-        self.create_parameter("locality_mun_trans", BOOL, "")
         self.cityarchetype = "MC"  # MC = monocentric, PC = polycentric
         self.citysprawl = float(50.0)  # km - approximate urban sprawl radius from main CBD
-        self.locality_mun_trans = 0  # Locality Map available for use? Yes/No
 
         # Decision Variables for Block Dynamics
         self.create_parameter("lucredev", BOOL, "")
@@ -83,60 +95,88 @@ class UrbanPlanning(UBModule):
         # RESIDENTIAL PARAMETERS
         # (includes all residential land uses of varying density)
         # Planning Parameters
-        self.create_parameter("occup_avg", DOUBLE, "")
-        self.create_parameter("occup_max", DOUBLE, "")
-        self.create_parameter("person_space", DOUBLE, "")
-        self.create_parameter("extra_comm_area", DOUBLE, "")
-        self.create_parameter("setback_f_min", DOUBLE, "")
-        self.create_parameter("setback_f_max", DOUBLE, "")
-        self.create_parameter("setback_s_min", DOUBLE, "")
-        self.create_parameter("setback_s_max", DOUBLE, "")
-        self.create_parameter("setback_f_med", BOOL, "")
-        self.create_parameter("setback_s_med", BOOL, "")
-        self.create_parameter("carports_max", DOUBLE, "")
-        self.create_parameter("garage_incl", BOOL, "")
-        self.create_parameter("w_driveway_min", DOUBLE, "")
-        self.create_parameter("patio_area_max", DOUBLE, "")
-        self.create_parameter("patio_covered", BOOL, "")
-        self.create_parameter("floor_num_max", DOUBLE, "")
-        self.create_parameter("occup_flat_avg", DOUBLE, "")
-        self.create_parameter("commspace_indoor", DOUBLE, "")
-        self.create_parameter("commspace_outdoor", DOUBLE, "")
-        self.create_parameter("flat_area_max", DOUBLE, "")
-        self.create_parameter("floor_num_HDRmax", DOUBLE, "")
-        self.create_parameter("setback_HDR_avg", DOUBLE, "")
-        self.create_parameter("parking_HDR", STRING, "")
-        self.create_parameter("park_OSR", BOOL, "")
-        self.create_parameter("roof_connected", STRING, "")
-        self.create_parameter("roof_dced_p", DOUBLE, "")
-        self.create_parameter("imperv_prop_dced", DOUBLE, "")
-        self.occup_avg = float(2.67)  # average occupancy (house)
-        self.occup_max = float(5.0)  # maximum occupancy (house)
-        self.person_space = float(84.0)  # space per person [sqm]
-        self.extra_comm_area = float(10.0)  # extra space for communal area
-        self.setback_f_min = float(2.0)  # minimum front setback
-        self.setback_f_max = float(9.0)  # maximum front setback
-        self.setback_s_min = float(1.0)  # minimum side setback (applies to rear as well)
-        self.setback_s_max = float(2.0)  # maximum side setback (applies to rear as well)
-        self.setback_f_med = 0  # Use median for min/max front setback?
-        self.setback_s_med = 0  # Use median for min/max side setback?
-        self.carports_max = 2  # max number of carports
-        self.garage_incl = 0  # include garage? YES/NO
-        self.w_driveway_min = float(2.6)  # minimum driveway width [m]
-        self.patio_area_max = float(2.0)  # maximum patio area [sqm]
-        self.patio_covered = 0  # is patio covered by roof?
-        self.floor_num_max = 2.0  # maximum number of floors
-        self.occup_flat_avg = float(1.5)  # average occupancy of apartment
-        self.commspace_indoor = float(10.0)  # communal space % indoor
-        self.commspace_outdoor = float(5.0)  # communal space % outdoor
-        self.flat_area_max = float(90.0)  # maximum apartment size [sqm]
-        self.floor_num_HDRmax = float(10.0)  # maximum number of floors of high-rise apartments
-        self.setback_HDR_avg = float(1.0)  # average setback for HDR site
+        self.create_parameter("occup_avg", DOUBLE, "Average occupancy [pax per house]")
+        self.create_parameter("occup_max", DOUBLE, "Maximum occupancy [pax per house]")
+        self.create_parameter("person_space", DOUBLE, "Floor space per person [sqm]")
+        self.create_parameter("extra_comm_area", DOUBLE, "% of extra communal area")
+        self.create_parameter("avg_allot_depth", DOUBLE, "Average depth of a residential allotment [m]")
+        self.create_parameter("allot_depth_default", BOOL, "Use the default allotment depth?")
+        self.create_parameter("floor_num_max", DOUBLE, "Maximum number of floors")
+        self.create_parameter("patio_area_max", DOUBLE, "maximum patio area [sqm] - assumed impervious")
+        self.create_parameter("patio_covered", BOOL, "Is the patio covered by a roof?")
+        self.create_parameter("carports_max", DOUBLE, "Maximum number of car ports")
+        self.create_parameter("garage_incl", BOOL, "Include a garage? Changes open ground area to roof area")
+        self.create_parameter("w_driveway_min", DOUBLE, "minimum driveway width [m]")
+        self.occup_avg = float(2.67)
+        self.occup_max = float(5.0)
+        self.person_space = float(84.0)
+        self.extra_comm_area = float(10.0)
+        self.avg_allot_depth = float(40.0)
+        self.allot_depth_default = int(1)
+        self.floor_num_max = 2.0
+        self.patio_area_max = float(2.0)
+        self.patio_covered = 0
+        self.carports_max = 2
+        self.garage_incl = 0
+        self.w_driveway_min = float(2.6)
+
+        self.create_parameter("setback_f_min", DOUBLE, "Minimum front setback")
+        self.create_parameter("setback_f_max", DOUBLE, "Maximum front setback")
+        self.create_parameter("setback_s_min", DOUBLE, "Minimum side setback, applies to the rear as well")
+        self.create_parameter("setback_s_max", DOUBLE, "Maximum side setback, applies to the rear as well")
+        self.create_parameter("setback_f_med", BOOL, "Use the median front setback?")
+        self.create_parameter("setback_s_med", BOOL, "Use the median side setback?")
+        self.setback_f_min = float(2.0)
+        self.setback_f_max = float(9.0)
+        self.setback_s_min = float(1.0)
+        self.setback_s_max = float(2.0)
+        self.setback_f_med = 0
+        self.setback_s_med = 0
+
+        self.create_parameter("occup_flat_avg", DOUBLE, "Average occupancy of an apartment [pax per apartment]")
+        self.create_parameter("flat_area_max", DOUBLE, "Maximum apartment size")
+        self.create_parameter("commspace_indoor", DOUBLE, "Indoor communal space, % of total floor space")
+        self.create_parameter("commspace_outdoor", DOUBLE, "Outdoor communal space, % of total floor space")
+        self.create_parameter("floor_num_HDRmax", DOUBLE, "Maximum number of floors of high-rise apartments")
+        self.create_parameter("setback_HDR_avg", DOUBLE, "Average setback for HDR site [m]")
+        self.create_parameter("parking_HDR", STRING, "Scheme for parking on HDR site")
+        self.create_parameter("park_OSR", BOOL, "Leverage nearby parks to fulfill outdoor open space requirements?")
+        self.occup_flat_avg = float(1.5)
+        self.flat_area_max = float(90.0)
+        self.commspace_indoor = float(10.0)
+        self.commspace_outdoor = float(5.0)
+        self.floor_num_HDRmax = float(10.0)
+        self.setback_HDR_avg = float(1.0)
         self.parking_HDR = "On"  # On = On-site, Off = Off-site, Var = Vary, NA = None
-        self.park_OSR = 0  # Leverage parks to fulfill outdoor open space requirements?
-        self.roof_connected = "Direct"  # how is the roof connected to drainage? Direct/Disconnected/Varied?
-        self.roof_dced_p = 50  # % of roof disconnection level
-        self.imperv_prop_dced = 10  # proportion of impervious area disconnected
+        self.park_OSR = 0
+
+        self.create_parameter("res_fpwmin", DOUBLE, "Minimum footpath width in residential street")
+        self.create_parameter("res_nswmin", DOUBLE, "Minimum nature strip width in residential street")
+        self.create_parameter("res_fpwmax", DOUBLE, "Maximum footpath width in residential street")
+        self.create_parameter("res_nswmax", DOUBLE, "Maximum nature strip width in residential street")
+        self.create_parameter("res_lanemin", DOUBLE, "Minimum Road lane width in residential streets")
+        self.create_parameter("res_lanemax", DOUBLE, "Maximum road lane width in residential streets")
+        self.create_parameter("res_fpmed", BOOL, "Use the median footpath width?")
+        self.create_parameter("res_nsmed", BOOL, "Use the median nature strip width?")
+        self.create_parameter("res_lanemed", BOOL, "Use the median road lane width in residential streets?")
+        self.res_fpwmin = 1.0
+        self.res_nswmin = 1.0
+        self.res_fpwmax = 3.0
+        self.res_nswmax = 3.0
+        self.res_lanemin = 3.0
+        self.res_lanemax = 5.0
+        self.res_fpmed = 0
+        self.res_nsmed = 0
+        self.res_lanemed = 0
+
+        self.create_parameter("define_drainage_rule", BOOL, "Define a spatial rule fro allotment stormwater drainage?")
+        self.create_parameter("roof_connected", STRING, "How is the roof connected")
+        self.create_parameter("roof_dced_p", DOUBLE, "% of roof disconnection level")
+        self.create_parameter("imperv_prop_dced", DOUBLE, "% of ground impervious area disconnected")
+        self.define_drainage_rule = 1
+        self.roof_connected = "Direct"  # Direct/Disconnected/Varied?
+        self.roof_dced_p = 50
+        self.imperv_prop_dced = 10
 
         # Advanced Parameters
         self.min_allot_width = float(
@@ -191,66 +231,83 @@ class UrbanPlanning(UBModule):
         # NON-RESIDENTIAL PARAMETERS
         # (includes Trade, Office/Rescom, Light Industry, Heavy Industry, Education, Health & Comm, Serv & Util)
         # Commercial & Industrial Zones :: Employment Details
-        self.create_parameter("employment_mode", STRING, "")
-        self.create_parameter("ind_edist", DOUBLE, "")
-        self.create_parameter("com_edist", DOUBLE, "")
-        self.create_parameter("orc_edist", DOUBLE, "")
+        self.create_parameter("employment_mode", STRING, "How should the employment be calculated?")
+        self.create_parameter("ind_edist", DOUBLE, "Suggest the industrial employment distribution in employees/ha")
+        self.create_parameter("com_edist", DOUBLE, "Suggests the commercial employment distribution in employees/ha")
+        self.create_parameter("orc_edist", DOUBLE, "Suggests the office employment distribution")
         self.create_parameter("employment_total", DOUBLE, "")
+        self.employment_mode = "D"  # I = input, D = distribution, S = single
+        self.ind_edist = float(100.0)  # used only in employment mode D
+        self.com_edist = float(100.0)  # used only in employment mode D
+        self.orc_edist = float(400.0)  # used only in employment mode D
+        self.employment_total = float(200.0)  # used only in employment mode S
+
         self.create_parameter("ind_subd_min", DOUBLE, "")
         self.create_parameter("ind_subd_max", DOUBLE, "")
         self.create_parameter("com_subd_min", DOUBLE, "")
         self.create_parameter("com_subd_max", DOUBLE, "")
         self.create_parameter("nres_minfsetback", DOUBLE, "")
-        self.create_parameter("nres_maxfloors", DOUBLE, "")
         self.create_parameter("nres_setback_auto", BOOL, "")
-        self.create_parameter("nres_nolimit_floors", BOOL, "")
+        self.ind_subd_min = float(4.0)
+        self.ind_subd_max = float(6.0)
+        self.com_subd_min = float(2.0)
+        self.com_subd_max = float(4.0)
+        self.nres_minfsetback = float(2.0)
+        self.nres_setback_auto = 0
+
         self.create_parameter("maxplotratio_ind", DOUBLE, "")
         self.create_parameter("maxplotratio_com", DOUBLE, "")
+        self.create_parameter("nres_maxfloors", DOUBLE, "")
+        self.create_parameter("nres_nolimit_floors", BOOL, "")
+        self.maxplotratio_ind = float(60.0)
+        self.maxplotratio_com = float(50.0)
+        self.nres_maxfloors = float(4.0)
+        self.nres_nolimit_floors = 0
+
         self.create_parameter("carpark_Wmin", DOUBLE, "")
         self.create_parameter("carpark_Dmin", DOUBLE, "")
         self.create_parameter("carpark_imp", DOUBLE, "")
         self.create_parameter("carpark_ind", DOUBLE, "")
         self.create_parameter("carpark_com", DOUBLE, "")
         self.create_parameter("loadingbay_A", DOUBLE, "")
-        self.create_parameter("lscape_hsbalance", DOUBLE, "")
-        self.create_parameter("lscape_impdced", DOUBLE, "")
-        self.employment_mode = "D"  # I = input, D = distribution, S = single
-        self.ind_edist = float(
-            100.0)  # Employment Mode D: suggests the industrial employment distribution in employees/ha
-        self.com_edist = float(
-            100.0)  # Employment Mode D: suggests the commercial employment distribution in employees/ha
-        self.orc_edist = float(400.0)  # Employment Mode D: suggests the office employment distribution
-        self.employment_total = float(200.0)  # Employment Mode S:
-        self.ind_subd_min = float(4.0)
-        self.ind_subd_max = float(6.0)
-        self.com_subd_min = float(2.0)
-        self.com_subd_max = float(4.0)
-        self.nres_minfsetback = float(2.0)
-        self.nres_maxfloors = float(4.0)
-        self.nres_setback_auto = 0
-        self.nres_nolimit_floors = 0
-        self.maxplotratio_ind = float(60.0)
-        self.maxplotratio_com = float(50.0)
         self.carpark_Wmin = float(2.6)
         self.carpark_Dmin = float(4.6)
         self.carpark_imp = float(100.0)
         self.carpark_ind = float(1.0)
         self.carpark_com = float(2.0)
         self.loadingbay_A = float(27.0)
+
+        self.create_parameter("lscape_hsbalance", DOUBLE, "")
+        self.create_parameter("lscape_impdced", DOUBLE, "")
         self.lscape_hsbalance = 1
         self.lscape_impdced = float(10.0)
 
-        self.nonres_far = {}
-        self.nonres_far["LI"] = 70.0
-        self.nonres_far["HI"] = 150.0
-        self.nonres_far["COM"] = 220.0
-        self.nonres_far["ORC"] = 110.0
+        self.create_parameter("nres_fpwmin", DOUBLE, "")
+        self.create_parameter("nres_nswmin", DOUBLE, "")
+        self.create_parameter("nres_fpwmax", DOUBLE, "")
+        self.create_parameter("nres_nswmax", DOUBLE, "")
+        self.create_parameter("nres_fpmed", BOOL, "")
+        self.create_parameter("nres_nsmed", BOOL, "")
+        self.create_parameter("nres_lanemin", DOUBLE, "")
+        self.create_parameter("nres_lanemax", DOUBLE, "")
+        self.create_parameter("nres_lanemed", DOUBLE, "")
+        self.nres_fpwmin = 1.0
+        self.nres_nswmin = 1.0
+        self.nres_fpwmax = 3.0
+        self.nres_nswmax = 3.0
+        self.nres_fpmed = 0
+        self.nres_nsmed = 0
+        self.nres_lanemin = 3.0
+        self.nres_lanemax = 5.0
+        self.nres_lanemed = 0
 
         # Civic Facilities
-        self.create_parameter("mun_explicit", BOOL, "")
-        self.create_parameter("edu_school", BOOL, "")
-        self.create_parameter("edu_uni", BOOL, "")
-        self.create_parameter("edu_lib", BOOL, "")
+        self.create_parameter("civic_explicit", BOOL, "")
+        self.create_parameter("civ_cemetery", BOOL, "")
+        self.create_parameter("civ_cityhall", BOOL, "")
+        self.create_parameter("civ_school", BOOL, "")
+        self.create_parameter("civ_uni", BOOL, "")
+        self.create_parameter("civ_lib", BOOL, "")
         self.create_parameter("civ_hospital", BOOL, "")
         self.create_parameter("civ_clinic", BOOL, "")
         self.create_parameter("civ_police", BOOL, "")
@@ -259,14 +316,15 @@ class UrbanPlanning(UBModule):
         self.create_parameter("civ_worship", BOOL, "")
         self.create_parameter("civ_leisure", BOOL, "")
         self.create_parameter("civ_museum", BOOL, "")
-        self.create_parameter("civ_zoo", BOOL, "")
         self.create_parameter("civ_stadium", BOOL, "")
         self.create_parameter("civ_racing", BOOL, "")
-        self.create_parameter("civ_cemetery", BOOL, "")
-        self.mun_explicit = 0
-        self.edu_school = 0
-        self.edu_uni = 0
-        self.edu_lib = 0
+        self.create_parameter("civ_zoo", BOOL, "")
+        self.civic_explicit = 0
+        self.civ_cemetery = 0
+        self.civ_cityhall = 0
+        self.civ_school = 0
+        self.civ_uni = 0
+        self.civ_lib = 0
         self.civ_hospital = 0
         self.civ_clinic = 0
         self.civ_police = 0
@@ -278,75 +336,134 @@ class UrbanPlanning(UBModule):
         self.civ_zoo = 0
         self.civ_stadium = 0
         self.civ_racing = 0
-        self.civ_cemetery = 0
+
+        # Advanced Parameters
+        self.nonres_far = {}
+        self.nonres_far["LI"] = 70.0
+        self.nonres_far["HI"] = 150.0
+        self.nonres_far["COM"] = 220.0
+        self.nonres_far["ORC"] = 110.0
 
         # TRANSPORT PARAMETERS
-        # (includes Roads, Transport)
-        # Residential Pedestrian
-        self.create_parameter("res_fpwmin", DOUBLE, "")
-        self.create_parameter("res_nswmin", DOUBLE, "")
-        self.create_parameter("res_fpwmax", DOUBLE, "")
-        self.create_parameter("res_nswmax", DOUBLE, "")
-        self.create_parameter("nres_fpwmin", DOUBLE, "")
-        self.create_parameter("nres_nswmin", DOUBLE, "")
-        self.create_parameter("nres_fpwmax", DOUBLE, "")
-        self.create_parameter("nres_nswmax", DOUBLE, "")
-        self.create_parameter("res_fpmed", BOOL, "")
-        self.create_parameter("res_nsmed", BOOL, "")
-        self.create_parameter("nres_fpmed", BOOL, "")
-        self.create_parameter("nres_nsmed", BOOL, "")
-        self.create_parameter("lane_wmin", DOUBLE, "")
-        self.create_parameter("lane_wmax", DOUBLE, "")
-        self.create_parameter("lane_crossfall", DOUBLE, "")
-        self.create_parameter("lane_wmed", BOOL, "")
-        self.res_fpwmin = 1.0
-        self.res_nswmin = 1.0
-        self.res_fpwmax = 3.0
-        self.res_nswmax = 3.0
-        self.nres_fpwmin = 1.0
-        self.nres_nswmin = 1.0
-        self.nres_fpwmax = 3.0
-        self.nres_nswmax = 3.0
-        self.res_fpmed = 0
-        self.res_nsmed = 0
-        self.nres_fpmed = 0
-        self.nres_nsmed = 0
-        self.lane_wmin = 3.0
-        self.lane_wmax = 5.0
-        self.lane_crossfall = 3.0
-        self.lane_wmed = 0
+        self.create_parameter("ma_fpath", BOOL, "")
+        self.create_parameter("ma_nstrip", BOOL, "")
+        self.create_parameter("ma_sidestreet", BOOL, "")
+        self.create_parameter("ma_bicycle", BOOL, "")
+        self.create_parameter("ma_travellane", BOOL, "")
+        self.create_parameter("ma_centralbuffer", BOOL, "")
+        self.ma_fpath = 0
+        self.ma_nstrip = 0
+        self.ma_sidestreet = 0
+        self.ma_bicycle = 0
+        self.ma_travellane = 0
+        self.ma_centralbuffer = 0
 
-        self.create_parameter("hwy_wlanemin", DOUBLE, "")
-        self.create_parameter("hwy_wlanemax", DOUBLE, "")
-        self.create_parameter("hwy_wmedianmin", DOUBLE, "")
-        self.create_parameter("hwy_wmedianmax", DOUBLE, "")
-        self.create_parameter("hwy_wbufmin", DOUBLE, "")
-        self.create_parameter("hwy_wbufmax", DOUBLE, "")
-        self.create_parameter("hwy_crossfall", DOUBLE, "")
-        self.create_parameter("hwy_lanemed", BOOL, "")
-        self.create_parameter("hwy_medmed", BOOL, "")
-        self.create_parameter("hwy_bufmed", BOOL, "")
-        self.create_parameter("hwy_restrict", BOOL, "")
-        self.create_parameter("hwy_buffer", BOOL, "")
-        self.hwy_wlanemin = 5.0
-        self.hwy_wlanemax = 10.0
-        self.hwy_wmedianmin = 4.0
-        self.hwy_wmedianmax = 6.0
-        self.hwy_wbufmin = 2.0
-        self.hwy_wbufmax = 5.0
-        self.hwy_crossfall = 3.0
-        self.hwy_lanemed = 0
-        self.hwy_medmed = 0
-        self.hwy_bufmed = 0
-        self.hwy_restrict = 0
-        self.hwy_buffer = 1
+        self.create_parameter("ma_fpath_wmin", DOUBLE, "")
+        self.create_parameter("ma_fpath_wmax", DOUBLE, "")
+        self.create_parameter("ma_nstrip_wmin", DOUBLE, "")
+        self.create_parameter("ma_nstrip_wmax", DOUBLE, "")
+        self.create_parameter("ma_sidestreet_wmin", DOUBLE, "")
+        self.create_parameter("ma_sidestreet_wmax", DOUBLE, "")
+        self.create_parameter("ma_bicycle_wmin", DOUBLE, "")
+        self.create_parameter("ma_bicycle_wmax", DOUBLE, "")
+        self.create_parameter("ma_travellane_wmin", DOUBLE, "")
+        self.create_parameter("ma_travellane_wmax", DOUBLE, "")
+        self.create_parameter("ma_centralbuffer_wmin", DOUBLE, "")
+        self.create_parameter("ma_centralbuffer_wmax", DOUBLE, "")
+        self.ma_fpath_wmin = 0
+        self.ma_fpath_wmax = 0
+        self.ma_nstrip_wmin = 0
+        self.ma_nstrip_wmax = 0
+        self.ma_sidestreet_wmin = 0
+        self.ma_sidestreet_wmax = 0
+        self.ma_bicycle_wmin = 0
+        self.ma_bicycle_wmax = 0
+        self.ma_travellane_wmin = 0
+        self.ma_travellane_wmax = 0
+        self.ma_centralbuffer_wmin = 0
+        self.ma_centralbuffer_wmax = 0
 
-        self.create_parameter("considerTRFacilities", BOOL, "")
+        self.create_parameter("ma_fpath_median", BOOL, "")
+        self.create_parameter("ma_nstrip_median", BOOL, "")
+        self.create_parameter("ma_sidestreet_median", BOOL, "")
+        self.create_parameter("ma_bicycle_median", BOOL, "")
+        self.create_parameter("ma_travellane_median", BOOL, "")
+        self.create_parameter("ma_centralbuffer_median", BOOL, "")
+        self.ma_fpath_median = 0
+        self.ma_nstrip_median = 0
+        self.ma_sidestreet_median = 0
+        self.ma_bicycle_median = 0
+        self.ma_travellane_median = 0
+        self.ma_centralbuffer_median = 0
+
+        self.create_parameter("ma_sidestreet_lanes", DOUBLE, "")
+        self.create_parameter("ma_bicycle_lanes", DOUBLE, "")
+        self.create_parameter("ma_bicycle_shared", BOOL, "")
+        self.create_parameter("ma_travellane_lanes", DOUBLE, "")
+        self.ma_sidestreet_lanes = 0
+        self.ma_bicycle_lanes = 0
+        self.ma_bicycle_shared = 0
+        self.ma_travellane_lanes = 0
+
+        self.create_parameter("pt_centralbuffer", BOOL, "")
+        self.create_parameter("pt_impervious", DOUBLE, "")
+        self.create_parameter("ma_median_reserved", BOOL, "")
+        self.create_parameter("ma_openspacebuffer", BOOL, "")
+        self.pt_centralbuffer = 0
+        self.pt_impervious = 0
+        self.ma_median_reserved = 0
+        self.ma_openspacebuffer = 0
+
+        self.create_parameter("hwy_different_check", BOOL, "")
+        self.create_parameter("hwy_verge_check", BOOL, "")
+        self.create_parameter("hwy_service_check", BOOL, "")
+        self.create_parameter("hwy_travellane_check", BOOL, "")
+        self.create_parameter("hwy_centralbuffer_check", BOOL, "")
+        self.hwy_different_check = 0
+        self.hwy_verge_check = 0
+        self.hwy_service_check = 0
+        self.hwy_travellane_check = 0
+        self.hwy_centralbuffer_check = 0
+
+        self.create_parameter("hwy_verge_wmin", DOUBLE, "")
+        self.create_parameter("hwy_verge_wmax", DOUBLE, "")
+        self.create_parameter("hwy_service_wmin", DOUBLE, "")
+        self.create_parameter("hwy_service_wmax", DOUBLE, "")
+        self.create_parameter("hwy_travellane_wmin", DOUBLE, "")
+        self.create_parameter("hwy_travellane_wmax", DOUBLE, "")
+        self.create_parameter("hwy_centralbuffer_wmin", DOUBLE, "")
+        self.create_parameter("hwy_centralbuffer_wmax", DOUBLE, "")
+        self.hwy_verge_wmin = 0
+        self.hwy_verge_wmax = 0
+        self.hwy_service_wmin = 0
+        self.hwy_service_wmax = 0
+        self.hwy_travellane_wmin = 0
+        self.hwy_travellane_wmax = 0
+        self.hwy_centralbuffer_wmin = 0
+        self.hwy_centralbuffer_wmax = 0
+
+        self.create_parameter("hwy_verge_median", BOOL, "")
+        self.create_parameter("hwy_service_median", BOOL, "")
+        self.create_parameter("hwy_travellane_median", BOOL, "")
+        self.create_parameter("hwy_centralbuffer_median", BOOL, "")
+        self.hwy_verge_median = 0
+        self.hwy_service_median = 0
+        self.hwy_travellane_median = 0
+        self.hwy_centralbuffer_median = 0
+
+        self.create_parameter("hwy_service_lanes", DOUBLE, "")
+        self.create_parameter("hwy_travellane_lanes", DOUBLE, "")
+        self.create_parameter("hwy_median_reserved", BOOL, "")
+        self.hwy_service_lanes = 0
+        self.hwy_travellane_lanes = 0
+        self.hwy_median_reserved = 0
+
+        self.create_parameter("consider_transport", BOOL, "")
         self.create_parameter("trans_airport", BOOL, "")
         self.create_parameter("trans_seaport", BOOL, "")
         self.create_parameter("trans_busdepot", BOOL, "")
         self.create_parameter("trans_railterminal", BOOL, "")
-        self.considerTRFacilities = 0
+        self.consider_transport = 0
         self.trans_airport = 0
         self.trans_seaport = 0
         self.trans_busdepot = 0
@@ -356,17 +473,20 @@ class UrbanPlanning(UBModule):
         # (includes Parks & Garden, Reserves & Floodways)
         # Parks, Squares & Gardens :: General
         self.create_parameter("pg_greengrey_ratio", DOUBLE, "")
-        self.create_parameter("pgsq_distribution", STRING, "")
-        self.create_parameter("pg_unused_space", DOUBLE, "")
-        self.create_parameter("pg_restrict", BOOL, "")
+        self.create_parameter("pg_nonrec_space", DOUBLE, "")
+        self.create_parameter("pg_fac_restaurant", BOOL, "")
+        self.create_parameter("pg_fac_fitness", BOOL, "")
+        self.create_parameter("pg_fac_bbq", BOOL, "")
+        self.create_parameter("pg_fac_sports", BOOL, "")
         self.pg_greengrey_ratio = float(10.0)
-        self.pgsq_distribution = "S"  # S = separate, C = combined
-        self.pg_unused_space = float(40.0)  # % of space in park not used for anything else
-        self.pg_restrict = 0  # Prohibit the use of park space
+        self.pg_nonrec_space = float(40.0)  # % of space in park not used for anything else
+        self.pg_fac_restaurant = 0
+        self.pg_fac_fitness = 0
+        self.pg_fac_bbq = 0
+        self.pg_fac_sports = 0
 
         self.create_parameter("ref_usable", BOOL, "")
         self.create_parameter("ref_usable_percent", DOUBLE, "")
-        self.create_parameter("ref_limit_stormwater", BOOL, "")
         self.create_parameter("svu_water", DOUBLE, "")
         self.create_parameter("svu4supply", BOOL, "")
         self.create_parameter("svu4waste", BOOL, "")
@@ -376,7 +496,6 @@ class UrbanPlanning(UBModule):
         self.create_parameter("svu4storm_prop", DOUBLE, "")
         self.ref_usable = 1
         self.ref_usable_percent = float(100.0)
-        self.ref_limit_stormwater = 0
         self.svu_water = float(50.0)
         self.svu4supply = 1
         self.svu4waste = 1
