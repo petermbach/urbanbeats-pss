@@ -60,6 +60,16 @@ class UrbanPlanning(UBModule):
         self.projectlog = projectlog
 
         # INPUT PARAMETER LIST
+        # Planning Templates
+        self.create_parameter("plan_type", STRING, "Dominant planning typology")
+        self.create_parameter("plan_template", STRING, "Option for setting planning parameters")
+        self.create_parameter("plan_paramset", STRING, "Default parameter set to use")
+        self.create_parameter("plan_paramfile", STRING, "Filename of loaded parameter set")
+        self.plan_type = "Suburbia"   # Suburbia, European, Megacity
+        self.plan_template = "PREDEF"   # PREDEF = pre-defined, PRELOAD = pre-filled
+        self.plan_paramset = "Custom"   # Custom or Melbourne
+        self.plan_paramfile = ""
+
         # Additional Data Sets
         self.create_parameter("emp_map", STRING, "Data reference ID for using an employment map")
         self.create_parameter("emp_fud", BOOL, "Obtain employment from the urban development module?")
@@ -345,19 +355,23 @@ class UrbanPlanning(UBModule):
         self.nonres_far["ORC"] = 110.0
 
         # TRANSPORT PARAMETERS
+        self.create_parameter("ma_buffer", BOOL, "")
         self.create_parameter("ma_fpath", BOOL, "")
         self.create_parameter("ma_nstrip", BOOL, "")
         self.create_parameter("ma_sidestreet", BOOL, "")
         self.create_parameter("ma_bicycle", BOOL, "")
         self.create_parameter("ma_travellane", BOOL, "")
         self.create_parameter("ma_centralbuffer", BOOL, "")
-        self.ma_fpath = 0
-        self.ma_nstrip = 0
+        self.ma_buffer = 0
+        self.ma_fpath = 1
+        self.ma_nstrip = 1
         self.ma_sidestreet = 0
         self.ma_bicycle = 0
-        self.ma_travellane = 0
-        self.ma_centralbuffer = 0
+        self.ma_travellane = 1
+        self.ma_centralbuffer = 1
 
+        self.create_parameter("ma_buffer_wmin", DOUBLE, "")
+        self.create_parameter("ma_buffer_wmax", DOUBLE, "")
         self.create_parameter("ma_fpath_wmin", DOUBLE, "")
         self.create_parameter("ma_fpath_wmax", DOUBLE, "")
         self.create_parameter("ma_nstrip_wmin", DOUBLE, "")
@@ -370,25 +384,29 @@ class UrbanPlanning(UBModule):
         self.create_parameter("ma_travellane_wmax", DOUBLE, "")
         self.create_parameter("ma_centralbuffer_wmin", DOUBLE, "")
         self.create_parameter("ma_centralbuffer_wmax", DOUBLE, "")
-        self.ma_fpath_wmin = 0
-        self.ma_fpath_wmax = 0
-        self.ma_nstrip_wmin = 0
-        self.ma_nstrip_wmax = 0
-        self.ma_sidestreet_wmin = 0
-        self.ma_sidestreet_wmax = 0
-        self.ma_bicycle_wmin = 0
-        self.ma_bicycle_wmax = 0
-        self.ma_travellane_wmin = 0
-        self.ma_travellane_wmax = 0
-        self.ma_centralbuffer_wmin = 0
-        self.ma_centralbuffer_wmax = 0
+        self.ma_buffer_wmin = 1.0
+        self.ma_buffer_wmax = 1.0
+        self.ma_fpath_wmin = 1.0
+        self.ma_fpath_wmax = 3.0
+        self.ma_nstrip_wmin = 1.0
+        self.ma_nstrip_wmax = 2.0
+        self.ma_sidestreet_wmin = 0.0
+        self.ma_sidestreet_wmax = 0.0
+        self.ma_bicycle_wmin = 0.0
+        self.ma_bicycle_wmax = 0.0
+        self.ma_travellane_wmin = 5.0
+        self.ma_travellane_wmax = 10.0
+        self.ma_centralbuffer_wmin = 2.0
+        self.ma_centralbuffer_wmax = 5.0
 
+        self.create_parameter("ma_buffer_median", BOOL, "")
         self.create_parameter("ma_fpath_median", BOOL, "")
         self.create_parameter("ma_nstrip_median", BOOL, "")
         self.create_parameter("ma_sidestreet_median", BOOL, "")
         self.create_parameter("ma_bicycle_median", BOOL, "")
         self.create_parameter("ma_travellane_median", BOOL, "")
         self.create_parameter("ma_centralbuffer_median", BOOL, "")
+        self.ma_buffer_median = 0
         self.ma_fpath_median = 0
         self.ma_nstrip_median = 0
         self.ma_sidestreet_median = 0
@@ -403,7 +421,7 @@ class UrbanPlanning(UBModule):
         self.ma_sidestreet_lanes = 0
         self.ma_bicycle_lanes = 0
         self.ma_bicycle_shared = 0
-        self.ma_travellane_lanes = 0
+        self.ma_travellane_lanes = 2
 
         self.create_parameter("pt_centralbuffer", BOOL, "")
         self.create_parameter("pt_impervious", DOUBLE, "")
@@ -420,10 +438,10 @@ class UrbanPlanning(UBModule):
         self.create_parameter("hwy_travellane_check", BOOL, "")
         self.create_parameter("hwy_centralbuffer_check", BOOL, "")
         self.hwy_different_check = 0
-        self.hwy_verge_check = 0
-        self.hwy_service_check = 0
-        self.hwy_travellane_check = 0
-        self.hwy_centralbuffer_check = 0
+        self.hwy_verge_check = 1
+        self.hwy_service_check = 1
+        self.hwy_travellane_check = 1
+        self.hwy_centralbuffer_check = 1
 
         self.create_parameter("hwy_verge_wmin", DOUBLE, "")
         self.create_parameter("hwy_verge_wmax", DOUBLE, "")
@@ -433,14 +451,14 @@ class UrbanPlanning(UBModule):
         self.create_parameter("hwy_travellane_wmax", DOUBLE, "")
         self.create_parameter("hwy_centralbuffer_wmin", DOUBLE, "")
         self.create_parameter("hwy_centralbuffer_wmax", DOUBLE, "")
-        self.hwy_verge_wmin = 0
-        self.hwy_verge_wmax = 0
-        self.hwy_service_wmin = 0
-        self.hwy_service_wmax = 0
-        self.hwy_travellane_wmin = 0
-        self.hwy_travellane_wmax = 0
-        self.hwy_centralbuffer_wmin = 0
-        self.hwy_centralbuffer_wmax = 0
+        self.hwy_verge_wmin = 1.0
+        self.hwy_verge_wmax = 3.0
+        self.hwy_service_wmin = 1.0
+        self.hwy_service_wmax = 1.0
+        self.hwy_travellane_wmin = 5.0
+        self.hwy_travellane_wmax = 10.0
+        self.hwy_centralbuffer_wmin = 2.0
+        self.hwy_centralbuffer_wmax = 5.0
 
         self.create_parameter("hwy_verge_median", BOOL, "")
         self.create_parameter("hwy_service_median", BOOL, "")
@@ -454,9 +472,11 @@ class UrbanPlanning(UBModule):
         self.create_parameter("hwy_service_lanes", DOUBLE, "")
         self.create_parameter("hwy_travellane_lanes", DOUBLE, "")
         self.create_parameter("hwy_median_reserved", BOOL, "")
-        self.hwy_service_lanes = 0
-        self.hwy_travellane_lanes = 0
+        self.create_parameter("hwy_openspacebuffer", BOOL, "")
+        self.hwy_service_lanes = 1
+        self.hwy_travellane_lanes = 3
         self.hwy_median_reserved = 0
+        self.hwy_openspacebuffer = 0
 
         self.create_parameter("consider_transport", BOOL, "")
         self.create_parameter("trans_airport", BOOL, "")

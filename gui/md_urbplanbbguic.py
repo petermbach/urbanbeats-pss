@@ -107,6 +107,10 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
         self.ui.parameters.currentChanged.connect(self.adjust_module_img)   # Changes the module's image
 
         # Tab 1 - General
+        self.ui.plan_params_preload.clicked.connect(self.enable_disable_devchecks)
+        self.ui.plan_params_predef.clicked.connect(self.enable_disable_devchecks)
+        self.ui.plan_params_citycombo.currentIndexChanged.connect(self.pre_fill_parameters)
+        self.ui.plan_params_filebox.textChanged.connect(self.pre_fill_parameters)
         self.ui.lucredevelop_check.clicked.connect(self.enable_disable_devchecks)
         self.ui.popredevelop_check.clicked.connect(self.enable_disable_devchecks)
         self.ui.noredevelop_check.clicked.connect(self.enable_disable_devchecks)
@@ -130,6 +134,23 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
         self.ui.civ_consider_check.clicked.connect(self.enable_disable_civic)
         self.ui.civ_customise.clicked.connect(self.launch_civ_customisation_gui)
 
+        # Tab 4 - Roads and Transport
+        self.ui.ma_buffer_check.clicked.connect(self.enable_disable_majorarterials)
+        self.ui.ma_fpath_check.clicked.connect(self.enable_disable_majorarterials)
+        self.ui.ma_nstrip_check.clicked.connect(self.enable_disable_majorarterials)
+        self.ui.ma_sidestreet_check.clicked.connect(self.enable_disable_majorarterials)
+        self.ui.ma_bicycle_check.clicked.connect(self.enable_disable_majorarterials)
+        self.ui.ma_travellane_check.clicked.connect(self.enable_disable_majorarterials)
+        self.ui.ma_centralbuffer_check.clicked.connect(self.enable_disable_majorarterials)
+        self.ui.pt_centralbuffer.clicked.connect(self.enable_disable_majorarterials)
+        self.ui.hwy_different_check.clicked.connect(self.enable_disable_highways)
+        self.ui.hwy_verge_check.clicked.connect(self.enable_disable_highways)
+        self.ui.hwy_service_check.clicked.connect(self.enable_disable_highways)
+        self.ui.hwy_travellane_check.clicked.connect(self.enable_disable_highways)
+        self.ui.hwy_centralbuffer_check.clicked.connect(self.enable_disable_highways)
+        self.ui.consider_transport.clicked.connect(self.enable_disable_transport)
+        self.ui.trans_customise.clicked.connect(self.launch_civ_customisation_gui)
+
         # Tab 5 - Open Spaces
         self.ui.pg_ggratio_slide.valueChanged.connect(self.set_greengreyratio_boxupdate)
         self.ui.svu_slider.valueChanged.connect(self.set_svu_waternonwater_boxupdate)
@@ -138,15 +159,14 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
         self.ui.svu_waste_check.clicked.connect(self.enable_disable_openspaces)
         self.ui.svu_storm_check.clicked.connect(self.enable_disable_openspaces)
 
-        # Tabe 6 - Other Uses
-        QtCore.QObject.connect(self.ui.unc_merge_check, QtCore.SIGNAL("clicked()"), self.unc_merge_enable)
-        QtCore.QObject.connect(self.ui.unc_merge2pg_check, QtCore.SIGNAL("clicked()"), self.unc_merge2pg_enable)
-        QtCore.QObject.connect(self.ui.unc_merge2ref_check, QtCore.SIGNAL("clicked()"), self.unc_merge2ref_enable)
-        QtCore.QObject.connect(self.ui.unc_merge2trans_check, QtCore.SIGNAL("clicked()"), self.unc_merge2trans_enable)
-        QtCore.QObject.connect(self.ui.unc_custom_check, QtCore.SIGNAL("clicked()"), self.unc_custom_check_enable)
-        QtCore.QObject.connect(self.ui.und_statemanual_radio, QtCore.SIGNAL("clicked()"), self.und_typeEnable)
-        QtCore.QObject.connect(self.ui.und_stateauto_radio, QtCore.SIGNAL("clicked()"), self.und_typeEnable)
-
+        # Tab 6 - Other Uses
+        self.ui.unc_merge_check.clicked.connect(self.enable_disable_others)
+        self.ui.unc_merge2pg_check.clicked.connect(self.enable_disable_others)
+        self.ui.unc_merge2ref_check.clicked.connect(self.enable_disable_others)
+        self.ui.unc_merge2trans_check.clicked.connect(self.enable_disable_others)
+        self.ui.unc_custom_check.clicked.connect(self.enable_disable_others)
+        self.ui.und_statemanual_radio.clicked.connect(self.enable_disable_others)
+        self.ui.und_stateauto_radio.clicked.connect(self.enable_disable_others)
 
         # Others
         self.ui.buttonBox.accepted.connect(self.save_values)
@@ -182,6 +202,9 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
 
     def enable_disable_devchecks(self):
         """Enables or disables the Block redevelopment features based on the state of the checkboxes. General Tab."""
+        self.ui.plan_params_filebox.setEnabled(self.ui.plan_params_preload.isChecked())
+        self.ui.plan_params_filebrowse.setEnabled(self.ui.plan_params_preload.isChecked())
+        self.ui.plan_params_citycombo.setEnabled(self.ui.plan_params_predef.isChecked())
         self.ui.employment_combo.setEnabled(int(not self.ui.emp_fud.isChecked()))
         if self.ui.noredevelop_check.isChecked():
             self.ui.lucredevelop_check.setEnabled(0)
@@ -211,6 +234,12 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
                 dataref_array[1].append(dref.get_data_id())
         return dataref_array
 
+    def pre_fill_parameters(self):
+        """Pre-filling method, will set up the module with all values contained in the pre-loaded parameter file or
+        settings. This method is called when the Combo box index is changed or a file has been browsed and entered into
+        the text box on the GENERALS tab."""
+        pass    # [TO DO]
+
     def change_active_module(self):
         """Searches for the active module based on the simulation year combo box and updates the GUI."""
         # Send message box to user to ask whether to save current parameters
@@ -235,6 +264,18 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
     def setup_gui_with_parameters(self):
         """Fills in all parameters belonging to the module for the current year."""
         # TAB 1 - GENERAL PARAMETERS
+        self.ui.plan_typology_combo.setCurrentIndex(ubglobals.PLANTYPES.index(self.module.get_parameter("plan_type")))
+
+        if self.module.get_parameter("plan_template") == "PREDEF":
+            self.ui.plan_params_predef.setChecked(1)
+        else:
+            self.ui.plan_params_preload.setChecked(1)
+
+        self.ui.plan_params_citycombo.setCurrentIndex(ubglobals.PLANPARAMSET.index(
+            self.module.get_parameter("plan_paramset")))
+
+        self.ui.plan_params_filebox.setText(str(self.module.get_parameter("plan_paramfile")))
+
         try:    # EMPLOYMENT COMBO - retrieve the dataID from module
             self.ui.employment_combo.setCurrentIndex(self.employmaps[1].index(self.module.get_parameter("emp_map")))
         except ValueError:
@@ -408,7 +449,77 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
         self.nonres_far["ORC"] = 110.0
 
         # TAB 4 - TRANSPORT PLANNING PARAMETERS
-        
+        self.ui.ma_buffer_check.setChecked(int(self.module.get_parameter("ma_buffer")))
+        self.ui.ma_fpath_check.setChecked(int(self.module.get_parameter("ma_fpath")))
+        self.ui.ma_nstrip_check.setChecked(int(self.module.get_parameter("ma_nstrip")))
+        self.ui.ma_sidestreet_check.setChecked(int(self.module.get_parameter("ma_sidestreet")))
+        self.ui.ma_bicycle_check.setChecked(int(self.module.get_parameter("ma_bicycle")))
+        self.ui.ma_travellane_check.setChecked(int(self.module.get_parameter("ma_travellane")))
+        self.ui.ma_centralbuffer_check.setChecked(int(self.module.get_parameter("ma_centralbuffer")))
+
+        self.ui.ma_buffer_wmin.setText(str(self.module.get_parameter("ma_buffer_wmin")))
+        self.ui.ma_buffer_wmax.setText(str(self.module.get_parameter("ma_buffer_wmax")))
+        self.ui.ma_fpath_wmin.setText(str(self.module.get_parameter("ma_fpath_wmin")))
+        self.ui.ma_fpath_wmax.setText(str(self.module.get_parameter("ma_fpath_wmax")))
+        self.ui.ma_nstrip_wmin.setText(str(self.module.get_parameter("ma_nstrip_wmin")))
+        self.ui.ma_nstrip_wmin.setText(str(self.module.get_parameter("ma_nstrip_wmax")))
+        self.ui.ma_sidestreet_wmin.setText(str(self.module.get_parameter("ma_sidestreet_wmin")))
+        self.ui.ma_sidestreet_wmin.setText(str(self.module.get_parameter("ma_sidestreet_wmax")))
+        self.ui.ma_bicycle_wmin.setText(str(self.module.get_parameter("ma_bicycle_wmin")))
+        self.ui.ma_bicycle_wmin.setText(str(self.module.get_parameter("ma_bicycle_wmax")))
+        self.ui.ma_travellane_wmin.setText(str(self.module.get_parameter("ma_travellane_wmin")))
+        self.ui.ma_travellane_wmin.setText(str(self.module.get_parameter("ma_travellane_wmax")))
+        self.ui.ma_centralbuffer_wmin.setText(str(self.module.get_parameter("ma_centralbuffer_wmin")))
+        self.ui.ma_centralbuffer_wmin.setText(str(self.module.get_parameter("ma_centralbuffer_wmax")))
+
+        self.ui.ma_buffer_median.setChecked(int(self.module.get_parameter("ma_buffer_median")))
+        self.ui.ma_fpath_median.setChecked(int(self.module.get_parameter("ma_fpath_median")))
+        self.ui.ma_nstrip_median.setChecked(int(self.module.get_parameter("ma_nstrip_median")))
+        self.ui.ma_sidestreet_median.setChecked(int(self.module.get_parameter("ma_sidestreet_median")))
+        self.ui.ma_bicycle_median.setChecked(int(self.module.get_parameter("ma_bicycle_median")))
+        self.ui.ma_travellane_median.setChecked(int(self.module.get_parameter("ma_travellane_median")))
+        self.ui.ma_centralbuffer_median.setChecked(int(self.module.get_parameter("ma_centralbuffer_median")))
+
+        self.ui.ma_sidestreet_lanes.setValue(int(self.module.get_parameter("ma_sidestreet_lanes")))
+        self.ui.ma_bicycle_lanes.setValue(int(self.module.get_parameter("ma_bicycle_lanes")))
+        self.ui.ma_bicycle_shared.setChecked(int(self.module.get_parameter("ma_bicycle_shared")))
+        self.ui.ma_travellane_lanes.setValue(int(self.module.get_parameter("ma_travellane_lanes")))
+
+        self.ui.pt_centralbuffer.setChecked(int(self.module.get_parameter("pt_centralbuffer")))
+        self.ui.pt_impervious.setValue(int(self.module.get_parameter("pt_impervious")))
+        self.ui.ma_median_reserved.setChecked(int(self.module.get_parameter("ma_median_reserved")))
+        self.ui.ma_openspacebuffer.setChecked(int(self.module.get_parameter("ma_openspacebuffer")))
+
+        self.ui.hwy_different_check.setChecked(int(self.module.get_parameter("hwy_different_check")))
+        self.ui.hwy_verge_check.setChecked(int(self.module.get_parameter("hwy_verge_check")))
+        self.ui.hwy_service_check.setChecked(int(self.module.get_parameter("hwy_service_check")))
+        self.ui.hwy_travellane_check.setChecked(int(self.module.get_parameter("hwy_travellane_check")))
+        self.ui.hwy_centralbuffer_check.setChecked(int(self.module.get_parameter("hwy_centralbuffer_check")))
+
+        self.ui.hwy_verge_wmin.setText(str(self.module.get_parameter("hwy_verge_wmin")))
+        self.ui.hwy_verge_wmax.setText(str(self.module.get_parameter("hwy_verge_wmax")))
+        self.ui.hwy_service_wmin.setText(str(self.module.get_parameter("hwy_service_wmin")))
+        self.ui.hwy_service_wmax.setText(str(self.module.get_parameter("hwy_service_wmax")))
+        self.ui.hwy_travellane_wmin.setText(str(self.module.get_parameter("hwy_travellane_wmin")))
+        self.ui.hwy_travellane_wmax.setText(str(self.module.get_parameter("hwy_travellane_wmax")))
+        self.ui.hwy_centralbuffer_wmin.setText(str(self.module.get_parameter("hwy_centralbuffer_wmin")))
+        self.ui.hwy_centralbuffer_wmax.setText(str(self.module.get_parameter("hwy_centralbuffer_wmax")))
+
+        self.ui.hwy_verge_median.setChecked(int(self.module.get_parameter("hwy_verge_median")))
+        self.ui.hwy_service_median.setChecked(int(self.module.get_parameter("hwy_service_median")))
+        self.ui.hwy_travellane_median.setChecked(int(self.module.get_parameter("hwy_travellane_median")))
+        self.ui.hwy_centralbuffer_median.setChecked(int(self.module.get_parameter("hwy_centralbuffer_median")))
+
+        self.ui.hwy_service_lanes.setValue(int(self.module.get_parameter("hwy_service_lanes")))
+        self.ui.hwy_travellane_lanes.setValue(int(self.module.get_parameter("hwy_travellane_lanes")))
+        self.ui.hwy_median_reserved.setChecked(int(self.module.get_parameter("hwy_median_reserved")))
+        self.ui.hwy_openspacebuffer.setChecked(int(self.module.get_parameter("hwy_openspacebuffer")))
+
+        self.ui.consider_transport.setChecked(int(self.module.get_parameter("consider_transport")))
+        self.ui.trans_airport.setChecked(int(self.module.get_parameter("trans_airport")))
+        self.ui.trans_seaport.setChecked(int(self.module.get_parameter("trans_seaport")))
+        self.ui.trans_busdepot.setChecked(int(self.module.get_parameter("trans_busdepot")))
+        self.ui.trans_railterminal.setChecked(int(self.module.get_parameter("trans_railterminal")))
 
         self.enable_disable_majorarterials()
         self.enable_disable_highways()
@@ -416,7 +527,7 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
 
         # TAB 5 - OPEN SPACES PLANNING PARAMETERS
         self.ui.pg_ggratio_slide.setValue(int(self.module.get_parameter("pg_greengrey_ratio")))
-        self.ui.pg_usable_spin.setValue(int(self.module.get_parameter("pg_unused_space")))
+        self.ui.pg_usable_spin.setValue(int(self.module.get_parameter("pg_nonrec_space")))
         self.ui.pg_fac_restaurant.setChecked(int(self.module.get_parameter("pg_fac_restaurant")))
         self.ui.pg_fac_fitness.setChecked(int(self.module.get_parameter("pg_fac_fitness")))
         self.ui.pg_fac_bbq.setChecked(int(self.module.get_parameter("pg_fac_bbq")))
@@ -460,26 +571,99 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
         undevindex = ubglobals.UNDEVSTATES.index(undev_type)
         self.ui.und_statemanual_combo.setCurrentIndex(int(undevindex))
         self.ui.und_allowdev_check.setChecked(int(self.module.get_parameter("und_allowdev")))
-
+        self.enable_disable_others()
         # END OF FILING IN GUI VALUES
         return True
 
     def enable_disable_majorarterials(self):
-        """        """
+        """Enables and disables GUI elements for all items under the MAJOR ARTERIALS category set of parameters."""
+        self.ui.ma_fpath_wmin.setEnabled(self.ui.ma_fpath_check.isChecked())
+        self.ui.ma_fpath_wmax.setEnabled(self.ui.ma_fpath_check.isChecked())
+        self.ui.ma_fpath_median.setEnabled(self.ui.ma_fpath_check.isChecked())
 
-        pass
+        self.ui.ma_nstrip_wmin.setEnabled(self.ui.ma_nstrip_check.isChecked())
+        self.ui.ma_nstrip_wmax.setEnabled(self.ui.ma_nstrip_check.isChecked())
+        self.ui.ma_nstrip_median.setEnabled(self.ui.ma_nstrip_check.isChecked())
+
+        self.ui.ma_sidestreet_wmin.setEnabled(self.ui.ma_sidestreet_check.isChecked())
+        self.ui.ma_sidestreet_wmax.setEnabled(self.ui.ma_sidestreet_check.isChecked())
+        self.ui.ma_sidestreet_median.setEnabled(self.ui.ma_sidestreet_check.isChecked())
+        self.ui.ma_sidestreet_lanes.setEnabled(self.ui.ma_sidestreet_check.isChecked())
+
+        self.ui.ma_bicycle_wmin.setEnabled(self.ui.ma_bicycle_check.isChecked())
+        self.ui.ma_bicycle_wmax.setEnabled(self.ui.ma_bicycle_check.isChecked())
+        self.ui.ma_bicycle_median.setEnabled(self.ui.ma_bicycle_check.isChecked())
+        self.ui.ma_bicycle_lanes.setEnabled(self.ui.ma_bicycle_check.isChecked())
+        self.ui.ma_bicycle_shared.setEnabled(self.ui.ma_bicycle_check.isChecked())
+
+        self.ui.ma_travellane_wmin.setEnabled(self.ui.ma_travellane_check.isChecked())
+        self.ui.ma_travellane_wmax.setEnabled(self.ui.ma_travellane_check.isChecked())
+        self.ui.ma_travellane_median.setEnabled(self.ui.ma_travellane_check.isChecked())
+        self.ui.ma_travellane_lanes.setEnabled(self.ui.ma_travellane_check.isChecked())
+
+        self.ui.ma_centralbuffer_wmin.setEnabled(self.ui.ma_centralbuffer_check.isChecked())
+        self.ui.ma_centralbuffer_wmax.setEnabled(self.ui.ma_centralbuffer_check.isChecked())
+        self.ui.ma_centralbuffer_median.setEnabled(self.ui.ma_centralbuffer_check.isChecked())
+        self.ui.ma_median_reserved.setEnabled(self.ui.ma_centralbuffer_check.isChecked())
+        if self.ui.ma_centralbuffer_check.isChecked():
+            self.ui.pt_centralbuffer.setEnabled(1)
+            self.ui.pt_impervious.setEnabled(self.ui.pt_centralbuffer.isChecked())
+        else:
+            self.ui.pt_centralbuffer.setEnabled(0)
+            self.ui.pt_impervious.setEnabled(0)
         return True
 
     def enable_disable_highways(self):
-        """        """
-
-        pass
+        """Enables and disables GUI elements under the HIGHWAYS Options based on user actions."""
+        if self.ui.hwy_different_check.isChecked():
+            self.ui.hwy_verge_check.setEnabled(1)
+            self.ui.hwy_verge_wmin.setEnabled(self.ui.hwy_verge_check.isChecked())
+            self.ui.hwy_verge_wmax.setEnabled(self.ui.hwy_verge_check.isChecked())
+            self.ui.hwy_verge_median.setEnabled(self.ui.hwy_verge_check.isChecked())
+            self.ui.hwy_service_check.setEnabled(1)
+            self.ui.hwy_service_wmin.setEnabled(self.ui.hwy_service_check.isChecked())
+            self.ui.hwy_service_wmax.setEnabled(self.ui.hwy_service_check.isChecked())
+            self.ui.hwy_service_lanes.setEnabled(self.ui.hwy_service_check.isChecked())
+            self.ui.hwy_service_median.setEnabled(self.ui.hwy_service_check.isChecked())
+            self.ui.hwy_travellane_check.setEnabled(1)
+            self.ui.hwy_travellane_wmin.setEnabled(self.ui.hwy_travellane_check.isChecked())
+            self.ui.hwy_travellane_wmax.setEnabled(self.ui.hwy_travellane_check.isChecked())
+            self.ui.hwy_travellane_lanes.setEnabled(self.ui.hwy_travellane_check.isChecked())
+            self.ui.hwy_travellane_median.setEnabled(self.ui.hwy_travellane_check.isChecked())
+            self.ui.hwy_centralbuffer_check.setEnabled(1)
+            self.ui.hwy_centralbuffer_wmin.setEnabled(self.ui.hwy_centralbuffer_check.isChecked())
+            self.ui.hwy_centralbuffer_wmax.setEnabled(self.ui.hwy_centralbuffer_check.isChecked())
+            self.ui.hwy_centralbuffer_median.setEnabled(self.ui.hwy_centralbuffer_check.isChecked())
+            self.ui.hwy_median_reserved.setEnabled(self.ui.hwy_centralbuffer_check.isChecked())
+        else:
+            self.ui.hwy_verge_check.setEnabled(0)
+            self.ui.hwy_verge_wmin.setEnabled(0)
+            self.ui.hwy_verge_wmax.setEnabled(0)
+            self.ui.hwy_verge_median.setEnabled(0)
+            self.ui.hwy_service_check.setEnabled(0)
+            self.ui.hwy_service_wmin.setEnabled(0)
+            self.ui.hwy_service_wmax.setEnabled(0)
+            self.ui.hwy_service_lanes.setEnabled(0)
+            self.ui.hwy_service_median.setEnabled(0)
+            self.ui.hwy_travellane_check.setEnabled(0)
+            self.ui.hwy_travellane_wmin.setEnabled(0)
+            self.ui.hwy_travellane_wmax.setEnabled(0)
+            self.ui.hwy_travellane_lanes.setEnabled(0)
+            self.ui.hwy_travellane_median.setEnabled(0)
+            self.ui.hwy_centralbuffer_check.setEnabled(0)
+            self.ui.hwy_centralbuffer_wmin.setEnabled(0)
+            self.ui.hwy_centralbuffer_wmax.setEnabled(0)
+            self.ui.hwy_centralbuffer_median.setEnabled(0)
+            self.ui.hwy_median_reserved.setEnabled(0)
         return True
 
     def enable_disable_transport(self):
-        """        """
-
-        pass
+        """Enables and disables the check boxes under TRANSPORTATION FACILITIES SUB-CATEGORY."""
+        self.ui.trans_airport.setEnabled(self.ui.consider_transport.isChecked())
+        self.ui.trans_seaport.setEnabled(self.ui.consider_transport.isChecked())
+        self.ui.trans_busdepot.setEnabled(self.ui.consider_transport.isChecked())
+        self.ui.trans_railterminal.setEnabled(self.ui.consider_transport.isChecked())
+        self.ui.trans_customise.setEnabled(self.ui.consider_transport.isChecked())
         return True
 
     def enable_disable_others(self):
@@ -570,5 +754,15 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
 
     def save_values(self):
         """Saves current values to the corresponding module's instance in the active scenario."""
-        print "Save Values"
+        # Tab 1 - General
+
+        # Tab 2 - Residential
+
+        # Tab 3 - Non-Residential
+
+        # Tab 4 - Transport and Roads
+
+        # Tab 5 - Open Spaces
+
+        # Tab 6 - Other Uses
         pass

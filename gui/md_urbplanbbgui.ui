@@ -221,7 +221,7 @@ p, li { white-space: pre-wrap; }
       <item>
        <widget class="QTabWidget" name="parameters">
         <property name="currentIndex">
-         <number>3</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="inputs_tab">
          <attribute name="title">
@@ -239,7 +239,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>546</width>
-               <height>485</height>
+               <height>828</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -249,9 +249,179 @@ p, li { white-space: pre-wrap; }
                  <number>9</number>
                 </property>
                 <item>
+                 <widget class="QLabel" name="plan_template_title">
+                  <property name="text">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;PLANNING TEMPLATES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="Line" name="line">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="plan_descr">
+                  <property name="text">
+                   <string>Begin here by choosing your default templates to work with, this includes building typologies and pre-filling the module's parameters</string>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QWidget" name="datasets_2" native="true">
+                  <layout class="QGridLayout" name="gridLayout_19">
+                   <item row="2" column="1" colspan="2">
+                    <widget class="QComboBox" name="plan_params_citycombo">
+                     <item>
+                      <property name="text">
+                       <string>Melbourne, Australia</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Custom...</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="5" column="3">
+                    <widget class="QPushButton" name="plan_params_filebrowse">
+                     <property name="text">
+                      <string>Browse...</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="1" colspan="2">
+                    <widget class="QLineEdit" name="plan_params_filebox">
+                     <property name="text">
+                      <string>(no file selected)</string>
+                     </property>
+                     <property name="readOnly">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="plan_params_lbl">
+                     <property name="maximumSize">
+                      <size>
+                       <width>157</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>Default Parameter Set:</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1" colspan="2">
+                    <widget class="QComboBox" name="plan_typology_combo">
+                     <item>
+                      <property name="text">
+                       <string>Dense European Cities</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Megacity</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Sprawled Suburbia</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="0" column="3">
+                    <widget class="QPushButton" name="plan_typology_details">
+                     <property name="text">
+                      <string>Details...</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="plan_typology_lbl">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>157</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>157</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>Dominant Planning Typology:</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="6" column="1" colspan="3">
+                    <widget class="QPushButton" name="plan_params_export">
+                     <property name="text">
+                      <string>Export Current Parameter Set...</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="../graphics/ubeats.qrc">
+                       <normaloff>:/icons/export-icon.png</normaloff>:/icons/export-icon.png</iconset>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="6" column="0">
+                    <widget class="QLabel" name="plan_params_lbl_2">
+                     <property name="maximumSize">
+                      <size>
+                       <width>157</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>Save User-defined Template:</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1" colspan="3">
+                    <widget class="QRadioButton" name="plan_params_predef">
+                     <property name="text">
+                      <string>Select from a pre-defined city</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="1" colspan="3">
+                    <widget class="QRadioButton" name="plan_params_preload">
+                     <property name="text">
+                      <string>Load a parameter set</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QLabel" name="descr1">
                   <property name="text">
                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;SET ADDITIONAL INPUT MAPS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="Line" name="line_2">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
                  </widget>
                 </item>
@@ -368,6 +538,20 @@ p, li { white-space: pre-wrap; }
                  <widget class="QLabel" name="descr1_2">
                   <property name="text">
                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;GENERAL PLANNING METRICS, RULES AND CONSTRAINTS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="Line" name="line_3">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="emp_lbl_5">
+                  <property name="text">
+                   <string>Define some basic characteristics of the city being planned.</string>
                   </property>
                  </widget>
                 </item>
@@ -543,6 +727,20 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;BLOCK REDEVELOPMENT DYNAMICS DECISION VARIABLES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="Line" name="line_4">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="emp_lbl_6">
+                  <property name="text">
+                   <string>Define rules for redeveloping Blocks (only applicable in Dynamic Simulation Mode)</string>
                   </property>
                  </widget>
                 </item>
@@ -735,7 +933,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>546</width>
-               <height>1109</height>
+               <height>1145</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -770,6 +968,13 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;SINGLE/SEMI-DETACHED RESIDENTIAL DWELLINGS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="Line" name="line_5">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
                  </widget>
                 </item>
@@ -1272,6 +1477,13 @@ p, li { white-space: pre-wrap; }
                  </widget>
                 </item>
                 <item>
+                 <widget class="Line" name="line_6">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QLabel" name="label_24">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -1576,6 +1788,13 @@ p, li { white-space: pre-wrap; }
                  </widget>
                 </item>
                 <item>
+                 <widget class="Line" name="line_7">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QLabel" name="label_17">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -1796,6 +2015,13 @@ p, li { white-space: pre-wrap; }
                  </widget>
                 </item>
                 <item>
+                 <widget class="Line" name="line_8">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QLabel" name="roof_connected_lbl">
                   <property name="text">
                    <string>Configure roof and surface drainage connection (affects effective imperviousness)?</string>
@@ -2002,7 +2228,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>546</width>
-               <height>1417</height>
+               <height>1435</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -2037,6 +2263,13 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;INDUSTRIAL AND COMMERCIAL ZONES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="Line" name="line_9">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
                  </widget>
                 </item>
@@ -3389,6 +3622,13 @@ p, li { white-space: pre-wrap; }
                  </widget>
                 </item>
                 <item>
+                 <widget class="Line" name="line_10">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QLabel" name="edu_facilities_lbl_2">
                   <property name="text">
                    <string>If a locality map has been loaded, basic characteristics for civic facilities can be transferred into the modelled city.</string>
@@ -3678,9 +3918,9 @@ p, li { white-space: pre-wrap; }
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>-495</y>
+               <y>0</y>
                <width>546</width>
-               <height>888</height>
+               <height>983</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -3719,6 +3959,13 @@ p, li { white-space: pre-wrap; }
                  </widget>
                 </item>
                 <item>
+                 <widget class="Line" name="line_11">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QLabel" name="w_arterial_lbl_2">
                   <property name="text">
                    <string>Define the average cross-section of major arterials</string>
@@ -3726,7 +3973,7 @@ p, li { white-space: pre-wrap; }
                  </widget>
                 </item>
                 <item>
-                 <widget class="QWidget" name="arterial_info_wdg_2" native="true">
+                 <widget class="QWidget" name="ma_buffer_w_lbl2" native="true">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -3746,14 +3993,14 @@ p, li { white-space: pre-wrap; }
                    </size>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_29">
-                   <item row="3" column="0">
+                   <item row="5" column="0">
                     <widget class="QLabel" name="ma_street_zone">
                      <property name="text">
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Street Zone&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="4" column="3">
+                   <item row="6" column="3">
                     <widget class="QLineEdit" name="ma_sidestreet_wmin">
                      <property name="maximumSize">
                       <size>
@@ -3766,21 +4013,21 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="6" column="2">
+                   <item row="8" column="2">
                     <widget class="QLabel" name="ma_bicycle_w_lbl1">
                      <property name="text">
                       <string>Width [m]</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="6" column="6">
+                   <item row="8" column="6">
                     <widget class="QCheckBox" name="ma_bicycle_median">
                      <property name="text">
                       <string>Use median</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="2" column="5">
+                   <item row="4" column="5">
                     <widget class="QLineEdit" name="ma_nstrip_wmax">
                      <property name="maximumSize">
                       <size>
@@ -3793,14 +4040,14 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="2" column="6">
+                   <item row="4" column="6">
                     <widget class="QCheckBox" name="ma_nstrip_median">
                      <property name="text">
                       <string>Use median</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="6" column="7">
+                   <item row="8" column="7">
                     <spacer name="horizontalSpacer_44">
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
@@ -3813,14 +4060,14 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </spacer>
                    </item>
-                   <item row="10" column="0" colspan="3">
+                   <item row="12" column="0" colspan="3">
                     <widget class="QLabel" name="ma_travellane_w_lbl3">
                      <property name="text">
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Avg. number of lanes&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="0" colspan="2">
+                   <item row="3" column="0" colspan="2">
                     <widget class="QCheckBox" name="ma_fpath_check">
                      <property name="whatsThis">
                       <string>If the median area cannot be developed at all, check this box to restrict any activity on this part of the infrastructure.</string>
@@ -3830,24 +4077,24 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="6" column="4">
+                   <item row="8" column="4">
                     <widget class="QLabel" name="ma_bicycle_w_lbl2">
                      <property name="text">
                       <string>to</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="11" column="6">
+                   <item row="13" column="6">
                     <widget class="QCheckBox" name="ma_centralbuffer_median">
                      <property name="text">
                       <string>Use median</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="7" column="3">
+                   <item row="9" column="3">
                     <widget class="QSpinBox" name="ma_bicycle_lanes"/>
                    </item>
-                   <item row="16" column="0" colspan="6">
+                   <item row="18" column="0" colspan="6">
                     <widget class="QCheckBox" name="ma_openspacebuffer">
                      <property name="whatsThis">
                       <string>Check this box to influence the likelihood of parks and highways in the neighbourhood being arranged alongside each other (results in higher likelihood of linear parks that run along highways, typical of Melbourne).</string>
@@ -3857,7 +4104,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="11" column="7">
+                   <item row="13" column="7">
                     <spacer name="horizontalSpacer_46">
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
@@ -3870,8 +4117,8 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </spacer>
                    </item>
-                   <item row="15" column="0" colspan="7">
-                    <widget class="QCheckBox" name="ma_median_reserve">
+                   <item row="17" column="0" colspan="7">
+                    <widget class="QCheckBox" name="ma_median_reserved">
                      <property name="whatsThis">
                       <string>If the median area cannot be developed at all, check this box to restrict any activity on this part of the infrastructure.</string>
                      </property>
@@ -3880,24 +4127,24 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="5" column="3">
+                   <item row="7" column="3">
                     <widget class="QSpinBox" name="ma_sidestreet_lanes"/>
                    </item>
-                   <item row="5" column="0" colspan="3">
+                   <item row="7" column="0" colspan="3">
                     <widget class="QLabel" name="ma_sidestreet_w_lbl3">
                      <property name="text">
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Avg. number of lanes&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="7" column="0" colspan="3">
+                   <item row="9" column="0" colspan="3">
                     <widget class="QLabel" name="ma_bicycle_w_lbl3">
                      <property name="text">
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Avg. number of lanes&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="3" column="7">
+                   <item row="5" column="7">
                     <spacer name="verticalSpacer_19">
                      <property name="orientation">
                       <enum>Qt::Vertical</enum>
@@ -3910,7 +4157,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </spacer>
                    </item>
-                   <item row="16" column="7">
+                   <item row="18" column="7">
                     <spacer name="verticalSpacer_16">
                      <property name="orientation">
                       <enum>Qt::Vertical</enum>
@@ -3923,7 +4170,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </spacer>
                    </item>
-                   <item row="15" column="7">
+                   <item row="17" column="7">
                     <spacer name="verticalSpacer_15">
                      <property name="orientation">
                       <enum>Qt::Vertical</enum>
@@ -3936,14 +4183,14 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </spacer>
                    </item>
-                   <item row="7" column="5" colspan="2">
+                   <item row="9" column="5" colspan="2">
                     <widget class="QCheckBox" name="ma_bicycle_shared">
                      <property name="text">
                       <string>Shared with road</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="7">
+                   <item row="2" column="7">
                     <spacer name="verticalSpacer_18">
                      <property name="orientation">
                       <enum>Qt::Vertical</enum>
@@ -3956,14 +4203,14 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </spacer>
                    </item>
-                   <item row="13" column="0">
+                   <item row="15" column="0">
                     <widget class="QLabel" name="ma_options">
                      <property name="text">
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Further Options&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="13" column="7">
+                   <item row="15" column="7">
                     <spacer name="verticalSpacer_17">
                      <property name="orientation">
                       <enum>Qt::Vertical</enum>
@@ -3976,10 +4223,10 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </spacer>
                    </item>
-                   <item row="10" column="3">
+                   <item row="12" column="3">
                     <widget class="QSpinBox" name="ma_travellane_lanes"/>
                    </item>
-                   <item row="2" column="3">
+                   <item row="4" column="3">
                     <widget class="QLineEdit" name="ma_nstrip_wmin">
                      <property name="maximumSize">
                       <size>
@@ -3992,14 +4239,14 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="0">
+                   <item row="2" column="0">
                     <widget class="QLabel" name="ma_pedestrian_zone">
                      <property name="text">
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Pedestrian Zone&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="8" column="0" colspan="2">
+                   <item row="10" column="0" colspan="2">
                     <widget class="QCheckBox" name="ma_travellane_check">
                      <property name="whatsThis">
                       <string>If the median area cannot be developed at all, check this box to restrict any activity on this part of the infrastructure.</string>
@@ -4009,17 +4256,17 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="2" column="0" colspan="2">
+                   <item row="4" column="0" colspan="2">
                     <widget class="QCheckBox" name="ma_nstrip_check">
                      <property name="whatsThis">
                       <string>If the median area cannot be developed at all, check this box to restrict any activity on this part of the infrastructure.</string>
                      </property>
                      <property name="text">
-                      <string>Nature Strip / Verge / Buffer</string>
+                      <string>Nature Strip / Verge</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="4" column="0" colspan="2">
+                   <item row="6" column="0" colspan="2">
                     <widget class="QCheckBox" name="ma_sidestreet_check">
                      <property name="whatsThis">
                       <string>If the median area cannot be developed at all, check this box to restrict any activity on this part of the infrastructure.</string>
@@ -4029,7 +4276,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="11" column="3">
+                   <item row="13" column="3">
                     <widget class="QLineEdit" name="ma_centralbuffer_wmin">
                      <property name="maximumSize">
                       <size>
@@ -4042,7 +4289,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="6" column="0" colspan="2">
+                   <item row="8" column="0" colspan="2">
                     <widget class="QCheckBox" name="ma_bicycle_check">
                      <property name="whatsThis">
                       <string>If the median area cannot be developed at all, check this box to restrict any activity on this part of the infrastructure.</string>
@@ -4052,7 +4299,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="8" column="5">
+                   <item row="10" column="5">
                     <widget class="QLineEdit" name="ma_travellane_wmax">
                      <property name="maximumSize">
                       <size>
@@ -4065,14 +4312,14 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="4" column="6">
+                   <item row="6" column="6">
                     <widget class="QCheckBox" name="ma_sidestreet_median">
                      <property name="text">
                       <string>Use median</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="11" column="0" colspan="2">
+                   <item row="13" column="0" colspan="2">
                     <widget class="QCheckBox" name="ma_centralbuffer_check">
                      <property name="whatsThis">
                       <string>If the median area cannot be developed at all, check this box to restrict any activity on this part of the infrastructure.</string>
@@ -4082,28 +4329,28 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="8" column="2">
+                   <item row="10" column="2">
                     <widget class="QLabel" name="ma_travellane_w_lbl1">
                      <property name="text">
                       <string>Width [m]</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="8" column="4">
+                   <item row="10" column="4">
                     <widget class="QLabel" name="ma_travellane_w_lbl2">
                      <property name="text">
                       <string>to</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="2" column="4">
+                   <item row="4" column="4">
                     <widget class="QLabel" name="ma_nstrip_w_lbl2">
                      <property name="text">
                       <string>to</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="2" column="7">
+                   <item row="4" column="7">
                     <spacer name="horizontalSpacer_42">
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
@@ -4116,7 +4363,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </spacer>
                    </item>
-                   <item row="4" column="5">
+                   <item row="6" column="5">
                     <widget class="QLineEdit" name="ma_sidestreet_wmax">
                      <property name="maximumSize">
                       <size>
@@ -4129,14 +4376,14 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="8" column="6">
+                   <item row="10" column="6">
                     <widget class="QCheckBox" name="ma_travellane_median">
                      <property name="text">
                       <string>Use median</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="6" column="3">
+                   <item row="8" column="3">
                     <widget class="QLineEdit" name="ma_bicycle_wmin">
                      <property name="maximumSize">
                       <size>
@@ -4149,21 +4396,21 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="2">
+                   <item row="3" column="2">
                     <widget class="QLabel" name="ma_fpath_w_lbl">
                      <property name="text">
                       <string>Width [m]</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="4">
+                   <item row="3" column="4">
                     <widget class="QLabel" name="ma_fpath_w_lbl2">
                      <property name="text">
                       <string>to</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="3">
+                   <item row="3" column="3">
                     <widget class="QLineEdit" name="ma_fpath_wmin">
                      <property name="maximumSize">
                       <size>
@@ -4176,14 +4423,14 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="4" column="4">
+                   <item row="6" column="4">
                     <widget class="QLabel" name="ma_sidestreet_w_lbl2">
                      <property name="text">
                       <string>to</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="7">
+                   <item row="3" column="7">
                     <spacer name="horizontalSpacer_41">
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
@@ -4196,14 +4443,14 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </spacer>
                    </item>
-                   <item row="1" column="6">
+                   <item row="3" column="6">
                     <widget class="QCheckBox" name="ma_fpath_median">
                      <property name="text">
                       <string>Use median</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="5">
+                   <item row="3" column="5">
                     <widget class="QLineEdit" name="ma_fpath_wmax">
                      <property name="maximumSize">
                       <size>
@@ -4216,7 +4463,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="8" column="7">
+                   <item row="10" column="7">
                     <spacer name="horizontalSpacer_45">
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
@@ -4229,7 +4476,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </spacer>
                    </item>
-                   <item row="4" column="7">
+                   <item row="6" column="7">
                     <spacer name="horizontalSpacer_43">
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
@@ -4242,14 +4489,14 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </spacer>
                    </item>
-                   <item row="4" column="2">
+                   <item row="6" column="2">
                     <widget class="QLabel" name="ma_sidestreet_w_lbl">
                      <property name="text">
                       <string>Width [m]</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="11" column="5">
+                   <item row="13" column="5">
                     <widget class="QLineEdit" name="ma_centralbuffer_wmax">
                      <property name="maximumSize">
                       <size>
@@ -4262,28 +4509,28 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="11" column="2">
+                   <item row="13" column="2">
                     <widget class="QLabel" name="ma_centralbuffer_w_lbl1">
                      <property name="text">
                       <string>Width [m]</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="2" column="2">
+                   <item row="4" column="2">
                     <widget class="QLabel" name="ma_nstrip_w_lbl">
                      <property name="text">
                       <string>Width [m]</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="11" column="4">
+                   <item row="13" column="4">
                     <widget class="QLabel" name="ma_centralbuffer_w_lbl2">
                      <property name="text">
                       <string>to</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="8" column="3">
+                   <item row="10" column="3">
                     <widget class="QLineEdit" name="ma_travellane_wmin">
                      <property name="maximumSize">
                       <size>
@@ -4296,7 +4543,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="6" column="5">
+                   <item row="8" column="5">
                     <widget class="QLineEdit" name="ma_bicycle_wmax">
                      <property name="maximumSize">
                       <size>
@@ -4309,14 +4556,91 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="14" column="0" colspan="5">
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="ma_buffer_zone">
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Buffer Zone&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="3">
+                    <widget class="QLineEdit" name="ma_buffer_wmin">
+                     <property name="maximumSize">
+                      <size>
+                       <width>50</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="6">
+                    <widget class="QCheckBox" name="ma_buffer_median">
+                     <property name="text">
+                      <string>Use median</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QCheckBox" name="ma_buffer_check">
+                     <property name="whatsThis">
+                      <string>If the median area cannot be developed at all, check this box to restrict any activity on this part of the infrastructure.</string>
+                     </property>
+                     <property name="text">
+                      <string>Buffer Zone</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="4">
+                    <widget class="QLabel" name="ma_fpath_w_lbl2_2">
+                     <property name="text">
+                      <string>to</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="7">
+                    <spacer name="horizontalSpacer_50">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>200</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="1" column="2">
+                    <widget class="QLabel" name="ma_buffer_w_lbl1">
+                     <property name="text">
+                      <string>Width [m]</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="5">
+                    <widget class="QLineEdit" name="ma_buffer_wmax">
+                     <property name="maximumSize">
+                      <size>
+                       <width>50</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="16" column="0" colspan="5">
                     <widget class="QCheckBox" name="pt_centralbuffer">
                      <property name="text">
                       <string>Median area contains at-grade public transport</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="14" column="5" colspan="2">
+                   <item row="16" column="5" colspan="2">
                     <widget class="QSpinBox" name="pt_impervious">
                      <property name="suffix">
                       <string>% impervious</string>
@@ -4362,6 +4686,13 @@ p, li { white-space: pre-wrap; }
                  </widget>
                 </item>
                 <item>
+                 <widget class="Line" name="line_12">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QCheckBox" name="hwy_different_check">
                   <property name="whatsThis">
                    <string>If the median area cannot be developed at all, check this box to restrict any activity on this part of the infrastructure.</string>
@@ -4399,6 +4730,20 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
+                   <item row="2" column="2">
+                    <widget class="QLabel" name="hwy_service_w_lbl1">
+                     <property name="text">
+                      <string>Width [m]</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="0" colspan="3">
+                    <widget class="QLabel" name="hwy_service_w_lbl3">
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Avg. number of lanes&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                    </widget>
+                   </item>
                    <item row="2" column="7">
                     <spacer name="horizontalSpacer_49">
                      <property name="orientation">
@@ -4412,20 +4757,19 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </spacer>
                    </item>
-                   <item row="4" column="0" colspan="3">
-                    <widget class="QLabel" name="hwy_service_w_lbl3">
-                     <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Avg. number of lanes&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                    </widget>
-                   </item>
                    <item row="4" column="3">
                     <widget class="QSpinBox" name="hwy_service_lanes"/>
                    </item>
-                   <item row="2" column="2">
-                    <widget class="QLabel" name="hwy_service_w_lbl1">
+                   <item row="2" column="3">
+                    <widget class="QLineEdit" name="hwy_service_wmin">
+                     <property name="maximumSize">
+                      <size>
+                       <width>50</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
                      <property name="text">
-                      <string>Width [m]</string>
+                      <string/>
                      </property>
                     </widget>
                    </item>
@@ -4449,19 +4793,6 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="2" column="3">
-                    <widget class="QLineEdit" name="hwy_service_wmin">
-                     <property name="maximumSize">
-                      <size>
-                       <width>50</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string/>
-                     </property>
-                    </widget>
-                   </item>
                    <item row="2" column="6">
                     <widget class="QCheckBox" name="hwy_service_median">
                      <property name="text">
@@ -4469,13 +4800,10 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="2" column="0">
-                    <widget class="QCheckBox" name="hwy_service_check">
-                     <property name="whatsThis">
-                      <string>If the median area cannot be developed at all, check this box to restrict any activity on this part of the infrastructure.</string>
-                     </property>
+                   <item row="1" column="2">
+                    <widget class="QLabel" name="hwy_verge_w_lbl1">
                      <property name="text">
-                      <string>Service Lane</string>
+                      <string>Width [m]</string>
                      </property>
                     </widget>
                    </item>
@@ -4499,10 +4827,13 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="2">
-                    <widget class="QLabel" name="hwy_verge_w_lbl1">
+                   <item row="2" column="0">
+                    <widget class="QCheckBox" name="hwy_service_check">
+                     <property name="whatsThis">
+                      <string>If the median area cannot be developed at all, check this box to restrict any activity on this part of the infrastructure.</string>
+                     </property>
                      <property name="text">
-                      <string>Width [m]</string>
+                      <string>Service Lane</string>
                      </property>
                     </widget>
                    </item>
@@ -4510,19 +4841,6 @@ p, li { white-space: pre-wrap; }
                     <widget class="QLabel" name="hwy_centralbuffer_w_lbl2">
                      <property name="text">
                       <string>to</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="5" column="3">
-                    <widget class="QLineEdit" name="hwy_travellane_wmin">
-                     <property name="maximumSize">
-                      <size>
-                       <width>50</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string/>
                      </property>
                     </widget>
                    </item>
@@ -4546,27 +4864,16 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="8" column="6">
-                    <widget class="QCheckBox" name="hwy_centralbuffer_median">
-                     <property name="text">
-                      <string>Use median</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="7" column="0" colspan="3">
-                    <widget class="QLabel" name="hwy_travellane_w_lbl3">
-                     <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Avg. number of lanes&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="10" column="0" colspan="7">
-                    <widget class="QCheckBox" name="hwy_median_reserved">
-                     <property name="whatsThis">
-                      <string>If the median area cannot be developed at all, check this box to restrict any activity on this part of the infrastructure.</string>
+                   <item row="5" column="3">
+                    <widget class="QLineEdit" name="hwy_travellane_wmin">
+                     <property name="maximumSize">
+                      <size>
+                       <width>50</width>
+                       <height>16777215</height>
+                      </size>
                      </property>
                      <property name="text">
-                      <string>Median Area reserved for future road widening</string>
+                      <string/>
                      </property>
                     </widget>
                    </item>
@@ -4583,6 +4890,13 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </spacer>
                    </item>
+                   <item row="7" column="0" colspan="3">
+                    <widget class="QLabel" name="hwy_travellane_w_lbl3">
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Avg. number of lanes&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                    </widget>
+                   </item>
                    <item row="1" column="3">
                     <widget class="QLineEdit" name="hwy_verge_wmin">
                      <property name="maximumSize">
@@ -4596,19 +4910,23 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
+                   <item row="8" column="6">
+                    <widget class="QCheckBox" name="hwy_centralbuffer_median">
+                     <property name="text">
+                      <string>Use median</string>
+                     </property>
+                    </widget>
+                   </item>
                    <item row="7" column="3">
                     <widget class="QSpinBox" name="hwy_travellane_lanes"/>
                    </item>
-                   <item row="8" column="3">
-                    <widget class="QLineEdit" name="hwy_centralbuffer_wmin">
-                     <property name="maximumSize">
-                      <size>
-                       <width>50</width>
-                       <height>16777215</height>
-                      </size>
+                   <item row="5" column="0" colspan="2">
+                    <widget class="QCheckBox" name="hwy_travellane_check">
+                     <property name="whatsThis">
+                      <string>If the median area cannot be developed at all, check this box to restrict any activity on this part of the infrastructure.</string>
                      </property>
                      <property name="text">
-                      <string/>
+                      <string>Travel Lane</string>
                      </property>
                     </widget>
                    </item>
@@ -4622,25 +4940,8 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="5" column="0" colspan="2">
-                    <widget class="QCheckBox" name="hwy_travellane_check">
-                     <property name="whatsThis">
-                      <string>If the median area cannot be developed at all, check this box to restrict any activity on this part of the infrastructure.</string>
-                     </property>
-                     <property name="text">
-                      <string>Travel Lane</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="5" column="2">
-                    <widget class="QLabel" name="hwy_travellane_w_lbl1">
-                     <property name="text">
-                      <string>Width [m]</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="5" column="5">
-                    <widget class="QLineEdit" name="hwy_travellane_wmax">
+                   <item row="8" column="3">
+                    <widget class="QLineEdit" name="hwy_centralbuffer_wmin">
                      <property name="maximumSize">
                       <size>
                        <width>50</width>
@@ -4662,52 +4963,32 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
+                   <item row="5" column="5">
+                    <widget class="QLineEdit" name="hwy_travellane_wmax">
+                     <property name="maximumSize">
+                      <size>
+                       <width>50</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="2">
+                    <widget class="QLabel" name="hwy_travellane_w_lbl1">
+                     <property name="text">
+                      <string>Width [m]</string>
+                     </property>
+                    </widget>
+                   </item>
                    <item row="5" column="4">
                     <widget class="QLabel" name="hwy_travellane_w_lbl2">
                      <property name="text">
                       <string>to</string>
                      </property>
                     </widget>
-                   </item>
-                   <item row="5" column="6">
-                    <widget class="QCheckBox" name="hwy_travellane_median">
-                     <property name="text">
-                      <string>Use median</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="7">
-                    <spacer name="horizontalSpacer_47">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>200</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item row="1" column="4">
-                    <widget class="QLabel" name="hwy_verge_w_lbl2">
-                     <property name="text">
-                      <string>to</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="5" column="7">
-                    <spacer name="horizontalSpacer_48">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>200</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
                    </item>
                    <item row="0" column="0">
                     <widget class="QLabel" name="hwy_carriageway_title">
@@ -4729,6 +5010,46 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </spacer>
                    </item>
+                   <item row="5" column="6">
+                    <widget class="QCheckBox" name="hwy_travellane_median">
+                     <property name="text">
+                      <string>Use median</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="7">
+                    <spacer name="horizontalSpacer_48">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>200</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="1" column="7">
+                    <spacer name="horizontalSpacer_47">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>200</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="1" column="4">
+                    <widget class="QLabel" name="hwy_verge_w_lbl2">
+                     <property name="text">
+                      <string>to</string>
+                     </property>
+                    </widget>
+                   </item>
                    <item row="9" column="7">
                     <spacer name="verticalSpacer_21">
                      <property name="orientation">
@@ -4742,7 +5063,7 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </spacer>
                    </item>
-                   <item row="10" column="7">
+                   <item row="11" column="7">
                     <spacer name="verticalSpacer_22">
                      <property name="orientation">
                       <enum>Qt::Vertical</enum>
@@ -4754,6 +5075,26 @@ p, li { white-space: pre-wrap; }
                       </size>
                      </property>
                     </spacer>
+                   </item>
+                   <item row="10" column="0" colspan="7">
+                    <widget class="QCheckBox" name="hwy_median_reserved">
+                     <property name="whatsThis">
+                      <string>If the median area cannot be developed at all, check this box to restrict any activity on this part of the infrastructure.</string>
+                     </property>
+                     <property name="text">
+                      <string>Median Area reserved for future road widening</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="11" column="0" colspan="7">
+                    <widget class="QCheckBox" name="hwy_openspacebuffer">
+                     <property name="whatsThis">
+                      <string>If the median area cannot be developed at all, check this box to restrict any activity on this part of the infrastructure.</string>
+                     </property>
+                     <property name="text">
+                      <string>Incorporate Open Spaces as road buffers if nearby</string>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </widget>
@@ -4784,6 +5125,13 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;TRANSPORTATION FACILITIES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="Line" name="line_13">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
                  </widget>
                 </item>
@@ -4915,7 +5263,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>546</width>
-               <height>575</height>
+               <height>621</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -4954,9 +5302,16 @@ p, li { white-space: pre-wrap; }
                  </widget>
                 </item>
                 <item>
+                 <widget class="Line" name="line_14">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QLabel" name="pg_ggratio_lbl_2">
                   <property name="text">
-                   <string>Details about the urban from of parks and </string>
+                   <string>Details about the urban form of parks and gardens</string>
                   </property>
                  </widget>
                 </item>
@@ -5141,6 +5496,20 @@ p, li { white-space: pre-wrap; }
                  </widget>
                 </item>
                 <item>
+                 <widget class="Line" name="line_15">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="pg_ggratio_lbl_3">
+                  <property name="text">
+                   <string>Customise reserve and floodway areas.</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QWidget" name="widget_21" native="true">
                   <property name="minimumSize">
                    <size>
@@ -5215,6 +5584,13 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;LAND DESIGNATED FOR SERVICES AND UTILITIES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="Line" name="line_16">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
                  </widget>
                 </item>
@@ -5465,7 +5841,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>546</width>
-               <height>477</height>
+               <height>495</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -5500,6 +5876,13 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;UNCLASSIFIED LAND&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="Line" name="line_17">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
                  </widget>
                 </item>
@@ -5721,6 +6104,13 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;UNDEVELOPED LAND&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="Line" name="line_18">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
                  </widget>
                 </item>

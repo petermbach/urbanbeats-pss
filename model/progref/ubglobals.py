@@ -109,7 +109,9 @@ LANDUSENAMES = ['Residential', 'Commercial', 'Offices Res Mix', 'Light Industry'
                 'Civic', 'Service and Utility', 'Road', 'Transport', 'Parks and Gardens', 'Reserves and Floodway',
                 'Undeveloped', 'Unclassified']
 
-UNDEVSTATES = ['GR', 'BF', 'AG']
+PLANTYPES = ["Suburbia", "European", "Megacity"]
+PLANPARAMSET = ["Custom", "Melbourne"]
+UNDEVSTATES = ['GF', 'BF', 'AG']
 
 # --- ASSET IDENTIFIERS ---
 ASSET_IDENTIFIERS = {"Block": "The most basic building block of the city in UrbanBEATS, the square cell containing all"
