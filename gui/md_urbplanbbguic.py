@@ -420,6 +420,7 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
         self.ui.w_nreslane_med_check.setChecked(bool(int(self.module.get_parameter("nres_lanemed"))))
 
         # --> Municipal Facilities
+        self.ui.civ_consider_check.setChecked(bool(int(self.module.get_parameter("civic_explicit"))))
         self.ui.civ_school.setChecked(bool(int(self.module.get_parameter("civ_school"))))
         self.ui.civ_university.setChecked(bool(int(self.module.get_parameter("civ_uni"))))
         self.ui.civ_library.setChecked(bool(int(self.module.get_parameter("civ_lib"))))
@@ -462,15 +463,15 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
         self.ui.ma_fpath_wmin.setText(str(self.module.get_parameter("ma_fpath_wmin")))
         self.ui.ma_fpath_wmax.setText(str(self.module.get_parameter("ma_fpath_wmax")))
         self.ui.ma_nstrip_wmin.setText(str(self.module.get_parameter("ma_nstrip_wmin")))
-        self.ui.ma_nstrip_wmin.setText(str(self.module.get_parameter("ma_nstrip_wmax")))
+        self.ui.ma_nstrip_wmax.setText(str(self.module.get_parameter("ma_nstrip_wmax")))
         self.ui.ma_sidestreet_wmin.setText(str(self.module.get_parameter("ma_sidestreet_wmin")))
-        self.ui.ma_sidestreet_wmin.setText(str(self.module.get_parameter("ma_sidestreet_wmax")))
+        self.ui.ma_sidestreet_wmax.setText(str(self.module.get_parameter("ma_sidestreet_wmax")))
         self.ui.ma_bicycle_wmin.setText(str(self.module.get_parameter("ma_bicycle_wmin")))
-        self.ui.ma_bicycle_wmin.setText(str(self.module.get_parameter("ma_bicycle_wmax")))
+        self.ui.ma_bicycle_wmax.setText(str(self.module.get_parameter("ma_bicycle_wmax")))
         self.ui.ma_travellane_wmin.setText(str(self.module.get_parameter("ma_travellane_wmin")))
-        self.ui.ma_travellane_wmin.setText(str(self.module.get_parameter("ma_travellane_wmax")))
+        self.ui.ma_travellane_wmax.setText(str(self.module.get_parameter("ma_travellane_wmax")))
         self.ui.ma_centralbuffer_wmin.setText(str(self.module.get_parameter("ma_centralbuffer_wmin")))
-        self.ui.ma_centralbuffer_wmin.setText(str(self.module.get_parameter("ma_centralbuffer_wmax")))
+        self.ui.ma_centralbuffer_wmax.setText(str(self.module.get_parameter("ma_centralbuffer_wmax")))
 
         self.ui.ma_buffer_median.setChecked(int(self.module.get_parameter("ma_buffer_median")))
         self.ui.ma_fpath_median.setChecked(int(self.module.get_parameter("ma_fpath_median")))
@@ -754,15 +755,280 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
 
     def save_values(self):
         """Saves current values to the corresponding module's instance in the active scenario."""
-        # Tab 1 - General
+        # TAB 1 - GENERAL PARAMETERS
+        print "Debug String: GENERAL PARAMETERS"
+        self.module.set_parameter("plan_type", ubglobals.PLANTYPES[self.ui.plan_typology_combo.currentIndex()])
+        if self.ui.plan_params_predef.isChecked():
+            self.module.set_parameter("plan_template", "PREDEF")
+        else:
+            self.module.set_parameter("plan_template", "PRELOAD")
 
-        # Tab 2 - Residential
+        self.module.set_parameter("plan_paramset", ubglobals.PLANPARAMSET[self.ui.plan_params_citycombo.currentIndex()])
+        self.module.set_parameter("plan_paramfile", self.ui.plan_params_filebox.text())
 
-        # Tab 3 - Non-Residential
+        self.module.set_parameter("emp_map", self.ui.employment_combo.currentText())
+        self.module.set_parameter("local_map", self.ui.locality_combo.currentText())
+        self.module.set_parameter("roadnet_map", self.ui.roadnet_combo.currentText())
+        self.module.set_parameter("emp_fud", int(self.ui.emp_fud.isChecked()))
+        self.module.set_parameter("local_attref", str(self.ui.locality_attref.text()))
+        self.module.set_parameter("roadnet_attref", str(self.ui.roadnet_attref.text()))
 
-        # Tab 4 - Transport and Roads
+        if self.ui.citymono_radio.isChecked():
+            self.module.set_parameter("cityarchetype", "MC")
+        else:
+            self.module.set_parameter("cityarchetype", "PC")
 
-        # Tab 5 - Open Spaces
+        self.module.set_parameter("citysprawl", float(self.ui.citysprawl_spin.value()))
 
-        # Tab 6 - Other Uses
-        pass
+        # --> Decision Variables for Block Dynamics
+        self.module.set_parameter("lucredev", int(self.ui.lucredevelop_check.isChecked()))
+        self.module.set_parameter("popredev", int(self.ui.popredevelop_check.isChecked()))
+        self.module.set_parameter("noredev", int(self.ui.noredevelop_check.isChecked()))
+        self.module.set_parameter("lucredev_thresh", int(self.ui.lucredevelop_spin.value()))
+        self.module.set_parameter("popredev_thresh", int(self.ui.popredevelop_spin.value()))
+
+        # TAB 2 - Residential
+        print "Debug String: RESIDENTIAL PARAMETERS"
+        self.module.set_parameter("occup_avg", float(self.ui.occup_avg_box.text()))
+        self.module.set_parameter("occup_max", float(self.ui.occup_max_box.text()))
+        self.module.set_parameter("person_space", float(self.ui.person_space_box.text()))
+        self.module.set_parameter("extra_comm_area", float(self.ui.extra_comm_area_box.text()))
+        self.module.set_parameter("avg_allot_depth", float(self.ui.allot_depth_box.text()))
+        self.module.set_parameter("allot_depth_default", int(self.ui.allot_depth_check.isChecked()))
+        self.module.set_parameter("floor_num_max", int(self.ui.house_floors.value()))
+        self.module.set_parameter("patio_area_max", float(self.ui.patio_area_max_box.text()))
+        self.module.set_parameter("patio_covered", int(self.ui.patio_covered_box.isChecked()))
+        self.module.set_parameter("carports_max", int(self.ui.carports_max_box.text()))
+        self.module.set_parameter("garage_incl", int(self.ui.garage_incl_box.isChecked()))
+        self.module.set_parameter("w_driveway_min", float(self.ui.w_driveway_min_box.text()))
+
+        self.module.set_parameter("setback_f_min", float(self.ui.setback_f_min_box.text()))
+        self.module.set_parameter("setback_f_max", float(self.ui.setback_f_max_box.text()))
+        self.module.set_parameter("setback_s_min", float(self.ui.setback_s_min_box.text()))
+        self.module.set_parameter("setback_s_max", float(self.ui.setback_s_max_box.text()))
+        self.module.set_parameter("setback_f_med", int(self.ui.fsetbackmed_check.isChecked()))
+        self.module.set_parameter("setback_s_med", int(self.ui.ssetbackmed_check.isChecked()))
+
+        self.module.set_parameter("occup_flat_avg", float(self.ui.occup_flat_avg_box.text()))
+        self.module.set_parameter("flat_area_max", float(self.ui.flat_area_max_box.text()))
+        self.module.set_parameter("commspace_indoor", float(self.ui.indoor_com_spin.value()))
+        self.module.set_parameter("commspace_outdoor", float(self.ui.outdoor_com_spin.value()))
+        self.module.set_parameter("floor_num_HDRmax", int(self.ui.aptbldg_floors.value()))
+        self.module.set_parameter("setback_HDR_avg", float(self.ui.setback_HDR_avg_box.text()))
+
+        if self.ui.parking_on.isChecked():
+            self.module.set_parameter("parking_HDR", "On")
+        elif self.ui.parking_off.isChecked():
+            self.module.set_parameter("parking_HDR", "Off")
+        elif self.ui.parking_vary.isChecked():
+            self.module.set_parameter("parking_HDR", "Var")
+        else:
+            self.module.set_parameter("parking_HDR", "NA")
+
+        self.module.set_parameter("park_OSR", int(self.ui.OSR_parks_include.isCheckable()))
+
+        self.module.set_parameter("res_fpwmin", float(self.ui.w_resfootpath_min_box.text()))
+        self.module.set_parameter("res_fpwmax", float(self.ui.w_resfootpath_max_box.text()))
+        self.module.set_parameter("res_nswmin", float(self.ui.w_resnaturestrip_min_box.text()))
+        self.module.set_parameter("res_nswmax", float(self.ui.w_resnaturestrip_max_box.text()))
+        self.module.set_parameter("res_fpmed", int(self.ui.w_resfootpath_med_check.isChecked()))
+        self.module.set_parameter("res_nsmed",  int(self.ui.w_resnaturestrip_med_check.isChecked()))
+        self.module.set_parameter("res_lanemin", float(self.ui.w_reslane_min_box.text()))
+        self.module.set_parameter("res_lanemax", float(self.ui.w_reslane_max_box.text()))
+        self.module.set_parameter("res_lanemed", int(self.ui.w_reslane_med_check.isChecked()))
+
+        self.module.set_parameter("define_drainage_rule", int(self.ui.drainage_rule_check.isChecked()))
+
+        if self.ui.roof_connected_radiodirect.isChecked():
+            self.module.set_parameter("roof_connected", "Direct")
+        elif self.ui.roof_connected_radiodisc.isChecked():
+            self.module.set_parameter("roof_connected", "Disconnect")
+        else:
+            self.module.set_parameter("roof_connected", "Vary")
+
+        self.module.set_parameter("roof_dced_p", int(self.ui.roofdced_vary_spin.value()))
+        self.module.set_parameter("imperv_prop_dced", int(self.ui.avg_imp_dced_spin.value()))
+
+        # TAB 3 - Non-Residential
+        print "Debug String: NON-RESIDENTIAL PARAMETERS"
+        if self.ui.jobs_direct_radio.isChecked():
+            self.module.set_parameter("employment_mode", "I")
+        elif self.ui.jobs_dist_radio.isChecked():
+            self.module.set_parameter("employment_mode", "D")
+        else:
+            self.module.set_parameter("employment_mode", "S")
+
+        self.module.set_parameter("ind_edist", int(self.ui.dist_ind_spin.value()))
+        self.module.set_parameter("com_edist", int(self.ui.dist_com_spin.value()))
+        self.module.set_parameter("orc_edist", int(self.ui.dist_orc_spin.value()))
+        self.module.set_parameter("employment_total", float(self.ui.totjobs_box.text()))
+
+        self.module.set_parameter("ind_subd_min", float(self.ui.ind_subd_min.text()))
+        self.module.set_parameter("ind_subd_max", float(self.ui.ind_subd_max.text()))
+        self.module.set_parameter("com_subd_min", float(self.ui.com_subd_min.text()))
+        self.module.set_parameter("com_subd_max", float(self.ui.com_subd_max.text()))
+
+        self.module.set_parameter("nres_minfsetback", float(self.ui.nres_setback_box.text()))
+        self.module.set_parameter("nres_setback_auto", int(self.ui.nres_setback_auto.isChecked()))
+
+        self.module.set_parameter("maxplotratio_ind", int(self.ui.plotratio_ind_slider.value()))
+        self.module.set_parameter("maxplotratio_com", int(self.ui.plotratio_com_slider.value()))
+        self.module.set_parameter("nres_maxfloors", int(self.ui.nres_maxfloors_spin.value()))
+        self.module.set_parameter("nres_nolimit_floors", int(self.ui.nres_maxfloors_nolimit.isChecked()))
+
+        self.module.set_parameter("carpark_Wmin", float(self.ui.carpark_dimW_box.text()))
+        self.module.set_parameter("carpark_Dmin", float(self.ui.carpark_dimD_box.text()))
+        self.module.set_parameter("carpark_imp", float(self.ui.carpark_imp_spin.value()))
+        self.module.set_parameter("carpark_ind", float(self.ui.carpark_ind_box.text()))
+        self.module.set_parameter("carpark_com", float(self.ui.carpark_com_box.text()))
+        self.module.set_parameter("loadingbay_A", float(self.ui.loadingbay_box.text()))
+
+        self.module.set_parameter("lscape_hsbalance", int(self.ui.lscape_hsbalance_slide.value()))
+        self.module.set_parameter("lscape_impdced", int(self.ui.lscape_impdced_spin.value()))
+
+        self.module.set_parameter("nres_fpwmin", float(self.ui.w_nresfootpath_min_box.text()))
+        self.module.set_parameter("nres_fpwmax", float(self.ui.w_nresfootpath_max_box.text()))
+        self.module.set_parameter("nres_nswmin", float(self.ui.w_nresnaturestrip_min_box.text()))
+        self.module.set_parameter("nres_nswmax", float(self.ui.w_nresnaturestrip_max_box.text()))
+        self.module.set_parameter("nres_fpmed", int(self.ui.w_nresfootpath_med_check.isChecked()))
+        self.module.set_parameter("nres_nsmed", int(self.ui.w_nresnaturestrip_med_check.isChecked()))
+        self.module.set_parameter("nres_lanemin", float(self.ui.w_nreslane_min_box.text()))
+        self.module.set_parameter("nres_lanemax", float(self.ui.w_nreslane_max_box.text()))
+        self.module.set_parameter("nres_lanemed", int(self.ui.w_nreslane_med_check.isChecked()))
+
+        # --> Municipal Facilities
+        self.module.set_parameter("civic_explicit", int(self.ui.civ_consider_check.isChecked()))
+        self.module.set_parameter("civ_school", int(self.ui.civ_school.isChecked()))
+        self.module.set_parameter("civ_uni", int(self.ui.civ_university.isChecked()))
+        self.module.set_parameter("civ_lib", int(self.ui.civ_library.isChecked()))
+        self.module.set_parameter("civ_hospital", int(self.ui.civ_hospital.isChecked()))
+        self.module.set_parameter("civ_clinic", int(self.ui.civ_clinic.isChecked()))
+        self.module.set_parameter("civ_police", int(self.ui.civ_police.isChecked()))
+        self.module.set_parameter("civ_fire", int(self.ui.civ_fire.isChecked()))
+        self.module.set_parameter("civ_jail", int(self.ui.civ_jail.isChecked()))
+        self.module.set_parameter("civ_worship",  int(self.ui.civ_worship.isChecked()))
+        self.module.set_parameter("civ_leisure", int(self.ui.civ_leisure.isChecked()))
+        self.module.set_parameter("civ_museum", int(self.ui.civ_museum.isChecked()))
+        self.module.set_parameter("civ_zoo", int(self.ui.civ_zoo.isChecked()))
+        self.module.set_parameter("civ_stadium", int(self.ui.civ_stadium.isChecked()))
+        self.module.set_parameter("civ_racing", int(self.ui.civ_racing.isChecked()))
+        self.module.set_parameter("civ_cemetery", int(self.ui.civ_cemetery.isChecked()))
+        self.module.set_parameter("civ_cityhall", int(self.ui.civ_cityhall.isChecked()))
+
+        # TAB 4 - Transport and Roads
+        print "Debug String: TRANSPORT PARAMETERS"
+        self.module.set_parameter("ma_buffer", int(self.ui.ma_buffer_check.isChecked()))
+        self.module.set_parameter("ma_fpath", int(self.ui.ma_fpath_check.isChecked()))
+        self.module.set_parameter("ma_nstrip", int(self.ui.ma_nstrip_check.isChecked()))
+        self.module.set_parameter("ma_sidestreet", int(self.ui.ma_sidestreet_check.isChecked()))
+        self.module.set_parameter("ma_bicycle", int(self.ui.ma_bicycle_check.isChecked()))
+        self.module.set_parameter("ma_travellane", int(self.ui.ma_travellane_check.isChecked()))
+        self.module.set_parameter("ma_centralbuffer", int(self.ui.ma_centralbuffer_check.isChecked()))
+
+        self.module.set_parameter("ma_buffer_wmin", float(self.ui.ma_buffer_wmin.text()))
+        self.module.set_parameter("ma_buffer_wmax", float(self.ui.ma_buffer_wmax.text()))
+        self.module.set_parameter("ma_fpath_wmin", float(self.ui.ma_fpath_wmin.text()))
+        self.module.set_parameter("ma_fpath_wmax", float(self.ui.ma_fpath_wmax.text()))
+        self.module.set_parameter("ma_nstrip_wmin", float(self.ui.ma_nstrip_wmin.text()))
+        self.module.set_parameter("ma_nstrip_wmax", float(self.ui.ma_nstrip_wmax.text()))
+        self.module.set_parameter("ma_sidestreet_wmin", float(self.ui.ma_sidestreet_wmin.text()))
+        self.module.set_parameter("ma_sidestreet_wmax", float(self.ui.ma_sidestreet_wmax.text()))
+        self.module.set_parameter("ma_bicycle_wmin", float(self.ui.ma_bicycle_wmin.text()))
+        self.module.set_parameter("ma_bicycle_wmax", float(self.ui.ma_bicycle_wmax.text()))
+        self.module.set_parameter("ma_travellane_wmin", float(self.ui.ma_travellane_wmin.text()))
+        self.module.set_parameter("ma_travellane_wmax", float(self.ui.ma_travellane_wmax.text()))
+        self.module.set_parameter("ma_centralbuffer_wmin", float(self.ui.ma_centralbuffer_wmin.text()))
+        self.module.set_parameter("ma_centralbuffer_wmax", float(self.ui.ma_centralbuffer_wmax.text()))
+
+        self.module.set_parameter("ma_buffer_median", int(self.ui.ma_buffer_median.isChecked()))
+        self.module.set_parameter("ma_fpath_median", int(self.ui.ma_fpath_median.isChecked()))
+        self.module.set_parameter("ma_nstrip_median", int(self.ui.ma_nstrip_median.isChecked()))
+        self.module.set_parameter("ma_sidestreet_median", int(self.ui.ma_sidestreet_median.isChecked()))
+        self.module.set_parameter("ma_bicycle_median", int(self.ui.ma_bicycle_median.isChecked()))
+        self.module.set_parameter("ma_travellane_median", int(self.ui.ma_travellane_median.isChecked()))
+        self.module.set_parameter("ma_centralbuffer_median", int(self.ui.ma_centralbuffer_median.isChecked()))
+
+        self.module.set_parameter("ma_sidestreet_lanes", int(self.ui.ma_sidestreet_lanes.value()))
+        self.module.set_parameter("ma_bicycle_lanes", int(self.ui.ma_bicycle_lanes.value()))
+        self.module.set_parameter("ma_bicycle_shared", int(self.ui.ma_bicycle_shared.isChecked()))
+        self.module.set_parameter("ma_travellane_lanes", int(self.ui.ma_travellane_lanes.value()))
+
+        self.module.set_parameter("pt_centralbuffer", int(self.ui.pt_centralbuffer.isChecked()))
+        self.module.set_parameter("pt_impervious", int(self.ui.pt_impervious.value()))
+        self.module.set_parameter("ma_median_reserved", int(self.ui.ma_median_reserved.isChecked()))
+        self.module.set_parameter("ma_openspacebuffer", int(self.ui.ma_openspacebuffer.isChecked()))
+
+        self.module.set_parameter("hwy_different_check", int(self.ui.hwy_different_check.isChecked()))
+        self.module.set_parameter("hwy_verge_check", int(self.ui.hwy_verge_check.isChecked()))
+        self.module.set_parameter("hwy_service_check", int(self.ui.hwy_service_check.isChecked()))
+        self.module.set_parameter("hwy_travellane_check", int(self.ui.hwy_travellane_check.isChecked()))
+        self.module.set_parameter("hwy_centralbuffer_check", int(self.ui.hwy_centralbuffer_check.isChecked()))
+
+        self.module.set_parameter("hwy_verge_wmin", float(self.ui.hwy_verge_wmin.text()))
+        self.module.set_parameter("hwy_verge_wmax", float(self.ui.hwy_verge_wmax.text()))
+        self.module.set_parameter("hwy_service_wmin", float(self.ui.hwy_service_wmin.text()))
+        self.module.set_parameter("hwy_service_wmax", float(self.ui.hwy_service_wmax.text()))
+        self.module.set_parameter("hwy_travellane_wmin", float(self.ui.hwy_travellane_wmin.text()))
+        self.module.set_parameter("hwy_travellane_wmax", float(self.ui.hwy_travellane_wmax.text()))
+        self.module.set_parameter("hwy_centralbuffer_wmin", float(self.ui.hwy_centralbuffer_wmin.text()))
+        self.module.set_parameter("hwy_centralbuffer_wmax", float(self.ui.hwy_centralbuffer_wmax.text()))
+
+        self.module.set_parameter("hwy_verge_median", int(self.ui.hwy_verge_median.isChecked()))
+        self.module.set_parameter("hwy_service_median", int(self.ui.hwy_service_median.isChecked()))
+        self.module.set_parameter("hwy_travellane_median", int(self.ui.hwy_travellane_median.isChecked()))
+        self.module.set_parameter("hwy_centralbuffer_median", int(self.ui.hwy_centralbuffer_median.isChecked()))
+
+        self.module.set_parameter("hwy_service_lanes", int(self.ui.hwy_service_lanes.value()))
+        self.module.set_parameter("hwy_travellane_lanes", int(self.ui.hwy_travellane_lanes.value()))
+        self.module.set_parameter("hwy_median_reserved", int(self.ui.hwy_median_reserved.isChecked()))
+        self.module.set_parameter("hwy_openspacebuffer", int(self.ui.hwy_openspacebuffer.isChecked()))
+
+        self.module.set_parameter("consider_transport", int(self.ui.consider_transport.isChecked()))
+        self.module.set_parameter("trans_airport",int( self.ui.trans_airport.isChecked()))
+        self.module.set_parameter("trans_seaport", int(self.ui.trans_seaport.isChecked()))
+        self.module.set_parameter("trans_busdepot", int(self.ui.trans_busdepot.isChecked()))
+        self.module.set_parameter("trans_railterminal", int(self.ui.trans_railterminal.isChecked()))
+
+        # TAB 5 - Open Spaces
+        print "Debug String: OPEN SPACE PARAMETERS"
+        self.module.set_parameter("pg_greengrey_ratio", int(self.ui.pg_ggratio_slide.value()))
+        self.module.set_parameter("pg_nonrec_space", int(self.ui.pg_usable_spin.value()))
+        self.module.set_parameter("pg_fac_restaurant", int(self.ui.pg_fac_restaurant.isChecked()))
+        self.module.set_parameter("pg_fac_fitness", int(self.ui.pg_fac_fitness.isChecked()))
+        self.module.set_parameter("pg_fac_bbq", int(self.ui.pg_fac_bbq.isChecked()))
+        self.module.set_parameter("pg_fac_sports", int(self.ui.pg_fac_sports.isChecked()))
+
+        self.module.set_parameter("ref_usable", int(self.ui.ref_usable_check.isChecked()))
+        self.module.set_parameter("ref_usable_percent", int(self.ui.ref_usable_spin.value()))
+
+        self.module.set_parameter("svu_water", int(self.ui.svu_slider.value()))
+        self.module.set_parameter("svu4supply", int(self.ui.svu_supply_check.isChecked()))
+        self.module.set_parameter("svu4waste", int(self.ui.svu_waste_check.isChecked()))
+        self.module.set_parameter("svu4storm", int(self.ui.svu_storm_check.isChecked()))
+
+        self.module.set_parameter("svu4supply_prop", int(self.ui.svu_supply_spin.value()))
+        self.module.set_parameter("svu4waste_prop", int(self.ui.svu_waste_spin.value()))
+        self.module.set_parameter("svu4storm_prop", int(self.ui.svu_storm_spin.value()))
+
+        # TAB 6 - Other Uses
+        print "Debug String: OTHER PARAMETERS"
+        self.module.set_parameter("unc_merge", int(self.ui.unc_merge_check.isChecked()))
+        self.module.set_parameter("unc_pgmerge", int(self.ui.unc_merge2pg_check.isChecked()))
+        self.module.set_parameter("unc_refmerge", int(self.ui.unc_merge2ref_check.isChecked()))
+        self.module.set_parameter("unc_rdmerge", int(self.ui.unc_merge2trans_check.isChecked()))
+        self.module.set_parameter("unc_refmerge_w", float(self.ui.unc_merge2ref_spin.value()))
+        self.module.set_parameter("unc_pgmerge_w", float(self.ui.unc_merge2pg_spin.value()))
+        self.module.set_parameter("unc_rdmerge_w", float(self.ui.unc_merge2trans_spin.value()))
+        self.module.set_parameter("unc_custom", int(self.ui.unc_custom_check.isChecked()))
+        self.module.set_parameter("unc_customthresh", float(self.ui.unc_areathresh_spin.value()))
+        self.module.set_parameter("unc_customimp", float(self.ui.unc_customimp_spin.value()))
+        self.module.set_parameter("unc_landirrigate", int(self.ui.unc_customirrigate_check.isChecked()))
+
+        if self.ui.und_statemanual_radio.isChecked():
+            self.module.set_parameter("und_state", "M")
+        else:
+            self.module.set_parameter("und_state", "A")
+
+        self.module.set_parameter("und_type_manual", ubglobals.UNDEVSTATES[self.ui.und_statemanual_combo.currenIndex()])
+        self.module.set_parameter("und_allowdev", int(self.ui.und_allowdev_check.isChecked()))
+        return True
