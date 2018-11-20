@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Spatial Delineation Module</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -1561,8 +1561,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>537</width>
-               <height>784</height>
+               <width>450</width>
+               <height>817</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_7">

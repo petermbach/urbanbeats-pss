@@ -603,7 +603,7 @@ class Ui_Delinblocks_Dialog(object):
         self.connectivity_scrollArea_2.setWidgetResizable(True)
         self.connectivity_scrollArea_2.setObjectName("connectivity_scrollArea_2")
         self.connectivity_contents_2 = QtWidgets.QWidget()
-        self.connectivity_contents_2.setGeometry(QtCore.QRect(0, 0, 537, 784))
+        self.connectivity_contents_2.setGeometry(QtCore.QRect(0, 0, 450, 817))
         self.connectivity_contents_2.setObjectName("connectivity_contents_2")
         self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.connectivity_contents_2)
         self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)
@@ -842,7 +842,7 @@ class Ui_Delinblocks_Dialog(object):
 
     def retranslateUi(self, Delinblocks_Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Delinblocks_Dialog.setWindowTitle(_translate("Delinblocks_Dialog", "Dialog"))
+        Delinblocks_Dialog.setWindowTitle(_translate("Delinblocks_Dialog", "Spatial Delineation Module"))
         self.title.setText(_translate("Delinblocks_Dialog", "Spatial Setup"))
         self.subtitle.setText(_translate("Delinblocks_Dialog", "Determine geometric representation, establish spatial connectivity and define how to process input data."))
         self.sidebar_title.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">SCENARIO TIME STEP</span></p></body></html>"))
