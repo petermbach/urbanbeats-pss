@@ -568,5 +568,238 @@ class UrbanPlanning(UBModule):
         # ------------------------------------------
         # END OF INPUT PARAMETER LIST
 
-    def run(self):
+    def run_module(self):
+        """Runs the urban planning module simulation."""
+        self.notify("Start Urban Planning!")
+
+        # prev_map_attr = self.activesim.getAssetWithName("PrevMapAttributes")  # DYNAMICS [TO DO]
+
+        map_attr = self.scenario.get_asset_with_name("MapAttributes")
+
+        # SECTION 1 - Get all global map attributes and prepare parameters
+        # 1.1 MAP ATTRIBUTES
+        blocks_num = map_attr.get_attribute("NumBlocks")
+        block_size = map_attr.get_attribute("BlockSize")    # size of blocks
+        Atblock = block_size * block_size                   # Total area of one block
+
+        # 1.2 PREPARE SAMPLING PARAMETERS RANGES
+        # If parameter range median boxes were checked, adjust these parameters to reflect that
+        # Residential/Non-residential setbacks and local streets
+        setback_f = ubmethods.adjust_sample_range(self.setback_f_min, self.setback_f_max, self.setback_f_med)
+        setback_s = ubmethods.adjust_sample_range(self.setback_s_min, self.setback_s_max, self.setback_s_med)
+        res_fp = ubmethods.adjust_sample_range(self.res_fpwmin, self.res_fpwmax, self.res_fpmed)
+        res_ns = ubmethods.adjust_sample_range(self.res_nswmin, self.res_nswmax, self.res_nsmed)
+        res_lane = ubmethods.adjust_sample_range(self.res_lanemin, self.res_lanemax, self.res_lanemed)
+        nres_fp = ubmethods.adjust_sample_range(self.nres_fpwmin, self.nres_fpwmax, self.nres_fpmed)
+        nres_ns = ubmethods.adjust_sample_range(self.nres_nswmin, self.nres_nswmax, self.nres_nsmed)
+        nres_lane = ubmethods.adjust_sample_range(self.nres_lanemin, self.nres_lanemax, self.nres_lanemed)
+
+        # Major Arterials
+        ma_buffer = ubmethods.adjust_sample_range(self.ma_buffer_wmin, self.ma_buffer_wmax, self.ma_buffer_median)
+        ma_fpath = ubmethods.adjust_sample_range(self.ma_fpath_wmin, self.ma_fpath_wmax, self.ma_fpath_median)
+        ma_nstrip = ubmethods.adjust_sample_range(self.ma_nstrip_wmin, self.ma_nstrip_wmax, self.ma_nstrip_median)
+        ma_sidestreet = ubmethods.adjust_sample_range(self.ma_sidestreet_wmin, self.ma_sidestreet_wmax,
+                                                      self.ma_sidestreet_median)
+        ma_bicycle = ubmethods.adjust_sample_range(self.ma_bicycle_wmin, self.ma_bicycle_wmax, self.ma_bicycle_median)
+        ma_travellane = ubmethods.adjust_sample_range(self.ma_travellane_wmin, self.ma_travellane_wmax,
+                                                      self.ma_travellane_median)
+        ma_centralbuffer = ubmethods.adjust_sample_range(self.ma_centralbuffer_wmin, self.ma_centralbuffer_wmax,
+                                                         self.ma_centralbuffer_median)
+        # Highways
+        hwy_verge = ubmethods.adjust_sample_range(self.hwy_verge_wmin, self.hwy_verge_wmax, self.hwy_verge_median)
+        hwy_service = ubmethods.adjust_sample_range(self.hwy_service_wmin, self.hwy_service_wmax,
+                                                    self.hwy_service_median)
+        hwy_travellane = ubmethods.adjust_sample_range(self.hwy_travellane_wmin, self.hwy_travellane_wmax,
+                                                       self.hwy_travellane_median)
+        hwy_centralbuffer = ubmethods.adjust_sample_range(self.hwy_centralbuffer_wmin, self.hwy_centralbuffer_wmax,
+                                                          self.hwy_centralbuffer_median)
+
+        self.notify("Begin Urban Planning!")
+        blockslist = self.scenario.get_assets_with_identifier("BlockID")
+
+        # SECTION 2 - LOOP ACROSS BLOCKS AND APPLY URBAN PLANNING RULES
+        for i in range(len(blockslist)):
+            # Initialize tally variables for the Block
+            blk_tia = 0  # Total Block Impervious Area
+            blk_roof = 0  # Total Block Roof Area
+            blk_eia = 0  # Total Block effective impervious area
+            blk_avspace = 0  # Total available space for decentralised water infrastructure
+
+            currentAttList = blockslist[i]
+            currentID = currentAttList.get_attribute("BlockID")
+
+            self.notify("Now Developing BlockID" + str(currentID))
+
+            # Skip Condition 1: Block is not active
+            if currentAttList.get_attribute("Status") == 0:
+                self.notify("BlockID"+str(currentID)+" is not active, moving to next ID")
+                currentAttList.add_attribute("Blk_TIA", -9999)
+                currentAttList.add_attribute("Blk_EIF", -9999)
+                currentAttList.add_attribute("Blk_TIF", -9999)
+                currentAttList.add_attribute("Blk_RoofsA", -9999)
+                continue
+
+            # Determine whether to update the Block at all using Dynamics Parameters
+            # if int(prev_map_attr.getAttribute("Impl_cycle")) == 0:    #Is this implementation cycle?
+            #     prevAttList = self.activesim.getAssetWithName("PrevID"+str(currentID))
+            #     if self.keepBlockDataCheck(currentAttList, prevAttList):        #NO = check block for update
+            #         self.notify("Changes in Block are below threshold levels, transferring data")
+            #         self.transferBlockAttributes(currentAttList, prevAttList)
+            #         continue        #If Block does not need to be developed, skip it
+            # COPIED OVER FROM LEGACY VERSION [DYNAMICS TO DO]
+
+            # Get Active Area
+            activity = currentAttList.get_attribute("Active")
+            Aactive = activity * Atblock
+
+            # 2.1 - UNCLASSIFIED LAND ---------------------
+            # Allocate unclassified area to the rest of the Block's LUC distribution
+            A_unc = currentAttList.get_attribute("pLU_NA") * Aactive
+            A_park = currentAttList.get_attribute("pLU_PG") * Aactive
+            A_ref = currentAttList.get_attribute("pLU_REF") * Aactive
+            A_rd = currentAttList.get_attribute("pLU_RD") * Aactive
+
+            if A_unc != 0:      # If there is unclassified area in the Block, then....
+                unc_area_subdivide = self.planUnclassified(A_unc, A_park, A_ref, A_rd, Atblock)
+                undevextra, pgextra, refextra, rdextra, otherarea, otherimp, irrigateextra = unc_area_subdivide
+            else:       # Otherwise just set extra areas to zero
+                undevextra, pgextra, refextra, rdextra, otherarea, otherimp, irrigateextra = 0, 0, 0, 0, 0, 0, 0
+
+            currentAttList.add_attribute("MiscAtot", otherarea)
+            currentAttList.add_attribute("MiscAimp", otherimp)
+
+            if self.unc_custom:     # Using a custom threshold?
+                currentAttList.add_attribute("MiscThresh", self.unc_customthresh)
+            else:
+                currentAttList.add_attribute("MiscThresh", 999.9)   # If not, make unrealistically high
+
+            blk_tia += otherimp     # Add areas to cumulative variables
+            blk_eia += otherimp
+            blk_roof += 0
+            blk_avspace += 0
+
+            # 2.2 - UNDEVELOPED LAND ---------------------
+            # Determine the state of the area's undeveloped land if possible
+            considerCBD = map_attr.get_attribute("considerCBD")
+            A_und = currentAttList.get_attribute("pLU_UND") * Aactive + undevextra
+
+            if A_und != 0:
+                undtype = self.determine_undev_type(currentAttList, considerCBD)
+            else:
+                undtype = str("NA")     # If no undeveloped land
+
+            currentAttList.add_attribute("UND_Type", undtype)
+            currentAttList.add_attribute("UND_av", float(A_und*self.und_allowdev))
+
+            blk_tia += 0            # Update cumulative variables
+            blk_eia += 0
+            blk_roof += 0
+            blk_avspace += float(A_und*self.und_allowdev)
+
+            # 2.3 - OPEN SPACES ---------------------
+            A_park += pgextra       # Add the extra park and reserve areas from unclassified land
+            A_ref += refextra
+            A_svu = currentAttList.get_attribute("pLU_SVU") * Aactive
+
+            # 2.3.1 - Parks & Gardens or Squares
+            parkratio = float(self.pg_greengrey_ratio + 10.0) / 20.0
+            sqratio = 1 - parkratio
+            sqarea = A_park * sqratio
+            greenarea = A_park * parkratio
+            avail_space = greenarea * self.pg_nonrec_space / 100.0
+
+            currentAttList.add_attribute("OpenSpace", A_park + A_ref)
+            currentAttList.add_attribute("AGreenOS", greenarea)
+            currentAttList.add_attribute("ASquare", sqarea)
+            currentAttList.add_attribute("PG_av", avail_space)
+
+            blk_tia += sqarea           # Update cumulative variables
+            blk_eia += sqarea
+            blk_roof += 0
+            blk_avspace += avail_space
+
+            # 2.3.2 - Reserves & Floodways
+            avail_ref = A_ref * self.ref_usable_percent / 100.0
+            currentAttList.add_attribute("REF_av", avail_ref)
+
+            blk_tia += 0                # Update cumulative variables
+            blk_eia += 0
+            blk_roof += 0
+            blk_avspace += avail_ref
+
+            # 2.3.3 - Services & Utilities
+            Asvu_water = float(A_svu) * float(self.svu_water) / 100.0
+            Asvu_others = A_svu - Asvu_water
+
+            svu_props = [self.svu4supply_prop * self.svu4supply,
+                         self.svu4waste_prop * self.svu4waste,
+                         self.svu4storm_prop * self.svu4storm]
+
+            if sum(svu_props) > 100:
+                # If for some reason the sums of percentages does not equal 100, normalize!
+                svu_props = [svu/sum(svu_props) for svu in svu_props]
+            else:
+                svu_props = [svu / 100.0 for svu in svu_props]  # Otherwise just divide by 100
+
+            currentAttList.add_attribute("ANonW_Util", Asvu_others)
+            currentAttList.add_attribute("SVU_avWS", float(Asvu_water * svu_props[0]))
+            currentAttList.add_attribute("SVU_avWW", float(Asvu_water * svu_props[1]))
+            currentAttList.add_attribute("SVU_avSW", float(Asvu_water * svu_props[2]))
+            currentAttList.add_attribute("SVU_avOTH", Asvu_water * (1.0 - sum(svu_props)))
+            # Attributes includes available space (av) for water supply (WS), wastewater (WW), stormwater (SW) or
+            # miscellaneous water-related applications (OTH)
+
+            blk_tia += 0
+            blk_eia += 0
+            blk_roof += 0
+            blk_avspace += Asvu_water
+
+            # 2.4 - ROADS ---------------------
+            A_rd += rdextra     # Add the extra road from unclassified land to total road area
+            pass
+
+            # 2.5 - RESIDENTIAL AREAS  ---------------------
+
+
+
+            # 2.6 - NON-RESIDENTIAL AREAS  ---------------------
+
+
+            # 2.7 - TALLY UP TOTAL LAND AREAS FOR GENERAL PROPERTIES  ---------------------
+
+
+
+            # END OF BLOCK LOOP
+
+        # Add new attributes to Map Attributes for later use
+        map_attr.add_attribute("UndevAllow", self.und_allowdev)
+        # map_attr.add_attribute("")  # All the road median restrictions
+
+        self.notify("End of Urban Planning Module")
+        print "DONE"
+
+    def plan_unclassified(self, A_unc, A_park, A_ref, A_rd, Atblock):
+        """ Proportions the unclassified area A_unc into other areas of land uses including parks,
+        reserves, roads.
+
+        :param A_unc: Area of unclassified land of the current block
+        :param A_park: Area of park land of the current block
+        :param A_ref: Area of reserve and floodway land of the current block
+        :param A_rd: Area of road of the current block
+        :param Atblock: Total area of the block active in the simulation.
+        :return: list() containing extra undeveloped area, extra area for parks, reserves, roads, additional area
+        and irrigation and impervious areas
+        """
         pass
+
+    def determine_undev_type(self, current_attributes, considerCBD):
+        """ Determines the state of undeveloped land of the current block based on city centre distance.
+
+        :param current_attributes: current UBVector() object with attributes
+        :param considerCBD: boolean of 1 (yes CBD was considered) or 0 (no CBD was not considered).
+        :return: a string corresponding to the type of undeveloped land."""
+        pass
+
+
+
+

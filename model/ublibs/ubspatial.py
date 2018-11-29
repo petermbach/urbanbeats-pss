@@ -732,12 +732,15 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
     fielddefmatrix.append(ogr.FieldDefn("BuffRadius", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("CentroidX", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("CentroidY", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("GSD_Dist", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("GSD_Loc", ogr.OFTString))
-    fielddefmatrix.append(ogr.FieldDefn("GSD_Deg", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("GSD_ACon", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("OSNet_Deg", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("OSNet_MinD", ogr.OFTReal))
+
+    if map_attr.get_attribute("HasOSLINK"):
+        fielddefmatrix.append(ogr.FieldDefn("GSD_Dist", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("GSD_Loc", ogr.OFTString))
+        fielddefmatrix.append(ogr.FieldDefn("GSD_Deg", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("GSD_ACon", ogr.OFTReal))
+    if map_attr.get_attribute("HasOSNET"):
+        fielddefmatrix.append(ogr.FieldDefn("OSNet_Deg", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("OSNet_MinD", ogr.OFTReal))
 
     if map_attr.get_attribute("HasELEV"):
         fielddefmatrix.append(ogr.FieldDefn("Elevation", ogr.OFTReal))
@@ -765,12 +768,16 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
         feature.SetField("BuffRadius", float(current_patch.get_attribute("BuffRadius")))
         feature.SetField("CentroidX", float(current_patch.get_attribute("CentroidX")))
         feature.SetField("CentroidY", float(current_patch.get_attribute("CentroidY")))
-        feature.SetField("GSD_Dist", float(current_patch.get_attribute("GSD_Dist")))
-        feature.SetField("GSD_Loc", str(current_patch.get_attribute("GSD_Loc")))
-        feature.SetField("GSD_Deg", int(current_patch.get_attribute("GSD_Deg")))
-        feature.SetField("GSD_ACon", float(current_patch.get_attribute("GSD_ACon")))
-        feature.SetField("OSNet_Deg", int(current_patch.get_attribute("OSNet_Deg")))
-        feature.SetField("OSNet_MinD", float(current_patch.get_attribute("OSNet_MinD")))
+
+        if map_attr.get_attribute("HasOSLINK"):
+            feature.SetField("GSD_Dist", float(current_patch.get_attribute("GSD_Dist")))
+            feature.SetField("GSD_Loc", str(current_patch.get_attribute("GSD_Loc")))
+            feature.SetField("GSD_Deg", int(current_patch.get_attribute("GSD_Deg")))
+            feature.SetField("GSD_ACon", float(current_patch.get_attribute("GSD_ACon")))
+
+        if map_attr.get_attribute("HasOSNET"):
+            feature.SetField("OSNet_Deg", int(current_patch.get_attribute("OSNet_Deg")))
+            feature.SetField("OSNet_MinD", float(current_patch.get_attribute("OSNet_MinD")))
 
         # if map_attr.get_attribute("HasELEV"):
         #     feature.SetField("Elevation", float(current_patch.get_attribute("Elevation")))
