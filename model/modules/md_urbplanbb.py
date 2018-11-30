@@ -759,7 +759,7 @@ class UrbanPlanning(UBModule):
             pass
 
             # 2.5 - RESIDENTIAL AREAS  ---------------------
-
+            
 
 
             # 2.6 - NON-RESIDENTIAL AREAS  ---------------------
@@ -790,7 +790,40 @@ class UrbanPlanning(UBModule):
         :return: list() containing extra undeveloped area, extra area for parks, reserves, roads, additional area
         and irrigation and impervious areas
         """
-        pass
+        # Check whether threshold exceeded
+        if self.unc_customthresh and A_unc >= (Atblock*self.unc_customthresh/100.0):  # CASE 1: Treat land as its own
+            unc_Aimp = A_unc * self.unc_customimp / 100.0
+            unc_Aperv = A_unc - unc_Aimp
+            if self.unc_landirrigate:
+                irrigateextra = unc_Aperv   # Add area to public irrigation requirements if user says so
+            else:
+                irrigateextra = 0
+
+            otherarea = A_unc
+            otherimp = unc_Aimp
+            undevextra, pgextra, refextra, rdextra = 0, 0, 0, 0    # Set all other types of areas to zero
+        elif self.unc_merge and (A_park + A_ref + A_rd) > 0
+            weights = [self.unc_pgmerge * float(self.unc_pgmerge_w) * bool(A_park > 0),
+                       self.unc_refmerge * float(self.unc_refmerge_w) * bool(A_ref > 0),
+                       self.unc_rdmerge * float(self.unc_rdmerge_w) * bool(A_rd > 0)]
+
+            if sum(weights) == 0:       # Proportion the land based on the weights if there are weights
+                undevextra = A_unc
+                otherarea, otherimp, pgextra, refextra, rdextra, irrigateextra = 0, 0, 0, 0, 0, 0
+            else:
+                finaldiv = []
+                for i in weights:
+                    # Tally up division of areas
+                    finaldiv.append(A_unc * i/sum(weights))
+                pgextra = finaldiv[0]
+                refextra = finaldiv[1]
+                rdextra = finaldiv[2]
+                undevextra, otherarea, otherimp, irrigateextra = 0, 0, 0, 0
+        else:
+            undevextra = A_unc
+            pgextra, refextra, rdextra, otherarea, otherimp, irrigateextra = 0, 0, 0, 0, 0, 0
+
+        return [undevextra, pgextra, refextra, rdextra, otherarea, otherimp, irrigateextra]
 
     def determine_undev_type(self, current_attributes, considerCBD):
         """ Determines the state of undeveloped land of the current block based on city centre distance.
@@ -798,7 +831,37 @@ class UrbanPlanning(UBModule):
         :param current_attributes: current UBVector() object with attributes
         :param considerCBD: boolean of 1 (yes CBD was considered) or 0 (no CBD was not considered).
         :return: a string corresponding to the type of undeveloped land."""
-        pass
+
+        # DEVELOPER'S NOTE: [TO DO] I want to revise this algorithm because it may not apply in other cases. This will
+        # be on the future to do list.
+
+        if self.und_state == "M":       # If the user manually determined this...
+            return self.und_type_manual
+        elif considerCBD == 0:          # If the CBD was not considered, then sprawl distance cannot be calculated
+            return self.undtypeDefault
+        else:                           # Otherwise, figure out based on CBD location
+            distCBD = current_attributes.get_attribute("CBDdist")/1000   #convert to km
+
+            if self.cityarchetype == "MC":       #Monocentric City Case
+                BFdist = float(self.und_BFtoGF)/100 * float(self.citysprawl)  #from 0 to BFdist --> BF
+                GFdist = float(self.und_BFtoAG)/100 * float(self.citysprawl)  #from BFdist to GFdist --> GF
+                                                                              #>GFdist --> AG
+            else:       #Polycentric City Case - MAD = Main Activity District (10km), CBD = Central Business District
+                MAD_sprawl = self.citysprawl - self.CBD_MAD_dist
+                BFdist = self.CBD_MAD_dist + MAD_sprawl*self.und_BFtoGF/100
+                GFdist = self.CBD_MAD_dist + MAD_sprawl*self.und_BFtoAG/100
+
+            if distCBD <= BFdist:       #Brownfield
+                undtype = "BF"
+            elif distCBD <= GFdist and self.considerGF: #Greenfield
+                undtype = "GF"
+            elif distCBD > GFdist and self.considerAG:  #Agriculture
+                undtype = "AG"
+            elif distCBD > GFdist and self.considerGF:  #Greenfield because AG not considered
+                undtype = "GF"
+            else:
+                undtype = "BF"  #Brownfield because GF and AG not considered
+        return undtype
 
 
 

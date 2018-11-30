@@ -878,6 +878,38 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
         fielddefmatrix.append(ogr.FieldDefn("HasLake", ogr.OFTInteger))
         fielddefmatrix.append(ogr.FieldDefn("LakeNames", ogr.OFTString))
 
+    if map_attr.get_attribute("HasURBANFORM"):
+        fielddefmatrix.append(ogr.FieldDefn("MiscAtot", ogr.OFTInteger))    # Unclassified Areas
+        fielddefmatrix.append(ogr.FieldDefn("MiscAimp", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("MiscThresh", ogr.OFTInteger))
+
+        fielddefmatrix.append(ogr.FieldDefn("UND_Type", ogr.OFTInteger))    # Undeveloped Land
+        fielddefmatrix.append(ogr.FieldDefn("UND_av", ogr.OFTInteger))
+
+        fielddefmatrix.append(ogr.FieldDefn("OpenSpace", ogr.OFTInteger))   # Parks/Gardens and Reserves
+        fielddefmatrix.append(ogr.FieldDefn("AGreenOS", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("ASquare", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("PG_av", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("REF_av", ogr.OFTInteger))
+
+        fielddefmatrix.append(ogr.FieldDefn("ANonW_Util", ogr.OFTInteger))  # Services & Utilities
+        fielddefmatrix.append(ogr.FieldDefn("SVU_avWS", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("SVU_avWW", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("SVU_avSW", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("SVU_avOTH", ogr.OFTInteger))
+
+        fielddefmatrix.append(ogr.FieldDefn("HasLake", ogr.OFTInteger))     # Roads & Highways
+        fielddefmatrix.append(ogr.FieldDefn("HasLake", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("HasLake", ogr.OFTInteger))
+
+        fielddefmatrix.append(ogr.FieldDefn("HasLake", ogr.OFTInteger))     # Residential
+        fielddefmatrix.append(ogr.FieldDefn("HasLake", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("HasLake", ogr.OFTInteger))
+
+        fielddefmatrix.append(ogr.FieldDefn("HasLake", ogr.OFTInteger))     # Non-Residential
+        fielddefmatrix.append(ogr.FieldDefn("HasLake", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("HasLake", ogr.OFTInteger))
+
     # More attributes to come in future
     # Create the fields
     for field in fielddefmatrix:
