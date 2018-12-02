@@ -203,11 +203,15 @@ def import_linear_network(filename, format, global_offsets, **kwargs):
         for i in range(totfeatures):
             currentfeature = layer.GetFeature(i)
             geometry = currentfeature.GetGeometryRef()
-            if geometry.GetGeometryType() == 2:  # LINE
+            if geometry.GetGeometryType() in [2, -2147483646]:  # LINE or LINESTRING25D
+                if geometry.GetGeometryType() == -2147483646:
+                    geometry.FlattenTo2D()
                 geometry.Segmentize(segmentmax)
                 for j in range(geometry.GetPointCount()):  # Get points
                     featurepoints.append((geometry.GetX(j) - global_offsets[0], geometry.GetY(j) - global_offsets[1]))
-            elif geometry.GetGeometryType() == 5:  # MULTILINESTRING
+            elif geometry.GetGeometryType() in [5, -2147483643]:  # MULTILINESTRING
+                if geometry.GetGeometryType() == -2147483643:
+                    geometry.FlattenTo2D()
                 for j in range(geometry.GetGeometryCount()):  # Loop through geometries
                     linestring = geometry.GetGeometryRef(j)
                     linestring.Segmentize(segmentmax)
@@ -220,7 +224,10 @@ def import_linear_network(filename, format, global_offsets, **kwargs):
         for i in range(totfeatures):
             currentfeature = layer.GetFeature(i)
             geometry = currentfeature.GetGeometryRef()
-            if geometry.GetGeometryType() == 2:     # LINESTRING
+            if geometry.GetGeometryType() in [2, -2147483646]:     # LINESTRING or LINESTRING25D
+                if geometry.GetGeometryType() == -2147483646:
+                    geometry.FlattenTo2D()
+                    # geometry = geometry.GetGeometryRef(0)
                 coordinates = []
                 for j in range(geometry.GetPointCount()):
                     coordinates.append((geometry.GetX(j) - global_offsets[0], geometry.GetY(j) - global_offsets[1]))
@@ -229,7 +236,10 @@ def import_linear_network(filename, format, global_offsets, **kwargs):
                 for a in attnames:
                     linefeature.add_attribute(str(a), currentfeature.GetFieldAsString(a))
                 linefeatures.append(linefeature)
-            elif geometry.GetGeometryType() == 5:   # MULTILINESTRING
+            elif geometry.GetGeometryType() in [5, -2147483643]:   # MULTILINESTRING or MULTILINESTRING25D
+                if geometry.GetGeometryType() == -2147483643:
+                    geometry.FlattenTo2D()
+                    # geometry = geometry.GetGeometryRef(0)       # Need to check if this is possible...
                 for j in range(geometry.GetGeometryCount()):
                     linestring = geometry.GetGeometryRef(j)
                     coordinates = []
