@@ -756,18 +756,244 @@ class UrbanPlanning(UBModule):
 
             # 2.4 - ROADS ---------------------
             A_rd += rdextra     # Add the extra road from unclassified land to total road area
-            pass
+            # [TO DO] Redo the roads based on new parameters
+            # # self.notify( "Total Road Area: ", A_rd )
+            #
+            # # Draw stochastic values:
+            # laneW = round(random.uniform(float(hwy_wlane[0]), float(hwy_wlane[1])), 1)
+            # medW = round(random.uniform(float(hwy_med[0]), float(hwy_med[1])), 1)
+            # buffW = round(random.uniform(float(hwy_buf[0]), float(hwy_buf[1])), 1)
+            #
+            # if (
+            #         A_park + A_ref) >= 0.5 * A_rd:  # if total open space is greater than half the road area, use it as buffer
+            #     rd_imp = float((2.0 * laneW) / (2.0 * laneW + medW))
+            #     park_buffer = 1
+            #     av_spRD = float(medW / (2.0 * laneW + medW)) * A_rd
+            # else:  # consider road's own buffer
+            #     rd_imp = (2.0 * laneW) / (2.0 * laneW + medW + 2.0 * buffW)
+            #     park_buffer = 0
+            #     av_spRD = (medW + 2 * buffW) / (2.0 * laneW + medW + buffW * 2.0) * A_rd
+            #
+            # Aimp_rd = A_rd * rd_imp
+            #
+            # currentAttList.addAttribute("RoadTIA", Aimp_rd)
+            # currentAttList.addAttribute("ParkBuffer", park_buffer)
+            # currentAttList.addAttribute("RD_av", av_spRD)
+            # currentAttList.addAttribute("RDMedW", medW)
+
+            # # Add to cumulative area variables
+            # blk_tia += Aimp_rd
+            # blk_eia += Aimp_rd * 0.9
+            # blk_roof += 0
+            # blk_avspace += av_spRD
 
             # 2.5 - RESIDENTIAL AREAS  ---------------------
-            
+            ResPop = currentAttList.getAttribute("Population")
+            A_res = currentAttList.getAttribute("pLU_RES") * Aactive
+            minHouse = self.person_space * self.occup_avg * 4
+            if A_res >= minHouse and ResPop > self.occup_flat_avg:
+                resdict = self.buildResidential(currentAttList, map_attr, A_res)
 
+                # Transfer res_dict attributes to output vector
+                currentAttList.add_attribute("HasRes", 1)
+
+                if resdict["TypeHouse"] == 1:
+                    currentAttList.add_attribute("HasHouses", 1)
+                    currentAttList.add_attribute("HouseOccup", resdict["HouseOccup"])
+                    currentAttList.add_attribute("ResParcels", resdict["ResParcels"])
+                    currentAttList.add_attribute("ResFrontT", resdict["TotalFrontage"])
+                    currentAttList.add_attribute("avSt_RES", resdict["avSt_RES"])
+                    currentAttList.add_attribute("WResNstrip", resdict["WResNstrip"])
+                    currentAttList.add_attribute("ResAllots", resdict["ResAllots"])
+                    currentAttList.add_attribute("ResDWpLot", resdict["ResDWpLot"])
+                    currentAttList.add_attribute("ResHouses", resdict["ResHouses"])
+                    currentAttList.add_attribute("ResLotArea", resdict["ResLotArea"])
+                    currentAttList.add_attribute("ResRoof", resdict["ResRoof"])
+                    currentAttList.add_attribute("avLt_RES", resdict["avLt_RES"])
+                    currentAttList.add_attribute("ResHFloors", resdict["ResHFloors"])
+                    currentAttList.add_attribute("ResLotTIA", resdict["ResLotTIA"])
+                    currentAttList.add_attribute("ResLotEIA", resdict["ResLotEIA"])
+                    currentAttList.add_attribute("ResGarden", resdict["ResGarden"])
+                    currentAttList.add_attribute("ResRoofCon", resdict["ResRoofCon"])
+                    currentAttList.add_attribute("ResLotALS", resdict["ResLotALS"])
+                    currentAttList.add_attribute("ResLotARS", resdict["ResLotARS"])
+
+                    if resdict["TotalFrontage"] == 0:
+                        frontageTIF = 0
+                    else:
+                        frontageTIF = 1 - (resdict["avSt_RES"] / resdict["TotalFrontage"])
+
+                if resdict["TypeApt"] == 1:
+                    currentAttList.add_attribute("HasFlats", 1)
+                    currentAttList.add_attribute("avSt_RES", 0)
+                    currentAttList.add_attribute("HDRFlats", resdict["HDRFlats"])
+                    currentAttList.add_attribute("HDRRoofA", resdict["HDRRoofA"])
+                    currentAttList.add_attribute("HDROccup", resdict["HDROccup"])
+                    currentAttList.add_attribute("HDR_TIA", resdict["HDR_TIA"])
+                    currentAttList.add_attribute("HDR_EIA", resdict["HDR_EIA"])
+                    currentAttList.add_attribute("HDRFloors", resdict["HDRFloors"])
+                    currentAttList.add_attribute("av_HDRes", resdict["av_HDRes"])
+                    currentAttList.add_attribute("HDRGarden", resdict["HDRGarden"])
+                    currentAttList.add_attribute("HDRCarPark", resdict["HDRCarPark"])
+
+            else:
+                currentAttList.add_attribute("HasRes", 0)
+                currentAttList.add_attribute("avSt_RES", A_res)  # becomes street-scape area available
+                currentAttList.add_attribute("LC_RES_IG", 0.00)
+                currentAttList.add_attribute("LC_RES_DG", 1.00)
+                currentAttList.add_attribute("LC_RES_CO", 0.00)
+                currentAttList.add_attribute("LC_RES_RF", 0.00)
+                currentAttList.add_attribute("LC_RES_AS", 0.00)
+                currentAttList.add_attribute("LC_RES_TR", 0.00)
+
+                # Add to cumulative area variables
+                blk_tia += 0
+                blk_eia += 0
+                blk_roof += 0
+                blk_avspace += A_res
 
             # 2.6 - NON-RESIDENTIAL AREAS  ---------------------
+            A_li = currentAttList.getAttribute("pLU_LI") * Aactive + extraInd + Asvu_others
+            A_hi = currentAttList.getAttribute("pLU_HI") * Aactive
+            A_com = currentAttList.getAttribute("pLU_COM") * Aactive + extraCom
+            A_orc = currentAttList.getAttribute("pLU_ORC") * Aactive
 
+            # Sample frontage information and create vector to store this
+            Wfp = round(random.uniform(float(nres_fpw[0]), float(nres_fpw[1])), 1)
+            Wns = round(random.uniform(float(nres_nsw[0]), float(nres_nsw[1])), 1)
+            Wrd = round(random.uniform(float(lane_w[0]), float(lane_w[1])), 1)
+            frontage = [Wfp, Wns, Wrd]
+
+            totalblockemployed = 0
+
+            if A_li != 0:
+                indLI_dict = self.buildNonResArea(currentAttList, map_attr, A_li, "LI", frontage)
+                if indLI_dict["Has_LI"] == 1:
+                    currentAttList.addAttribute("Has_LI", 1)
+                    # Transfer attributes from indLI dictionary
+                    currentAttList.addAttribute("LIjobs", indLI_dict["TotalBlockEmployed"])
+                    currentAttList.addAttribute("LIestates", indLI_dict["Estates"])
+                    currentAttList.addAttribute("avSt_LI", indLI_dict["av_St"])
+                    currentAttList.addAttribute("LIAfront", indLI_dict["Afrontage"])
+                    currentAttList.addAttribute("LIAfrEIA", indLI_dict["FrontageEIA"])
+                    currentAttList.addAttribute("LIAestate", indLI_dict["Aestate"])
+                    currentAttList.addAttribute("LIAeBldg", indLI_dict["EstateBuildingArea"])
+                    currentAttList.addAttribute("LIFloors", indLI_dict["Floors"])
+                    currentAttList.addAttribute("LIAeLoad", indLI_dict["Outdoorloadbay"])
+                    currentAttList.addAttribute("LIAeCPark",
+                                                indLI_dict["Outdoorcarpark"])  # TOTAL OUTDOOR VISIBLE CARPARK
+                    currentAttList.addAttribute("avLt_LI", indLI_dict["EstateGreenArea"])
+                    currentAttList.addAttribute("LIAeLgrey", indLI_dict["Alandscape"] - indLI_dict["EstateGreenArea"])
+                    currentAttList.addAttribute("LIAeEIA", indLI_dict["EstateEffectiveImpervious"])
+                    currentAttList.addAttribute("LIAeTIA", indLI_dict["EstateImperviousArea"])
+
+                    # Add to cumulative area variables
+                    totalblockemployed += indLI_dict["TotalBlockEmployed"]
+                    blk_tia += indLI_dict["Estates"] * (indLI_dict["EstateImperviousArea"] + indLI_dict["FrontageEIA"])
+                    blk_eia += indLI_dict["Estates"] * (
+                                indLI_dict["EstateEffectiveImpervious"] + 0.9 * indLI_dict["FrontageEIA"])
+                    blk_roof += indLI_dict["Estates"] * indLI_dict["EstateBuildingArea"]
+                    blk_avspace += indLI_dict["Estates"] * (indLI_dict["EstateGreenArea"] + indLI_dict["av_St"])
+
+            if A_hi != 0:
+                indHI_dict = self.buildNonResArea(currentAttList, map_attr, A_hi, "HI", frontage)
+                if indHI_dict["Has_HI"] == 1:
+                    currentAttList.addAttribute("Has_HI", 1)
+                    # Transfer attributes from indHI dictionary
+                    currentAttList.addAttribute("HIjobs", indHI_dict["TotalBlockEmployed"])
+                    currentAttList.addAttribute("HIestates", indHI_dict["Estates"])
+                    currentAttList.addAttribute("avSt_HI", indLI_dict["av_St"])
+                    currentAttList.addAttribute("HIAfront", indLI_dict["Afrontage"])
+                    currentAttList.addAttribute("HIAfrEIA", indLI_dict["FrontageEIA"])
+                    currentAttList.addAttribute("HIAestate", indHI_dict["Aestate"])
+                    currentAttList.addAttribute("HIAeBldg", indHI_dict["EstateBuildingArea"])
+                    currentAttList.addAttribute("HIFloors", indHI_dict["Floors"])
+                    currentAttList.addAttribute("HIAeLoad", indHI_dict["Outdoorloadbay"])
+                    currentAttList.addAttribute("HIAeCPark",
+                                                indHI_dict["Outdoorcarpark"])  # TOTAL OUTDOOR VISIBLE CARPARK
+                    currentAttList.addAttribute("avLt_HI", indHI_dict["EstateGreenArea"])
+                    currentAttList.addAttribute("HIAeLgrey", indHI_dict["Alandscape"] - indHI_dict["EstateGreenArea"])
+                    currentAttList.addAttribute("HIAeEIA", indHI_dict["EstateEffectiveImpervious"])
+                    currentAttList.addAttribute("HIAeTIA", indHI_dict["EstateImperviousArea"])
+
+                    # Add to cumulative area variables
+                    totalblockemployed += indHI_dict["TotalBlockEmployed"]
+                    blk_tia += indHI_dict["Estates"] * (indHI_dict["EstateImperviousArea"] + indHI_dict["FrontageEIA"])
+                    blk_eia += indHI_dict["Estates"] * (
+                                indHI_dict["EstateEffectiveImpervious"] + 0.9 * indHI_dict["FrontageEIA"])
+                    blk_roof += indHI_dict["Estates"] * indHI_dict["EstateBuildingArea"]
+                    blk_avspace += indHI_dict["Estates"] * (indHI_dict["EstateGreenArea"] + indHI_dict["av_St"])
+
+            if A_com != 0:
+                com_dict = self.buildNonResArea(currentAttList, map_attr, A_com, "COM", frontage)
+                if com_dict["Has_COM"] == 1:
+                    currentAttList.addAttribute("Has_Com", 1)
+                    # Transfer attributes from COM dictionary
+                    currentAttList.addAttribute("COMjobs", com_dict["TotalBlockEmployed"])
+                    currentAttList.addAttribute("COMestates", com_dict["Estates"])
+                    currentAttList.addAttribute("avSt_COM", com_dict["av_St"])
+                    currentAttList.addAttribute("COMAfront", com_dict["Afrontage"])
+                    currentAttList.addAttribute("COMAfrEIA", com_dict["FrontageEIA"])
+                    currentAttList.addAttribute("COMAestate", com_dict["Aestate"])
+                    currentAttList.addAttribute("COMAeBldg", com_dict["EstateBuildingArea"])
+                    currentAttList.addAttribute("COMFloors", com_dict["Floors"])
+                    currentAttList.addAttribute("COMAeLoad", com_dict["Outdoorloadbay"])
+                    currentAttList.addAttribute("COMAeCPark",
+                                                com_dict["Outdoorcarpark"])  # TOTAL OUTDOOR VISIBLE CARPARK
+                    currentAttList.addAttribute("avLt_COM", com_dict["EstateGreenArea"])
+                    currentAttList.addAttribute("COMAeLgrey", com_dict["Alandscape"] - com_dict["EstateGreenArea"])
+                    currentAttList.addAttribute("COMAeEIA", com_dict["EstateEffectiveImpervious"])
+                    currentAttList.addAttribute("COMAeTIA", com_dict["EstateImperviousArea"])
+
+                    # Add to cumulative area variables
+                    totalblockemployed += com_dict["TotalBlockEmployed"]
+                    blk_tia += com_dict["Estates"] * (com_dict["EstateImperviousArea"] + com_dict["FrontageEIA"])
+                    blk_eia += com_dict["Estates"] * (
+                                com_dict["EstateEffectiveImpervious"] + 0.9 * com_dict["FrontageEIA"])
+                    blk_roof += com_dict["Estates"] * com_dict["EstateBuildingArea"]
+                    blk_avspace += com_dict["Estates"] * (com_dict["EstateGreenArea"] + com_dict["av_St"])
+
+            if A_orc != 0:
+                orc_dict = self.buildNonResArea(currentAttList, map_attr, A_orc, "ORC", frontage)
+                if orc_dict["Has_ORC"] == 1:
+                    currentAttList.addAttribute("Has_ORC", 1)
+                    # Transfer attributes from Offices dictionary
+                    currentAttList.addAttribute("ORCjobs", orc_dict["TotalBlockEmployed"])
+                    currentAttList.addAttribute("ORCestates", orc_dict["Estates"])
+                    currentAttList.addAttribute("avSt_ORC", orc_dict["av_St"])
+                    currentAttList.addAttribute("ORCAfront", orc_dict["Afrontage"])
+                    currentAttList.addAttribute("ORCAfrEIA", orc_dict["FrontageEIA"])
+                    currentAttList.addAttribute("ORCAestate", orc_dict["Aestate"])
+                    currentAttList.addAttribute("ORCAeBldg", orc_dict["EstateBuildingArea"])
+                    currentAttList.addAttribute("ORCFloors", orc_dict["Floors"])
+                    currentAttList.addAttribute("ORCAeLoad", orc_dict["Outdoorloadbay"])
+                    currentAttList.addAttribute("ORCAeCPark",
+                                                orc_dict["Outdoorcarpark"])  # TOTAL OUTDOOR VISIBLE CARPARK
+                    currentAttList.addAttribute("avLt_ORC", orc_dict["EstateGreenArea"])
+                    currentAttList.addAttribute("ORCAeLgrey", orc_dict["Alandscape"] - orc_dict["EstateGreenArea"])
+                    currentAttList.addAttribute("ORCAeEIA", orc_dict["EstateEffectiveImpervious"])
+                    currentAttList.addAttribute("ORCAeTIA", orc_dict["EstateImperviousArea"])
+
+                    # Add to cumulative area variables
+                    totalblockemployed += orc_dict["TotalBlockEmployed"]
+                    blk_tia += orc_dict["Estates"] * (orc_dict["EstateImperviousArea"] + orc_dict["FrontageEIA"])
+                    blk_eia += orc_dict["Estates"] * (
+                                orc_dict["EstateEffectiveImpervious"] + 0.9 * orc_dict["FrontageEIA"])
+                    blk_roof += orc_dict["Estates"] * orc_dict["EstateBuildingArea"]
+                    blk_avspace += orc_dict["Estates"] * (orc_dict["EstateGreenArea"] + orc_dict["av_St"])
 
             # 2.7 - TALLY UP TOTAL LAND AREAS FOR GENERAL PROPERTIES  ---------------------
+            currentAttList.changeAttribute("Employ", totalblockemployed)
+            currentAttList.addAttribute("Blk_TIA", blk_tia)
+            currentAttList.addAttribute("Blk_EIA", blk_eia)
 
+            blk_eif = blk_eia / Aactive
+            currentAttList.addAttribute("Blk_EIF", blk_eif)
 
+            blk_tif = blk_tia / Aactive
+            currentAttList.addAttribute("Blk_TIF", blk_tif)
+
+            currentAttList.addAttribute("Blk_RoofsA", blk_roof)
 
             # END OF BLOCK LOOP
 
@@ -778,6 +1004,7 @@ class UrbanPlanning(UBModule):
         self.notify("End of Urban Planning Module")
         print "DONE"
 
+    # MODULE SUB-FUNCTIONS -----------------
     def plan_unclassified(self, A_unc, A_park, A_ref, A_rd, Atblock):
         """ Proportions the unclassified area A_unc into other areas of land uses including parks,
         reserves, roads.
@@ -802,7 +1029,7 @@ class UrbanPlanning(UBModule):
             otherarea = A_unc
             otherimp = unc_Aimp
             undevextra, pgextra, refextra, rdextra = 0, 0, 0, 0    # Set all other types of areas to zero
-        elif self.unc_merge and (A_park + A_ref + A_rd) > 0
+        elif self.unc_merge and (A_park + A_ref + A_rd) > 0:
             weights = [self.unc_pgmerge * float(self.unc_pgmerge_w) * bool(A_park > 0),
                        self.unc_refmerge * float(self.unc_refmerge_w) * bool(A_ref > 0),
                        self.unc_rdmerge * float(self.unc_rdmerge_w) * bool(A_rd > 0)]
@@ -863,6 +1090,724 @@ class UrbanPlanning(UBModule):
                 undtype = "BF"  #Brownfield because GF and AG not considered
         return undtype
 
+    def buildResidential(self, currentAttList, map_attr, A_res):
+        """Builds residential urban form - either houses or apartments depending on the
+        density of the population on the land available"""
+        # Step 1 - Determine Typology
+        popBlock = currentAttList.getAttribute("Pop")
+        Afloor = self.person_space * popBlock
+        farblock = Afloor / A_res  # Calculate FAR
+        # self.notify( "FARBlock"+str( farblock ))
 
+        blockratios = self.retrieveRatios(farblock)
+        restype = self.retrieveResType(blockratios[0])
+        if restype[0] == "HighRise":
+            hdr_person_space = float(self.flat_area_max) / float(self.occup_flat_avg)
+            Afloor = hdr_person_space * popBlock
+            farblock = Afloor / A_res
+            blockratios = self.retrieveRatios(farblock)
+            restype = self.retrieveResType(blockratios[0])
 
+        if "House" in restype:  # Design houses by default
+            resdict = self.designResidentialHouses(currentAttList, map_attr, A_res, popBlock, blockratios, Afloor)
+            resdict["TypeApt"] = 0
+        elif "Apartment" in restype or "HighRise" in restype:  # Design apartments
+            resdict = self.designResidentialApartments(currentAttList, map_attr, A_res, popBlock, blockratios, Afloor)
+            resdict["TypeHouse"] = 0
+        else:
+            resdict = {}
+        return resdict
 
+    def designResidentialHouses(self, currentAttList, map_attr, A_res, pop, ratios, Afloor):
+        """All necessary urban planning calculations for residential dwellings urban form """
+        resdict = {}
+        resdict["TypeHouse"] = 1
+
+        # Sample parameters from specified ranges
+        occupmin = self.occup_flat_avg  # Absolute min
+        occupmax = self.occup_max  # Absolute max
+
+        occup = 0  # initialize to enter the loop
+        while occup < occupmin or occup > occupmax or occup == 0:
+            occup = random.normalvariate(self.occup_avg, self.occup_avg / 10)
+        self.notify("Block occupancy: " + str(occup))
+
+        resdict["HouseOccup"] = occup
+
+        res_fpw = self.adjustSampleRange(self.res_fpwmin, self.res_fpwmax, self.res_fpmed)
+        res_nsw = self.adjustSampleRange(self.res_nswmin, self.res_nswmax, self.res_nsmed)
+        lane_w = self.adjustSampleRange(self.lane_wmin, self.lane_wmax, self.lane_wmed)
+        Wfp = round(random.uniform(float(res_fpw[0]), float(res_fpw[1])), 1)
+        Wns = round(random.uniform(float(res_nsw[0]), float(res_nsw[1])), 1)
+        Wrd = round(random.uniform(float(lane_w[0]), float(lane_w[1])), 1)
+        Wfrontage = Wfp + Wns + Wrd
+
+        # Step 2: Subdivide Area
+        Ndwunits = float(int(
+            (((pop / occup) / 2.0) + 1))) * 2.0  # make it an even number, divide by 1, add 1, truncate, multiply by 2
+        district_L = A_res / 100.0  # default typology depth = 100m
+        parcels = max(float(int(district_L / 200.0)), 1.0)  # default typology width = 200m
+        Wparcel = district_L / parcels
+        Aparcel = Wparcel * 100  # Area of one parcel
+        Afrontage = (district_L * Wfrontage * 2) + ((parcels * 2) * Wfrontage * (100 - 2 * Wfrontage))
+        Afpath = Afrontage * float(Wfp / Wfrontage)
+        Anstrip = Afrontage * float(Wns / Wfrontage)
+        Aroad = Afrontage - Afpath - Anstrip
+
+        resdict["Afpath"] = Afpath  # For WHOLE district
+        resdict["Anstrip"] = Anstrip  # For WHOLE district
+        resdict["Aroad"] = Aroad  # For WHOLE district
+
+        Dlot = (100 - 2 * Wfrontage) / 2  # Depth of one allotment
+        Aca = A_res - Afrontage
+
+        if Aca < self.min_allot_width * Dlot:  # Construction area should be large enough such that a single allotment
+            # containing all buildings satisfies all width requirements.
+            self.notify("Too much area taken up for frontage, removing frontage to clear up construction area!")
+            Aca = A_res
+            Afrontage = 0.00  # Set the frontage equal to zero for this block, this will occur because areas are too small
+            # Dlot = Aca/float(self.min_allot_width)  #Constrain the depth such that the minimum width requirements are satisfied
+            Dlot = 40.0  # Constrain to 40m deep
+            resdict["Afpath"] = 0.00  # For WHOLE district
+            resdict["Anstrip"] = 0.00  # For WHOLE district
+            resdict["Aroad"] = 0.00  # For WHOLE district
+
+        # self.notify("DLot "+str(Dlot))
+        # self.notify( "Ndwunits"+str(Ndwunits))
+        # self.notify( "district"+str(district_L))
+        # self.notify( "parcels"+str(parcels))
+
+        # self.notify( "Dlot"+str(Dlot))
+        # self.notify( "Aca"+str(Aca))
+
+        AfrontagePerv = Afrontage * (float(Wns) / float(Wfrontage))
+
+        resdict["ResParcels"] = parcels
+        resdict["TotalFrontage"] = Afrontage
+        resdict["avSt_RES"] = AfrontagePerv
+        resdict["WResNstrip"] = Wns
+
+        # Step 2b: Determine how many houses on one allotment based on advanced parameter "min Allotment Width"
+        Wlot = 0.0
+        DWperLot = 0.0
+        Nallotments = 0.0
+        while Wlot < self.min_allot_width:
+            DWperLot += 1.0
+            Nallotments = Ndwunits / DWperLot
+            Alot = Aca / Nallotments
+            Wlot = Alot / Dlot
+            # print Wlot, self.min_allot_width, "dwellings per lot:", DWperLot, Ndwunits, Nallotments, Alot
+            # self.notify(str(DWperLot)+str(Nallotments)+str(Alot)+str(Wlot))
+
+        self.notify("For this block, we need " + str(DWperLot) + " dwellings on each allotment")
+
+        resdict["ResAllots"] = Nallotments
+        resdict["ResDWpLot"] = DWperLot
+        resdict["ResHouses"] = Ndwunits
+
+        if self.setback_f_med == 0:
+            fsetback = round(random.uniform(self.setback_f_min, self.setback_f_max), 1)
+        else:
+            fsetback = (self.setback_f_min + self.setback_f_max) / 2
+
+        if self.setback_s_med == 0:
+            ssetback = round(random.uniform(self.setback_s_min, self.setback_s_max), 1)
+        else:
+            ssetback = (self.setback_s_min + self.setback_s_max) / 2
+
+        # Step 3: Subdivide ONE Lot
+        res_parking_area = self.carports_max * 2.6 * 4.9  # ADDITIONAL COVERAGE ON SITE
+        if self.garage_incl:
+            Agarage = res_parking_area
+            Aparking = res_parking_area * 0.5
+        else:
+            Agarage = 0
+            Aparking = res_parking_area
+
+        if self.patio_covered:
+            Acover = self.patio_area_max
+            Apatio = 0
+        else:
+            Acover = 0
+            Apatio = self.patio_area_max
+
+        Alotfloor = DWperLot * (occup * self.person_space * (1.0 + self.extra_comm_area / 100.0) + Agarage + Acover)
+        farlot = Alotfloor / Alot
+        lotratios = self.retrieveRatios(farlot)
+        Als = lotratios[3] * Alot
+        Ars = lotratios[4] * Alot
+        Apave = fsetback * self.w_driveway_min + Apatio + Aparking  # DRIVEWAY + PATIO + PARKING
+
+        resdict["ResDriveway"] = fsetback * self.w_driveway_min
+
+        # Determine if need more floors
+        floors = 1
+        Aba = Alotfloor
+        while (Aba + Apave + Als) > Alot:
+            # self.notify( "Need more than "+str(floors)+str(" floor(s)!"))
+            floors += 1
+            Aba = Alotfloor / floors
+
+        # Retry #1 - Als set to Ars
+        if floors > self.floor_num_max:
+            Als = Ars  # set the remaining garden space to recreational space
+            floors = 1  # Reset floors to 1
+            Aba = Alotfloor  # Reset building area to equal Gross Floor Area
+            while (Aba + Apave + Als) > Alot:  # Try again
+                self.notify("Even with less garden, need more than " + str(floors) + str("floor(s)!"))
+                floors += 1
+                Aba = Alotfloor / floors
+
+        # Retry #2 - fsetback becomes ssetback (i.e. reduces paved driveway area further)
+        if floors > self.floor_num_max:
+            Apave -= (
+                                 fsetback - ssetback) * self.w_driveway_min  # REDUCED DRIVEWAY + PATIO + either half of PARKING or NONE
+            floors = 1
+            Aba = Alotfloor
+            while (Aba + Apave + Als) > Alot:
+                self.notify("Even with less garden, less driveway, need more than " + str(floors) + str("floor(s)!"))
+                floors += 1
+                Aba = Alotfloor / floors
+
+        # Retry #3 - Remove setback completely (i.e. can be compensated with external paving later)
+        if floors > self.floor_num_max:
+            Apave -= ssetback * self.w_driveway_min  # i.e. PATIO + Parking
+            floors = 1
+            Aba = Alotfloor
+            while (Aba + Apave + Als) > Alot:
+                self.notify("Even with less garden, no driveway, need more than " + str(floors) + str("floor(s)!"))
+                floors += 1
+                Aba = Alotfloor / floors
+
+        # Retry #4 - Remove Carpark Paving
+        if floors > self.floor_num_max:
+            if Agarage == 0:
+                Apave -= Aparking / 2.0  # DRIVEWAY + PATIO + half of PARKING since no garage!
+            else:
+                Apave -= Aparking  # DRIVEWAY + PATIO
+            floors = 1
+            Aba = Alotfloor
+            while (Aba + Apave + Als) > Alot:
+                self.notify("Even with less garden and less carpark paving and no driveway, need more than " + str(
+                    floors) + "floor(s)!")
+                floors += 1
+                Aba = Alotfloor / floors
+
+        # Last Resort - exceed floor limit
+        if floors > self.floor_num_max:
+            pass
+            self.notify("Floor Limit Exceeded! Cannot plan within bounds, continuing!")
+
+        Aba = Alotfloor / floors
+        Dbuilding = Aba / (Wlot - 2 * ssetback)
+        Apa = ssetback * Dbuilding * 2
+        Apave = max(Apave, 0)  # Make sure paved area is non-negative!
+        av_LOT = max(Alot - Ars - Aba - Apave - Apa,
+                     0)  # WSUD SPACE = Lot area - Building - Recreation - Paving - Planning Req.
+
+        # Calculate Imperviousness, etc. write to residential dictionary
+        resdict["ResLotArea"] = Alot
+        resdict["ResRoof"] = Aba
+        resdict["avLt_RES"] = av_LOT
+        resdict["ResHFloors"] = floors
+        resdict["Apaving"] = Apave
+
+        # Determine Roof Connectivity
+        roofconnect = self.roof_connected
+        connectivity = ["Direct", "Disconnect"]
+        if roofconnect == "Vary":
+            roofconnect = connectivity[int(random.randint(0, 100) <= self.roof_dced_p)]
+        if roofconnect == "Direct":
+            AroofEff = Aba
+        elif roofconnect == "Disconnect":
+            AroofEff = 0
+
+        resdict["ResRoofCon"] = roofconnect
+
+        AimpLot = Aba + Apave
+        AConnectedImp = (AroofEff + Apave) * (1.0 - float(self.imperv_prop_dced / 100))
+        Agarden = max(Alot - AimpLot, 0)
+
+        resdict["ResLotTIA"] = AimpLot
+        resdict["ResLotEIA"] = AConnectedImp
+        resdict["ResGarden"] = Agarden
+        resdict["ResLotALS"] = Als
+        resdict["ResLotARS"] = Ars
+        return resdict
+
+    def designResidentialApartments(self, currentAttList, map_attr, A_res, pop, ratios, Afloor):
+        """Lays out the specified residential area with high density apartments for a given population
+        and ratios for the block. Algorithm works within floor constraints, but ignores these if the site
+        cannot be laid out properly.
+        """
+        resdict = {}
+        resdict["TypeApt"] = 1
+
+        # Step 2: Subdivide Area
+        Apa = math.sqrt(A_res) * 2 * self.setback_HDR_avg + (
+                    math.sqrt(A_res) - self.setback_HDR_avg) * 2 * self.setback_HDR_avg
+        A_res_adj = A_res - Apa  # minus Planning Area Apa
+        Aos = ratios[2] * A_res_adj  # min required open space area (outdoor + 1/2 indoor) (within A_res_adj)
+        Als = ratios[3] * A_res_adj  # min required liveability space area (within Aos)
+        Ars = ratios[4] * A_res_adj  # min required recreation space area (within Als)
+
+        # Step3: Work out N units and car parking + indoor/outdoor spaces
+        Naptunits = float(int(pop / self.occup_flat_avg + 1))  # round up (using integer conversion/truncation)
+        Ncparksmin = ratios[5] * Naptunits  # min required carparks, based on OCR (within Ncparksmax)
+        Ncparksmax = ratios[6] * Naptunits  # max required carparks, based on TCR
+        cpMin = Ncparksmin * 2.6 * 4.9
+        cpMax = Ncparksmax * 2.6 * 4.9
+
+        AextraIndoor = float(self.commspace_indoor) / 100 * Afloor
+        AextraOutdoor = float(self.commspace_outdoor) / 100 * Afloor
+
+        resdict["HDRFlats"] = Naptunits
+
+        if AextraOutdoor < Aos:
+            # self.notify( "User-defined Outdoor space requirements are less than minimum suggested, scaling down...")
+            Aos = AextraOutdoor
+            Als = AextraOutdoor * (Als / Aos)
+            Ars = AextraOutdoor * (Ars / Aos)
+
+        pPG = currentAttList.getAttribute("pLU_PG")
+        pactive = currentAttList.getAttribute("Active")
+        Ablock = map_attr.getAttribute("BlockSize") * map_attr.getAttribute("BlockSize")
+        Apg = pPG * pactive * Ablock * float(int(self.park_OSR))
+
+        # Step 4a: Work out Building Footprint using OSR
+        Aoutdoor = max(Aos - 0.5 * AextraIndoor - Apg, 0)  # if indoor space is much greater, Aoutdoor becomes negative
+        if Aoutdoor == 0:  # if there is no outdoor space, then ls and rs spaces on-site are zero
+            Als_site = 0
+            Ars_site = 0
+        else:
+            Als_site = Als
+            Ars_site = Ars
+
+        Aca = A_res_adj - Aoutdoor
+        Nfloors = float(int(((Afloor + AextraIndoor) / Aca) + 1))
+        if Nfloors < self.floor_num_HDRmax:
+            # self.notify( "Try #1 - HDR residential design OK, floors not exceeded")
+            # Step 5: Layout Urban Form
+            Aba = (Afloor + AextraIndoor) / Nfloors
+            Aouts = A_res - Apa - Aba
+            Aon_rs = max(Ars_site - Apg, 0)
+            av_RESHDR = max(Als_site - Aon_rs, 0)  # Available WSUD Space for residential district
+
+            Aparking = self.calculateParkingArea(Aouts, Als_site, cpMin, cpMax)
+            Aimp = Aba + Aparking
+            Aeff = Aimp * float(1 - self.imperv_prop_dced / 100)
+            Agarden = A_res - Aba - Aparking
+
+            # Calculate Imperviousness, etc., write to residential dictionary
+            resdict["HDRRoofA"] = Aba
+            resdict["HDROccup"] = self.occup_flat_avg
+            resdict["HDR_TIA"] = Aimp
+            resdict["HDR_EIA"] = Aeff
+            resdict["HDRFloors"] = Nfloors
+            resdict["av_HDRes"] = av_RESHDR
+            resdict["HDRGarden"] = Agarden
+            resdict["HDRCarPark"] = Aparking
+            return resdict
+        else:
+            pass
+            # self.notify( "Exceeded floors, executing 2nd method" )
+
+        # Step 4b: Work out Building Footprint using LSR
+        Aoutdoor = max(Als - Apg, 0)
+        if Aoutdoor == 0:
+            Als_site = 0  # on-site
+            Ars_site = 0  # on-site
+        else:
+            Als_site = Als
+            Ars_site = Ars
+
+        Aca = A_res_adj - Aoutdoor
+        Nfloors = float(int(((Afloor + AextraIndoor) / Aca) + 1))
+        if Nfloors < self.floor_num_HDRmax:
+            # self.notify( "Try #2 - HDR residential design OK, floors not exceeded" )
+            # Step 5: Layout Urban Form
+            Aba = (Afloor + AextraIndoor) / Nfloors
+            Aouts = A_res - Apa - Aba
+            Aon_rs = max(Ars_site - Apg, 0)
+            av_RESHDR = max(Als_site - Aon_rs, 0)  # Available WSUD Space for residential district
+
+            Aparking = self.calculateParkingArea(Aouts, Als_site, cpMin, cpMax)
+            Aimp = Aba + Aparking
+            Aeff = Aimp * float(1 - self.imperv_prop_dced / 100)
+            Agarden = A_res - Aba - Aparking
+
+            # Calculate Imperviousness, etc., write to residential dictionary
+            resdict["HDRRoofA"] = Aba
+            resdict["HDROccup"] = self.occup_flat_avg
+            resdict["HDR_TIA"] = Aimp
+            resdict["HDR_EIA"] = Aeff
+            resdict["HDRFloors"] = Nfloors
+            resdict["av_HDRes"] = av_RESHDR
+            resdict["HDRGarden"] = Agarden
+            resdict["HDRCarPark"] = Aparking
+            return resdict
+        else:
+            pass
+            # self.notify( "Exceeded floors, executing 3rd method, ignoring floor limit" )
+
+        # Step 4c: Work out Building Footprint using OSR, ignoring floor limit
+        Aoutdoor = max(Aos - 0.5 * AextraIndoor - Apg, 0)
+        if Aoutdoor == 0:
+            Als_site = 0
+            Ars_site = 0
+        else:
+            Als_site = Als
+            Ars_site = Ars
+
+        Aca = A_res_adj - Aoutdoor
+        Nfloors = float(int(((Afloor + AextraIndoor) / Aca) + 1))
+        # self.notify( "Try #3 - HDR average floors determined as: "+str(Nfloors))
+
+        # Step 5: Layout Urban Form
+        Aba = (Afloor + AextraIndoor) / Nfloors
+        Aouts = A_res - Apa - Aba
+        Aon_rs = max(Ars_site - Apg, 0)
+        av_RESHDR = max(Als_site - Aon_rs, 0)
+
+        Aparking = self.calculateParkingArea(Aouts, Als_site, cpMin, cpMax)
+        Aimp = Aba + Aparking
+        Aeff = Aimp * float(1 - self.imperv_prop_dced / 100)
+        Agarden = A_res - Aba - Aparking
+
+        # Calculate Imperviousness, etc., write to residential dictionary
+        resdict["HDRRoofA"] = Aba
+        resdict["HDROccup"] = self.occup_flat_avg
+        resdict["HDR_TIA"] = Aimp
+        resdict["HDR_EIA"] = Aeff
+        resdict["HDRFloors"] = Nfloors
+        resdict["av_HDRes"] = av_RESHDR
+        resdict["HDRGarden"] = Agarden
+        resdict["HDRCarPark"] = Aparking
+
+        return resdict
+
+    def calculateParkingArea(self, Aout, Alive, cpMin, cpMax):
+        """Determines the total outdoor parking space on the HDR site based on OSR's remaining
+        available space, using information about parking requirements, liveability space and
+        inputs.
+
+        Inputs:
+            - Aout - Outdoor space = Land Area - PlanningArea - Building Area
+            - Alive - Liveability space on-site = LSR x LA or zero if all area is leveraged by park
+            - cpMin - minimum area required for car parks
+            - cpMax - maximum area required for car parks
+        Outputs:
+            - Aparking - area of parking outside
+        """
+        if self.parking_HDR == "Vary":
+            park_options = ["On", "Off", "Var"]
+            choice = random.randint(0, 2)
+            parking_HDR = park_options[choice]
+
+        if self.parking_HDR == "On":
+            avail_Parking = max(Aout - Alive, 0)
+            if avail_Parking < cpMin:
+                Aparking = avail_Parking
+            elif avail_Parking < cpMax:
+                Aparking = avail_Parking
+            elif avail_Parking > cpMax:
+                Aparking = avail_Parking - cpMax
+        elif parking_HDR == "Off" or parking_HDR == "Var":
+            Aparking = 0
+        return Aparking
+
+    def retrieveResType(self, lui):
+        """Retrieves the residence type for the specified lui, if the type
+        is between two options, both are returned
+        Input:
+            - LUI: land use intensity
+        Output:
+            - [Type1, Type2], if only one type, then Type2=0
+        """
+        # self.notify( "LUI", lui
+        if lui == -9999:
+            return ["HighRise", 0]
+        if lui < self.aptLUIthresh[0]:
+            return ["House", 0]
+        elif lui > self.aptLUIthresh[0] and lui < self.houseLUIthresh[1]:
+            return ["House", "Apartment"]
+        elif lui < self.aptLUIthresh[1] and lui > self.houseLUIthresh[1]:
+            return ["Apartment", 0]
+        elif lui > self.highLUIthresh[0] and lui < self.aptLUIthresh[1]:
+            return ["Apartment", "HighRise"]
+        elif lui < self.highLUIthresh[0] and lui > self.aptLUIthresh[1]:
+            return ["HighRise", 0]
+        else:
+            return ["HighRise", 0]
+
+    def retrieveRatios(self, far):
+        """Retrieves the LUI and other values from the lookup dictionary
+        Input:
+            - FAR - floor-area-ratio of the site
+        Output:
+            - [LUI, FAR, OSR, LSR, RSR, OCR, TCR] matrix
+        """
+        # self.notify( "Searching Table for FAR = ", far
+        mindex = 0  # counter for while loop
+        found = 0
+        while mindex < len(self.resLUIdict["FAR"]):
+            if far < self.resLUIdict["FAR"][mindex]:  # will want to take the higher FAR
+                far = self.resLUIdict["FAR"][mindex]
+                mindex = len(self.resLUIdict["FAR"])
+                found = 1
+            else:
+                mindex += 1
+
+        if found == 0:  # means that FAR > FAR[LUI8.0)
+            return [-9999, far, 0, 0, 0, 0, 0]  # returns the -9999 not found case for LUI
+
+        if found == 1:
+            # get LUI and others
+            dictindex = self.resLUIdict["FAR"].index(far)
+            return [self.resLUIdict["LUI"][dictindex],
+                    far,
+                    self.resLUIdict["OSR"][dictindex],
+                    self.resLUIdict["LSR"][dictindex],
+                    self.resLUIdict["RSR"][dictindex],
+                    self.resLUIdict["OCR"][dictindex],
+                    self.resLUIdict["TCR"][dictindex]]
+
+    def buildNonResArea(self, currentAttList, map_attr, Aluc, type, frontage):
+        """Function to build non-residential urban form (LI, HI, COM, ORC) based on the
+        typology of estates and plot ratios and the provision of sufficient space for
+        building, carparks, service/loading bay and landscaping."""
+
+        nresdict = {}
+        # Note: Auto-setback
+        # The formula to calculate auto-setback = H/2 + 1.5m based on Monash Council's Documents
+        # This, however, relates more predominantly to facilities in close proximity to residential
+        # neighbourhoods. As a means to an end, however, this formula can be used within reason here.
+        # H will be taken as 3m and the formula is used only to building up to floors = 5 --> 9m setback
+        # which corresponds to roughly the average setback value of commercial areas in the technology
+        # precinct. The problem with using this is that the site is treated as a square. As a result,
+        # the setback will only be applied on two faces of the site (since the site is expected to adjoin
+        # other neighbouring sites. This is up for future revision.
+
+        # Determine frontage info
+        laneW = float(frontage[2])
+        nstrip = float(frontage[1])
+        fpath = float(frontage[0])
+        Wfrontage = laneW + nstrip + fpath
+
+        # STEP 1: Determine employment in the area
+        employed = self.determineEmployment(self.employment_mode, currentAttList, map_attr, Aluc, type)
+        nresdict["TotalBlockEmployed"] = employed
+
+        # self.notify( "Empployed + Dens"+str(employed))
+
+        employmentDens = employed / (Aluc / 10000)  # Employment density [jobs/ha]
+
+        # self.notify( employmentDens )
+
+        # STEP 2: Subdivide the area and allocate employment
+        if type == "LI" or type == "HI":
+            blockthresh = round(random.uniform(self.ind_subd_min, self.ind_subd_max), 1)
+        elif type == "ORC" or type == "COM":
+            blockthresh = round(random.uniform(self.com_subd_min, self.com_subd_max), 1)
+
+        estates = float(max(int(Aluc / (blockthresh * 10000)), 1))
+        Aestate = Aluc / float(estates)
+        Westate = math.sqrt(Aestate)
+        Afrontage = Westate * Wfrontage + Wfrontage * (Westate - Wfrontage)
+        Afpath = Afrontage * float(fpath / Wfrontage)
+        Anstrip = Afrontage * float(nstrip / Wfrontage)
+        Aroad = Afrontage - Afpath - Anstrip
+
+        Aca = max(Aestate - Afrontage, 0)
+
+        employed = employmentDens * (Aestate / 10000)
+
+        nresdict["Afrontage"] = Afrontage
+        nresdict["Afpath"] = Afpath
+        nresdict["Anstrip"] = Anstrip
+        nresdict["Aroad"] = Aroad
+        nresdict["av_St"] = (nstrip / (laneW + nstrip + fpath)) * Afrontage
+        nresdict["FrontageEIA"] = nresdict["Afrontage"] - nresdict["av_St"]
+        nresdict["SiteArea"] = Aluc
+        nresdict["Estates"] = estates
+        nresdict["Aestate"] = Aestate
+        nresdict["DevelopableArea"] = Aca
+        nresdict["EstateEmployed"] = employed
+
+        if Aca == 0:  # If the area is not substantial enough to build on, return an empty dictionary
+            # self.notify( "Block's ", type, " area is not substantial enough to build on, not doing anything else"
+            nresdict["Has_" + str(type)] = 0
+            return nresdict
+        nresdict["Has_" + str(type)] = 1
+
+        # STEP 3: Determine building area, height, plot ratio balance for ONE estate
+        Afloor = self.nonres_far[type] * employed  # Step 3a: Calculate total floor area
+
+        if type == "LI" or type == "HI":  # Step 3b: Determine maximum building footself.notify(
+            Afootprintmax = float(self.maxplotratio_ind) / 100 * Aca
+        elif type == "COM":
+            Afootprintmax = float(self.maxplotratio_com) / 100 * Aca
+        else:  # type = "ORC", plot ratio rules do not apply, but instead setback rules, taken on 2 faces
+            Afootprintmax = Aca - 2.0 * math.sqrt(Aca) * max(
+                float(self.nres_minfsetback) * float(not (self.nres_setback_auto)), 2.0)
+            # Site area - (setback area, which is either minimum specified or 2meters if auto is enabled)
+            # NOTE - need to go measure the setbacks for high-rise areas in the city just to make sure 2m is ok
+
+        # self.notify( "Calculating Floors: "+str(Afloor)+", "+str(Afootprintmax)+", "+str(Afloor/Afootprintmax + 1 ))
+        if Afootprintmax == 0:
+            nresdict["Has_" + str(type)] = 0
+            return nresdict
+
+        num_floors = float(int(Afloor / Afootprintmax + 1))  # Step 3c: Calculate number of floors, either 1 or more
+
+        # self.notify( "Num _Floors "+str(num_floors) )
+
+        if num_floors <= self.nres_maxfloors or self.nres_nolimit_floors:  # If floors do not exceed max or aren't of concern
+            pass
+            # self.notify( "Number of floors not exceeded, proceeding to lay out site")
+            # We have Afloor calculated from start and the number of floors in num_floors rounded up
+        elif type == "ORC":  # else if floors are exceeded, but the type is ORC then that's fine too
+            pass
+            # self.notify( "Number of floors exceeded but this is for High-rise offices in a major district")
+            # We have Afloor calculated from start and the number of floors in num_floors rounded up
+        else:
+            # self.notify( "Number of floors exceeded, increasing building footprint"  )  #setback taken on two faces
+            Afootprintmaxadj = max(
+                Aca - 2.0 * math.sqrt(Aca) * max(self.nres_minfsetback * float(not (self.nres_setback_auto)), 2.0), 0)
+            if Afootprintmaxadj != 0:
+                num_floors = float(int(Afloor / Afootprintmaxadj + 1))
+            else:
+                num_floors = 0  # becomes zero if there is no building, treat the site as a yard
+            if num_floors <= self.nres_maxfloors:
+                pass
+                # self.notify( "Newly adjusted building footprint is ok" )
+                # We have Afloor and the adjusted num_floors
+            else:
+                # self.notify( "Even ignoring plot ratio, floors exceeded, readjusting employment density" )
+                # Recalculate building footprint based on plot ratio and recalculate employees
+                # Use maximum floors and maximum building size within limits of plot ratio
+                num_floors = self.nres_maxfloors
+                Afloor = Afootprintmax * num_floors  # total floor area is now building footself.notify( * max number of floors
+                employednew = float(
+                    int(Afloor / self.nonres_far[type] + 1))  # employed now calculated from new floor area
+                employeddiscrepancy = employed - employednew
+                # self.notify( "Site was adjusted for total employment: ", employeddiscrepancy, " jobs were removed."
+                employed = employednew  # set new employed as the default employment
+
+            # Tally up information
+        # self.notify( "After num_floors: ", num_floors
+
+        # STEP 4: Lay out site and determine parking and loading bay requirements
+        if num_floors == 0:
+            Afootprintfinal = 0
+        else:
+            Afootprintfinal = Afloor / float(num_floors)
+
+        nresdict["EstateBuildingArea"] = Afootprintfinal
+        nresdict["Floors"] = float(num_floors)
+        nresdict["TotalEstateFloorArea"] = Afloor
+
+        # Progress: We have site area, building placed on site. Now we need to determine remaining area
+
+        # Step 4a: Loading bay requirements
+        Aloadingbay = Afloor / 100.0 * self.loadingbay_A
+
+        # Step 4b: Car Parking requirements
+        if type == "LI" or type == "HI":
+            Acarpark = self.carpark_ind * employed * self.carpark_Wmin * self.carpark_Dmin
+        elif type == "COM" or type == "ORC":
+            Acarpark = self.carpark_com * Afloor / 100 * self.carpark_Wmin * self.carpark_Dmin
+
+        # self.notify( "Car parking: "+str(Acarpark))
+
+        nresdict["Aloadingbay"] = Aloadingbay
+        nresdict["TotalAcarpark"] = Acarpark
+
+        # Step 4c: Try to fit carpark and loading bay on-site, otherwise stack
+        minsetback = max(not (self.nres_setback_auto) * self.nres_minfsetback,
+                         (num_floors / 2 + 1.5) * self.nres_setback_auto * float(bool(num_floors <= 5)), 2.0)
+        # setback determined as follows: if not automatic, uses the minimum specified, if automatic and below 5 floors, uses the formula
+        #       if automatic but above 5 floors, uses 2m by default
+
+        setbackArea = math.sqrt(Aestate) * minsetback * 2 - minsetback * minsetback  # take setback area on two faces
+        Asite_remain = Aca - Afootprintfinal - setbackArea
+        # print "Debug"
+        if (Asite_remain - Acarpark - Aloadingbay) > 0:
+            # Case 1: It all fits, hooray! --> Alandscape = setback area + remaining area
+            Alandscape = (Asite_remain - Acarpark - Aloadingbay) + setbackArea
+            nresdict["Alandscape"] = Alandscape
+            nresdict["Outdoorloadbay"] = Aloadingbay
+            nresdict["Outdoorcarpark"] = Acarpark
+        elif (Asite_remain - Aloadingbay) > 0:
+            # Case 2: Loading bay fits, but carpark does not entirely --> that's ok, Alandscape = setback area
+            Alandscape = setbackArea
+            nresdict["Alandscape"] = Alandscape
+            nresdict["Outdoorloadbay"] = Aloadingbay
+            nresdict["Outdoorcarpark"] = Asite_remain - Aloadingbay
+        elif Asite_remain > 0:
+            # Case 3: Loading bay does not fit --> use setback area to fit, Alandscape = remaining setback
+            Aloadingbay = min(Aloadingbay, Asite_remain + setbackArea)  # remaining site area + setback area intrusion
+            Alandscape = max(Asite_remain + setbackArea - Aloadingbay, 0)  # The rest of the area
+            nresdict["Outdoorloadbay"] = Aloadingbay
+            nresdict["Alandscape"] = Alandscape
+            nresdict["Outdoorcarpark"] = 0
+        else:
+            # Case 4: Loading bay does not fit even in setback area --> assume it is covered, no landscaping, but check setback
+            # self.notify( "WARNING, SETBACK AREA NOT PROVIDED" )
+            revisedSetback = Aca - Afootprintfinal
+            # self.notify( "Revised Setback: "+str(revisedSetback))
+            Alandscape = max(revisedSetback, 0)
+            nresdict["Alandscape"] = Alandscape
+            nresdict["Outdoorloadbay"] = 0
+            nresdict["Outdoorcarpark"] = 0
+
+        # STEP 5: Landscaping
+        if self.lscape_hsbalance == -1:
+            prop_Soft = 0
+            prop_Hard = 1
+        elif self.lscape_hsbalance == 1:
+            prop_Soft = 1
+            prop_Hard = 0
+        else:
+            prop_Soft = 0.5
+            prop_Hard = 0.5
+
+        Aimpaddition = prop_Hard * Alandscape
+        Agreen = prop_Soft * Alandscape
+
+        # Tally up all land surface cover information
+        Aimp_total = Aca - Alandscape + Aimpaddition
+        Aimp_connected = (1 - self.lscape_impdced / 100) * Aimp_total
+
+        nresdict["EstateGreenArea"] = Agreen
+        nresdict["EstateImperviousArea"] = Aimp_total
+        nresdict["EstateEffectiveImpervious"] = Aimp_connected
+        return nresdict
+
+    def determineEmployment(self, method, currentAttList, map_attr, Aluc, type):
+        """Determines the employment of the block based on the selected method. Calls
+        some alternative functions for scaling or other aspects"""
+        if method == "I" and map_attr.getAttribute("include_employment") == 1:
+            # Condition required to do this: there has to be data on employment input
+            employed = currentAttList.getAttribute("Employ")  # total employment for Block
+            # Scale this value based on the hypothetical area and employee distribution
+
+        elif method == "S":
+            employed = 0  # Global employment/Total Non-res Built-up Area = block employed
+            # Do something to tally up total employment and density for the map
+
+        elif method == "D":
+            if type == "LI" or type == "HI":
+                employed = self.ind_edist * Aluc / 10000
+            elif type == "COM":
+                employed = self.com_edist * Aluc / 10000
+            elif type == "ORC":
+                employed = self.orc_edist * Aluc / 10000
+            else:
+                self.notify("Something's wrong here...")
+        return employed
+
+    def scaleEmployment(self, currentAttList, employed, Aluc):
+        pass
+        # Scales the employed value down based on Aluc, used for "S" and "D" methods
+        return employed
