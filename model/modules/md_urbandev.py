@@ -57,8 +57,10 @@ class UrbanDevelopment(UBModule):
         self.projectlog = projectlog
 
         # PARAMETER LIST DEFINITION
-        self.create_parameter("dummy", BOOL, "dummy parameter for testing")
-        self.dummy = 0
+        self.create_parameter("cellsize", BOOL, "dummy parameter for testing")
+        self.cellsize = 100
+
+        
 
     def run(self):
         pass
