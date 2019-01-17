@@ -537,10 +537,13 @@ class UrbanBeatsScenario(threading.Thread):
         # --- STATIC STEP 2: Climate Setup ---
 
         # --- STATIC STEP 3: Urban Planning ---
-        # self.simulation.update_runtime_progress(30)             # From this point forth, modules may be optional!
-        # urbplanbb = self.get_module_object("URBPLAN", 0)
-        # urbplanbb.attach(self.__observers)
-        # urbplanbb.run_module()
+        self.simulation.update_runtime_progress(30)             # From this point forth, modules may be optional!
+        urbplanbb = self.get_module_object("URBPLAN", 0)
+        if urbplanbb is None:
+            pass
+        else:
+            urbplanbb.attach(self.__observers)
+            urbplanbb.run_module()
 
         # --- STATIC STEP 4: Socio-Economic ---
         # --- STATIC STEP 5: Spatial Mapping ---
