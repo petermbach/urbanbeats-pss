@@ -739,36 +739,77 @@ class UrbanPlanning(UBModule):
 
             # 2.4 - ROADS ---------------------
             A_rd += rdextra     # Add the extra road from unclassified land to total road area
-            # [TO DO] Redo the roads based on new parameters
-            # # self.notify( "Total Road Area: ", A_rd )
-            #
-            # # Draw stochastic values:
-            # laneW = round(random.uniform(float(hwy_wlane[0]), float(hwy_wlane[1])), 1)
-            # medW = round(random.uniform(float(hwy_med[0]), float(hwy_med[1])), 1)
-            # buffW = round(random.uniform(float(hwy_buf[0]), float(hwy_buf[1])), 1)
-            #
-            # if (
-            #         A_park + A_ref) >= 0.5 * A_rd:  # if total open space is greater than half the road area, use it as buffer
-            #     rd_imp = float((2.0 * laneW) / (2.0 * laneW + medW))
-            #     park_buffer = 1
-            #     av_spRD = float(medW / (2.0 * laneW + medW)) * A_rd
-            # else:  # consider road's own buffer
-            #     rd_imp = (2.0 * laneW) / (2.0 * laneW + medW + 2.0 * buffW)
-            #     park_buffer = 0
-            #     av_spRD = (medW + 2 * buffW) / (2.0 * laneW + medW + buffW * 2.0) * A_rd
-            #
-            # Aimp_rd = A_rd * rd_imp
-            #
-            # block_attr.addAttribute("RoadTIA", Aimp_rd)
-            # block_attr.addAttribute("ParkBuffer", park_buffer)
-            # block_attr.addAttribute("RD_av", av_spRD)
-            # block_attr.addAttribute("RDMedW", medW)
 
-            # # Add to cumulative area variables
-            # blk_tia += Aimp_rd
-            # blk_eia += Aimp_rd * 0.9
-            # blk_roof += 0
-            # blk_avspace += av_spRD
+            # [TO DO] Work out proportion of roads in each Block and use this to determine area proportion for
+            # Major arterials and highway typologies
+
+            # MAJOR ARTERIALS
+            # Buffer - sample and multiply by the boolean
+            rd_buffer = round(random.uniform(float(ma_buffer[0]), float(ma_buffer[1])), 1) * int(self.ma_buffer)
+
+            # Footpath - sample and multiply by the boolean
+            rd_fpath = round(random.uniform(float(ma_fpath[0]), float(ma_fpath[1])), 1) * int(self.ma_fpath)
+
+            # Nature strip - sample and multiply by the boolean
+            rd_nstrip = round(random.uniform(float(ma_nstrip[0]), float(ma_nstrip[1])), 1) * int(self.ma_nstrip)
+
+            # Side street - sample and multiply by the boolean and the number of lanes
+            rd_sidestreet = round(random.uniform(float(ma_sidestreet[0]), float(ma_sidestreet[1])), 1) * \
+                            int(self.ma_sidestreet) * self.ma_sidestreet_lanes
+
+            # Bicycle lanes - sample and multiply by the boolean and the number of lanes
+            rd_bicycle = round(random.uniform(float(ma_bicycle[0]), float(ma_bicycle[1])), 1) * \
+                         int(self.ma_bicycle) * self.ma_bicycle_lanes
+
+            # Determine the total width of bicycle and sidestreet lanes
+            if self.ma_bicycle_shared:      # If the bicycle and side street share the same space...
+                rd_street_edge = max(rd_sidestreet, rd_bicycle)     # The larger of the two
+            else:                           # else...
+                rd_street_edge = rd_sidestreet + rd_bicycle         # The sum of the two
+
+            # Travel Lane - sample and multiply by boolean and number of lanes
+            rd_travellane = round(random.uniform(float(ma_travellane[0]), float(ma_travellane[1])), 1) * \
+                            int(self.ma_travellane) * self.ma_travellane_lanes
+
+            # Central Buffer - sample and multiply by boolean
+            rd_centralbuff = round(random.uniform(float(ma_centralbuffer[0]), float(ma_centralbuffer[1])), 1) * \
+                             int(self.ma_centralbuffer)
+
+            arterial_imp = [rd_fpath, rd_street_edge, rd_travellane]
+            arterial_perv = [rd_buffer, rd_nstrip]
+
+            if self.pt_centralbuffer:       # Is there at-grade public transport in the central buffer?
+                arterial_imp.append(self.pt_impervious / 100.0 * rd_centralbuff)
+                arterial_perv.append((1 - self.pt_impervious / 100.0) * rd_centralbuff)
+
+            # Incorporate open spaces as buffers
+            if self.ma_openspacebuffer:
+                if (A_park + A_ref) >= 0.5 * A_rd:      # if total open space is greater than half the road area
+                    # Then the rd_buffer parameter is set to zero because the parks are used instead
+                    park_buffer = 1
+                    arterial_perv[0] = 0
+                else:   # Use the buffer area defined for the roads
+                    park_buffer = 0
+
+                total_width = (sum(arterial_imp) + sum(arterial_perv)) * 2.0
+                Aimp_rd = float(sum(arterial_imp) * 2.0 / total_width) * A_rd
+
+                if self.ma_median_reserved:
+                    av_spRD = float(sum(arterial_perv[:len(arterial_perv)-1]) * 2.0 / total_width) * A_rd
+                else:
+                    av_spRD = float(sum(arterial_perv) * 2.0 / total_width) * A_rd
+
+            # HIGHWAYS AND FREEWAYS [TO DO]
+
+            block_attr.add_attribute("RoadTIA", Aimp_rd)
+            block_attr.add_attribute("ParkBuffer", park_buffer)
+            block_attr.add_attribute("RD_av", av_spRD)
+
+            # Add to cumulative area variables
+            blk_tia += Aimp_rd
+            blk_eia += Aimp_rd
+            blk_roof += 0
+            blk_avspace += av_spRD
 
             # 2.5 - RESIDENTIAL AREAS  ---------------------
             ResPop = block_attr.get_attribute("Population")          # Retrieve population count
