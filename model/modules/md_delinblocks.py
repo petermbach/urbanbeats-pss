@@ -623,7 +623,7 @@ class DelinBlocks(UBModule):
             map_attr.add_attribute("HasSTORMDRAINS", 0)
 
         # if self.include_sewer:      # Wastewater sewer network - coming soon!
-        #     pass
+        #     pass  # NATALIA - check this out!
 
         # if self.include_supply          # Water distribution network - coming soon!
         #     pass
