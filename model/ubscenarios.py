@@ -540,8 +540,11 @@ class UrbanBeatsScenario(threading.Thread):
         self.simulation.update_runtime_progress(30)             # From this point forth, modules may be optional!
         urbplanbb = self.get_module_object("URBPLAN", 0)
         if urbplanbb is None:
-            pass
+            map_attr = self.get_asset_with_name("MapAttributes")
+            map_attr.add_attribute("HasURBANFORM", 0)
         else:
+            map_attr = self.get_asset_with_name("MapAttributes")
+            map_attr.add_attribute("HasURBANFORM", 1)
             urbplanbb.attach(self.__observers)
             urbplanbb.run_module()
 

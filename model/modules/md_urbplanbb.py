@@ -545,7 +545,16 @@ class UrbanPlanning(UBModule):
         # prev_map_attr = self.activesim.getAssetWithName("PrevMapAttributes")  # DYNAMICS [TO DO]
 
         map_attr = self.scenario.get_asset_with_name("MapAttributes")
-        print "Section 1"
+
+        # MAIN RUN CONDITION: CHECK THAT ALL PRIOR DATA ARE INCLUDED
+        truth_matrix = []
+        truth_matrix.append(bool(map_attr.get_attribute("HasLUC")))
+        truth_matrix.append(bool(map_attr.get_attribute("HasPOP")))
+        if False in truth_matrix:
+            map_attr.change_attribute("HasURBANFORM", 0)    # Change the condition for urban planning
+            self.notify("Urban Planning Terminating Prematurely: Not enough data!")
+            return  # Break the module pre-maturely
+
         # SECTION 1 - Get all global map attributes and prepare parameters
         # 1.1 MAP ATTRIBUTES
         block_size = map_attr.get_attribute("BlockSize")    # size of blocks
@@ -912,7 +921,7 @@ class UrbanPlanning(UBModule):
             if A_com != 0:
                 com_dict = self.build_nonres_area(block_attr, map_attr, A_com, "COM", frontage)
                 if com_dict["Has_COM"] == 1:
-                    block_attr.add_attribute("Has_Com", 1)
+                    block_attr.add_attribute("Has_COM", 1)
                     # Transfer attributes from COM dictionary
                     block_attr.add_attribute("COMjobs", com_dict["TotalBlockEmployed"])
                     block_attr.add_attribute("COMestates", com_dict["Estates"])
@@ -1802,7 +1811,6 @@ class UrbanPlanning(UBModule):
     def initialize_lui_dictionary(self):
         """Loads and initializes the LUI values for residential development. These are contained in the
         project's ancillary folder. The data is saved to the global variable self.resLUIdict."""
-        print self.activesim.get_program_rootpath() + "/ancillary/reslui.cfg"
         f = open(self.activesim.get_program_rootpath()+"/ancillary/reslui.cfg", 'r')
 
         # ratio tables for residential district planning (from Time-Saver Standards)
