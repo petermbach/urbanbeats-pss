@@ -52,6 +52,20 @@ import numpy as np
 from ..progref import ubglobals
 # --- URBANBEATS LIBRARY IMPORTS ---
 
+def adjust_sample_range(parmin, parmax, parusemed):
+    """Adjusts a stochastic samplinge based on the input parameters of minimum, maximum and median.
+
+    :param parmin: minimum sampling value of the parameter
+    :param parmax: maximum smpling value of the parameter
+    :param parusemed: boolean, use the median value?
+    :return a list object containing two values representing the sampling range if median = True, returns same values
+    """
+    if parusemed:
+        med = (min + max) / 2.0
+        return [med, med]
+    else:
+        return [parmin, parmax]
+
 
 def autosize_blocks(width, height):
     """Calculates the recommended Block Size dependent on the size of the case study determined by the input map

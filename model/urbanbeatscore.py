@@ -170,6 +170,10 @@ class UrbanBeatsSim(object):
         pattern."""
         self.__observers.append(observerobj)
 
+    def get_program_rootpath(self):
+        """Returns the root path of the program."""
+        return self.__rootpath
+
     def load_project_info_xml(self, projectpath):
         """Loads the project's info.xml file and writes the information into the simulation core."""
         try:

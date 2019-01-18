@@ -535,7 +535,19 @@ class UrbanBeatsScenario(threading.Thread):
         delinblocks.run_module()
 
         # --- STATIC STEP 2: Climate Setup ---
+
         # --- STATIC STEP 3: Urban Planning ---
+        self.simulation.update_runtime_progress(30)             # From this point forth, modules may be optional!
+        urbplanbb = self.get_module_object("URBPLAN", 0)
+        if urbplanbb is None:
+            map_attr = self.get_asset_with_name("MapAttributes")
+            map_attr.add_attribute("HasURBANFORM", 0)
+        else:
+            map_attr = self.get_asset_with_name("MapAttributes")
+            map_attr.add_attribute("HasURBANFORM", 1)
+            urbplanbb.attach(self.__observers)
+            urbplanbb.run_module()
+
         # --- STATIC STEP 4: Socio-Economic ---
         # --- STATIC STEP 5: Spatial Mapping ---
         # --- STATIC STEP 6: Regulation ---

@@ -203,11 +203,15 @@ def import_linear_network(filename, format, global_offsets, **kwargs):
         for i in range(totfeatures):
             currentfeature = layer.GetFeature(i)
             geometry = currentfeature.GetGeometryRef()
-            if geometry.GetGeometryType() == 2:  # LINE
+            if geometry.GetGeometryType() in [2, -2147483646]:  # LINE or LINESTRING25D
+                if geometry.GetGeometryType() == -2147483646:
+                    geometry.FlattenTo2D()
                 geometry.Segmentize(segmentmax)
                 for j in range(geometry.GetPointCount()):  # Get points
                     featurepoints.append((geometry.GetX(j) - global_offsets[0], geometry.GetY(j) - global_offsets[1]))
-            elif geometry.GetGeometryType() == 5:  # MULTILINESTRING
+            elif geometry.GetGeometryType() in [5, -2147483643]:  # MULTILINESTRING
+                if geometry.GetGeometryType() == -2147483643:
+                    geometry.FlattenTo2D()
                 for j in range(geometry.GetGeometryCount()):  # Loop through geometries
                     linestring = geometry.GetGeometryRef(j)
                     linestring.Segmentize(segmentmax)
@@ -220,7 +224,10 @@ def import_linear_network(filename, format, global_offsets, **kwargs):
         for i in range(totfeatures):
             currentfeature = layer.GetFeature(i)
             geometry = currentfeature.GetGeometryRef()
-            if geometry.GetGeometryType() == 2:     # LINESTRING
+            if geometry.GetGeometryType() in [2, -2147483646]:     # LINESTRING or LINESTRING25D
+                if geometry.GetGeometryType() == -2147483646:
+                    geometry.FlattenTo2D()
+                    # geometry = geometry.GetGeometryRef(0)
                 coordinates = []
                 for j in range(geometry.GetPointCount()):
                     coordinates.append((geometry.GetX(j) - global_offsets[0], geometry.GetY(j) - global_offsets[1]))
@@ -229,7 +236,10 @@ def import_linear_network(filename, format, global_offsets, **kwargs):
                 for a in attnames:
                     linefeature.add_attribute(str(a), currentfeature.GetFieldAsString(a))
                 linefeatures.append(linefeature)
-            elif geometry.GetGeometryType() == 5:   # MULTILINESTRING
+            elif geometry.GetGeometryType() in [5, -2147483643]:   # MULTILINESTRING or MULTILINESTRING25D
+                if geometry.GetGeometryType() == -2147483643:
+                    geometry.FlattenTo2D()
+                    # geometry = geometry.GetGeometryRef(0)       # Need to check if this is possible...
                 for j in range(geometry.GetGeometryCount()):
                     linestring = geometry.GetGeometryRef(j)
                     coordinates = []
@@ -732,12 +742,15 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
     fielddefmatrix.append(ogr.FieldDefn("BuffRadius", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("CentroidX", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("CentroidY", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("GSD_Dist", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("GSD_Loc", ogr.OFTString))
-    fielddefmatrix.append(ogr.FieldDefn("GSD_Deg", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("GSD_ACon", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("OSNet_Deg", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("OSNet_MinD", ogr.OFTReal))
+
+    if map_attr.get_attribute("HasOSLINK"):
+        fielddefmatrix.append(ogr.FieldDefn("GSD_Dist", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("GSD_Loc", ogr.OFTString))
+        fielddefmatrix.append(ogr.FieldDefn("GSD_Deg", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("GSD_ACon", ogr.OFTReal))
+    if map_attr.get_attribute("HasOSNET"):
+        fielddefmatrix.append(ogr.FieldDefn("OSNet_Deg", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("OSNet_MinD", ogr.OFTReal))
 
     if map_attr.get_attribute("HasELEV"):
         fielddefmatrix.append(ogr.FieldDefn("Elevation", ogr.OFTReal))
@@ -765,12 +778,16 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
         feature.SetField("BuffRadius", float(current_patch.get_attribute("BuffRadius")))
         feature.SetField("CentroidX", float(current_patch.get_attribute("CentroidX")))
         feature.SetField("CentroidY", float(current_patch.get_attribute("CentroidY")))
-        feature.SetField("GSD_Dist", float(current_patch.get_attribute("GSD_Dist")))
-        feature.SetField("GSD_Loc", str(current_patch.get_attribute("GSD_Loc")))
-        feature.SetField("GSD_Deg", int(current_patch.get_attribute("GSD_Deg")))
-        feature.SetField("GSD_ACon", float(current_patch.get_attribute("GSD_ACon")))
-        feature.SetField("OSNet_Deg", int(current_patch.get_attribute("OSNet_Deg")))
-        feature.SetField("OSNet_MinD", float(current_patch.get_attribute("OSNet_MinD")))
+
+        if map_attr.get_attribute("HasOSLINK"):
+            feature.SetField("GSD_Dist", float(current_patch.get_attribute("GSD_Dist")))
+            feature.SetField("GSD_Loc", str(current_patch.get_attribute("GSD_Loc")))
+            feature.SetField("GSD_Deg", int(current_patch.get_attribute("GSD_Deg")))
+            feature.SetField("GSD_ACon", float(current_patch.get_attribute("GSD_ACon")))
+
+        if map_attr.get_attribute("HasOSNET"):
+            feature.SetField("OSNet_Deg", int(current_patch.get_attribute("OSNet_Deg")))
+            feature.SetField("OSNet_MinD", float(current_patch.get_attribute("OSNet_MinD")))
 
         # if map_attr.get_attribute("HasELEV"):
         #     feature.SetField("Elevation", float(current_patch.get_attribute("Elevation")))
@@ -814,14 +831,14 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
     # >>> FROM DELINBLOCKS
     fielddefmatrix.append(ogr.FieldDefn("BlockID", ogr.OFTInteger))
 
-    if map_attr.get_attribute("HasELEV"):
+    if map_attr.get_attribute("HasELEV"):       # IF AN ELEVATION MAP WAS INCLUDED
         fielddefmatrix.append(ogr.FieldDefn("BasinID", ogr.OFTInteger))
 
     fielddefmatrix.append(ogr.FieldDefn("CentreX", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("CentreY", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("Neighbours", ogr.OFTString))
 
-    if map_attr.get_attribute("HasLUC"):
+    if map_attr.get_attribute("HasLUC"):        # IF A LAND USE MAP WAS LOADED
         # fielddefmatrix.append(ogr.FieldDefn("Status", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("Active", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("pLU_RES", ogr.OFTReal))
@@ -838,16 +855,16 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
         fielddefmatrix.append(ogr.FieldDefn("pLU_UND", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("pLU_NA", ogr.OFTReal))
 
-        if map_attr.get_attribute("HasSPATIALMETRICS"):
+        if map_attr.get_attribute("HasSPATIALMETRICS"):     # IF SPATIAL METRICS WERE CALCULATED
             fielddefmatrix.append(ogr.FieldDefn("Rich", ogr.OFTReal))
             fielddefmatrix.append(ogr.FieldDefn("ShDiv", ogr.OFTReal))
             fielddefmatrix.append(ogr.FieldDefn("ShDom", ogr.OFTReal))
             fielddefmatrix.append(ogr.FieldDefn("ShEven", ogr.OFTReal))
 
-    if map_attr.get_attribute("HasPOP"):
+    if map_attr.get_attribute("HasPOP"):        # IF POPULATION DATA WAS LOADED
         fielddefmatrix.append(ogr.FieldDefn("Population", ogr.OFTReal))
 
-    if map_attr.get_attribute("HasELEV"):
+    if map_attr.get_attribute("HasELEV"):       # IF ELEVATION AND FLOWPATH DELINEATION WAS CONDUCTED
         fielddefmatrix.append(ogr.FieldDefn("AvgElev", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("MaxElev", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("MinElev", ogr.OFTReal))
@@ -857,19 +874,137 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
         fielddefmatrix.append(ogr.FieldDefn("h_pond", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("Outlet", ogr.OFTInteger))
 
-    if map_attr.get_attribute("HasGEOPOLITICAL"):
+    if map_attr.get_attribute("HasGEOPOLITICAL"):   # IF A GEOPOLITICAL MAP WAS INCLUDED IN THE SIMULATION
         fielddefmatrix.append(ogr.FieldDefn("Region", ogr.OFTString))
 
-    if map_attr.get_attribute("HasSUBURBS"):
+    if map_attr.get_attribute("HasSUBURBS"):        # IF SUBURBS WERE INCLUDED IN THE SIMULATION
         fielddefmatrix.append(ogr.FieldDefn("Suburb", ogr.OFTString))
 
-    if map_attr.get_attribute("HasRIVERS"):
+    if map_attr.get_attribute("HasRIVERS"):         # IF A RIVERS MAP WAS LOADED IN THE SIMULATION
         fielddefmatrix.append(ogr.FieldDefn("HasRiver", ogr.OFTInteger))
         fielddefmatrix.append(ogr.FieldDefn("RiverNames", ogr.OFTString))
 
-    if map_attr.get_attribute("HasLAKES"):
+    if map_attr.get_attribute("HasLAKES"):          # IF A LAKES MAP WAS LOADED IN THE SIMULATION
         fielddefmatrix.append(ogr.FieldDefn("HasLake", ogr.OFTInteger))
         fielddefmatrix.append(ogr.FieldDefn("LakeNames", ogr.OFTString))
+
+    if map_attr.get_attribute("HasURBANFORM"):      # IF URBAN PLANNING MODULE HAS BEEN EXECUTED
+        fielddefmatrix.append(ogr.FieldDefn("MiscAtot", ogr.OFTReal))    # Unclassified Areas
+        fielddefmatrix.append(ogr.FieldDefn("MiscAimp", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("MiscThresh", ogr.OFTReal))
+
+        fielddefmatrix.append(ogr.FieldDefn("UND_Type", ogr.OFTString))    # Undeveloped Land
+        fielddefmatrix.append(ogr.FieldDefn("UND_av", ogr.OFTReal))
+
+        fielddefmatrix.append(ogr.FieldDefn("OpenSpace", ogr.OFTReal))   # Parks/Gardens and Reserves
+        fielddefmatrix.append(ogr.FieldDefn("AGreenOS", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("ASquare", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("PG_av", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("REF_av", ogr.OFTReal))
+
+        fielddefmatrix.append(ogr.FieldDefn("ANonW_Util", ogr.OFTReal))  # Services & Utilities
+        fielddefmatrix.append(ogr.FieldDefn("SVU_avWS", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("SVU_avWW", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("SVU_avSW", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("SVU_avOTH", ogr.OFTReal))
+
+        fielddefmatrix.append(ogr.FieldDefn("RoadTIA", ogr.OFTReal))     # Roads & Highways
+        fielddefmatrix.append(ogr.FieldDefn("ParkBuffer", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("RD_av", ogr.OFTReal))
+
+        fielddefmatrix.append(ogr.FieldDefn("HouseOccup", ogr.OFTReal))     # Residential
+        fielddefmatrix.append(ogr.FieldDefn("ResParcels", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("ResFrontT", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("avSt_RES", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("WResNstrip", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("ResAllots", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("ResDWpLot", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("ResHouses", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("ResLotArea", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("ResRoof", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("avLt_RES", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("ResHFloors", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("ResLotTIA", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("ResLotEIA", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("ResGarden", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("ResRoofCon", ogr.OFTString))
+        fielddefmatrix.append(ogr.FieldDefn("ResLotALS", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("ResLotARS", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("HDRFlats", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("HDRRoofA", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("HDROccup", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("HDR_TIA", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("HDR_EIA", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("HDRFloors", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("av_HDRes", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("HDRGarden", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("HDRCarPark", ogr.OFTReal))
+
+        fielddefmatrix.append(ogr.FieldDefn("LIjobs", ogr.OFTInteger))      # Light Industry
+        fielddefmatrix.append(ogr.FieldDefn("LIestates", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("avSt_LI", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("LIAfront", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("LIAfrEIA", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("LIAestate", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("LIAeBldg", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("LIFloors", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("LIAeLoad", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("LIAeCPark", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("avLt_LI", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("LIAeLgrey", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("LIAeEIA", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("LIAeTIA", ogr.OFTReal))
+
+        fielddefmatrix.append(ogr.FieldDefn("HIjobs", ogr.OFTInteger))      # Heavy Industry
+        fielddefmatrix.append(ogr.FieldDefn("HIestates", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("avSt_HI", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("HIAfront", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("HIAfrEIA", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("HIAestate", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("HIAeBldg", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("HIFloors", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("HIAeLoad", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("HIAeCPark", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("avLt_HI", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("HIAeLgrey", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("HIAeEIA", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("HIAeTIA", ogr.OFTReal))
+
+        fielddefmatrix.append(ogr.FieldDefn("COMjobs", ogr.OFTInteger))  # Commercial
+        fielddefmatrix.append(ogr.FieldDefn("COMestates", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("avSt_COM", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("COMAfront", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("COMAfrEIA", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("COMAestate", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("COMAeBldg", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("COMFloors", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("COMAeLoad", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("COMAeCPark", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("avLt_COM", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("COMAeLgrey", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("COMAeEIA", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("COMAeTIA", ogr.OFTReal))
+
+        fielddefmatrix.append(ogr.FieldDefn("ORCjobs", ogr.OFTInteger))  # Offices
+        fielddefmatrix.append(ogr.FieldDefn("ORCestates", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("avSt_ORC", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("ORCAfront", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("ORCAfrEIA", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("ORCAestate", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("ORCAeBldg", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("ORCFloors", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("ORCAeLoad", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("ORCAeCPark", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("avLt_ORC", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("ORCAeLgrey", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("ORCAeEIA", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("ORCAeTIA", ogr.OFTReal))
+
+        fielddefmatrix.append(ogr.FieldDefn("Blk_TIA", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("Blk_EIA", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("Blk_EIF", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("Blk_TIF", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("Blk_RoofsA", ogr.OFTReal))
 
     # More attributes to come in future
     # Create the fields
@@ -955,6 +1090,130 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
         if map_attr.get_attribute("HasLAKES"):
             feature.SetField("HasLake", int(currentAttList.get_attribute("HasLake")))
             feature.SetField("LakeNames", str(",".join(map(str, currentAttList.get_attribute("LakeNames")))))
+
+        if map_attr.get_attribute("HasURBANFORM"):
+            feature.SetField("MiscAtot", float(currentAttList.get_attribute("MiscAtot")))       # Unclassified
+            feature.SetField("MiscAimp", float(currentAttList.get_attribute("MiscAimp")))
+            feature.SetField("MiscThresh", float(currentAttList.get_attribute("MiscThresh")))
+
+            feature.SetField("UND_Type", str(currentAttList.get_attribute("UND_Type")))         # Undeveloped
+            feature.SetField("UND_av", float(currentAttList.get_attribute("UND_av")))
+
+            feature.SetField("OpenSpace", float(currentAttList.get_attribute("OpenSpace")))     # Open Spaces
+            feature.SetField("AGreenOS", float(currentAttList.get_attribute("AGreenOS")))
+            feature.SetField("ASquare", float(currentAttList.get_attribute("ASquare")))
+            feature.SetField("PG_av", float(currentAttList.get_attribute("PG_av")))
+            feature.SetField("REF_av", float(currentAttList.get_attribute("REF_av")))
+
+            feature.SetField("ANonW_Util", float(currentAttList.get_attribute("ANonW_Util")))   # Service & Utility
+            feature.SetField("SVU_avWS", float(currentAttList.get_attribute("SVU_avWS")))
+            feature.SetField("SVU_avWW", float(currentAttList.get_attribute("SVU_avWW")))
+            feature.SetField("SVU_avSW", float(currentAttList.get_attribute("SVU_avSW")))
+            feature.SetField("SVU_avOTH", float(currentAttList.get_attribute("SVU_avOTH")))
+
+            feature.SetField("RoadTIA", float(currentAttList.get_attribute("RoadTIA")))         # Roads
+            feature.SetField("ParkBuffer", int(currentAttList.get_attribute("ParkBuffer")))
+            feature.SetField("RD_av", float(currentAttList.get_attribute("RD_av")))
+
+            if currentAttList.get_attribute("HasHouses"):
+                feature.SetField("HouseOccup", float(currentAttList.get_attribute("HouseOccup")))   # Residential
+                feature.SetField("ResParcels", int(currentAttList.get_attribute("ResParcels")))
+                feature.SetField("ResFrontT", float(currentAttList.get_attribute("ResFrontT")))
+                feature.SetField("WResNstrip", float(currentAttList.get_attribute("WResNstrip")))
+                feature.SetField("ResAllots", int(currentAttList.get_attribute("ResAllots")))
+                feature.SetField("ResDWpLot", int(currentAttList.get_attribute("ResDWpLot")))
+                feature.SetField("ResHouses", int(currentAttList.get_attribute("ResHouses")))
+                feature.SetField("ResLotArea", float(currentAttList.get_attribute("ResLotArea")))
+                feature.SetField("ResRoof", float(currentAttList.get_attribute("ResRoof")))
+                feature.SetField("avLt_RES", float(currentAttList.get_attribute("avLt_RES")))
+                feature.SetField("ResHFloors", int(currentAttList.get_attribute("ResHFloors")))
+                feature.SetField("ResLotTIA", float(currentAttList.get_attribute("ResLotTIA")))
+                feature.SetField("ResLotEIA", float(currentAttList.get_attribute("ResLotEIA")))
+                feature.SetField("ResGarden", float(currentAttList.get_attribute("ResGarden")))
+                feature.SetField("ResRoofCon", str(currentAttList.get_attribute("ResRoofCon")))
+                feature.SetField("ResLotALS", float(currentAttList.get_attribute("ResLotALS")))
+                feature.SetField("ResLotARS", float(currentAttList.get_attribute("ResLotARS")))
+
+            if currentAttList.get_attribute("HasFlats"):
+                feature.SetField("HDRFlats", int(currentAttList.get_attribute("HDRFlats")))         # High-Density
+                feature.SetField("HDRRoofA", float(currentAttList.get_attribute("HDRRoofA")))
+                feature.SetField("HDROccup", float(currentAttList.get_attribute("HDROccup")))
+                feature.SetField("HDR_TIA", float(currentAttList.get_attribute("HDR_TIA")))
+                feature.SetField("HDR_EIA", float(currentAttList.get_attribute("HDR_EIA")))
+                feature.SetField("HDRFloors", int(currentAttList.get_attribute("HDRFloors")))
+                feature.SetField("av_HDRes", float(currentAttList.get_attribute("av_HDRes")))
+                feature.SetField("HDRGarden", float(currentAttList.get_attribute("HDRGarden")))
+                feature.SetField("HDRCarPark", float(currentAttList.get_attribute("HDRCarPark")))
+
+            if currentAttList.get_attribute("Has_LI"):
+                feature.SetField("LIjobs", int(currentAttList.get_attribute("LIjobs")))             # Light Industry
+                feature.SetField("LIestates", int(currentAttList.get_attribute("LIestates")))
+                feature.SetField("avSt_LI", float(currentAttList.get_attribute("avSt_LI")))
+                feature.SetField("LIAfront", float(currentAttList.get_attribute("LIAfront")))
+                feature.SetField("LIAfrEIA", float(currentAttList.get_attribute("LIAfrEIA")))
+                feature.SetField("LIAestate", float(currentAttList.get_attribute("LIAestate")))
+                feature.SetField("LIAeBldg", float(currentAttList.get_attribute("LIAeBldg")))
+                feature.SetField("LIFloors", int(currentAttList.get_attribute("LIFloors")))
+                feature.SetField("LIAeLoad", float(currentAttList.get_attribute("LIAeLoad")))
+                feature.SetField("LIAeCPark", float(currentAttList.get_attribute("LIAeCPark")))
+                feature.SetField("avLt_LI", float(currentAttList.get_attribute("avLt_LI")))
+                feature.SetField("LIAeLgrey", float(currentAttList.get_attribute("LIAeLgrey")))
+                feature.SetField("LIAeEIA", float(currentAttList.get_attribute("LIAeEIA")))
+                feature.SetField("LIAeTIA", float(currentAttList.get_attribute("LIAeTIA")))
+
+            if currentAttList.get_attribute("Has_HI"):
+                feature.SetField("HIjobs", int(currentAttList.get_attribute("HIjobs")))             # Heavy Industry
+                feature.SetField("HIestates", int(currentAttList.get_attribute("HIestates")))
+                feature.SetField("avSt_HI", float(currentAttList.get_attribute("avSt_HI")))
+                feature.SetField("HIAfront", float(currentAttList.get_attribute("HIAfront")))
+                feature.SetField("HIAfrEIA", float(currentAttList.get_attribute("HIAfrEIA")))
+                feature.SetField("HIAestate", float(currentAttList.get_attribute("HIAestate")))
+                feature.SetField("HIAeBldg", float(currentAttList.get_attribute("HIAeBldg")))
+                feature.SetField("HIFloors", int(currentAttList.get_attribute("HIFloors")))
+                feature.SetField("HIAeLoad", float(currentAttList.get_attribute("HIAeLoad")))
+                feature.SetField("HIAeCPark", float(currentAttList.get_attribute("HIAeCPark")))
+                feature.SetField("avLt_HI", float(currentAttList.get_attribute("avLt_HI")))
+                feature.SetField("HIAeLgrey", float(currentAttList.get_attribute("HIAeLgrey")))
+                feature.SetField("HIAeEIA", float(currentAttList.get_attribute("HIAeEIA")))
+                feature.SetField("HIAeTIA", float(currentAttList.get_attribute("HIAeTIA")))
+
+            if currentAttList.get_attribute("Has_COM"):
+                feature.SetField("COMjobs", int(currentAttList.get_attribute("COMjobs")))           # Commercial
+                feature.SetField("COMestates", int(currentAttList.get_attribute("COMestates")))
+                feature.SetField("avSt_COM", float(currentAttList.get_attribute("avSt_COM")))
+                feature.SetField("COMAfront", float(currentAttList.get_attribute("COMAfront")))
+                feature.SetField("COMAfrEIA", float(currentAttList.get_attribute("COMAfrEIA")))
+                feature.SetField("COMAestate", float(currentAttList.get_attribute("COMAestate")))
+                feature.SetField("COMAeBldg", float(currentAttList.get_attribute("COMAeBldg")))
+                feature.SetField("COMFloors", int(currentAttList.get_attribute("COMFloors")))
+                feature.SetField("COMAeLoad", float(currentAttList.get_attribute("COMAeLoad")))
+                feature.SetField("COMAeCPark", float(currentAttList.get_attribute("COMAeCPark")))
+                feature.SetField("avLt_COM", float(currentAttList.get_attribute("avLt_COM")))
+                feature.SetField("COMAeLgrey", float(currentAttList.get_attribute("COMAeLgrey")))
+                feature.SetField("COMAeEIA", float(currentAttList.get_attribute("COMAeEIA")))
+                feature.SetField("COMAeTIA", float(currentAttList.get_attribute("COMAeTIA")))
+
+            if currentAttList.get_attribute("Has_ORC"):
+                feature.SetField("ORCjobs", int(currentAttList.get_attribute("ORCjobs")))           # Offices
+                feature.SetField("ORCestates", int(currentAttList.get_attribute("ORCestates")))
+                feature.SetField("avSt_ORC", float(currentAttList.get_attribute("avSt_ORC")))
+                feature.SetField("ORCAfront", float(currentAttList.get_attribute("ORCAfront")))
+                feature.SetField("ORCAfrEIA", float(currentAttList.get_attribute("ORCAfrEIA")))
+                feature.SetField("ORCAestate", float(currentAttList.get_attribute("ORCAestate")))
+                feature.SetField("ORCAeBldg", float(currentAttList.get_attribute("ORCAeBldg")))
+                feature.SetField("ORCFloors", int(currentAttList.get_attribute("ORCFloors")))
+                feature.SetField("ORCAeLoad", float(currentAttList.get_attribute("ORCAeLoad")))
+                feature.SetField("ORCAeCPark", float(currentAttList.get_attribute("ORCAeCPark")))
+                feature.SetField("avLt_ORC", float(currentAttList.get_attribute("avLt_ORC")))
+                feature.SetField("ORCAeLgrey", float(currentAttList.get_attribute("ORCAeLgrey")))
+                feature.SetField("ORCAeEIA", float(currentAttList.get_attribute("ORCAeEIA")))
+                feature.SetField("ORCAeTIA", float(currentAttList.get_attribute("ORCAeTIA")))
+
+            feature.SetField("Blk_TIA", float(currentAttList.get_attribute("Blk_TIA")))
+            feature.SetField("Blk_EIA", float(currentAttList.get_attribute("Blk_EIA")))
+            feature.SetField("Blk_EIF", float(currentAttList.get_attribute("Blk_EIF")))
+            feature.SetField("Blk_TIF", float(currentAttList.get_attribute("Blk_TIF")))
+            feature.SetField("Blk_RoofsA", float(currentAttList.get_attribute("Blk_RoofsA")))
 
         layer.CreateFeature(feature)
 
