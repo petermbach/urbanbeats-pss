@@ -908,9 +908,9 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
         fielddefmatrix.append(ogr.FieldDefn("SVU_avSW", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("SVU_avOTH", ogr.OFTReal))
 
-        #fielddefmatrix.append(ogr.FieldDefn("HasLake", ogr.OFTInteger))     # Roads & Highways
-        #fielddefmatrix.append(ogr.FieldDefn("HasLake", ogr.OFTInteger))
-        #fielddefmatrix.append(ogr.FieldDefn("HasLake", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("RoadTIA", ogr.OFTReal))     # Roads & Highways
+        fielddefmatrix.append(ogr.FieldDefn("ParkBuffer", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("RD_av", ogr.OFTReal))
 
         fielddefmatrix.append(ogr.FieldDefn("HouseOccup", ogr.OFTReal))     # Residential
         fielddefmatrix.append(ogr.FieldDefn("ResParcels", ogr.OFTInteger))
@@ -1111,9 +1111,9 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
             feature.SetField("SVU_avSW", float(currentAttList.get_attribute("SVU_avSW")))
             feature.SetField("SVU_avOTH", float(currentAttList.get_attribute("SVU_avOTH")))
 
-            # ROADS AND HIGHWAYS
-            if currentAttList.get_attribute("HasRes"):
-                feature.SetField("avSt_RES", float(currentAttList.get_attribute("avSt_RES")))       # Both Residential
+            feature.SetField("RoadTIA", float(currentAttList.get_attribute("RoadTIA")))         # Roads
+            feature.SetField("ParkBuffer", int(currentAttList.get_attribute("ParkBuffer")))
+            feature.SetField("RD_av", float(currentAttList.get_attribute("RD_av")))
 
             if currentAttList.get_attribute("HasHouses"):
                 feature.SetField("HouseOccup", float(currentAttList.get_attribute("HouseOccup")))   # Residential
