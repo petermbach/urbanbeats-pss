@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Urbplanbb_Dialog</class>
- <widget class="QDialog" name="Urbplanbb_Dialog">
+ <class>Spatialmap_Dialog</class>
+ <widget class="QDialog" name="Spatialmap_Dialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -23,7 +23,11 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Urban Planning Module</string>
+   <string>Spatial Mapping Module</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../graphics/ubeats.qrc">
+    <normaloff>:/icons/Very-Basic-Design-icon.png</normaloff>:/icons/Very-Basic-Design-icon.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -206,11 +210,15 @@
              <height>16777215</height>
             </size>
            </property>
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
            <property name="html">
             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;DESCRIPTION&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;This module enables the mapping and setting of planning constraints, land surface cover estimation and investigating trends in spatial water consumption and urban water pollution among others.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
@@ -224,7 +232,7 @@ p, li { white-space: pre-wrap; }
          <bool>true</bool>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="geometry_tab">
          <attribute name="title">
@@ -3542,7 +3550,7 @@ p, li { white-space: pre-wrap; }
                         <rect>
                          <x>0</x>
                          <y>0</y>
-                         <width>492</width>
+                         <width>465</width>
                          <height>434</height>
                         </rect>
                        </property>
@@ -4400,7 +4408,7 @@ Laundry = Household</string>
                         <rect>
                          <x>0</x>
                          <y>0</y>
-                         <width>492</width>
+                         <width>487</width>
                          <height>587</height>
                         </rect>
                        </property>
@@ -5649,7 +5657,7 @@ p, li { white-space: pre-wrap; }
                         <rect>
                          <x>0</x>
                          <y>0</y>
-                         <width>492</width>
+                         <width>487</width>
                          <height>587</height>
                         </rect>
                        </property>
@@ -6936,7 +6944,7 @@ p, li { white-space: pre-wrap; }
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>510</width>
+                     <width>497</width>
                      <height>320</height>
                     </rect>
                    </property>
@@ -7471,8 +7479,8 @@ p, li { white-space: pre-wrap; }
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>510</width>
-                     <height>301</height>
+                     <width>439</width>
+                     <height>297</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_37">
@@ -7932,13 +7940,13 @@ p, li { white-space: pre-wrap; }
  </tabstops>
  <resources>
   <include location="../graphics/ubeats.qrc"/>
-  <include location="Documents/Coding Projects/UrbanBEATS-PSS/graphics/ubeats.qrc"/>
+  <include location="../graphics/ubeats.qrc"/>
  </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>Urbplanbb_Dialog</receiver>
+   <receiver>Spatialmap_Dialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -7954,7 +7962,7 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>Urbplanbb_Dialog</receiver>
+   <receiver>Spatialmap_Dialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

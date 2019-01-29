@@ -31,7 +31,7 @@ import model.progref.ubglobals as ubglobals
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
-from md_urbplanbbgui import Ui_Urbplanbb_Dialog
+from md_spatialmapping import Ui_Spatialmap_Dialog
 
 
 # --- MAIN GUI FUNCTION ---
@@ -46,7 +46,7 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         :param parent: None
         """
         QtWidgets.QDialog.__init__(self, parent)
-        self.ui = Ui_Urbplanbb_Dialog()
+        self.ui = Ui_Spatialmap_Dialog()
         self.ui.setupUi(self)
 
         # --- CONNECTIONS WITH CORE AND GUI ---
@@ -58,30 +58,30 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         # The active scenario is already set when the GUI is launched because the user could only click it if
         # a scenario is active. This active scenario will inform the rest of the GUI.
         self.module = None  # Initialize the variable to hold the active module object
-        self.pixmap_ref = [":/images/images/md_urbplanbb_general.jpg",
-                           ":/images/images/md_urbplanbb_residential.jpg",
-                           ":/images/images/md_urbplanbb_nonres.jpg",
-                           ":/images/images/md_urbplanbb_roads.jpg",
-                           ":/images/images/md_urbplanbb_openspaces.jpg",
-                           ":/images/images/md_urbplanbb_others.jpg"]
-        self.adjust_module_img()
+        # self.pixmap_ref = [":/images/images/md_urbplanbb_general.jpg",
+        #                    ":/images/images/md_urbplanbb_residential.jpg",
+        #                    ":/images/images/md_urbplanbb_nonres.jpg",
+        #                    ":/images/images/md_urbplanbb_roads.jpg",
+        #                    ":/images/images/md_urbplanbb_openspaces.jpg",
+        #                    ":/images/images/md_urbplanbb_others.jpg"]
+        # self.adjust_module_img()
 
         # --- SIMULATION YEAR SETTINGS ---
-        simyears = self.active_scenario.get_simulation_years()  # gets the simulation years
-        if len(simyears) > 1:
-            self.ui.year_combo.setEnabled(1)  # if more than one year, enables the box for selection
-            self.ui.autofillButton.setEnabled(1)
-            self.ui.same_params.setEnabled(1)
-            self.ui.year_combo.clear()
-            for yr in simyears:
-                self.ui.year_combo.addItem(str(yr))
-        else:
-            self.ui.autofillButton.setEnabled(0)  # if static or benchmark, then only one year is available
-            self.ui.same_params.setEnabled(0)  # so all of the sidebar buttons get disabled.
-            self.ui.year_combo.setEnabled(0)
-            self.ui.year_combo.clear()
-            self.ui.year_combo.addItem(str(simyears[0]))
-        self.ui.year_combo.setCurrentIndex(0)  # Set to the first item on the list.
+        # simyears = self.active_scenario.get_simulation_years()  # gets the simulation years
+        # if len(simyears) > 1:
+        #     self.ui.year_combo.setEnabled(1)  # if more than one year, enables the box for selection
+        #     self.ui.autofillButton.setEnabled(1)
+        #     self.ui.same_params.setEnabled(1)
+        #     self.ui.year_combo.clear()
+        #     for yr in simyears:
+        #         self.ui.year_combo.addItem(str(yr))
+        # else:
+        #     self.ui.autofillButton.setEnabled(0)  # if static or benchmark, then only one year is available
+        #     self.ui.same_params.setEnabled(0)  # so all of the sidebar buttons get disabled.
+        #     self.ui.year_combo.setEnabled(0)
+        #     self.ui.year_combo.clear()
+        #     self.ui.year_combo.addItem(str(simyears[0]))
+        # self.ui.year_combo.setCurrentIndex(0)  # Set to the first item on the list.
 
         # --- SETUP ALL DYNAMIC COMBO BOXES ---
 
@@ -91,7 +91,7 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         self.gui_state = "ready"
 
         # --- SIGNALS AND SLOTS ---
-        self.ui.parameters.currentChanged.connect(self.adjust_module_img)   # Changes the module's image
+        # self.ui.parameters.currentChanged.connect(self.adjust_module_img)   # Changes the module's image
 
         # TAB 1 - PLANNING RULES PARAMETERS
 

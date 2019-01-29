@@ -58,7 +58,8 @@ import model.ublibs.ubspatial as ubspatial
 
 from gui.md_delinblocksguic import DelinBlocksGuiLaunch
 from gui.md_urbplanbbguic import UrbplanbbGuiLaunch
-
+from gui.md_urbdevelopc import UrbdevelopGuiLaunch
+from gui.md_spatialmappingc import SpatialMappingGuiLaunch
 
 # --- MAIN GUI FUNCTION ---
 class MainWindow(QtWidgets.QMainWindow):
@@ -1050,11 +1051,10 @@ class MainWindow(QtWidgets.QMainWindow):
         pass
 
     def launch_urbandev_modulegui(self):
-        """
-
-        :return:
-        """
-        pass
+        """Launches the urban development module's user interface and filles in relevant parameters."""
+        urbandevgui = UrbdevelopGuiLaunch(self, self.get_active_simulation_object(),
+                                          self.get_active_data_library(), self.get_active_project_log())
+        urbandevgui.exec_()
 
     def launch_urbanplan_modulegui(self):
         """Launches the urban planning modules user interface and pre-fills all relevant parameters."""
@@ -1070,11 +1070,10 @@ class MainWindow(QtWidgets.QMainWindow):
         pass
 
     def launch_spatialmap_modulegui(self):
-        """
-
-        :return:
-        """
-        pass
+        """Launches the spatial mapping module's user interface and fills in relevant parameters."""
+        spatialmappinggui = SpatialMappingGuiLaunch(self, self.get_active_simulation_object(),
+                                                    self.get_active_data_library(), self.get_active_project_log())
+        spatialmappinggui.exec_()
 
     def launch_regulation_modulegui(self):
         """
