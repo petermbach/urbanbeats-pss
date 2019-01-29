@@ -2524,7 +2524,8 @@ class Ui_Urbplanbb_Dialog(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">A simplified spatial representation of the urban environment. In this module, settings are made to the geometry that is used to represent the urban information, spatial connectivity and geography.</span></p></body></html>"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">DESCRIPTION</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Using planning regulations, this module attempts to reconstruct the urban form in abstract detail to enable planning of various elements of the environment. This urban form is a representation of the urban characteristics of the real city and can be calibrated against a number of different summary metrics including impervious areas, roof areas, paved areas, building counts, housing occupancy, car parking space, etc.</span></p></body></html>"))
         self.plan_template_title.setText(_translate("Urbplanbb_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">PLANNING TEMPLATES</span></p></body></html>"))
         self.plan_descr.setText(_translate("Urbplanbb_Dialog", "Begin here by choosing your default templates to work with, this includes building typologies and pre-filling the module\'s parameters"))
         self.plan_params_citycombo.setItemText(0, _translate("Urbplanbb_Dialog", "Melbourne, Australia"))
