@@ -212,6 +212,9 @@ class UrbanBeatsScenario(threading.Thread):
         except KeyError:
             print "Error, cannot find module instance!"
             return None
+        except IndexError:
+            print "No module instances found for current time step."
+            return None
 
     def setup_scenario(self):
         """Initializes the scenario with the setup data provided by the user."""
