@@ -1,13 +1,32 @@
+# coding=utf-8
 """
-:author duquevna
+@file DesignGraphBuilder
+@author Natalia Duque
+@section LICENSE
+
+Sewer Networks Design (SND)
+Copyright (C) 2016  CIACUA, Universidad de los Andes, Bogotá, Colombia
+
+This program is a free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from numpy import power, infty, array
-from Utilities.Rounder import rounder
-from HydraulicDesign.LayoutNode import LayoutNode
-from HydraulicDesign.DesignNode import DesignNode
-from HydraulicDesign.DesignedArc import DesignedArc
-from HydraulicDesign.DesignHydraulics import DesignHydraulics
-from Utilities.Global import elevation_change, commercial_diameters, Arrow3D
+from plugins.snd_natalia.utilities.Rounder import rounder
+from plugins.snd_natalia.hydraulic_design.LayoutNode import LayoutNode
+from plugins.snd_natalia.hydraulic_design.DesignNode import DesignNode
+from plugins.snd_natalia.hydraulic_design.DesignedArc import DesignedArc
+from plugins.snd_natalia.hydraulic_design.DesignHydraulics import DesignHydraulics
+from plugins.snd_natalia.utilities.Global import elevation_change, commercial_diameters, Arrow3D
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 

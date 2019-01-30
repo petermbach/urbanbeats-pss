@@ -1,8 +1,27 @@
+# coding=utf-8
 """
-:author duquevna
+@file LayoutNode
+@author Natalia Duque
+@section LICENSE
+
+Sewer Networks Design (SND)
+Copyright (C) 2016  CIACUA, Universidad de los Andes, Bogotá, Colombia
+
+This program is a free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-import HydraulicDesign.DataHandler as dataHandler
-from Utilities.Global import min_depth, max_depth
+import plugins.snd_natalia.hydraulic_design.DataHandler as dataHandler
+from plugins.snd_natalia.utilities.Global import min_depth, max_depth
 
 
 class LayoutNode(object):
