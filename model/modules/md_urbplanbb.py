@@ -783,21 +783,20 @@ class UrbanPlanning(UBModule):
                 arterial_perv.append((1 - self.pt_impervious / 100.0) * rd_centralbuff)
 
             # Incorporate open spaces as buffers
+            park_buffer = 0     # By default: Use the buffer area defined for the roads
             if self.ma_openspacebuffer:
                 if (A_park + A_ref) >= 0.5 * A_rd:      # if total open space is greater than half the road area
                     # Then the rd_buffer parameter is set to zero because the parks are used instead
                     park_buffer = 1
                     arterial_perv[0] = 0
-                else:   # Use the buffer area defined for the roads
-                    park_buffer = 0
 
-                total_width = (sum(arterial_imp) + sum(arterial_perv)) * 2.0
-                Aimp_rd = float(sum(arterial_imp) * 2.0 / total_width) * A_rd
+            total_width = (sum(arterial_imp) + sum(arterial_perv)) * 2.0
+            Aimp_rd = float(sum(arterial_imp) * 2.0 / total_width) * A_rd
 
-                if self.ma_median_reserved:
-                    av_spRD = float(sum(arterial_perv[:len(arterial_perv)-1]) * 2.0 / total_width) * A_rd
-                else:
-                    av_spRD = float(sum(arterial_perv) * 2.0 / total_width) * A_rd
+            if self.ma_median_reserved:
+                av_spRD = float(sum(arterial_perv[:len(arterial_perv)-1]) * 2.0 / total_width) * A_rd
+            else:
+                av_spRD = float(sum(arterial_perv) * 2.0 / total_width) * A_rd
 
             # HIGHWAYS AND FREEWAYS [TO DO]
 
