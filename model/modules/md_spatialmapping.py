@@ -139,6 +139,9 @@ class SpatialMapping(UBModule):
         # Calculates the water demands, irrigation volumes and wastewater generated. Also includes downscaling of water
         # consumption to daily diurnal patterns and scaling across a year for seasonal trends.
 
+
+
+
         # --- STORMWATER POLLUTION EMISSIONS ---
         # Pollutions emissions mapping, stormwater system, this module analyses the land use diversity and determines
         # build-up wash-off pollutant concentrations that can then be mapped spatially or modelled temporally.

@@ -308,7 +308,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
                 for dref in datarefs:
                     twi = QtWidgets.QTreeWidgetItem()
                     twi.setText(0, dref.get_metadata("filename"))
-                    twi.setToolTip(0, str(dref.get_data_id())+" - "+str(dref.get_data_file_path()))
+                    twi.setToolTip(0, str(dref.get_data_id())+" :: "+str(dref.get_data_file_path()))
                     self.ui.scenariodata_tree.topLevelItem(i).addChild(twi)
 
     def launch_timestep_window(self):
@@ -348,12 +348,12 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         selection = self.ui.datalibrary_tree.currentItem()
         if selection.childCount() == 0 and selection.text(0) != "(no data)":
             # Then we have a data set
-            dataID, filepath = selection.toolTip(0).split(" - ")
+            dataID, filepath = selection.toolTip(0).split(" :: ")
             filename = selection.text(0)
             dataref = self.datalibrary.get_data_with_id(dataID)
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, filename)
-            twi.setToolTip(0, str(dataID + " - " + filepath))
+            twi.setToolTip(0, str(dataID + " :: " + filepath))
             if dataref.get_metadata("class") == "spatial":
                 self.ui.scenariodata_tree.topLevelItem(0).addChild(twi)
             elif dataref.get_metadata("class") == "temporal":
@@ -366,7 +366,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         selection = self.ui.scenariodata_tree.currentItem()
         if selection.text(0) not in ["Spatial Data", "Temporal Data", "Qualitative Data"]:
             # filename = selection.text(0)
-            # dataID, filepath = selection.toolTip(0).split(" - ")
+            # dataID, filepath = selection.toolTip(0).split(" :: ")
             parent = selection.parent()
             parent.removeChild(selection)
 
@@ -409,7 +409,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
                 cur_toplevelitem.child(dtypeindex).takeChild(0)
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, dref.get_metadata("filename"))
-            twi.setToolTip(0, str(dref.get_data_id()) + " - " + str(dref.get_data_file_path()))
+            twi.setToolTip(0, str(dref.get_data_id()) + " :: " + str(dref.get_data_file_path()))
             cur_toplevelitem.child(dtypeindex).addChild(twi)
 
         # Update Temporal Data Sets
@@ -422,7 +422,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
                 cur_toplevelitem.child(dtypeindex).takeChild(0)
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, dref.get_metadata("filename"))
-            twi.setToolTip(0, str(dref.get_data_id()) + " - " + str(dref.get_data_file_path()))
+            twi.setToolTip(0, str(dref.get_data_id()) + " :: " + str(dref.get_data_file_path()))
             cur_toplevelitem.child(dtypeindex).addChild(twi)
 
         # Update the Qualitative Data Set
@@ -432,7 +432,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
                 self.ui.datalibrary_tree.topLevelItem(2).takeChild(0)
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, dref.get_metadata("filename"))
-            twi.setToolTip(0, str(dref.get_data_id()) + " - " + str(dref.get_data_file_path()))
+            twi.setToolTip(0, str(dref.get_data_id()) + " :: " + str(dref.get_data_file_path()))
             self.ui.datalibrary_tree.topLevelItem(2).addChild(twi)
 
         self.ui.datalibrary_tree.expandAll()
@@ -584,7 +584,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         olddatasets = self.scenario.get_data_reference("spatial")
         newdatasets = []
         for i in range(self.ui.scenariodata_tree.topLevelItem(0).childCount()):
-            dataID, filepath = self.ui.scenariodata_tree.topLevelItem(0).child(i).toolTip(0).split(" - ")
+            dataID, filepath = self.ui.scenariodata_tree.topLevelItem(0).child(i).toolTip(0).split(" :: ")
             filename = self.ui.scenariodata_tree.topLevelItem(0).child(i).text(0)
             dref = self.datalibrary.get_data_with_id(dataID)
             if self.scenario.has_dataref(dataID):
@@ -608,7 +608,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         olddatasets = self.scenario.get_data_reference("temporal")
         newdatasets = []
         for i in range(self.ui.scenariodata_tree.topLevelItem(1).childCount()):
-            dataID, filepath = self.ui.scenariodata_tree.topLevelItem(1).child(i).toolTip(0).split(" - ")
+            dataID, filepath = self.ui.scenariodata_tree.topLevelItem(1).child(i).toolTip(0).split(" :: ")
             filename = self.ui.scenariodata_tree.topLevelItem(1).child(i).text(0)
             dref = self.datalibrary.get_data_with_id(dataID)
             if self.scenario.has_dataref(dataID):
@@ -629,7 +629,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         olddatasets = self.scenario.get_data_reference("qualitative")
         newdatasets = []
         for i in range(self.ui.scenariodata_tree.topLevelItem(2).childCount()):
-            dataID, filepath = self.ui.scenariodata_tree.topLevelItem(2).child(i).toolTip(0).split(" - ")
+            dataID, filepath = self.ui.scenariodata_tree.topLevelItem(2).child(i).toolTip(0).split(" :: ")
             filename = self.ui.scenariodata_tree.topLevelItem(2).child(i).text(0)
             dref = self.datalibrary.get_data_with_id(dataID)
             if self.scenario.has_dataref(dataID):
