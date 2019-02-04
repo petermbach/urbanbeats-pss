@@ -45,7 +45,7 @@ import modules.md_perfassess as md_perfassess
 import modules.md_regulation as md_regulation
 import modules.md_socioecon as md_socioecon
 import modules.md_spatialmapping as md_spatialmapping
-import modules.md_techplacement as md_techplacement
+import modules.md_infrastructure as md_techplacement
 import modules.md_urbandev as md_urbandev
 import modules.md_urbplanbb as md_urbplanbb
 import ublibs.ubspatial as ubspatial
@@ -256,7 +256,7 @@ class UrbanBeatsScenario(threading.Thread):
                     md_regulation.RegulationModule(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("INFRA"):
                 self.__modules["INFRA"].append(
-                    md_techplacement.Techplacement(inputs[0], inputs[1], inputs[2], inputs[3], i))
+                    md_techplacement.Infrastructure(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("PERF"):
                 self.__modules["PERF"].append(
                     md_perfassess.PerformanceAssessment(inputs[0], inputs[1], inputs[2], inputs[3], i))
@@ -538,23 +538,39 @@ class UrbanBeatsScenario(threading.Thread):
         delinblocks.run_module()
 
         # --- STATIC STEP 2: Climate Setup ---
+        # Skip this for now.
 
         # --- STATIC STEP 3: Urban Planning ---
         self.simulation.update_runtime_progress(30)             # From this point forth, modules may be optional!
         urbplanbb = self.get_module_object("URBPLAN", 0)
+        map_attr = self.get_asset_with_name("MapAttributes")
         if urbplanbb is None:
-            map_attr = self.get_asset_with_name("MapAttributes")
             map_attr.add_attribute("HasURBANFORM", 0)
         else:
-            map_attr = self.get_asset_with_name("MapAttributes")
             map_attr.add_attribute("HasURBANFORM", 1)
             urbplanbb.attach(self.__observers)
             urbplanbb.run_module()
 
         # --- STATIC STEP 4: Socio-Economic ---
+        # Skip this for now
+
         # --- STATIC STEP 5: Spatial Mapping ---
+        # Skip this for now
+
         # --- STATIC STEP 6: Regulation ---
+        # Skip this for now
+
         # --- STATIC STEP 7: Infrastructure ---
+        self.simulation.update_runtime_progress(60)
+        infrastructure = self.get_module_object("INFRA", 0)
+        if infrastructure is None:
+            map_attr.add_attribute("HasINFRA", 0)
+        else:
+            map_attr.add_attribute("HasINFRA", 1)
+            infrastructure.attach(self.__observers)
+            infrastructure.run_module()
+
+
         # --- STATIC STEP 8: Performance ---
         # --- STATIC STEP 9: Impact ---
         # --- STATIC STEP 10: Decision Analysis ---

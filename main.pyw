@@ -61,6 +61,8 @@ from gui.md_urbplanbbguic import UrbplanbbGuiLaunch
 from gui.md_urbdevelopc import UrbdevelopGuiLaunch
 from gui.md_spatialmappingc import SpatialMappingGuiLaunch
 
+from gui.md_infrastructurec import InfrastructureGuiLaunch
+
 # --- MAIN GUI FUNCTION ---
 class MainWindow(QtWidgets.QMainWindow):
     """The class definition for the UrbanBEATS Main Window. The main window
@@ -1083,11 +1085,10 @@ class MainWindow(QtWidgets.QMainWindow):
         pass
 
     def launch_infrastructure_modulegui(self):
-        """
-
-        :return:
-        """
-        pass
+        """Launches the infrastructure module's user interface and fills in relevant parameters."""
+        infrastructuregui = InfrastructureGuiLaunch(self, self.get_active_simulation_object(),
+                                                    self.get_active_data_library(), self.get_active_project_log())
+        infrastructuregui.exec_()
 
     def launch_performance_modulegui(self):
         """

@@ -39,7 +39,7 @@ from ubmodule import *
 
 
 # --- MODULE CLASS DEFINITION ---
-class RegulationModule():
+class RegulationModule(UBModule):
     """ REGULATION MODULE
     In this module, all policy and non-structural related strategies are
     tested and tried. The module also defines the management targets that

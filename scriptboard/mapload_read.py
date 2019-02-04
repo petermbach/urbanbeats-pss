@@ -21,8 +21,12 @@ print xmin, xmax, ymin, ymax
 
 spatialref = layer.GetSpatialRef()
 inputprojcs = spatialref.GetAttrValue("PROJCS")
+print "EPSG CODE:", spatialref.GetAttrValue("PROJCS|AUTHORITY", 1)
 if inputprojcs is None:
     print "Warning, spatial reference epsg cannot be found"
+
+print spatialref.IsGeographic()                 # If this map is projected, this will be 0
+print spatialref.IsProjected()                  # If this map is projected, this will be 1
 
 featurecount = layer.GetFeatureCount()
 print "Total feature", featurecount

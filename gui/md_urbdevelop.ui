@@ -225,7 +225,7 @@ p, li { white-space: pre-wrap; }
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_10">
           <item>
-           <widget class="QScrollArea" name="inputs_scrollArea">
+           <widget class="QScrollArea" name="general_scrollarea">
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
             </property>
@@ -248,59 +248,59 @@ p, li { white-space: pre-wrap; }
                  <number>9</number>
                 </property>
                 <item>
-                 <widget class="QLabel" name="descr1_15">
+                 <widget class="QLabel" name="basic_title">
                   <property name="text">
                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;BASIC SETUP&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="Line" name="line">
+                 <widget class="Line" name="basic_divider">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="emp_lbl_30">
+                 <widget class="QLabel" name="basic_descr">
                   <property name="text">
                    <string>Basic input data for conducting the urban development modelling</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QWidget" name="widget" native="true">
+                 <widget class="QWidget" name="basic_widget" native="true">
                   <layout class="QGridLayout" name="gridLayout_2">
                    <item row="2" column="0">
-                    <widget class="QLabel" name="label_2">
+                    <widget class="QLabel" name="basic_dt_lbl">
                      <property name="text">
                       <string>Simulation Time Step [years]:</string>
                      </property>
                     </widget>
                    </item>
                    <item row="2" column="2">
-                    <widget class="QLabel" name="label_3">
+                    <widget class="QLabel" name="basic_dt">
                      <property name="text">
                       <string>dT year(s)</string>
                      </property>
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="label_4">
+                    <widget class="QLabel" name="basic_nhd_lbl">
                      <property name="text">
                       <string>Cell Neighbourhood Size (radius) [m]:</string>
                      </property>
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="label">
+                    <widget class="QLabel" name="basic_cellsize_lbl">
                      <property name="text">
                       <string>Map Resolution (cell size) [m]:</string>
                      </property>
                     </widget>
                    </item>
                    <item row="0" column="2">
-                    <widget class="QSpinBox" name="resolution_spin">
+                    <widget class="QSpinBox" name="basic_cellsize">
                      <property name="minimumSize">
                       <size>
                        <width>80</width>
@@ -402,28 +402,28 @@ p, li { white-space: pre-wrap; }
                     </spacer>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="label_10">
+                    <widget class="QLabel" name="basic_stochastic_lbl">
                      <property name="text">
                       <string>Stochastic perturbation [ ]:</string>
                      </property>
                     </widget>
                    </item>
                    <item row="1" column="0">
-                    <widget class="QLabel" name="label_6">
+                    <widget class="QLabel" name="basic_baseyear_lbl">
                      <property name="text">
                       <string>Base year [year]:</string>
                      </property>
                     </widget>
                    </item>
                    <item row="1" column="2">
-                    <widget class="QLabel" name="label_7">
+                    <widget class="QLabel" name="basic_baseyear">
                      <property name="text">
                       <string>199?</string>
                      </property>
                     </widget>
                    </item>
                    <item row="3" column="2">
-                    <widget class="QDoubleSpinBox" name="doubleSpinBox">
+                    <widget class="QDoubleSpinBox" name="basic_nhd">
                      <property name="prefix">
                       <string/>
                      </property>
@@ -448,7 +448,7 @@ p, li { white-space: pre-wrap; }
                     </widget>
                    </item>
                    <item row="3" column="3">
-                    <widget class="QLabel" name="label_5">
+                    <widget class="QLabel" name="basic_nhd_lbl2">
                      <property name="text">
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;approx. area: ?? sqkm&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
@@ -471,7 +471,7 @@ p, li { white-space: pre-wrap; }
                     </spacer>
                    </item>
                    <item row="4" column="2">
-                    <widget class="QLineEdit" name="lineEdit_5">
+                    <widget class="QLineEdit" name="basic_stochastic">
                      <property name="maximumSize">
                       <size>
                        <width>80</width>
@@ -484,7 +484,7 @@ p, li { white-space: pre-wrap; }
                     </widget>
                    </item>
                    <item row="4" column="3">
-                    <widget class="QLabel" name="label_11">
+                    <widget class="QLabel" name="basic_stochastic_lbl2">
                      <property name="text">
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(alpha is the size of perturbation)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
@@ -497,38 +497,38 @@ p, li { white-space: pre-wrap; }
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="descr1">
+                 <widget class="QLabel" name="input_title">
                   <property name="text">
                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;BASE INPUT DATA AND OPTIONS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="Line" name="line_2">
+                 <widget class="Line" name="input_divider">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="emp_lbl_2">
+                 <widget class="QLabel" name="input_descr">
                   <property name="text">
                    <string>Customise options for the three key spatial inputs: Land use, population and employment</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="emp_lbl_33">
+                 <widget class="QLabel" name="input_luc_title">
                   <property name="text">
                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Land Use&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QWidget" name="datasets" native="true">
+                 <widget class="QWidget" name="input_luc_widget" native="true">
                   <layout class="QGridLayout" name="gridLayout_6">
                    <item row="2" column="1">
-                    <widget class="QComboBox" name="employment_combo_16">
+                    <widget class="QComboBox" name="input_aggreg_combo">
                      <item>
                       <property name="text">
                        <string>Single Uniform Land Use (faster, but less accurate)</string>
@@ -547,44 +547,44 @@ p, li { white-space: pre-wrap; }
                     </widget>
                    </item>
                    <item row="2" column="0">
-                    <widget class="QLabel" name="emp_lbl_34">
+                    <widget class="QLabel" name="input_aggreg_lbl">
                      <property name="text">
                       <string>Land Use Aggregation Options:</string>
                      </property>
                     </widget>
                    </item>
                    <item row="1" column="0">
-                    <widget class="QLabel" name="emp_lbl">
+                    <widget class="QLabel" name="input_luc_lbl">
                      <property name="text">
                       <string>Select Input Map:</string>
                      </property>
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QComboBox" name="employment_combo"/>
+                    <widget class="QComboBox" name="input_luc_combo"/>
                    </item>
                   </layout>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="label_59">
+                 <widget class="QLabel" name="input_pop_title">
                   <property name="text">
                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Population Map&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QWidget" name="datasets_17" native="true">
+                 <widget class="QWidget" name="input_pop_widget" native="true">
                   <layout class="QGridLayout" name="gridLayout_23">
                    <item row="1" column="0">
-                    <widget class="QLabel" name="label_58">
+                    <widget class="QLabel" name="input_pop_lbl">
                      <property name="text">
                       <string>Select Input Map:</string>
                      </property>
                     </widget>
                    </item>
                    <item row="3" column="2">
-                    <widget class="QDoubleSpinBox" name="doubleSpinBox_8">
+                    <widget class="QDoubleSpinBox" name="input_birthrate_spin">
                      <property name="maximumSize">
                       <size>
                        <width>80</width>
@@ -702,24 +702,24 @@ p, li { white-space: pre-wrap; }
                     </spacer>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QLabel" name="label_60">
+                    <widget class="QLabel" name="input_birthrate_lbl">
                      <property name="text">
                       <string>Birth Rate:</string>
                      </property>
                     </widget>
                    </item>
                    <item row="1" column="2" colspan="3">
-                    <widget class="QComboBox" name="locality_combo_17"/>
+                    <widget class="QComboBox" name="input_pop_combo"/>
                    </item>
                    <item row="2" column="3">
-                    <widget class="QLabel" name="label_64">
+                    <widget class="QLabel" name="input_pop_lbl4">
                      <property name="text">
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;TREND&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
                    <item row="5" column="2">
-                    <widget class="QDoubleSpinBox" name="doubleSpinBox_13">
+                    <widget class="QDoubleSpinBox" name="input_migration_spin">
                      <property name="maximumSize">
                       <size>
                        <width>80</width>
@@ -750,14 +750,14 @@ p, li { white-space: pre-wrap; }
                     </widget>
                    </item>
                    <item row="3" column="4">
-                    <widget class="QPushButton" name="pushButton">
+                    <widget class="QPushButton" name="input_birthrate_custom">
                      <property name="text">
                       <string>Custom...</string>
                      </property>
                     </widget>
                    </item>
                    <item row="4" column="2">
-                    <widget class="QDoubleSpinBox" name="doubleSpinBox_12">
+                    <widget class="QDoubleSpinBox" name="input_deathrate_spin">
                      <property name="maximumSize">
                       <size>
                        <width>80</width>
@@ -788,21 +788,21 @@ p, li { white-space: pre-wrap; }
                     </widget>
                    </item>
                    <item row="5" column="0">
-                    <widget class="QLabel" name="label_66">
+                    <widget class="QLabel" name="input_migration_lbl">
                      <property name="text">
                       <string>Net Migration Rate:</string>
                      </property>
                     </widget>
                    </item>
                    <item row="4" column="0">
-                    <widget class="QLabel" name="label_65">
+                    <widget class="QLabel" name="input_deathrate_lbl">
                      <property name="text">
                       <string>Death Rate:</string>
                      </property>
                     </widget>
                    </item>
                    <item row="4" column="4">
-                    <widget class="QPushButton" name="pushButton_3">
+                    <widget class="QPushButton" name="input_deathrate_custom">
                      <property name="text">
                       <string>Custom...</string>
                      </property>
@@ -825,7 +825,7 @@ p, li { white-space: pre-wrap; }
                     </spacer>
                    </item>
                    <item row="3" column="3">
-                    <widget class="QComboBox" name="locality_combo_18">
+                    <widget class="QComboBox" name="input_birthrate_trend">
                      <property name="minimumSize">
                       <size>
                        <width>150</width>
@@ -860,14 +860,14 @@ p, li { white-space: pre-wrap; }
                     </widget>
                    </item>
                    <item row="2" column="2">
-                    <widget class="QLabel" name="label_61">
+                    <widget class="QLabel" name="input_pop_lbl3">
                      <property name="text">
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;RATE&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
                    <item row="4" column="3">
-                    <widget class="QComboBox" name="locality_combo_19">
+                    <widget class="QComboBox" name="input_deathrate_trend">
                      <property name="minimumSize">
                       <size>
                        <width>150</width>
@@ -902,7 +902,7 @@ p, li { white-space: pre-wrap; }
                     </widget>
                    </item>
                    <item row="5" column="3">
-                    <widget class="QComboBox" name="locality_combo_20">
+                    <widget class="QComboBox" name="input_migration_trend">
                      <property name="minimumSize">
                       <size>
                        <width>150</width>
@@ -950,21 +950,21 @@ p, li { white-space: pre-wrap; }
                     </spacer>
                    </item>
                    <item row="5" column="4">
-                    <widget class="QPushButton" name="pushButton_4">
+                    <widget class="QPushButton" name="input_migration_custom">
                      <property name="text">
                       <string>Custom...</string>
                      </property>
                     </widget>
                    </item>
                    <item row="6" column="4">
-                    <widget class="QPushButton" name="pushButton_5">
+                    <widget class="QPushButton" name="input_pop_summary">
                      <property name="text">
                       <string>Summary</string>
                      </property>
                     </widget>
                    </item>
                    <item row="2" column="0" colspan="2">
-                    <widget class="QLabel" name="label_63">
+                    <widget class="QLabel" name="input_pop_lbl2">
                      <property name="text">
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Population Dynamics&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
@@ -987,27 +987,27 @@ p, li { white-space: pre-wrap; }
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="emp_lbl_31">
+                 <widget class="QLabel" name="input_employment_title">
                   <property name="text">
                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Employment&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QWidget" name="datasets_16" native="true">
+                 <widget class="QWidget" name="input_employment_widget" native="true">
                   <layout class="QGridLayout" name="gridLayout_21">
                    <property name="bottomMargin">
                     <number>0</number>
                    </property>
                    <item row="0" column="2">
-                    <widget class="QRadioButton" name="radioButton_2">
+                    <widget class="QRadioButton" name="employ_pop">
                      <property name="text">
                       <string>Estimate from Population</string>
                      </property>
                     </widget>
                    </item>
                    <item row="1" column="0" colspan="4">
-                    <widget class="QStackedWidget" name="stackedWidget">
+                    <widget class="QStackedWidget" name="employ_stack">
                      <property name="minimumSize">
                       <size>
                        <width>0</width>
@@ -1015,18 +1015,18 @@ p, li { white-space: pre-wrap; }
                       </size>
                      </property>
                      <property name="currentIndex">
-                      <number>1</number>
+                      <number>0</number>
                      </property>
                      <widget class="QWidget" name="page">
                       <layout class="QGridLayout" name="gridLayout_3">
                        <item row="0" column="0">
-                        <widget class="QGroupBox" name="groupBox">
+                        <widget class="QGroupBox" name="employ_inputmap_box">
                          <property name="title">
                           <string>Input Map (select)</string>
                          </property>
                          <layout class="QGridLayout" name="gridLayout_4">
                           <item row="2" column="1">
-                           <widget class="QDoubleSpinBox" name="doubleSpinBox_9">
+                           <widget class="QDoubleSpinBox" name="employ_inputmap_spin">
                             <property name="prefix">
                              <string/>
                             </property>
@@ -1051,10 +1051,10 @@ p, li { white-space: pre-wrap; }
                            </widget>
                           </item>
                           <item row="1" column="1">
-                           <widget class="QComboBox" name="locality_combo_5"/>
+                           <widget class="QComboBox" name="employ_inputmap_combo"/>
                           </item>
                           <item row="0" column="0" colspan="2">
-                           <widget class="QLabel" name="label_9">
+                           <widget class="QLabel" name="employ_inputmap_lbl">
                             <property name="text">
                              <string>Select an input data set to use for employment. Note that this map should preferably align with the spatial locations of employment</string>
                             </property>
@@ -1064,7 +1064,7 @@ p, li { white-space: pre-wrap; }
                            </widget>
                           </item>
                           <item row="2" column="0">
-                           <widget class="QLabel" name="label_62">
+                           <widget class="QLabel" name="employ_inputmap_lbl3">
                             <property name="text">
                              <string>Annual rate of change:</string>
                             </property>
@@ -1087,7 +1087,7 @@ p, li { white-space: pre-wrap; }
                            </spacer>
                           </item>
                           <item row="1" column="0">
-                           <widget class="QLabel" name="label_8">
+                           <widget class="QLabel" name="employ_inputmap_lbl2">
                             <property name="text">
                              <string>Input employment map:</string>
                             </property>
@@ -1104,7 +1104,7 @@ p, li { white-space: pre-wrap; }
                      <widget class="QWidget" name="page_2">
                       <layout class="QVBoxLayout" name="verticalLayout_8">
                        <item>
-                        <widget class="QGroupBox" name="groupBox_2">
+                        <widget class="QGroupBox" name="employ_pop_box">
                          <property name="title">
                           <string>Estimate from Population</string>
                          </property>
@@ -1123,7 +1123,7 @@ p, li { white-space: pre-wrap; }
                            </spacer>
                           </item>
                           <item row="0" column="0" colspan="4">
-                           <widget class="QLabel" name="label_50">
+                           <widget class="QLabel" name="employ_pop_lbl">
                             <property name="text">
                              <string>Define scaling factors of the global residential population density for different employment land uses...</string>
                             </property>
@@ -1133,7 +1133,7 @@ p, li { white-space: pre-wrap; }
                            </widget>
                           </item>
                           <item row="3" column="2">
-                           <widget class="QDoubleSpinBox" name="doubleSpinBox_4">
+                           <widget class="QDoubleSpinBox" name="employ_pop_office">
                             <property name="minimumSize">
                              <size>
                               <width>80</width>
@@ -1143,7 +1143,7 @@ p, li { white-space: pre-wrap; }
                            </widget>
                           </item>
                           <item row="2" column="2">
-                           <widget class="QDoubleSpinBox" name="doubleSpinBox_3">
+                           <widget class="QDoubleSpinBox" name="employ_pop_ind">
                             <property name="minimumSize">
                              <size>
                               <width>80</width>
@@ -1153,7 +1153,7 @@ p, li { white-space: pre-wrap; }
                            </widget>
                           </item>
                           <item row="1" column="2">
-                           <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+                           <widget class="QDoubleSpinBox" name="employ_pop_com">
                             <property name="minimumSize">
                              <size>
                               <width>80</width>
@@ -1192,21 +1192,21 @@ p, li { white-space: pre-wrap; }
                            </spacer>
                           </item>
                           <item row="2" column="0">
-                           <widget class="QLabel" name="label_48">
+                           <widget class="QLabel" name="employ_pop_ind_lbl">
                             <property name="text">
                              <string>Industrial employment factor:</string>
                             </property>
                            </widget>
                           </item>
                           <item row="3" column="0">
-                           <widget class="QLabel" name="label_49">
+                           <widget class="QLabel" name="employ_pop_office_lbl">
                             <property name="text">
                              <string>Offices employment factor:</string>
                             </property>
                            </widget>
                           </item>
                           <item row="1" column="0">
-                           <widget class="QLabel" name="label_36">
+                           <widget class="QLabel" name="employ_pop_com_lbl">
                             <property name="text">
                              <string>Commercial employment factor:</string>
                             </property>
@@ -1258,14 +1258,14 @@ p, li { white-space: pre-wrap; }
                            </spacer>
                           </item>
                           <item row="4" column="0">
-                           <widget class="QCheckBox" name="checkBox">
+                           <widget class="QCheckBox" name="employ_pop_roc">
                             <property name="text">
                              <string>Define a separate rate of change:</string>
                             </property>
                            </widget>
                           </item>
                           <item row="4" column="2">
-                           <widget class="QDoubleSpinBox" name="doubleSpinBox_10">
+                           <widget class="QDoubleSpinBox" name="employ_pop_roc_spin">
                             <property name="prefix">
                              <string/>
                             </property>
@@ -1326,27 +1326,27 @@ p, li { white-space: pre-wrap; }
                      <widget class="QWidget" name="page_3">
                       <layout class="QVBoxLayout" name="verticalLayout_9">
                        <item>
-                        <widget class="QGroupBox" name="groupBox_3">
+                        <widget class="QGroupBox" name="employ_land_box">
                          <property name="title">
                           <string>Estimate from Land Use</string>
                          </property>
                          <layout class="QGridLayout" name="gridLayout_22">
                           <item row="2" column="3">
-                           <widget class="QLabel" name="label_56">
+                           <widget class="QLabel" name="employ_land_ind_lbl2">
                             <property name="text">
                              <string>employees/ha</string>
                             </property>
                            </widget>
                           </item>
                           <item row="3" column="3">
-                           <widget class="QLabel" name="label_57">
+                           <widget class="QLabel" name="employ_land_office_lbl2">
                             <property name="text">
                              <string>employees/ha</string>
                             </property>
                            </widget>
                           </item>
                           <item row="2" column="2">
-                           <widget class="QDoubleSpinBox" name="doubleSpinBox_6">
+                           <widget class="QDoubleSpinBox" name="employ_land_ind">
                             <property name="minimumSize">
                              <size>
                               <width>80</width>
@@ -1356,14 +1356,14 @@ p, li { white-space: pre-wrap; }
                            </widget>
                           </item>
                           <item row="3" column="0">
-                           <widget class="QLabel" name="label_53">
+                           <widget class="QLabel" name="employ_land_office_lbl">
                             <property name="text">
                              <string>Office employment density:</string>
                             </property>
                            </widget>
                           </item>
                           <item row="3" column="2">
-                           <widget class="QDoubleSpinBox" name="doubleSpinBox_7">
+                           <widget class="QDoubleSpinBox" name="employ_land_office">
                             <property name="minimumSize">
                              <size>
                               <width>80</width>
@@ -1402,7 +1402,7 @@ p, li { white-space: pre-wrap; }
                            </spacer>
                           </item>
                           <item row="1" column="3">
-                           <widget class="QLabel" name="label_55">
+                           <widget class="QLabel" name="employ_land_com_lbl2">
                             <property name="text">
                              <string>employees/ha</string>
                             </property>
@@ -1467,7 +1467,7 @@ p, li { white-space: pre-wrap; }
                            </spacer>
                           </item>
                           <item row="0" column="0" colspan="5">
-                           <widget class="QLabel" name="label_52">
+                           <widget class="QLabel" name="employ_land_lbl">
                             <property name="text">
                              <string>Define employment densities for different land uses, the total employment is estimated based on the available land area...</string>
                             </property>
@@ -1477,14 +1477,14 @@ p, li { white-space: pre-wrap; }
                            </widget>
                           </item>
                           <item row="1" column="0">
-                           <widget class="QLabel" name="label_54">
+                           <widget class="QLabel" name="employ_land_com_lbl">
                             <property name="text">
                              <string>Commercial employment density:</string>
                             </property>
                            </widget>
                           </item>
                           <item row="1" column="2">
-                           <widget class="QDoubleSpinBox" name="doubleSpinBox_5">
+                           <widget class="QDoubleSpinBox" name="employ_land_com">
                             <property name="minimumSize">
                              <size>
                               <width>80</width>
@@ -1494,14 +1494,14 @@ p, li { white-space: pre-wrap; }
                            </widget>
                           </item>
                           <item row="2" column="0">
-                           <widget class="QLabel" name="label_51">
+                           <widget class="QLabel" name="employ_land_ind_lbl">
                             <property name="text">
                              <string>Industrial employment density:</string>
                             </property>
                            </widget>
                           </item>
                           <item row="4" column="0">
-                           <widget class="QCheckBox" name="checkBox_2">
+                           <widget class="QCheckBox" name="employ_land_roc">
                             <property name="text">
                              <string>Define a separate rate of change:</string>
                             </property>
@@ -1524,7 +1524,7 @@ p, li { white-space: pre-wrap; }
                            </spacer>
                           </item>
                           <item row="4" column="2">
-                           <widget class="QDoubleSpinBox" name="doubleSpinBox_11">
+                           <widget class="QDoubleSpinBox" name="employ_land_roc_spin">
                             <property name="prefix">
                              <string/>
                             </property>
@@ -1569,21 +1569,21 @@ p, li { white-space: pre-wrap; }
                     </widget>
                    </item>
                    <item row="0" column="3">
-                    <widget class="QRadioButton" name="radioButton_3">
+                    <widget class="QRadioButton" name="employ_land">
                      <property name="text">
                       <string>Estimate from Land</string>
                      </property>
                     </widget>
                    </item>
                    <item row="0" column="1">
-                    <widget class="QRadioButton" name="radioButton">
+                    <widget class="QRadioButton" name="employ_inputmap">
                      <property name="text">
                       <string>Input Map</string>
                      </property>
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QLabel" name="emp_lbl_32">
+                    <widget class="QLabel" name="employ_data_lbl">
                      <property name="text">
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Data Source:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
@@ -1606,7 +1606,7 @@ p, li { white-space: pre-wrap; }
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
-           <widget class="QTabWidget" name="tabWidget">
+           <widget class="QTabWidget" name="spatialrelation_tabwidget">
             <property name="tabPosition">
              <enum>QTabWidget::West</enum>
             </property>
@@ -1628,7 +1628,7 @@ p, li { white-space: pre-wrap; }
                  <number>9</number>
                 </property>
                 <item>
-                 <widget class="QWidget" name="resdemand_titlew" native="true">
+                 <widget class="QWidget" name="accessibility_titlebox" native="true">
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
@@ -1643,7 +1643,7 @@ p, li { white-space: pre-wrap; }
                     <number>0</number>
                    </property>
                    <item>
-                    <widget class="QLabel" name="resdemand_titlei">
+                    <widget class="QLabel" name="accessibility_titleicon">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -1677,7 +1677,7 @@ p, li { white-space: pre-wrap; }
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="resdemand_title">
+                    <widget class="QLabel" name="accessibility_title">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -1716,7 +1716,7 @@ p, li { white-space: pre-wrap; }
                </layout>
               </item>
               <item>
-               <widget class="QScrollArea" name="inputs_scrollArea_4">
+               <widget class="QScrollArea" name="accessibility_scrollarea">
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>
@@ -1739,20 +1739,20 @@ p, li { white-space: pre-wrap; }
                      <number>9</number>
                     </property>
                     <item>
-                     <widget class="QLabel" name="descr1_4">
+                     <widget class="QLabel" name="access_general_title">
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;General Settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QWidget" name="widget_3" native="true">
+                     <widget class="QWidget" name="access_general_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_9">
                        <item row="4" column="0">
-                        <widget class="QWidget" name="widget_2" native="true">
+                        <widget class="QWidget" name="access_general_types_widget" native="true">
                          <layout class="QGridLayout" name="gridLayout_18">
                           <item row="1" column="2">
-                           <widget class="QLabel" name="emp_lbl_36">
+                           <widget class="QLabel" name="access_general_network_icon">
                             <property name="minimumSize">
                              <size>
                               <width>25</width>
@@ -1777,7 +1777,7 @@ p, li { white-space: pre-wrap; }
                            </widget>
                           </item>
                           <item row="1" column="0">
-                           <widget class="QLabel" name="label_15">
+                           <widget class="QLabel" name="access_general_types_lbl">
                             <property name="text">
                              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Accessibility Types:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                             </property>
@@ -1797,9 +1797,9 @@ p, li { white-space: pre-wrap; }
                            </spacer>
                           </item>
                           <item row="2" column="2">
-                           <widget class="QLabel" name="label_12">
+                           <widget class="QLabel" name="access_general_network_lbl">
                             <property name="text">
-                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;LINEAR&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;NETWORK&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                             </property>
                            </widget>
                           </item>
@@ -1817,7 +1817,10 @@ p, li { white-space: pre-wrap; }
                            </spacer>
                           </item>
                           <item row="1" column="6">
-                           <widget class="QLabel" name="emp_lbl_82">
+                           <widget class="QLabel" name="access_general_location_icon">
+                            <property name="enabled">
+                             <bool>true</bool>
+                            </property>
                             <property name="minimumSize">
                              <size>
                               <width>25</width>
@@ -1842,7 +1845,7 @@ p, li { white-space: pre-wrap; }
                            </widget>
                           </item>
                           <item row="1" column="4">
-                           <widget class="QLabel" name="emp_lbl_81">
+                           <widget class="QLabel" name="access_general_area_icon">
                             <property name="minimumSize">
                              <size>
                               <width>25</width>
@@ -1867,7 +1870,7 @@ p, li { white-space: pre-wrap; }
                            </widget>
                           </item>
                           <item row="2" column="4">
-                           <widget class="QLabel" name="label_13">
+                           <widget class="QLabel" name="access_general_area_lbl">
                             <property name="text">
                              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;AREA&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                             </property>
@@ -1887,9 +1890,9 @@ p, li { white-space: pre-wrap; }
                            </spacer>
                           </item>
                           <item row="2" column="6">
-                           <widget class="QLabel" name="label_14">
+                           <widget class="QLabel" name="access_general_location_lbl">
                             <property name="text">
-                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;POINT&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;LOCATION&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                             </property>
                            </widget>
                           </item>
@@ -1910,14 +1913,14 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="2" column="0">
-                        <widget class="QCheckBox" name="checkBox_13">
+                        <widget class="QCheckBox" name="access_export_combined">
                          <property name="text">
                           <string>Export combined Accessibility Map Aij during simulation</string>
                          </property>
                         </widget>
                        </item>
                        <item row="1" column="0">
-                        <widget class="QLabel" name="emp_lbl_14">
+                        <widget class="QLabel" name="access_general_lbl">
                          <property name="minimumSize">
                           <size>
                            <width>320</width>
@@ -1933,14 +1936,14 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="1" column="2">
-                        <widget class="QPushButton" name="pushButton_2">
+                        <widget class="QPushButton" name="access_general_summary">
                          <property name="text">
                           <string>Summary...</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="0">
-                        <widget class="QCheckBox" name="checkBox_14">
+                        <widget class="QCheckBox" name="access_export_individual">
                          <property name="text">
                           <string>Export Individual Accessibility Maps for selected criteria i</string>
                          </property>
@@ -1963,37 +1966,24 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="descr1_10">
+                     <widget class="QLabel" name="access_criteria_title">
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Select Accessibility Criteria&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QWidget" name="datasets_4" native="true">
+                     <widget class="QWidget" name="access_roads_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_12">
                        <item row="4" column="2">
-                        <widget class="QCheckBox" name="checkBox_8">
+                        <widget class="QCheckBox" name="access_roads_res">
                          <property name="text">
                           <string>Residential</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="3" column="4">
-                        <widget class="QLabel" name="emp_lbl_29">
-                         <property name="minimumSize">
-                          <size>
-                           <width>60</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;a&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; vertical-align:sub;&quot;&gt;ij&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="6">
-                        <spacer name="horizontalSpacer_28">
+                       <item row="7" column="5">
+                        <spacer name="horizontalSpacer_33">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
                          </property>
@@ -2005,24 +1995,8 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </spacer>
                        </item>
-                       <item row="4" column="4">
-                        <widget class="QLineEdit" name="lineEdit">
-                         <property name="minimumSize">
-                          <size>
-                           <width>60</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>60</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="7" column="5">
-                        <spacer name="horizontalSpacer_33">
+                       <item row="2" column="6">
+                        <spacer name="horizontalSpacer_28">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
                          </property>
@@ -2047,6 +2021,35 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </spacer>
                        </item>
+                       <item row="3" column="4">
+                        <widget class="QLabel" name="access_roads_lbl4">
+                         <property name="minimumSize">
+                          <size>
+                           <width>60</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="text">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;a&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; vertical-align:sub;&quot;&gt;ij&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="4" column="4">
+                        <widget class="QLineEdit" name="access_roads_ares">
+                         <property name="minimumSize">
+                          <size>
+                           <width>60</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>60</width>
+                           <height>16777215</height>
+                          </size>
+                         </property>
+                        </widget>
+                       </item>
                        <item row="4" column="5">
                         <spacer name="horizontalSpacer_29">
                          <property name="orientation">
@@ -2060,10 +2063,26 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </spacer>
                        </item>
-                       <item row="6" column="2">
-                        <widget class="QCheckBox" name="checkBox_10">
+                       <item row="7" column="2">
+                        <widget class="QCheckBox" name="access_roads_offices">
                          <property name="text">
-                          <string>Industrial</string>
+                          <string>Offices</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="5" column="4">
+                        <widget class="QLineEdit" name="access_roads_acom">
+                         <property name="minimumSize">
+                          <size>
+                           <width>60</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>60</width>
+                           <height>16777215</height>
+                          </size>
                          </property>
                         </widget>
                        </item>
@@ -2080,47 +2099,29 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </spacer>
                        </item>
-                       <item row="7" column="4">
-                        <widget class="QLineEdit" name="lineEdit_4">
-                         <property name="minimumSize">
-                          <size>
-                           <width>60</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>60</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="5" column="4">
-                        <widget class="QLineEdit" name="lineEdit_2">
-                         <property name="minimumSize">
-                          <size>
-                           <width>60</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>60</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="7" column="2">
-                        <widget class="QCheckBox" name="checkBox_11">
+                       <item row="6" column="2">
+                        <widget class="QCheckBox" name="access_roads_ind">
                          <property name="text">
-                          <string>Offices</string>
+                          <string>Industrial</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="0" colspan="2">
+                        <widget class="QLabel" name="access_roads_lbl1">
+                         <property name="text">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Select Data Input:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="5" column="2">
+                        <widget class="QCheckBox" name="access_roads_com">
+                         <property name="text">
+                          <string>Commercial</string>
                          </property>
                         </widget>
                        </item>
                        <item row="2" column="2" colspan="4">
-                        <widget class="QComboBox" name="employment_combo_7">
+                        <widget class="QComboBox" name="access_roads_data">
                          <property name="minimumSize">
                           <size>
                            <width>200</width>
@@ -2136,7 +2137,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="3" column="2">
-                        <widget class="QSpinBox" name="spinBox">
+                        <widget class="QSpinBox" name="access_roads_weight">
                          <property name="minimumSize">
                           <size>
                            <width>50</width>
@@ -2154,43 +2155,45 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
-                       <item row="5" column="2">
-                        <widget class="QCheckBox" name="checkBox_9">
-                         <property name="text">
-                          <string>Commercial</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="0" colspan="2">
-                        <widget class="QLabel" name="emp_lbl_26">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Select Data Input:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
                        <item row="4" column="0" colspan="2">
-                        <widget class="QLabel" name="emp_lbl_27">
+                        <widget class="QLabel" name="access_roads_lbl3">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Accessibility Factor(s):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="0" colspan="2">
-                        <widget class="QLabel" name="emp_lbl_28">
+                        <widget class="QLabel" name="access_roads_lbl2">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Level of Importance:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="4">
-                        <widget class="QCheckBox" name="checkBox_3">
+                        <widget class="QCheckBox" name="access_roads_include">
                          <property name="text">
                           <string>Include</string>
                          </property>
                         </widget>
                        </item>
+                       <item row="6" column="4">
+                        <widget class="QLineEdit" name="access_roads_aind">
+                         <property name="minimumSize">
+                          <size>
+                           <width>60</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>60</width>
+                           <height>16777215</height>
+                          </size>
+                         </property>
+                        </widget>
+                       </item>
                        <item row="0" column="0">
-                        <widget class="QLabel" name="emp_lbl_35">
+                        <widget class="QLabel" name="access_roads_icon">
                          <property name="minimumSize">
                           <size>
                            <width>25</width>
@@ -2214,8 +2217,21 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
-                       <item row="6" column="4">
-                        <widget class="QLineEdit" name="lineEdit_3">
+                       <item row="0" column="1" colspan="2">
+                        <widget class="QLabel" name="access_roads_title">
+                         <property name="minimumSize">
+                          <size>
+                           <width>180</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="text">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Major Arterials and Highways&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="7" column="4">
+                        <widget class="QLineEdit" name="access_roads_aoffices">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -2230,34 +2246,21 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
-                       <item row="0" column="1" colspan="2">
-                        <widget class="QLabel" name="descr1_7">
-                         <property name="minimumSize">
-                          <size>
-                           <width>180</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Major Arterials and Highways&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
                       </layout>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QWidget" name="datasets_10" native="true">
+                     <widget class="QWidget" name="access_rail_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_13">
                        <item row="4" column="2">
-                        <widget class="QCheckBox" name="checkBox_32">
+                        <widget class="QCheckBox" name="access_rail_res">
                          <property name="text">
                           <string>Residential</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="4">
-                        <widget class="QLabel" name="emp_lbl_56">
+                        <widget class="QLabel" name="access_rail_lbl4">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -2283,7 +2286,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="4" column="4">
-                        <widget class="QLineEdit" name="lineEdit_21">
+                        <widget class="QLineEdit" name="access_rail_ares">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -2325,7 +2328,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="5" column="2">
-                        <widget class="QCheckBox" name="checkBox_33">
+                        <widget class="QCheckBox" name="access_rail_com">
                          <property name="text">
                           <string>Commercial</string>
                          </property>
@@ -2345,7 +2348,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="6" column="2">
-                        <widget class="QCheckBox" name="checkBox_34">
+                        <widget class="QCheckBox" name="access_rail_ind">
                          <property name="text">
                           <string>Industrial</string>
                          </property>
@@ -2365,7 +2368,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="7" column="4">
-                        <widget class="QLineEdit" name="lineEdit_22">
+                        <widget class="QLineEdit" name="access_rail_aoffices">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -2381,7 +2384,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="5" column="4">
-                        <widget class="QLineEdit" name="lineEdit_23">
+                        <widget class="QLineEdit" name="access_rail_acom">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -2397,14 +2400,14 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="7" column="2">
-                        <widget class="QCheckBox" name="checkBox_35">
+                        <widget class="QCheckBox" name="access_rail_offices">
                          <property name="text">
                           <string>Offices</string>
                          </property>
                         </widget>
                        </item>
                        <item row="2" column="2" colspan="4">
-                        <widget class="QComboBox" name="employment_combo_8">
+                        <widget class="QComboBox" name="access_rail_data">
                          <property name="minimumSize">
                           <size>
                            <width>200</width>
@@ -2420,7 +2423,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="3" column="2">
-                        <widget class="QSpinBox" name="spinBox_6">
+                        <widget class="QSpinBox" name="access_rail_weight">
                          <property name="minimumSize">
                           <size>
                            <width>50</width>
@@ -2439,35 +2442,35 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="2" column="0" colspan="2">
-                        <widget class="QLabel" name="emp_lbl_57">
+                        <widget class="QLabel" name="access_rail_lbl1">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Select Data Input:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="4" column="0" colspan="2">
-                        <widget class="QLabel" name="emp_lbl_58">
+                        <widget class="QLabel" name="access_rail_lbl3">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Accessibility Factor(s):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="0" colspan="2">
-                        <widget class="QLabel" name="emp_lbl_59">
+                        <widget class="QLabel" name="access_rail_lbl2">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Level of Importance:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="4">
-                        <widget class="QCheckBox" name="checkBox_4">
+                        <widget class="QCheckBox" name="access_rail_include">
                          <property name="text">
                           <string>Include</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="0">
-                        <widget class="QLabel" name="emp_lbl_60">
+                        <widget class="QLabel" name="access_rail_icon">
                          <property name="minimumSize">
                           <size>
                            <width>25</width>
@@ -2492,7 +2495,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="0" column="1" colspan="2">
-                        <widget class="QLabel" name="descr1_17">
+                        <widget class="QLabel" name="access_rail_title">
                          <property name="minimumSize">
                           <size>
                            <width>180</width>
@@ -2505,7 +2508,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="6" column="4">
-                        <widget class="QLineEdit" name="lineEdit_24">
+                        <widget class="QLineEdit" name="access_rail_aind">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -2524,17 +2527,17 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <widget class="QWidget" name="datasets_18" native="true">
+                     <widget class="QWidget" name="access_waterway_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_25">
                        <item row="4" column="2">
-                        <widget class="QCheckBox" name="checkBox_36">
+                        <widget class="QCheckBox" name="access_waterways_res">
                          <property name="text">
                           <string>Residential</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="4">
-                        <widget class="QLabel" name="emp_lbl_61">
+                        <widget class="QLabel" name="access_waterways_lbl4">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -2560,7 +2563,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="4" column="4">
-                        <widget class="QLineEdit" name="lineEdit_25">
+                        <widget class="QLineEdit" name="access_waterways_ares">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -2602,7 +2605,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="5" column="2">
-                        <widget class="QCheckBox" name="checkBox_37">
+                        <widget class="QCheckBox" name="access_waterways_com">
                          <property name="text">
                           <string>Commercial</string>
                          </property>
@@ -2622,7 +2625,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="6" column="2">
-                        <widget class="QCheckBox" name="checkBox_38">
+                        <widget class="QCheckBox" name="access_waterways_ind">
                          <property name="text">
                           <string>Industrial</string>
                          </property>
@@ -2642,7 +2645,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="7" column="4">
-                        <widget class="QLineEdit" name="lineEdit_26">
+                        <widget class="QLineEdit" name="access_waterways_aoffices">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -2658,7 +2661,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="5" column="4">
-                        <widget class="QLineEdit" name="lineEdit_27">
+                        <widget class="QLineEdit" name="access_waterways_acom">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -2674,14 +2677,14 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="7" column="2">
-                        <widget class="QCheckBox" name="checkBox_39">
+                        <widget class="QCheckBox" name="access_waterways_offices">
                          <property name="text">
                           <string>Offices</string>
                          </property>
                         </widget>
                        </item>
                        <item row="2" column="2" colspan="4">
-                        <widget class="QComboBox" name="employment_combo_13">
+                        <widget class="QComboBox" name="access_waterways_data">
                          <property name="minimumSize">
                           <size>
                            <width>200</width>
@@ -2697,7 +2700,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="3" column="2">
-                        <widget class="QSpinBox" name="spinBox_7">
+                        <widget class="QSpinBox" name="access_waterways_weight">
                          <property name="minimumSize">
                           <size>
                            <width>50</width>
@@ -2716,35 +2719,35 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="2" column="0" colspan="2">
-                        <widget class="QLabel" name="emp_lbl_62">
+                        <widget class="QLabel" name="access_waterway_lbl1">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Select Data Input:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="4" column="0" colspan="2">
-                        <widget class="QLabel" name="emp_lbl_63">
+                        <widget class="QLabel" name="access_waterway_lbl3">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Accessibility Factor(s):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="0" colspan="2">
-                        <widget class="QLabel" name="emp_lbl_64">
+                        <widget class="QLabel" name="access_waterway_lbl2">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Level of Importance:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="4">
-                        <widget class="QCheckBox" name="checkBox_5">
+                        <widget class="QCheckBox" name="access_waterways_include">
                          <property name="text">
                           <string>Include</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="0">
-                        <widget class="QLabel" name="emp_lbl_65">
+                        <widget class="QLabel" name="access_waterway_icon">
                          <property name="minimumSize">
                           <size>
                            <width>25</width>
@@ -2769,7 +2772,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="0" column="1" colspan="2">
-                        <widget class="QLabel" name="descr1_18">
+                        <widget class="QLabel" name="access_waterway_title">
                          <property name="minimumSize">
                           <size>
                            <width>180</width>
@@ -2782,7 +2785,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="6" column="4">
-                        <widget class="QLineEdit" name="lineEdit_28">
+                        <widget class="QLineEdit" name="access_waterways_aind">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -2801,17 +2804,17 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <widget class="QWidget" name="datasets_19" native="true">
+                     <widget class="QWidget" name="access_lake_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_26">
                        <item row="4" column="2">
-                        <widget class="QCheckBox" name="checkBox_40">
+                        <widget class="QCheckBox" name="access_lakes_res">
                          <property name="text">
                           <string>Residential</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="4">
-                        <widget class="QLabel" name="emp_lbl_66">
+                        <widget class="QLabel" name="access_lakes_lbl4">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -2837,7 +2840,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="4" column="4">
-                        <widget class="QLineEdit" name="lineEdit_29">
+                        <widget class="QLineEdit" name="access_lakes_ares">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -2879,7 +2882,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="5" column="2">
-                        <widget class="QCheckBox" name="checkBox_41">
+                        <widget class="QCheckBox" name="access_lakes_com">
                          <property name="text">
                           <string>Commercial</string>
                          </property>
@@ -2899,7 +2902,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="6" column="2">
-                        <widget class="QCheckBox" name="checkBox_42">
+                        <widget class="QCheckBox" name="access_lakes_ind">
                          <property name="text">
                           <string>Industrial</string>
                          </property>
@@ -2919,7 +2922,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="7" column="4">
-                        <widget class="QLineEdit" name="lineEdit_30">
+                        <widget class="QLineEdit" name="access_lakes_aoffices">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -2935,7 +2938,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="5" column="4">
-                        <widget class="QLineEdit" name="lineEdit_31">
+                        <widget class="QLineEdit" name="access_lakes_acom">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -2951,14 +2954,14 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="7" column="2">
-                        <widget class="QCheckBox" name="checkBox_43">
+                        <widget class="QCheckBox" name="access_lakes_offices">
                          <property name="text">
                           <string>Offices</string>
                          </property>
                         </widget>
                        </item>
                        <item row="2" column="2" colspan="4">
-                        <widget class="QComboBox" name="employment_combo_14">
+                        <widget class="QComboBox" name="access_lakes_data">
                          <property name="minimumSize">
                           <size>
                            <width>200</width>
@@ -2974,7 +2977,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="3" column="2">
-                        <widget class="QSpinBox" name="spinBox_8">
+                        <widget class="QSpinBox" name="access_lakes_weight">
                          <property name="minimumSize">
                           <size>
                            <width>50</width>
@@ -2993,35 +2996,35 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="2" column="0" colspan="2">
-                        <widget class="QLabel" name="emp_lbl_67">
+                        <widget class="QLabel" name="access_lake_lbl1">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Select Data Input:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="4" column="0" colspan="2">
-                        <widget class="QLabel" name="emp_lbl_68">
+                        <widget class="QLabel" name="access_lake_lbl3">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Accessibility Factor(s):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="0" colspan="2">
-                        <widget class="QLabel" name="emp_lbl_69">
+                        <widget class="QLabel" name="access_lake_lbl2">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Level of Importance:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="4">
-                        <widget class="QCheckBox" name="checkBox_6">
+                        <widget class="QCheckBox" name="access_lakes_include">
                          <property name="text">
                           <string>Include</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="0">
-                        <widget class="QLabel" name="emp_lbl_70">
+                        <widget class="QLabel" name="access_lake_icon">
                          <property name="minimumSize">
                           <size>
                            <width>25</width>
@@ -3046,7 +3049,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="0" column="1" colspan="2">
-                        <widget class="QLabel" name="descr1_19">
+                        <widget class="QLabel" name="access_lake_title">
                          <property name="minimumSize">
                           <size>
                            <width>180</width>
@@ -3059,7 +3062,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="6" column="4">
-                        <widget class="QLineEdit" name="lineEdit_32">
+                        <widget class="QLineEdit" name="access_lakes_aind">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -3078,17 +3081,17 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <widget class="QWidget" name="datasets_21" native="true">
+                     <widget class="QWidget" name="access_pos_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_28">
                        <item row="4" column="2">
-                        <widget class="QCheckBox" name="checkBox_48">
+                        <widget class="QCheckBox" name="access_pos_res">
                          <property name="text">
                           <string>Residential</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="4">
-                        <widget class="QLabel" name="emp_lbl_76">
+                        <widget class="QLabel" name="access_pos_lbl4">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -3114,7 +3117,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="4" column="4">
-                        <widget class="QLineEdit" name="lineEdit_37">
+                        <widget class="QLineEdit" name="access_pos_ares">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -3156,7 +3159,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="5" column="2">
-                        <widget class="QCheckBox" name="checkBox_49">
+                        <widget class="QCheckBox" name="access_pos_com">
                          <property name="text">
                           <string>Commercial</string>
                          </property>
@@ -3176,7 +3179,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="6" column="2">
-                        <widget class="QCheckBox" name="checkBox_50">
+                        <widget class="QCheckBox" name="access_pos_ind">
                          <property name="text">
                           <string>Industrial</string>
                          </property>
@@ -3196,7 +3199,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="7" column="4">
-                        <widget class="QLineEdit" name="lineEdit_38">
+                        <widget class="QLineEdit" name="access_pos_aoffices">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -3212,7 +3215,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="5" column="4">
-                        <widget class="QLineEdit" name="lineEdit_39">
+                        <widget class="QLineEdit" name="access_pos_acom">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -3228,14 +3231,14 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="7" column="2">
-                        <widget class="QCheckBox" name="checkBox_51">
+                        <widget class="QCheckBox" name="access_pos_offices">
                          <property name="text">
                           <string>Offices</string>
                          </property>
                         </widget>
                        </item>
                        <item row="2" column="2" colspan="4">
-                        <widget class="QComboBox" name="employment_combo_17">
+                        <widget class="QComboBox" name="access_pos_data">
                          <property name="minimumSize">
                           <size>
                            <width>200</width>
@@ -3251,7 +3254,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="3" column="2">
-                        <widget class="QSpinBox" name="spinBox_10">
+                        <widget class="QSpinBox" name="access_pos_weight">
                          <property name="minimumSize">
                           <size>
                            <width>50</width>
@@ -3270,35 +3273,35 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="2" column="0" colspan="2">
-                        <widget class="QLabel" name="emp_lbl_77">
+                        <widget class="QLabel" name="access_pos_lbl1">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Select Data Input:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="4" column="0" colspan="2">
-                        <widget class="QLabel" name="emp_lbl_78">
+                        <widget class="QLabel" name="access_pos_lbl3">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Accessibility Factor(s):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="0" colspan="2">
-                        <widget class="QLabel" name="emp_lbl_79">
+                        <widget class="QLabel" name="access_pos_lbl2">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Level of Importance:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="4">
-                        <widget class="QCheckBox" name="checkBox_12">
+                        <widget class="QCheckBox" name="access_pos_include">
                          <property name="text">
                           <string>Include</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="0">
-                        <widget class="QLabel" name="emp_lbl_80">
+                        <widget class="QLabel" name="access_pos_icon">
                          <property name="minimumSize">
                           <size>
                            <width>25</width>
@@ -3323,7 +3326,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="0" column="1" colspan="2">
-                        <widget class="QLabel" name="descr1_21">
+                        <widget class="QLabel" name="access_pos_title">
                          <property name="minimumSize">
                           <size>
                            <width>180</width>
@@ -3336,7 +3339,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="6" column="4">
-                        <widget class="QLineEdit" name="lineEdit_40">
+                        <widget class="QLineEdit" name="access_pos_aind">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -3355,17 +3358,17 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <widget class="QWidget" name="datasets_20" native="true">
+                     <widget class="QWidget" name="access_poi_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_27">
                        <item row="4" column="2">
-                        <widget class="QCheckBox" name="checkBox_44">
+                        <widget class="QCheckBox" name="access_poi_res">
                          <property name="text">
                           <string>Residential</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="4">
-                        <widget class="QLabel" name="emp_lbl_71">
+                        <widget class="QLabel" name="access_poi_lbl4">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -3391,7 +3394,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="4" column="4">
-                        <widget class="QLineEdit" name="lineEdit_33">
+                        <widget class="QLineEdit" name="access_poi_ares">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -3433,7 +3436,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="5" column="2">
-                        <widget class="QCheckBox" name="checkBox_45">
+                        <widget class="QCheckBox" name="access_poi_com">
                          <property name="text">
                           <string>Commercial</string>
                          </property>
@@ -3453,7 +3456,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="6" column="2">
-                        <widget class="QCheckBox" name="checkBox_46">
+                        <widget class="QCheckBox" name="access_poi_ind">
                          <property name="text">
                           <string>Industrial</string>
                          </property>
@@ -3473,7 +3476,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="7" column="4">
-                        <widget class="QLineEdit" name="lineEdit_34">
+                        <widget class="QLineEdit" name="access_poi_aoffices">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -3489,7 +3492,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="5" column="4">
-                        <widget class="QLineEdit" name="lineEdit_35">
+                        <widget class="QLineEdit" name="access_poi_acom">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -3505,14 +3508,14 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="7" column="2">
-                        <widget class="QCheckBox" name="checkBox_47">
+                        <widget class="QCheckBox" name="access_poi_offices">
                          <property name="text">
                           <string>Offices</string>
                          </property>
                         </widget>
                        </item>
                        <item row="2" column="2" colspan="4">
-                        <widget class="QComboBox" name="employment_combo_15">
+                        <widget class="QComboBox" name="access_poi_data">
                          <property name="minimumSize">
                           <size>
                            <width>200</width>
@@ -3528,7 +3531,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="3" column="2">
-                        <widget class="QSpinBox" name="spinBox_9">
+                        <widget class="QSpinBox" name="access_poi_weight">
                          <property name="minimumSize">
                           <size>
                            <width>50</width>
@@ -3547,35 +3550,35 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="2" column="0" colspan="2">
-                        <widget class="QLabel" name="emp_lbl_72">
+                        <widget class="QLabel" name="access_poi_lbl1">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Select Data Input:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="4" column="0" colspan="2">
-                        <widget class="QLabel" name="emp_lbl_73">
+                        <widget class="QLabel" name="access_poi_lbl3">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Accessibility Factor(s):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="0" colspan="2">
-                        <widget class="QLabel" name="emp_lbl_74">
+                        <widget class="QLabel" name="access_poi_lbl2">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Level of Importance:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="4">
-                        <widget class="QCheckBox" name="checkBox_7">
+                        <widget class="QCheckBox" name="access_poi_include">
                          <property name="text">
                           <string>Include</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="0">
-                        <widget class="QLabel" name="emp_lbl_75">
+                        <widget class="QLabel" name="access_poi_icon">
                          <property name="minimumSize">
                           <size>
                            <width>25</width>
@@ -3600,7 +3603,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="0" column="1" colspan="2">
-                        <widget class="QLabel" name="descr1_20">
+                        <widget class="QLabel" name="access_poi_title">
                          <property name="minimumSize">
                           <size>
                            <width>180</width>
@@ -3613,7 +3616,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="6" column="4">
-                        <widget class="QLineEdit" name="lineEdit_36">
+                        <widget class="QLineEdit" name="access_poi_aind">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -3654,7 +3657,7 @@ p, li { white-space: pre-wrap; }
                  <number>9</number>
                 </property>
                 <item>
-                 <widget class="QWidget" name="resdemand_titlew_2" native="true">
+                 <widget class="QWidget" name="suit_title_box" native="true">
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
@@ -3669,7 +3672,7 @@ p, li { white-space: pre-wrap; }
                     <number>0</number>
                    </property>
                    <item>
-                    <widget class="QLabel" name="resdemand_titlei_2">
+                    <widget class="QLabel" name="suit_icon">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -3703,7 +3706,7 @@ p, li { white-space: pre-wrap; }
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="resdemand_title_2">
+                    <widget class="QLabel" name="suit_title">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -3742,7 +3745,7 @@ p, li { white-space: pre-wrap; }
                </layout>
               </item>
               <item>
-               <widget class="QScrollArea" name="inputs_scrollArea_3">
+               <widget class="QScrollArea" name="suit_scrollarea">
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>
@@ -3765,17 +3768,17 @@ p, li { white-space: pre-wrap; }
                      <number>9</number>
                     </property>
                     <item>
-                     <widget class="QLabel" name="emp_lbl_11">
+                     <widget class="QLabel" name="suit_general_title">
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;General Settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QWidget" name="widget_7" native="true">
+                     <widget class="QWidget" name="suit_general_box" native="true">
                       <layout class="QGridLayout" name="gridLayout_8">
                        <item row="0" column="1">
-                        <widget class="QPushButton" name="pushButton_8">
+                        <widget class="QPushButton" name="suit_general_summary">
                          <property name="enabled">
                           <bool>false</bool>
                          </property>
@@ -3785,7 +3788,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="0" column="0">
-                        <widget class="QLabel" name="emp_lbl_10">
+                        <widget class="QLabel" name="suit_general_lbl">
                          <property name="minimumSize">
                           <size>
                            <width>320</width>
@@ -3807,7 +3810,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="1" column="0">
-                        <widget class="QCheckBox" name="checkBox_52">
+                        <widget class="QCheckBox" name="suit_export_maps">
                          <property name="text">
                           <string>Export aggregated suitability maps for each land use</string>
                          </property>
@@ -3817,38 +3820,38 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="emp_lbl_12">
+                     <widget class="QLabel" name="suit_crit_title">
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Suitability Criteria&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QWidget" name="widget_8" native="true">
+                     <widget class="QWidget" name="suit_crit_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_11">
                        <item row="4" column="0">
-                        <widget class="QCheckBox" name="checkBox_57">
+                        <widget class="QCheckBox" name="suit_soil_check">
                          <property name="text">
                           <string>Soil infiltration rate [mm/hr]</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="1">
-                        <widget class="QLabel" name="label_28">
+                        <widget class="QLabel" name="suit_crit_lbl2">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;DATA SOURCE&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="0">
-                        <widget class="QCheckBox" name="checkBox_54">
+                        <widget class="QCheckBox" name="suit_gw_check">
                          <property name="text">
                           <string>Depth to groundwater [m]</string>
                          </property>
                         </widget>
                        </item>
                        <item row="2" column="1">
-                        <widget class="QComboBox" name="comboBox_6">
+                        <widget class="QComboBox" name="suit_slope_data">
                          <item>
                           <property name="text">
                            <string>(select map)</string>
@@ -3857,14 +3860,14 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="0" column="2">
-                        <widget class="QLabel" name="label_29">
+                        <widget class="QLabel" name="suit_crit_lbl3">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;WEIGHT&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="1">
-                        <widget class="QComboBox" name="comboBox_7">
+                        <widget class="QComboBox" name="suit_gw_data">
                          <item>
                           <property name="text">
                            <string>(select map)</string>
@@ -3873,7 +3876,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="2" column="2">
-                        <widget class="QSpinBox" name="spinBox_3">
+                        <widget class="QSpinBox" name="suit_slope_weight">
                          <property name="maximumSize">
                           <size>
                            <width>50</width>
@@ -3892,7 +3895,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="5" column="1">
-                        <widget class="QComboBox" name="comboBox_9">
+                        <widget class="QComboBox" name="suit_custom1_data">
                          <item>
                           <property name="text">
                            <string>(select map)</string>
@@ -3901,7 +3904,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="4" column="1">
-                        <widget class="QComboBox" name="comboBox_8">
+                        <widget class="QComboBox" name="suit_soil_data">
                          <item>
                           <property name="text">
                            <string>(select map)</string>
@@ -3910,7 +3913,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="2" column="3">
-                        <widget class="QCheckBox" name="checkBox_55">
+                        <widget class="QCheckBox" name="suit_slope_attract">
                          <property name="maximumSize">
                           <size>
                            <width>60</width>
@@ -3923,7 +3926,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="5" column="2">
-                        <widget class="QSpinBox" name="spinBox_11">
+                        <widget class="QSpinBox" name="suit_custom1_weight">
                          <property name="maximumSize">
                           <size>
                            <width>50</width>
@@ -3942,7 +3945,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="4" column="2">
-                        <widget class="QSpinBox" name="spinBox_5">
+                        <widget class="QSpinBox" name="suit_soil_weight">
                          <property name="maximumSize">
                           <size>
                            <width>50</width>
@@ -3961,7 +3964,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="3" column="3">
-                        <widget class="QCheckBox" name="checkBox_56">
+                        <widget class="QCheckBox" name="suit_gw_attract">
                          <property name="maximumSize">
                           <size>
                            <width>60</width>
@@ -3974,7 +3977,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="5" column="3">
-                        <widget class="QCheckBox" name="checkBox_60">
+                        <widget class="QCheckBox" name="suit_custom1_attract">
                          <property name="maximumSize">
                           <size>
                            <width>60</width>
@@ -3987,7 +3990,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="3" column="2">
-                        <widget class="QSpinBox" name="spinBox_4">
+                        <widget class="QSpinBox" name="suit_gw_weight">
                          <property name="maximumSize">
                           <size>
                            <width>50</width>
@@ -4006,7 +4009,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="4" column="3">
-                        <widget class="QCheckBox" name="checkBox_58">
+                        <widget class="QCheckBox" name="suit_soil_attract">
                          <property name="maximumSize">
                           <size>
                            <width>60</width>
@@ -4019,35 +4022,35 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="0" column="3">
-                        <widget class="QLabel" name="label_30">
+                        <widget class="QLabel" name="suit_crit_lbl4">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;EFFECT&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="5" column="0">
-                        <widget class="QCheckBox" name="checkBox_59">
+                        <widget class="QCheckBox" name="suit_custom1_check">
                          <property name="text">
                           <string>Custom Criterion 1</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="0">
-                        <widget class="QLabel" name="label_26">
+                        <widget class="QLabel" name="suit_crit_lbl1">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;CRITERION&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="6" column="0">
-                        <widget class="QCheckBox" name="checkBox_61">
+                        <widget class="QCheckBox" name="suit_custom2_check">
                          <property name="text">
                           <string>Custom Criterion 2</string>
                          </property>
                         </widget>
                        </item>
                        <item row="6" column="1">
-                        <widget class="QComboBox" name="comboBox_10">
+                        <widget class="QComboBox" name="suit_custom2_data">
                          <item>
                           <property name="text">
                            <string>(select map)</string>
@@ -4056,7 +4059,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="6" column="2">
-                        <widget class="QSpinBox" name="spinBox_12">
+                        <widget class="QSpinBox" name="suit_custom2_weight">
                          <property name="maximumSize">
                           <size>
                            <width>50</width>
@@ -4075,7 +4078,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="6" column="3">
-                        <widget class="QCheckBox" name="checkBox_62">
+                        <widget class="QCheckBox" name="suit_custom2_attract">
                          <property name="maximumSize">
                           <size>
                            <width>60</width>
@@ -4088,7 +4091,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="2" column="0">
-                        <widget class="QCheckBox" name="checkBox_63">
+                        <widget class="QCheckBox" name="suit_slope_check">
                          <property name="text">
                           <string>Slope [%]</string>
                          </property>
@@ -4098,24 +4101,24 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="emp_lbl_13">
+                     <widget class="QLabel" name="suit_thresholds_title">
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Suitability Thresholds for Active Land Uses&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QWidget" name="widget_9" native="true">
+                     <widget class="QWidget" name="suit_threshold_widget" native="true">
                       <layout class="QHBoxLayout" name="horizontalLayout_2">
                        <item>
-                        <widget class="QLabel" name="label_23">
+                        <widget class="QLabel" name="suit_threshold_lbl">
                          <property name="text">
                           <string>Select Active Land Use Category:</string>
                          </property>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QComboBox" name="comboBox_11">
+                        <widget class="QComboBox" name="suit_threshold_luccombo">
                          <item>
                           <property name="text">
                            <string>Residential</string>
@@ -4142,7 +4145,7 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <widget class="QStackedWidget" name="stackedWidget_2">
+                     <widget class="QStackedWidget" name="suit_threshold_stack">
                       <property name="minimumSize">
                        <size>
                         <width>0</width>
@@ -4150,12 +4153,12 @@ p, li { white-space: pre-wrap; }
                        </size>
                       </property>
                       <property name="currentIndex">
-                       <number>0</number>
+                       <number>3</number>
                       </property>
                       <widget class="QWidget" name="page_4">
                        <layout class="QVBoxLayout" name="verticalLayout_18">
                         <item>
-                         <widget class="QGroupBox" name="groupBox_4">
+                         <widget class="QGroupBox" name="suit_thresh_res">
                           <property name="title">
                            <string>Residential</string>
                           </property>
@@ -4166,7 +4169,7 @@ p, li { white-space: pre-wrap; }
                       <widget class="QWidget" name="page_5">
                        <layout class="QVBoxLayout" name="verticalLayout_19">
                         <item>
-                         <widget class="QGroupBox" name="groupBox_5">
+                         <widget class="QGroupBox" name="suit_thresh_com">
                           <property name="title">
                            <string>Commercial</string>
                           </property>
@@ -4177,7 +4180,7 @@ p, li { white-space: pre-wrap; }
                       <widget class="QWidget" name="page_6">
                        <layout class="QVBoxLayout" name="verticalLayout_20">
                         <item>
-                         <widget class="QGroupBox" name="groupBox_6">
+                         <widget class="QGroupBox" name="suit_thresh_ind">
                           <property name="title">
                            <string>Industrial</string>
                           </property>
@@ -4188,7 +4191,7 @@ p, li { white-space: pre-wrap; }
                       <widget class="QWidget" name="page_7">
                        <layout class="QVBoxLayout" name="verticalLayout_21">
                         <item>
-                         <widget class="QGroupBox" name="groupBox_7">
+                         <widget class="QGroupBox" name="suit_thresh_office">
                           <property name="title">
                            <string>Mixed Use Development</string>
                           </property>
@@ -4221,7 +4224,7 @@ p, li { white-space: pre-wrap; }
                  <number>9</number>
                 </property>
                 <item>
-                 <widget class="QWidget" name="resdemand_titlew_3" native="true">
+                 <widget class="QWidget" name="zoning_titlebox" native="true">
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
@@ -4236,7 +4239,7 @@ p, li { white-space: pre-wrap; }
                     <number>0</number>
                    </property>
                    <item>
-                    <widget class="QLabel" name="resdemand_titlei_3">
+                    <widget class="QLabel" name="zoning_icon">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -4270,7 +4273,7 @@ p, li { white-space: pre-wrap; }
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="resdemand_title_3">
+                    <widget class="QLabel" name="zoning_title">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -4309,7 +4312,7 @@ p, li { white-space: pre-wrap; }
                </layout>
               </item>
               <item>
-               <widget class="QScrollArea" name="inputs_scrollArea_2">
+               <widget class="QScrollArea" name="zoning_scrollarea">
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>
@@ -4332,28 +4335,28 @@ p, li { white-space: pre-wrap; }
                      <number>9</number>
                     </property>
                     <item>
-                     <widget class="QLabel" name="descr1_14">
+                     <widget class="QLabel" name="zoning_general_title">
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;General Settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QCheckBox" name="checkBox_31">
+                     <widget class="QCheckBox" name="zoning_export">
                       <property name="text">
                        <string>Export aggregated zoning maps for each land use</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="descr1_11">
+                     <widget class="QLabel" name="zoning_constraints_title">
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;General Zoning Constraints&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="emp_lbl_8">
+                     <widget class="QLabel" name="zoning_constraints_lbl">
                       <property name="text">
                        <string>Use various key input maps to create general constraints to zoning within the region.</string>
                       </property>
@@ -4363,10 +4366,10 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <widget class="QWidget" name="widget_6" native="true">
+                     <widget class="QWidget" name="zoning_constraints_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_19">
                        <item row="0" column="2" colspan="2">
-                        <widget class="QComboBox" name="comboBox_5">
+                        <widget class="QComboBox" name="zoning_constraints_water_combo">
                          <item>
                           <property name="text">
                            <string>(select map)</string>
@@ -4391,7 +4394,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="0" column="0">
-                        <widget class="QLabel" name="label_22">
+                        <widget class="QLabel" name="zoning_constraints_water">
                          <property name="text">
                           <string>Water Bodies:</string>
                          </property>
@@ -4401,14 +4404,14 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="descr1_8">
+                     <widget class="QLabel" name="zoning_passive_title">
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Passive and Constrained Land Uses&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="emp_lbl_6">
+                     <widget class="QLabel" name="zoning_passive_lbl">
                       <property name="text">
                        <string>Determine which land uses are allowed to change and which land uses remain static in the simulation. Note that constrained land uses are recovered in area post simulation.</string>
                       </property>
@@ -4418,10 +4421,10 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <widget class="QWidget" name="widget_4" native="true">
+                     <widget class="QWidget" name="zoning_passive_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_7">
                        <item row="1" column="1">
-                        <widget class="QPushButton" name="pushButton_6">
+                        <widget class="QPushButton" name="zoning_move_to_constrained">
                          <property name="maximumSize">
                           <size>
                            <width>50</width>
@@ -4434,7 +4437,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="1" column="0" rowspan="3">
-                        <widget class="QListWidget" name="listWidget">
+                        <widget class="QListWidget" name="zonining_passive_box">
                          <property name="minimumSize">
                           <size>
                            <width>0</width>
@@ -4485,7 +4488,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="1" column="2" rowspan="3">
-                        <widget class="QListWidget" name="listWidget_2">
+                        <widget class="QListWidget" name="zoning_constrained_box">
                          <property name="minimumSize">
                           <size>
                            <width>0</width>
@@ -4501,7 +4504,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="2" column="1">
-                        <widget class="QPushButton" name="pushButton_7">
+                        <widget class="QPushButton" name="zoning_move_to_passive">
                          <property name="maximumSize">
                           <size>
                            <width>50</width>
@@ -4527,14 +4530,14 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="0" column="0">
-                        <widget class="QLabel" name="label_16">
+                        <widget class="QLabel" name="zonining_passive_lbl2">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Passive Land Use (dynamic)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="2">
-                        <widget class="QLabel" name="label_17">
+                        <widget class="QLabel" name="zonining_passive_lbl3">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Constrained Land Use (static)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
@@ -4544,14 +4547,14 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="descr1_9">
+                     <widget class="QLabel" name="zoning_rules_title">
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Define Additional Zoning Areas for Active Land Uses&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="emp_lbl_7">
+                     <widget class="QLabel" name="zoning_rules_lbl">
                       <property name="text">
                        <string>For the four major land uses, define areas allowed for future development (note that these maps will be combined with the constraints for static land use classes defined previously).</string>
                       </property>
@@ -4561,122 +4564,122 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <widget class="QWidget" name="widget_5" native="true">
+                     <widget class="QWidget" name="zoning_rules_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_10">
                        <item row="12" column="1">
-                        <widget class="QCheckBox" name="checkBox_21">
+                        <widget class="QCheckBox" name="zoning_rules_indundev">
                          <property name="text">
                           <string>Include all undeveloped land</string>
                          </property>
                         </widget>
                        </item>
                        <item row="5" column="2">
-                        <widget class="QCheckBox" name="checkBox_24">
+                        <widget class="QCheckBox" name="zoning_rules_comauto">
                          <property name="text">
                           <string>Auto</string>
                          </property>
                         </widget>
                        </item>
                        <item row="13" column="2">
-                        <widget class="QCheckBox" name="checkBox_26">
+                        <widget class="QCheckBox" name="zoning_rules_officesauto">
                          <property name="text">
                           <string>Auto</string>
                          </property>
                         </widget>
                        </item>
                        <item row="7" column="1">
-                        <widget class="QCheckBox" name="checkBox_28">
+                        <widget class="QCheckBox" name="zoning_rules_compassive">
                          <property name="text">
                           <string>Include all passive areas</string>
                          </property>
                         </widget>
                        </item>
                        <item row="16" column="1">
-                        <widget class="QCheckBox" name="checkBox_22">
+                        <widget class="QCheckBox" name="zoning_rules_officesundev">
                          <property name="text">
                           <string>Include all undeveloped land</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="0">
-                        <widget class="QLabel" name="label_18">
+                        <widget class="QLabel" name="zoning_rules_lbl2">
                          <property name="text">
                           <string>Residential Land Use:</string>
                          </property>
                         </widget>
                        </item>
                        <item row="6" column="1">
-                        <widget class="QCheckBox" name="checkBox_16">
+                        <widget class="QCheckBox" name="zoning_rules_comlimit">
                          <property name="text">
                           <string>Limit to current base year active area</string>
                          </property>
                         </widget>
                        </item>
                        <item row="9" column="2">
-                        <widget class="QCheckBox" name="checkBox_25">
+                        <widget class="QCheckBox" name="zoning_rules_indauto">
                          <property name="text">
                           <string>Auto</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="1">
-                        <widget class="QCheckBox" name="checkBox_27">
+                        <widget class="QCheckBox" name="zoning_rules_respassive">
                          <property name="text">
                           <string>Include all passive areas</string>
                          </property>
                         </widget>
                        </item>
                        <item row="11" column="1">
-                        <widget class="QCheckBox" name="checkBox_29">
+                        <widget class="QCheckBox" name="zoning_rules_indpassive">
                          <property name="text">
                           <string>Include all passive areas</string>
                          </property>
                         </widget>
                        </item>
                        <item row="8" column="1">
-                        <widget class="QCheckBox" name="checkBox_20">
+                        <widget class="QCheckBox" name="zoning_rules_comundev">
                          <property name="text">
                           <string>Include all undeveloped land</string>
                          </property>
                         </widget>
                        </item>
                        <item row="4" column="1">
-                        <widget class="QCheckBox" name="checkBox_19">
+                        <widget class="QCheckBox" name="zoning_rules_resundev">
                          <property name="text">
                           <string>Include all undeveloped land</string>
                          </property>
                         </widget>
                        </item>
                        <item row="2" column="1">
-                        <widget class="QCheckBox" name="checkBox_15">
+                        <widget class="QCheckBox" name="zoning_rules_reslimit">
                          <property name="text">
                           <string>Limit to current base year active area</string>
                          </property>
                         </widget>
                        </item>
                        <item row="10" column="1">
-                        <widget class="QCheckBox" name="checkBox_17">
+                        <widget class="QCheckBox" name="zoning_rules_indlimit">
                          <property name="text">
                           <string>Limit to current base year active area</string>
                          </property>
                         </widget>
                        </item>
                        <item row="14" column="1">
-                        <widget class="QCheckBox" name="checkBox_18">
+                        <widget class="QCheckBox" name="zoning_rules_officeslimit">
                          <property name="text">
                           <string>Limit to current base year active area</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="2">
-                        <widget class="QCheckBox" name="checkBox_23">
+                        <widget class="QCheckBox" name="zoning_rules_resauto">
                          <property name="text">
                           <string>Auto</string>
                          </property>
                         </widget>
                        </item>
                        <item row="5" column="1">
-                        <widget class="QComboBox" name="comboBox_2">
+                        <widget class="QComboBox" name="zoning_rules_comcombo">
                          <item>
                           <property name="text">
                            <string>(select Zoning map)</string>
@@ -4685,7 +4688,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="13" column="1">
-                        <widget class="QComboBox" name="comboBox_4">
+                        <widget class="QComboBox" name="zoning_rules_officescombo">
                          <item>
                           <property name="text">
                            <string>(select Zoning map)</string>
@@ -4694,14 +4697,14 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="9" column="0">
-                        <widget class="QLabel" name="label_20">
+                        <widget class="QLabel" name="zoning_rules_lbl4">
                          <property name="text">
                           <string>Industrial Land Use:</string>
                          </property>
                         </widget>
                        </item>
                        <item row="9" column="1">
-                        <widget class="QComboBox" name="comboBox_3">
+                        <widget class="QComboBox" name="zoning_rules_indcombo">
                          <item>
                           <property name="text">
                            <string>(select Zoning map)</string>
@@ -4710,7 +4713,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="0" column="1">
-                        <widget class="QComboBox" name="comboBox">
+                        <widget class="QComboBox" name="zoning_rules_rescombo">
                          <item>
                           <property name="text">
                            <string>(select Zoning map)</string>
@@ -4719,21 +4722,21 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="13" column="0">
-                        <widget class="QLabel" name="label_21">
+                        <widget class="QLabel" name="zoning_rules_lbl5">
                          <property name="text">
                           <string>Mixed Development Land Use:</string>
                          </property>
                         </widget>
                        </item>
                        <item row="5" column="0">
-                        <widget class="QLabel" name="label_19">
+                        <widget class="QLabel" name="zoning_rules_lbl3">
                          <property name="text">
                           <string>Commercial Land Use:</string>
                          </property>
                         </widget>
                        </item>
                        <item row="15" column="1">
-                        <widget class="QCheckBox" name="checkBox_30">
+                        <widget class="QCheckBox" name="zoning_rules_officespassive">
                          <property name="text">
                           <string>Include all passive areas</string>
                          </property>
@@ -5107,14 +5110,14 @@ p, li { white-space: pre-wrap; }
   <tabstop>same_params</tabstop>
   <tabstop>description</tabstop>
   <tabstop>parameters</tabstop>
-  <tabstop>inputs_scrollArea</tabstop>
-  <tabstop>employment_combo</tabstop>
+  <tabstop>general_scrollarea</tabstop>
+  <tabstop>input_luc_combo</tabstop>
   <tabstop>buttonBox</tabstop>
   <tabstop>help_button</tabstop>
  </tabstops>
  <resources>
   <include location="../graphics/ubeats.qrc"/>
-  <include location="Documents/Coding Projects/UrbanBEATS-PSS/graphics/ubeats.qrc"/>
+  <include location="../graphics/ubeats.qrc"/>
  </resources>
  <connections>
   <connection>
@@ -5146,6 +5149,22 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>suit_threshold_luccombo</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>suit_threshold_stack</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>583</x>
+     <y>410</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>472</x>
+     <y>485</y>
     </hint>
    </hints>
   </connection>
