@@ -39,7 +39,7 @@ from ubmodule import *
 
 
 # --- MODULE CLASS DEFINITION ---
-class Techplacement(UBModule):
+class Infrastructure(UBModule):
     """ TECHNOLOGY PLANNING AND IMPLEMENTATION MODULE
     Performs the classical spatial allocation of infrastructure algorithm.
     Also performs the implementation depending on the simulation type.
@@ -56,8 +56,32 @@ class Techplacement(UBModule):
         self.projectlog = projectlog
 
         # PARAMETER LIST DEFINITION
-        self.create_parameter("dummy", BOOL, "dummy parameter for testing")
-        self.dummy = 0
+        self.create_parameter("generate_wastewater", BOOL, "boolean for whether to run wastewater algorithms.")
+        self.generate_wastewater = 1
 
-    def run(self):
-        pass
+    def run_module(self):
+        """Runs the infrastructure simulation module."""
+        self.notify("Start INFRASTRUCTURE Planning")
+
+        if self.generate_wastewater:
+            self.run_wastewater_infrastructure_module()
+
+        return True
+
+    def run_wastewater_infrastructure_module(self):
+        """ Wastewater infrastructure generation module, runs the creation of sewer network connected to current WWTPs
+        within the region and then plans decentralisation/centralisation strategies through spatial assessment and
+        adaptation strategies.
+        """
+        self.notify("Wastewater Plan!")
+
+        # Get Map Attributes
+        map_attr = self.scenario.get_asset_with_name("MapAttributes")
+
+        # Get all the Blocks
+        blocks = self.scenario.get_assets_with_identifier("BlockID")    # returns [ ] of UBVector() objects
+        for b in blocks:
+            print "Current Block", b.get_attribute("BlockID")
+            print b.get_attribute("MinElev")
+
+        return True

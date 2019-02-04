@@ -43,7 +43,7 @@ import modules.md_perfassess
 import modules.md_regulation
 import modules.md_socioecon
 import modules.md_spatialmapping
-import modules.md_techplacement
+import modules.md_infrastructure
 import modules.md_urbandev
 import modules.md_urbplanbb
 
