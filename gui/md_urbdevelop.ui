@@ -3756,7 +3756,7 @@ p, li { white-space: pre-wrap; }
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>0</y>
+                   <y>-83</y>
                    <width>490</width>
                    <height>477</height>
                   </rect>
@@ -4437,7 +4437,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="1" column="0" rowspan="3">
-                        <widget class="QListWidget" name="zonining_passive_box">
+                        <widget class="QListWidget" name="zoning_passive_box">
                          <property name="minimumSize">
                           <size>
                            <width>0</width>
