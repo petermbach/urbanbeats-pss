@@ -68,7 +68,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
 
         # --- SIMULATION YEAR SETTINGS ---
         simyears = self.active_scenario.get_simulation_years()  # gets the simulation years
-        if len(simyears) > 1:
+        if len(simyears) > 1:       # Note that the dt simulation or the Urban Development Module is annual
             self.ui.year_combo.setEnabled(1)  # if more than one year, enables the box for selection
             self.ui.autofillButton.setEnabled(1)
             self.ui.same_params.setEnabled(1)
@@ -194,6 +194,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.access_poi_include.clicked.connect(self.enable_disable_accessibility_widgets)
 
         # SUITABILITY
+        self.ui.suit_general_summary.clicked.connect(self.display_suitability_summary)
         self.ui.suit_slope_check.clicked.connect(self.enable_disable_suitability_widgets)
         self.ui.suit_gw_check.clicked.connect(self.enable_disable_suitability_widgets)
         self.ui.suit_soil_check.clicked.connect(self.enable_disable_suitability_widgets)
@@ -217,7 +218,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
 
     def adjust_module_img(self):
         """Changes the module's image based on the currently selected tab in the GUI."""
-        pass
+        pass    # [TO DO] once I decide on having different images...
 
     def get_dataref_array(self, dataclass, datatype, *args):
         """Retrieves a list of data files loaded into the current scenario for display in the GUI
@@ -261,7 +262,12 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
     def display_accessibility_summary(self):
         """Displays a summary of all the accessibility information entered into the model for the user to gain an
         overview. Opens a dialog window for this."""
-        pass
+        pass    # [TO DO]
+
+    def display_suitability_summary(self):
+        """Displays a summary of all the suitability information entered into the model for the user to gain an
+        overview. Opens a dialog window for this."""
+        pass    # [TO DO]
 
     def update_employment_stack(self):
         """Updates the index of the employment input stack widget."""
@@ -274,15 +280,15 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
 
     def call_birthrate_custom(self):
         """Calls the custom window for filling out a dynamic birth-rate."""
-        pass
+        pass    # [TO DO]
 
     def call_deathrate_custom(self):
         """Calls the custom window for filling out a dynamic death-rate."""
-        pass
+        pass    # [TO DO]
 
     def call_migration_custom(self):
         """Calls the custom window for filling out a dynamic migration-rate."""
-        pass
+        pass    # [TO DO]
 
     def move_zone_to_constrained(self):
         """Moves a list-widget-item from the passive box to the constrained box, called when
