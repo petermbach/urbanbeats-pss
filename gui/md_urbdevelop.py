@@ -1282,7 +1282,7 @@ class Ui_Urbandev_Dialog(object):
         self.suit_scrollarea.setWidgetResizable(True)
         self.suit_scrollarea.setObjectName("suit_scrollarea")
         self.inputs_contents_3 = QtWidgets.QWidget()
-        self.inputs_contents_3.setGeometry(QtCore.QRect(0, -117, 490, 477))
+        self.inputs_contents_3.setGeometry(QtCore.QRect(0, 0, 490, 477))
         self.inputs_contents_3.setObjectName("inputs_contents_3")
         self.verticalLayout_14 = QtWidgets.QVBoxLayout(self.inputs_contents_3)
         self.verticalLayout_14.setContentsMargins(0, 0, 0, 0)
