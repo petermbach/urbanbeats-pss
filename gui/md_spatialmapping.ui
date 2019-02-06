@@ -232,7 +232,7 @@ p, li { white-space: pre-wrap; }
          <bool>true</bool>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="overlays">
          <attribute name="title">
@@ -2120,7 +2120,7 @@ Laundry = Household</string>
               <item>
                <widget class="QStackedWidget" name="res_analysis_stack">
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>1</number>
                 </property>
                 <widget class="QWidget" name="page">
                  <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2139,7 +2139,7 @@ Laundry = Household</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
+                       <y>-130</y>
                        <width>501</width>
                        <height>685</height>
                       </rect>
@@ -3779,7 +3779,7 @@ p, li { white-space: pre-wrap; }
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-223</y>
+                       <y>0</y>
                        <width>501</width>
                        <height>452</height>
                       </rect>
@@ -7118,7 +7118,7 @@ p, li { white-space: pre-wrap; }
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-105</y>
+                   <y>0</y>
                    <width>519</width>
                    <height>378</height>
                   </rect>
