@@ -102,8 +102,13 @@ ext: 'png'
 DECISIONS = ["best", "random", "none"]
 MODULENAMES = ["SPATIAL", "CLIMATE", "URBDEV", "URBPLAN", "SOCIO", "MAP", "REG", "INFRA", "PERF", "IMPACT", "DECISION"]
 
+# NATURAL ELEMENTS
 SOILDICTIONARY = [180, 36, 3.6, 0.36] #mm/hr - 1=sand, 2=sandy clay, 3=medium clay, 4=heavy clay
+LANDCOVERMATERIALS = ["AS", "CO", "DG"]  # AS = asphalt, CO = concrete, DG = bare dirt ground
+TREETYPES = ["RB", "RN", "TB", "TN", "OB", "ON"]
+        # Explanation of tree types: R = round, T = tall, O = open, B = broad leaves, N = needle leaves
 
+# LAND USE AND PLANNING ELEMENTS
 LANDUSEABBR = ['RES', 'COM', 'ORC', 'LI', 'HI', 'CIV', 'SVU', 'RD', 'TR', 'PG', 'REF', 'UND', 'NA']
 LANDUSENAMES = ['Residential', 'Commercial', 'Offices Res Mix', 'Light Industry', 'Heavy Industry',
                 'Civic', 'Service and Utility', 'Road', 'Transport', 'Parks and Gardens', 'Reserves and Floodway',
@@ -112,6 +117,24 @@ LANDUSENAMES = ['Residential', 'Commercial', 'Offices Res Mix', 'Light Industry'
 PLANTYPES = ["Suburbia", "European", "Megacity"]
 PLANPARAMSET = ["Custom", "Melbourne"]
 UNDEVSTATES = ['GF', 'BF', 'AG']
+
+# WATER-RELATED ELEMENTS
+# Diurnal Patterns
+# SDD = STANDARD DAILY DIURNAL PATTERN SCALING FACTORS
+SDD = [0.3, 0.3, 0.3, 0.3, 0.5, 1.0, 1.5, 1.5, 1.3, 1.0, 1.0, 1.5, 1.5, 1.2, 1.0, 1.0, 1.0, 1.3, 1.3, 0.8,
+       0.8, 0.5, 0.5, 0.5]
+
+# CDP = CONSATNT DAILY DIURNAL PATTERN SCALING FACTORS
+CDP = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+       1.0, 1.0, 1.0, 1.0]
+
+# OHT = OFFICE HOURS TRAPEZOIDAL DIURNAL PATTERN SCALING FACTORS
+OHT = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.0, 3.0, 2.5, 2.0, 1.5, 1.0, 0.5,
+       0.0, 0.0, 0.0, 0.0]
+
+# AHC = AFTER HOURS CONSTANT DIURNAL PATTERN
+AHC = [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0,
+       2.0, 2.0, 2.0, 2.0]
 
 # --- ASSET IDENTIFIERS ---
 ASSET_IDENTIFIERS = {"Block": "The most basic building block of the city in UrbanBEATS, the square cell containing all"
