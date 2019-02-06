@@ -111,7 +111,7 @@ class SpatialMapping(UBModule):
         self.surfParking = "AS"
         self.surfBay = "AS"
         self.surfHard = "CO"
-        self.trees_Nres = 0.0
+        self.trees_NRes = 0.0
         self.trees_Site = 0
         self.trees_Front = 0
 
@@ -122,15 +122,15 @@ class SpatialMapping(UBModule):
         self.surfArt = "AS"
         self.surfHwy = "AS"
         self.surfFpath = "CO"
-        self.trees_roaddens = 1
+        self.trees_roaddens = 1.0
 
         self.create_parameter("surfFpath", STRING, "Surface cover of paved areas in parks")
         self.create_parameter("trees_opendens", DOUBLE, "Density of tree cover in parks")
         self.create_parameter("trees_refdens", DOUBLE, "Density of tree cover in reserves")
         self.create_parameter("tree_type", STRING, "Default and predominant type of tree in the case study region.")
         self.surfSquare = "CO"
-        self.trees_opendens = 10
-        self.trees_refdens = 10
+        self.trees_opendens = 10.0
+        self.trees_refdens = 10.0
         self.tree_type = "RB"
 
         # GLOBALS
@@ -175,8 +175,8 @@ class SpatialMapping(UBModule):
         self.create_parameter("res_kitchen_ffp", STRING, "Minimum Fit for purpose water source for kitchen use.")
         self.res_kitchen_fq = 5.0
         self.res_kitchen_dur = 2.0
-        self.res_kitchen_hot = 30
-        self.res_kitchen_var = 0
+        self.res_kitchen_hot = 30.0
+        self.res_kitchen_var = 0.0
         self.res_kitchen_ffp = "PO"     # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
 
         self.create_parameter("res_shower_fq", DOUBLE, "Frequency of shower water use.")
@@ -186,8 +186,8 @@ class SpatialMapping(UBModule):
         self.create_parameter("res_shower_ffp", STRING, "Minimum Fit for purpose water source for shower use.")
         self.res_shower_fq = 5.0
         self.res_shower_dur = 2.0
-        self.res_shower_hot = 30
-        self.res_shower_var = 0
+        self.res_shower_hot = 30.0
+        self.res_shower_var = 0.0
         self.res_shower_ffp = "PO"  # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
 
         self.create_parameter("res_toilet_fq", DOUBLE, "Frequency of toilet water use.")
@@ -195,8 +195,8 @@ class SpatialMapping(UBModule):
         self.create_parameter("res_toilet_var", DOUBLE, "Stochastic variation in toilet water use")
         self.create_parameter("res_toilet_ffp", STRING, "Minimum Fit for purpose water source for toilet use.")
         self.res_toilet_fq = 5.0
-        self.res_toilet_hot = 30
-        self.res_toilet_var = 0
+        self.res_toilet_hot = 30.0
+        self.res_toilet_var = 0.0
         self.res_toilet_ffp = "PO"  # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
 
         self.create_parameter("res_laundry_fq", DOUBLE, "Frequency of laundry water use.")
@@ -204,8 +204,8 @@ class SpatialMapping(UBModule):
         self.create_parameter("res_laundry_var", DOUBLE, "Stochastic variation in laundry water use")
         self.create_parameter("res_laundry_ffp", STRING, "Minimum Fit for purpose water source for laundry use.")
         self.res_laundry_fq = 5.0
-        self.res_laundry_hot = 30
-        self.res_laundry_var = 0
+        self.res_laundry_hot = 30.0
+        self.res_laundry_var = 0.0
         self.res_laundry_ffp = "PO"  # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
 
         self.create_parameter("res_dishwasher_fq", DOUBLE, "Frequency of dishwasher water use.")
@@ -213,8 +213,8 @@ class SpatialMapping(UBModule):
         self.create_parameter("res_dishwasher_var", DOUBLE, "Stochastic variation in dishwasher water use")
         self.create_parameter("res_dishwasher_ffp", STRING, "Minimum Fit for purpose water source for dishwasher use.")
         self.res_dishwasher_fq = 5.0
-        self.res_dishwasher_hot = 30
-        self.res_dishwasher_var = 0
+        self.res_dishwasher_hot = 30.0
+        self.res_dishwasher_var = 0.0
         self.res_dishwasher_ffp = "PO"  # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
 
         self.create_parameter("res_outdoor_vol", DOUBLE, "Outdoor irrigation volume")
@@ -276,9 +276,9 @@ class SpatialMapping(UBModule):
         self.create_parameter("res_dailyindoor_np", DOUBLE, "Proportion of daily indoor use from non-potable source")
         self.create_parameter("res_dailyindoor_hot", DOUBLE, "Proportion of daily indoor use requiring hot water")
         self.create_parameter("res_dailyindoor_var", DOUBLE, "Variation to daily indoor use")
-        self.res_dailyindoor_vol = 155
-        self.res_dailyindoor_np = 60
-        self.res_dailyindoor_hot = 30
+        self.res_dailyindoor_vol = 155.0
+        self.res_dailyindoor_np = 60.0
+        self.res_dailyindoor_hot = 30.0
         self.res_dailyindoor_var = 0.0
         # Outdoor water use - use the same parameters as before
 

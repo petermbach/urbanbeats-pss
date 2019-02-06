@@ -360,7 +360,6 @@ class UrbanBeatsScenario(threading.Thread):
                         # Currently this does some explicit type casting based on the parameter types defined
                         m.set_parameter(child.tag, type(m.get_parameter(child.tag))(child.text))
 
-
     def add_data_reference(self, dataref):
         """Adds the data reference to the scenario's data store depending on its class."""
         if dataref.get_metadata("class") == "spatial":
