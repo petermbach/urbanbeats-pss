@@ -232,7 +232,7 @@ p, li { white-space: pre-wrap; }
          <bool>true</bool>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="overlays">
          <attribute name="title">
@@ -1932,7 +1932,7 @@ p, li { white-space: pre-wrap; }
              <enum>QTabWidget::West</enum>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>3</number>
             </property>
             <widget class="QWidget" name="res">
              <attribute name="icon">
@@ -2537,7 +2537,7 @@ p, li { white-space: pre-wrap; }
                             <widget class="QSpinBox" name="kitchen_dur"/>
                            </item>
                            <item row="5" column="1">
-                            <widget class="QComboBox" name="kitchenffp">
+                            <widget class="QComboBox" name="kitchen_ffp">
                              <item>
                               <property name="text">
                                <string>PO</string>
@@ -3779,7 +3779,7 @@ p, li { white-space: pre-wrap; }
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
+                       <y>-223</y>
                        <width>501</width>
                        <height>452</height>
                       </rect>
@@ -7118,7 +7118,7 @@ p, li { white-space: pre-wrap; }
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>0</y>
+                   <y>-105</y>
                    <width>519</width>
                    <height>378</height>
                   </rect>

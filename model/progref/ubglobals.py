@@ -119,6 +119,9 @@ PLANPARAMSET = ["Custom", "Melbourne"]
 UNDEVSTATES = ['GF', 'BF', 'AG']
 
 # WATER-RELATED ELEMENTS
+RESSTANDARDS = ["AS6400", "Others..."]
+FFP = ["PO", "NP", "RW", "SW", "GW"]    # Fit for purpose water qualities
+DPS = ["SDD", "CDP", "OHT", "AHC", "USER"]    # Types of diurnal patterns
 # Diurnal Patterns
 # SDD = STANDARD DAILY DIURNAL PATTERN SCALING FACTORS
 SDD = [0.3, 0.3, 0.3, 0.3, 0.5, 1.0, 1.5, 1.5, 1.3, 1.0, 1.0, 1.5, 1.5, 1.2, 1.0, 1.0, 1.0, 1.3, 1.3, 0.8,

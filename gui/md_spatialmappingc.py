@@ -286,6 +286,13 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
 
     def setup_gui_with_parameters(self):
         """Fills in all parameters belonging to the module for the current year."""
+        # MAIN CHECK BOXES
+        self.ui.planning_check.setChecked(int(self.module.get_parameter("planrules")))
+        self.ui.landcover_check.setChecked(int(self.module.get_parameter("landcover")))
+        self.ui.pos_check.setChecked(int(self.module.get_parameter("openspaces")))
+        self.ui.wateruse_check.setChecked(int(self.module.get_parameter("wateruse")))
+        self.ui.pollution_check.setChecked(int(self.module.get_parameter("emissions")))
+
         # TAB 1 - PLANNING RULES PARAMETERS
 
         # TAB 2 - LAND SURFACE COVER PARAMETERS
@@ -327,8 +334,184 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         self.ui.ref_limit_check.setChecked(int(self.module.get_parameter("reserves_restrict")))
 
         # TAB 4 - WATER USE PARAMETERS
-        
+        # RESIDENTIAL Water Use
+        if self.module.get_parameter("residential_method") == "EUA":
+            self.ui.resdemand_analysis_combo.setCurrentIndex(0)
+        else:
+            self.ui.resdemand_analysis_combo.setCurrentIndex(1)
 
+        self.ui.res_standard_combo.setCurrentIndex(ubglobals.RESSTANDARDS.index(
+            self.module.get_parameter("res_standard")))
+
+        self.ui.kitchen_freq.setValue(float(self.module.get_parameter("res_kitchen_fq")))
+        self.ui.kitchen_dur.setValue(int(self.module.get_parameter("res_kitchen_dur")))
+        self.ui.kitchen_hot.setValue(int(self.module.get_parameter("res_kitchen_hot")))
+        self.ui.kitchen_vary.setValue(int(self.module.get_parameter("res_kitchen_var")))
+        self.ui.kitchen_ffp.setCurrentIndex(ubglobals.FFP.index(self.module.get_parameter("res_kitchen_ffp")))
+        self.ui.kitchen_dp.setCurrentIndex(ubglobals.DPS.index(self.module.get_parameter("res_kitchen_pat")))
+        if self.module.get_parameter("res_kitchen_wwq") == "B":
+            self.ui.kitchen_blackradio.setChecked(1)
+        else:
+            self.ui.kitchen_greyradio.setChecked(1)
+
+        self.ui.shower_freq.setValue(float(self.module.get_parameter("res_shower_fq")))
+        self.ui.shower_dur.setValue(int(self.module.get_parameter("res_shower_dur")))
+        self.ui.shower_hot.setValue(int(self.module.get_parameter("res_shower_hot")))
+        self.ui.shower_vary.setValue(int(self.module.get_parameter("res_shower_var")))
+        self.ui.shower_ffp.setCurrentIndex(ubglobals.FFP.index(self.module.get_parameter("res_shower_ffp")))
+        self.ui.shower_dp.setCurrentIndex(ubglobals.DPS.index(self.module.get_parameter("res_shower_pat")))
+        if self.module.get_parameter("res_shower_wwq") == "B":
+            self.ui.shower_blackradio.setChecked(1)
+        else:
+            self.ui.shower_greyradio.setChecked(1)
+
+        self.ui.toilet_freq.setValue(float(self.module.get_parameter("res_toilet_fq")))
+        self.ui.toilet_hot.setValue(int(self.module.get_parameter("res_toilet_hot")))
+        self.ui.toilet_vary.setValue(int(self.module.get_parameter("res_toilet_var")))
+        self.ui.toilet_ffp.setCurrentIndex(ubglobals.FFP.index(self.module.get_parameter("res_toilet_ffp")))
+        self.ui.toilet_dp.setCurrentIndex(ubglobals.DPS.index(self.module.get_parameter("res_toilet_pat")))
+        if self.module.get_parameter("res_toilet_wwq") == "B":
+            self.ui.toilet_blackradio.setChecked(1)
+        else:
+            self.ui.toilet_greyradio.setChecked(1)
+
+        self.ui.laundry_freq.setValue(float(self.module.get_parameter("res_laundry_fq")))
+        self.ui.laundry_hot.setValue(int(self.module.get_parameter("res_laundry_hot")))
+        self.ui.laundry_vary.setValue(int(self.module.get_parameter("res_laundry_var")))
+        self.ui.laundry_ffp.setCurrentIndex(ubglobals.FFP.index(self.module.get_parameter("res_laundry_ffp")))
+        self.ui.laundry_dp.setCurrentIndex(ubglobals.DPS.index(self.module.get_parameter("res_laundry_pat")))
+        if self.module.get_parameter("res_laundry_wwq") == "B":
+            self.ui.laundry_blackradio.setChecked(1)
+        else:
+            self.ui.laundry_greyradio.setChecked(1)
+
+        self.ui.dish_freq.setValue(float(self.module.get_parameter("res_dishwasher_fq")))
+        self.ui.dish_hot.setValue(int(self.module.get_parameter("res_dishwasher_hot")))
+        self.ui.dish_vary.setValue(int(self.module.get_parameter("res_dishwasher_var")))
+        self.ui.dish_ffp.setCurrentIndex(ubglobals.FFP.index(self.module.get_parameter("res_dishwasher_ffp")))
+        self.ui.dish_dp.setCurrentIndex(ubglobals.DPS.index(self.module.get_parameter("res_dishwasher_pat")))
+        if self.module.get_parameter("res_dishwasher_wwq") == "B":
+            self.ui.dish_blackradio.setChecked(1)
+        else:
+            self.ui.dish_greyradio.setChecked(1)
+
+        self.ui.res_irrigate_vol.setValue(float(self.module.get_parameter("res_outdoor_vol")))
+        self.ui.res_irrigate_ffp.setCurrentIndex(ubglobals.FFP.index(self.module.get_parameter("res_outdoor_ffp")))
+        self.ui.res_irrigate_dp.setCurrentIndex(ubglobals.DPS.index(self.module.get_parameter("res_outdoor_pat")))
+
+        self.ui.res_direct_vol.setValue(float(self.module.get_parameter("res_dailyindoor_vol")))
+        self.ui.res_direct_np.setValue(int(self.module.get_parameter("res_dailyindoor_np")))
+        self.ui.res_direct_hot.setValue(int(self.module.get_parameter("res_dailyindoor_hot")))
+        self.ui.res_direct_vary.setValue(int(self.module.get_parameter("res_dailyindoor_var")))
+        self.ui.indoor_dp.setCurrentIndex(ubglobals.DPS.index(self.module.get_parameter("res_dailyindoor_pat")))
+        self.ui.res_direct_ww_slider.setValue(self.module.get_parameter("res_dailyindoor_bgprop"))
+
+        self.ui.res_direct_irrigate.setValue(float(self.module.get_parameter("res_outdoor_vol")))
+        self.ui.res_direct_irrigate_ffp.setCurrentIndex(ubglobals.FFP.index(
+            self.module.get_parameter("res_outdoor_ffp")))
+        self.ui.outdoor_dp.setCurrentIndex(ubglobals.DPS.index(self.module.get_parameter("res_outdoor_pat")))
+
+        # NON-RESIDENTIAL Water Use
+        if self.module.get_parameter("nonres_method") == "UQR":
+            self.ui.nres_analysis_combo.setCurrentIndex(0)
+        else:
+            self.ui.nres_analysis_combo.setCurrentIndex(1)
+
+        self.ui.com_demandbox.setText(str(self.module.get_parameter("com_demand")))
+        self.ui.com_demandspin.setValue(int(self.module.get_parameter("com_var")))
+        self.ui.com_demandspin_2.setValue(int(self.module.get_parameter("com_var")))
+        if self.module.get_parameter("com_units") == "LSQMD":
+            self.ui.com_demandunits.setCurrentIndex(0)
+        else:
+            self.ui.com_demandunits.setCurrentIndex(1)
+        self.ui.com_hotbox.setValue(int(self.module.get_parameter("com_hot")))
+        self.ui.com_hotbox_2.setValue(int(self.module.get_parameter("com_hot")))
+        self.ui.com_pe.setText(str(self.module.get_parameter("com_pefactor")))
+        self.ui.com_dp.setCurrentIndex(ubglobals.DPS.index(self.module.get_parameter("com_pat")))
+        self.ui.com_dp_2.setCurrentIndex(ubglobals.DPS.index(self.module.get_parameter("com_pat")))
+
+        self.ui.office_demandbox.setText(str(self.module.get_parameter("office_demand")))
+        self.ui.office_demandspin.setValue(int(self.module.get_parameter("office_var")))
+        self.ui.office_demandspin_2.setValue(int(self.module.get_parameter("office_var")))
+        if self.module.get_parameter("office_units") == "LSQMD":
+            self.ui.office_demandunits.setCurrentIndex(0)
+        else:
+            self.ui.office_demandunits.setCurrentIndex(1)
+        self.ui.office_hotbox.setValue(int(self.module.get_parameter("office_hot")))
+        self.ui.office_hotbox_2.setValue(int(self.module.get_parameter("office_hot")))
+        self.ui.office_pe.setText(str(self.module.get_parameter("office_pefactor")))
+
+        self.ui.li_demandbox.setText(str(self.module.get_parameter("li_demand")))
+        self.ui.li_demandspin.setValue(int(self.module.get_parameter("li_var")))
+        self.ui.li_demandspin_2.setValue(int(self.module.get_parameter("li_var")))
+        if self.module.get_parameter("li_units") == "LSQMD":
+            self.ui.li_demandunits.setCurrentIndex(0)
+        else:
+            self.ui.li_demandunits.setCurrentIndex(1)
+        self.ui.li_hotbox.setValue(int(self.module.get_parameter("li_hot")))
+        self.ui.li_hotbox_2.setValue(int(self.module.get_parameter("li_hot")))
+        self.ui.li_pe.setText(str(self.module.get_parameter("li_pefactor")))
+        self.ui.ind_dp.setCurrentIndex(ubglobals.DPS.index(self.module.get_parameter("li_pat")))
+        self.ui.ind_dp_2.setCurrentIndex(ubglobals.DPS.index(self.module.get_parameter("li_pat")))
+
+        self.ui.hi_demandbox.setText(str(self.module.get_parameter("hi_demand")))
+        self.ui.hi_demandspin.setValue(int(self.module.get_parameter("hi_var")))
+        self.ui.hi_demandspin_2.setValue(int(self.module.get_parameter("hi_var")))
+        if self.module.get_parameter("hi_units") == "LSQMD":
+            self.ui.hi_demandunits.setCurrentIndex(0)
+        else:
+            self.ui.hi_demandunits.setCurrentIndex(1)
+        self.ui.hi_hotbox.setValue(int(self.module.get_parameter("hi_hot")))
+        self.ui.hi_hotbox_2.setValue(int(self.module.get_parameter("hi_hot")))
+        self.ui.hi_pe.setText(str(self.module.get_parameter("hi_pefactor")))
+
+        self.ui.nres_irrigate_vol.setValue(float(self.module.get_parameter("nonres_landscape_vol")))
+        self.ui.nres_irrigate_ffp.setCurrentIndex(ubglobals.FFP.index(
+            self.module.get_parameter("nonres_landscape_ffp")))
+        self.ui.nres_irrigate_vol_2.setValue(float(self.module.get_parameter("nonres_landscape_vol")))
+        self.ui.nres_irrigate_ffp_2.setCurrentIndex(ubglobals.FFP.index(
+            self.module.get_parameter("nonres_landscape_ffp")))
+        self.ui.nres_irrigate_dp.setCurrentIndex(ubglobals.DPS.index(
+            self.module.get_parameter("nonres_landscape_pat")))
+        self.ui.nres_irrigate_dp_2.setCurrentIndex(ubglobals.DPS.index(
+            self.module.get_parameter("nonres_landscape_pat")))
+
+        self.ui.nres_ww_com_slider.setValue(int(self.module.get_parameter("com_ww_bgprop")))
+        self.ui.nres_ww_ind_slider.setValue(int(self.module.get_parameter("ind_ww_bgprop")))
+
+        # PUBLIC OPEN SPACE AND DISTRICTS Water Use
+        self.ui.pos_annual_vol.setValue(float(self.module.get_parameter("pos_irrigation_vol")))
+        self.ui.pos_ffp.setCurrentIndex(ubglobals.FFP.index(self.module.get_parameter("pos_irrigation_ffp")))
+        self.ui.pos_spaces_pg.setChecked(int(self.module.get_parameter("irrigate_parks")))
+        self.ui.pos_spaces_na.setChecked(int(self.module.get_parameter("irrigate_landmarks")))
+        self.ui.pos_spaces_ref.setChecked(int(self.module.get_parameter("irrigate_reserves")))
+        self.ui.pos_dp.setCurrentIndex(ubglobals.DPS.index(self.module.get_parameter("pos_irrigation_pat")))
+
+        self.ui.losses_check.setChecked(int(self.module.get_parameter("estimate_waterloss")))
+        if self.module.get_parameter("waterloss_method") == "VOLPROP":
+            self.ui.losses_volradio.setChecked(1)
+        else:
+            self.ui.losses_flowradio.setChecked(1)
+        self.ui.losses_volspin.setValue(float(self.module.get_parameter("waterloss_volprop")))
+        self.ui.losses_flowbox.setText(str(self.module.get_parameter("waterloss_constant")))
+        if self.module.get_parameter("waterloss_constant_units") == "MLY":
+            self.ui.losses_flowunits.setCurrentIndex(0)
+        else:
+            self.ui.losses_flowunits.setCurrentIndex(1)
+
+        # TEMPORAL DYNAMICS
+        self.ui.weekly_reducenres_check.setChecked(int(self.module.get_parameter("weekend_nonres_reduce")))
+        self.ui.weekly_increaseres_check.setChecked(int(self.module.get_parameter("weekend_res_increase")))
+        self.ui.weekly_reducenres_spin.setValue(float(self.module.get_parameter("weekend_nonres_factor")))
+        self.ui.weekly_increaseres_spin.setValue(float(self.module.get_parameter("weekend_res_factor")))
+
+        self.ui.seasonal_check.setChecked(int(self.module.get_parameter("seasonal_analysis")))
+        # self.ui.seasonal_scaledata_combo.setCurrentIndex(???)
+        self.ui.seasonal_numyears_spin.setValue(int(self.module.get_parameter("scaling_years")))
+        self.ui.seasonal_globalavg_box.setText(str(self.module.get_parameter("scaling_average")))
+        self.ui.seasonal_globalavg_check.setChecked(int(self.module.get_parameter("scaling_average_fromdata")))
+        self.ui.seasonal_irrigateresume_spin.setValue(int(self.module.get_parameter("irrigate_resume_time")))
+        self.uiseasonal_noirrigaterain_check.setChecked(int(self.module.get_parameter("no_irrigate_during_rain")))
 
         self.enable_disable_custom_buttons()    # Enable/Disable Functions
         self.enable_disable_losses_widgets()
@@ -346,6 +529,13 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
 
     def save_values(self):
         """Saves current values to the corresponding module's instance in the active scenario."""
+        # MAIN CHECK BOXES
+        self.module.set_parameter("planrules", int(self.ui.planning_check.isChecked()))
+        self.module.set_parameter("landcover", int(self.ui.landcover_check.isChecked()))
+        self.module.set_parameter("openspaces", int(self.ui.pos_check.isChecked()))
+        self.module.set_parameter("wateruse", int(self.ui.wateruse_check.isChecked()))
+        self.module.set_parameter("emissions", int(self.ui.pollution_check.isChecked()))
+
         # TAB 1 - PLANNING RULES PARAMETERS
 
         # TAB 2 - LAND SURFACE COVER PARAMETERS
@@ -377,7 +567,7 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("reserves_restrict", int(self.ui.ref_limit_check.isChecked()))
 
         # TAB 4 - WATER USE PARAMETERS
-
+        
 
         # TAB 5 - POLLUTION EMISSIONS PARAMETERS
 
