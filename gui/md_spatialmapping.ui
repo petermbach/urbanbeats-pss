@@ -236,7 +236,7 @@ p, li { white-space: pre-wrap; }
         </property>
         <widget class="QWidget" name="overlays">
          <attribute name="title">
-          <string>Planning Overlays</string>
+          <string>Overlays</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
@@ -254,7 +254,7 @@ p, li { white-space: pre-wrap; }
            </layout>
           </item>
           <item>
-           <widget class="QScrollArea" name="inputs_scrollArea_2">
+           <widget class="QScrollArea" name="overlays_scrollArea">
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
             </property>
@@ -349,7 +349,7 @@ p, li { white-space: pre-wrap; }
            </layout>
           </item>
           <item>
-           <widget class="QScrollArea" name="lc_widget">
+           <widget class="QScrollArea" name="landcover_scrollArea">
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
             </property>
@@ -806,7 +806,7 @@ p, li { white-space: pre-wrap; }
                     </spacer>
                    </item>
                    <item row="3" column="3">
-                    <widget class="QLineEdit" name="lc_restrees_box_2">
+                    <widget class="QLineEdit" name="lc_nrestrees_box">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -1680,7 +1680,7 @@ p, li { white-space: pre-wrap; }
              <number>9</number>
             </property>
             <item>
-             <widget class="QCheckBox" name="planning_check_2">
+             <widget class="QCheckBox" name="pos_check">
               <property name="text">
                <string>Perform mapping of open space characteristics, distribution and setup encumbrances</string>
               </property>
@@ -1689,7 +1689,7 @@ p, li { white-space: pre-wrap; }
            </layout>
           </item>
           <item>
-           <widget class="QScrollArea" name="inputs_scrollArea_3">
+           <widget class="QScrollArea" name="pos_scrollArea">
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
             </property>
@@ -1870,14 +1870,14 @@ p, li { white-space: pre-wrap; }
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_51">
                    <item>
-                    <widget class="QCheckBox" name="pg_usable_prohibit_2">
+                    <widget class="QCheckBox" name="pg_usable_prohibit">
                      <property name="text">
                       <string>Restrict Park Space Usage for Decentralised Water Infrastructure</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QCheckBox" name="ref_limit_check_2">
+                    <widget class="QCheckBox" name="ref_limit_check">
                      <property name="text">
                       <string>Limit use of Reserve and Floodways exclusively to stormwater management</string>
                      </property>
@@ -7120,7 +7120,7 @@ p, li { white-space: pre-wrap; }
                    <x>0</x>
                    <y>0</y>
                    <width>519</width>
-                   <height>381</height>
+                   <height>378</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_36">
@@ -7154,6 +7154,13 @@ p, li { white-space: pre-wrap; }
                        <property name="rightMargin">
                         <number>9</number>
                        </property>
+                       <item row="5" column="1">
+                        <widget class="QCheckBox" name="pos_spaces_ref">
+                         <property name="text">
+                          <string>Reserves and Floodways</string>
+                         </property>
+                        </widget>
+                       </item>
                        <item row="2" column="1">
                         <widget class="QComboBox" name="pos_ffp">
                          <item>
@@ -7183,19 +7190,6 @@ p, li { white-space: pre-wrap; }
                          </item>
                         </widget>
                        </item>
-                       <item row="1" column="1">
-                        <widget class="QDoubleSpinBox" name="pos_annual_vol">
-                         <property name="maximumSize">
-                          <size>
-                           <width>51</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                         <property name="decimals">
-                          <number>1</number>
-                         </property>
-                        </widget>
-                       </item>
                        <item row="1" column="0">
                         <widget class="QLabel" name="pos_annual_lbl">
                          <property name="whatsThis">
@@ -7203,13 +7197,6 @@ p, li { white-space: pre-wrap; }
                          </property>
                          <property name="text">
                           <string>Approximate Annual Irrigation Volume:</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="1" colspan="2">
-                        <widget class="QCheckBox" name="pos_spaces_pg">
-                         <property name="text">
-                          <string>Parks and Gardens</string>
                          </property>
                         </widget>
                        </item>
@@ -7242,10 +7229,23 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
-                       <item row="4" column="1" colspan="2">
-                        <widget class="QCheckBox" name="pos_spaces_na">
+                       <item row="3" column="1" colspan="2">
+                        <widget class="QCheckBox" name="pos_spaces_pg">
                          <property name="text">
-                          <string>Green Landmarks</string>
+                          <string>Parks and Gardens</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QDoubleSpinBox" name="pos_annual_vol">
+                         <property name="maximumSize">
+                          <size>
+                           <width>51</width>
+                           <height>16777215</height>
+                          </size>
+                         </property>
+                         <property name="decimals">
+                          <number>1</number>
                          </property>
                         </widget>
                        </item>
@@ -7259,28 +7259,15 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
-                       <item row="5" column="1" colspan="2">
-                        <widget class="QCheckBox" name="pos_spaces_ref">
+                       <item row="4" column="1" colspan="2">
+                        <widget class="QCheckBox" name="pos_spaces_na">
                          <property name="text">
-                          <string>Reserves and Floodways</string>
+                          <string>Green Landmarks</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="3">
                         <spacer name="horizontalSpacer_103">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="4" column="3">
-                        <spacer name="horizontalSpacer_104">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
                          </property>
@@ -7319,7 +7306,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="5" column="3">
-                        <spacer name="horizontalSpacer_105">
+                        <spacer name="horizontalSpacer_104">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
                          </property>
@@ -8069,7 +8056,7 @@ p, li { white-space: pre-wrap; }
            </layout>
           </item>
           <item>
-           <widget class="QScrollArea" name="inputs_scrollArea_4">
+           <widget class="QScrollArea" name="pollution_scrollArea">
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
             </property>

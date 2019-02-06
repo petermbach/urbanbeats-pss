@@ -67,24 +67,24 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         # self.adjust_module_img()
 
         # --- SIMULATION YEAR SETTINGS ---
-        # simyears = self.active_scenario.get_simulation_years()  # gets the simulation years
-        # if len(simyears) > 1:
-        #     self.ui.year_combo.setEnabled(1)  # if more than one year, enables the box for selection
-        #     self.ui.autofillButton.setEnabled(1)
-        #     self.ui.same_params.setEnabled(1)
-        #     self.ui.year_combo.clear()
-        #     for yr in simyears:
-        #         self.ui.year_combo.addItem(str(yr))
-        # else:
-        #     self.ui.autofillButton.setEnabled(0)  # if static or benchmark, then only one year is available
-        #     self.ui.same_params.setEnabled(0)  # so all of the sidebar buttons get disabled.
-        #     self.ui.year_combo.setEnabled(0)
-        #     self.ui.year_combo.clear()
-        #     self.ui.year_combo.addItem(str(simyears[0]))
-        # self.ui.year_combo.setCurrentIndex(0)  # Set to the first item on the list.
+        simyears = self.active_scenario.get_simulation_years()  # gets the simulation years
+        if len(simyears) > 1:
+            self.ui.year_combo.setEnabled(1)  # if more than one year, enables the box for selection
+            self.ui.autofillButton.setEnabled(1)
+            self.ui.same_params.setEnabled(1)
+            self.ui.year_combo.clear()
+            for yr in simyears:
+                self.ui.year_combo.addItem(str(yr))
+        else:
+            self.ui.autofillButton.setEnabled(0)  # if static or benchmark, then only one year is available
+            self.ui.same_params.setEnabled(0)  # so all of the sidebar buttons get disabled.
+            self.ui.year_combo.setEnabled(0)
+            self.ui.year_combo.clear()
+            self.ui.year_combo.addItem(str(simyears[0]))
+        self.ui.year_combo.setCurrentIndex(0)  # Set to the first item on the list.
 
         # --- SETUP ALL DYNAMIC COMBO BOXES ---
-
+        # seasonal_scaledata_combo - climate data
 
         self.gui_state = "initial"
         self.change_active_module()
@@ -92,18 +92,54 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
 
         # --- SIGNALS AND SLOTS ---
         # self.ui.parameters.currentChanged.connect(self.adjust_module_img)   # Changes the module's image
+        self.ui.planning_check.clicked.connect(self.enable_disable_whole_gui_tabs)
 
         # TAB 1 - PLANNING RULES PARAMETERS
-
+        # No current signals or slots
 
         # TAB 2 - LAND SURFACE COVER PARAMETERS
+        self.ui.lc_restrees_slider.valueChanged.connect(self.slider_landcover_update)
+        self.ui.lc_nrestrees_slider.valueChanged.connect(self.slider_landcover_update)
 
+        # TAB 3 - OPEN SPACES PARAMETERS
+        # No current signals or slots
 
-        # TAB 3 - WATER USE PARAMETERS
+        # TAB 4 - WATER USE PARAMETERS
+        self.ui.res_standard_button.clicked.connect(self.show_res_standard_details)
+        self.ui.res_enduse_summarybutton.clicked.connect(self.show_res_enduse_summary)
+        self.ui.kitchen_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
+        self.ui.shower_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
+        self.ui.toilet_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
+        self.ui.laundry_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
+        self.ui.dish_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
+        self.ui.res_irrigate_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
+        self.ui.indoor_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
+        self.ui.outdoor_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
+        self.ui.nres_irrigate_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
+        self.ui.nres_irrigate_dp_2.currentIndexChanged.connect(self.enable_disable_custom_buttons)
+        self.ui.com_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
+        self.ui.com_dp_2.currentIndexChanged.connect(self.enable_disable_custom_buttons)
+        self.ui.ind_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
+        self.ui.ind_dp_2.currentIndexChanged.connect(self.enable_disable_custom_buttons)
+        self.ui.pos_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
+        self.ui.res_direct_ww_slider.valueChanged.connect(self.slider_res_value_update)
+        self.ui.civic_presetsbutton.clicked.connect(self.view_civic_wateruse_presets)
+        self.ui.civic_presetsbutton_2.clicked.connect(self.view_civic_wateruse_presets)
+        self.ui.nres_ww_com_slider.valueChanged.connect(self.slider_nres_com_update)
+        self.ui.nres_ww_ind_slider.valueChanged.connect(self.slider_nres_ind_update)
+        self.ui.nres_ww_com_slider_2.valueChanged.connect(self.slider_nres_com_update)
+        self.ui.nres_ww_ind_slider_2.valueChanged.connect(self.slider_nres_ind_update)
+        self.ui.losses_check.clicked.connect(self.enable_disable_losses_widgets)
+        self.ui.losses_volradio.clicked.connect(self.enable_disable_losses_widgets)
+        self.ui.losses_flowradio.clicked.connect(self.enable_disable_losses_widgets)
+        self.ui.weekly_reducenres_check.clicked.connect(self.enable_disable_weekly_widgets)
+        self.ui.weekly_increaseres_check.clicked.connect(self.enable_disable_weekly_widgets)
+        self.ui.seasonal_check.clicked.connect(self.enable_disable_seasonal_widgets)
+        self.ui.seasonal_globalavg_check.clicked.connect(self.enable_disable_seasonal_widgets)
+        self.ui.seasonal_noirrigaterain_check.clicked.connect(self.enable_disable_seasonal_widgets)
 
-
-        # TAB 4 - POLLUTION EMISSIONS PARAMETERS
-
+        # TAB 5 - POLLUTION EMISSIONS PARAMETERS
+        # No current signals or slots
 
         # OTHERS
         self.ui.buttonBox.accepted.connect(self.save_values)
@@ -111,10 +147,6 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
     def adjust_module_img(self):
         """Changes the module's image based on the currently selected tab in the GUI."""
         self.ui.module_img.setPixmap(QtGui.QPixmap(self.pixmap_ref[self.ui.parameters.currentIndex()]))
-
-    def enable_disable_entire_gui(self):
-        """Enables and disables respective GUI elements depending on what the user clicks."""
-        pass
 
     def get_dataref_array(self, dataclass, datatype, *args):
         """Retrieves a list of data files loaded into the current scenario for display in the GUI
@@ -155,8 +187,101 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
                 return
 
         # Retrieve the Urbplanbb() Reference corresponding to the current year
-        self.module = self.active_scenario.get_module_object("URBPLAN", self.ui.year_combo.currentIndex())
+        self.module = self.active_scenario.get_module_object("MAP", self.ui.year_combo.currentIndex())
         self.setup_gui_with_parameters()
+        return True
+
+    def slider_landcover_update(self):
+        """Updates all land cover slider values."""
+        self.ui.lc_restrees_box.setText(str(self.ui.lc_restrees_slider.value())+"%")
+        self.ui.lc_nrestrees_box.setText(str(self.ui.lc_nrestrees_slider.value()) + "%")
+        return True
+
+    def slider_res_value_update(self):
+        """Updates the residential blackwater/greywater slider value boxes to reflect the current slider's value."""
+        self.ui.res_direct_wwboxgrey.setText(str(int((self.ui.res_direct_ww_slider.value()*-1+100)/2))+"%")
+        self.ui.res_direct_wwboxblack.setText(str(int((self.ui.res_direct_ww_slider.value()+100)/2))+"%")
+        return True
+
+    def slider_nres_com_update(self):
+        """Updates the non-residential slider for commercial wastewater volumes"""
+        self.ui.nres_ww_com_greybox.setText(str(int((self.ui.nres_ww_com_slider.value()*-1+100)/2))+"%")
+        self.ui.nres_ww_com_greybox_2.setText(str(int((self.ui.nres_ww_com_slider_2.value() * -1 + 100) / 2)) + "%")
+        self.ui.nres_ww_com_blackbox.setText(str(int((self.ui.nres_ww_com_slider.value() + 100) / 2)) + "%")
+        self.ui.nres_ww_com_blackbox_2.setText(str(int((self.ui.nres_ww_com_slider_2.value() + 100) / 2)) + "%")
+        return True
+
+    def slider_nres_ind_update(self):
+        """Updates the non-residential slider for industrial wastewater volumes"""
+        self.ui.nres_ww_ind_greybox.setText(str(int((self.ui.nres_ww_ind_slider.value() * -1 + 100) / 2)) + "%")
+        self.ui.nres_ww_ind_greybox_2.setText(str(int((self.ui.nres_ww_ind_slider_2.value() * -1 + 100) / 2)) + "%")
+        self.ui.nres_ww_ind_blackbox.setText(str(int((self.ui.nres_ww_ind_slider.value() + 100) / 2)) + "%")
+        self.ui.nres_ww_ind_blackbox_2.setText(str(int((self.ui.nres_ww_ind_slider_2.value() + 100) / 2)) + "%")
+        return True
+
+    def show_res_standard_details(self):
+        """"""
+        pass    # [TO DO]
+
+    def show_res_enduse_summary(self):
+        """"""
+        pass    # [TO DO]
+
+    def view_civic_wateruse_presets(self):
+        """"""
+        pass    # [TO DO]
+
+    def enable_disable_whole_gui_tabs(self):
+        """Enables and disables the entire GUI chunks depending on which assessment checkboxes have been checked."""
+        self.ui.overlays_scrollArea.setEnabled(self.ui.planning_check.isChecked())
+        self.ui.landcover_scrollArea.setEnabled(self.ui.landcover_check.isChecked())
+        self.ui.pos_scrollArea.setEnabled(self.ui.pos_check.isChecked())
+        self.ui.wateruse_master_widget.setEnabled(self.ui.wateruse_check.isChecked())
+        self.ui.pollution_scrollArea.setEnabled(self.ui.pollution_check.isChecked())
+        return True
+
+    def enable_disable_losses_widgets(self):
+        """Enables and disables the water losses options when clicking the respective radio buttons."""
+        self.ui.losses_flowbox.setEnabled(self.ui.losses_flowradio.isChecked() and self.ui.losses_check.isChecked())
+        self.ui.losses_flowunits.setEnabled(self.ui.losses_flowradio.isChecked() and self.ui.losses_check.isChecked())
+        self.ui.losses_volspin.setEnabled(self.ui.losses_volradio.isChecked() and self.ui.losses_check.isChecked())
+        self.ui.losses_flowradio.setEnabled(self.ui.losses_check.isChecked())
+        self.ui.losses_volradio.setEnabled(self.ui.losses_check.isChecked())
+        return True
+
+    def enable_disable_weekly_widgets(self):
+        """Enables and disables the weekly water use behaviour options."""
+        self.ui.weekly_reducenres_spin.setEnabled(self.ui.weekly_reducenres_check.isChecked())
+        self.ui.weekly_increaseres_spin.setEnabled(self.ui.weekly_increaseres_check.isChecked())
+        return True
+
+    def enable_disable_seasonal_widgets(self):
+        """Enables and disables the seasonal widgets."""
+        self.ui.seasonal_globalavg_box.setEnabled(not self.ui.seasonal_globalavg_check.isChecked())
+        self.ui.seasonal_irrigateresume_spin.setEnabled(self.ui.seasonal_noirrigaterain_check.isChecked())
+        self.ui.seasonal_widget.setEnabled(self.ui.seasonal_check.isChecked())
+        return True
+
+    def enable_disable_custom_buttons(self):
+        """Enables and disables all the diurnal pattern custom buttons depending on the state of the combo boxes."""
+        self.ui.kitchen_dpcustom.setEnabled(self.ui.kitchen_dp.currentIndex() == self.ui.kitchen_dp.count() - 1)
+        self.ui.shower_dpcustom.setEnabled(self.ui.shower_dp.currentIndex() == self.ui.shower_dp.count() - 1)
+        self.ui.toilet_dpcustom.setEnabled(self.ui.toilet_dp.currentIndex() == self.ui.toilet_dp.count() - 1)
+        self.ui.laundry_dpcustom.setEnabled(self.ui.laundry_dp.currentIndex() == self.ui.laundry_dp.count() - 1)
+        self.ui.dish_dpcustom.setEnabled(self.ui.dish_dp.currentIndex() == self.ui.dish_dp.count() - 1)
+        self.ui.res_irrigate_dpcustom.setEnabled(self.ui.res_irrigate_dp.currentIndex() ==
+                                                 self.ui.res_irrigate_dp.count() - 1)
+        self.ui.indoor_dpcustom.setEnabled(self.ui.indoor_dp.currentIndex() == self.ui.indoor_dp.count() - 1)
+        self.ui.outdoor_dpcustom.setEnabled(self.ui.outdoor_dp.currentIndex() == self.ui.outdoor_dp.count() - 1)
+        self.ui.nres_irrigate_dpcustom_2.setEnabled(self.ui.nres_irrigate_dp_2.currentIndex() ==
+                                                 self.ui.nres_irrigate_dp_2.count() - 1)
+        self.ui.nres_irrigate_dpcustom.setEnabled(self.ui.nres_irrigate_dp.currentIndex() ==
+                                                  self.ui.nres_irrigate_dp.count() - 1)
+        self.ui.com_dpcustom.setEnabled(self.ui.com_dp.currentIndex() == self.ui.com_dp.count() - 1)
+        self.ui.com_dpcustom_2.setEnabled(self.ui.com_dp_2.currentIndex() == self.ui.com_dp_2.count() - 1)
+        self.ui.ind_dpcustom.setEnabled(self.ui.ind_dp.currentIndex() == self.ui.ind_dp.count() - 1)
+        self.ui.ind_dpcustom_2.setEnabled(self.ui.ind_dp_2.currentIndex() == self.ui.ind_dp_2.count() - 1)
+        self.ui.pos_dpcustom.setEnabled(self.ui.pos_dp.currentIndex() == self.ui.pos_dp.count() - 1)
         return True
 
     def setup_gui_with_parameters(self):
@@ -164,12 +289,59 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         # TAB 1 - PLANNING RULES PARAMETERS
 
         # TAB 2 - LAND SURFACE COVER PARAMETERS
+        self.ui.lc_respave_combo.setCurrentIndex(ubglobals.LANDCOVERMATERIALS.index(
+            self.module.get_parameter("surfDriveway")))
+        if self.module.get_parameter("surfResIrrigate") == "G":
+            self.ui.lc_resirri_garden.setChecked(1)
+        else:
+            self.ui.lc_resirri_allperv.setChecked(1)
+        self.ui.lc_restrees_slider.setValue(int(self.module.get_parameter("trees_Res") * 100))
+        self.ui.lc_nrespark_combo.setCurrentIndex(ubglobals.LANDCOVERMATERIALS.index(
+            self.module.get_parameter("surfParking")))
+        self.ui.lc_nresbay_combo.setCurrentIndex(ubglobals.LANDCOVERMATERIALS.index(
+            self.module.get_parameter("surfBay")))
+        self.ui.lc_nreshard_combo.setCurrentIndex(ubglobals.LANDCOVERMATERIALS.index(
+            self.module.get_parameter("surfHard")))
+        self.ui.lc_nrestrees_slider.setValue(int(self.module.get_parameter("trees_Nres")*100))
+        self.ui.lc_nrestreeloc_checkon.setChecked(int(self.module.get_parameter("trees_Site")))
+        self.ui.lc_nrestreeloc_checkoff.setChecked(int(self.module.get_parameter("trees_Front")))
+        self.ui.lc_rdloc_combo.setCurrentIndex(ubglobals.LANDCOVERMATERIALS.index(
+            self.module.get_parameter("surfArt")))
+        self.ui.lc_rdhwy_combo.setCurrentIndex(ubglobals.LANDCOVERMATERIALS.index(
+            self.module.get_parameter("surfHwy")))
+        self.ui.lc_rdfpath_combo.setCurrentIndex(ubglobals.LANDCOVERMATERIALS.index(
+            self.module.get_parameter("surfFpath")))
+        self.ui.lc_rdtreedens_spin.setValue(self.module.get_parameter("trees_roaddens"))
+        self.ui.lc_openpave_combo.setCurrentIndex(ubglobals.LANDCOVERMATERIALS.index(
+            self.module.get_parameter("surfSquare")))
+        self.ui.lc_opentrees_spin.setValue(self.module.get_parameter("trees_opendens"))
+        self.ui.lc_reftrees_spin.setValue(self.module.get_parameter("trees_refdens"))
+        self.ui.lc_vegetation_combo.setCurrentIndex(ubglobals.TREETYPES.index(self.module.get_parameter("tree_type")))
 
-        # TAB 3 - WATER USE PARAMETERS
+        self.slider_landcover_update()      # Enable/disable functions
 
-        # TAB 4 - POLLUTION EMISSIONS
+        # TAB 3 - OPEN SPACE MAPPING AND STRATEGIES
+        self.ui.osnet_accessibility_check.setChecked(int(self.module.get_parameter("osnet_accessibility")))
+        self.ui.osnet_spacenet_check.setChecked(int(self.module.get_parameter("osnet_network")))
+        self.ui.pg_usable_prohibit.setChecked(int(self.module.get_parameter("parks_restrict")))
+        self.ui.ref_limit_check.setChecked(int(self.module.get_parameter("reserves_restrict")))
+
+        # TAB 4 - WATER USE PARAMETERS
+        
+
+
+        self.enable_disable_custom_buttons()    # Enable/Disable Functions
+        self.enable_disable_losses_widgets()
+        self.enable_disable_seasonal_widgets()
+        self.enable_disable_weekly_widgets()
+        self.slider_nres_com_update()
+        self.slider_nres_ind_update()
+        self.slider_res_value_update()
+
+        # TAB 5 - POLLUTION EMISSIONS
 
         # END OF FILING IN GUI VALUES
+        self.enable_disable_whole_gui_tabs()
         return True
 
     def save_values(self):
@@ -177,9 +349,36 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         # TAB 1 - PLANNING RULES PARAMETERS
 
         # TAB 2 - LAND SURFACE COVER PARAMETERS
+        self.module.set_parameter("surfDriveway", ubglobals.LANDCOVERMATERIALS[self.ui.lc_respave_combo.currentIndex()])
+        if self.ui.lc_resirri_garden.isChecked():
+            self.module.set_parameter("surfResIrrigate", "G")
+        else:
+            self.module.set_parameter("surfResIrrigate", "A")
+        self.module.set_parameter("trees_Res", float(self.ui.lc_restrees_slider.value())/100.0)
+        self.module.set_parameter("surfParking", ubglobals.LANDCOVERMATERIALS[self.ui.lc_nrespark_combo.currentIndex()])
+        self.module.set_parameter("surfBay", ubglobals.LANDCOVERMATERIALS[self.ui.lc_nresbay_combo.currentIndex()])
+        self.module.set_parameter("surfHard", ubglobals.LANDCOVERMATERIALS[self.ui.lc_nreshard_combo.currentIndex()])
+        self.module.set_parameter("trees_Nres", float(self.ui.lc_nrestrees_slider.value())/100.0)
+        self.module.set_parameter("trees_Site", int(self.ui.lc_nrestreeloc_checkon.isChecked()))
+        self.module.set_parameter("trees_Front", int(self.ui.lc_nrestreeloc_checkoff.isChecked()))
+        self.module.set_parameter("surfArt", ubglobals.LANDCOVERMATERIALS[self.ui.lc_rdloc_combo.currentIndex()])
+        self.module.set_parameter("surfHwy", ubglobals.LANDCOVERMATERIALS[self.ui.lc_rdhwy_combo.currentIndex()])
+        self.module.set_parameter("surfFpath", ubglobals.LANDCOVERMATERIALS[self.ui.lc_rdfpath_combo.currentIndex()])
+        self.module.set_parameter("trees_roaddens", float(self.ui.lc_rdtreedens_spin.value()))
+        self.module.set_parameter("surfSquare", ubglobals.LANDCOVERMATERIALS[self.ui.lc_openpave_combo.currentIndex()])
+        self.module.set_parameter("trees_opendens", float(self.ui.lc_opentrees_spin.value()))
+        self.module.set_parameter("trees_refdens", float(self.ui.lc_reftrees_spin.value()))
+        self.module.set_parameter("tree_type", ubglobals.TREETYPES[self.ui.lc_vegetation_combo.currentIndex()])
 
-        # TAB 3 - WATER USE PARAMETERS
+        # TAB 3 - OPEN SPACE CONNECTIVITY AND NETWORKS
+        self.module.set_parameter("osnet_accessibility", int(self.ui.osnet_accessibility_check.isChecked()))
+        self.module.set_parameter("osnet_network", int(self.ui.osnet_spacenet_check.isChecked()))
+        self.module.set_parameter("parks_restrict", int(self.ui.pg_usable_prohibit.isChecked()))
+        self.module.set_parameter("reserves_restrict", int(self.ui.ref_limit_check.isChecked()))
 
-        # TAB 4 - POLLUTION EMISSIONS PARAMETERS
+        # TAB 4 - WATER USE PARAMETERS
+
+
+        # TAB 5 - POLLUTION EMISSIONS PARAMETERS
 
         return True

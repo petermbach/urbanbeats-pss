@@ -99,13 +99,13 @@ class SpatialMapping(UBModule):
         self.create_parameter("surfResIrrigate", STRING, "Which surfaces to irrigate?")
         self.create_parameter("trees_Res", DOUBLE, "Residential tree cover 0 to 1")
         self.surfDriveway = "CO"
-        self.surfResIrrigate = "G"
+        self.surfResIrrigate = "G"      #G = Garden, A = ALL
         self.trees_Res = 0.1
 
         self.create_parameter("surfParking", STRING, "Surface cover of parking lots.")
         self.create_parameter("surfBay", STRING, "Surface cover of loading bay.")
         self.create_parameter("surfHard", STRING, "Surface cover of hard landscaping")
-        self.create_parameter("trees_Nres", DOUBLE, "Non-residential tree cover 0 to 1")
+        self.create_parameter("trees_NRes", DOUBLE, "Non-residential tree cover 0 to 1")
         self.create_parameter("trees_Site", BOOL, "Are trees located on-site?")
         self.create_parameter("trees_Front", BOOL, "Are trees located along the frontage?")
         self.surfParking = "AS"
