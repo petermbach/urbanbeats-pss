@@ -36,15 +36,15 @@ import tempfile
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 from ubmodule import *
-from model.progref.ubglobals import as ubglobals
+import model.progref.ubglobals as ubglobals
 
 
 # --- MODULE CLASS DEFINITION ---
 class SpatialMapping(UBModule):
     """ SPATIAL MAPPING MODULE
-    Undertakes the task of mapping a range of aspects of the urban
-    environment including land cover, water demands, pollution emissions.
-    Flood-prone areas
+    Undertakes the task of mapping a range of aspects of the urban environment including land cover, water demands,
+    open space connectivity/accessibility, pollution emissions and planning overlays. The module is preparatory for
+    many subsequent regulation/strategy and implementation modules.
     """
     def __init__(self, activesim, scenario, datalibrary, projectlog, simulationyear):
         UBModule.__init__(self)
@@ -90,7 +90,7 @@ class SpatialMapping(UBModule):
         # --------------------------------------------------------------------------------------------------------------
 
         # OVERLAYS
-        
+
         # --- LAND COVER MAPPING PARAMETERS ----------------------------------------------------------------------------
         # Assigns land cover types to a range of urban characteristics determined in the previous urban planning module
         # for the purpose of mapping land cover, urban microclimate and other aspects.
@@ -495,6 +495,12 @@ class SpatialMapping(UBModule):
         pass
 
     def map_water_consumption(self, block_attr):
+        """Calculates the water consumption and temporal water demand/wastewater trends for the input block. The demand
+        is broken into Residential, Non-residential, Open Spaces, Losses and the seasonal dynamics thereof.
+
+        :param block_attr: The UBVector() format of the current Block whose water consumption needs to be determined.
+        :return: No return, block attributes are written to the current block_attr object.
+        """
         pass
 
     def map_pollution_emissions(self):
