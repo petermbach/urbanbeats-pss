@@ -29,21 +29,19 @@ __copyright__ = "Copyright 2012. Peter M. Bach"
 # --- --- --- --- --- ---
 
 # --- PYTHON LIBRARY IMPORTS ---
-import threading
-import os
-import gc
-import tempfile
+import random
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 from ubmodule import *
+import model.progref.ubglobals as ubglobals
 
 
 # --- MODULE CLASS DEFINITION ---
 class SpatialMapping(UBModule):
     """ SPATIAL MAPPING MODULE
-    Undertakes the task of mapping a range of aspects of the urban
-    environment including land cover, water demands, pollution emissions.
-    Flood-prone areas
+    Undertakes the task of mapping a range of aspects of the urban environment including land cover, water demands,
+    open space connectivity/accessibility, pollution emissions and planning overlays. The module is preparatory for
+    many subsequent regulation/strategy and implementation modules.
     """
     def __init__(self, activesim, scenario, datalibrary, projectlog, simulationyear):
         UBModule.__init__(self)
@@ -61,12 +59,18 @@ class SpatialMapping(UBModule):
         # within the case study. Each group has a boolean at the start that determines whether that part of the module
         # is activated or not.
 
-        # --- ACTIVATE/DEACTIVATION PARAMETERS ---
+        # --- ACTIVATE/DEACTIVATION PARAMETERS -------------------------------------------------------------------------
+        # These are the key booleans at the start of each tab that enable/disable the GUI elements depending on whether
+        # they are to be featured in the simulation.
+        # --------------------------------------------------------------------------------------------------------------
         self.create_parameter("planrules", BOOL, "Introduce special planning rules into model?")
         self.planrules = 0
 
         self.create_parameter("landcover", BOOL, "Map land cover across urban form?")
         self.landcover = 0
+
+        self.create_parameter("openspaces", BOOL, "Conduct analysis of open space characteristics/distribution.")
+        self.openspaces = 0
 
         self.create_parameter("wateruse", BOOL, "Calculate spatio-temporal water consumption and wastewater?")
         self.wateruse = 0
@@ -76,39 +80,35 @@ class SpatialMapping(UBModule):
 
         # DEVELOPER NOTE: Add future sub-module BOOLEANS here
 
-        # --- PLANNING RULES PARAMETERS ---
+        # --- PLANNING OVERLAY PARAMETERS ------------------------------------------------------------------------------
         # Includes a range of options for setting up planning restrictions in the case study. This includes limiting the
         # construction of infrastructure in certain land uses or the introduction of planning overlays that will have
         # some form of impact on how much can be constructed in various regions.
+        # --------------------------------------------------------------------------------------------------------------
 
-        # Overlays
+        # OVERLAYS
 
-        # Encumbrances
-        self.create_parameter("parks_restrict", BOOL, "Restrict park space usage for decentral. water infrastructure?")
-        self.create_parameter("reserves_restrict", BOOL, "Restrict reserve and floodway space to stormwater?")
-        self.parks_restrict = 0
-        self.reserves_restrict = 0
-
-        # --- LAND COVER MAPPING PARAMETERS ---
+        # --- LAND COVER MAPPING PARAMETERS ----------------------------------------------------------------------------
         # Assigns land cover types to a range of urban characteristics determined in the previous urban planning module
         # for the purpose of mapping land cover, urban microclimate and other aspects.
+        # --------------------------------------------------------------------------------------------------------------
         self.create_parameter("surfDriveway", STRING, "Land cover class of paved surfaces.")
         self.create_parameter("surfResIrrigate", STRING, "Which surfaces to irrigate?")
         self.create_parameter("trees_Res", DOUBLE, "Residential tree cover 0 to 1")
         self.surfDriveway = "CO"
-        self.surfResIrrigate = "G"
+        self.surfResIrrigate = "G"      #G = Garden, A = ALL
         self.trees_Res = 0.1
 
         self.create_parameter("surfParking", STRING, "Surface cover of parking lots.")
         self.create_parameter("surfBay", STRING, "Surface cover of loading bay.")
         self.create_parameter("surfHard", STRING, "Surface cover of hard landscaping")
-        self.create_parameter("trees_Nres", DOUBLE, "Non-residential tree cover 0 to 1")
+        self.create_parameter("trees_NRes", DOUBLE, "Non-residential tree cover 0 to 1")
         self.create_parameter("trees_Site", BOOL, "Are trees located on-site?")
         self.create_parameter("trees_Front", BOOL, "Are trees located along the frontage?")
         self.surfParking = "AS"
         self.surfBay = "AS"
         self.surfHard = "CO"
-        self.trees_Nres = 0.0
+        self.trees_NRes = 0.0
         self.trees_Site = 0
         self.trees_Front = 0
 
@@ -119,32 +119,327 @@ class SpatialMapping(UBModule):
         self.surfArt = "AS"
         self.surfHwy = "AS"
         self.surfFpath = "CO"
-        self.trees_roaddens = 1
+        self.trees_roaddens = 1.0
 
         self.create_parameter("surfFpath", STRING, "Surface cover of paved areas in parks")
         self.create_parameter("trees_opendens", DOUBLE, "Density of tree cover in parks")
         self.create_parameter("trees_refdens", DOUBLE, "Density of tree cover in reserves")
         self.create_parameter("tree_type", STRING, "Default and predominant type of tree in the case study region.")
         self.surfSquare = "CO"
-        self.trees_opendens = 10
-        self.trees_refdens = 10
+        self.trees_opendens = 10.0
+        self.trees_refdens = 10.0
         self.tree_type = "RB"
 
         # GLOBALS
-        self.materialtypes = ["AS", "CO", "DG"]  # AS = asphalt, CO = concrete, DG = bare dirt ground
-        self.treetypes = ["RB", "RN", "TB", "TN", "OB", "ON"]
-        # Explanation of tree types: R = round, T = tall, O = open, B = broad leaves, N = needle leaves
+        self.materialtypes = ubglobals.LANDCOVERMATERIALS
+        self.treetypes = ubglobals.TREETYPES
 
-        # --- SPATIO-TEMPORAL WATER USE AND WASTEWATER VOLUMES ---
+        # --- OPEN SPACE MAPPING AND STRATEGIES ------------------------------------------------------------------------
+        # Parameters to conduct the analysis of open space 'networks' within the case study. This spatial mapping
+        # feature looks at the links and distribution of open spaces and exports maps accordingly as well as statistics
+        # on open space accessibility, similar to what is done in the urban development, but at a different level.
+        # --------------------------------------------------------------------------------------------------------------
+        # OPEN SPACE ACCESSIBILITY AND NETWORKS
+        self.create_parameter("osnet_accessibility", BOOL, "Calculate accessibility?")
+        self.create_parameter("osnet_network", BOOL, "Delineate open space network?")
+        self.osnet_accessibility = 0
+        self.osnet_network = 0
+
+        # Parameters for Undertaking Open Space Analysis
+
+        # ENCUMBRANCES
+        self.create_parameter("parks_restrict", BOOL, "Restrict park space usage for decentral. water infrastructure?")
+        self.create_parameter("reserves_restrict", BOOL, "Restrict reserve and floodway space to stormwater?")
+        self.parks_restrict = 0
+        self.reserves_restrict = 0
+
+        # --- SPATIO-TEMPORAL WATER USE AND WASTEWATER VOLUMES ---------------------------------------------------------
         # Calculates the water demands, irrigation volumes and wastewater generated. Also includes downscaling of water
         # consumption to daily diurnal patterns and scaling across a year for seasonal trends.
+        # --------------------------------------------------------------------------------------------------------------
+        # -- RESIDENTIAL WATER USE --
+        self.create_parameter("residential_method", STRING, "Method for determinining residential water use.")
+        self.residential_method = "EUA"     # EUA = end use analysis, DQI = direct flow input
 
+        # END USE ANALYSIS
+        self.create_parameter("res_standard", STRING, "The water appliances standard to use in calculations.")
+        self.res_standard = "AS6400"
+        self.create_parameter("res_baseefficiency", STRING, "The base level efficiency to use at simulation begin.")
+        self.res_base_efficiency = "none"       # Dependent on standard.
 
+        self.create_parameter("res_kitchen_fq", DOUBLE, "Frequency of kitchen water use.")
+        self.create_parameter("res_kitchen_dur", DOUBLE, "Duration of kitchen water use.")
+        self.create_parameter("res_kitchen_hot", DOUBLE, "Proportion of kitchen water from hot water")
+        self.create_parameter("res_kitchen_var", DOUBLE, "Stochastic variation in kitchen water use")
+        self.create_parameter("res_kitchen_ffp", STRING, "Minimum Fit for purpose water source for kitchen use.")
+        self.res_kitchen_fq = 5.0
+        self.res_kitchen_dur = 2.0
+        self.res_kitchen_hot = 30.0
+        self.res_kitchen_var = 0.0
+        self.res_kitchen_ffp = "PO"     # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
 
+        self.create_parameter("res_shower_fq", DOUBLE, "Frequency of shower water use.")
+        self.create_parameter("res_shower_dur", DOUBLE, "Duration of shower water use.")
+        self.create_parameter("res_shower_hot", DOUBLE, "Proportion of shower water from hot water")
+        self.create_parameter("res_shower_var", DOUBLE, "Stochastic variation in shower water use")
+        self.create_parameter("res_shower_ffp", STRING, "Minimum Fit for purpose water source for shower use.")
+        self.res_shower_fq = 5.0
+        self.res_shower_dur = 2.0
+        self.res_shower_hot = 30.0
+        self.res_shower_var = 0.0
+        self.res_shower_ffp = "PO"  # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
 
-        # --- STORMWATER POLLUTION EMISSIONS ---
+        self.create_parameter("res_toilet_fq", DOUBLE, "Frequency of toilet water use.")
+        self.create_parameter("res_toilet_hot", DOUBLE, "Proportion of toilet water from hot water")
+        self.create_parameter("res_toilet_var", DOUBLE, "Stochastic variation in toilet water use")
+        self.create_parameter("res_toilet_ffp", STRING, "Minimum Fit for purpose water source for toilet use.")
+        self.res_toilet_fq = 5.0
+        self.res_toilet_hot = 30.0
+        self.res_toilet_var = 0.0
+        self.res_toilet_ffp = "PO"  # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
+
+        self.create_parameter("res_laundry_fq", DOUBLE, "Frequency of laundry water use.")
+        self.create_parameter("res_laundry_hot", DOUBLE, "Proportion of laundry water from hot water")
+        self.create_parameter("res_laundry_var", DOUBLE, "Stochastic variation in laundry water use")
+        self.create_parameter("res_laundry_ffp", STRING, "Minimum Fit for purpose water source for laundry use.")
+        self.res_laundry_fq = 5.0
+        self.res_laundry_hot = 30.0
+        self.res_laundry_var = 0.0
+        self.res_laundry_ffp = "PO"  # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
+
+        self.create_parameter("res_dishwasher_fq", DOUBLE, "Frequency of dishwasher water use.")
+        self.create_parameter("res_dishwasher_hot", DOUBLE, "Proportion of dishwasher water from hot water")
+        self.create_parameter("res_dishwasher_var", DOUBLE, "Stochastic variation in dishwasher water use")
+        self.create_parameter("res_dishwasher_ffp", STRING, "Minimum Fit for purpose water source for dishwasher use.")
+        self.res_dishwasher_fq = 5.0
+        self.res_dishwasher_hot = 30.0
+        self.res_dishwasher_var = 0.0
+        self.res_dishwasher_ffp = "PO"  # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
+
+        self.create_parameter("res_outdoor_vol", DOUBLE, "Outdoor irrigation volume")
+        self.create_parameter("res_outdoor_ffp", STRING, "Outdoor min fit-for-purpose water source")
+        self.res_outdoor_vol = 1.0
+        self.res_outdoor_ffp = "RW"
+
+        # Diurnal patterns
+        self.create_parameter("res_kitchen_pat", STRING, "Diurnal pattern for kitchen water use")
+        self.create_parameter("res_kitchen_cp", LISTDOUBLE, "The diurnal pattern for kitchen water use if custom")
+        self.res_kitchen_pat = "SDD"
+        self.res_kitchen_cp = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                               1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+        self.create_parameter("res_shower_pat", STRING, "Diurnal pattern for shower water use")
+        self.create_parameter("res_shower_cp", LISTDOUBLE, "The diurnal pattern for shower water use if custom")
+        self.res_shower_pat = "SDD"
+        self.res_shower_cp = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                              1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+        self.create_parameter("res_toilet_pat", STRING, "Diurnal pattern for toilet water use")
+        self.create_parameter("res_toilet_cp", LISTDOUBLE, "The diurnal pattern for toilet water use if custom")
+        self.res_toilet_pat = "SDD"
+        self.res_toilet_cp = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                              1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+        self.create_parameter("res_laundry_pat", STRING, "Diurnal pattern for laundry water use")
+        self.create_parameter("res_laundry_cp", LISTDOUBLE, "The diurnal pattern for laundry water use if custom")
+        self.res_laundry_pat = "SDD"
+        self.res_laundry_cp = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                               1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+        self.create_parameter("res_dishwasher_pat", STRING, "Diurnal pattern for dishwasher water use")
+        self.create_parameter("res_dishwasher_cp", LISTDOUBLE, "The diurnal pattern for dishwasher water use if custom")
+        self.res_dishwasher_pat = "SDD"
+        self.res_dishwasher_cp = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                                  1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+        self.create_parameter("res_outdoor_pat", STRING, "Diurnal pattern for outdoor water use")
+        self.create_parameter("res_outdoor_cp", LISTDOUBLE, "The diurnal pattern for outdoor water use if custom")
+        self.res_outdoor_pat = "SDD"
+        self.res_outdoor_cp = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                               1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+        # Wastewater Generation
+        self.create_parameter("res_kitchen_wwq", STRING, "Wastewater quality level for kitchen use")
+        self.create_parameter("res_shower_wwq", STRING, "Wastewater quality level for shower use")
+        self.create_parameter("res_toilet_wwq", STRING, "Wastewater quality for toilet use")
+        self.create_parameter("res_laundry_wwq", STRING, "Wastewater quality for laundry use")
+        self.create_parameter("res_dishwasher_wwq", STRING, "Wastewater quality for dishwasher use")
+        self.res_kitchen_wwq = "B"  # G = grey, B = black
+        self.res_shower_wwq = "G"
+        self.res_toilet_wwq = "B"
+        self.res_laundry_wwq = "G"
+        self.res_dishwasher_wwq = "B"
+
+        # RESIDENTIAl DIRECT FLOW INPUT
+        self.create_parameter("res_dailyindoor_vol", DOUBLE, "Approx. daily indoor per capita water use")
+        self.create_parameter("res_dailyindoor_np", DOUBLE, "Proportion of daily indoor use from non-potable source")
+        self.create_parameter("res_dailyindoor_hot", DOUBLE, "Proportion of daily indoor use requiring hot water")
+        self.create_parameter("res_dailyindoor_var", DOUBLE, "Variation to daily indoor use")
+        self.res_dailyindoor_vol = 155.0
+        self.res_dailyindoor_np = 60.0
+        self.res_dailyindoor_hot = 30.0
+        self.res_dailyindoor_var = 0.0
+        # Outdoor water use - use the same parameters as before
+
+        self.create_parameter("res_dailyindoor_pat", STRING, "Diurnal pattern to use for daily indoor res use")
+        self.create_parameter("res_dailyindoor_cp", LISTDOUBLE, "The default custom pattern if used for daily indoor")
+        self.res_dailyindoor_pat = "SDD"
+        self.res_dailyindoor_cp = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                                   1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        # Outdoor patterns, use the same parameters as before
+
+        self.create_parameter("res_dailyindoor_bgprop", DOUBLE, "Blackwater-greywater proportion of daily indoor use.")
+        self.res_dailyindoor_bgprop = 0.0   # default = 0 which is 50-50
+
+        # -- NON-RESIDENTIAL WATER USE --
+        self.create_parameter("nonres_method", STRING, "Method for estimating non-residential water consumption")
+        self.nonres_method = "UQR"      # UQR = unit flow rate, PES = Population equivalents
+
+        # UNIT FLOW RATES
+        self.create_parameter("com_demand", DOUBLE, "Commercial water demand value")
+        self.create_parameter("com_var", DOUBLE, "Variation in commercial water demand")
+        self.create_parameter("com_units", STRING, "Units for commercial water demands")
+        self.create_parameter("com_hot", DOUBLE, "Proportion of hot water for commercial water demand")
+        self.com_demand = 20.0
+        self.com_var = 0.0
+        self.com_units = "LSQMD"    # LSQMD = L/sqm/day and LPAXD = L/persons/day
+        self.com_hot = 20.0
+
+        self.create_parameter("office_demand", DOUBLE, "Office water demand value")
+        self.create_parameter("office_var", DOUBLE, "Variation in office water demand")
+        self.create_parameter("office_units", STRING, "Units for office water demands")
+        self.create_parameter("office_hot", DOUBLE, "Proportion of hot water for office water demand")
+        self.office_demand = 20.0
+        self.office_var = 0.0
+        self.office_units = "LSQMD"  # LSQMD = L/sqm/day and LPAXD = L/persons/day
+        self.office_hot = 20.0
+
+        self.create_parameter("li_demand", DOUBLE, "Light Industry water demand value")
+        self.create_parameter("li_var", DOUBLE, "Variation in Light Industry water demand")
+        self.create_parameter("li_units", STRING, "Units for Light Industry water demands")
+        self.create_parameter("li_hot", DOUBLE, "Proportion of hot water for Light Industry water demand")
+        self.li_demand = 20.0
+        self.li_var = 0.0
+        self.li_units = "LSQMD"  # LSQMD = L/sqm/day and LPAXD = L/persons/day
+        self.li_hot = 20.0
+
+        self.create_parameter("hi_demand", DOUBLE, "Heavy Industry water demand value")
+        self.create_parameter("hi_var", DOUBLE, "Variation in Heavy Industry water demand")
+        self.create_parameter("hi_units", STRING, "Units for Heavy Industry water demands")
+        self.create_parameter("hi_hot", DOUBLE, "Proportion of hot water for Heavy Industry water demand")
+        self.hi_demand = 20.0
+        self.hi_var = 0.0
+        self.hi_units = "LSQMD"  # LSQMD = L/sqm/day and LPAXD = L/persons/day
+        self.hi_hot = 20.0
+
+        self.create_parameter("nonres_landscape_vol", DOUBLE, "Landscape irrigation volume")
+        self.create_parameter("nonres_landscape_ffp", STRING, "Minimum fit-for-purpose irrigation volume")
+        self.nonres_landscape_vol = 1.0
+        self.nonres_landscape_ffp = "PO"
+
+        self.create_parameter("com_pat", STRING, "Daily diurnal pattern for commercial water demands.")
+        self.create_parameter("com_cp", LISTDOUBLE, "Custom patternf or commercial water demands.")
+        self.com_pat = "SDD"
+        self.com_cp = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                       1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+        self.create_parameter("ind_pat", STRING, "Daily diurnal pattern for limercial water demands.")
+        self.create_parameter("ind_cp", LISTDOUBLE, "Custom patternf or limercial water demands.")
+        self.ind_pat = "SDD"
+        self.ind_cp = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                       1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+        self.create_parameter("nonres_landscape_pat", STRING, "Daily diurnal pattern for himercial water demands.")
+        self.create_parameter("nonres_landscape_cp", LISTDOUBLE, "Custom patternf or himercial water demands.")
+        self.nonres_landscape_pat = "SDD"
+        self.nonres_landscape_cp = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                                    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+        self.create_parameter("com_ww_bgprop", DOUBLE, "Proportion of black and greywater from commercial areas.")
+        self.create_parameter("ind_ww_bgprop", DOUBLE, "Proportion of black and greywater from industrial areas.")
+        self.com_ww_bgprop = 0.0
+        self.ind_ww_bgprop = 0.0
+
+        # POPULATION EQUIVALENTS METHOD (ADDITINOAL PARAMETERS)
+        self.create_parameter("com_pefactor", DOUBLE, "Population equivalent for commercial water use")
+        self.create_parameter("office_pefactor", DOUBLE, "Population equivalent for office water use")
+        self.create_parameter("li_pefactor", DOUBLE, "Population equivalent factor for light industry water use.")
+        self.create_parameter("hi_pefactor", DOUBLE, "Population equivalent factor for heavy industry water use.")
+        self.com_pefactor = 1.0
+        self.office_pefactor = 1.0
+        self.li_pefactor = 1.0
+        self.hi_pefactor = 1.0
+
+        # -- PUBLIC OPEN SPACES AND DISTRICTS --
+        self.create_parameter("pos_irrigation_vol", DOUBLE, "POS Irrigation Volume")
+        self.create_parameter("pos_irrigation_ffp", STRING, "POS Fit-for-purpose minimum quality")
+        self.pos_irrigation_vol = 1.0
+        self.pos_irrigation_ffp = "NP"
+
+        self.create_parameter("irrigate_parks", BOOL, "Irrigate parks and gardens?")
+        self.create_parameter("irrigate_landmarks", BOOL, "Irrigate green parts of landmarks?")
+        self.create_parameter("irrigate_reserves", BOOL, "Irrigate reserves and floodways?")
+        self.irrigate_parks = 1
+        self.irrigate_landmarks = 1
+        self.irrigate_reserves = 0
+
+        self.create_parameter("pos_irrigation_pat", STRING, "Diurnal pattern for POS irrigation")
+        self.create_parameter("pos_irrigation_cp", LISTDOUBLE, "Custom pattern for POS irrigation diurnal")
+        self.pos_irrigation_pat = "SDD"
+        self.pos_irrigation_cp = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                                  1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+        # -- REGIONAL WATER LOSSES --
+        self.create_parameter("estimate_waterloss", BOOL, "Estimate water losses?")
+        self.create_parameter("waterloss_method", STRING, "Method for estimating water loss")
+        self.create_parameter("waterloss_volprop", DOUBLE, "Loss as volume of total demand proportion")
+        self.create_parameter("waterloss_constant", DOUBLE, "Loss as constant global amount")
+        self.create_parameter("waterloss_constant_units", STRING, "Units for constant global loss amount")
+        self.estimate_waterloss = 1
+        self.waterloss_method = "VOLPROP"   # VOLPROP = proportionate volume, CONSTANT = constant global loss
+        self.waterloss_volprop = 10.0
+        self.waterloss_constant = 1.0
+        self.waterloss_constant_units = "MLY"   # MLY = ML/year, MLHAY = ML/ha/year
+
+        # -- TEMPORAL AND SEASONAL DYNAMICS --
+        # WEEKLY DYNAMICS
+        self.create_parameter("weekend_nonres_reduce", BOOL, "Reduce non-res water demand during weekends?")
+        self.create_parameter("weekend_nonres_factor", DOUBLE, "Reduction factor for non-res weekend volumes.")
+        self.weekend_nonres_reduce = 1
+        self.weekend_nonres_factor = 0.2
+
+        self.create_parameter("weekend_res_increase", BOOL, "Increase residential water use on weekends?")
+        self.create_parameter("weekend_res_factor", DOUBLE, "Scaling factor for residential water use on weekends")
+        self.weekend_res_increase = 1
+        self.weekend_res_factor = 1.4
+
+        # SEASONAL DYNAMICS
+        self.create_parameter("seasonal_analysis", BOOL, "Perform seasonal analysis?")
+        self.create_parameter("scaling_dataset", STRING, "Data set to perform scaling against")
+        self.create_parameter("scaling_years", DOUBLE, "Number of years to use for scaling")
+        self.create_parameter("scaling_average", DOUBLE, "Global average for scaling")
+        self.create_parameter("scaling_average_fromdata", BOOL, "Calculate global average from data?")
+        self.create_parameter("no_irrigate_during_rain", BOOL, "Do not irrigate during rain event?")
+        self.create_parameter("irrigation_resume_time", DOUBLE, "Resume irrigation after how many hours?")
+        self.seasonal_analysis = 0
+        self.scaling_dataset = ""
+        self.scaling_years = 1
+        self.scaling_average = 1.0
+        self.scaling_average_fromdata = 1
+        self.no_irrigate_during_rain = 1
+        self.irrigation_resume_time = 24
+
+        # ADVANCED - DIURNAL PATTERNS
+        self.sdd = ubglobals.SDD
+        self.cdp = ubglobals.CDP
+        self.oht = ubglobals.OHT
+        self.ahc = ubglobals.AHC
+
+        # --- STORMWATER POLLUTION EMISSIONS ---------------------------------------------------------------------------
         # Pollutions emissions mapping, stormwater system, this module analyses the land use diversity and determines
         # build-up wash-off pollutant concentrations that can then be mapped spatially or modelled temporally.
+        # --------------------------------------------------------------------------------------------------------------
+        pass
 
     def run_module(self):
         """Runs the current module. Note that this module is set up to only call the relevant mapping functions
@@ -165,6 +460,10 @@ class SpatialMapping(UBModule):
                 if block_attr.get_attribute("Status") == 0:
                     continue
             self.map_land_surface_covers(block_attr)
+
+        # OPEN SPACE ANALYSIS
+        if self.openspaces:
+            self.open_space_analysis()
 
         # WATER USE
         if self.wateruse:
@@ -188,13 +487,232 @@ class SpatialMapping(UBModule):
         :param block_attr: The UBVector() format of the current Block whose land cover needs to be determined
         :return: No return, block attributes are writen to the current block_attr object
         """
-
-        pass
-
         return True
 
-    def map_water_consumption(self, block_attr):
+    def map_open_spaces(self):
+        """Maps the open space connectivity and accessibility as well as some key planning aspects surrounding POS."""
         pass
+
+    def map_water_consumption(self, block_attr):
+        """Calculates the water consumption and temporal water demand/wastewater trends for the input block. The demand
+        is broken into Residential, Non-residential, Open Spaces, Losses and the seasonal dynamics thereof.
+
+        :param block_attr: The UBVector() format of the current Block whose water consumption needs to be determined.
+        :return: No return, block attributes are written to the current block_attr object.
+        """
+
+        # RESIDENTIAL WATER DEMAND
+        if self.residential_method == "EUA":
+            self.res_enduseanalysis()
+        else:
+            self.res_directanalysis()
+
+    def res_enduseanalysis(self, block_attr):
+        """Conducts end use analysis for residential districts. Returns the flow rates for all demand sub-components.
+        in a dictionary that can be queries. Demands returned are daily values except for irrigation, which is annual.
+        """
+        if block_attr.get_attribute("HasHouses") or block_attr.get_attribute("HasFlats"):
+            flowrates = self.retrieve_standards(self.res_standard)  # Get the flowrates from the standards
+            baserating = flowrates["RatingCats"].index(self.res_base_efficiency)   # Represents the index to look up
+
+            # RESIDENTIAL INDOOR WATER DEMANDS
+            if block_attr.get_attribute("HasHouses"):
+                occup = block_attr.get_attribute("")
+                qty = block_attr.get_attribute("ResHouses") # The total number of houses for up-scaling
+            else:
+                occup = block_attr.get_attribute("")
+                qty = block_attr.get_attribute("")      # The total number of units for up-scaling
+
+            # Get base demands
+            kitchendem = self.res_kitchen_fq * self.res_kitchen_dur * occup * flowrates["Kitchen"][baserating]
+            showerdem = self.res_shower_fq * self.res_shower_dur * occup * flowrates["Shower"][baserating]
+            toiletdem = self.res_toilet_fq * occup * flowrates["Toilet"][baserating]
+            laundrydem = self.res_laundry_fq * flowrates["Laundry"][baserating]
+            dishwasherdem = self.res_dishwasher_fq * flowrates["Dishwasher"][baserating]
+
+            # Vary Demands
+            kitchendemF = -1
+            while kitchendemF <= 0:
+                kitchendemF = kitchendem + random.uniform(kitchendem * self.res_kitchen_var/100.0 * (-1),
+                                                          kitchendem * self.res_kitchen_var/100.0)
+            showerdemF = -1
+            while showerdemF <= 0:
+                showerdemF = showerdem + random.uniform(showerdem * self.res_shower_var/100.0 * (-1),
+                                                        showerdem * self.res_shower_var/100.0)
+            toiletdemF = -1
+            while toiletdemF <= 0:
+                toiletdemF = toiletdem + random.uniform(toiletdem * self.res_toilet_var/100.0 * (-1),
+                                                        toiletdem * self.res_toilet_var/100.0)
+            laundrydemF = -1
+            while laundrydemF <= 0:
+                laundrydemF = laundrydem + random.uniform(laundrydem * self.res_laundry_var/100.0 * (-1),
+                                                          laundrydem * self.res_laundry_var/100.0)
+            dishwasherdemF = -1
+            while dishwasherdemF <= 0:
+                dishwasherdemF = dishwasherdem + random.uniform(dishwasherdem * self.res_dishwasher_var / 100.0 * (-1),
+                                                                dishwasherdem * self.res_dishwasher_var / 100.0)
+
+            indoor_demands = [kitchendemF, showerdemF, toiletdemF, laundrydemF, dishwasherdemF]
+            hotwater_ratios = [self.res_kitchen_hot/100.0, self.res_shower_hot/100.0, self.res_toilet_hot/100.0,
+                               self.res_laundry_hot/100.0, self.res_dishwasher_hot/100.0]
+            # hotwater_volumes = indoor_demands X hotwater_ratios
+            hotwater_volumes = [a*b for a,b in zip(indoor_demands, hotwater_ratios)]
+
+            # Up-scale to Block Level
+            blk_demands = [i * qty for i in indoor_demands]      # up-scale
+            blk_hotwater = [i * qty for i in hotwater_volumes]
+
+            # Work out Wastewater volumes by making boolean vectors
+            gw = [int(self.res_kitchen_wwq == "GW"), int(self.res_shower_wwq == "GW"), int(self.res_toilet_wwq == "GW"),
+                  int(self.res_laundry_wwq == "GW"), int(self.res_dishwasher_wwq == "GW")]
+            bw = [int(self.res_kitchen_wwq == "BW"), int(self.res_shower_wwq == "BW"), int(self.res_toilet_wwq == "BW"),
+                  int(self.res_laundry_wwq == "BW"), int(self.res_dishwasher_wwq == "BW")]
+
+            # Write the information in terms of the single House level and the Block Level
+            block_attr.add_attribute("WD_HHKitchen", indoor_demands[0])   # Household Kitchen use [L/hh/day]
+            block_attr.add_attribute("WD_HHShower", indoor_demands[2])    # Household Shower use [L/hh/day]
+            block_attr.add_attribute("WD_HHToilet", indoor_demands[2])    # Household Toilet use [L/hh/day]
+            block_attr.add_attribute("WD_HHLaundry", indoor_demands[3])   # Household Laundry use [L/hh/day]
+            block_attr.add_attribute("WD_HHDish", indoor_demands[4])      # Household Dishwasher [L/hh/day]
+            block_attr.add_attribute("WD_HHIndoor", sum(indoor_demands))   # Total Household Use [L/hh/day]
+            block_attr.add_attribute("WD_HHHot", sum(hotwater_volumes))    # Total Household Hot Water [L/hh/day]
+            block_attr.add_attribute("HH_GreyW", sum([a * b for a,b in zip(gw, indoor_demands)])) # [L/hh/day]
+            block_attr.add_attribute("HH_BlackW", sum([a * b for a,b in zip(bw, indoor_demands)]))  # [L/hh/day]
+
+            block_attr.add_attribute("WD_Indoor", sum(blk_demands) / 1000.0)    # Total Block Indoor use [kL/day]
+            block_attr.add_attribute("WD_HotVol", sum(blk_hotwater) / 1000.0)   # Total Block Hot Water [kL/day]
+            block_attr.add_attribute("WW_ResGrey", sum([a * b for a,b in zip(gw, blk_demands)]))    # [kL/day]
+            block_attr.add_attribute("WW_ResBlack", sum([a * b for a,b in zip(bw, blk_demands)]))   # [kL/day]
+        else:   # If no residential, then simply set all attributes to zero
+            block_attr.add_attribute("WD_HHKitchen", 0.0)
+            block_attr.add_attribute("WD_HHShower", 0.0)
+            block_attr.add_attribute("WD_HHToilet", 0.0)
+            block_attr.add_attribute("WD_HHLaundry", 0.0)
+            block_attr.add_attribute("WD_HHDish", 0.0)
+            block_attr.add_attribute("WD_HHIndoor", 0.0)
+            block_attr.add_attribute("WD_HHHot", 0.0)
+            block_attr.add_attribute("HH_GreyW", 0.0)
+            block_attr.add_attribute("HH_BlackW", 0.0)
+
+            block_attr.add_attribute("WD_Indoor", 0.0)
+            block_attr.add_attribute("WD_HotVol", 0.0)
+            block_attr.add_attribute("WW_ResGrey", 0.0)
+            block_attr.add_attribute("WW_ResBlack", 0.0)
+        return True
+
+    def res_directanalysis(self, block_attr):
+        """Conducts the direct input analysis of residential water demand."""
+        if block_attr.get_attribute("HasHouses") or block_attr.get_attribute("HasFlats"):
+            # RESIDENTIAL INDOOR WATER DEMANDS
+            if self.block_attr.get_attribute("HasHouses"):
+                occup = block_attr.get_attribute("")
+                qty = block_attr.get_attribute("ResHouses")  # The total number of houses for up-scaling
+            else:
+                occup = block_attr.get_attribute("")
+                qty = block_attr.get_attribute("")  # The total number of units for up-scaling
+
+            # Calculate indoor demand for one household
+            volHH = float(self.res_dailyindoor_vol * occup)
+
+            # Add variation
+            volHHF= -1
+            while volHHF <= 0:
+                volHHF = volHH + random.uniform(volHH * self.res_dailyindoor_var / 100.0 * (-1),
+                                                                volHH * self.res_dishwasher_var / 100.0)
+            # Work out hot water and non-potable water
+            volHot = volHHF * self.res_dailyindoor_hot/100.0
+            volNp = volHHF * self.res_dailyindoor_np/100.0
+
+            # Work out greywater/blackwater proportions
+            propGW = 1.0 - (self.res_dailyindoor_bgprop + 100.0)/100.0/2.0
+            propBW = 1.0 - propGW
+
+            # Create attributes, up-scale at the same time.
+            block_attr.add_attribute("WD_HHIndoor", volHHF)  # Household Indoor Water use [L/hh/day]
+            block_attr.add_attribute("WD_HHHot", volHot)     # Household Indoor hot water [L/hh/day]
+            block_attr.add_attribute("WD_HHNonPot", volNp)  # Household non-potable use [L/hh/day]
+            block_attr.add_attribute("HH_GreyW", volHHF * propGW)     # HH Greywater [L/hh/day]
+            block_attr.add_attribute("HH_BlackW", volHHF * propBW)    # HH Blackwater [L/hh/day]
+
+            block_attr.add_attribute("WD_Indoor", volHHF * qty / 1000.0)    # Block Indoor Residential use [kL/day]
+            block_attr.add_attribute("WD_HotVol", volHot * qty / 1000.0)    # Block Indoor Res Hot water use [kL/day]
+            block_attr.add_attribute("WD_NonPotable", volNp * qty / 1000.0) # Block Res Nonpotable use [kL/day]
+            block_attr.add_attribute("WW_ResGrey", volHHF * qty * propGW / 1000.0)  # Block Res Greywater [kL/day]
+            block_attr.add_attribute("WW_ResBlack", volHHF * qty * propBW / 1000.0) # Block Res Blackwater [kL/day]
+        else:
+            block_attr.add_attribute("WD_HHIndoor", 0)
+            block_attr.add_attribute("WD_HHHot", 0)
+            block_attr.add_attribute("WD_HHNonPot", 0)
+            block_attr.add_attribute("HH_GreyW", 0)
+            block_attr.add_attribute("HH_BlackW", 0)
+
+            block_attr.add_attribute("WD_Indoor", 0)
+            block_attr.add_attribute("WD_HotVol", 0)
+            block_attr.add_attribute("WD_NonPotable", 0)
+            block_attr.add_attribute("WW_ResGrey", 0.0)
+            block_attr.add_attribute("WW_ResBlack", 0.0)
+        return True
+
+    def res_irrigation(self, block_attr):
+        """Calculates the irrigation water demands for residential households or apartments."""
+        # GET METRICS FOR GARDEN SPACE
+        if block_attr.get_attribute("HasHouses") or block_attr.get_attribute("HasFlats"):
+            if block_attr.get_attribute("HasHouses"):
+                garden = block_attr.get_attribute("ResGarden")
+                qty = block_attr.get_attribute("ResAllots")  # The total number of houses for up-scaling
+            else:
+                garden = block_attr.get_attribute("HDRGarden")
+                qty = 1     # If it's apartments, we don't sub-divide the garden space
+
+            gardenVolHH = self.res_outdoor_vol * garden * 100.0 / 365.0          # Convert [ML/ha/year] to [L/day]
+
+            block_attr.add_attribute("WD_HHGarden", gardenVolHH)                # Household garden irrigation [L/hh/day]
+            block_attr.add_attribute("WD_Outdoor", gardenVolHH * qty / 1000.0)  # Block Residential Irrigation [kL/day]
+        else:
+            block_attr.add_attribute("WD_HHGarden", 0.0)
+            block_attr.add_attribute("WD_Outdoor", 0.0)
+        return True
+
+    def nonres_unitflowrate(self):
+        pass
+
+    def nonres_popequivalents(self):
+        pass
+
+    def retrieve_standards(self, st_name):
+        """Retrieves the water flow rates for the respective appliance standard."""
+        standard_dict = dict()
+        standard_dict["Name"] = st_name
+        standard_dict["Shower"] = []
+        standard_dict["Kitchen"] = []
+        standard_dict["Toilet"] = []
+        standard_dict["Laundry"] = []
+        standard_dict["Dishwasher"] = []
+        standard_dict["RatingCats"] = []
+
+        rootpath = self.activesim.get_program_rootpath()    # Get the program's root path
+        f = open(rootpath+"/ancillary/appliances/"+st_name+".cfg", 'r')
+        data = []
+        for lines in f:
+            data.append(lines.rstrip("\n").split(","))
+        f.close()
+        rating_cats = []
+        for i in range(len(data)):      # Scan all data and create the dictionary
+            if i == 0:  # Skip the header line
+                continue
+            if data[i][2] not in rating_cats:
+                standard_dict["RatingCats"].append(data[i][2])
+            standard_dict[data[i][1]].append(float(data[i][3])*0.5 + float(data[i][4])*0.5)
+        print standard_dict
+        return standard_dict
+
+    def get_wateruse_custompattern(self, key):
+        """Retrieves the _cp custom pattern vector from the given key, the keys are in UBGlobals for reference."""
+        return eval("self." + str(key) + "_cp")
+
+    def set_wateruse_custompattern(self, key, patternvector):
+        """Sets the current custom pattern _cp of the parameter with the given key to the new patternvector."""
+        exec ("self." + str(key) + "_cp = " + str(patternvector))
 
     def map_pollution_emissions(self):
         pass

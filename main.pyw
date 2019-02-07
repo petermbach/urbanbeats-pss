@@ -1046,11 +1046,8 @@ class MainWindow(QtWidgets.QMainWindow):
         delinblocksgui.exec_()
 
     def launch_climatesetup_modulegui(self):
-        """
-
-        :return:
-        """
-        pass
+        """Launches the climate setup module's user interface and fills in relevant parameters."""
+        pass    # [TO DO]
 
     def launch_urbandev_modulegui(self):
         """Launches the urban development module's user interface and filles in relevant parameters."""
@@ -1065,10 +1062,7 @@ class MainWindow(QtWidgets.QMainWindow):
         urbplanbbgui.exec_()
 
     def launch_socioeconomic_modulegui(self):
-        """
-
-        :return:
-        """
+        """Launches the socio-economic module's user interface and pre-fills all relevant parameters."""
         pass
 
     def launch_spatialmap_modulegui(self):
@@ -1078,10 +1072,7 @@ class MainWindow(QtWidgets.QMainWindow):
         spatialmappinggui.exec_()
 
     def launch_regulation_modulegui(self):
-        """
-
-        :return:
-        """
+        """Launches the Regulation module's user interface and fills in relevant parameters."""
         pass
 
     def launch_infrastructure_modulegui(self):
@@ -1091,24 +1082,15 @@ class MainWindow(QtWidgets.QMainWindow):
         infrastructuregui.exec_()
 
     def launch_performance_modulegui(self):
-        """
-
-        :return:
-        """
+        """Launches the Performance Assessment's user interface and fills in relevant parameters."""
         pass
 
     def launch_impact_modulegui(self):
-        """
-
-        :return:
-        """
+        """"""
         pass
 
     def launch_decisionanalysis_modulegui(self):
-        """
-
-        :return:
-        """
+        """"""
         pass
 
     # FUNCTIONS TO DO

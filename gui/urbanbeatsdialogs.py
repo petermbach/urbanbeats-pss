@@ -92,6 +92,7 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
         self.update_datacat_combo()
         self.update_datacatsub_combo()
 
+        self.shortcutpath = None
         # --- SIGNALS AND SLOTS ---
         self.ui.adddatabrowse.clicked.connect(self.browse_for_data)
         self.ui.spatial_radio.clicked.connect(self.update_datacat_combo)
@@ -105,6 +106,11 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
 
     def browse_for_data(self):
         """Allows the user to select a data file to load into the model's data library."""
+        if self.shortcutpath is None:
+            dir = os.curdir
+        else:
+            dir = self.shortcutpath
+
         if self.ui.spatial_radio.isChecked():
             datatype = "Spatial Formats (*.txt *shp)"
         elif self.ui.temporal_radio.isChecked():
@@ -113,9 +119,10 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
             datatype = "Qualitative Data (*.txt *.csv *.dat)"
 
         message = "Browse for Input Data File..."
-        datafile, _filter = QtWidgets.QFileDialog.getOpenFileName(self, message, os.curdir,datatype)
+        datafile, _filter = QtWidgets.QFileDialog.getOpenFileName(self, message, dir, datatype)
         if datafile:
             self.ui.databox.setText(datafile)
+        self.shortcutpath = os.path.dirname(datafile)
 
     def update_datacat_combo(self):
         """Updates the data category combo box depending on whether it should display spatial, temporal

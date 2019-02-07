@@ -67,8 +67,8 @@ class UrbanDevelopment(UBModule):
 
         self.create_parameter("baseyear", DOUBLE, "the base year of the simulation")
         self.create_parameter("dt", DOUBLE, "simulation time step in [years]")
-        self.baseyear = self.activesim
-        self.dt = self.activesim
+        self.baseyear = self.scenario.get_metadata("startyear")
+        self.dt = self.scenario.get_metadata("dt")
 
         # --- TAB 1 - GENERAL: DATA INPUTS AND DETAILS ---
         self.create_parameter("luc_inputmap", STRING, "land use map to be used in the simulation")
@@ -84,11 +84,11 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("pop_migration", DOUBLE, "migration rate")
         self.create_parameter("pop_migrationtrend", STRING, "migration trend to be applied")
         self.pop_inputmap = ""
-        self.pop_birthrate = 6
+        self.pop_birthrate = 6.0
         self.pop_birthtrend = "L"   # L = linear, E = exponential, S = sigmoid, P = stochastic, C = custom
-        self.pop_deathrate = 6
+        self.pop_deathrate = 6.0
         self.pop_deathtrend = "L"
-        self.pop_migration = 6
+        self.pop_migration = 6.0
         self.pop_migrationtrend = "L"
 
         self.create_parameter("employ_datasource", STRING, "data source for employment information")
@@ -103,7 +103,7 @@ class UrbanDevelopment(UBModule):
         # Employment parameters when using estimates from population
         self.create_parameter("employ_pop_comfactor", DOUBLE, "factor for estimating commercial employment")
         self.create_parameter("employ_pop_indfactor", DOUBLE, "factor for estimating industrial employment")
-        self.create_parameter("employ_pop_officesfactor", DOUBLE, "factor for estimating offices employment")
+        self.create_parameter("employ_pop_officefactor", DOUBLE, "factor for estimating offices employment")
         self.create_parameter("employ_pop_rocbool", BOOL, "use separate rate of change or keep estimating?")
         self.create_parameter("employ_pop_roc", DOUBLE, "rate of change in employment")
         self.employ_pop_comfactor = 0.7
@@ -115,7 +115,7 @@ class UrbanDevelopment(UBModule):
         # Employment parameters when using estimates from land use
         self.create_parameter("employ_land_comfactor", DOUBLE, "factor for estimating commercial employment from land")
         self.create_parameter("employ_land_indfactor", DOUBLE, "factor for estimating industrial employment from land")
-        self.create_parameter("employ_land_officesfactor", DOUBLE, "factor for estimating office employment from land")
+        self.create_parameter("employ_land_officefactor", DOUBLE, "factor for estimating office employment from land")
         self.create_parameter("employ_land_rocbool", BOOL, "use separate rate of change?")
         self.create_parameter("employ_land_roc", DOUBLE, "rate of change in employment")
         self.employ_land_comfactor = 70
@@ -179,52 +179,52 @@ class UrbanDevelopment(UBModule):
         self.access_rail_aoffices = 0.4
 
         # Accessibility to Waterways
-        self.create_parameter("access_waterway_include", BOOL, "Include accessibility assessment to nearest waterway?")
-        self.create_parameter("access_waterway_data", STRING, "data set to use for waterway.")
-        self.create_parameter("access_waterway_weight", DOUBLE, "Weight assigned to the importance of waterway access")
-        self.create_parameter("access_waterway_res", BOOL, "consider for residential?")
-        self.create_parameter("access_waterway_com", BOOL, "consider for commercial?")
-        self.create_parameter("access_waterway_ind", BOOL, "consider for industrial?")
-        self.create_parameter("access_waterway_offices", BOOL, "consider for offices?")
-        self.create_parameter("access_waterway_ares", DOUBLE, "a-value for waterway access to residential areas")
-        self.create_parameter("access_waterway_acom", DOUBLE, "a-value for waterway access to commercial areas")
-        self.create_parameter("access_waterway_aind", DOUBLE, "a-value for waterway access to industrial areas")
-        self.create_parameter("access_waterway_aoffices", DOUBLE, "a-value for waterway access to offices areas")
-        self.access_waterway_include = 1
-        self.access_waterway_data = ""
-        self.access_waterway_weight = 0
-        self.access_waterway_res = 1
-        self.access_waterway_com = 1
-        self.access_waterway_ind = 1
-        self.access_waterway_offices = 1
-        self.access_waterway_ares = 0.4
-        self.access_waterway_acom = 0.4
-        self.access_waterway_aind = 0.4
-        self.access_waterway_aoffices = 0.4
+        self.create_parameter("access_waterways_include", BOOL, "Include accessibility assessment to nearest waterway?")
+        self.create_parameter("access_waterways_data", STRING, "data set to use for waterway.")
+        self.create_parameter("access_waterways_weight", DOUBLE, "Weight assigned to the importance of waterway access")
+        self.create_parameter("access_waterways_res", BOOL, "consider for residential?")
+        self.create_parameter("access_waterways_com", BOOL, "consider for commercial?")
+        self.create_parameter("access_waterways_ind", BOOL, "consider for industrial?")
+        self.create_parameter("access_waterways_offices", BOOL, "consider for offices?")
+        self.create_parameter("access_waterways_ares", DOUBLE, "a-value for waterway access to residential areas")
+        self.create_parameter("access_waterways_acom", DOUBLE, "a-value for waterway access to commercial areas")
+        self.create_parameter("access_waterways_aind", DOUBLE, "a-value for waterway access to industrial areas")
+        self.create_parameter("access_waterways_aoffices", DOUBLE, "a-value for waterway access to offices areas")
+        self.access_waterways_include = 1
+        self.access_waterways_data = ""
+        self.access_waterways_weight = 0
+        self.access_waterways_res = 1
+        self.access_waterways_com = 1
+        self.access_waterways_ind = 1
+        self.access_waterways_offices = 1
+        self.access_waterways_ares = 0.4
+        self.access_waterways_acom = 0.4
+        self.access_waterways_aind = 0.4
+        self.access_waterways_aoffices = 0.4
 
         # Accessibility to lakes
-        self.create_parameter("access_lake_include", BOOL, "Include accessibility assessment to nearest lake?")
-        self.create_parameter("access_lake_data", STRING, "data set to use for lake.")
-        self.create_parameter("access_lake_weight", DOUBLE, "Weight assigned to the importance of lake access")
-        self.create_parameter("access_lake_res", BOOL, "consider for residential?")
-        self.create_parameter("access_lake_com", BOOL, "consider for commercial?")
-        self.create_parameter("access_lake_ind", BOOL, "consider for industrial?")
-        self.create_parameter("access_lake_offices", BOOL, "consider for offices?")
-        self.create_parameter("access_lake_ares", DOUBLE, "a-value for lake access to residential areas")
-        self.create_parameter("access_lake_acom", DOUBLE, "a-value for lake access to commercial areas")
-        self.create_parameter("access_lake_aind", DOUBLE, "a-value for lake access to industrial areas")
-        self.create_parameter("access_lake_aoffices", DOUBLE, "a-value for lake access to offices areas")
-        self.access_lake_include = 1
-        self.access_lake_data = ""
-        self.access_lake_weight = 0
-        self.access_lake_res = 1
-        self.access_lake_com = 1
-        self.access_lake_ind = 1
-        self.access_lake_offices = 1
-        self.access_lake_ares = 0.4
-        self.access_lake_acom = 0.4
-        self.access_lake_aind = 0.4
-        self.access_lake_aoffices = 0.4
+        self.create_parameter("access_lakes_include", BOOL, "Include accessibility assessment to nearest lake?")
+        self.create_parameter("access_lakes_data", STRING, "data set to use for lake.")
+        self.create_parameter("access_lakes_weight", DOUBLE, "Weight assigned to the importance of lake access")
+        self.create_parameter("access_lakes_res", BOOL, "consider for residential?")
+        self.create_parameter("access_lakes_com", BOOL, "consider for commercial?")
+        self.create_parameter("access_lakes_ind", BOOL, "consider for industrial?")
+        self.create_parameter("access_lakes_offices", BOOL, "consider for offices?")
+        self.create_parameter("access_lakes_ares", DOUBLE, "a-value for lake access to residential areas")
+        self.create_parameter("access_lakes_acom", DOUBLE, "a-value for lake access to commercial areas")
+        self.create_parameter("access_lakes_aind", DOUBLE, "a-value for lake access to industrial areas")
+        self.create_parameter("access_lakes_aoffices", DOUBLE, "a-value for lake access to offices areas")
+        self.access_lakes_include = 1
+        self.access_lakes_data = ""
+        self.access_lakes_weight = 0
+        self.access_lakes_res = 1
+        self.access_lakes_com = 1
+        self.access_lakes_ind = 1
+        self.access_lakes_offices = 1
+        self.access_lakes_ares = 0.4
+        self.access_lakes_acom = 0.4
+        self.access_lakes_aind = 0.4
+        self.access_lakes_aoffices = 0.4
 
         # Accessibility to Public Open Space (POS)
         self.create_parameter("access_pos_include", BOOL, "Include accessibility assessment to nearest pos?")
@@ -337,7 +337,7 @@ class UrbanDevelopment(UBModule):
         # Passive and Constrained Land Uses
         self.create_parameter("zoning_passive_luc", LISTDOUBLE, "Land use categories in passive group of uses")
         self.create_parameter("zoning_constrained_luc", LISTDOUBLE, "Land use categories in constrained group")
-        self.zoning_passive_luc = [6, 7, 8, 9, 10, 11, 12]      # These are numerical encodings of LUC categories
+        self.zoning_passive_luc = [5, 6, 7, 8, 9, 10, 11, 12]   # These are numerical encodings of LUC categories
         self.zoning_constrained_luc = []                        # refer to ubglobals.py for key
 
         # Additional Zoning Areas for Land uses

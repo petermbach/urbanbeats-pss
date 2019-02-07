@@ -173,7 +173,7 @@ class UrbanBeatsScenario(threading.Thread):
         else:
             nameid = asset_identifier+"ID"
 
-        attribute_values = [[],[]]  # Asset ID, Asset Value
+        attribute_values = [[], []]  # Asset ID, Asset Value
         for asset in assetcol:
             if asset.get_attribute(nameid) in asset_ids:
                 attribute_values[0].append(asset.get_attribute(nameid))
@@ -353,10 +353,12 @@ class UrbanBeatsScenario(threading.Thread):
             for instance in mdata.find(modname).findall("parameters"):
                 m = self.get_module_object(modname, int(instance.attrib["index"]))
                 for child in instance:
-                    # Currently this does some explicit type casting based on the parameter types defined
-                    print child.tag, child.text   # DEBUG WITH THIS IN CASE PROGRAM CRASHES ON LOADING
-                    m.set_parameter(child.tag, type(m.get_parameter(child.tag))(child.text))
-
+                    print child.tag, child.text  # DEBUG WITH THIS IN CASE PROGRAM CRASHES ON LOADING
+                    if m.get_parameter_type(child.tag) == 'LISTDOUBLE':     # IF IT's a LISTDOUBLE
+                        m.set_parameter(child.tag, ast.literal_eval(child.text))    # Use literal eval
+                    else:
+                        # Currently this does some explicit type casting based on the parameter types defined
+                        m.set_parameter(child.tag, type(m.get_parameter(child.tag))(child.text))
 
     def add_data_reference(self, dataref):
         """Adds the data reference to the scenario's data store depending on its class."""
