@@ -173,7 +173,7 @@ class UrbanBeatsScenario(threading.Thread):
         else:
             nameid = asset_identifier+"ID"
 
-        attribute_values = [[],[]]  # Asset ID, Asset Value
+        attribute_values = [[], []]  # Asset ID, Asset Value
         for asset in assetcol:
             if asset.get_attribute(nameid) in asset_ids:
                 attribute_values[0].append(asset.get_attribute(nameid))

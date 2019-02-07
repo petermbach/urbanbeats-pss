@@ -29,10 +29,7 @@ __copyright__ = "Copyright 2012. Peter M. Bach"
 # --- --- --- --- --- ---
 
 # --- PYTHON LIBRARY IMPORTS ---
-import threading
-import os
-import gc
-import tempfile
+import random
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 from ubmodule import *
@@ -167,6 +164,8 @@ class SpatialMapping(UBModule):
         # END USE ANALYSIS
         self.create_parameter("res_standard", STRING, "The water appliances standard to use in calculations.")
         self.res_standard = "AS6400"
+        self.create_parameter("res_baseefficiency", STRING, "The base level efficiency to use at simulation begin.")
+        self.res_base_efficiency = "none"       # Dependent on standard.
 
         self.create_parameter("res_kitchen_fq", DOUBLE, "Frequency of kitchen water use.")
         self.create_parameter("res_kitchen_dur", DOUBLE, "Duration of kitchen water use.")
@@ -501,7 +500,211 @@ class SpatialMapping(UBModule):
         :param block_attr: The UBVector() format of the current Block whose water consumption needs to be determined.
         :return: No return, block attributes are written to the current block_attr object.
         """
+
+        # RESIDENTIAL WATER DEMAND
+        if self.residential_method == "EUA":
+            self.res_enduseanalysis()
+        else:
+            self.res_directanalysis()
+
+    def res_enduseanalysis(self, block_attr):
+        """Conducts end use analysis for residential districts. Returns the flow rates for all demand sub-components.
+        in a dictionary that can be queries. Demands returned are daily values except for irrigation, which is annual.
+        """
+        if block_attr.get_attribute("HasHouses") or block_attr.get_attribute("HasFlats"):
+            flowrates = self.retrieve_standards(self.res_standard)  # Get the flowrates from the standards
+            baserating = flowrates["RatingCats"].index(self.res_base_efficiency)   # Represents the index to look up
+
+            # RESIDENTIAL INDOOR WATER DEMANDS
+            if block_attr.get_attribute("HasHouses"):
+                occup = block_attr.get_attribute("")
+                qty = block_attr.get_attribute("ResHouses") # The total number of houses for up-scaling
+            else:
+                occup = block_attr.get_attribute("")
+                qty = block_attr.get_attribute("")      # The total number of units for up-scaling
+
+            # Get base demands
+            kitchendem = self.res_kitchen_fq * self.res_kitchen_dur * occup * flowrates["Kitchen"][baserating]
+            showerdem = self.res_shower_fq * self.res_shower_dur * occup * flowrates["Shower"][baserating]
+            toiletdem = self.res_toilet_fq * occup * flowrates["Toilet"][baserating]
+            laundrydem = self.res_laundry_fq * flowrates["Laundry"][baserating]
+            dishwasherdem = self.res_dishwasher_fq * flowrates["Dishwasher"][baserating]
+
+            # Vary Demands
+            kitchendemF = -1
+            while kitchendemF <= 0:
+                kitchendemF = kitchendem + random.uniform(kitchendem * self.res_kitchen_var/100.0 * (-1),
+                                                          kitchendem * self.res_kitchen_var/100.0)
+            showerdemF = -1
+            while showerdemF <= 0:
+                showerdemF = showerdem + random.uniform(showerdem * self.res_shower_var/100.0 * (-1),
+                                                        showerdem * self.res_shower_var/100.0)
+            toiletdemF = -1
+            while toiletdemF <= 0:
+                toiletdemF = toiletdem + random.uniform(toiletdem * self.res_toilet_var/100.0 * (-1),
+                                                        toiletdem * self.res_toilet_var/100.0)
+            laundrydemF = -1
+            while laundrydemF <= 0:
+                laundrydemF = laundrydem + random.uniform(laundrydem * self.res_laundry_var/100.0 * (-1),
+                                                          laundrydem * self.res_laundry_var/100.0)
+            dishwasherdemF = -1
+            while dishwasherdemF <= 0:
+                dishwasherdemF = dishwasherdem + random.uniform(dishwasherdem * self.res_dishwasher_var / 100.0 * (-1),
+                                                                dishwasherdem * self.res_dishwasher_var / 100.0)
+
+            indoor_demands = [kitchendemF, showerdemF, toiletdemF, laundrydemF, dishwasherdemF]
+            hotwater_ratios = [self.res_kitchen_hot/100.0, self.res_shower_hot/100.0, self.res_toilet_hot/100.0,
+                               self.res_laundry_hot/100.0, self.res_dishwasher_hot/100.0]
+            # hotwater_volumes = indoor_demands X hotwater_ratios
+            hotwater_volumes = [a*b for a,b in zip(indoor_demands, hotwater_ratios)]
+
+            # Up-scale to Block Level
+            blk_demands = [i * qty for i in indoor_demands]      # up-scale
+            blk_hotwater = [i * qty for i in hotwater_volumes]
+
+            # Work out Wastewater volumes by making boolean vectors
+            gw = [int(self.res_kitchen_wwq == "GW"), int(self.res_shower_wwq == "GW"), int(self.res_toilet_wwq == "GW"),
+                  int(self.res_laundry_wwq == "GW"), int(self.res_dishwasher_wwq == "GW")]
+            bw = [int(self.res_kitchen_wwq == "BW"), int(self.res_shower_wwq == "BW"), int(self.res_toilet_wwq == "BW"),
+                  int(self.res_laundry_wwq == "BW"), int(self.res_dishwasher_wwq == "BW")]
+
+            # Write the information in terms of the single House level and the Block Level
+            block_attr.add_attribute("WD_HHKitchen", indoor_demands[0])   # Household Kitchen use [L/hh/day]
+            block_attr.add_attribute("WD_HHShower", indoor_demands[2])    # Household Shower use [L/hh/day]
+            block_attr.add_attribute("WD_HHToilet", indoor_demands[2])    # Household Toilet use [L/hh/day]
+            block_attr.add_attribute("WD_HHLaundry", indoor_demands[3])   # Household Laundry use [L/hh/day]
+            block_attr.add_attribute("WD_HHDish", indoor_demands[4])      # Household Dishwasher [L/hh/day]
+            block_attr.add_attribute("WD_HHIndoor", sum(indoor_demands))   # Total Household Use [L/hh/day]
+            block_attr.add_attribute("WD_HHHot", sum(hotwater_volumes))    # Total Household Hot Water [L/hh/day]
+            block_attr.add_attribute("HH_GreyW", sum([a * b for a,b in zip(gw, indoor_demands)])) # [L/hh/day]
+            block_attr.add_attribute("HH_BlackW", sum([a * b for a,b in zip(bw, indoor_demands)]))  # [L/hh/day]
+
+            block_attr.add_attribute("WD_Indoor", sum(blk_demands) / 1000.0)    # Total Block Indoor use [kL/day]
+            block_attr.add_attribute("WD_HotVol", sum(blk_hotwater) / 1000.0)   # Total Block Hot Water [kL/day]
+            block_attr.add_attribute("WW_ResGrey", sum([a * b for a,b in zip(gw, blk_demands)]))    # [kL/day]
+            block_attr.add_attribute("WW_ResBlack", sum([a * b for a,b in zip(bw, blk_demands)]))   # [kL/day]
+        else:   # If no residential, then simply set all attributes to zero
+            block_attr.add_attribute("WD_HHKitchen", 0.0)
+            block_attr.add_attribute("WD_HHShower", 0.0)
+            block_attr.add_attribute("WD_HHToilet", 0.0)
+            block_attr.add_attribute("WD_HHLaundry", 0.0)
+            block_attr.add_attribute("WD_HHDish", 0.0)
+            block_attr.add_attribute("WD_HHIndoor", 0.0)
+            block_attr.add_attribute("WD_HHHot", 0.0)
+            block_attr.add_attribute("HH_GreyW", 0.0)
+            block_attr.add_attribute("HH_BlackW", 0.0)
+
+            block_attr.add_attribute("WD_Indoor", 0.0)
+            block_attr.add_attribute("WD_HotVol", 0.0)
+            block_attr.add_attribute("WW_ResGrey", 0.0)
+            block_attr.add_attribute("WW_ResBlack", 0.0)
+        return True
+
+    def res_directanalysis(self, block_attr):
+        """Conducts the direct input analysis of residential water demand."""
+        if block_attr.get_attribute("HasHouses") or block_attr.get_attribute("HasFlats"):
+            # RESIDENTIAL INDOOR WATER DEMANDS
+            if self.block_attr.get_attribute("HasHouses"):
+                occup = block_attr.get_attribute("")
+                qty = block_attr.get_attribute("ResHouses")  # The total number of houses for up-scaling
+            else:
+                occup = block_attr.get_attribute("")
+                qty = block_attr.get_attribute("")  # The total number of units for up-scaling
+
+            # Calculate indoor demand for one household
+            volHH = float(self.res_dailyindoor_vol * occup)
+
+            # Add variation
+            volHHF= -1
+            while volHHF <= 0:
+                volHHF = volHH + random.uniform(volHH * self.res_dailyindoor_var / 100.0 * (-1),
+                                                                volHH * self.res_dishwasher_var / 100.0)
+            # Work out hot water and non-potable water
+            volHot = volHHF * self.res_dailyindoor_hot/100.0
+            volNp = volHHF * self.res_dailyindoor_np/100.0
+
+            # Work out greywater/blackwater proportions
+            propGW = 1.0 - (self.res_dailyindoor_bgprop + 100.0)/100.0/2.0
+            propBW = 1.0 - propGW
+
+            # Create attributes, up-scale at the same time.
+            block_attr.add_attribute("WD_HHIndoor", volHHF)  # Household Indoor Water use [L/hh/day]
+            block_attr.add_attribute("WD_HHHot", volHot)     # Household Indoor hot water [L/hh/day]
+            block_attr.add_attribute("WD_HHNonPot", volNp)  # Household non-potable use [L/hh/day]
+            block_attr.add_attribute("HH_GreyW", volHHF * propGW)     # HH Greywater [L/hh/day]
+            block_attr.add_attribute("HH_BlackW", volHHF * propBW)    # HH Blackwater [L/hh/day]
+
+            block_attr.add_attribute("WD_Indoor", volHHF * qty / 1000.0)    # Block Indoor Residential use [kL/day]
+            block_attr.add_attribute("WD_HotVol", volHot * qty / 1000.0)    # Block Indoor Res Hot water use [kL/day]
+            block_attr.add_attribute("WD_NonPotable", volNp * qty / 1000.0) # Block Res Nonpotable use [kL/day]
+            block_attr.add_attribute("WW_ResGrey", volHHF * qty * propGW / 1000.0)  # Block Res Greywater [kL/day]
+            block_attr.add_attribute("WW_ResBlack", volHHF * qty * propBW / 1000.0) # Block Res Blackwater [kL/day]
+        else:
+            block_attr.add_attribute("WD_HHIndoor", 0)
+            block_attr.add_attribute("WD_HHHot", 0)
+            block_attr.add_attribute("WD_HHNonPot", 0)
+            block_attr.add_attribute("HH_GreyW", 0)
+            block_attr.add_attribute("HH_BlackW", 0)
+
+            block_attr.add_attribute("WD_Indoor", 0)
+            block_attr.add_attribute("WD_HotVol", 0)
+            block_attr.add_attribute("WD_NonPotable", 0)
+            block_attr.add_attribute("WW_ResGrey", 0.0)
+            block_attr.add_attribute("WW_ResBlack", 0.0)
+        return True
+
+    def res_irrigation(self, block_attr):
+        """Calculates the irrigation water demands for residential households or apartments."""
+        # GET METRICS FOR GARDEN SPACE
+        if block_attr.get_attribute("HasHouses") or block_attr.get_attribute("HasFlats"):
+            if block_attr.get_attribute("HasHouses"):
+                garden = block_attr.get_attribute("ResGarden")
+                qty = block_attr.get_attribute("ResAllots")  # The total number of houses for up-scaling
+            else:
+                garden = block_attr.get_attribute("HDRGarden")
+                qty = 1     # If it's apartments, we don't sub-divide the garden space
+
+            gardenVolHH = self.res_outdoor_vol * garden * 100.0 / 365.0          # Convert [ML/ha/year] to [L/day]
+
+            block_attr.add_attribute("WD_HHGarden", gardenVolHH)                # Household garden irrigation [L/hh/day]
+            block_attr.add_attribute("WD_Outdoor", gardenVolHH * qty / 1000.0)  # Block Residential Irrigation [kL/day]
+        else:
+            block_attr.add_attribute("WD_HHGarden", 0.0)
+            block_attr.add_attribute("WD_Outdoor", 0.0)
+        return True
+
+    def nonres_unitflowrate(self):
         pass
+
+    def nonres_popequivalents(self):
+        pass
+
+    def retrieve_standards(self, st_name):
+        """Retrieves the water flow rates for the respective appliance standard."""
+        standard_dict = dict()
+        standard_dict["Name"] = st_name
+        standard_dict["Shower"] = []
+        standard_dict["Kitchen"] = []
+        standard_dict["Toilet"] = []
+        standard_dict["Laundry"] = []
+        standard_dict["Dishwasher"] = []
+        standard_dict["RatingCats"] = []
+
+        rootpath = self.activesim.get_program_rootpath()    # Get the program's root path
+        f = open(rootpath+"/ancillary/appliances/"+st_name+".cfg", 'r')
+        data = []
+        for lines in f:
+            data.append(lines.rstrip("\n").split(","))
+        f.close()
+        rating_cats = []
+        for i in range(len(data)):      # Scan all data and create the dictionary
+            if i == 0:  # Skip the header line
+                continue
+            if data[i][2] not in rating_cats:
+                standard_dict["RatingCats"].append(data[i][2])
+            standard_dict[data[i][1]].append(float(data[i][3])*0.5 + float(data[i][4])*0.5)
+        print standard_dict
+        return standard_dict
 
     def get_wateruse_custompattern(self, key):
         """Retrieves the _cp custom pattern vector from the given key, the keys are in UBGlobals for reference."""

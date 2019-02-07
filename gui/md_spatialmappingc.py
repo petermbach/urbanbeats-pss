@@ -605,6 +605,7 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
             self.module.set_parameter("residential_method", "DQI")
 
         self.module.set_parameter("res_standard", ubglobals.RESSTANDARDS[self.ui.res_standard_combo.currentIndex()])
+        self.module.set_parameter("res_baseefficiency", self.ui.res_standard_eff.currentIndex())
 
         self.module.set_parameter("res_kitchen_fq", float(self.ui.kitchen_freq.value()))
         self.module.set_parameter("res_kitchen_dur", float(self.ui.kitchen_dur.value()))
@@ -796,9 +797,9 @@ class CustomPatternLaunch(QtWidgets.QDialog):
         self.ui.setupUi(self)
         self.module = module
         self.enduse = enduse
-        print "End Use!", enduse
+
         # Transfer pattern data into table
-        self.ui.endusetype.setText(ubglobals.DIURNAL_LABELS[ubglobals.DIURNAL_CATS.index(enduse)])
+        self.ui.endusetype.setText(ubglobals.DIURNAL_LABELS[ubglobals.DIURNAL_CATS.index(self.enduse)])
         self.pattern = self.module.get_wateruse_custompattern(self.enduse)
         self.ui.avg_box.setText(str(round(sum(self.pattern) / len(self.pattern), 3)))
 

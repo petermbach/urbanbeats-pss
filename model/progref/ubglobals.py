@@ -139,6 +139,9 @@ OHT = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.0, 3.0
 AHC = [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0,
        2.0, 2.0, 2.0, 2.0]
 
+DEMAND_CATS = ["kitchen", "shower", "toilet", "laundry", "dish", "garden", "indoor",
+               "com", "ind", "nonres_irri", "pos_irri"]
+
 DIURNAL_CATS = ["res_kitchen", "res_shower", "res_toilet", "res_laundry", "res_dishwasher", "res_outdoor",
                 "res_dailyindoor_cp", "com", "ind", "nonres_landscape", "pos_irrigation"]
 
