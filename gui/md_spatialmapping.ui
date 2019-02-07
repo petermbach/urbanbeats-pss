@@ -1932,7 +1932,7 @@ p, li { white-space: pre-wrap; }
              <enum>QTabWidget::West</enum>
             </property>
             <property name="currentIndex">
-             <number>3</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="res">
              <attribute name="icon">
@@ -2120,7 +2120,7 @@ Laundry = Household</string>
               <item>
                <widget class="QStackedWidget" name="res_analysis_stack">
                 <property name="currentIndex">
-                 <number>1</number>
+                 <number>0</number>
                 </property>
                 <widget class="QWidget" name="page">
                  <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2139,7 +2139,7 @@ Laundry = Household</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-130</y>
+                       <y>0</y>
                        <width>501</width>
                        <height>685</height>
                       </rect>
@@ -5861,7 +5861,7 @@ p, li { white-space: pre-wrap; }
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>501</width>
+                       <width>483</width>
                        <height>605</height>
                       </rect>
                      </property>
@@ -8194,7 +8194,7 @@ p, li { white-space: pre-wrap; }
  <resources>
   <include location="../graphics/ubeats.qrc"/>
   <include location="../graphics/ubeats.qrc"/>
-  <include location="../../../../.designer/graphics/ubeats.qrc"/>
+  <include location="../graphics/ubeats.qrc"/>
  </resources>
  <connections>
   <connection>

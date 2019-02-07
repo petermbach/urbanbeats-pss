@@ -32,7 +32,7 @@ import model.progref.ubglobals as ubglobals
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
 from md_spatialmapping import Ui_Spatialmap_Dialog
-
+from md_subgui_dp import Ui_CustomPatternDialog
 
 # --- MAIN GUI FUNCTION ---
 class SpatialMappingGuiLaunch(QtWidgets.QDialog):
@@ -142,6 +142,22 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         self.ui.seasonal_globalavg_check.clicked.connect(self.enable_disable_seasonal_widgets)
         self.ui.seasonal_noirrigaterain_check.clicked.connect(self.enable_disable_seasonal_widgets)
 
+        self.ui.kitchen_dpcustom.clicked.connect(lambda: self.call_pattern_gui("res_kitchen"))      # Custom patterns
+        self.ui.shower_dpcustom.clicked.connect(lambda: self.call_pattern_gui("res_shower"))
+        self.ui.toilet_dpcustom.clicked.connect(lambda: self.call_pattern_gui("res_toilet"))
+        self.ui.laundry_dpcustom.clicked.connect(lambda: self.call_pattern_gui("res_laundry"))
+        self.ui.dish_dpcustom.clicked.connect(lambda: self.call_pattern_gui("res_dishwasher"))
+        self.ui.res_irrigate_dpcustom.clicked.connect(lambda: self.call_pattern_gui("res_outdoor"))
+        self.ui.outdoor_dpcustom.clicked.connect(lambda: self.call_pattern_gui("res_outdoor"))
+        self.ui.indoor_dpcustom.clicked.connect(lambda: self.call_pattern_gui("res_dailyindoor_cp"))
+        self.ui.com_dpcustom.clicked.connect(lambda: self.call_pattern_gui("com"))
+        self.ui.com_dpcustom_2.clicked.connect(lambda: self.call_pattern_gui("com"))
+        self.ui.ind_dpcustom.clicked.connect(lambda: self.call_pattern_gui("ind"))
+        self.ui.ind_dpcustom_2.clicked.connect(lambda: self.call_pattern_gui("ind"))
+        self.ui.nres_irrigate_dpcustom.clicked.connect(lambda: self.call_pattern_gui("nonres_landscape"))
+        self.ui.nres_irrigate_dpcustom_2.clicked.connect(lambda: self.call_pattern_gui("nonres_landscape"))
+        self.ui.pos_dpcustom.clicked.connect(lambda: self.call_pattern_gui("pos_irrigation"))
+
         # TAB 5 - POLLUTION EMISSIONS PARAMETERS
         # No current signals or slots
 
@@ -195,6 +211,23 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         self.setup_gui_with_parameters()
         return True
 
+    def call_pattern_gui(self, enduse):
+        """Call the sub-gui for setting a custom End Use Diurnal Patterns."""
+        custompatternguic = CustomPatternLaunch(self.module, enduse)
+        custompatternguic.exec_()
+
+    def show_res_standard_details(self):
+        """"""
+        pass    # [TO DO]
+
+    def show_res_enduse_summary(self):
+        """"""
+        pass    # [TO DO]
+
+    def view_civic_wateruse_presets(self):
+        """"""
+        pass    # [TO DO]
+
     def slider_landcover_update(self):
         """Updates all land cover slider values."""
         self.ui.lc_restrees_box.setText(str(self.ui.lc_restrees_slider.value())+"%")
@@ -222,18 +255,6 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         self.ui.nres_ww_ind_blackbox.setText(str(int((self.ui.nres_ww_ind_slider.value() + 100) / 2)) + "%")
         self.ui.nres_ww_ind_blackbox_2.setText(str(int((self.ui.nres_ww_ind_slider_2.value() + 100) / 2)) + "%")
         return True
-
-    def show_res_standard_details(self):
-        """"""
-        pass    # [TO DO]
-
-    def show_res_enduse_summary(self):
-        """"""
-        pass    # [TO DO]
-
-    def view_civic_wateruse_presets(self):
-        """"""
-        pass    # [TO DO]
 
     def enable_disable_whole_gui_tabs(self):
         """Enables and disables the entire GUI chunks depending on which assessment checkboxes have been checked."""
@@ -341,8 +362,10 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         # RESIDENTIAL Water Use
         if self.module.get_parameter("residential_method") == "EUA":
             self.ui.resdemand_analysis_combo.setCurrentIndex(0)
+            self.ui.res_analysis_stack.setCurrentIndex(0)
         else:
             self.ui.resdemand_analysis_combo.setCurrentIndex(1)
+            self.ui.res_analysis_stack.setCurrentIndex(1)
 
         self.ui.res_standard_combo.setCurrentIndex(ubglobals.RESSTANDARDS.index(
             self.module.get_parameter("res_standard")))
@@ -418,8 +441,10 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         # NON-RESIDENTIAL Water Use
         if self.module.get_parameter("nonres_method") == "UQR":
             self.ui.nres_analysis_combo.setCurrentIndex(0)
+            self.ui.nonres_analysis_stack.setCurrentIndex(0)
         else:
             self.ui.nres_analysis_combo.setCurrentIndex(1)
+            self.ui.nonres_analysis_stack.setCurrentIndex(1)
 
         self.ui.com_demandbox.setText(str(self.module.get_parameter("com_demand")))
         self.ui.com_demandspin.setValue(int(self.module.get_parameter("com_var")))
@@ -752,5 +777,54 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("irrigation_resume_time", int(self.ui.seasonal_irrigateresume_spin.value()))
 
         # TAB 5 - POLLUTION EMISSIONS PARAMETERS
+        return True
 
+
+class CustomPatternLaunch(QtWidgets.QDialog):
+    """The class definition for the sub-GUI for setting custom diurnal patterns. This sub-gui launches if the custom
+    button is clicked on any of the diurnal patterns within the Spatial Mapping Module."""
+    def __init__(self, module, enduse, parent = None):
+        """Initialization of the subGUI for entering custom diurnal patterns. This sub-gui is launched and filled with
+        the current custom pattern selected.
+
+        :param module: reference to the UBModule() Spatial Mapping Module Instance
+        :param enduse: the end use key as per ubglobals.DIURNAL_CATS
+        :param parent: None
+        """
+        QtWidgets.QDialog.__init__(self, parent)
+        self.ui = Ui_CustomPatternDialog()
+        self.ui.setupUi(self)
+        self.module = module
+        self.enduse = enduse
+        print "End Use!", enduse
+        # Transfer pattern data into table
+        self.ui.endusetype.setText(ubglobals.DIURNAL_LABELS[ubglobals.DIURNAL_CATS.index(enduse)])
+        self.pattern = self.module.get_wateruse_custompattern(self.enduse)
+        self.ui.avg_box.setText(str(round(sum(self.pattern) / len(self.pattern), 3)))
+
+        for i in range(24):     # Populate the table
+            self.ui.tableWidget.item(i, 0).setText(str(self.pattern[i]))
+
+        self.ui.tableWidget.itemChanged.connect(self.recalculate_avg)
+        self.ui.button_Box.clicked.connect(self.save_values)
+
+    def recalculate_avg(self):
+        """Recalculates the average of the whole pattern and displays the result in the 'Average Scaling' text box."""
+        subpattern = []
+        try:
+            for i in range(24):
+                subpattern.append(float(self.ui.tableWidget.item(i, 0).text()))
+            self.ui.avg_box.setText(str(round(sum(subpattern) / len(subpattern), 3)))
+        except ValueError or TypeError:
+            self.ui.avg_box.setText("ERROR")    # If a user enters text instead of a proper number!
+
+    def save_values(self):
+        """Creates a new pattern vector and saves this to the module."""
+        for i in range(24):
+            try:
+                self.pattern[i] = float(self.ui.tableWidget.item(i, 0).text())
+            except ValueError:  # Catch stupid entries by setting the default multiplier to 1.0
+                self.pattern[i] = 1.0
+
+        self.module.set_wateruse_custompattern(self.enduse, self.pattern)
         return True

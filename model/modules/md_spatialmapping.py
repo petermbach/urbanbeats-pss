@@ -503,5 +503,13 @@ class SpatialMapping(UBModule):
         """
         pass
 
+    def get_wateruse_custompattern(self, key):
+        """Retrieves the _cp custom pattern vector from the given key, the keys are in UBGlobals for reference."""
+        return eval("self." + str(key) + "_cp")
+
+    def set_wateruse_custompattern(self, key, patternvector):
+        """Sets the current custom pattern _cp of the parameter with the given key to the new patternvector."""
+        exec ("self." + str(key) + "_cp = " + str(patternvector))
+
     def map_pollution_emissions(self):
         pass
