@@ -604,7 +604,7 @@ class SpatialMapping(UBModule):
         """Conducts the direct input analysis of residential water demand."""
         if block_attr.get_attribute("HasHouses") or block_attr.get_attribute("HasFlats"):
             # RESIDENTIAL INDOOR WATER DEMANDS
-            if self.block_attr.get_attribute("HasHouses"):
+            if block_attr.get_attribute("HasHouses"):
                 occup = block_attr.get_attribute("")
                 qty = block_attr.get_attribute("ResHouses")  # The total number of houses for up-scaling
             else:
@@ -673,10 +673,40 @@ class SpatialMapping(UBModule):
             block_attr.add_attribute("WD_Outdoor", 0.0)
         return True
 
-    def nonres_unitflowrate(self):
+    def nonres_waterdemands(self, block_attr):
+        """Calculates non-residential water demands for commercial, industrial, offices land uses based on the unit
+        flow rate method, which assumes water demands per floor space or employee."""
         pass
 
-    def nonres_popequivalents(self):
+        block_attr.add_attribute("WD_COM", 0)
+        block_attr.add_attribute("WD_HotCOM", 0)
+        block_attr.add_attribute("WD_Office", 0)
+        block_attr.add_attribute("WD_HotOffice", 0)
+        block_attr.add_attribute("WD_LI", 0)
+        block_attr.add_attribute("WD_HotLI", 0)
+        block_attr.add_attribute("WD_HI", 0)
+        block_attr.add_attribute("WD_HotHI", 0)
+        block_attr.add_attribute("WD_NRes", 0)
+        block_attr.add_attribute("WD_HotNRes", 0)
+
+        block_attr.add_attribute("WW_ComGrey", 0)
+        block_attr.add_attribute("WW_ComBlack", 0)
+        block_attr.add_attribute("WW_IndGrey", 0)
+        block_attr.add_attribute("WW_IndBlack", 0)
+
+        block_attr.add_attribute("WD_NResIrr", 0)
+
+    def public_spaces_wateruse(self, block_attr):
+        """Calculates the public open spaces water use, including mainly the irrigation of open spaces and landmark
+        areas."""
+        pass
+
+    def tally_total_block_wateruse(self, block_attr):
+        """"""
+        pass
+
+    def calculate_water_losses(self, vol, block_area):
+        """Determines water losses across the system."""
         pass
 
     def retrieve_standards(self, st_name):
