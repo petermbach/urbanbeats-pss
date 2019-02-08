@@ -824,6 +824,9 @@ class UrbanPlanning(UBModule):
 
                 if resdict["TypeHouse"] == 1:
                     block_attr.add_attribute("HasHouses", 1)
+                    block_attr.add_attribute("ResARoad", resdict["Aroad"])
+                    block_attr.add_attribute("ResANstrip", resdict["Anstrip"])
+                    block_attr.add_attribute("ResAFpath", resdict["Afpath"])
                     block_attr.add_attribute("HouseOccup", resdict["HouseOccup"])
                     block_attr.add_attribute("ResParcels", resdict["ResParcels"])
                     block_attr.add_attribute("ResFrontT", resdict["TotalFrontage"])
