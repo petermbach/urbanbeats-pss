@@ -531,26 +531,11 @@ class SpatialMapping(UBModule):
             dishwasherdem = self.res_dishwasher_fq * flowrates["Dishwasher"][baserating]
 
             # Vary Demands
-            kitchendemF = -1
-            while kitchendemF <= 0:
-                kitchendemF = kitchendem + random.uniform(kitchendem * self.res_kitchen_var/100.0 * (-1),
-                                                          kitchendem * self.res_kitchen_var/100.0)
-            showerdemF = -1
-            while showerdemF <= 0:
-                showerdemF = showerdem + random.uniform(showerdem * self.res_shower_var/100.0 * (-1),
-                                                        showerdem * self.res_shower_var/100.0)
-            toiletdemF = -1
-            while toiletdemF <= 0:
-                toiletdemF = toiletdem + random.uniform(toiletdem * self.res_toilet_var/100.0 * (-1),
-                                                        toiletdem * self.res_toilet_var/100.0)
-            laundrydemF = -1
-            while laundrydemF <= 0:
-                laundrydemF = laundrydem + random.uniform(laundrydem * self.res_laundry_var/100.0 * (-1),
-                                                          laundrydem * self.res_laundry_var/100.0)
-            dishwasherdemF = -1
-            while dishwasherdemF <= 0:
-                dishwasherdemF = dishwasherdem + random.uniform(dishwasherdem * self.res_dishwasher_var / 100.0 * (-1),
-                                                                dishwasherdem * self.res_dishwasher_var / 100.0)
+            kitchendemF = self.vary_demand_stochastically(kitchendem, self.res_kitchen_var/100.0)
+            showerdemF = self.vary_demand_stochastically(showerdem, self.res_shower_var / 100.0)
+            toiletdemF = self.vary_demand_stochastically(toiletdem, self.res_toilet_var / 100.0)
+            laundrydemF = self.vary_demand_stochastically(laundrydem, self.res_laundry_var / 100.0)
+            dishwasherdemF = self.vary_demand_stochastically(dishwasherdem, self.res_dishwasher_var / 100.0)
 
             indoor_demands = [kitchendemF, showerdemF, toiletdemF, laundrydemF, dishwasherdemF]
             hotwater_ratios = [self.res_kitchen_hot/100.0, self.res_shower_hot/100.0, self.res_toilet_hot/100.0,
@@ -615,10 +600,8 @@ class SpatialMapping(UBModule):
             volHH = float(self.res_dailyindoor_vol * occup)
 
             # Add variation
-            volHHF= -1
-            while volHHF <= 0:
-                volHHF = volHH + random.uniform(volHH * self.res_dailyindoor_var / 100.0 * (-1),
-                                                                volHH * self.res_dishwasher_var / 100.0)
+            volHHF = self.vary_demand_stochastically(volHH, self.res_dailyindoor_var/100.0)
+
             # Work out hot water and non-potable water
             volHot = volHHF * self.res_dailyindoor_hot/100.0
             volNp = volHHF * self.res_dailyindoor_np/100.0
@@ -675,8 +658,53 @@ class SpatialMapping(UBModule):
 
     def nonres_waterdemands(self, block_attr):
         """Calculates non-residential water demands for commercial, industrial, offices land uses based on the unit
-        flow rate method, which assumes water demands per floor space or employee."""
-        pass
+        flow rate or Population Equivalents method, which assumes water demands per floor space or employee."""
+        # COMMERCIAL AREAS
+        if block_attr.get_attribute("Has_COM") and self.nonres_method == "UQR":
+            if self.com_units == "LSQMD":
+                floorspace = block_attr.get_attribute("COMFloors") * block_attr.get_attribute("COMAeBldg") * \
+                             block_attr.get_attribute("COMestates")
+                comdemand = self.com_demand * floorspace / 1000.0       # [kL/day]
+            else:
+                comdemand = self.com_demand * block_attr.get_attribute("COMjobs") / 1000.0  # [kL/day]
+                
+        elif block_attr.get_attribute("Has_COM") and self.nonres_method == "PES":
+            comdemand = 0
+        else:
+            comdemand = 0
+
+
+        # OFFICES
+
+
+        # LIGHT INDUSTRY
+
+
+
+        # HEAVY INDUSTRY
+
+
+
+        # if int(currentAttList.getAttribute("Has_Com")):
+        #     if self.com_demandunits == 'sqm':
+        #         Afloor = currentAttList.getAttribute("COMAeBldg") * \
+        #             currentAttList.getAttribute("COMFloors")* \
+        #                 currentAttList.getAttribute("COMestates")
+        #         demand = self.getNonResIndoorDemand(Afloor, self.com_demand, self.com_demandvary/100)
+        #     elif self.com_demandunits == 'cap':
+        #         employed = currentAttList.getAttribute("COMjobs")
+        #         demand = self.getNonResIndoorDemand(employed, self.com_demand, self.com_demandvary/100)
+        #     compublic = currentAttList.getAttribute("avLt_COM")*currentAttList.getAttribute("COMestates")
+        #     waterDemandDict["COMDemand"] = demand/1000
+        #     blockCom += waterDemandDict["COMDemand"]
+        #     totalBlockNonResWD += demand/1000
+        # else:
+        #     waterDemandDict["COMDemand"] = 0
+
+
+
+
+
 
         block_attr.add_attribute("WD_COM", 0)
         block_attr.add_attribute("WD_HotCOM", 0)
@@ -708,6 +736,16 @@ class SpatialMapping(UBModule):
     def calculate_water_losses(self, vol, block_area):
         """Determines water losses across the system."""
         pass
+
+    def vary_demand_stochastically(self, basedemand, varyfactor):
+        """Uses a uniform distribution to alter a base demand value by a variation factor [ ] either incrementally
+        or decrementally. Returns the varied demand value."""
+        if varyfactor == 0:
+            return basedemand
+        variedDemand = -1
+        while variedDemand <= 0:
+            variedDemand = basedemand + random.uniform(basedemand * varyfactor * (-1), basedemand * varyfactor)
+        return variedDemand
 
     def retrieve_standards(self, st_name):
         """Retrieves the water flow rates for the respective appliance standard."""
