@@ -648,6 +648,7 @@ class UrbanPlanning(UBModule):
 
             block_attr.add_attribute("MiscAtot", otherarea)
             block_attr.add_attribute("MiscAimp", otherimp)
+            block_attr.add_attribute("MiscAirr", irrigateextra)
 
             if self.unc_custom:     # Using a custom threshold?
                 block_attr.add_attribute("MiscThresh", self.unc_customthresh)
@@ -811,6 +812,7 @@ class UrbanPlanning(UBModule):
             blk_avspace += av_spRD
 
             # 2.5 - RESIDENTIAL AREAS  ---------------------
+            map_attr.add_attribute("AvgOccup", self.occup_avg)      # Used in later modules! Needs a baseline
             ResPop = block_attr.get_attribute("Population")          # Retrieve population count
             A_res = block_attr.get_attribute("pLU_RES") * Aactive    # Retrieve active area
             minHouse = self.person_space * self.occup_avg * 4       # Work out the minimum house size

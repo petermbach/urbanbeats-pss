@@ -120,22 +120,14 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         self.ui.indoor_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
         self.ui.outdoor_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
         self.ui.nres_irrigate_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
-        self.ui.nres_irrigate_dp_2.currentIndexChanged.connect(self.enable_disable_custom_buttons)
         self.ui.com_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
-        self.ui.com_dp_2.currentIndexChanged.connect(self.enable_disable_custom_buttons)
         self.ui.ind_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
-        self.ui.ind_dp_2.currentIndexChanged.connect(self.enable_disable_custom_buttons)
         self.ui.pos_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
         self.ui.res_direct_ww_slider.valueChanged.connect(self.slider_res_value_update)
         self.ui.civic_presetsbutton.clicked.connect(self.view_civic_wateruse_presets)
-        self.ui.civic_presetsbutton_2.clicked.connect(self.view_civic_wateruse_presets)
         self.ui.nres_ww_com_slider.valueChanged.connect(self.slider_nres_com_update)
         self.ui.nres_ww_ind_slider.valueChanged.connect(self.slider_nres_ind_update)
-        self.ui.nres_ww_com_slider_2.valueChanged.connect(self.slider_nres_com_update)
-        self.ui.nres_ww_ind_slider_2.valueChanged.connect(self.slider_nres_ind_update)
         self.ui.losses_check.clicked.connect(self.enable_disable_losses_widgets)
-        self.ui.losses_volradio.clicked.connect(self.enable_disable_losses_widgets)
-        self.ui.losses_flowradio.clicked.connect(self.enable_disable_losses_widgets)
         self.ui.weekly_reducenres_check.clicked.connect(self.enable_disable_weekly_widgets)
         self.ui.weekly_increaseres_check.clicked.connect(self.enable_disable_weekly_widgets)
         self.ui.seasonal_check.clicked.connect(self.enable_disable_seasonal_widgets)
@@ -151,11 +143,8 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         self.ui.outdoor_dpcustom.clicked.connect(lambda: self.call_pattern_gui("res_outdoor"))
         self.ui.indoor_dpcustom.clicked.connect(lambda: self.call_pattern_gui("res_dailyindoor_cp"))
         self.ui.com_dpcustom.clicked.connect(lambda: self.call_pattern_gui("com"))
-        self.ui.com_dpcustom_2.clicked.connect(lambda: self.call_pattern_gui("com"))
         self.ui.ind_dpcustom.clicked.connect(lambda: self.call_pattern_gui("ind"))
-        self.ui.ind_dpcustom_2.clicked.connect(lambda: self.call_pattern_gui("ind"))
         self.ui.nres_irrigate_dpcustom.clicked.connect(lambda: self.call_pattern_gui("nonres_landscape"))
-        self.ui.nres_irrigate_dpcustom_2.clicked.connect(lambda: self.call_pattern_gui("nonres_landscape"))
         self.ui.pos_dpcustom.clicked.connect(lambda: self.call_pattern_gui("pos_irrigation"))
 
         # TAB 5 - POLLUTION EMISSIONS PARAMETERS
@@ -243,17 +232,13 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
     def slider_nres_com_update(self):
         """Updates the non-residential slider for commercial wastewater volumes"""
         self.ui.nres_ww_com_greybox.setText(str(int((self.ui.nres_ww_com_slider.value()*-1+100)/2))+"%")
-        self.ui.nres_ww_com_greybox_2.setText(str(int((self.ui.nres_ww_com_slider_2.value() * -1 + 100) / 2)) + "%")
         self.ui.nres_ww_com_blackbox.setText(str(int((self.ui.nres_ww_com_slider.value() + 100) / 2)) + "%")
-        self.ui.nres_ww_com_blackbox_2.setText(str(int((self.ui.nres_ww_com_slider_2.value() + 100) / 2)) + "%")
         return True
 
     def slider_nres_ind_update(self):
         """Updates the non-residential slider for industrial wastewater volumes"""
         self.ui.nres_ww_ind_greybox.setText(str(int((self.ui.nres_ww_ind_slider.value() * -1 + 100) / 2)) + "%")
-        self.ui.nres_ww_ind_greybox_2.setText(str(int((self.ui.nres_ww_ind_slider_2.value() * -1 + 100) / 2)) + "%")
         self.ui.nres_ww_ind_blackbox.setText(str(int((self.ui.nres_ww_ind_slider.value() + 100) / 2)) + "%")
-        self.ui.nres_ww_ind_blackbox_2.setText(str(int((self.ui.nres_ww_ind_slider_2.value() + 100) / 2)) + "%")
         return True
 
     def enable_disable_whole_gui_tabs(self):
@@ -267,11 +252,7 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
 
     def enable_disable_losses_widgets(self):
         """Enables and disables the water losses options when clicking the respective radio buttons."""
-        self.ui.losses_flowbox.setEnabled(self.ui.losses_flowradio.isChecked() and self.ui.losses_check.isChecked())
-        self.ui.losses_flowunits.setEnabled(self.ui.losses_flowradio.isChecked() and self.ui.losses_check.isChecked())
-        self.ui.losses_volspin.setEnabled(self.ui.losses_volradio.isChecked() and self.ui.losses_check.isChecked())
-        self.ui.losses_flowradio.setEnabled(self.ui.losses_check.isChecked())
-        self.ui.losses_volradio.setEnabled(self.ui.losses_check.isChecked())
+        self.ui.losses_volspin.setEnabled(self.ui.losses_check.isChecked())
         return True
 
     def enable_disable_weekly_widgets(self):
@@ -298,14 +279,10 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
                                                  self.ui.res_irrigate_dp.count() - 1)
         self.ui.indoor_dpcustom.setEnabled(self.ui.indoor_dp.currentIndex() == self.ui.indoor_dp.count() - 1)
         self.ui.outdoor_dpcustom.setEnabled(self.ui.outdoor_dp.currentIndex() == self.ui.outdoor_dp.count() - 1)
-        self.ui.nres_irrigate_dpcustom_2.setEnabled(self.ui.nres_irrigate_dp_2.currentIndex() ==
-                                                 self.ui.nres_irrigate_dp_2.count() - 1)
         self.ui.nres_irrigate_dpcustom.setEnabled(self.ui.nres_irrigate_dp.currentIndex() ==
                                                   self.ui.nres_irrigate_dp.count() - 1)
         self.ui.com_dpcustom.setEnabled(self.ui.com_dp.currentIndex() == self.ui.com_dp.count() - 1)
-        self.ui.com_dpcustom_2.setEnabled(self.ui.com_dp_2.currentIndex() == self.ui.com_dp_2.count() - 1)
         self.ui.ind_dpcustom.setEnabled(self.ui.ind_dp.currentIndex() == self.ui.ind_dp.count() - 1)
-        self.ui.ind_dpcustom_2.setEnabled(self.ui.ind_dp_2.currentIndex() == self.ui.ind_dp_2.count() - 1)
         self.ui.pos_dpcustom.setEnabled(self.ui.pos_dp.currentIndex() == self.ui.pos_dp.count() - 1)
         return True
 
@@ -439,76 +416,60 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         self.ui.outdoor_dp.setCurrentIndex(ubglobals.DPS.index(self.module.get_parameter("res_outdoor_pat")))
 
         # NON-RESIDENTIAL Water Use
-        if self.module.get_parameter("nonres_method") == "UQR":
-            self.ui.nres_analysis_combo.setCurrentIndex(0)
-            self.ui.nonres_analysis_stack.setCurrentIndex(0)
-        else:
-            self.ui.nres_analysis_combo.setCurrentIndex(1)
-            self.ui.nonres_analysis_stack.setCurrentIndex(1)
-
         self.ui.com_demandbox.setText(str(self.module.get_parameter("com_demand")))
         self.ui.com_demandspin.setValue(int(self.module.get_parameter("com_var")))
-        self.ui.com_demandspin_2.setValue(int(self.module.get_parameter("com_var")))
         if self.module.get_parameter("com_units") == "LSQMD":
             self.ui.com_demandunits.setCurrentIndex(0)
-        else:
+        elif self.module.get_parameter("com_units") == "LPAXD":
             self.ui.com_demandunits.setCurrentIndex(1)
+        else:
+            self.ui.com_demandunits.setCurrentIndex(2)
+
         self.ui.com_hotbox.setValue(int(self.module.get_parameter("com_hot")))
-        self.ui.com_hotbox_2.setValue(int(self.module.get_parameter("com_hot")))
-        self.ui.com_pe.setText(str(self.module.get_parameter("com_pefactor")))
         self.ui.com_dp.setCurrentIndex(ubglobals.DPS.index(self.module.get_parameter("com_pat")))
-        self.ui.com_dp_2.setCurrentIndex(ubglobals.DPS.index(self.module.get_parameter("com_pat")))
 
         self.ui.office_demandbox.setText(str(self.module.get_parameter("office_demand")))
         self.ui.office_demandspin.setValue(int(self.module.get_parameter("office_var")))
-        self.ui.office_demandspin_2.setValue(int(self.module.get_parameter("office_var")))
         if self.module.get_parameter("office_units") == "LSQMD":
             self.ui.office_demandunits.setCurrentIndex(0)
-        else:
+        elif self.module.get_parameter("office_units") == "LPAXD":
             self.ui.office_demandunits.setCurrentIndex(1)
+        else:
+            self.ui.office_demandunits.setCurrentIndex(2)
+
         self.ui.office_hotbox.setValue(int(self.module.get_parameter("office_hot")))
-        self.ui.office_hotbox_2.setValue(int(self.module.get_parameter("office_hot")))
-        self.ui.office_pe.setText(str(self.module.get_parameter("office_pefactor")))
 
         self.ui.li_demandbox.setText(str(self.module.get_parameter("li_demand")))
         self.ui.li_demandspin.setValue(int(self.module.get_parameter("li_var")))
-        self.ui.li_demandspin_2.setValue(int(self.module.get_parameter("li_var")))
         if self.module.get_parameter("li_units") == "LSQMD":
             self.ui.li_demandunits.setCurrentIndex(0)
-        else:
+        elif self.module.get_parameter("li_units") == "LPAXD":
             self.ui.li_demandunits.setCurrentIndex(1)
+        else:
+            self.ui.li_demandunits.setCurrentIndex(2)
+
         self.ui.li_hotbox.setValue(int(self.module.get_parameter("li_hot")))
-        self.ui.li_hotbox_2.setValue(int(self.module.get_parameter("li_hot")))
-        self.ui.li_pe.setText(str(self.module.get_parameter("li_pefactor")))
         self.ui.ind_dp.setCurrentIndex(ubglobals.DPS.index(self.module.get_parameter("ind_pat")))
-        self.ui.ind_dp_2.setCurrentIndex(ubglobals.DPS.index(self.module.get_parameter("ind_pat")))
 
         self.ui.hi_demandbox.setText(str(self.module.get_parameter("hi_demand")))
         self.ui.hi_demandspin.setValue(int(self.module.get_parameter("hi_var")))
-        self.ui.hi_demandspin_2.setValue(int(self.module.get_parameter("hi_var")))
         if self.module.get_parameter("hi_units") == "LSQMD":
             self.ui.hi_demandunits.setCurrentIndex(0)
-        else:
+        elif self.module.get_parameter("hi_units") == "LPAXD":
             self.ui.hi_demandunits.setCurrentIndex(1)
+        else:
+            self.ui.hi_demandunits.setCurrentIndex(2)
+
         self.ui.hi_hotbox.setValue(int(self.module.get_parameter("hi_hot")))
-        self.ui.hi_hotbox_2.setValue(int(self.module.get_parameter("hi_hot")))
-        self.ui.hi_pe.setText(str(self.module.get_parameter("hi_pefactor")))
 
         self.ui.nres_irrigate_vol.setValue(float(self.module.get_parameter("nonres_landscape_vol")))
         self.ui.nres_irrigate_ffp.setCurrentIndex(ubglobals.FFP.index(
             self.module.get_parameter("nonres_landscape_ffp")))
-        self.ui.nres_irrigate_vol_2.setValue(float(self.module.get_parameter("nonres_landscape_vol")))
-        self.ui.nres_irrigate_ffp_2.setCurrentIndex(ubglobals.FFP.index(
-            self.module.get_parameter("nonres_landscape_ffp")))
         self.ui.nres_irrigate_dp.setCurrentIndex(ubglobals.DPS.index(
-            self.module.get_parameter("nonres_landscape_pat")))
-        self.ui.nres_irrigate_dp_2.setCurrentIndex(ubglobals.DPS.index(
             self.module.get_parameter("nonres_landscape_pat")))
 
         self.ui.nres_ww_com_slider.setValue(int(self.module.get_parameter("com_ww_bgprop")))
         self.ui.nres_ww_ind_slider.setValue(int(self.module.get_parameter("ind_ww_bgprop")))
-        self.ui.nres_ww_com_slider_2.setValue(int(self.module.get_parameter("com_ww_bgprop")))
-        self.ui.nres_ww_ind_slider_2.setValue(int(self.module.get_parameter("ind_ww_bgprop")))
 
         # PUBLIC OPEN SPACE AND DISTRICTS Water Use
         self.ui.pos_annual_vol.setValue(float(self.module.get_parameter("pos_irrigation_vol")))
@@ -519,16 +480,7 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         self.ui.pos_dp.setCurrentIndex(ubglobals.DPS.index(self.module.get_parameter("pos_irrigation_pat")))
 
         self.ui.losses_check.setChecked(int(self.module.get_parameter("estimate_waterloss")))
-        if self.module.get_parameter("waterloss_method") == "VOLPROP":
-            self.ui.losses_volradio.setChecked(1)
-        else:
-            self.ui.losses_flowradio.setChecked(1)
         self.ui.losses_volspin.setValue(float(self.module.get_parameter("waterloss_volprop")))
-        self.ui.losses_flowbox.setText(str(self.module.get_parameter("waterloss_constant")))
-        if self.module.get_parameter("waterloss_constant_units") == "MLY":
-            self.ui.losses_flowunits.setCurrentIndex(0)
-        else:
-            self.ui.losses_flowunits.setCurrentIndex(1)
 
         # TEMPORAL DYNAMICS
         self.ui.weekly_reducenres_check.setChecked(int(self.module.get_parameter("weekend_nonres_reduce")))
@@ -676,71 +628,53 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("res_dailyindoor_bgprop", float(self.ui.res_direct_ww_slider.value()))
 
         # NON-RESIDENTIAL Water Use
-        if self.ui.nres_analysis_combo.currentIndex() == 0:
-            self.module.set_parameter("nonres_method", "UQR")   # Unit flow rate
-        else:
-            self.module.set_parameter("nonres_method", "PES")   # Population EquivalentS
-
         self.module.set_parameter("com_demand", float(self.ui.com_demandbox.text()))
         if self.ui.com_demandunits.currentIndex() == 0:
             self.module.set_parameter("com_units", "LSQMD")
-        else:
+        elif self.ui.com_demandunits.currentIndex() == 1:
             self.module.set_parameter("com_units", "LPAXD")
-        self.module.set_parameter("com_pefactor", float(self.ui.com_pe.text()))
+        else:
+            self.module.set_parameter("com_units", "PES")
 
         self.module.set_parameter("office_demand", float(self.ui.office_demandbox.text()))
         if self.ui.office_demandunits.currentIndex() == 0:
             self.module.set_parameter("office_units", "LSQMD")
-        else:
+        elif self.ui.office_demandunits.currentIndex() == 1:
             self.module.set_parameter("office_units", "LPAXD")
-        self.module.set_parameter("office_pefactor", float(self.ui.office_pe.text()))
+        else:
+            self.module.set_parameter("office_units", "PES")
 
         self.module.set_parameter("li_demand", float(self.ui.li_demandbox.text()))
         if self.ui.li_demandunits.currentIndex() == 0:
             self.module.set_parameter("li_units", "LSQMD")
-        else:
+        elif self.ui.li_demandunits.currentIndex() == 1:
             self.module.set_parameter("li_units", "LPAXD")
-        self.module.set_parameter("li_pefactor", float(self.ui.li_pe.text()))
+        else:
+            self.module.set_parameter("li_units", "PES")
 
         self.module.set_parameter("hi_demand", float(self.ui.hi_demandbox.text()))
         if self.ui.hi_demandunits.currentIndex() == 0:
             self.module.set_parameter("hi_units", "LSQMD")
-        else:
+        elif self.ui.hi_demandunits.currentIndex() == 1:
             self.module.set_parameter("hi_units", "LPAXD")
-        self.module.set_parameter("hi_pefactor", float(self.ui.hi_pe.text()))
+        else:
+            self.module.set_parameter("hi_units", "PES")
 
-        if self.ui.nres_analysis_combo.currentIndex() == 0:     # Using Unit Flow Rate Method
-            self.module.set_parameter("com_var", float(self.ui.com_demandspin.value()))
-            self.module.set_parameter("com_hot", float(self.ui.com_hotbox.value()))
-            self.module.set_parameter("com_pat", ubglobals.DPS[self.ui.com_dp.currentIndex()])
-            self.module.set_parameter("office_var", float(self.ui.office_demandspin.value()))
-            self.module.set_parameter("office_hot", float(self.ui.office_hotbox.value()))
-            self.module.set_parameter("li_var", float(self.ui.li_demandspin.value()))
-            self.module.set_parameter("li_hot", float(self.ui.li_hotbox.value()))
-            self.module.set_parameter("ind_pat", ubglobals.DPS[self.ui.ind_dp.currentIndex()])
-            self.module.set_parameter("hi_var", float(self.ui.hi_demandspin.value()))
-            self.module.set_parameter("hi_hot", float(self.ui.hi_hotbox.value()))
-            self.module.set_parameter("nonres_landscape_vol", float(self.ui.nres_irrigate_vol.value()))
-            self.module.set_parameter("nonres_landscape_ffp", ubglobals.FFP[self.ui.nres_irrigate_ffp.currentIndex()])
-            self.module.set_parameter("nonres_landscape_pat", ubglobals.DPS[self.ui.nres_irrigate_dp.currentIndex()])
-            self.module.set_parameter("com_ww_bgprop", float(self.ui.nres_ww_com_slider.value()))
-            self.module.set_parameter("ind_ww_bgprop", float(self.ui.nres_ww_ind_slider.value()))
-        else:       # Using Population Equivalents Method
-            self.module.set_parameter("com_var", float(self.ui.com_demandspin_2.value()))
-            self.module.set_parameter("com_hot", float(self.ui.com_hotbox_2.value()))
-            self.module.set_parameter("com_pat", ubglobals.DPS[self.ui.com_dp_2.currentIndex()])
-            self.module.set_parameter("office_var", float(self.ui.office_demandspin_2.value()))
-            self.module.set_parameter("office_hot", float(self.ui.office_hotbox_2.value()))
-            self.module.set_parameter("li_var", float(self.ui.li_demandspin_2.value()))
-            self.module.set_parameter("li_hot", float(self.ui.li_hotbox_2.value()))
-            self.module.set_parameter("ind_pat", ubglobals.DPS[self.ui.ind_dp_2.currentIndex()])
-            self.module.set_parameter("hi_var", float(self.ui.hi_demandspin_2.value()))
-            self.module.set_parameter("hi_hot", float(self.ui.hi_hotbox_2.value()))
-            self.module.set_parameter("nonres_landscape_vol", float(self.ui.nres_irrigate_vol_2.value()))
-            self.module.set_parameter("nonres_landscape_ffp", ubglobals.FFP[self.ui.nres_irrigate_ffp_2.currentIndex()])
-            self.module.set_parameter("nonres_landscape_pat", ubglobals.DPS[self.ui.nres_irrigate_dp_2.currentIndex()])
-            self.module.set_parameter("com_ww_bgprop", float(self.ui.nres_ww_com_slider_2.value()))
-            self.module.set_parameter("ind_ww_bgprop", float(self.ui.nres_ww_ind_slider_2.value()))
+        self.module.set_parameter("com_var", float(self.ui.com_demandspin.value()))
+        self.module.set_parameter("com_hot", float(self.ui.com_hotbox.value()))
+        self.module.set_parameter("com_pat", ubglobals.DPS[self.ui.com_dp.currentIndex()])
+        self.module.set_parameter("office_var", float(self.ui.office_demandspin.value()))
+        self.module.set_parameter("office_hot", float(self.ui.office_hotbox.value()))
+        self.module.set_parameter("li_var", float(self.ui.li_demandspin.value()))
+        self.module.set_parameter("li_hot", float(self.ui.li_hotbox.value()))
+        self.module.set_parameter("ind_pat", ubglobals.DPS[self.ui.ind_dp.currentIndex()])
+        self.module.set_parameter("hi_var", float(self.ui.hi_demandspin.value()))
+        self.module.set_parameter("hi_hot", float(self.ui.hi_hotbox.value()))
+        self.module.set_parameter("nonres_landscape_vol", float(self.ui.nres_irrigate_vol.value()))
+        self.module.set_parameter("nonres_landscape_ffp", ubglobals.FFP[self.ui.nres_irrigate_ffp.currentIndex()])
+        self.module.set_parameter("nonres_landscape_pat", ubglobals.DPS[self.ui.nres_irrigate_dp.currentIndex()])
+        self.module.set_parameter("com_ww_bgprop", float(self.ui.nres_ww_com_slider.value()))
+        self.module.set_parameter("ind_ww_bgprop", float(self.ui.nres_ww_ind_slider.value()))
 
         # PUBLIC OPEN SPACES AND DISTRICTS
         self.module.set_parameter("pos_irrigation_vol", float(self.ui.pos_annual_vol.value()))
@@ -752,16 +686,7 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
 
         # REGIONAL WATER LOSSES
         self.module.set_parameter("estimate_waterloss", int(self.ui.losses_check.isChecked()))
-        if self.ui.losses_volradio.isChecked():
-            self.module.set_parameter("waterloss_method", "VOLPROP")
-        else:
-            self.module.set_parameter("waterloss_method", "CONSTANT")
         self.module.set_parameter("waterloss_volprop", float(self.ui.losses_volspin.value()))
-        self.module.set_parameter("waterloss_constant", float(self.ui.losses_flowbox.text()))
-        if self.ui.losses_flowunits.currentIndex() == 0:
-            self.module.set_parameter("waterloss_constant_units", "MLY")
-        else:
-            self.module.set_parameter("waterloss_constant_units", "MLHAY")
 
         # TEMPORAL AND SEASONAL DYNAMICS
         self.module.set_parameter("weekend_nonres_reduce", int(self.ui.weekly_reducenres_check.isChecked()))
