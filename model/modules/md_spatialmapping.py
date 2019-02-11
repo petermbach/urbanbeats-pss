@@ -444,21 +444,31 @@ class SpatialMapping(UBModule):
 
         # PLANNING RULES
         if self.planrules:
+            map_attr.add_attribute("HasOVERLAYS", 1)
             self.map_planning_rules()
+        else:
+            map_attr.add_attribute("HasOVERLAYS", 0)
 
         # LAND COVER
         if self.landcover:
+            map_attr.add_attribute("HasLANDCOVER", 1)
             for block_attr in blockslist:
                 if block_attr.get_attribute("Status") == 0:
                     continue
                 self.map_land_surface_covers(block_attr)
+        else:
+            map_attr.add_attribute("HasLANDCOVER", 0)
 
         # OPEN SPACE ANALYSIS
         if self.openspaces:
+            map_attr.add_attribute("HasOPENSPACEMAP", 1)
             self.map_open_spaces(map_attr)
+        else:
+            map_attr.add_attribute("HasOPENSPACEMAP", 0)
 
         # WATER USE
         if self.wateruse:
+            map_attr.add_attribute("HasWATERUSE", 1)
             if self.residential_method == "EUA":
                 self.flowrates = self.retrieve_standards(self.res_standard)  # Get the flowrates from the standards
                 self.baserating = self.flowrates["RatingCats"].index(self.res_base_efficiency)  # The index to look up
@@ -482,11 +492,15 @@ class SpatialMapping(UBModule):
                     map_attr.add_attribute("dp_" + cat, ubglobals.AHC)
                 else:
                     map_attr.add_attribute("dp_" + cat, eval("self."+cat+"_cp"))
+        else:
+            map_attr.add_attribute("HasWATERUSE", 0)
 
         # POLLUTION EMISSIONS
         if self.emissions:
+            map_attr.add_attribute("HasPOLLUTIONMAP", 1)
             self.map_pollution_emissions()
-
+        else:
+            map_attr.add_attribute("HasPOLLUTIONMAP", 0)
         return True
 
     def map_planning_rules(self):
@@ -1056,6 +1070,9 @@ class SpatialMapping(UBModule):
             block_attr.add_attribute("WD_HotVol", sum(blk_hotwater) / 1000.0)   # Total Block Hot Water [kL/day]
             block_attr.add_attribute("WW_ResGrey", sum([a * b for a, b in zip(gw, blk_demands)]))    # [kL/day]
             block_attr.add_attribute("WW_ResBlack", sum([a * b for a, b in zip(bw, blk_demands)]))   # [kL/day]
+
+            map_attr = self.scenario.get_asset_with_name("MapAttributes")
+            map_attr.add_attribute("WD_RES_Method", "EUA")
         else:   # If no residential, then simply set all attributes to zero
             block_attr.add_attribute("WD_HHKitchen", 0.0)
             block_attr.add_attribute("WD_HHShower", 0.0)
@@ -1106,6 +1123,9 @@ class SpatialMapping(UBModule):
             block_attr.add_attribute("WD_NonPotable", volNp * qty / 1000.0) # Block Res Nonpotable use [kL/day]
             block_attr.add_attribute("WW_ResGrey", volHHF * qty * propGW / 1000.0)  # Block Res Greywater [kL/day]
             block_attr.add_attribute("WW_ResBlack", volHHF * qty * propBW / 1000.0) # Block Res Blackwater [kL/day]
+
+            map_attr = self.scenario.get_asset_with_name("MapAttributes")
+            map_attr.add_attribute("WD_RES_Method", "DQI")
         else:
             block_attr.add_attribute("WD_HHIndoor", 0)
             block_attr.add_attribute("WD_HHHot", 0)
