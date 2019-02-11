@@ -449,7 +449,7 @@ class SpatialMapping(UBModule):
             for block_attr in blockslist:
                 if block_attr.get_attribute("Status") == 0:
                     continue
-            self.map_land_surface_covers(block_attr)
+                self.map_land_surface_covers(block_attr)
 
         # OPEN SPACE ANALYSIS
         if self.openspaces:
@@ -517,7 +517,9 @@ class SpatialMapping(UBModule):
         Unclassified (UNC)      x               x                   x               -               -           -
         ----------------------------------------------------------------------------------------------------------------
         Each attribute name is preceded by: LC_[cat]_[type] - note for residential both houses and flats use RES as the
-        category abbreviation since a Block can only have either or type of residential typology.
+        category abbreviation since a Block can only have either or type of residential typology. Civic and Transport
+        Land uses to follow. These should most likely have look-up dictionaries that can simply be mapped over in future
+        versions.
 
         :param block_attr: The UBVector() format of the current Block whose land cover needs to be determined
         :return: No return, block attributes are writen to the current block_attr object
@@ -582,7 +584,6 @@ class SpatialMapping(UBModule):
         # WRITE ATTRIBUTES TO THE BLOCK
         for k in lcover.keys():
             block_attr.add_attribute("LC_RES_"+str(k), lcover[k]/float(A_res))
-
         return True
 
     def landcover_apartments(self, block_attr, A_res):
@@ -766,8 +767,31 @@ class SpatialMapping(UBModule):
         return True
 
     def map_open_spaces(self):
-        """Maps the open space connectivity and accessibility as well as some key planning aspects surrounding POS."""
+        """Maps the open space connectivity and accessibility as well as some key planning aspects surrounding POS.
+        Two key maps are created and analysed: Open Space Connectivity and Open Space Network. Note that the algorithm
+        is only usable if patch delineation is used in the Spatial Delineation. This is therefore checked before
+        any function is called.
+
+        Open Space Connectivity: A measure of the distance to the closest open space. All non-green patches are checked
+            against green patches and the closest link is calculated.
+        Open Space Network: A measure of how connected the open spaces are to each other. A network is plotted of all
+            connections between open spaces within an acceptable distance to each other. The network serves to be
+            analysed spatially and using network characteristics to better understand how we can better plan open spaces
+            in the urban environment. Connected components show how many sub-networks there are, node degree and
+            centrality indicates the key locations of crucial connections.
+        """
         pass
+
+
+
+
+
+
+
+
+
+
+
 
     def map_water_consumption(self, block_attr):
         """Calculates the water consumption and temporal water demand/wastewater trends for the input block. The demand
@@ -864,13 +888,13 @@ class SpatialMapping(UBModule):
             block_attr.add_attribute("WD_HHDish", indoor_demands[4])      # Household Dishwasher [L/hh/day]
             block_attr.add_attribute("WD_HHIndoor", sum(indoor_demands))   # Total Household Use [L/hh/day]
             block_attr.add_attribute("WD_HHHot", sum(hotwater_volumes))    # Total Household Hot Water [L/hh/day]
-            block_attr.add_attribute("HH_GreyW", sum([a * b for a,b in zip(gw, indoor_demands)])) # [L/hh/day]
-            block_attr.add_attribute("HH_BlackW", sum([a * b for a,b in zip(bw, indoor_demands)]))  # [L/hh/day]
+            block_attr.add_attribute("HH_GreyW", sum([a * b for a, b in zip(gw, indoor_demands)])) # [L/hh/day]
+            block_attr.add_attribute("HH_BlackW", sum([a * b for a, b in zip(bw, indoor_demands)]))  # [L/hh/day]
 
             block_attr.add_attribute("WD_Indoor", sum(blk_demands) / 1000.0)    # Total Block Indoor use [kL/day]
             block_attr.add_attribute("WD_HotVol", sum(blk_hotwater) / 1000.0)   # Total Block Hot Water [kL/day]
-            block_attr.add_attribute("WW_ResGrey", sum([a * b for a,b in zip(gw, blk_demands)]))    # [kL/day]
-            block_attr.add_attribute("WW_ResBlack", sum([a * b for a,b in zip(bw, blk_demands)]))   # [kL/day]
+            block_attr.add_attribute("WW_ResGrey", sum([a * b for a, b in zip(gw, blk_demands)]))    # [kL/day]
+            block_attr.add_attribute("WW_ResBlack", sum([a * b for a, b in zip(bw, blk_demands)]))   # [kL/day]
         else:   # If no residential, then simply set all attributes to zero
             block_attr.add_attribute("WD_HHKitchen", 0.0)
             block_attr.add_attribute("WD_HHShower", 0.0)
