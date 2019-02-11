@@ -879,7 +879,9 @@ class UrbanPlanning(UBModule):
                     blk_avspace += resdict["av_HDRes"]
 
             else:
-                block_attr.add_attribute("HasRes", 0)
+                block_attr.add_attribute("HasRes", 1)       # There IS residential space,BUT
+                block_attr.add_attribute("HasHouses", 0)    # No houses
+                block_attr.add_attribute("HasFlats", 0)     # No flats
                 block_attr.add_attribute("avSt_RES", A_res)  # becomes street-scape area available
 
                 # Add to cumulative area variables
@@ -914,6 +916,9 @@ class UrbanPlanning(UBModule):
                     # Transfer attributes from indLI dictionary
                     block_attr.add_attribute("LIjobs", indLI_dict["TotalBlockEmployed"])
                     block_attr.add_attribute("LIestates", indLI_dict["Estates"])
+                    block_attr.add_attribute("LIARoad", indLI_dict["Aroad"])
+                    block_attr.add_attribute("LIANstrip", indLI_dict["Anstrip"])
+                    block_attr.add_attribute("LIAFpath", indLI_dict["Afpath"])
                     block_attr.add_attribute("avSt_LI", indLI_dict["av_St"])
                     block_attr.add_attribute("LIAfront", indLI_dict["Afrontage"])
                     block_attr.add_attribute("LIAfrEIA", indLI_dict["FrontageEIA"])
@@ -942,9 +947,12 @@ class UrbanPlanning(UBModule):
                     # Transfer attributes from indHI dictionary
                     block_attr.add_attribute("HIjobs", indHI_dict["TotalBlockEmployed"])
                     block_attr.add_attribute("HIestates", indHI_dict["Estates"])
-                    block_attr.add_attribute("avSt_HI", indLI_dict["av_St"])
-                    block_attr.add_attribute("HIAfront", indLI_dict["Afrontage"])
-                    block_attr.add_attribute("HIAfrEIA", indLI_dict["FrontageEIA"])
+                    block_attr.add_attribute("HIARoad", indHI_dict["Aroad"])
+                    block_attr.add_attribute("HIANstrip", indHI_dict["Anstrip"])
+                    block_attr.add_attribute("HIAFpath", indHI_dict["Afpath"])
+                    block_attr.add_attribute("avSt_HI", indHI_dict["av_St"])
+                    block_attr.add_attribute("HIAfront", indHI_dict["Afrontage"])
+                    block_attr.add_attribute("HIAfrEIA", indHI_dict["FrontageEIA"])
                     block_attr.add_attribute("HIAestate", indHI_dict["Aestate"])
                     block_attr.add_attribute("HIAeBldg", indHI_dict["EstateBuildingArea"])
                     block_attr.add_attribute("HIFloors", indHI_dict["Floors"])
@@ -970,6 +978,9 @@ class UrbanPlanning(UBModule):
                     # Transfer attributes from COM dictionary
                     block_attr.add_attribute("COMjobs", com_dict["TotalBlockEmployed"])
                     block_attr.add_attribute("COMestates", com_dict["Estates"])
+                    block_attr.add_attribute("COMARoad", com_dict["Aroad"])
+                    block_attr.add_attribute("COMANstrip", com_dict["Anstrip"])
+                    block_attr.add_attribute("COMAFpath", com_dict["Afpath"])
                     block_attr.add_attribute("avSt_COM", com_dict["av_St"])
                     block_attr.add_attribute("COMAfront", com_dict["Afrontage"])
                     block_attr.add_attribute("COMAfrEIA", com_dict["FrontageEIA"])
@@ -998,6 +1009,9 @@ class UrbanPlanning(UBModule):
                     # Transfer attributes from Offices dictionary
                     block_attr.add_attribute("ORCjobs", orc_dict["TotalBlockEmployed"])
                     block_attr.add_attribute("ORCestates", orc_dict["Estates"])
+                    block_attr.add_attribute("ORCARoad", orc_dict["Aroad"])
+                    block_attr.add_attribute("ORCANstrip", orc_dict["Anstrip"])
+                    block_attr.add_attribute("ORCAFpath", orc_dict["Afpath"])
                     block_attr.add_attribute("avSt_ORC", orc_dict["av_St"])
                     block_attr.add_attribute("ORCAfront", orc_dict["Afrontage"])
                     block_attr.add_attribute("ORCAfrEIA", orc_dict["FrontageEIA"])

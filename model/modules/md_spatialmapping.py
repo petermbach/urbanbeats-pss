@@ -495,133 +495,211 @@ class SpatialMapping(UBModule):
         cover types to differentiate including: CO = concrete, AS = asphalt, DG = dry grass, IG = irrigated grass,
         RF = roof, TR = trees.
 
+        A number of attributes are added to each Block by the end of this function, denoting the land surface cover
+        distribution for each land cover type. The function also tallies up the total land cover proportions for the
+        Block.
+
+        Attributes include:
+        ----------------------------------------------------------------------------------------------------------------
+        Land Use            Dry Grass (DG)  Irrig. Grass(IG)   Concrete (CO)   Asphalt (AS)    Trees (TR)    Roof (RF)
+        ----------------------------------------------------------------------------------------------------------------
+        Residential(Houses)     x               x                   x               x               x           x
+        Residential (Flats)     x               x                   x               x               x           x
+        Commercial (COM)        x               x                   x               x               x           x
+        Light Industry (LI)     x               x                   x               x               x           x
+        Heavy Industry (HI)     x               x                   x               x               x           x
+        Offices Mixed Dev (ORC) x               x                   x               x               x           x
+        Parks and Gardens (PG)  x               x                   x               x               x           -
+        Reserves (REF)          x               x                   -               -               -           -
+        Service/Utility (SVU)   x               -                   -               -               -           -
+        Major Roads (RD)        x               -                   x               x               -           -
+        Undeveloped (UND)       x               x                   -               -               -           -
+        Unclassified (UNC)      x               x                   x               -               -           -
+        ----------------------------------------------------------------------------------------------------------------
+        Each attribute name is preceded by: LC_[cat]_[type] - note for residential both houses and flats use RES as the
+        category abbreviation since a Block can only have either or type of residential typology.
+
         :param block_attr: The UBVector() format of the current Block whose land cover needs to be determined
         :return: No return, block attributes are writen to the current block_attr object
         """
+        # MAP RESIDENTIAL LAND COVER
+        A_res = float(block_attr.get_attribute("pLU_RES") * block_attr.get_attribute("Active"))
+        if block_attr.get_attribute("HasRes") and block_attr.get_attribute("HasFlats"):
+            self.landcover_apartments(block_attr, A_res)
+        else:
+            self.landcover_houses(block_attr, A_res)    # Otherwise map using landcover_houses() as it catches zero case
 
+        # MAP NON-RESIDENTIAL LAND COVER
+        abbr = ["COM", "LI", "HI", "ORC"]
+        for nonres_type in abbr:        # Loop over the four main types
+            A_lu = float(block_attr.get_attribute("pLU_"+str(nonres_type)) * block_attr.get_attribute("Active"))
+            self.landcover_nonres(block_attr, nonres_type, A_lu)
 
+        # MAP OTHER TYPES
+        self.landcover_unclassified(block_attr)
+        self.landcover_undeveloped(block_attr)
+        self.landcover_openspaces(block_attr)
+        self.landcover_roads(block_attr)
         return True
 
-    def landcover_houses(self, block_attr):
+    def landcover_houses(self, block_attr, A_res):
         """Determines proportions of land cover on residential land and provides a percentage estimate for the
-        block."""
-        ig_lc, dg_lc, co_lc, rf_lc, as_lc, tr_lc = 0, 0, 0, 0, 0, 0       # Tracker variables
+        block. The estimate is done at the house level and then scaled up to the neighbourhood.
+
+        :param block_attr: the UBVector() instance of the current Block.
+        :param A_res: the area of the residential land use in the current block.
+        """
+        lcover = {"IG": 0.00, "DG": 0.00, "CO": 0.00, "AS": 0.00, "TR": 0.00, "RF": 0.00}   # Tracker Dictionary
+
+        if A_res == 0:      # If residential area is zero, just add all the 0.00 proportions
+            for k in lcover.keys():
+                block_attr.add_attribute("LC_RES_"+str(k), lcover[k])
+            return True
 
         # GOING THROUGH URBAN ELEMENTS (Roof, Paving, Garden, Other Pervious, Nature Strip, Footpath, Road)
-        # (1) Roof Land Cover
-        rf_lc += block_attr.get_attribute("ResRoof") * block_attr.get_attribute("ResAllots")
-
-        # (2) Paved Surface
-        paving = block_attr.get_attribute("ResLotTIA") - block_attr.get_attribute("ResRoof") * \
-                 block_attr.get_attribute("ResAllots")
-        if self.surfDriveway == "CO":
-            co_lc += paving
-        elif self.surfDriveway == "AS":
-            as_lc += paving
-        else:
-            dg_lc += paving
+        lcover["RF"] += float(block_attr.get_attribute("ResRoof") * block_attr.get_attribute("ResAllots"))  # ROOF
+        lcover[self.surfDriveway] += (block_attr.get_attribute("ResLotTIA") - block_attr.get_attribute("ResRoof")) * \
+                                     block_attr.get_attribute("ResAllots")      # PAVED SURFACES
 
         # Irrigated grass - (3) Garden, (4) Other Pervious, (5) Nature Strip
         perviouslot = block_attr.get_attribute("ResGarden") * block_attr.get_attribute("ResAllots")
         freespace = block_attr.get_attribute("avLt_RES") * block_attr.get_attribute("ResAllots")
         nstrip = block_attr.get_attribute("ResANstrip")
-        if self.surfResIrrigate == "G":     # Only garden irrigated
-            ig_lc += freespace
-            dg_lc += (perviouslot - freespace) + nstrip
-        else:       # All surface irrigated
-            ig_lc += perviouslot + nstrip
-            dg_lc += 0
-
-        # (6) Road
-        if self.surfArt == "AS":
-            as_lc += block_attr.get_attribute("ResARoad")
-        elif self.surfArt == "CO":
-            co_lc += block_attr.get_attribute("ResARoad")
+        if self.wateruse and self.res_outdoor_vol == 0.0:
+            # lcover["IG"] += 0.0       # Note: commented out because it is a redundant operation, just here for clarity
+            lcover["DG"] += perviouslot + nstrip        # Allocate all to dry grass if no irrigation
         else:
-            dg_lc += block_attr.get_attribute("ResARoad")
+            if self.surfResIrrigate == "G":     # Only garden irrigated
+                lcover["IG"] += freespace
+                lcover["DG"] += (perviouslot - freespace) + nstrip
+            else:       # All surface irrigated
+                lcover["IG"] += perviouslot + nstrip
+                # lcover["DG"] += 0.0
 
-        # (7) Footpath
-        if self.surfSquare == "AS":
-            as_lc += block_attr.get_attribute("ResAFpath")
-        elif self.surfSquare == "CO":
-            co_lc += block_attr.get_attribute("ResAFpath")
-        else:
-            dg_lc += block_attr.get_attribute("ResAFpath")
+        lcover[self.surfArt] += float(block_attr.get_attribute("ResARoad"))
+        lcover[self.surfFpath] += float(block_attr.get_attribute("ResAFpath"))
 
-        # WRITE RESIDENTIAL ATTRIBUTES - AS PROPORTIONS
-        block_attr.add_attribute("LC_RES_IG", float(ig_lc / sum([ig_lc, dg_lc, co_lc, rf_lc, as_lc, tr_lc])))
-        block_attr.add_attribute("LC_RES_DG", float(dg_lc / sum([ig_lc, dg_lc, co_lc, rf_lc, as_lc, tr_lc])))
-        block_attr.add_attribute("LC_RES_CO", float(co_lc / sum([ig_lc, dg_lc, co_lc, rf_lc, as_lc, tr_lc])))
-        block_attr.add_attribute("LC_RES_RF", float(rf_lc / sum([ig_lc, dg_lc, co_lc, rf_lc, as_lc, tr_lc])))
-        block_attr.add_attribute("LC_RES_AS", float(as_lc / sum([ig_lc, dg_lc, co_lc, rf_lc, as_lc, tr_lc])))
-        block_attr.add_attribute("LC_RES_TR", float(tr_lc / sum([ig_lc, dg_lc, co_lc, rf_lc, as_lc, tr_lc])))
+        # WRITE ATTRIBUTES TO THE BLOCK
+        for k in lcover.keys():
+            block_attr.add_attribute("LC_RES_"+str(k), lcover[k]/float(A_res))
+
         return True
 
-    def landcover_apartments(self, block_attr):
-        """Maps the land surface covers of residential areas."""
-        ig_lc, dg_lc, co_lc, rf_lc, as_lc, tr_lc = 0, 0, 0, 0, 0, 0  # Tracker variables
+    def landcover_apartments(self, block_attr, A_res):
+        """Maps the land surface cover of Residential Apartment areas. Apartments are distinguished from houses in
+        that they are more aggregated in the model. Attributes are therefore different and no scaling-up is required.
+
+        :param block_attr: the UBVector() object of the current Block for which land cover is calculated.
+        :param A_res"""
+        lcover = {"IG": 0.00, "DG": 0.00, "CO": 0.00, "AS": 0.00, "TR": 0.00, "RF": 0.00}
+
+        if A_res == 0:
+            for k in lcover.keys():
+                block_attr.add_attribute("LC_RES_"+str(k), float(lcover[k]))    # Write zeroes
 
         # GOING THROUGH URBAN ELEMENTS (Roof, Paving, Garden, Other Pervious, Nature Strip, Footpath, Road)
-        # (1) Roof Land Cover
-        rf_lc += block_attr.get_attribute("HDRRoofA")
-
-        # (2) Paving, (6) Footpath, (7) Road
-        paving = block_attr("HDR_TIA") - block_attr("HDR_RoofA")
-        if self.surfDriveway == "CO":
-            co_lc += paving
-        elif self.surfDriveway == "AS":
-            as_lc += paving
-        else:
-            dg_lc += paving
+        lcover["RF"] += float(block_attr.get_attribute("HDRRoofA"))     # Building Roof
+        lcover[self.surfDriveway] += float(block_attr("HDR_TIA") - block_attr("HDR_RoofA"))     # Paving
 
         # Pervious Areas (3) Garden, (4) Other Pervious, (5) Nature Strip
         perviouslot = block_attr.get_attribute("HDRGarden")
         freespace = block_attr.get_attribute("av_HDRes")
         if self.surfResIrrigate == "G":     # Only garden irrigated
-            ig_lc += freespace
-            dg_lc += perviouslot - freespace
+            lcover["IG"] += freespace
+            lcover["DG"] += perviouslot - freespace
         else:       # All surface irrigated
-            ig_lc += perviouslot
-            dg_lc += 0
+            lcover["IG"] += perviouslot
+            lcover["DG"] += 0
 
-        # WRITE RESIDENTIAL ATTRIBUTES - AS PROPORTIONS
-        block_attr.add_attribute("LC_RES_IG", float(ig_lc / sum([ig_lc, dg_lc, co_lc, rf_lc, as_lc, tr_lc])))
-        block_attr.add_attribute("LC_RES_DG", float(dg_lc / sum([ig_lc, dg_lc, co_lc, rf_lc, as_lc, tr_lc])))
-        block_attr.add_attribute("LC_RES_CO", float(co_lc / sum([ig_lc, dg_lc, co_lc, rf_lc, as_lc, tr_lc])))
-        block_attr.add_attribute("LC_RES_RF", float(rf_lc / sum([ig_lc, dg_lc, co_lc, rf_lc, as_lc, tr_lc])))
-        block_attr.add_attribute("LC_RES_AS", float(as_lc / sum([ig_lc, dg_lc, co_lc, rf_lc, as_lc, tr_lc])))
-        block_attr.add_attribute("LC_RES_TR", float(tr_lc / sum([ig_lc, dg_lc, co_lc, rf_lc, as_lc, tr_lc])))
+        # Transfer all attributes to the Block UBVector()
+        for k in lcover.keys():
+            block_attr.add_attribute("LC_RES_"+str(k), lcover[k]/float(A_res))
         return True
 
-    def landcover_nonres(self, block_attr):
-        """Maps the land surface covers of non-residential areas."""
+    def landcover_nonres(self, block_attr, nonres_type, A_nres):
+        """Maps the land surface covers of non-residential areas. COM, LI, HI or ORC land uses considered here.
 
+        :param block_attr: the UBVector() instance of the current Block
+        :param nonres_type: "LI", "HI", "ORC", "COM", string input of one of the four non-res built environment types
+        :param A_nres: the current area of the nonresidential district used for totals
+        """
+        lcover = {"IG": 0.00, "DG": 1.00, "CO": 0.00, "AS": 0.00, "TR": 0.00, "RF": 0.00}   # DG = 1.0 by default
+        if not block_attr.get_attribute("Has"+str(nonres_type)) or A_nres == 0:
+            # Write default attributes and skip this function.
+            for k in lcover.keys():
+                block_attr.add_attributes("LC_"+str(nonres_type)+"_"+str(k), float(lcover[k]))
+            return True
+
+        # Calculate land covers
+        lcover[self.surfArt] += float(block_attr.get_attribute(str(nonres_type)+"ARoad"))   # Road Land cover
+        lcover[self.surfParking] += float(block_attr.get_attribute(str(nonres_type)+"AeCPark"))     # Carpark surface
+        lcover[self.surfBay] += float(block_attr.get_attribute(str(nonres_type)+"AeLoad"))  # Loading Bay
+        lcover["RF"] += float(block_attr.get_attribute(str(nonres_type)+"AeBldg"))      # Roof Cover
+        lcover[self.surfHard] += float(block_attr.get_attribute(str(nonres_type)+"AeLgrey"))    # Grey Landscape
+        lcover["DG"] += float(block_attr.get_attribute(str(nonres_type)+"ANstrip"))     # Nature Strip
+        lcover[self.surfFpath] += float(block_attr.get_attribute(str(nonres_type)+"AFpath"))    # Footpath
+
+        # Determine if landscaped area is irrigated or not
+        if self.wateruse and self.nonres_landscape_vol == 0:
+            # Dry grass - because irrigation volume is zero!
+            lcover["DG"] += float(block_attr.get_attribute("avLt_"+str(nonres_type)))
+        else:   # Otherwise assume irrigated!
+            lcover["IG"] += float(block_attr.get_attribute("avLt_"+str(nonres_type)))
+
+        # Tally up percentages of land covers and add to block_attr immediately
+        for cover in lcover.keys():
+            block_attr.add_attribute("LC_"+str(nonres_type)+"_"+str(k), float(lcover[cover] / A_nres))
+            # Attributes for e.g. LI:  "LC_LI_IG", "LC_LI_DG", "LC_LI_CO", "LC_LI"AS", "LC_LI_TR", "LC_LI_TR"
+        return True
+
+    def landcover_unclassified(self, block_attr):
+        """Determines land cover composition for the unclassified land within current block. Three covers considered.
+        Writes the results to the current block_attr vector."""
         # UNCLASSIFIED LAND - Three types: Irrigated/dry grass and concrete
         unc_land = block_attr.get_attribute("MiscAtot")
         if unc_land != 0:
             pervious_prop = float(block_attr.get_attribute("MiscAirr") / unc_land)
-            if self.wateruse and self.irrigate_landmarks:   # Link with water demand!
+            if self.wateruse and self.irrigate_landmarks:  # Link with water demand!
                 block_attr.add_attribute("LC_NA_IG", pervious_prop)
-                block_attr.add_attribute("LC_NA_DG", 0)
+                block_attr.add_attribute("LC_NA_DG", 0.00)
             else:
                 block_attr.add_attribute("LC_NA_DG", pervious_prop)
-                block_attr.add_attribute("LC_NA_IG", 0)
+                block_attr.add_attribute("LC_NA_IG", 0.00)
             block_attr.add_attribute("LC_NA_CO", float(block_attr.get_attribute("MiscAimp") / unc_land))
-
-        # UNDEVELOPED LAND - Two types: irrigated/dry grass dependent on type of undev land
-        if block_attr.get_attribute("UND_Type") in ["BF", "GF", "NA"]:  # If greenfield, brownfield or undetermined...
-            block_attr.add_attribute("LC_UND_DG", 1.0)
-            block_attr.add_attribute("LC_UND_IG", 0.0)
         else:
-            block_attr.add_attribute("LC_UND_DG", 0.0)
-            block_attr.add_attribute("LC_UND_IG", 1.0)
+            block_attr.add_attribute("LC_NA_DG", 0.00)  # If the area is zero, then all land cover proportions are zero
+            block_attr.add_attribute("LC_NA_IG", 0.00)
+            block_attr.add_attribute("LC_NA_CO", 0.00)
+        return True
 
+    def landcover_undeveloped(self, block_attr):
+        """Calculates the land cover composition of undeveloped land. Can take either dry or irrigated grass.
+        Writes the information to the current block_attr vector."""
+        # UNDEVELOPED LAND - Two types: irrigated/dry grass dependent on type of undev land
+        if block_attr.get_attribute("pLU_UND") != 0:
+            if block_attr.get_attribute("UND_Type") in ["BF", "GF", "NA"]:  # If greenfield, brownfield or undetermined...
+                block_attr.add_attribute("LC_UND_DG", 1.0)
+                block_attr.add_attribute("LC_UND_IG", 0.0)
+            else:
+                block_attr.add_attribute("LC_UND_DG", 0.0)
+                block_attr.add_attribute("LC_UND_IG", 1.0)
+        else:   # If there is no undeveloped land
+            block_attr.add_attribute("LC_UND_DG", 0.0)
+            block_attr.add_attribute("LC_UND_IG", 0.0)
+        return True
+
+    def landcover_openspaces(self, block_attr):
+        """Calculates the land cover composition of open spaces within the current block, 'block_attr'.
+        Writes these attributes to the block. Categories covered includes Service and Utility, Parks and
+        Gardens and Reserves and Floodways."""
         # SERVICES & UTILITY - Assume dry grass all the time
-        block_attr.add_attribute("LC_SVU_DG", 1.0)
-        block_attr.add_attribute("LC_SVU_IG", 0.0)
+        if block_attr.get_attribute("pLU_SVU") != 0:
+            block_attr.add_attribute("LC_SVU_DG", 1.0)
+        else:
+            block_attr.add_attribute("LC_SVU_DG", 0.0)
 
         # OPEN SPACES - Five cover types: Irrigated Grass (IG), Dry Grass (DG), Concrete (CO), Asphalt (AS), Trees (TR)
-        ig_lc, dg_lc, co_lc, as_lc, tr_lc = 0, 0, 0, 0, 0   # Initialize
+        ig_lc, dg_lc, co_lc, as_lc, tr_lc = 0, 0, 0, 0, 0  # Initialize
 
         # Paved Areas - Concrete or Asphalt
         if self.surfSquare == "CO":
@@ -651,13 +729,21 @@ class SpatialMapping(UBModule):
             block_attr.add_attribute("LC_PG_TR", float(tr_lc / sum([co_lc, as_lc, dg_lc, ig_lc, tr_lc])))
 
         # RESERVES - irrigated or dry grass - assume dry by default..
-        if self.wateruse and self.irrigate_reserves:
-            block_attr.add_attribute("LC_REF_DG", 0.0)
-            block_attr.add_attribute("LC_REF_IG", 1.0)
+        if block_attr.get_attribute("pLU_REF") != 0:
+            if self.wateruse and self.irrigate_reserves:
+                block_attr.add_attribute("LC_REF_DG", 0.0)
+                block_attr.add_attribute("LC_REF_IG", 1.0)
+            else:
+                block_attr.add_attribute("LC_REF_DG", 1.0)
+                block_attr.add_attribute("LC_REF_IG", 0.0)
         else:
-            block_attr.add_attribute("LC_REF_DG", 1.0)
+            block_attr.add_attribute("LC_REF_DG", 0.0)
             block_attr.add_attribute("LC_REF_IG", 0.0)
+        return True
 
+    def landcover_roads(self, block_attr):
+        """Calculates the land cover composition of the road reserves within the current block 'block_attr'.
+        Writes these attributes to the block."""
         # ROADS - Dependent on Road Types
         as_lc, co_lc, dg_lc = 0, 0, 0
         dg_lc += block_attr.get_attribute("RD_av")
@@ -677,9 +763,6 @@ class SpatialMapping(UBModule):
             block_attr.add_attribute("LC_RD_AS", float(as_lc / sum([co_lc, as_lc, dg_lc])))
             block_attr.add_attribute("LC_RD_DG", float(dg_lc / sum([co_lc, as_lc, dg_lc])))
         # [TO DO] NEED TO FIX UP THE INTRICACIES OF THE ROAD RESERVE, THIS REQUIRES MORE ATTRIBUTES IN URBAN PLAN MOD.
-
-        # NON-RESIDENTIAL AREAS (COM, LI, HI, ORC) [TO DO]
-        pass
         return True
 
     def map_open_spaces(self):
