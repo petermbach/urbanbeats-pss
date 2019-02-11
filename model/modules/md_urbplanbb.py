@@ -1549,7 +1549,7 @@ class UrbanPlanning(UBModule):
         if self.parking_HDR == "Vary":
             park_options = ["On", "Off", "Var"]
             choice = random.randint(0, 2)
-            parking_HDR = park_options[choice]
+            self.parking_HDR = park_options[choice]
 
         if self.parking_HDR == "On":
             avail_Parking = max(Aout - Alive, 0)
@@ -1559,7 +1559,9 @@ class UrbanPlanning(UBModule):
                 Aparking = avail_Parking
             elif avail_Parking > cpMax:
                 Aparking = avail_Parking - cpMax
-        elif parking_HDR == "Off" or parking_HDR == "Var":
+        elif self.parking_HDR == "Off" or self.parking_HDR == "Var":
+            Aparking = 0
+        else:
             Aparking = 0
         return Aparking
 

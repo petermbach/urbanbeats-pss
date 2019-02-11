@@ -1416,8 +1416,6 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
     shapefile.Destroy()
     return True
 
-
-
 # TEST SCRIPT - get_bounding_polygon() function
 # MAPPATH = "C:/Users/peter/Documents/TempDocs/Files/Upperdandy/Boundary.shp"
 # coordinates, mapstats = get_bounding_polygon(MAPPATH, "leaflet",

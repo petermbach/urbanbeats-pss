@@ -99,6 +99,8 @@ class Ui_MainWindow(object):
         self.OutputConsole_lbl.setObjectName("OutputConsole_lbl")
         self.verticalLayout_7.addWidget(self.OutputConsole_lbl)
         self.OutputConsole = QtWidgets.QTextEdit(self.Progress_Widget)
+        self.OutputConsole.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.OutputConsole.setLineWrapMode(QtWidgets.QTextEdit.NoWrap)
         self.OutputConsole.setReadOnly(True)
         self.OutputConsole.setObjectName("OutputConsole")
         self.verticalLayout_7.addWidget(self.OutputConsole)

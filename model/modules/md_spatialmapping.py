@@ -170,7 +170,7 @@ class SpatialMapping(UBModule):
         self.create_parameter("res_standard", STRING, "The water appliances standard to use in calculations.")
         self.res_standard = "AS6400"
         self.create_parameter("res_baseefficiency", STRING, "The base level efficiency to use at simulation begin.")
-        self.res_base_efficiency = "none"       # Dependent on standard.
+        self.res_baseefficiency = "none"       # Dependent on standard.
 
         self.create_parameter("res_kitchen_fq", DOUBLE, "Frequency of kitchen water use.")
         self.create_parameter("res_kitchen_dur", DOUBLE, "Duration of kitchen water use.")
@@ -615,8 +615,8 @@ class SpatialMapping(UBModule):
                 block_attr.add_attribute("LC_RES_"+str(k), float(lcover[k]))    # Write zeroes
 
         # GOING THROUGH URBAN ELEMENTS (Roof, Paving, Garden, Other Pervious, Nature Strip, Footpath, Road)
-        lcover["RF"] += float(block_attr.get_attribute("HDRRoofA"))     # Building Roof
-        lcover[self.surfDriveway] += float(block_attr("HDR_TIA") - block_attr("HDR_RoofA"))     # Paving
+        lcover["RF"] += float(block_attr.get_attribute("HDRRoofA"))     # Building Roof followed by paving
+        lcover[self.surfDriveway] += float(block_attr.get_attribute("HDR_TIA") - block_attr.get_attribute("HDRRoofA"))
 
         # Pervious Areas (3) Garden, (4) Other Pervious, (5) Nature Strip
         perviouslot = block_attr.get_attribute("HDRGarden")
@@ -644,7 +644,7 @@ class SpatialMapping(UBModule):
         if not block_attr.get_attribute("Has"+str(nonres_type)) or A_nres == 0:
             # Write default attributes and skip this function.
             for k in lcover.keys():
-                block_attr.add_attributes("LC_"+str(nonres_type)+"_"+str(k), float(lcover[k]))
+                block_attr.add_attribute("LC_"+str(nonres_type)+"_"+str(k), float(lcover[k]))
             return True
 
         # Calculate land covers
@@ -728,9 +728,9 @@ class SpatialMapping(UBModule):
 
         # Irrigated Park Areas - Assume parks are irrigated by default, so check for whether this is not the case
         if self.wateruse and not self.irrigate_parks:
-            dg_lc += block_attr("AGreenOS")
+            dg_lc += block_attr.get_attribute("AGreenOS")
         else:
-            ig_lc += block_attr("AGreenOS")
+            ig_lc += block_attr.get_attribute("AGreenOS")
 
         if sum([co_lc, as_lc, dg_lc, ig_lc, tr_lc]) == 0:
             block_attr.add_attribute("LC_PG_CO", 0)

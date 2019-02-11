@@ -360,7 +360,7 @@ p, li { white-space: pre-wrap; }
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
+               <y>-177</y>
                <width>566</width>
                <height>898</height>
               </rect>
@@ -2120,7 +2120,7 @@ Laundry = Household</string>
               <item>
                <widget class="QStackedWidget" name="res_analysis_stack">
                 <property name="currentIndex">
-                 <number>1</number>
+                 <number>0</number>
                 </property>
                 <widget class="QWidget" name="page">
                  <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2139,7 +2139,7 @@ Laundry = Household</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-70</y>
+                       <y>0</y>
                        <width>501</width>
                        <height>717</height>
                       </rect>
