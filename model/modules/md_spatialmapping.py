@@ -541,11 +541,11 @@ class SpatialMapping(UBModule):
         :return: No return, block attributes are writen to the current block_attr object
         """
         # MAP RESIDENTIAL LAND COVER
-        A_res = float(block_attr.get_attribute("pLU_RES") * block_attr.get_attribute("Active"))
+        area_res = float(block_attr.get_attribute("pLU_RES") * block_attr.get_attribute("Active"))
         if block_attr.get_attribute("HasRes") and block_attr.get_attribute("HasFlats"):
-            self.landcover_apartments(block_attr, A_res)
+            self.landcover_apartments(block_attr, area_res)
         else:
-            self.landcover_houses(block_attr, A_res)    # Otherwise map using landcover_houses() as it catches zero case
+            self.landcover_houses(block_attr, area_res)    # Otherwise map using landcover_houses() as it catches zero case
 
         # MAP NON-RESIDENTIAL LAND COVER
         abbr = ["COM", "LI", "HI", "ORC"]
@@ -560,16 +560,16 @@ class SpatialMapping(UBModule):
         self.landcover_roads(block_attr)
         return True
 
-    def landcover_houses(self, block_attr, A_res):
+    def landcover_houses(self, block_attr, area_res):
         """Determines proportions of land cover on residential land and provides a percentage estimate for the
         block. The estimate is done at the house level and then scaled up to the neighbourhood.
 
         :param block_attr: the UBVector() instance of the current Block.
-        :param A_res: the area of the residential land use in the current block.
+        :param area_res: the area of the residential land use in the current block.
         """
         lcover = {"IG": 0.00, "DG": 0.00, "CO": 0.00, "AS": 0.00, "TR": 0.00, "RF": 0.00}   # Tracker Dictionary
 
-        if A_res == 0:      # If residential area is zero, just add all the 0.00 proportions
+        if area_res == 0 or block_attr.get_attribute("HasHouses") == 0:      # If residential area is zero, just add all the 0.00 proportions
             for k in lcover.keys():
                 block_attr.add_attribute("LC_RES_"+str(k), lcover[k])
             return True
@@ -599,7 +599,7 @@ class SpatialMapping(UBModule):
 
         # WRITE ATTRIBUTES TO THE BLOCK
         for k in lcover.keys():
-            block_attr.add_attribute("LC_RES_"+str(k), lcover[k]/float(A_res))
+            block_attr.add_attribute("LC_RES_" + str(k), lcover[k] / float(area_res))
         return True
 
     def landcover_apartments(self, block_attr, A_res):
