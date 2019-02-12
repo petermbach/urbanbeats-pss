@@ -102,6 +102,7 @@ class Ui_MainWindow(object):
         self.OutputConsole.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.OutputConsole.setLineWrapMode(QtWidgets.QTextEdit.NoWrap)
         self.OutputConsole.setReadOnly(True)
+        self.OutputConsole.setTextInteractionFlags(QtCore.Qt.TextSelectableByKeyboard|QtCore.Qt.TextSelectableByMouse)
         self.OutputConsole.setObjectName("OutputConsole")
         self.verticalLayout_7.addWidget(self.OutputConsole)
         self.ProgressBar = QtWidgets.QProgressBar(self.Progress_Widget)
