@@ -110,6 +110,7 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
 
         # TAB 4 - WATER USE PARAMETERS
         self.ui.res_standard_button.clicked.connect(self.show_res_standard_details)
+        self.ui.res_standard_combo.currentIndexChanged.connect(self.populate_ratings_combo)
         self.ui.res_enduse_summarybutton.clicked.connect(self.show_res_enduse_summary)
         self.ui.kitchen_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
         self.ui.shower_dp.currentIndexChanged.connect(self.enable_disable_custom_buttons)
@@ -286,6 +287,17 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         self.ui.pos_dpcustom.setEnabled(self.ui.pos_dp.currentIndex() == self.ui.pos_dp.count() - 1)
         return True
 
+    def populate_ratings_combo(self):
+        """Fills out the rating levels combo, based on the standard."""
+        standards_dict = self.module.retrieve_standards(str(
+            ubglobals.RESSTANDARDS[self.ui.res_standard_combo.currentIndex()]))
+        ratinglist = standards_dict["RatingCats"]
+        self.ui.res_standard_eff.clear()
+        for i in ratinglist:
+            self.ui.res_standard_eff.addItem(i)
+        self.ui.res_standard_eff.setCurrentIndex(0)
+        return True
+
     def setup_gui_with_parameters(self):
         """Fills in all parameters belonging to the module for the current year."""
         # MAIN CHECK BOXES
@@ -346,6 +358,8 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
 
         self.ui.res_standard_combo.setCurrentIndex(ubglobals.RESSTANDARDS.index(
             self.module.get_parameter("res_standard")))
+        self.populate_ratings_combo()
+        self.ui.res_standard_eff.setCurrentIndex(int(self.module.get_parameter("res_baseefficiency")))
 
         self.ui.kitchen_freq.setValue(float(self.module.get_parameter("res_kitchen_fq")))
         self.ui.kitchen_dur.setValue(int(self.module.get_parameter("res_kitchen_dur")))
@@ -481,6 +495,10 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
 
         self.ui.losses_check.setChecked(int(self.module.get_parameter("estimate_waterloss")))
         self.ui.losses_volspin.setValue(float(self.module.get_parameter("waterloss_volprop")))
+        if self.module.get_parameter("loss_pat") == "CDP":
+            self.ui.loss_dp.setCurrentIndex(0)
+        else:
+            self.ui.loss_dp.setCurrentIndex(1)
 
         # TEMPORAL DYNAMICS
         self.ui.weekly_reducenres_check.setChecked(int(self.module.get_parameter("weekend_nonres_reduce")))
@@ -557,7 +575,7 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
             self.module.set_parameter("residential_method", "DQI")
 
         self.module.set_parameter("res_standard", ubglobals.RESSTANDARDS[self.ui.res_standard_combo.currentIndex()])
-        self.module.set_parameter("res_baseefficiency", self.ui.res_standard_eff.currentIndex())
+        self.module.set_parameter("res_baseefficiency", float(self.ui.res_standard_eff.currentIndex()))
 
         self.module.set_parameter("res_kitchen_fq", float(self.ui.kitchen_freq.value()))
         self.module.set_parameter("res_kitchen_dur", float(self.ui.kitchen_dur.value()))
@@ -687,6 +705,10 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         # REGIONAL WATER LOSSES
         self.module.set_parameter("estimate_waterloss", int(self.ui.losses_check.isChecked()))
         self.module.set_parameter("waterloss_volprop", float(self.ui.losses_volspin.value()))
+        if self.ui.loss_dp.currentIndex() == 0:
+            self.module.set_parameter("loss_pat", "CDP")    # Constant pattern
+        else:
+            self.module.set_parameter("loss_pat", "INV")    # Inverse of demands
 
         # TEMPORAL AND SEASONAL DYNAMICS
         self.module.set_parameter("weekend_nonres_reduce", int(self.ui.weekly_reducenres_check.isChecked()))

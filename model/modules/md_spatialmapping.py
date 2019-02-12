@@ -169,16 +169,16 @@ class SpatialMapping(UBModule):
         # END USE ANALYSIS
         self.create_parameter("res_standard", STRING, "The water appliances standard to use in calculations.")
         self.res_standard = "AS6400"
-        self.create_parameter("res_baseefficiency", STRING, "The base level efficiency to use at simulation begin.")
-        self.res_baseefficiency = "none"       # Dependent on standard.
+        self.create_parameter("res_baseefficiency", DOUBLE, "The base level efficiency to use at simulation begin.")
+        self.res_baseefficiency = 0.0       # Dependent on standard, represents the index of the water flow rates table.
 
         self.create_parameter("res_kitchen_fq", DOUBLE, "Frequency of kitchen water use.")
         self.create_parameter("res_kitchen_dur", DOUBLE, "Duration of kitchen water use.")
         self.create_parameter("res_kitchen_hot", DOUBLE, "Proportion of kitchen water from hot water")
         self.create_parameter("res_kitchen_var", DOUBLE, "Stochastic variation in kitchen water use")
         self.create_parameter("res_kitchen_ffp", STRING, "Minimum Fit for purpose water source for kitchen use.")
-        self.res_kitchen_fq = 5.0
-        self.res_kitchen_dur = 2.0
+        self.res_kitchen_fq = 2.0
+        self.res_kitchen_dur = 10.0
         self.res_kitchen_hot = 30.0
         self.res_kitchen_var = 0.0
         self.res_kitchen_ffp = "PO"     # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
@@ -188,9 +188,9 @@ class SpatialMapping(UBModule):
         self.create_parameter("res_shower_hot", DOUBLE, "Proportion of shower water from hot water")
         self.create_parameter("res_shower_var", DOUBLE, "Stochastic variation in shower water use")
         self.create_parameter("res_shower_ffp", STRING, "Minimum Fit for purpose water source for shower use.")
-        self.res_shower_fq = 5.0
-        self.res_shower_dur = 2.0
-        self.res_shower_hot = 30.0
+        self.res_shower_fq = 2.0
+        self.res_shower_dur = 5.0
+        self.res_shower_hot = 60.0
         self.res_shower_var = 0.0
         self.res_shower_ffp = "PO"  # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
 
@@ -198,8 +198,8 @@ class SpatialMapping(UBModule):
         self.create_parameter("res_toilet_hot", DOUBLE, "Proportion of toilet water from hot water")
         self.create_parameter("res_toilet_var", DOUBLE, "Stochastic variation in toilet water use")
         self.create_parameter("res_toilet_ffp", STRING, "Minimum Fit for purpose water source for toilet use.")
-        self.res_toilet_fq = 5.0
-        self.res_toilet_hot = 30.0
+        self.res_toilet_fq = 2.0
+        self.res_toilet_hot = 0.0
         self.res_toilet_var = 0.0
         self.res_toilet_ffp = "PO"  # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
 
@@ -207,8 +207,8 @@ class SpatialMapping(UBModule):
         self.create_parameter("res_laundry_hot", DOUBLE, "Proportion of laundry water from hot water")
         self.create_parameter("res_laundry_var", DOUBLE, "Stochastic variation in laundry water use")
         self.create_parameter("res_laundry_ffp", STRING, "Minimum Fit for purpose water source for laundry use.")
-        self.res_laundry_fq = 5.0
-        self.res_laundry_hot = 30.0
+        self.res_laundry_fq = 2.0
+        self.res_laundry_hot = 50.0
         self.res_laundry_var = 0.0
         self.res_laundry_ffp = "PO"  # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
 
@@ -216,8 +216,8 @@ class SpatialMapping(UBModule):
         self.create_parameter("res_dishwasher_hot", DOUBLE, "Proportion of dishwasher water from hot water")
         self.create_parameter("res_dishwasher_var", DOUBLE, "Stochastic variation in dishwasher water use")
         self.create_parameter("res_dishwasher_ffp", STRING, "Minimum Fit for purpose water source for dishwasher use.")
-        self.res_dishwasher_fq = 5.0
-        self.res_dishwasher_hot = 30.0
+        self.res_dishwasher_fq = 1.0
+        self.res_dishwasher_hot = 50.0
         self.res_dishwasher_var = 0.0
         self.res_dishwasher_ffp = "PO"  # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
 
@@ -308,8 +308,8 @@ class SpatialMapping(UBModule):
         self.create_parameter("com_var", DOUBLE, "Variation in commercial water demand")
         self.create_parameter("com_units", STRING, "Units for commercial water demands")
         self.create_parameter("com_hot", DOUBLE, "Proportion of hot water for commercial water demand")
-        self.com_demand = 20.0
-        self.com_var = 0.0
+        self.com_demand = 40.0
+        self.com_var = 10.0
         self.com_units = "LSQMD"    # LSQMD = L/sqm/day and LPAXD = L/persons/day, PES = Population equivalents
         self.com_hot = 20.0
 
@@ -317,8 +317,8 @@ class SpatialMapping(UBModule):
         self.create_parameter("office_var", DOUBLE, "Variation in office water demand")
         self.create_parameter("office_units", STRING, "Units for office water demands")
         self.create_parameter("office_hot", DOUBLE, "Proportion of hot water for office water demand")
-        self.office_demand = 20.0
-        self.office_var = 0.0
+        self.office_demand = 40.0
+        self.office_var = 10.0
         self.office_units = "LSQMD"  # LSQMD = L/sqm/day and LPAXD = L/persons/day, PES = Population equivalents
         self.office_hot = 20.0
 
@@ -326,8 +326,8 @@ class SpatialMapping(UBModule):
         self.create_parameter("li_var", DOUBLE, "Variation in Light Industry water demand")
         self.create_parameter("li_units", STRING, "Units for Light Industry water demands")
         self.create_parameter("li_hot", DOUBLE, "Proportion of hot water for Light Industry water demand")
-        self.li_demand = 20.0
-        self.li_var = 0.0
+        self.li_demand = 40.0
+        self.li_var = 10.0
         self.li_units = "LSQMD"  # LSQMD = L/sqm/day and LPAXD = L/persons/day, PES = Population equivalents
         self.li_hot = 20.0
 
@@ -335,8 +335,8 @@ class SpatialMapping(UBModule):
         self.create_parameter("hi_var", DOUBLE, "Variation in Heavy Industry water demand")
         self.create_parameter("hi_units", STRING, "Units for Heavy Industry water demands")
         self.create_parameter("hi_hot", DOUBLE, "Proportion of hot water for Heavy Industry water demand")
-        self.hi_demand = 20.0
-        self.hi_var = 0.0
+        self.hi_demand = 40.0
+        self.hi_var = 10.0
         self.hi_units = "LSQMD"  # LSQMD = L/sqm/day and LPAXD = L/persons/day, PES = Population equivalents
         self.hi_hot = 20.0
 
@@ -390,8 +390,10 @@ class SpatialMapping(UBModule):
         # -- REGIONAL WATER LOSSES --
         self.create_parameter("estimate_waterloss", BOOL, "Estimate water losses?")
         self.create_parameter("waterloss_volprop", DOUBLE, "Loss as volume of total demand proportion")
+        self.create_parameter("loss_pat", STRING, "Diurnal pattern for Water Losses")
         self.estimate_waterloss = 1
         self.waterloss_volprop = 10.0
+        self.loss_pat = "CDP"   # Either CDP or INV = inverse, which is generated
 
         # -- TEMPORAL AND SEASONAL DYNAMICS --
         # WEEKLY DYNAMICS
@@ -431,7 +433,7 @@ class SpatialMapping(UBModule):
         # Pollutions emissions mapping, stormwater system, this module analyses the land use diversity and determines
         # build-up wash-off pollutant concentrations that can then be mapped spatially or modelled temporally.
         # --------------------------------------------------------------------------------------------------------------
-        pass
+        pass    # [COMING SOON]
 
     def run_module(self):
         """Runs the current module. Note that this module is set up to only call the relevant mapping functions
@@ -444,6 +446,7 @@ class SpatialMapping(UBModule):
 
         # PLANNING RULES
         if self.planrules:
+            self.notify("Analysing Planning Overlays...")
             map_attr.add_attribute("HasOVERLAYS", 1)
             self.map_planning_rules()
         else:
@@ -452,16 +455,18 @@ class SpatialMapping(UBModule):
         # LAND COVER
         if self.landcover:
             map_attr.add_attribute("HasLANDCOVER", 1)
+            self.notify("Determining Land Covers Across Blocks...")
             for block_attr in blockslist:
                 if block_attr.get_attribute("Status") == 0:
                     continue
-                self.map_land_surface_covers(block_attr)
+                self.map_land_surface_covers(map_attr, block_attr)
         else:
             map_attr.add_attribute("HasLANDCOVER", 0)
 
         # OPEN SPACE ANALYSIS
         if self.openspaces:
             map_attr.add_attribute("HasOPENSPACEMAP", 1)
+            self.notify("Performing Open Space Mapping...")
             self.map_open_spaces(map_attr)
         else:
             map_attr.add_attribute("HasOPENSPACEMAP", 0)
@@ -469,9 +474,10 @@ class SpatialMapping(UBModule):
         # WATER USE
         if self.wateruse:
             map_attr.add_attribute("HasWATERUSE", 1)
+            self.notify("Calculating Water Consumption and Wastewater Generation...")
             if self.residential_method == "EUA":
                 self.flowrates = self.retrieve_standards(self.res_standard)  # Get the flowrates from the standards
-                self.baserating = self.flowrates["RatingCats"].index(self.res_base_efficiency)  # The index to look up
+                self.baserating = self.res_baseefficiency  # The index to look up
                 self.res_endusebasedemands()    # Initialize the calculation of base end use demands
             self.initialize_per_capita_residential_use()    # As a statistic and also for non-residential stuff.
             for block_attr in blockslist:
@@ -498,15 +504,18 @@ class SpatialMapping(UBModule):
         # POLLUTION EMISSIONS
         if self.emissions:
             map_attr.add_attribute("HasPOLLUTIONMAP", 1)
+            self.notify("Performing Pollution Emissions Mapping...")
             self.map_pollution_emissions()
         else:
             map_attr.add_attribute("HasPOLLUTIONMAP", 0)
+
+        self.notify("Spatial Mapping Module COMPLETED!")
         return True
 
     def map_planning_rules(self):
         pass
 
-    def map_land_surface_covers(self, block_attr):
+    def map_land_surface_covers(self, map_attr, block_attr):
         """Maps the land surface covers of the current Block passed to this method. UrbanBEATS uses a few basic land
         cover types to differentiate including: CO = concrete, AS = asphalt, DG = dry grass, IG = irrigated grass,
         RF = roof, TR = trees.
@@ -541,7 +550,9 @@ class SpatialMapping(UBModule):
         :return: No return, block attributes are writen to the current block_attr object
         """
         # MAP RESIDENTIAL LAND COVER
-        area_res = float(block_attr.get_attribute("pLU_RES") * block_attr.get_attribute("Active"))
+        blocksize = map_attr.get_attribute("BlockSize")
+        blockarea = blocksize * blocksize
+        area_res = float(block_attr.get_attribute("pLU_RES") * block_attr.get_attribute("Active") * blockarea)
         if block_attr.get_attribute("HasRes") and block_attr.get_attribute("HasFlats"):
             self.landcover_apartments(block_attr, area_res)
         else:
@@ -550,7 +561,8 @@ class SpatialMapping(UBModule):
         # MAP NON-RESIDENTIAL LAND COVER
         abbr = ["COM", "LI", "HI", "ORC"]
         for nonres_type in abbr:        # Loop over the four main types
-            A_lu = float(block_attr.get_attribute("pLU_"+str(nonres_type)) * block_attr.get_attribute("Active"))
+            A_lu = float(block_attr.get_attribute("pLU_"+str(nonres_type)) * block_attr.get_attribute("Active") * \
+                   blockarea)
             self.landcover_nonres(block_attr, nonres_type, A_lu)
 
         # MAP OTHER TYPES
@@ -641,20 +653,20 @@ class SpatialMapping(UBModule):
         :param A_nres: the current area of the nonresidential district used for totals
         """
         lcover = {"IG": 0.00, "DG": 1.00, "CO": 0.00, "AS": 0.00, "TR": 0.00, "RF": 0.00}   # DG = 1.0 by default
-        if not block_attr.get_attribute("Has"+str(nonres_type)) or A_nres == 0:
+        if not block_attr.get_attribute("Has_"+str(nonres_type)) or A_nres == 0:
             # Write default attributes and skip this function.
             for k in lcover.keys():
                 block_attr.add_attribute("LC_"+str(nonres_type)+"_"+str(k), float(lcover[k]))
             return True
 
         # Calculate land covers
-        lcover[self.surfArt] += float(block_attr.get_attribute(str(nonres_type)+"ARoad"))   # Road Land cover
+        lcover[self.surfArt] += float(block_attr.get_attribute(str(nonres_type)+"AeRoad"))   # Road Land cover
         lcover[self.surfParking] += float(block_attr.get_attribute(str(nonres_type)+"AeCPark"))     # Carpark surface
         lcover[self.surfBay] += float(block_attr.get_attribute(str(nonres_type)+"AeLoad"))  # Loading Bay
         lcover["RF"] += float(block_attr.get_attribute(str(nonres_type)+"AeBldg"))      # Roof Cover
         lcover[self.surfHard] += float(block_attr.get_attribute(str(nonres_type)+"AeLgrey"))    # Grey Landscape
-        lcover["DG"] += float(block_attr.get_attribute(str(nonres_type)+"ANstrip"))     # Nature Strip
-        lcover[self.surfFpath] += float(block_attr.get_attribute(str(nonres_type)+"AFpath"))    # Footpath
+        lcover["DG"] += float(block_attr.get_attribute(str(nonres_type)+"AeNstrip"))     # Nature Strip
+        lcover[self.surfFpath] += float(block_attr.get_attribute(str(nonres_type)+"AeFpath"))    # Footpath
 
         # Determine if landscaped area is irrigated or not
         if self.wateruse and self.nonres_landscape_vol == 0:
@@ -664,8 +676,9 @@ class SpatialMapping(UBModule):
             lcover["IG"] += float(block_attr.get_attribute("avLt_"+str(nonres_type)))
 
         # Tally up percentages of land covers and add to block_attr immediately
-        for cover in lcover.keys():
-            block_attr.add_attribute("LC_"+str(nonres_type)+"_"+str(k), float(lcover[cover] / A_nres))
+        Aestate = block_attr.get_attribute(str(nonres_type)+"Aestate")
+        for k in lcover.keys():
+            block_attr.add_attribute("LC_"+str(nonres_type)+"_"+str(k), float(lcover[k] /sum(lcover.values())))
             # Attributes for e.g. LI:  "LC_LI_IG", "LC_LI_DG", "LC_LI_CO", "LC_LI"AS", "LC_LI_TR", "LC_LI_TR"
         return True
 
@@ -675,7 +688,7 @@ class SpatialMapping(UBModule):
         # UNCLASSIFIED LAND - Three types: Irrigated/dry grass and concrete
         unc_land = block_attr.get_attribute("MiscAtot")
         if unc_land != 0:
-            pervious_prop = float(block_attr.get_attribute("MiscAirr") / unc_land)
+            pervious_prop = float((unc_land - block_attr.get_attribute("MiscAimp")) / unc_land)
             if self.wateruse and self.irrigate_landmarks:  # Link with water demand!
                 block_attr.add_attribute("LC_NA_IG", pervious_prop)
                 block_attr.add_attribute("LC_NA_DG", 0.00)
@@ -797,9 +810,9 @@ class SpatialMapping(UBModule):
             centrality indicates the key locations of crucial connections.
 
         Sub-Methods Belonging to map_open_spaces():
-            -
-            -
-            -
+            - retrieve_patch_groups()
+            - find_open_space_distances()
+            - delineate_open_space_network()
 
         :param map_attr: the global MapAttributes UBComponent() instance.
         """
@@ -1317,6 +1330,9 @@ class SpatialMapping(UBModule):
 
     def retrieve_standards(self, st_name):
         """Retrieves the water flow rates for the respective appliance standard."""
+        if st_name == "Others...":
+            return {"Name": "Others...", "RatingCats": ["none"]}
+
         standard_dict = dict()
         standard_dict["Name"] = st_name
         standard_dict["Shower"] = []
@@ -1332,14 +1348,12 @@ class SpatialMapping(UBModule):
         for lines in f:
             data.append(lines.rstrip("\n").split(","))
         f.close()
-        rating_cats = []
         for i in range(len(data)):      # Scan all data and create the dictionary
             if i == 0:  # Skip the header line
                 continue
-            if data[i][2] not in rating_cats:
+            if data[i][2] not in standard_dict["RatingCats"]:
                 standard_dict["RatingCats"].append(data[i][2])
             standard_dict[data[i][1]].append(float(data[i][3])*0.5 + float(data[i][4])*0.5)
-        print standard_dict
         return standard_dict
 
     def get_wateruse_custompattern(self, key):

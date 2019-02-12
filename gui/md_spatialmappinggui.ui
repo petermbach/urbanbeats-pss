@@ -5974,8 +5974,8 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>471</width>
-                   <height>378</height>
+                   <width>519</width>
+                   <height>352</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_36">
@@ -6275,46 +6275,6 @@ p, li { white-space: pre-wrap; }
                        <property name="rightMargin">
                         <number>9</number>
                        </property>
-                       <item row="2" column="1" colspan="2">
-                        <widget class="QLabel" name="loss_dp_lbl">
-                         <property name="text">
-                          <string>Loss Pattern:</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="3">
-                        <widget class="QComboBox" name="loss_dp">
-                         <property name="currentIndex">
-                          <number>0</number>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>Constant Hourly Pattern</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>Inverse of other demands</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item row="1" column="0">
-                        <spacer name="horizontalSpacer_58">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeType">
-                          <enum>QSizePolicy::Fixed</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
                        <item row="1" column="1">
                         <widget class="QDoubleSpinBox" name="losses_volspin">
                          <property name="suffix">
@@ -6331,45 +6291,52 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
-                       <item row="0" column="0" colspan="4">
+                       <item row="1" column="0">
+                        <spacer name="horizontalSpacer_58">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeType">
+                          <enum>QSizePolicy::Fixed</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>20</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item row="1" column="2">
+                        <widget class="QLabel" name="losses_vol_lbl">
+                         <property name="text">
+                          <string>of total demand using a</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="0" colspan="7">
                         <widget class="QCheckBox" name="losses_check">
                          <property name="text">
                           <string>Estimate Water Losses from Water Supply System for region (select method):</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="1" column="2">
-                        <widget class="QLabel" name="losses_vol_lbl">
-                         <property name="text">
-                          <string>of total demand</string>
+                       <item row="1" column="3" colspan="3">
+                        <widget class="QComboBox" name="loss_dp">
+                         <property name="currentIndex">
+                          <number>0</number>
                          </property>
+                         <item>
+                          <property name="text">
+                           <string>Constant Hourly Pattern</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Inverse Pattern of Other Uses</string>
+                          </property>
+                         </item>
                         </widget>
-                       </item>
-                       <item row="2" column="4">
-                        <spacer name="horizontalSpacer_77">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="1" column="3" colspan="2">
-                        <spacer name="horizontalSpacer_57">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
                        </item>
                       </layout>
                      </widget>
@@ -6529,7 +6496,7 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>457</width>
+                   <width>519</width>
                    <height>361</height>
                   </rect>
                  </property>
@@ -6560,6 +6527,9 @@ p, li { white-space: pre-wrap; }
                          <property name="maximum">
                           <double>20.000000000000000</double>
                          </property>
+                         <property name="singleStep">
+                          <double>0.100000000000000</double>
+                         </property>
                         </widget>
                        </item>
                        <item row="0" column="1">
@@ -6572,6 +6542,9 @@ p, li { white-space: pre-wrap; }
                          </property>
                          <property name="maximum">
                           <double>1.000000000000000</double>
+                         </property>
+                         <property name="singleStep">
+                          <double>0.100000000000000</double>
                          </property>
                         </widget>
                        </item>
