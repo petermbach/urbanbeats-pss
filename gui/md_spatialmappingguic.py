@@ -216,12 +216,15 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         parameters."""
         standard_dict = self.module.retrieve_standards(str(
             ubglobals.RESSTANDARDS[self.ui.res_standard_combo.currentIndex()]))
+        if standard_dict["Name"] == "Others...":
+            self.ui.res_enduse_summarybox.setText("Total: (undefined) L/person/day)")
+            return True
 
         # OMFG.... I need an average occupancy from another GUI element... urrgh.
         avg_occupancy = self.simulation.get_active_scenario().get_module_object("URBPLAN", 0).get_parameter("occup_avg")
 
-        avg_use = self.ui.kitchen_freq.value() * self.ui.kitchen_dur.value() \
-                  * standard_dict["Kitchen"][int(self.ui.res_standard_eff.currentIndex())] + \
+        avg_use = self.ui.kitchen_freq.value() * self.ui.kitchen_dur.value() * \
+                  standard_dict["Kitchen"][int(self.ui.res_standard_eff.currentIndex())] + \
                   self.ui.shower_freq.value() * self.ui.shower_dur.value() * \
                   standard_dict["Shower"][int(self.ui.res_standard_eff.currentIndex())] + \
                   self.ui.toilet_freq.value() * \

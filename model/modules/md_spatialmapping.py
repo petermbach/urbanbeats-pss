@@ -1374,5 +1374,29 @@ class SpatialMapping(UBModule):
         """Sets the current custom pattern _cp of the parameter with the given key to the new patternvector."""
         exec ("self." + str(key) + "_cp = " + str(patternvector))
 
+    def create_day_time_series(self, demandcomponents):
+        """Creates a 24-hour time series for the given demand components, returns a single aggregate time series
+        object.
+
+        :param demandcomponents: a list of all demand components to use in the time series creation
+        :return: UBTimeSeries() object
+        """
+        pass    # [TO DO]
+
+    def create_weekly_time_series(self, demandcomponents):
+        pass    # [TO DO]
+
+    def create_annual_time_series(self, demandcomponents):
+        pass    # [TO DO]
+
+    def get_peak_daily_demand(self, tseries, units):
+        """Returns the peak flow rate for a given time series 'tseries' in the given units.
+
+        :param tseries: the input time-series, a UBTimeSeries() object
+        :param units: "L", "m3" or "L/sec" or "m3/sec"
+        :return: single value in the corresponding units from the given time series
+        """
+        pass    # [TO DO]
+
     def map_pollution_emissions(self):
         pass
