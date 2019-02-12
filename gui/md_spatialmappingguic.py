@@ -212,8 +212,28 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
         pass    # [TO DO]
 
     def show_res_enduse_summary(self):
-        """"""
-        pass    # [TO DO]
+        """Calculates an average per capita water use and displays it in the box beneath the end use analysis
+        parameters."""
+        standard_dict = self.module.retrieve_standards(str(
+            ubglobals.RESSTANDARDS[self.ui.res_standard_combo.currentIndex()]))
+
+        # OMFG.... I need an average occupancy from another GUI element... urrgh.
+        avg_occupancy = self.simulation.get_active_scenario().get_module_object("URBPLAN", 0).get_parameter("occup_avg")
+
+        avg_use = self.ui.kitchen_freq.value() * self.ui.kitchen_dur.value() \
+                  * standard_dict["Kitchen"][int(self.ui.res_standard_eff.currentIndex())] + \
+                  self.ui.shower_freq.value() * self.ui.shower_dur.value() * \
+                  standard_dict["Shower"][int(self.ui.res_standard_eff.currentIndex())] + \
+                  self.ui.toilet_freq.value() * \
+                  standard_dict["Toilet"][int(self.ui.res_standard_eff.currentIndex())] + \
+                  self.ui.laundry_freq.value() * \
+                  standard_dict["Laundry"][int(self.ui.res_standard_eff.currentIndex())] / float(avg_occupancy) + \
+                  self.ui.dish_freq.value() * \
+                  standard_dict["Dishwasher"][int(self.ui.res_standard_eff.currentIndex())] / float(avg_occupancy)
+
+        self.ui.res_enduse_summarybox.setText("Total: " + str(round(avg_use, 1)) + " L/person/day (Occupancy: " +
+                                              str(avg_occupancy)+")")   # OMG it actually worked...
+        return True
 
     def view_civic_wateruse_presets(self):
         """"""
@@ -527,6 +547,7 @@ class SpatialMappingGuiLaunch(QtWidgets.QDialog):
 
         # END OF FILING IN GUI VALUES
         self.enable_disable_whole_gui_tabs()
+        self.show_res_enduse_summary()
         return True
 
     def save_values(self):
