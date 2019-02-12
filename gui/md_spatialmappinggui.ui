@@ -2120,7 +2120,7 @@ Laundry = Household</string>
               <item>
                <widget class="QStackedWidget" name="res_analysis_stack">
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>1</number>
                 </property>
                 <widget class="QWidget" name="page">
                  <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -3829,7 +3829,7 @@ p, li { white-space: pre-wrap; }
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>483</width>
+                       <width>501</width>
                        <height>452</height>
                       </rect>
                      </property>
@@ -4135,14 +4135,23 @@ p, li { white-space: pre-wrap; }
                            </item>
                            <item row="1" column="1">
                             <widget class="QDoubleSpinBox" name="res_direct_vol">
+                             <property name="minimumSize">
+                              <size>
+                               <width>70</width>
+                               <height>0</height>
+                              </size>
+                             </property>
                              <property name="maximumSize">
                               <size>
-                               <width>51</width>
+                               <width>70</width>
                                <height>16777215</height>
                               </size>
                              </property>
                              <property name="decimals">
-                              <number>1</number>
+                              <number>0</number>
+                             </property>
+                             <property name="maximum">
+                              <double>1000.000000000000000</double>
                              </property>
                             </widget>
                            </item>
@@ -4634,7 +4643,7 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>483</width>
+                   <width>519</width>
                    <height>605</height>
                   </rect>
                  </property>

@@ -483,6 +483,7 @@ class SpatialMapping(UBModule):
             for block_attr in blockslist:
                 if block_attr.get_attribute("Status") == 0:
                     continue
+                print "Now calculating demands for Block: ", str(block_attr.get_attribute("BlockID"))
                 self.map_water_consumption(block_attr)
             # SAVE PATTERN DATA INTO MAP ATTRIBUTES
             categories = ubglobals.DIURNAL_CATS
@@ -1006,11 +1007,11 @@ class SpatialMapping(UBModule):
     def res_endusebasedemands(self):
         """Calculates the base demand values for the five end uses, which can then be adjusted depending on the
         stochastic variation introduced in the model and the occupancy."""
-        self.kitchendem = self.res_kitchen_fq * self.res_kitchen_dur * self.flowrates["Kitchen"][self.baserating]
-        self.showerdem = self.res_shower_fq * self.res_shower_dur * self.flowrates["Shower"][self.baserating]
-        self.toiletdem = self.res_toilet_fq * self.flowrates["Toilet"][self.baserating]
-        self.laundrydem = self.res_laundry_fq * self.flowrates["Laundry"][self.baserating]
-        self.dishwasherdem = self.res_dishwasher_fq * self.flowrates["Dishwasher"][self.baserating]
+        self.kitchendem = self.res_kitchen_fq * self.res_kitchen_dur * self.flowrates["Kitchen"][int(self.baserating)]
+        self.showerdem = self.res_shower_fq * self.res_shower_dur * self.flowrates["Shower"][int(self.baserating)]
+        self.toiletdem = self.res_toilet_fq * self.flowrates["Toilet"][int(self.baserating)]
+        self.laundrydem = self.res_laundry_fq * self.flowrates["Laundry"][int(self.baserating)]
+        self.dishwasherdem = self.res_dishwasher_fq * self.flowrates["Dishwasher"][int(self.baserating)]
         return True
 
     def initialize_per_capita_residential_use(self):
@@ -1023,12 +1024,14 @@ class SpatialMapping(UBModule):
         else:
             self.avg_per_res_capita = self.res_dailyindoor_vol
         map_attr.add_attribute("AvgPerCapWaterUse", self.avg_per_res_capita)
+        self.notify("The Average Per Capita Water Use is: "+str(self.avg_per_res_capita)+" L/day")
         return True
 
     def res_enduseanalysis(self, block_attr):
         """Conducts end use analysis for residential districts. Returns the flow rates for all demand sub-components.
         in a dictionary that can be queries. Demands returned are daily values except for irrigation, which is annual.
         """
+        print "Entering End Use Analysis"
         if block_attr.get_attribute("HasHouses") or block_attr.get_attribute("HasFlats"):
             # RESIDENTIAL INDOOR WATER DEMANDS
             if block_attr.get_attribute("HasHouses"):
@@ -1063,26 +1066,26 @@ class SpatialMapping(UBModule):
             blk_hotwater = [i * qty for i in hotwater_volumes]
 
             # Work out Wastewater volumes by making boolean vectors
-            gw = [int(self.res_kitchen_wwq == "GW"), int(self.res_shower_wwq == "GW"), int(self.res_toilet_wwq == "GW"),
-                  int(self.res_laundry_wwq == "GW"), int(self.res_dishwasher_wwq == "GW")]
-            bw = [int(self.res_kitchen_wwq == "BW"), int(self.res_shower_wwq == "BW"), int(self.res_toilet_wwq == "BW"),
-                  int(self.res_laundry_wwq == "BW"), int(self.res_dishwasher_wwq == "BW")]
+            gw = [int(self.res_kitchen_wwq == "G"), int(self.res_shower_wwq == "G"), int(self.res_toilet_wwq == "G"),
+                  int(self.res_laundry_wwq == "G"), int(self.res_dishwasher_wwq == "G")]
+            bw = [int(self.res_kitchen_wwq == "B"), int(self.res_shower_wwq == "B"), int(self.res_toilet_wwq == "B"),
+                  int(self.res_laundry_wwq == "B"), int(self.res_dishwasher_wwq == "B")]
 
             # Write the information in terms of the single House level and the Block Level
             block_attr.add_attribute("WD_HHKitchen", indoor_demands[0])   # Household Kitchen use [L/hh/day]
-            block_attr.add_attribute("WD_HHShower", indoor_demands[2])    # Household Shower use [L/hh/day]
+            block_attr.add_attribute("WD_HHShower", indoor_demands[1])    # Household Shower use [L/hh/day]
             block_attr.add_attribute("WD_HHToilet", indoor_demands[2])    # Household Toilet use [L/hh/day]
             block_attr.add_attribute("WD_HHLaundry", indoor_demands[3])   # Household Laundry use [L/hh/day]
             block_attr.add_attribute("WD_HHDish", indoor_demands[4])      # Household Dishwasher [L/hh/day]
             block_attr.add_attribute("WD_HHIndoor", sum(indoor_demands))   # Total Household Use [L/hh/day]
             block_attr.add_attribute("WD_HHHot", sum(hotwater_volumes))    # Total Household Hot Water [L/hh/day]
-            block_attr.add_attribute("HH_GreyW", sum([a * b for a, b in zip(gw, indoor_demands)])) # [L/hh/day]
+            block_attr.add_attribute("HH_GreyW", sum([a * b for a, b in zip(gw, indoor_demands)]))   # [L/hh/day]
             block_attr.add_attribute("HH_BlackW", sum([a * b for a, b in zip(bw, indoor_demands)]))  # [L/hh/day]
 
             block_attr.add_attribute("WD_Indoor", sum(blk_demands) / 1000.0)    # Total Block Indoor use [kL/day]
             block_attr.add_attribute("WD_HotVol", sum(blk_hotwater) / 1000.0)   # Total Block Hot Water [kL/day]
-            block_attr.add_attribute("WW_ResGrey", sum([a * b for a, b in zip(gw, blk_demands)]))    # [kL/day]
-            block_attr.add_attribute("WW_ResBlack", sum([a * b for a, b in zip(bw, blk_demands)]))   # [kL/day]
+            block_attr.add_attribute("WW_ResGrey", sum([a * b for a, b in zip(gw, blk_demands)]) / 1000.0)    # [kL/day]
+            block_attr.add_attribute("WW_ResBlack", sum([a * b for a, b in zip(bw, blk_demands)]) / 1000.0)   # [kL/day]
 
             map_attr = self.scenario.get_asset_with_name("MapAttributes")
             map_attr.add_attribute("WD_RES_Method", "EUA")
@@ -1156,6 +1159,7 @@ class SpatialMapping(UBModule):
     def res_irrigation(self, block_attr):
         """Calculates the irrigation water demands for residential households or apartments."""
         # GET METRICS FOR GARDEN SPACE
+        print "Entering Irrigation Analysis"
         if block_attr.get_attribute("HasHouses") or block_attr.get_attribute("HasFlats"):
             if block_attr.get_attribute("HasHouses"):
                 garden = block_attr.get_attribute("ResGarden")
@@ -1176,6 +1180,7 @@ class SpatialMapping(UBModule):
         """Calculates non-residential water demands for commercial, industrial, offices land uses based on the unit
         flow rate or Population Equivalents method, which assumes water demands per floor space or employee."""
         # COMMERCIAL AREAS
+        print "Entering Non-Res Analysis"
         if block_attr.get_attribute("Has_COM"):
             if self.com_units == "LSQMD":
                 floorspace = block_attr.get_attribute("COMFloors") * block_attr.get_attribute("COMAeBldg") * \
@@ -1284,22 +1289,24 @@ class SpatialMapping(UBModule):
     def public_spaces_wateruse(self, block_attr):
         """Calculates the public open spaces water use, including mainly the irrigation of open spaces and landmark
         areas."""
+        print "Entering Public Space Water Use"
         parkspace = block_attr.get_attribute("AGreenOS") * int(self.irrigate_parks)
         landmarkspace = block_attr.get_attribute("MiscAirr") * int(self.irrigate_landmarks)
         refspace = block_attr.get_attribute("REF_av") * int(self.irrigate_reserves)
-        block_attr("WD_POSIrri", self.pos_irrigation_vol * 1000 / 365.0 *
-                   (parkspace + landmarkspace + refspace) / 10000.0)    # Total OS irrigation [kL/day]
+        block_attr.add_attribute("WD_POSIrri", self.pos_irrigation_vol * 1000 / 365.0 *
+                                 (parkspace + landmarkspace + refspace) / 10000.0)    # Total OS irrigation [kL/day]
         return True
 
     def tally_total_block_wateruse(self, block_attr):
         """Scans the water demand attributes and calculates total demands for various sub-categories. Includes losses"""
+        print "Getting total water use."
         total_blk_indoor = block_attr.get_attribute("WD_Indoor") + block_attr.get_attribute("WD_NRes")
         total_irrigation = block_attr.get_attribute("WD_Outdoor") + block_attr.get_attribute("WD_NResIrri") + \
                            block_attr.get_attribute("WD_POSIrri")
         total_blk_hotwater = block_attr.get_attribute("WD_HotVol") + block_attr.get_attribute("WD_HotNRes")
-        total_blk_greywater = block_attr.getget_attribute("WW_ResGrey") + block_attr.get_attribute("WW_ComGrey") + \
+        total_blk_greywater = block_attr.get_attribute("WW_ResGrey") + block_attr.get_attribute("WW_ComGrey") + \
                               block_attr.get_attribute("WW_IndGrey")
-        total_blk_blackwater = block_attr.getget_attribute("WW_ResBlack") + block_attr.get_attribute("WW_ComBlack") + \
+        total_blk_blackwater = block_attr.get_attribute("WW_ResBlack") + block_attr.get_attribute("WW_ComBlack") + \
                                block_attr.get_attribute("WW_IndBlack")
         total_blk_demand = total_blk_indoor + total_irrigation
         total_blk_ww = total_blk_greywater + total_blk_blackwater
@@ -1321,7 +1328,7 @@ class SpatialMapping(UBModule):
     def vary_demand_stochastically(self, basedemand, varyfactor):
         """Uses a uniform distribution to alter a base demand value by a variation factor [ ] either incrementally
         or decrementally. Returns the varied demand value."""
-        if varyfactor == 0:
+        if varyfactor == 0 or basedemand == 0:      # If either are zero, don't even try! You'll risk infinite loop!
             return basedemand
         variedDemand = -1
         while variedDemand <= 0:

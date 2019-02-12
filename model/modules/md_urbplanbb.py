@@ -1056,7 +1056,6 @@ class UrbanPlanning(UBModule):
         # map_attr.add_attribute("")  # All the road median restrictions
 
         self.notify("End of Urban Planning Module")
-        print "DONE"
 
     # MODULE SUB-FUNCTIONS -----------------
     def plan_unclassified(self, A_unc, A_park, A_ref, A_rd, Atblock):
