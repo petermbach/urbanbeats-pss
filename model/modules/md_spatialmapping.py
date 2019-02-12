@@ -487,7 +487,10 @@ class SpatialMapping(UBModule):
                 self.map_water_consumption(block_attr)
             # SAVE PATTERN DATA INTO MAP ATTRIBUTES
             categories = ubglobals.DIURNAL_CATS
-            map_attr.add_attribute("dp_losses", ubglobals.CDP)  # Add constant pattern for losses
+            if self.loss_pat == "CDP":
+                map_attr.add_attribute("dp_losses", ubglobals.CDP)  # Add constant pattern for losses
+            else:
+                map_attr.add_attribute("dp_losses", "INV")  # Invert the pattern when it is time to
             for cat in ubglobals.DIURNAL_CATS:
                 if eval("self."+cat+"_pat") == "SDD":
                     map_attr.add_attribute("dp_" + cat, ubglobals.SDD)
@@ -557,7 +560,7 @@ class SpatialMapping(UBModule):
         if block_attr.get_attribute("HasRes") and block_attr.get_attribute("HasFlats"):
             self.landcover_apartments(block_attr, area_res)
         else:
-            self.landcover_houses(block_attr, area_res)    # Otherwise map using landcover_houses() as it catches zero case
+            self.landcover_houses(block_attr, area_res)    # Otherwise map using landcover_houses(), it catches zeros
 
         # MAP NON-RESIDENTIAL LAND COVER
         abbr = ["COM", "LI", "HI", "ORC"]
@@ -582,7 +585,7 @@ class SpatialMapping(UBModule):
         """
         lcover = {"IG": 0.00, "DG": 0.00, "CO": 0.00, "AS": 0.00, "TR": 0.00, "RF": 0.00}   # Tracker Dictionary
 
-        if area_res == 0 or block_attr.get_attribute("HasHouses") == 0:      # If residential area is zero, just add all the 0.00 proportions
+        if area_res == 0 or block_attr.get_attribute("HasHouses") == 0:      # If zero, just add all 0.00 proportions
             for k in lcover.keys():
                 block_attr.add_attribute("LC_RES_"+str(k), lcover[k])
             return True
@@ -708,7 +711,7 @@ class SpatialMapping(UBModule):
         Writes the information to the current block_attr vector."""
         # UNDEVELOPED LAND - Two types: irrigated/dry grass dependent on type of undev land
         if block_attr.get_attribute("pLU_UND") != 0:
-            if block_attr.get_attribute("UND_Type") in ["BF", "GF", "NA"]:  # If greenfield, brownfield or undetermined...
+            if block_attr.get_attribute("UND_Type") in ["BF", "GF", "NA"]:  # greenfield, brownfield or undetermined...
                 block_attr.add_attribute("LC_UND_DG", 1.0)
                 block_attr.add_attribute("LC_UND_IG", 0.0)
             else:

@@ -2120,7 +2120,7 @@ Laundry = Household</string>
               <item>
                <widget class="QStackedWidget" name="res_analysis_stack">
                 <property name="currentIndex">
-                 <number>1</number>
+                 <number>0</number>
                 </property>
                 <widget class="QWidget" name="page">
                  <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2627,7 +2627,7 @@ p, li { white-space: pre-wrap; }
                              </property>
                              <property name="icon">
                               <iconset resource="../graphics/ubeats.qrc">
-                               <normaloff>:/icons/Info-icon.png</normaloff>:/icons/Info-icon.png</iconset>
+                               <normaloff>:/icons/Refresh-icon.png</normaloff>:/icons/Refresh-icon.png</iconset>
                              </property>
                             </widget>
                            </item>

@@ -34,6 +34,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from md_spatialmappinggui import Ui_Spatialmap_Dialog
 from md_subgui_dp import Ui_CustomPatternDialog
 
+
 # --- MAIN GUI FUNCTION ---
 class SpatialMappingGuiLaunch(QtWidgets.QDialog):
     def __init__(self, main, simulation, datalibrary, simlog, parent=None):
