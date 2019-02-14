@@ -29,14 +29,13 @@ __copyright__ = "Copyright 2012. Peter M. Bach"
 # --- --- --- --- --- ---
 
 # --- PYTHON LIBRARY IMPORTS ---
-import threading
-import os
-import gc
-import tempfile
+import random
+import math
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 from ubmodule import *
 import model.progref.ubglobals as ubglobals
+import model.ublibs.ubdatatypes as ubdata
 
 
 # --- MODULE CLASS DEFINITION ---
@@ -164,17 +163,22 @@ class SpatialMapping(UBModule):
         self.create_parameter("residential_method", STRING, "Method for determinining residential water use.")
         self.residential_method = "EUA"     # EUA = end use analysis, DQI = direct flow input
 
+        self.flowrates = []     # Initialize these variables, used in the EUA method
+        self.baserating = 0
+
         # END USE ANALYSIS
         self.create_parameter("res_standard", STRING, "The water appliances standard to use in calculations.")
         self.res_standard = "AS6400"
+        self.create_parameter("res_baseefficiency", DOUBLE, "The base level efficiency to use at simulation begin.")
+        self.res_baseefficiency = 0.0       # Dependent on standard, represents the index of the water flow rates table.
 
         self.create_parameter("res_kitchen_fq", DOUBLE, "Frequency of kitchen water use.")
         self.create_parameter("res_kitchen_dur", DOUBLE, "Duration of kitchen water use.")
         self.create_parameter("res_kitchen_hot", DOUBLE, "Proportion of kitchen water from hot water")
         self.create_parameter("res_kitchen_var", DOUBLE, "Stochastic variation in kitchen water use")
         self.create_parameter("res_kitchen_ffp", STRING, "Minimum Fit for purpose water source for kitchen use.")
-        self.res_kitchen_fq = 5.0
-        self.res_kitchen_dur = 2.0
+        self.res_kitchen_fq = 2.0
+        self.res_kitchen_dur = 10.0
         self.res_kitchen_hot = 30.0
         self.res_kitchen_var = 0.0
         self.res_kitchen_ffp = "PO"     # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
@@ -184,9 +188,9 @@ class SpatialMapping(UBModule):
         self.create_parameter("res_shower_hot", DOUBLE, "Proportion of shower water from hot water")
         self.create_parameter("res_shower_var", DOUBLE, "Stochastic variation in shower water use")
         self.create_parameter("res_shower_ffp", STRING, "Minimum Fit for purpose water source for shower use.")
-        self.res_shower_fq = 5.0
-        self.res_shower_dur = 2.0
-        self.res_shower_hot = 30.0
+        self.res_shower_fq = 2.0
+        self.res_shower_dur = 5.0
+        self.res_shower_hot = 60.0
         self.res_shower_var = 0.0
         self.res_shower_ffp = "PO"  # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
 
@@ -194,8 +198,8 @@ class SpatialMapping(UBModule):
         self.create_parameter("res_toilet_hot", DOUBLE, "Proportion of toilet water from hot water")
         self.create_parameter("res_toilet_var", DOUBLE, "Stochastic variation in toilet water use")
         self.create_parameter("res_toilet_ffp", STRING, "Minimum Fit for purpose water source for toilet use.")
-        self.res_toilet_fq = 5.0
-        self.res_toilet_hot = 30.0
+        self.res_toilet_fq = 2.0
+        self.res_toilet_hot = 0.0
         self.res_toilet_var = 0.0
         self.res_toilet_ffp = "PO"  # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
 
@@ -203,8 +207,8 @@ class SpatialMapping(UBModule):
         self.create_parameter("res_laundry_hot", DOUBLE, "Proportion of laundry water from hot water")
         self.create_parameter("res_laundry_var", DOUBLE, "Stochastic variation in laundry water use")
         self.create_parameter("res_laundry_ffp", STRING, "Minimum Fit for purpose water source for laundry use.")
-        self.res_laundry_fq = 5.0
-        self.res_laundry_hot = 30.0
+        self.res_laundry_fq = 2.0
+        self.res_laundry_hot = 50.0
         self.res_laundry_var = 0.0
         self.res_laundry_ffp = "PO"  # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
 
@@ -212,10 +216,17 @@ class SpatialMapping(UBModule):
         self.create_parameter("res_dishwasher_hot", DOUBLE, "Proportion of dishwasher water from hot water")
         self.create_parameter("res_dishwasher_var", DOUBLE, "Stochastic variation in dishwasher water use")
         self.create_parameter("res_dishwasher_ffp", STRING, "Minimum Fit for purpose water source for dishwasher use.")
-        self.res_dishwasher_fq = 5.0
-        self.res_dishwasher_hot = 30.0
+        self.res_dishwasher_fq = 1.0
+        self.res_dishwasher_hot = 50.0
         self.res_dishwasher_var = 0.0
         self.res_dishwasher_ffp = "PO"  # PO = potable, NP = non-potable, RW = rainwater, GW = greywater, SW = storm
+
+        self.kitchendem = 0     # Placeholders for the base unit demand (for kitchen/shower/toilet, it's per capita)
+        self.showerdem = 0      # for laundry and dishwasher it's per household.
+        self.toiletdem = 0
+        self.laundrydem = 0
+        self.dishwasherdem = 0
+        self.avg_per_res_capita = 0     # Average per capita use
 
         self.create_parameter("res_outdoor_vol", DOUBLE, "Outdoor irrigation volume")
         self.create_parameter("res_outdoor_ffp", STRING, "Outdoor min fit-for-purpose water source")
@@ -293,44 +304,40 @@ class SpatialMapping(UBModule):
         self.res_dailyindoor_bgprop = 0.0   # default = 0 which is 50-50
 
         # -- NON-RESIDENTIAL WATER USE --
-        self.create_parameter("nonres_method", STRING, "Method for estimating non-residential water consumption")
-        self.nonres_method = "UQR"      # UQR = unit flow rate, PES = Population equivalents
-
-        # UNIT FLOW RATES
         self.create_parameter("com_demand", DOUBLE, "Commercial water demand value")
         self.create_parameter("com_var", DOUBLE, "Variation in commercial water demand")
         self.create_parameter("com_units", STRING, "Units for commercial water demands")
         self.create_parameter("com_hot", DOUBLE, "Proportion of hot water for commercial water demand")
-        self.com_demand = 20.0
-        self.com_var = 0.0
-        self.com_units = "LSQMD"    # LSQMD = L/sqm/day and LPAXD = L/persons/day
+        self.com_demand = 40.0
+        self.com_var = 10.0
+        self.com_units = "LSQMD"    # LSQMD = L/sqm/day and LPAXD = L/persons/day, PES = Population equivalents
         self.com_hot = 20.0
 
         self.create_parameter("office_demand", DOUBLE, "Office water demand value")
         self.create_parameter("office_var", DOUBLE, "Variation in office water demand")
         self.create_parameter("office_units", STRING, "Units for office water demands")
         self.create_parameter("office_hot", DOUBLE, "Proportion of hot water for office water demand")
-        self.office_demand = 20.0
-        self.office_var = 0.0
-        self.office_units = "LSQMD"  # LSQMD = L/sqm/day and LPAXD = L/persons/day
+        self.office_demand = 40.0
+        self.office_var = 10.0
+        self.office_units = "LSQMD"  # LSQMD = L/sqm/day and LPAXD = L/persons/day, PES = Population equivalents
         self.office_hot = 20.0
 
         self.create_parameter("li_demand", DOUBLE, "Light Industry water demand value")
         self.create_parameter("li_var", DOUBLE, "Variation in Light Industry water demand")
         self.create_parameter("li_units", STRING, "Units for Light Industry water demands")
         self.create_parameter("li_hot", DOUBLE, "Proportion of hot water for Light Industry water demand")
-        self.li_demand = 20.0
-        self.li_var = 0.0
-        self.li_units = "LSQMD"  # LSQMD = L/sqm/day and LPAXD = L/persons/day
+        self.li_demand = 40.0
+        self.li_var = 10.0
+        self.li_units = "LSQMD"  # LSQMD = L/sqm/day and LPAXD = L/persons/day, PES = Population equivalents
         self.li_hot = 20.0
 
         self.create_parameter("hi_demand", DOUBLE, "Heavy Industry water demand value")
         self.create_parameter("hi_var", DOUBLE, "Variation in Heavy Industry water demand")
         self.create_parameter("hi_units", STRING, "Units for Heavy Industry water demands")
         self.create_parameter("hi_hot", DOUBLE, "Proportion of hot water for Heavy Industry water demand")
-        self.hi_demand = 20.0
-        self.hi_var = 0.0
-        self.hi_units = "LSQMD"  # LSQMD = L/sqm/day and LPAXD = L/persons/day
+        self.hi_demand = 40.0
+        self.hi_var = 10.0
+        self.hi_units = "LSQMD"  # LSQMD = L/sqm/day and LPAXD = L/persons/day, PES = Population equivalents
         self.hi_hot = 20.0
 
         self.create_parameter("nonres_landscape_vol", DOUBLE, "Landscape irrigation volume")
@@ -361,16 +368,6 @@ class SpatialMapping(UBModule):
         self.com_ww_bgprop = 0.0
         self.ind_ww_bgprop = 0.0
 
-        # POPULATION EQUIVALENTS METHOD (ADDITINOAL PARAMETERS)
-        self.create_parameter("com_pefactor", DOUBLE, "Population equivalent for commercial water use")
-        self.create_parameter("office_pefactor", DOUBLE, "Population equivalent for office water use")
-        self.create_parameter("li_pefactor", DOUBLE, "Population equivalent factor for light industry water use.")
-        self.create_parameter("hi_pefactor", DOUBLE, "Population equivalent factor for heavy industry water use.")
-        self.com_pefactor = 1.0
-        self.office_pefactor = 1.0
-        self.li_pefactor = 1.0
-        self.hi_pefactor = 1.0
-
         # -- PUBLIC OPEN SPACES AND DISTRICTS --
         self.create_parameter("pos_irrigation_vol", DOUBLE, "POS Irrigation Volume")
         self.create_parameter("pos_irrigation_ffp", STRING, "POS Fit-for-purpose minimum quality")
@@ -392,15 +389,11 @@ class SpatialMapping(UBModule):
 
         # -- REGIONAL WATER LOSSES --
         self.create_parameter("estimate_waterloss", BOOL, "Estimate water losses?")
-        self.create_parameter("waterloss_method", STRING, "Method for estimating water loss")
         self.create_parameter("waterloss_volprop", DOUBLE, "Loss as volume of total demand proportion")
-        self.create_parameter("waterloss_constant", DOUBLE, "Loss as constant global amount")
-        self.create_parameter("waterloss_constant_units", STRING, "Units for constant global loss amount")
+        self.create_parameter("loss_pat", STRING, "Diurnal pattern for Water Losses")
         self.estimate_waterloss = 1
-        self.waterloss_method = "VOLPROP"   # VOLPROP = proportionate volume, CONSTANT = constant global loss
         self.waterloss_volprop = 10.0
-        self.waterloss_constant = 1.0
-        self.waterloss_constant_units = "MLY"   # MLY = ML/year, MLHAY = ML/ha/year
+        self.loss_pat = "CDP"   # Either CDP or INV = inverse, which is generated
 
         # -- TEMPORAL AND SEASONAL DYNAMICS --
         # WEEKLY DYNAMICS
@@ -440,7 +433,7 @@ class SpatialMapping(UBModule):
         # Pollutions emissions mapping, stormwater system, this module analyses the land use diversity and determines
         # build-up wash-off pollutant concentrations that can then be mapped spatially or modelled temporally.
         # --------------------------------------------------------------------------------------------------------------
-        pass
+        pass    # [COMING SOON]
 
     def run_module(self):
         """Runs the current module. Note that this module is set up to only call the relevant mapping functions
@@ -453,46 +446,544 @@ class SpatialMapping(UBModule):
 
         # PLANNING RULES
         if self.planrules:
+            self.notify("Analysing Planning Overlays...")
+            map_attr.add_attribute("HasOVERLAYS", 1)
             self.map_planning_rules()
+        else:
+            map_attr.add_attribute("HasOVERLAYS", 0)
 
         # LAND COVER
         if self.landcover:
+            map_attr.add_attribute("HasLANDCOVER", 1)
+            self.notify("Determining Land Covers Across Blocks...")
             for block_attr in blockslist:
                 if block_attr.get_attribute("Status") == 0:
                     continue
-            self.map_land_surface_covers(block_attr)
+                self.map_land_surface_covers(map_attr, block_attr)
+        else:
+            map_attr.add_attribute("HasLANDCOVER", 0)
 
         # OPEN SPACE ANALYSIS
         if self.openspaces:
-            self.open_space_analysis()
+            map_attr.add_attribute("HasOPENSPACEMAP", 1)
+            self.notify("Performing Open Space Mapping...")
+            self.map_open_spaces(map_attr)
+        else:
+            map_attr.add_attribute("HasOPENSPACEMAP", 0)
 
         # WATER USE
         if self.wateruse:
+            map_attr.add_attribute("HasWATERUSE", 1)
+            self.notify("Calculating Water Consumption and Wastewater Generation...")
+            if self.residential_method == "EUA":
+                self.flowrates = self.retrieve_standards(self.res_standard)  # Get the flowrates from the standards
+                self.baserating = self.res_baseefficiency  # The index to look up
+                self.res_endusebasedemands()    # Initialize the calculation of base end use demands
+            self.initialize_per_capita_residential_use()    # As a statistic and also for non-residential stuff.
             for block_attr in blockslist:
                 if block_attr.get_attribute("Status") == 0:
                     continue
-            self.map_water_consumption(block_attr)
+                print "Now calculating demands for Block: ", str(block_attr.get_attribute("BlockID"))
+                self.map_water_consumption(block_attr)
+            # SAVE PATTERN DATA INTO MAP ATTRIBUTES
+            categories = ubglobals.DIURNAL_CATS
+            if self.loss_pat == "CDP":
+                map_attr.add_attribute("dp_losses", ubglobals.CDP)  # Add constant pattern for losses
+            else:
+                map_attr.add_attribute("dp_losses", "INV")  # Invert the pattern when it is time to
+            for cat in ubglobals.DIURNAL_CATS:
+                if eval("self."+cat+"_pat") == "SDD":
+                    map_attr.add_attribute("dp_" + cat, ubglobals.SDD)
+                elif eval("self."+cat+"_pat") == "CDP":
+                    map_attr.add_attribute("dp_" + cat, ubglobals.CDP)
+                elif eval("self."+cat+"_pat") == "OHT":
+                    map_attr.add_attribute("dp_" + cat, ubglobals.OHT)
+                elif eval("self."+cat+"_pat") == "AHC":
+                    map_attr.add_attribute("dp_" + cat, ubglobals.AHC)
+                else:
+                    map_attr.add_attribute("dp_" + cat, eval("self."+cat+"_cp"))
+        else:
+            map_attr.add_attribute("HasWATERUSE", 0)
 
         # POLLUTION EMISSIONS
         if self.emissions:
+            map_attr.add_attribute("HasPOLLUTIONMAP", 1)
+            self.notify("Performing Pollution Emissions Mapping...")
             self.map_pollution_emissions()
+        else:
+            map_attr.add_attribute("HasPOLLUTIONMAP", 0)
 
+        self.notify("Spatial Mapping Module COMPLETED!")
         return True
 
     def map_planning_rules(self):
         pass
 
-    def map_land_surface_covers(self, block_attr):
-        """Maps the land surface covers of the current Block passed to this method.
+    def map_land_surface_covers(self, map_attr, block_attr):
+        """Maps the land surface covers of the current Block passed to this method. UrbanBEATS uses a few basic land
+        cover types to differentiate including: CO = concrete, AS = asphalt, DG = dry grass, IG = irrigated grass,
+        RF = roof, TR = trees.
+
+        A number of attributes are added to each Block by the end of this function, denoting the land surface cover
+        distribution for each land cover type. The function also tallies up the total land cover proportions for the
+        Block.
+
+        Attributes include:
+        ----------------------------------------------------------------------------------------------------------------
+        Land Use            Dry Grass (DG)  Irrig. Grass(IG)   Concrete (CO)   Asphalt (AS)    Trees (TR)    Roof (RF)
+        ----------------------------------------------------------------------------------------------------------------
+        Residential(Houses)     x               x                   x               x               x           x
+        Residential (Flats)     x               x                   x               x               x           x
+        Commercial (COM)        x               x                   x               x               x           x
+        Light Industry (LI)     x               x                   x               x               x           x
+        Heavy Industry (HI)     x               x                   x               x               x           x
+        Offices Mixed Dev (ORC) x               x                   x               x               x           x
+        Parks and Gardens (PG)  x               x                   x               x               x           -
+        Reserves (REF)          x               x                   -               -               -           -
+        Service/Utility (SVU)   x               -                   -               -               -           -
+        Major Roads (RD)        x               -                   x               x               -           -
+        Undeveloped (UND)       x               x                   -               -               -           -
+        Unclassified (UNC)      x               x                   x               -               -           -
+        ----------------------------------------------------------------------------------------------------------------
+        Each attribute name is preceded by: LC_[cat]_[type] - note for residential both houses and flats use RES as the
+        category abbreviation since a Block can only have either or type of residential typology. Civic and Transport
+        Land uses to follow. These should most likely have look-up dictionaries that can simply be mapped over in future
+        versions.
 
         :param block_attr: The UBVector() format of the current Block whose land cover needs to be determined
         :return: No return, block attributes are writen to the current block_attr object
         """
+        # MAP RESIDENTIAL LAND COVER
+        blocksize = map_attr.get_attribute("BlockSize")
+        blockarea = blocksize * blocksize
+        area_res = float(block_attr.get_attribute("pLU_RES") * block_attr.get_attribute("Active") * blockarea)
+        if block_attr.get_attribute("HasRes") and block_attr.get_attribute("HasFlats"):
+            self.landcover_apartments(block_attr, area_res)
+        else:
+            self.landcover_houses(block_attr, area_res)    # Otherwise map using landcover_houses(), it catches zeros
+
+        # MAP NON-RESIDENTIAL LAND COVER
+        abbr = ["COM", "LI", "HI", "ORC"]
+        for nonres_type in abbr:        # Loop over the four main types
+            A_lu = float(block_attr.get_attribute("pLU_"+str(nonres_type)) * block_attr.get_attribute("Active") * \
+                   blockarea)
+            self.landcover_nonres(block_attr, nonres_type, A_lu)
+
+        # MAP OTHER TYPES
+        self.landcover_unclassified(block_attr)
+        self.landcover_undeveloped(block_attr)
+        self.landcover_openspaces(block_attr)
+        self.landcover_roads(block_attr)
         return True
 
-    def map_open_spaces(self):
-        """Maps the open space connectivity and accessibility as well as some key planning aspects surrounding POS."""
-        pass
+    def landcover_houses(self, block_attr, area_res):
+        """Determines proportions of land cover on residential land and provides a percentage estimate for the
+        block. The estimate is done at the house level and then scaled up to the neighbourhood.
+
+        :param block_attr: the UBVector() instance of the current Block.
+        :param area_res: the area of the residential land use in the current block.
+        """
+        lcover = {"IG": 0.00, "DG": 0.00, "CO": 0.00, "AS": 0.00, "TR": 0.00, "RF": 0.00}   # Tracker Dictionary
+
+        if area_res == 0 or block_attr.get_attribute("HasHouses") == 0:      # If zero, just add all 0.00 proportions
+            for k in lcover.keys():
+                block_attr.add_attribute("LC_RES_"+str(k), lcover[k])
+            return True
+
+        # GOING THROUGH URBAN ELEMENTS (Roof, Paving, Garden, Other Pervious, Nature Strip, Footpath, Road)
+        lcover["RF"] += float(block_attr.get_attribute("ResRoof") * block_attr.get_attribute("ResAllots"))  # ROOF
+        lcover[self.surfDriveway] += (block_attr.get_attribute("ResLotTIA") - block_attr.get_attribute("ResRoof")) * \
+                                     block_attr.get_attribute("ResAllots")      # PAVED SURFACES
+
+        # Irrigated grass - (3) Garden, (4) Other Pervious, (5) Nature Strip
+        perviouslot = block_attr.get_attribute("ResGarden") * block_attr.get_attribute("ResAllots")
+        freespace = block_attr.get_attribute("avLt_RES") * block_attr.get_attribute("ResAllots")
+        nstrip = block_attr.get_attribute("ResANstrip")
+        if self.wateruse and self.res_outdoor_vol == 0.0:
+            # lcover["IG"] += 0.0       # Note: commented out because it is a redundant operation, just here for clarity
+            lcover["DG"] += perviouslot + nstrip        # Allocate all to dry grass if no irrigation
+        else:
+            if self.surfResIrrigate == "G":     # Only garden irrigated
+                lcover["IG"] += freespace
+                lcover["DG"] += (perviouslot - freespace) + nstrip
+            else:       # All surface irrigated
+                lcover["IG"] += perviouslot + nstrip
+                # lcover["DG"] += 0.0
+
+        lcover[self.surfArt] += float(block_attr.get_attribute("ResARoad"))
+        lcover[self.surfFpath] += float(block_attr.get_attribute("ResAFpath"))
+
+        # WRITE ATTRIBUTES TO THE BLOCK
+        for k in lcover.keys():
+            block_attr.add_attribute("LC_RES_" + str(k), lcover[k] / float(area_res))
+        return True
+
+    def landcover_apartments(self, block_attr, A_res):
+        """Maps the land surface cover of Residential Apartment areas. Apartments are distinguished from houses in
+        that they are more aggregated in the model. Attributes are therefore different and no scaling-up is required.
+
+        :param block_attr: the UBVector() object of the current Block for which land cover is calculated.
+        :param A_res"""
+        lcover = {"IG": 0.00, "DG": 0.00, "CO": 0.00, "AS": 0.00, "TR": 0.00, "RF": 0.00}
+
+        if A_res == 0:
+            for k in lcover.keys():
+                block_attr.add_attribute("LC_RES_"+str(k), float(lcover[k]))    # Write zeroes
+
+        # GOING THROUGH URBAN ELEMENTS (Roof, Paving, Garden, Other Pervious, Nature Strip, Footpath, Road)
+        lcover["RF"] += float(block_attr.get_attribute("HDRRoofA"))     # Building Roof followed by paving
+        lcover[self.surfDriveway] += float(block_attr.get_attribute("HDR_TIA") - block_attr.get_attribute("HDRRoofA"))
+
+        # Pervious Areas (3) Garden, (4) Other Pervious, (5) Nature Strip
+        perviouslot = block_attr.get_attribute("HDRGarden")
+        freespace = block_attr.get_attribute("av_HDRes")
+        if self.surfResIrrigate == "G":     # Only garden irrigated
+            lcover["IG"] += freespace
+            lcover["DG"] += perviouslot - freespace
+        else:       # All surface irrigated
+            lcover["IG"] += perviouslot
+            lcover["DG"] += 0
+
+        # Transfer all attributes to the Block UBVector()
+        for k in lcover.keys():
+            block_attr.add_attribute("LC_RES_"+str(k), lcover[k]/float(A_res))
+        return True
+
+    def landcover_nonres(self, block_attr, nonres_type, A_nres):
+        """Maps the land surface covers of non-residential areas. COM, LI, HI or ORC land uses considered here.
+
+        :param block_attr: the UBVector() instance of the current Block
+        :param nonres_type: "LI", "HI", "ORC", "COM", string input of one of the four non-res built environment types
+        :param A_nres: the current area of the nonresidential district used for totals
+        """
+        lcover = {"IG": 0.00, "DG": 1.00, "CO": 0.00, "AS": 0.00, "TR": 0.00, "RF": 0.00}   # DG = 1.0 by default
+        if not block_attr.get_attribute("Has_"+str(nonres_type)) or A_nres == 0:
+            # Write default attributes and skip this function.
+            for k in lcover.keys():
+                block_attr.add_attribute("LC_"+str(nonres_type)+"_"+str(k), float(lcover[k]))
+            return True
+
+        # Calculate land covers
+        lcover[self.surfArt] += float(block_attr.get_attribute(str(nonres_type)+"AeRoad"))   # Road Land cover
+        lcover[self.surfParking] += float(block_attr.get_attribute(str(nonres_type)+"AeCPark"))     # Carpark surface
+        lcover[self.surfBay] += float(block_attr.get_attribute(str(nonres_type)+"AeLoad"))  # Loading Bay
+        lcover["RF"] += float(block_attr.get_attribute(str(nonres_type)+"AeBldg"))      # Roof Cover
+        lcover[self.surfHard] += float(block_attr.get_attribute(str(nonres_type)+"AeLgrey"))    # Grey Landscape
+        lcover["DG"] += float(block_attr.get_attribute(str(nonres_type)+"AeNstrip"))     # Nature Strip
+        lcover[self.surfFpath] += float(block_attr.get_attribute(str(nonres_type)+"AeFpath"))    # Footpath
+
+        # Determine if landscaped area is irrigated or not
+        if self.wateruse and self.nonres_landscape_vol == 0:
+            # Dry grass - because irrigation volume is zero!
+            lcover["DG"] += float(block_attr.get_attribute("avLt_"+str(nonres_type)))
+        else:   # Otherwise assume irrigated!
+            lcover["IG"] += float(block_attr.get_attribute("avLt_"+str(nonres_type)))
+
+        # Tally up percentages of land covers and add to block_attr immediately
+        Aestate = block_attr.get_attribute(str(nonres_type)+"Aestate")
+        for k in lcover.keys():
+            block_attr.add_attribute("LC_"+str(nonres_type)+"_"+str(k), float(lcover[k] /sum(lcover.values())))
+            # Attributes for e.g. LI:  "LC_LI_IG", "LC_LI_DG", "LC_LI_CO", "LC_LI"AS", "LC_LI_TR", "LC_LI_TR"
+        return True
+
+    def landcover_unclassified(self, block_attr):
+        """Determines land cover composition for the unclassified land within current block. Three covers considered.
+        Writes the results to the current block_attr vector."""
+        # UNCLASSIFIED LAND - Three types: Irrigated/dry grass and concrete
+        unc_land = block_attr.get_attribute("MiscAtot")
+        if unc_land != 0:
+            pervious_prop = float((unc_land - block_attr.get_attribute("MiscAimp")) / unc_land)
+            if self.wateruse and self.irrigate_landmarks:  # Link with water demand!
+                block_attr.add_attribute("LC_NA_IG", pervious_prop)
+                block_attr.add_attribute("LC_NA_DG", 0.00)
+            else:
+                block_attr.add_attribute("LC_NA_DG", pervious_prop)
+                block_attr.add_attribute("LC_NA_IG", 0.00)
+            block_attr.add_attribute("LC_NA_CO", float(block_attr.get_attribute("MiscAimp") / unc_land))
+        else:
+            block_attr.add_attribute("LC_NA_DG", 0.00)  # If the area is zero, then all land cover proportions are zero
+            block_attr.add_attribute("LC_NA_IG", 0.00)
+            block_attr.add_attribute("LC_NA_CO", 0.00)
+        return True
+
+    def landcover_undeveloped(self, block_attr):
+        """Calculates the land cover composition of undeveloped land. Can take either dry or irrigated grass.
+        Writes the information to the current block_attr vector."""
+        # UNDEVELOPED LAND - Two types: irrigated/dry grass dependent on type of undev land
+        if block_attr.get_attribute("pLU_UND") != 0:
+            if block_attr.get_attribute("UND_Type") in ["BF", "GF", "NA"]:  # greenfield, brownfield or undetermined...
+                block_attr.add_attribute("LC_UND_DG", 1.0)
+                block_attr.add_attribute("LC_UND_IG", 0.0)
+            else:
+                block_attr.add_attribute("LC_UND_DG", 0.0)
+                block_attr.add_attribute("LC_UND_IG", 1.0)
+        else:   # If there is no undeveloped land
+            block_attr.add_attribute("LC_UND_DG", 0.0)
+            block_attr.add_attribute("LC_UND_IG", 0.0)
+        return True
+
+    def landcover_openspaces(self, block_attr):
+        """Calculates the land cover composition of open spaces within the current block, 'block_attr'.
+        Writes these attributes to the block. Categories covered includes Service and Utility, Parks and
+        Gardens and Reserves and Floodways."""
+        # SERVICES & UTILITY - Assume dry grass all the time
+        if block_attr.get_attribute("pLU_SVU") != 0:
+            block_attr.add_attribute("LC_SVU_DG", 1.0)
+        else:
+            block_attr.add_attribute("LC_SVU_DG", 0.0)
+
+        # OPEN SPACES - Five cover types: Irrigated Grass (IG), Dry Grass (DG), Concrete (CO), Asphalt (AS), Trees (TR)
+        ig_lc, dg_lc, co_lc, as_lc, tr_lc = 0, 0, 0, 0, 0  # Initialize
+
+        # Paved Areas - Concrete or Asphalt
+        if self.surfSquare == "CO":
+            co_lc += block_attr.get_attribute("ASquare")
+        elif self.surfSquare == "AS":
+            as_lc += block_attr.get_attribute("ASquare")
+        else:
+            dg_lc += block_attr.get_attribute("ASquare")
+
+        # Irrigated Park Areas - Assume parks are irrigated by default, so check for whether this is not the case
+        if self.wateruse and not self.irrigate_parks:
+            dg_lc += block_attr.get_attribute("AGreenOS")
+        else:
+            ig_lc += block_attr.get_attribute("AGreenOS")
+
+        if sum([co_lc, as_lc, dg_lc, ig_lc, tr_lc]) == 0:
+            block_attr.add_attribute("LC_PG_CO", 0)
+            block_attr.add_attribute("LC_PG_AS", 0)
+            block_attr.add_attribute("LC_PG_DG", 0)
+            block_attr.add_attribute("LC_PG_IG", 0)
+            block_attr.add_attribute("LC_PG_TR", 0)
+        else:
+            block_attr.add_attribute("LC_PG_CO", float(co_lc / sum([co_lc, as_lc, dg_lc, ig_lc, tr_lc])))
+            block_attr.add_attribute("LC_PG_AS", float(as_lc / sum([co_lc, as_lc, dg_lc, ig_lc, tr_lc])))
+            block_attr.add_attribute("LC_PG_DG", float(dg_lc / sum([co_lc, as_lc, dg_lc, ig_lc, tr_lc])))
+            block_attr.add_attribute("LC_PG_IG", float(ig_lc / sum([co_lc, as_lc, dg_lc, ig_lc, tr_lc])))
+            block_attr.add_attribute("LC_PG_TR", float(tr_lc / sum([co_lc, as_lc, dg_lc, ig_lc, tr_lc])))
+
+        # RESERVES - irrigated or dry grass - assume dry by default..
+        if block_attr.get_attribute("pLU_REF") != 0:
+            if self.wateruse and self.irrigate_reserves:
+                block_attr.add_attribute("LC_REF_DG", 0.0)
+                block_attr.add_attribute("LC_REF_IG", 1.0)
+            else:
+                block_attr.add_attribute("LC_REF_DG", 1.0)
+                block_attr.add_attribute("LC_REF_IG", 0.0)
+        else:
+            block_attr.add_attribute("LC_REF_DG", 0.0)
+            block_attr.add_attribute("LC_REF_IG", 0.0)
+        return True
+
+    def landcover_roads(self, block_attr):
+        """Calculates the land cover composition of the road reserves within the current block 'block_attr'.
+        Writes these attributes to the block."""
+        # ROADS - Dependent on Road Types
+        as_lc, co_lc, dg_lc = 0, 0, 0
+        dg_lc += block_attr.get_attribute("RD_av")
+        if self.surfArt == "AS":
+            as_lc += block_attr.get_attribute("RoadTIA")
+        elif self.surfArt == "CO":
+            co_lc += block_attr.get_attribute("RoadTIA")
+        else:
+            dg_lc += block_attr.get_attribute("RoadTIA")
+
+        if sum([co_lc, as_lc, dg_lc]) == 0:
+            block_attr.add_attribute("LC_RD_CO", 0)
+            block_attr.add_attribute("LC_RD_AS", 0)
+            block_attr.add_attribute("LC_RD_DG", 0)
+        else:
+            block_attr.add_attribute("LC_RD_CO", float(co_lc / sum([co_lc, as_lc, dg_lc])))
+            block_attr.add_attribute("LC_RD_AS", float(as_lc / sum([co_lc, as_lc, dg_lc])))
+            block_attr.add_attribute("LC_RD_DG", float(dg_lc / sum([co_lc, as_lc, dg_lc])))
+        # [TO DO] NEED TO FIX UP THE INTRICACIES OF THE ROAD RESERVE, THIS REQUIRES MORE ATTRIBUTES IN URBAN PLAN MOD.
+        return True
+
+    def map_open_spaces(self, map_attr):
+        """Maps the open space connectivity and accessibility as well as some key planning aspects surrounding POS.
+        Two key maps are created and analysed: Open Space Connectivity and Open Space Network. Note that the algorithm
+        is only usable if patch delineation is used in the Spatial Delineation. This is therefore checked before
+        any function is called.
+
+        Open Space Connectivity: A measure of the distance to the closest open space. All non-green patches are checked
+            against green patches and the closest link is calculated.
+        Open Space Network: A measure of how connected the open spaces are to each other. A network is plotted of all
+            connections between open spaces within an acceptable distance to each other. The network serves to be
+            analysed spatially and using network characteristics to better understand how we can better plan open spaces
+            in the urban environment. Connected components show how many sub-networks there are, node degree and
+            centrality indicates the key locations of crucial connections.
+
+        Sub-Methods Belonging to map_open_spaces():
+            - retrieve_patch_groups()
+            - find_open_space_distances()
+            - delineate_open_space_network()
+
+        :param map_attr: the global MapAttributes UBComponent() instance.
+        """
+        if not map_attr.get_attribute("patchdelin"):        # Check on whether patches were delineated
+            map_attr.add_attribute("HasOSNET", 0)
+            map_attr.add_attribute("HasOSLINK", 0)
+            return True
+        blocksize = map_attr.get_attribute("BlockSize")
+
+        green_patches, grey_patches, non_patches = self.retrieve_patch_groups()
+        if len(green_patches) > 0:
+            # 7.1 - Open Space Distances
+            if self.osnet_accessibility:
+                self.find_open_space_distances(green_patches, grey_patches, non_patches)
+                map_attr.add_attribute("HasOSLINK", 1)
+            else:
+                map_attr.add_attribute("HasOSLINK", 0)
+            # 7.2 - Open Space Network
+            if self.osnet_network:
+                # The minimum acceptable distance to connect the network is taken as the final block size, if two
+                # entire Block patches exist, they are adjacent and connected by Block centroid
+                min_dist = blocksize * math.sqrt(2)
+                self.delineate_open_space_network(green_patches, grey_patches, non_patches, min_dist)
+                map_attr.add_attribute("HasOSNET", 1)
+            else:
+                map_attr.add_attribute("HasOSNET", 0)
+        else:
+            self.notify("Warning, no open spaces in map, cannot check for links")
+            map_attr.add_attribute("HasOSLINK", 0)
+            map_attr.add_attribute("HasOSNET", 0)
+        # [TO DO] other open space functionality
+        return True
+
+    def retrieve_patch_groups(self):
+        """Scans the simulation's patches and subdivides them into three groups based on land use. Returns three lists,
+        each containing all references to UBVector() objects with corresponding patch type.
+
+        :return: greenpatches (list of all PG and REF land use patchs), roadpatches (list of all RD patches), and
+                 greypathces (everything else)
+        """
+        # Get all patches in the collection
+        patches = self.scenario.get_assets_with_identifier("PatchID")     # Retrieves all patches
+
+        # From all the patches, sort out the open space patches as a separate array
+        greenpatches = []
+        greypatches = []
+        roadpatches = []
+        for i in patches:
+            if i.get_attribute("Landuse") in [10, 11]:
+                greenpatches.append(i)
+            elif i.get_attribute("Landuse") in [8]:
+                roadpatches.append(i)
+            else:
+                greypatches.append(i)
+        return greenpatches, greypatches, roadpatches
+
+    def find_open_space_distances(self, green_patches, grey_patches, non_patches):
+        """Calculates the location of the closest green space within the map. Considers PG and REF land uses. Distances
+        are calculated between the grey patches, which is a list of non-park patches and green patches.
+
+        :param green_patches: list containing UBVector() instances of all PG/REF patches in the map
+        :param grey_patches: list containing UBVector() instances fo all non PG/REF patches
+        :param non_patches: list containing UBVector() instances fo all patches that should not be considered
+        :return: Modifies the existing patch UBVector() instance and adds OSLink assets to the scenario
+        """
+        # Find the distance to nearest green space in all grey patches
+        oslink_id = 1
+        for grey in grey_patches:
+            prev_dist = 9999999999999999    # Initialize with something absurdly high!
+            pts_current = (0, 0)        # Initialize
+            current_green = None     # Initialize
+            pts1 = grey.get_points()
+
+            for green in green_patches:
+                pts2 = green.get_points()
+                current_dist = math.sqrt(pow(pts1[0] - pts2[0], 2) + pow(pts1[1] - pts2[1],2))
+                if current_dist < prev_dist:
+                    prev_dist = current_dist
+                    pts_current = pts2
+                    current_green = green
+                    grey.add_attribute("GSD_Dist", prev_dist)
+                    grey.add_attribute("GSD_Loc", str(green.get_attribute("BlockID"))+"_"+
+                                       str(green.get_attribute("PatchID")))
+                    grey.add_attribute("GSD_Deg", 0)
+                    grey.add_attribute("GSD_ACon", 0)
+
+            # Draw the link line
+            dist_line = ubdata.UBVector(((pts1[0], pts1[1]), (pts_current[0], pts_current[1])))
+            dist_line.add_attribute("OSLinkID", oslink_id)
+            dist_line.add_attribute("Distance", prev_dist)
+            dist_line.add_attribute("Location", grey.get_attribute("GSD_Loc"))
+            dist_line.add_attribute("Landuse", grey.get_attribute("Landuse"))
+            dist_line.add_attribute("AreaAccess", grey.get_attribute("PatchArea"))
+            dist_line.add_attribute("OS_Size", current_green.get_attribute("PatchArea"))
+            self.scenario.add_asset("OSLinkID"+str(oslink_id), dist_line)
+            oslink_id += 1
+
+        # For all green patches, write the same attributes and calculate the degree of connection
+        for green in green_patches:
+            patch_name = str(green.get_attribute("BlockID"))+"_"+str(green.get_attribute("PatchID"))
+            degree = 0
+            urban_area_connected = 0
+            for grey in grey_patches:
+                if grey.get_attribute("GSD_Loc") == patch_name:
+                    degree += 1
+                    urban_area_connected += grey.get_attribute("PatchArea")
+
+            green.add_attribute("GSD_Dist", 0)
+            green.add_attribute("GSD_Loc", str(green.get_attribute("BlockID"))+"_"+
+                                str(green.get_attribute("PatchID")))
+            green.add_attribute("GSD_Deg", degree)
+            green.add_attribute("GSD_ACon", urban_area_connected)
+
+        # For non-patches, add all default attributes
+        for non in non_patches:
+            non.add_attribute("GSD_Dist", -1)
+            non.add_attribute("GSD_Loc", "")
+            non.add_attribute("GSD_Deg", 0)
+            non.add_attribute("GSD_ACon", 0)
+        return True
+
+    def delineate_open_space_network(self, green_patches, grey_patches, non_patches, min_dist):
+        """Create a network of open spaces, only considers Parks and Reserves/Floodways
+
+        :param green_patches: a list containing UBVector() instances of green patches
+        :param grey_patches: a list of UBVector() instances of grey patches
+        :param non_patches: a list of UBVector() instances representing road patches
+        :return: modifies the existing patch data and adds OSNet assets to the scenario
+        """
+        osnet_id = 1
+        for g in green_patches:             # For each green patch, find the next closest patch
+            degrees = 0
+            pts1 = g.get_points()   # Get the patchXY
+            prev_dist = -1
+            for h in green_patches:
+                if h.get_attribute("BlockID") == g.get_attribute("BlockID") \
+                        and h.get_attribute("PatchID") == g.get_attribute("PatchID"):
+                    continue    # If it's the same patch, don't do anything!!
+                pts2 = h.get_points()
+                current_dist = math.sqrt(pow(pts1[0]-pts2[0], 2) + pow(pts1[1]-pts2[1], 2))
+                if current_dist <= min_dist:
+                    degrees += 1
+
+                    link = ubdata.UBVector(((pts1[0], pts1[1]), (pts2[0], pts2[1])))
+                    link.add_attribute("OSNetID", osnet_id)
+                    link.add_attribute("NodeA", str(g.get_attribute("BlockID")) + "_" +
+                                       str(g.get_attribute("PatchID")))
+                    link.add_attribute("NodeB", str(h.get_attribute("BlockID")) + "_" +
+                                       str(h.get_attribute("PatchID")))
+                    link.add_attribute("Distance", current_dist)
+                    self.scenario.add_asset("OSNetID" + str(osnet_id), link)
+                    osnet_id += 1
+
+                    if prev_dist == -1 or current_dist < prev_dist:
+                        prev_dist = current_dist
+
+            g.add_attribute("OSNet_Deg", degrees)
+            g.add_attribute("OSNet_MinD", prev_dist)
+
+        # Add the new attributes to all patches that aren't parks for completeness
+        for g in grey_patches:
+            g.add_attribute("OSNet_Deg", 0)
+            g.add_attribute("OSNet_MinD", -1)
+        for n in non_patches:
+            n.add_attribute("OSNet_Deg", 0)
+            n.add_attribute("OSNet_MinD", -1)
+        return True
 
     def map_water_consumption(self, block_attr):
         """Calculates the water consumption and temporal water demand/wastewater trends for the input block. The demand
@@ -501,7 +992,411 @@ class SpatialMapping(UBModule):
         :param block_attr: The UBVector() format of the current Block whose water consumption needs to be determined.
         :return: No return, block attributes are written to the current block_attr object.
         """
-        pass
+        # RESIDENTIAL WATER DEMAND
+        if self.residential_method == "EUA":
+            self.res_enduseanalysis(block_attr)
+        else:
+            self.res_directanalysis(block_attr)
+        self.res_irrigation(block_attr)
+
+        # NON-RESIDENTIAL WATER DEMAND AND PUBLIC OPEN SPACES
+        self.nonres_waterdemands(block_attr)
+        self.public_spaces_wateruse(block_attr)
+
+        # FINAL TOTALS
+        self.tally_total_block_wateruse(block_attr)
+        return True
+
+    def res_endusebasedemands(self):
+        """Calculates the base demand values for the five end uses, which can then be adjusted depending on the
+        stochastic variation introduced in the model and the occupancy."""
+        self.kitchendem = self.res_kitchen_fq * self.res_kitchen_dur * self.flowrates["Kitchen"][int(self.baserating)]
+        self.showerdem = self.res_shower_fq * self.res_shower_dur * self.flowrates["Shower"][int(self.baserating)]
+        self.toiletdem = self.res_toilet_fq * self.flowrates["Toilet"][int(self.baserating)]
+        self.laundrydem = self.res_laundry_fq * self.flowrates["Laundry"][int(self.baserating)]
+        self.dishwasherdem = self.res_dishwasher_fq * self.flowrates["Dishwasher"][int(self.baserating)]
+        return True
+
+    def initialize_per_capita_residential_use(self):
+        """Calculates a quick per capita water use [L/day] based on the selected residential method."""
+        map_attr = self.scenario.get_asset_with_name("MapAttributes")
+        if self.residential_method == "EUA":
+            avg_occup = map_attr.get_attribute("AvgOccup")
+            self.avg_per_res_capita = self.kitchendem + self.showerdem + self.toiletdem + \
+                                      float(self.laundrydem / avg_occup) + float(self.dishwasherdem / avg_occup)
+        else:
+            self.avg_per_res_capita = self.res_dailyindoor_vol
+        map_attr.add_attribute("AvgPerCapWaterUse", self.avg_per_res_capita)
+        self.notify("The Average Per Capita Water Use is: "+str(self.avg_per_res_capita)+" L/day")
+        return True
+
+    def res_enduseanalysis(self, block_attr):
+        """Conducts end use analysis for residential districts. Returns the flow rates for all demand sub-components.
+        in a dictionary that can be queries. Demands returned are daily values except for irrigation, which is annual.
+        """
+        print "Entering End Use Analysis"
+        if block_attr.get_attribute("HasHouses") or block_attr.get_attribute("HasFlats"):
+            # RESIDENTIAL INDOOR WATER DEMANDS
+            if block_attr.get_attribute("HasHouses"):
+                occup = block_attr.get_attribute("HouseOccup")
+                qty = block_attr.get_attribute("ResHouses") # The total number of houses for up-scaling
+            else:
+                occup = block_attr.get_attribute("HDROccup")
+                qty = block_attr.get_attribute("HDRFlats")      # The total number of units for up-scaling
+
+            # Get base demands and scale to household level
+            kitchendem = self.kitchendem * occup
+            showerdem = self.showerdem * occup
+            toiletdem = self.toiletdem * occup
+            laundrydem = self.laundrydem
+            dishwasherdem = self.dishwasherdem
+
+            # Vary Demands
+            kitchendemF = self.vary_demand_stochastically(kitchendem, self.res_kitchen_var/100.0)
+            showerdemF = self.vary_demand_stochastically(showerdem, self.res_shower_var / 100.0)
+            toiletdemF = self.vary_demand_stochastically(toiletdem, self.res_toilet_var / 100.0)
+            laundrydemF = self.vary_demand_stochastically(laundrydem, self.res_laundry_var / 100.0)
+            dishwasherdemF = self.vary_demand_stochastically(dishwasherdem, self.res_dishwasher_var / 100.0)
+
+            indoor_demands = [kitchendemF, showerdemF, toiletdemF, laundrydemF, dishwasherdemF]
+            hotwater_ratios = [self.res_kitchen_hot/100.0, self.res_shower_hot/100.0, self.res_toilet_hot/100.0,
+                               self.res_laundry_hot/100.0, self.res_dishwasher_hot/100.0]
+            # hotwater_volumes = indoor_demands X hotwater_ratios
+            hotwater_volumes = [a*b for a,b in zip(indoor_demands, hotwater_ratios)]
+
+            # Up-scale to Block Level
+            blk_demands = [i * qty for i in indoor_demands]      # up-scale
+            blk_hotwater = [i * qty for i in hotwater_volumes]
+
+            # Work out Wastewater volumes by making boolean vectors
+            gw = [int(self.res_kitchen_wwq == "G"), int(self.res_shower_wwq == "G"), int(self.res_toilet_wwq == "G"),
+                  int(self.res_laundry_wwq == "G"), int(self.res_dishwasher_wwq == "G")]
+            bw = [int(self.res_kitchen_wwq == "B"), int(self.res_shower_wwq == "B"), int(self.res_toilet_wwq == "B"),
+                  int(self.res_laundry_wwq == "B"), int(self.res_dishwasher_wwq == "B")]
+
+            # Write the information in terms of the single House level and the Block Level
+            block_attr.add_attribute("WD_HHKitchen", indoor_demands[0])   # Household Kitchen use [L/hh/day]
+            block_attr.add_attribute("WD_HHShower", indoor_demands[1])    # Household Shower use [L/hh/day]
+            block_attr.add_attribute("WD_HHToilet", indoor_demands[2])    # Household Toilet use [L/hh/day]
+            block_attr.add_attribute("WD_HHLaundry", indoor_demands[3])   # Household Laundry use [L/hh/day]
+            block_attr.add_attribute("WD_HHDish", indoor_demands[4])      # Household Dishwasher [L/hh/day]
+            block_attr.add_attribute("WD_HHIndoor", sum(indoor_demands))   # Total Household Use [L/hh/day]
+            block_attr.add_attribute("WD_HHHot", sum(hotwater_volumes))    # Total Household Hot Water [L/hh/day]
+            block_attr.add_attribute("HH_GreyW", sum([a * b for a, b in zip(gw, indoor_demands)]))   # [L/hh/day]
+            block_attr.add_attribute("HH_BlackW", sum([a * b for a, b in zip(bw, indoor_demands)]))  # [L/hh/day]
+
+            block_attr.add_attribute("WD_Indoor", sum(blk_demands) / 1000.0)    # Total Block Indoor use [kL/day]
+            block_attr.add_attribute("WD_HotVol", sum(blk_hotwater) / 1000.0)   # Total Block Hot Water [kL/day]
+            block_attr.add_attribute("WW_ResGrey", sum([a * b for a, b in zip(gw, blk_demands)]) / 1000.0)    # [kL/day]
+            block_attr.add_attribute("WW_ResBlack", sum([a * b for a, b in zip(bw, blk_demands)]) / 1000.0)   # [kL/day]
+
+            map_attr = self.scenario.get_asset_with_name("MapAttributes")
+            map_attr.add_attribute("WD_RES_Method", "EUA")
+        else:   # If no residential, then simply set all attributes to zero
+            block_attr.add_attribute("WD_HHKitchen", 0.0)
+            block_attr.add_attribute("WD_HHShower", 0.0)
+            block_attr.add_attribute("WD_HHToilet", 0.0)
+            block_attr.add_attribute("WD_HHLaundry", 0.0)
+            block_attr.add_attribute("WD_HHDish", 0.0)
+            block_attr.add_attribute("WD_HHIndoor", 0.0)
+            block_attr.add_attribute("WD_HHHot", 0.0)
+            block_attr.add_attribute("HH_GreyW", 0.0)
+            block_attr.add_attribute("HH_BlackW", 0.0)
+
+            block_attr.add_attribute("WD_Indoor", 0.0)
+            block_attr.add_attribute("WD_HotVol", 0.0)
+            block_attr.add_attribute("WW_ResGrey", 0.0)
+            block_attr.add_attribute("WW_ResBlack", 0.0)
+        return True
+
+    def res_directanalysis(self, block_attr):
+        """Conducts the direct input analysis of residential water demand."""
+        if block_attr.get_attribute("HasHouses") or block_attr.get_attribute("HasFlats"):
+            # RESIDENTIAL INDOOR WATER DEMANDS
+            if block_attr.get_attribute("HasHouses"):
+                occup = block_attr.get_attribute("HouseOccup")
+                qty = block_attr.get_attribute("ResHouses")  # The total number of houses for up-scaling
+            else:
+                occup = block_attr.get_attribute("HDROccup")
+                qty = block_attr.get_attribute("HDRFlats")  # The total number of units for up-scaling
+
+            # Calculate indoor demand for one household
+            volHH = float(self.res_dailyindoor_vol * occup)
+            volHHF = self.vary_demand_stochastically(volHH, self.res_dailyindoor_var/100.0)     # Add variation
+            volHot = volHHF * self.res_dailyindoor_hot/100.0    # Work out hot water and non-potable water
+            volNp = volHHF * self.res_dailyindoor_np/100.0
+
+            # Work out greywater/blackwater proportions
+            propGW = 1.0 - (self.res_dailyindoor_bgprop + 100.0)/100.0/2.0
+            propBW = 1.0 - propGW
+
+            # Create attributes, up-scale at the same time.
+            block_attr.add_attribute("WD_HHIndoor", volHHF)  # Household Indoor Water use [L/hh/day]
+            block_attr.add_attribute("WD_HHHot", volHot)     # Household Indoor hot water [L/hh/day]
+            block_attr.add_attribute("WD_HHNonPot", volNp)  # Household non-potable use [L/hh/day]
+            block_attr.add_attribute("HH_GreyW", volHHF * propGW)     # HH Greywater [L/hh/day]
+            block_attr.add_attribute("HH_BlackW", volHHF * propBW)    # HH Blackwater [L/hh/day]
+
+            block_attr.add_attribute("WD_Indoor", volHHF * qty / 1000.0)    # Block Indoor Residential use [kL/day]
+            block_attr.add_attribute("WD_HotVol", volHot * qty / 1000.0)    # Block Indoor Res Hot water use [kL/day]
+            block_attr.add_attribute("WD_NonPotable", volNp * qty / 1000.0) # Block Res Nonpotable use [kL/day]
+            block_attr.add_attribute("WW_ResGrey", volHHF * qty * propGW / 1000.0)  # Block Res Greywater [kL/day]
+            block_attr.add_attribute("WW_ResBlack", volHHF * qty * propBW / 1000.0) # Block Res Blackwater [kL/day]
+
+            map_attr = self.scenario.get_asset_with_name("MapAttributes")
+            map_attr.add_attribute("WD_RES_Method", "DQI")
+        else:
+            block_attr.add_attribute("WD_HHIndoor", 0)
+            block_attr.add_attribute("WD_HHHot", 0)
+            block_attr.add_attribute("WD_HHNonPot", 0)
+            block_attr.add_attribute("HH_GreyW", 0)
+            block_attr.add_attribute("HH_BlackW", 0)
+
+            block_attr.add_attribute("WD_Indoor", 0)
+            block_attr.add_attribute("WD_HotVol", 0)
+            block_attr.add_attribute("WD_NonPotable", 0)
+            block_attr.add_attribute("WW_ResGrey", 0.0)
+            block_attr.add_attribute("WW_ResBlack", 0.0)
+        return True
+
+    def res_irrigation(self, block_attr):
+        """Calculates the irrigation water demands for residential households or apartments."""
+        # GET METRICS FOR GARDEN SPACE
+        print "Entering Irrigation Analysis"
+        if block_attr.get_attribute("HasHouses") or block_attr.get_attribute("HasFlats"):
+            if block_attr.get_attribute("HasHouses"):
+                garden = block_attr.get_attribute("ResGarden")
+                qty = block_attr.get_attribute("ResAllots")  # The total number of houses for up-scaling
+            else:
+                garden = block_attr.get_attribute("HDRGarden")
+                qty = 1     # If it's apartments, we don't sub-divide the garden space
+
+            gardenVolHH = self.res_outdoor_vol * garden * 100.0 / 365.0          # Convert [ML/ha/year] to [L/day]
+            block_attr.add_attribute("WD_HHGarden", gardenVolHH)                # Household garden irrigation [L/hh/day]
+            block_attr.add_attribute("WD_Outdoor", gardenVolHH * qty / 1000.0)  # Block Residential Irrigation [kL/day]
+        else:
+            block_attr.add_attribute("WD_HHGarden", 0.0)
+            block_attr.add_attribute("WD_Outdoor", 0.0)
+        return True
+
+    def nonres_waterdemands(self, block_attr):
+        """Calculates non-residential water demands for commercial, industrial, offices land uses based on the unit
+        flow rate or Population Equivalents method, which assumes water demands per floor space or employee."""
+        # COMMERCIAL AREAS
+        print "Entering Non-Res Analysis"
+        if block_attr.get_attribute("Has_COM"):
+            if self.com_units == "LSQMD":
+                floorspace = block_attr.get_attribute("COMFloors") * block_attr.get_attribute("COMAeBldg") * \
+                             block_attr.get_attribute("COMestates")
+                comdemand = self.com_demand * floorspace / 1000.0       # [kL/day]
+            elif self.com_units == "LPAXD":
+                comdemand = self.com_demand * block_attr.get_attribute("COMjobs") / 1000.0  # [kL/day]
+            else:   # Units = PES
+                comdemand = self.com_demand * self.avg_per_res_capita * block_attr.get_attribute("COMjobs") / 1000.0
+                # It is equal to the (PE Factor) x (the average residential per capita use) x (total employed)
+
+            compublicspace = block_attr.get_attribute("avLt_COM")
+            comdemand = self.vary_demand_stochastically(comdemand, self.com_var/100.0)
+            comhot = self.com_hot/100.0 * comdemand
+        else:
+            compublicspace = 0
+            comdemand = 0
+            comhot = 0
+
+        # OFFICES
+        if block_attr.get_attribute("Has_ORC"):
+            if self.office_units == "LSQMD":
+                floorspace = block_attr.get_attribute("ORCFloors") * block_attr.get_attribute("ORCAeBldg") * \
+                             block_attr.get_attribute("ORCestates")
+                orcdemand = self.office_demand * floorspace / 1000.0       # [kL/day]
+            elif self.office_units == "LPAXD":
+                orcdemand = self.office_demand * block_attr.get_attribute("ORCjobs") / 1000.0  # [kL/day]
+            else:   # Units = PES
+                orcdemand = self.office_demand * self.avg_per_res_capita * block_attr.get_attribute("ORCjobs") / 1000.0
+                # It is equal to the (PE Factor) x (the average residential per capita use) x (total employed)
+
+            orcpublicspace = block_attr.get_attribute("avLt_ORC")
+            orcdemand = self.vary_demand_stochastically(orcdemand, self.office_var/100.0)
+            orchot = self.office_hot/100.0 * orcdemand
+        else:
+            orcpublicspace = 0
+            orcdemand = 0
+            orchot = 0
+
+        # LIGHT INDUSTRY
+        if block_attr.get_attribute("Has_LI"):
+            if self.li_units == "LSQMD":
+                floorspace = block_attr.get_attribute("LIFloors") * block_attr.get_attribute("LIAeBldg") * \
+                             block_attr.get_attribute("LIestates")
+                lidemand = self.li_demand * floorspace / 1000.0       # [kL/day]
+            elif self.li_units == "LPAXD":
+                lidemand = self.li_demand * block_attr.get_attribute("LIjobs") / 1000.0  # [kL/day]
+            else:   # Units = PES
+                lidemand = self.li_demand * self.avg_per_res_capita * block_attr.get_attribute("LIjobs") / 1000.0
+                # It is equal to the (PE Factor) x (the average residential per capita use) x (total employed)
+
+            lipublicspace = block_attr.get_attribute("avLt_LI")
+            lidemand = self.vary_demand_stochastically(lidemand, self.li_var/100.0)
+            lihot = self.li_hot/100.0 * lidemand
+        else:
+            lipublicspace = 0
+            lidemand = 0
+            lihot = 0
+
+        # HEAVY INDUSTRY
+        if block_attr.get_attribute("Has_HI"):
+            if self.hi_units == "LSQMD":
+                floorspace = block_attr.get_attribute("HIFloors") * block_attr.get_attribute("HIAeBldg") * \
+                             block_attr.get_attribute("HIestates")
+                hidemand = self.hi_demand * floorspace / 1000.0       # [kL/day]
+            elif self.hi_units == "LPAXD":
+                hidemand = self.hi_demand * block_attr.get_attribute("HIjobs") / 1000.0  # [kL/day]
+            else:   # Units = PES
+                hidemand = self.hi_demand * self.avg_per_res_capita * block_attr.get_attribute("HIjobs") / 1000.0
+                # It is equal to the (PE Factor) x (the average residential per capita use) x (total employed)
+
+            hipublicspace = block_attr.get_attribute("avLt_HI")
+            hidemand = self.vary_demand_stochastically(hidemand, self.hi_var/100.0)
+            hihot = self.hi_hot/100.0 * hidemand
+        else:
+            hipublicspace = 0
+            hidemand = 0
+            hihot = 0
+
+        # Non-Res Irrigation
+        total_irrigation_space = compublicspace + orcpublicspace + lipublicspace + hipublicspace
+        irrigation_vol = total_irrigation_space / 10000.0 * self.nonres_landscape_vol * 1000.0 / 365.0  # [kL/day]
+
+        # GW and WW factors
+        com_propGW = 1.0 - (self.com_ww_bgprop + 100.0) / 100.0 / 2.0
+        com_propBW = 1.0 - com_propGW
+        ind_propGW = 1.0 - (self.ind_ww_bgprop + 100.0) / 100.0 / 2.0
+        ind_propBW = 1.0 - ind_propGW
+
+        block_attr.add_attribute("WD_COM", comdemand)       # Commercial demand [kL/day]
+        block_attr.add_attribute("WD_HotCOM", comhot)       # Commercial hot Water [kL/day]
+        block_attr.add_attribute("WD_Office", orcdemand)    # Office demand [kL/day]
+        block_attr.add_attribute("WD_HotOffice", orchot)    # Office hot water [kL/day]
+        block_attr.add_attribute("WD_LI", lidemand)         # Light Industry demand [kL/day]
+        block_attr.add_attribute("WD_HotLI", lihot)         # Light industry hot water [kL/day]
+        block_attr.add_attribute("WD_HI", hidemand)         # Heavy Industry demand [kL/day]
+        block_attr.add_attribute("WD_HotHI", hihot)         # Heavy industry hot water [kL/day]
+        block_attr.add_attribute("WD_NRes", comdemand + orcdemand + lidemand + hidemand)    # Total non-res [kL/day]
+        block_attr.add_attribute("WD_HotNRes", comhot + orchot + lihot + hihot)
+        block_attr.add_attribute("WD_NResIrri", irrigation_vol)  # Total non-res irrigation [kL/day]
+        block_attr.add_attribute("WW_ComGrey", (comdemand + orcdemand) * com_propGW)
+        block_attr.add_attribute("WW_ComBlack", (comdemand + orcdemand) * com_propBW)
+        block_attr.add_attribute("WW_IndGrey", (lidemand + hidemand) * ind_propGW)
+        block_attr.add_attribute("WW_IndBlack", (lidemand + hidemand) * ind_propBW)
+
+    def public_spaces_wateruse(self, block_attr):
+        """Calculates the public open spaces water use, including mainly the irrigation of open spaces and landmark
+        areas."""
+        print "Entering Public Space Water Use"
+        parkspace = block_attr.get_attribute("AGreenOS") * int(self.irrigate_parks)
+        landmarkspace = block_attr.get_attribute("MiscAirr") * int(self.irrigate_landmarks)
+        refspace = block_attr.get_attribute("REF_av") * int(self.irrigate_reserves)
+        block_attr.add_attribute("WD_POSIrri", self.pos_irrigation_vol * 1000 / 365.0 *
+                                 (parkspace + landmarkspace + refspace) / 10000.0)    # Total OS irrigation [kL/day]
+        return True
+
+    def tally_total_block_wateruse(self, block_attr):
+        """Scans the water demand attributes and calculates total demands for various sub-categories. Includes losses"""
+        print "Getting total water use."
+        total_blk_indoor = block_attr.get_attribute("WD_Indoor") + block_attr.get_attribute("WD_NRes")
+        total_irrigation = block_attr.get_attribute("WD_Outdoor") + block_attr.get_attribute("WD_NResIrri") + \
+                           block_attr.get_attribute("WD_POSIrri")
+        total_blk_hotwater = block_attr.get_attribute("WD_HotVol") + block_attr.get_attribute("WD_HotNRes")
+        total_blk_greywater = block_attr.get_attribute("WW_ResGrey") + block_attr.get_attribute("WW_ComGrey") + \
+                              block_attr.get_attribute("WW_IndGrey")
+        total_blk_blackwater = block_attr.get_attribute("WW_ResBlack") + block_attr.get_attribute("WW_ComBlack") + \
+                               block_attr.get_attribute("WW_IndBlack")
+        total_blk_demand = total_blk_indoor + total_irrigation
+        total_blk_ww = total_blk_greywater + total_blk_blackwater
+
+        if self.estimate_waterloss:
+            total_losses = self.waterloss_volprop/100.0 * total_blk_demand
+        else:
+            total_losses = 0.0
+
+        block_attr.add_attribute("Blk_WD", total_blk_demand / 1000.0 * 365.0)   # Total Demand [ML/year]
+        block_attr.add_attribute("Blk_WDIrri", total_irrigation / 1000.0 * 365.0)   # Total Irrigation [ML/year]
+        block_attr.add_attribute("Blk_WDHot", total_blk_hotwater / 1000.0 * 365.0)  # Total Hot Water [ML/year]
+        block_attr.add_attribute("Blk_WW", total_blk_ww / 1000.0 * 365.0)   # Total Block Wastewater [ML/year]
+        block_attr.add_attribute("Blk_WWGrey", total_blk_greywater / 1000.0 * 365.0)    # Total greywater [ML/year]
+        block_attr.add_attribute("Blk_WWBlack", total_blk_blackwater / 1000.0 * 365.0)  # Total blackwater [ML/year]
+        block_attr.add_attribute("Blk_Losses", total_losses / 1000.0 * 365.0)  # Total system losses [ML/year]
+        return True
+
+    def vary_demand_stochastically(self, basedemand, varyfactor):
+        """Uses a uniform distribution to alter a base demand value by a variation factor [ ] either incrementally
+        or decrementally. Returns the varied demand value."""
+        if varyfactor == 0 or basedemand == 0:      # If either are zero, don't even try! You'll risk infinite loop!
+            return basedemand
+        variedDemand = -1
+        while variedDemand <= 0:
+            variedDemand = basedemand + random.uniform(basedemand * varyfactor * (-1), basedemand * varyfactor)
+        return variedDemand
+
+    def retrieve_standards(self, st_name):
+        """Retrieves the water flow rates for the respective appliance standard."""
+        if st_name == "Others...":
+            return {"Name": "Others...", "RatingCats": ["none"]}
+
+        standard_dict = dict()
+        standard_dict["Name"] = st_name
+        standard_dict["Shower"] = []
+        standard_dict["Kitchen"] = []
+        standard_dict["Toilet"] = []
+        standard_dict["Laundry"] = []
+        standard_dict["Dishwasher"] = []
+        standard_dict["RatingCats"] = []
+
+        rootpath = self.activesim.get_program_rootpath()    # Get the program's root path
+        f = open(rootpath+"/ancillary/appliances/"+st_name+".cfg", 'r')
+        data = []
+        for lines in f:
+            data.append(lines.rstrip("\n").split(","))
+        f.close()
+        for i in range(len(data)):      # Scan all data and create the dictionary
+            if i == 0:  # Skip the header line
+                continue
+            if data[i][2] not in standard_dict["RatingCats"]:
+                standard_dict["RatingCats"].append(data[i][2])
+            standard_dict[data[i][1]].append(float(data[i][3])*0.5 + float(data[i][4])*0.5)
+        return standard_dict
+
+    def get_wateruse_custompattern(self, key):
+        """Retrieves the _cp custom pattern vector from the given key, the keys are in UBGlobals for reference."""
+        return eval("self." + str(key) + "_cp")
+
+    def set_wateruse_custompattern(self, key, patternvector):
+        """Sets the current custom pattern _cp of the parameter with the given key to the new patternvector."""
+        exec ("self." + str(key) + "_cp = " + str(patternvector))
+
+    def create_day_time_series(self, demandcomponents):
+        """Creates a 24-hour time series for the given demand components, returns a single aggregate time series
+        object.
+
+        :param demandcomponents: a list of all demand components to use in the time series creation
+        :return: UBTimeSeries() object
+        """
+        pass    # [TO DO]
+
+    def create_weekly_time_series(self, demandcomponents):
+        pass    # [TO DO]
+
+    def create_annual_time_series(self, demandcomponents):
+        pass    # [TO DO]
+
+    def get_peak_daily_demand(self, tseries, units):
+        """Returns the peak flow rate for a given time series 'tseries' in the given units.
+
+        :param tseries: the input time-series, a UBTimeSeries() object
+        :param units: "L", "m3" or "L/sec" or "m3/sec"
+        :return: single value in the corresponding units from the given time series
+        """
+        pass    # [TO DO]
 
     def map_pollution_emissions(self):
         pass

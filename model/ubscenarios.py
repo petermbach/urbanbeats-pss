@@ -173,7 +173,7 @@ class UrbanBeatsScenario(threading.Thread):
         else:
             nameid = asset_identifier+"ID"
 
-        attribute_values = [[],[]]  # Asset ID, Asset Value
+        attribute_values = [[], []]  # Asset ID, Asset Value
         for asset in assetcol:
             if asset.get_attribute(nameid) in asset_ids:
                 attribute_values[0].append(asset.get_attribute(nameid))
@@ -540,6 +540,7 @@ class UrbanBeatsScenario(threading.Thread):
         delinblocks.run_module()
 
         # --- STATIC STEP 2: Climate Setup ---
+        self.simulation.update_runtime_progress(20)
         # Skip this for now.
 
         # --- STATIC STEP 3: Urban Planning ---
@@ -554,16 +555,26 @@ class UrbanBeatsScenario(threading.Thread):
             urbplanbb.run_module()
 
         # --- STATIC STEP 4: Socio-Economic ---
-        # Skip this for now
+        self.simulation.update_runtime_progress(40)
+        # Skip this for now...
 
         # --- STATIC STEP 5: Spatial Mapping ---
-        # Skip this for now
+        self.simulation.update_runtime_progress(50)
+        spatialmap = self.get_module_object("MAP", 0)
+        map_attr = self.get_asset_with_name("MapAttributes")
+        if spatialmap is None:
+            map_attr.add_attribute("HasSPATIALMAPPING", 0)
+        else:
+            map_attr.add_attribute("HasSPATIALMAPPING", 1)
+            spatialmap.attach(self.__observers)
+            spatialmap.run_module()
 
         # --- STATIC STEP 6: Regulation ---
-        # Skip this for now
+        self.simulation.update_runtime_progress(60)
+        # Skip this for now...
 
         # --- STATIC STEP 7: Infrastructure ---
-        self.simulation.update_runtime_progress(60)
+        self.simulation.update_runtime_progress(65)
         infrastructure = self.get_module_object("INFRA", 0)
         if infrastructure is None:
             map_attr.add_attribute("HasINFRA", 0)
@@ -572,10 +583,17 @@ class UrbanBeatsScenario(threading.Thread):
             infrastructure.attach(self.__observers)
             infrastructure.run_module()
 
-
         # --- STATIC STEP 8: Performance ---
+        self.simulation.update_runtime_progress(70)
+        # Skip this for now...
+
         # --- STATIC STEP 9: Impact ---
+        self.simulation.update_runtime_progress(80)
+        # Skip this for now...
+
         # --- STATIC STEP 10: Decision Analysis ---
+        self.simulation.update_runtime_progress(90)
+        # Skip this for now...
 
         # --- DATA EXPORT AND CLEANUP STEPS ---
         self.simulation.update_runtime_progress(95)

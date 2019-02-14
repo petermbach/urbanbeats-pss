@@ -648,6 +648,7 @@ class UrbanPlanning(UBModule):
 
             block_attr.add_attribute("MiscAtot", otherarea)
             block_attr.add_attribute("MiscAimp", otherimp)
+            block_attr.add_attribute("MiscAirr", irrigateextra)
 
             if self.unc_custom:     # Using a custom threshold?
                 block_attr.add_attribute("MiscThresh", self.unc_customthresh)
@@ -811,6 +812,7 @@ class UrbanPlanning(UBModule):
             blk_avspace += av_spRD
 
             # 2.5 - RESIDENTIAL AREAS  ---------------------
+            map_attr.add_attribute("AvgOccup", self.occup_avg)      # Used in later modules! Needs a baseline
             ResPop = block_attr.get_attribute("Population")          # Retrieve population count
             A_res = block_attr.get_attribute("pLU_RES") * Aactive    # Retrieve active area
             minHouse = self.person_space * self.occup_avg * 4       # Work out the minimum house size
@@ -822,6 +824,9 @@ class UrbanPlanning(UBModule):
 
                 if resdict["TypeHouse"] == 1:
                     block_attr.add_attribute("HasHouses", 1)
+                    block_attr.add_attribute("ResARoad", resdict["Aroad"])
+                    block_attr.add_attribute("ResANstrip", resdict["Anstrip"])
+                    block_attr.add_attribute("ResAFpath", resdict["Afpath"])
                     block_attr.add_attribute("HouseOccup", resdict["HouseOccup"])
                     block_attr.add_attribute("ResParcels", resdict["ResParcels"])
                     block_attr.add_attribute("ResFrontT", resdict["TotalFrontage"])
@@ -874,7 +879,9 @@ class UrbanPlanning(UBModule):
                     blk_avspace += resdict["av_HDRes"]
 
             else:
-                block_attr.add_attribute("HasRes", 0)
+                block_attr.add_attribute("HasRes", 1)       # There IS residential space,BUT
+                block_attr.add_attribute("HasHouses", 0)    # No houses
+                block_attr.add_attribute("HasFlats", 0)     # No flats
                 block_attr.add_attribute("avSt_RES", A_res)  # becomes street-scape area available
 
                 # Add to cumulative area variables
@@ -909,6 +916,10 @@ class UrbanPlanning(UBModule):
                     # Transfer attributes from indLI dictionary
                     block_attr.add_attribute("LIjobs", indLI_dict["TotalBlockEmployed"])
                     block_attr.add_attribute("LIestates", indLI_dict["Estates"])
+                    block_attr.add_attribute("LIAeRoad", indLI_dict["Aroad"])
+                    block_attr.add_attribute("LIAeNstrip", indLI_dict["Anstrip"])
+                    block_attr.add_attribute("LIAeFpath", indLI_dict["Afpath"])
+                    block_attr.add_attribute("LIAestate", indLI_dict["Aestate"])
                     block_attr.add_attribute("avSt_LI", indLI_dict["av_St"])
                     block_attr.add_attribute("LIAfront", indLI_dict["Afrontage"])
                     block_attr.add_attribute("LIAfrEIA", indLI_dict["FrontageEIA"])
@@ -937,9 +948,13 @@ class UrbanPlanning(UBModule):
                     # Transfer attributes from indHI dictionary
                     block_attr.add_attribute("HIjobs", indHI_dict["TotalBlockEmployed"])
                     block_attr.add_attribute("HIestates", indHI_dict["Estates"])
-                    block_attr.add_attribute("avSt_HI", indLI_dict["av_St"])
-                    block_attr.add_attribute("HIAfront", indLI_dict["Afrontage"])
-                    block_attr.add_attribute("HIAfrEIA", indLI_dict["FrontageEIA"])
+                    block_attr.add_attribute("HIAeRoad", indHI_dict["Aroad"])
+                    block_attr.add_attribute("HIAeNstrip", indHI_dict["Anstrip"])
+                    block_attr.add_attribute("HIAeFpath", indHI_dict["Afpath"])
+                    block_attr.add_attribute("HIAestate", indHI_dict["Aestate"])
+                    block_attr.add_attribute("avSt_HI", indHI_dict["av_St"])
+                    block_attr.add_attribute("HIAfront", indHI_dict["Afrontage"])
+                    block_attr.add_attribute("HIAfrEIA", indHI_dict["FrontageEIA"])
                     block_attr.add_attribute("HIAestate", indHI_dict["Aestate"])
                     block_attr.add_attribute("HIAeBldg", indHI_dict["EstateBuildingArea"])
                     block_attr.add_attribute("HIFloors", indHI_dict["Floors"])
@@ -965,6 +980,10 @@ class UrbanPlanning(UBModule):
                     # Transfer attributes from COM dictionary
                     block_attr.add_attribute("COMjobs", com_dict["TotalBlockEmployed"])
                     block_attr.add_attribute("COMestates", com_dict["Estates"])
+                    block_attr.add_attribute("COMAeRoad", com_dict["Aroad"])
+                    block_attr.add_attribute("COMAeNstrip", com_dict["Anstrip"])
+                    block_attr.add_attribute("COMAeFpath", com_dict["Afpath"])
+                    block_attr.add_attribute("COMAestate", com_dict["Aestate"])
                     block_attr.add_attribute("avSt_COM", com_dict["av_St"])
                     block_attr.add_attribute("COMAfront", com_dict["Afrontage"])
                     block_attr.add_attribute("COMAfrEIA", com_dict["FrontageEIA"])
@@ -993,6 +1012,10 @@ class UrbanPlanning(UBModule):
                     # Transfer attributes from Offices dictionary
                     block_attr.add_attribute("ORCjobs", orc_dict["TotalBlockEmployed"])
                     block_attr.add_attribute("ORCestates", orc_dict["Estates"])
+                    block_attr.add_attribute("ORCAeRoad", orc_dict["Aroad"])
+                    block_attr.add_attribute("ORCAeNstrip", orc_dict["Anstrip"])
+                    block_attr.add_attribute("ORCAeFpath", orc_dict["Afpath"])
+                    block_attr.add_attribute("ORCAestate", orc_dict["Aestate"])
                     block_attr.add_attribute("avSt_ORC", orc_dict["av_St"])
                     block_attr.add_attribute("ORCAfront", orc_dict["Afrontage"])
                     block_attr.add_attribute("ORCAfrEIA", orc_dict["FrontageEIA"])
@@ -1033,7 +1056,6 @@ class UrbanPlanning(UBModule):
         # map_attr.add_attribute("")  # All the road median restrictions
 
         self.notify("End of Urban Planning Module")
-        print "DONE"
 
     # MODULE SUB-FUNCTIONS -----------------
     def plan_unclassified(self, A_unc, A_park, A_ref, A_rd, Atblock):
@@ -1530,7 +1552,7 @@ class UrbanPlanning(UBModule):
         if self.parking_HDR == "Vary":
             park_options = ["On", "Off", "Var"]
             choice = random.randint(0, 2)
-            parking_HDR = park_options[choice]
+            self.parking_HDR = park_options[choice]
 
         if self.parking_HDR == "On":
             avail_Parking = max(Aout - Alive, 0)
@@ -1540,7 +1562,9 @@ class UrbanPlanning(UBModule):
                 Aparking = avail_Parking
             elif avail_Parking > cpMax:
                 Aparking = avail_Parking - cpMax
-        elif parking_HDR == "Off" or parking_HDR == "Var":
+        elif self.parking_HDR == "Off" or self.parking_HDR == "Var":
+            Aparking = 0
+        else:
             Aparking = 0
         return Aparking
 

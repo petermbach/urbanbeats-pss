@@ -58,10 +58,10 @@ import model.ublibs.ubspatial as ubspatial
 
 from gui.md_delinblocksguic import DelinBlocksGuiLaunch
 from gui.md_urbplanbbguic import UrbplanbbGuiLaunch
-from gui.md_urbdevelopc import UrbdevelopGuiLaunch
-from gui.md_spatialmappingc import SpatialMappingGuiLaunch
+from gui.md_urbdevelopguic import UrbdevelopGuiLaunch
+from gui.md_spatialmappingguic import SpatialMappingGuiLaunch
 
-from gui.md_infrastructurec import InfrastructureGuiLaunch
+from gui.md_infrastructureguic import InfrastructureGuiLaunch
 
 # --- MAIN GUI FUNCTION ---
 class MainWindow(QtWidgets.QMainWindow):

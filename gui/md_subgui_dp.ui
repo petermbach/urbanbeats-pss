@@ -72,7 +72,6 @@ p, li { white-space: pre-wrap; }
      </layout>
      <zorder>endusetype</zorder>
      <zorder>enduselbl</zorder>
-     <zorder>demand_down_title</zorder>
     </widget>
    </item>
    <item>

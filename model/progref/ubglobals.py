@@ -139,6 +139,13 @@ OHT = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.0, 3.0
 AHC = [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0,
        2.0, 2.0, 2.0, 2.0]
 
+DIURNAL_CATS = ["res_kitchen", "res_shower", "res_toilet", "res_laundry", "res_dishwasher", "res_outdoor",
+                "res_dailyindoor", "com", "ind", "nonres_landscape", "pos_irrigation"]
+
+DIURNAL_LABELS = ["Kitchen", "Shower", "Toilet", "Laundry", "Dishwasher", "Garden",
+                  "Residential Indoor", "Commercial and Offices", "Industries", "Non-residential Outdoor",
+                  "Public Irrigation"]
+
 # --- ASSET IDENTIFIERS ---
 ASSET_IDENTIFIERS = {"Block": "The most basic building block of the city in UrbanBEATS, the square cell containing all"
                               "relevant geodata",

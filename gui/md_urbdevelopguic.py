@@ -31,7 +31,7 @@ import model.progref.ubglobals as ubglobals
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
-from md_urbdevelop import Ui_Urbandev_Dialog
+from md_urbdevelopgui import Ui_Urbandev_Dialog
 
 
 # --- MAIN GUI FUNCTION ---
