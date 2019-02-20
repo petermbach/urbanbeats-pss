@@ -53,7 +53,7 @@ from ..progref import ubglobals
 # --- URBANBEATS LIBRARY IMPORTS ---
 
 def adjust_sample_range(parmin, parmax, parusemed):
-    """Adjusts a stochastic samplinge based on the input parameters of minimum, maximum and median.
+    """Adjusts a stochastic sampling based on the input parameters of minimum, maximum and median.
 
     :param parmin: minimum sampling value of the parameter
     :param parmax: maximum smpling value of the parameter

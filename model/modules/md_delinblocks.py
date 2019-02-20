@@ -695,7 +695,7 @@ class DelinBlocks(UBModule):
 
             for green in green_patches:
                 pts2 = green.get_points()
-                current_dist = math.sqrt(pow(pts1[0] - pts2[0], 2) + pow(pts1[1] - pts2[1],2))
+                current_dist = math.sqrt(pow(pts1[0] - pts2[0], 2) + pow(pts1[1] - pts2[1], 2))
                 if current_dist < prev_dist:
                     prev_dist = current_dist
                     pts_current = pts2
@@ -1263,7 +1263,7 @@ class DelinBlocks(UBModule):
     def find_downstream_dinf(self, z, nhd_z):
         """Adapted D-infinity method to only direct water in one direction based on the steepest slope
         of the 8 triangular facets surrounding a Block's neighbourhood and a probabilistic choice weighted
-        by the propotioning of flow. This is the stochastic option of flowpath delineation for UrbanBEATS
+        by the proportioning of flow. This is the stochastic option of flowpath delineation for UrbanBEATS
         and ONLY works with the Moore neighbourhood.
 
         :param z: elevation of the current central Block
