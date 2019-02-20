@@ -603,7 +603,7 @@ class Ui_Delinblocks_Dialog(object):
         self.connectivity_scrollArea_2.setWidgetResizable(True)
         self.connectivity_scrollArea_2.setObjectName("connectivity_scrollArea_2")
         self.connectivity_contents_2 = QtWidgets.QWidget()
-        self.connectivity_contents_2.setGeometry(QtCore.QRect(0, 0, 450, 817))
+        self.connectivity_contents_2.setGeometry(QtCore.QRect(0, 0, 537, 717))
         self.connectivity_contents_2.setObjectName("connectivity_contents_2")
         self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.connectivity_contents_2)
         self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)
@@ -704,10 +704,9 @@ class Ui_Delinblocks_Dialog(object):
         self.div3_3.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.div3_3.setObjectName("div3_3")
         self.verticalLayout_17.addWidget(self.div3_3)
-        self.connectivity_lbl = QtWidgets.QLabel(self.connectivity_contents_2)
-        self.connectivity_lbl.setWordWrap(True)
-        self.connectivity_lbl.setObjectName("connectivity_lbl")
-        self.verticalLayout_17.addWidget(self.connectivity_lbl)
+        self.flowpath_check = QtWidgets.QCheckBox(self.connectivity_contents_2)
+        self.flowpath_check.setObjectName("flowpath_check")
+        self.verticalLayout_17.addWidget(self.flowpath_check)
         self.flowpath_widget = QtWidgets.QWidget(self.connectivity_contents_2)
         self.flowpath_widget.setObjectName("flowpath_widget")
         self.gridLayout_11 = QtWidgets.QGridLayout(self.flowpath_widget)
@@ -715,12 +714,12 @@ class Ui_Delinblocks_Dialog(object):
         self.gridLayout_11.setObjectName("gridLayout_11")
         self.flowpath_lbl = QtWidgets.QLabel(self.flowpath_widget)
         self.flowpath_lbl.setObjectName("flowpath_lbl")
-        self.gridLayout_11.addWidget(self.flowpath_lbl, 0, 0, 1, 1)
+        self.gridLayout_11.addWidget(self.flowpath_lbl, 1, 0, 1, 1)
+        spacerItem10 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_11.addItem(spacerItem10, 1, 2, 1, 1)
         self.demsmooth_check = QtWidgets.QCheckBox(self.flowpath_widget)
         self.demsmooth_check.setObjectName("demsmooth_check")
-        self.gridLayout_11.addWidget(self.demsmooth_check, 1, 1, 1, 1)
-        spacerItem10 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_11.addItem(spacerItem10, 0, 2, 1, 1)
+        self.gridLayout_11.addWidget(self.demsmooth_check, 2, 1, 1, 1)
         self.flowpath_combo = QtWidgets.QComboBox(self.flowpath_widget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -730,14 +729,18 @@ class Ui_Delinblocks_Dialog(object):
         self.flowpath_combo.setObjectName("flowpath_combo")
         self.flowpath_combo.addItem("")
         self.flowpath_combo.addItem("")
-        self.gridLayout_11.addWidget(self.flowpath_combo, 0, 1, 1, 1)
+        self.gridLayout_11.addWidget(self.flowpath_combo, 1, 1, 1, 1)
         self.demsmooth_spin = QtWidgets.QSpinBox(self.flowpath_widget)
         self.demsmooth_spin.setMinimum(1)
         self.demsmooth_spin.setMaximum(2)
         self.demsmooth_spin.setObjectName("demsmooth_spin")
-        self.gridLayout_11.addWidget(self.demsmooth_spin, 1, 2, 1, 1)
+        self.gridLayout_11.addWidget(self.demsmooth_spin, 2, 2, 1, 1)
         spacerItem11 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_11.addItem(spacerItem11, 1, 3, 1, 1)
+        self.gridLayout_11.addItem(spacerItem11, 2, 3, 1, 1)
+        self.connectivity_lbl = QtWidgets.QLabel(self.flowpath_widget)
+        self.connectivity_lbl.setWordWrap(True)
+        self.connectivity_lbl.setObjectName("connectivity_lbl")
+        self.gridLayout_11.addWidget(self.connectivity_lbl, 0, 0, 1, 4)
         self.verticalLayout_17.addWidget(self.flowpath_widget)
         self.flowpath_guide_widget = QtWidgets.QWidget(self.connectivity_contents_2)
         self.flowpath_guide_widget.setObjectName("flowpath_guide_widget")
@@ -769,27 +772,6 @@ class Ui_Delinblocks_Dialog(object):
         self.ignore_rivers_check.setObjectName("ignore_rivers_check")
         self.gridLayout_15.addWidget(self.ignore_rivers_check, 1, 0, 1, 1)
         self.verticalLayout_17.addWidget(self.flowpath_guide_widget_3)
-        self.connectivity_title_2 = QtWidgets.QLabel(self.connectivity_contents_2)
-        self.connectivity_title_2.setObjectName("connectivity_title_2")
-        self.verticalLayout_17.addWidget(self.connectivity_title_2)
-        self.div3_4 = QtWidgets.QFrame(self.connectivity_contents_2)
-        self.div3_4.setFrameShape(QtWidgets.QFrame.HLine)
-        self.div3_4.setFrameShadow(QtWidgets.QFrame.Sunken)
-        self.div3_4.setObjectName("div3_4")
-        self.verticalLayout_17.addWidget(self.div3_4)
-        self.connectivity_lbl_2 = QtWidgets.QLabel(self.connectivity_contents_2)
-        self.connectivity_lbl_2.setWordWrap(True)
-        self.connectivity_lbl_2.setObjectName("connectivity_lbl_2")
-        self.verticalLayout_17.addWidget(self.connectivity_lbl_2)
-        self.flowpath_guide_widget_2 = QtWidgets.QWidget(self.connectivity_contents_2)
-        self.flowpath_guide_widget_2.setObjectName("flowpath_guide_widget_2")
-        self.gridLayout_13 = QtWidgets.QGridLayout(self.flowpath_guide_widget_2)
-        self.gridLayout_13.setContentsMargins(0, 0, 0, 0)
-        self.gridLayout_13.setObjectName("gridLayout_13")
-        self.flowpath_lbl2_2 = QtWidgets.QLabel(self.flowpath_guide_widget_2)
-        self.flowpath_lbl2_2.setObjectName("flowpath_lbl2_2")
-        self.gridLayout_13.addWidget(self.flowpath_lbl2_2, 0, 0, 1, 1)
-        self.verticalLayout_17.addWidget(self.flowpath_guide_widget_2)
         self.verticalLayout_7.addLayout(self.verticalLayout_17)
         spacerItem12 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_7.addItem(spacerItem12)
@@ -1120,8 +1102,22 @@ class Ui_Delinblocks_Dialog(object):
 "- If tolerance limit is not met, cell\'s water is routed directly to catchment outlet."))
         self.storm_check.setText(_translate("Delinblocks_Dialog", "Stormwater Drainage Infrastructure"))
         self.storm_combo.setItemText(0, _translate("Delinblocks_Dialog", "(none)"))
-        self.connectivity_title.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">STORMWATER DRAINAGE FLOW PATHS</span></p></body></html>"))
-        self.connectivity_lbl.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p>Select and customise methodology for identifying water drainage paths across Blocks.</p></body></html>"))
+        self.connectivity_title.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">DRAINAGE FLOW PATHS</span></p></body></html>"))
+        self.flowpath_check.setToolTip(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM\'s accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Correction proceeds as follows:</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If tolerance limit is not met, cell\'s water is routed directly to catchment outlet.</span></p></body></html>"))
+        self.flowpath_check.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">If available, then the program will bias the flow directions towards Blocks with natural features e.g. a river, creek or lake. This will only happen if the above option to include a river or lake feature has been enabled and a map has been specified.</p></body></html>"))
+        self.flowpath_check.setText(_translate("Delinblocks_Dialog", "Delineate stormwater drainage flowpaths and sub-basins across the case study"))
         self.flowpath_lbl.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -1146,6 +1142,7 @@ class Ui_Delinblocks_Dialog(object):
         self.flowpath_combo.setItemText(0, _translate("Delinblocks_Dialog", "Adapted version of D-infinity (Tarboton, 1997)"))
         self.flowpath_combo.setItemText(1, _translate("Delinblocks_Dialog", "D8 (O\'Callaghan & Mark, 1984)"))
         self.demsmooth_spin.setToolTip(_translate("Delinblocks_Dialog", "Select the number of times the smoothing algorithm should be applied. A higher number will lead to a much smoother map, but can result in possible issues with finding flow paths."))
+        self.connectivity_lbl.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p>Select and customise methodology for identifying water drainage paths across Blocks.</p></body></html>"))
         self.infrastructure_check.setToolTip(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -1218,14 +1215,6 @@ class Ui_Delinblocks_Dialog(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Ignores river features in the landscape. This means that delineation continues until the lowest elevation point has been detected. Select this option if your river features do not directly determine the catchment e.g. you are including a creek in the catchment, but do not want to subdivide the catchment based on inflow points to the creek.</p></body></html>"))
         self.ignore_rivers_check.setText(_translate("Delinblocks_Dialog", "Ignore River features when determining catchment outlets"))
-        self.connectivity_title_2.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">WASTEWATER FLOW PATHS</span></p></body></html>"))
-        self.connectivity_lbl_2.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p>Customize options for delineating flow directions of wastewater throughout the network</p></body></html>"))
-        self.flowpath_lbl2_2.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">How many blocks to consider when determining drainage fluxes (the greater the number, the greater the computational burden).</span></p></body></html>"))
-        self.flowpath_lbl2_2.setText(_translate("Delinblocks_Dialog", "coming soon"))
         self.parameters.setTabText(self.parameters.indexOf(self.tab), _translate("Delinblocks_Dialog", "Water Context"))
         self.footer_lbl.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-style:italic;\">UrbanBEATS - md_delinblocks module</span></p></body></html>"))
         self.reset_button.setWhatsThis(_translate("Delinblocks_Dialog", "<html><head/><body><p>Resets all parameters of this module in the current \'scenario time step\' to the default values.</p></body></html>"))

@@ -103,7 +103,6 @@ class DelinBlocks(UBModule):
         # 1.2.2 HEXAGONS    [TO DO]
         # 1.2.3 VECTORPATCHES [TO DO]
 
-
         # (Tab 2.1) JURISDICTIONAL AND SUBURBAN BOUNDARIES
         self.create_parameter("include_geopolitical", BOOL, "include geopolitical map?")
         self.create_parameter("geopolitical_map", STRING, "geopolitical map filepath")
@@ -169,6 +168,7 @@ class DelinBlocks(UBModule):
         self.supply_map = ""
 
         # (Tab 3.3) STORMWATER DRAINAGE FLOW PATHS
+        self.create_parameter("flowpaths", BOOL, "delineate drainage flow paths and subcatchments?")
         self.create_parameter("flowpath_method", STRING, "flowpath method to use")
         self.create_parameter("dem_smooth", BOOL, "smooth DEM map before doing flowpath delineation?")
         self.create_parameter("dem_passes", DOUBLE, "number of passes for smoothing")
@@ -176,6 +176,7 @@ class DelinBlocks(UBModule):
         self.create_parameter("guide_built", BOOL, "guide flowpath delineation using built infrastructure?")
         self.create_parameter("ignore_rivers", BOOL, "ignore river features in the delineation of outlets")
         self.create_parameter("ignore_lakes", BOOL, "ignore lake features in the delineation of outlets")
+        self.flowpaths = 1
         self.flowpath_method = "D8"
         self.dem_smooth = 0
         self.dem_passes = 1
@@ -183,9 +184,6 @@ class DelinBlocks(UBModule):
         self.guide_built = 0
         self.ignore_rivers = 0
         self.ignore_lakes = 0
-
-        # (Tab 3.3) WASTEWATER FLOW DIRECTIONS
-        # Coming Soon
 
         # NON-VISIBLE PARAMETER LIST - USED THROUGHOUT THE SIMULATION
         self.xllcorner = float(0.0)     # Obtained from the loaded raster data (elevation) upon run-time
@@ -243,7 +241,6 @@ class DelinBlocks(UBModule):
         print("Extent Area WxH [km2] = " + str(Amap_rect / 1000000.0))
         print("Final Block Size [m] = " + str(bs))
         print("---===---")
-
 
         # START CREATING BLOCKS MAP
         self.notify("Creating Blocks Map!")
@@ -622,6 +619,8 @@ class DelinBlocks(UBModule):
         if self.include_lakes:
             map_attr.add_attribute("HasLAKES", 1)
             lake_map = self.datalibrary.get_data_with_id(self.lake_map)
+            self.notify("Loading Lakes Map")
+            print("Loading Lakes Map")
             fullfilepath = lake_map.get_data_file_path() + lake_map.get_metadata("filename")
             lakes = ubspatial.import_polygonal_map(fullfilepath, "native", "Lake",
                                                    (map_attr.get_attribute("xllcorner"),
@@ -638,6 +637,8 @@ class DelinBlocks(UBModule):
         if self.include_storm:      # Their sole purpose is to support the delineation of stormwater flow paths
             map_attr.add_attribute("HasSTORMDRAINS", 1)
             storm_map = self.datalibrary.get_data_with_id(self.storm_map)
+            self.notify("Loading Storm Drains")
+            print("Loading Storm Drains")
             fullfilepath = storm_map.get_data_file_path() + storm_map.get_metadata("filename")
             stormdrains = ubspatial.import_linear_network(fullfilepath, "LINES",
                                                           (map_attr.get_attribute("xllcorner"),
@@ -653,8 +654,10 @@ class DelinBlocks(UBModule):
         #     pass
 
         # - STEP 6 - Delineate Flow Paths and Drainage Basins
-        if map_attr.get_attribute("HasELEV"):
+        if map_attr.get_attribute("HasELEV") and self.flowpaths:
             # Delineate flow paths
+            self.notify("Delineating flow paths and drainage sub-basins")
+            print("Delineating flow paths and drainage sub-basins")
             if self.dem_smooth:     # If the user wishes to smooth the DEM, then perform the smoothing passes
                 self.perform_smooth_dem(blockslist)
 
@@ -673,12 +676,16 @@ class DelinBlocks(UBModule):
             if len(green_patches) > 0:
                 # 7.1 - Open Space Distances
                 if self.osnet_accessibility:
+                    self.notify("Analysing open space accessibility")
+                    print("Analysing open space accessibility")
                     self.find_open_space_distances(green_patches, grey_patches, non_patches)
                     map_attr.add_attribute("HasOSLINK", 1)
                 else:
                     map_attr.add_attribute("HasOSLINK", 0)
                 # 7.2 - Open Space Network
                 if self.osnet_network:
+                    self.notify("Analysing open space network")
+                    print("Analysing open space network")
                     # The minimum acceptable distance to connect the network is taken as the final block size, if two
                     # entire Block patches exist, they are adjacent and connected by Block centroid
                     min_dist = self.final_bs*math.sqrt(2)
