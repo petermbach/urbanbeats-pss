@@ -103,7 +103,6 @@ class DelinBlocks(UBModule):
         # 1.2.2 HEXAGONS    [TO DO]
         # 1.2.3 VECTORPATCHES [TO DO]
 
-
         # (Tab 2.1) JURISDICTIONAL AND SUBURBAN BOUNDARIES
         self.create_parameter("include_geopolitical", BOOL, "include geopolitical map?")
         self.create_parameter("geopolitical_map", STRING, "geopolitical map filepath")
@@ -169,6 +168,7 @@ class DelinBlocks(UBModule):
         self.supply_map = ""
 
         # (Tab 3.3) STORMWATER DRAINAGE FLOW PATHS
+        self.create_parameter("flowpaths", BOOL, "delineate drainage flow paths and subcatchments?")
         self.create_parameter("flowpath_method", STRING, "flowpath method to use")
         self.create_parameter("dem_smooth", BOOL, "smooth DEM map before doing flowpath delineation?")
         self.create_parameter("dem_passes", DOUBLE, "number of passes for smoothing")
@@ -176,6 +176,7 @@ class DelinBlocks(UBModule):
         self.create_parameter("guide_built", BOOL, "guide flowpath delineation using built infrastructure?")
         self.create_parameter("ignore_rivers", BOOL, "ignore river features in the delineation of outlets")
         self.create_parameter("ignore_lakes", BOOL, "ignore lake features in the delineation of outlets")
+        self.flowpaths = 1
         self.flowpath_method = "D8"
         self.dem_smooth = 0
         self.dem_passes = 1
@@ -183,9 +184,6 @@ class DelinBlocks(UBModule):
         self.guide_built = 0
         self.ignore_rivers = 0
         self.ignore_lakes = 0
-
-        # (Tab 3.3) WASTEWATER FLOW DIRECTIONS
-        # Coming Soon
 
         # NON-VISIBLE PARAMETER LIST - USED THROUGHOUT THE SIMULATION
         self.xllcorner = float(0.0)     # Obtained from the loaded raster data (elevation) upon run-time
@@ -208,6 +206,7 @@ class DelinBlocks(UBModule):
         :return: True upon successful completion
         """
         self.notify("Start Spatial Delineation Module")     # Module start
+        print "Start Spatial Delineation Module"
         rand.seed()     # Seed the random number generator
 
         # --- SECTION 1 - PREPARATION FOR CREATING THE GRIDDED MAP BASED ON THE INPUT BOUNDARY MAP ---
@@ -237,9 +236,15 @@ class DelinBlocks(UBModule):
         self.notify("Extent Area WxH [km2] = "+str(Amap_rect/1000000.0))
         self.notify("Final Block Size [m] = "+str(bs))
         self.notify("---===---")
+        print("Map Width [km] = " + str(mapwidth / 1000.0))
+        print("Map Height [km] = " + str(mapheight / 1000.0))
+        print("Extent Area WxH [km2] = " + str(Amap_rect / 1000000.0))
+        print("Final Block Size [m] = " + str(bs))
+        print("---===---")
 
         # START CREATING BLOCKS MAP
         self.notify("Creating Blocks Map!")
+        print("Creating Blocks Map!")
 
         # ADJUST SIMULATION AREA DIMENSIONS
         blocks_wide = int(math.ceil(mapwidth / float(bs)))      # To figure out how many blocks wide and tall, we use
@@ -249,6 +254,9 @@ class DelinBlocks(UBModule):
         self.notify("Blocks wide: "+str(blocks_wide))
         self.notify("Blocks tall: "+str(blocks_tall))
         self.notify("Total number of Blocks: "+str(numblocks))
+        print("Blocks wide: " + str(blocks_wide))
+        print("Blocks tall: " + str(blocks_tall))
+        print("Total number of Blocks: " + str(numblocks))
 
         # CBD DISTANCE CALCULATIONS [TO DO]
         # Look up long and lat of CBD if need to be considered
@@ -287,10 +295,11 @@ class DelinBlocks(UBModule):
 
         blockIDcount = 1    # Counter for BlockID, initialized here
         blockslist = []
-        self.notify("Creating Block Geometry...")
+        print("Creating Block Geometry...")
         for y in range(blocks_tall):        # Loop across the number of blocks tall and blocks wide
             for x in range(blocks_wide):
                 # self.notify("Current BLOCK ID: "+str(blockIDcount))
+                print("Current BLOCK ID: " + str(blockIDcount))
 
                 # - STEP 1 - CREATE BLOCK GEOMETRY
                 current_block = self.create_block_face(x, y, bs, blockIDcount, boundarypoly)
@@ -319,14 +328,17 @@ class DelinBlocks(UBModule):
         #   - Land use: + population, will allow the model to do urban planning
         #   - Elevation: will allow the model to do Flowpath delineation
         self.notify("Loading Basic Input Maps")
+        print("Loading Basic Input Maps")
 
         # STEP 2.1 :: Load Land Use Map
         if self.landuse_map:
             lu_dref = self.datalibrary.get_data_with_id(self.landuse_map)       # Retrieve the land use data reference
             fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
             self.notify("Loading: "+str(fullfilepath))
+            print("Loading: " + str(fullfilepath))
             landuseraster = ubspatial.import_ascii_raster(fullfilepath, self.landuse_map)
             self.notify("Load Complete!")
+            print("Load Complete!")
             landuse_offset = ubspatial.calculate_offsets(landuseraster, map_attr)
             luc_res = landuseraster.get_cellsize()
             csc = int(bs / luc_res)  # csc = cell selection count - knowing how many cells wide and tall
@@ -415,8 +427,10 @@ class DelinBlocks(UBModule):
             pop_dref = self.datalibrary.get_data_with_id(self.population_map)   # Retrieve the population data reference
             fullfilepath = pop_dref.get_data_file_path() + pop_dref.get_metadata("filename")
             self.notify("Loading: " + str(fullfilepath))
+            print("Loading: " + str(fullfilepath))
             populationraster = ubspatial.import_ascii_raster(fullfilepath, self.population_map)
             self.notify("Load Complete!")
+            print("Load Complete!")
             population_offset = ubspatial.calculate_offsets(populationraster, map_attr)
             pop_res = populationraster.get_cellsize()
             csc = int(bs / pop_res)  # csc = cell selection count - knowing how many cells wide and tall
@@ -450,8 +464,10 @@ class DelinBlocks(UBModule):
             elev_dref = self.datalibrary.get_data_with_id(self.elevation_map)     # Retrieves the elevation data ref
             fullfilepath = elev_dref.get_data_file_path() + elev_dref.get_metadata("filename")
             self.notify("Loading: " + str(fullfilepath))
+            print("Loading: " + str(fullfilepath))
             elevationraster = ubspatial.import_ascii_raster(fullfilepath, self.elevation_map)
             self.notify("Load Complete!")
+            print("Load Complete!")
             elevation_offset = ubspatial.calculate_offsets(elevationraster, map_attr)
             elev_res = elevationraster.get_cellsize()
             csc = int(bs / elev_res)    # Figure out how many cells wide and cells tall in the elevation raster
@@ -489,6 +505,7 @@ class DelinBlocks(UBModule):
 
         # - STEP 3 - FIND BLOCK NEIGHBOURHOOD
         self.notify("Establishing neighbourhoods")
+        print("Establishing neighbourhoods")
         for i in range(len(blockslist)):  # Loop across current Blocks
             curblock = blockslist[i]    # curblock is the reference to the UBVector() instance in blockslist
             if curblock.get_attribute("Status") == 0:
@@ -512,6 +529,7 @@ class DelinBlocks(UBModule):
         # - STEP 4 - Assign Municipal Regions and Suburban Regions to Blocks
         municipalities = []
         self.notify("Loading Municipality Map")
+        print("Loading Municipality Map")
         if self.include_geopolitical:                       # LOAD MUNICIPALITY MAP
             map_attr.add_attribute("HasGEOPOLITICAL", 1)
             geopol_map = self.datalibrary.get_data_with_id(self.geopolitical_map)
@@ -526,6 +544,7 @@ class DelinBlocks(UBModule):
 
         suburbs = []
         self.notify("Loading Suburb Map")
+        print("Loading Suburb Map")
         if self.include_suburb:                             # LOAD SUBURBAN MAP
             map_attr.add_attribute("HasSUBURBS", 1)
             suburb_map = self.datalibrary.get_data_with_id(self.suburban_map)
@@ -587,6 +606,8 @@ class DelinBlocks(UBModule):
         if self.include_rivers:
             map_attr.add_attribute("HasRIVERS", 1)
             river_map = self.datalibrary.get_data_with_id(self.river_map)
+            self.notify("Loading River Map")
+            print("Loading River Map")
             fullfilepath = river_map.get_data_file_path() + river_map.get_metadata("filename")
             rivers = ubspatial.import_linear_network(fullfilepath, "LINES",
                                                      (map_attr.get_attribute("xllcorner"),
@@ -598,6 +619,8 @@ class DelinBlocks(UBModule):
         if self.include_lakes:
             map_attr.add_attribute("HasLAKES", 1)
             lake_map = self.datalibrary.get_data_with_id(self.lake_map)
+            self.notify("Loading Lakes Map")
+            print("Loading Lakes Map")
             fullfilepath = lake_map.get_data_file_path() + lake_map.get_metadata("filename")
             lakes = ubspatial.import_polygonal_map(fullfilepath, "native", "Lake",
                                                    (map_attr.get_attribute("xllcorner"),
@@ -614,6 +637,8 @@ class DelinBlocks(UBModule):
         if self.include_storm:      # Their sole purpose is to support the delineation of stormwater flow paths
             map_attr.add_attribute("HasSTORMDRAINS", 1)
             storm_map = self.datalibrary.get_data_with_id(self.storm_map)
+            self.notify("Loading Storm Drains")
+            print("Loading Storm Drains")
             fullfilepath = storm_map.get_data_file_path() + storm_map.get_metadata("filename")
             stormdrains = ubspatial.import_linear_network(fullfilepath, "LINES",
                                                           (map_attr.get_attribute("xllcorner"),
@@ -629,8 +654,10 @@ class DelinBlocks(UBModule):
         #     pass
 
         # - STEP 6 - Delineate Flow Paths and Drainage Basins
-        if map_attr.get_attribute("HasELEV"):
+        if map_attr.get_attribute("HasELEV") and self.flowpaths:
             # Delineate flow paths
+            self.notify("Delineating flow paths and drainage sub-basins")
+            print("Delineating flow paths and drainage sub-basins")
             if self.dem_smooth:     # If the user wishes to smooth the DEM, then perform the smoothing passes
                 self.perform_smooth_dem(blockslist)
 
@@ -649,12 +676,16 @@ class DelinBlocks(UBModule):
             if len(green_patches) > 0:
                 # 7.1 - Open Space Distances
                 if self.osnet_accessibility:
+                    self.notify("Analysing open space accessibility")
+                    print("Analysing open space accessibility")
                     self.find_open_space_distances(green_patches, grey_patches, non_patches)
                     map_attr.add_attribute("HasOSLINK", 1)
                 else:
                     map_attr.add_attribute("HasOSLINK", 0)
                 # 7.2 - Open Space Network
                 if self.osnet_network:
+                    self.notify("Analysing open space network")
+                    print("Analysing open space network")
                     # The minimum acceptable distance to connect the network is taken as the final block size, if two
                     # entire Block patches exist, they are adjacent and connected by Block centroid
                     min_dist = self.final_bs*math.sqrt(2)
@@ -671,6 +702,7 @@ class DelinBlocks(UBModule):
 
         # - CLEAN-UP - RESET ALL VARIABLES FOR GARBAGE COLLECTOR
         self.notify("End of Delinblocks")
+        print("End of Delinblocks")
         return False
 
     # ------------------------------------------------

@@ -53,7 +53,7 @@
           </size>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="Project_tab">
           <attribute name="title">
@@ -92,11 +92,140 @@ p, li { white-space: pre-wrap; }
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_6">
            <item>
-            <widget class="QPlainTextEdit" name="Simulation">
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-            </widget>
+            <layout class="QVBoxLayout" name="verticalLayout_16">
+             <item>
+              <widget class="QLabel" name="simdetails">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Simulation Details&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPlainTextEdit" name="Simulation">
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_15">
+             <item>
+              <widget class="QLabel" name="simcaching_title">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Simulation Caching&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="simcaching_description">
+               <property name="text">
+                <string>Continue model simulations from a specific module, restore previous simulation states or save current simulation states.</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="simcaching_widget" native="true">
+               <layout class="QGridLayout" name="gridLayout_2">
+                <item row="2" column="1">
+                 <widget class="QLineEdit" name="simcaching_current"/>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="simcaching_current_lbl">
+                  <property name="text">
+                   <string>Current simulation cache:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="2">
+                 <widget class="QPushButton" name="simcaching_current_change">
+                  <property name="text">
+                   <string>Change...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="simcaching_start_lbl">
+                  <property name="text">
+                   <string>Start simulation from:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0" colspan="3">
+                 <widget class="QCheckBox" name="simcaching_activate">
+                  <property name="text">
+                   <string>Activate Simulation Caching Mode</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1" colspan="2">
+                 <widget class="QComboBox" name="simcaching_start_combo">
+                  <item>
+                   <property name="text">
+                    <string>Beginning</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Urban Planning</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Socio-Economic</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Spatial Mapping</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Regulation</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Infrastructure</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Performance</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="simcaching_options_lbl">
+                  <property name="text">
+                   <string>Other Options:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QPushButton" name="simcaching_cachebutton">
+                  <property name="text">
+                   <string>Cache Current Simulation...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="2">
+                 <widget class="QPushButton" name="simcaching_options_button">
+                  <property name="text">
+                   <string>Options...</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
@@ -154,6 +283,12 @@ p, li { white-space: pre-wrap; }
        </item>
        <item>
         <widget class="QTextEdit" name="OutputConsole">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>133</height>
+          </size>
+         </property>
          <property name="horizontalScrollBarPolicy">
           <enum>Qt::ScrollBarAlwaysOn</enum>
          </property>
@@ -2402,7 +2537,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>deleteScenario</tabstop>
   <tabstop>ScenarioView_Widget</tabstop>
   <tabstop>Narrative</tabstop>
-  <tabstop>Simulation</tabstop>
   <tabstop>DataSummary</tabstop>
   <tabstop>Log</tabstop>
   <tabstop>OutputConsole</tabstop>
