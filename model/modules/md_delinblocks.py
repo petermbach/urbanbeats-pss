@@ -376,6 +376,9 @@ class DelinBlocks(UBModule):
                 current_block.add_attribute("pLU_REF", landclassprop[10])   # REF = Reserves & Floodways
                 current_block.add_attribute("pLU_UND", landclassprop[11])   # UND = Undeveloped
                 current_block.add_attribute("pLU_NA", landclassprop[12])    # NA = Unclassified
+                current_block.add_attribute("pLU_WAT", landclassprop[12])  # WAT = Water
+                current_block.add_attribute("pLU_FOR", landclassprop[12])  # FOR = Forest
+                current_block.add_attribute("pLU_AGR", landclassprop[12])  # AGR = Agriculture
                 map_attr.set_attribute("HasLUC", 1)
 
                 # STEP 2.2.2 - Calculate Spatial Metrics

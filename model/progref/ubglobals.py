@@ -109,10 +109,10 @@ TREETYPES = ["RB", "RN", "TB", "TN", "OB", "ON"]
         # Explanation of tree types: R = round, T = tall, O = open, B = broad leaves, N = needle leaves
 
 # LAND USE AND PLANNING ELEMENTS
-LANDUSEABBR = ['RES', 'COM', 'ORC', 'LI', 'HI', 'CIV', 'SVU', 'RD', 'TR', 'PG', 'REF', 'UND', 'NA']
+LANDUSEABBR = ['RES', 'COM', 'ORC', 'LI', 'HI', 'CIV', 'SVU', 'RD', 'TR', 'PG', 'REF', 'UND', 'NA', 'WAT', 'FOR', 'AGR']
 LANDUSENAMES = ['Residential', 'Commercial', 'Offices Res Mix', 'Light Industry', 'Heavy Industry',
                 'Civic', 'Service and Utility', 'Road', 'Transport', 'Parks and Gardens', 'Reserves and Floodway',
-                'Undeveloped', 'Unclassified']
+                'Undeveloped', 'Unclassified', 'Water', 'Forest', 'Agriculture']
 
 PLANTYPES = ["Suburbia", "European", "Megacity"]
 PLANPARAMSET = ["Custom", "Melbourne"]

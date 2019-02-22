@@ -106,8 +106,8 @@ def calculate_frequency_of_lu_classes(lucdatamatrix):
     :return a list of all 13 classes and their relative proportion, activity, the total data coverage.
     """
     # Step 1 - Order all data entries into a lit of 13 elements
-    # Categories: 'RES', 'COM', 'ORC', 'LI', 'HI', 'CIV', 'SVU', 'RD', 'TR', 'PG', 'REF', 'UND', 'NA'
-    lucprop = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    # Cats: 'RES', 'COM', 'ORC', 'LI', 'HI', 'CIV', 'SVU', 'RD', 'TR', 'PG', 'REF', 'UND', 'NA', 'WAT', 'FOR', 'AGR'
+    lucprop = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     total_n_luc = 0     # Counts the total elements of valid land use classes i.e. skips counting NODATA
     matrix_size = 0     # Counts total elements in the 2D array
     for i in range(len(lucdatamatrix)):
@@ -122,7 +122,7 @@ def calculate_frequency_of_lu_classes(lucdatamatrix):
 
     # Step 2 - Convert frequency to proportion
     if total_n_luc == 0:
-        return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 0
+        return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 0
     for i in range(len(lucprop)):
         lucprop[i] = float(lucprop[i]) / float(total_n_luc)
     activity = float(total_n_luc) / float(matrix_size)

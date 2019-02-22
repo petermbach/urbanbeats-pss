@@ -672,7 +672,7 @@ def export_patch_buffers_to_gis_shapefile(asset_col, map_attr, filepath, filenam
 
     for i in range(len(asset_col)):
         current_patch = asset_col[i]
-        if current_patch.get_attribute("Landuse") not in [10, 11]:
+        if current_patch.get_attribute("Landuse") not in [10, 11, 15]:
             continue
         patchpoint = current_patch.get_points()
 
@@ -854,6 +854,9 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
         fielddefmatrix.append(ogr.FieldDefn("pLU_REF", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("pLU_UND", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("pLU_NA", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("pLU_WAT", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("pLU_FOR", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("pLU_AGR", ogr.OFTReal))
 
         if map_attr.get_attribute("HasSPATIALMETRICS"):     # IF SPATIAL METRICS WERE CALCULATED
             fielddefmatrix.append(ogr.FieldDefn("Rich", ogr.OFTReal))
@@ -1155,6 +1158,9 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
             feature.SetField("pLU_REF", float(currentAttList.get_attribute("pLU_REF")))
             feature.SetField("pLU_UND", float(currentAttList.get_attribute("pLU_UND")))
             feature.SetField("pLU_NA", float(currentAttList.get_attribute("pLU_NA")))
+            feature.SetField("pLU_WAT", float(currentAttList.get_attribute("pLU_WAT")))
+            feature.SetField("pLU_FOR", float(currentAttList.get_attribute("pLU_FOR")))
+            feature.SetField("pLU_AGR", float(currentAttList.get_attribute("pLU_AGR")))
 
             if map_attr.get_attribute("HasSPATIALMETRICS"):
                 feature.SetField("Rich", float(currentAttList.get_attribute("Rich")))
