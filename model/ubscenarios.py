@@ -213,7 +213,7 @@ class UrbanBeatsScenario(threading.Thread):
             print "Error, cannot find module instance!"
             return None
         except IndexError:
-            print "No module instances found for current time step."
+            print "No module instances of", modulecat, " found for current time step."
             return None
 
     def setup_scenario(self):

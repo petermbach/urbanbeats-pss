@@ -1064,6 +1064,7 @@ class DelinBlocks(UBModule):
                     upblock.add_attribute("Outlet", 0)              # Upstream blocks are NOT outlets!
 
         self.notify("Total Basins in the Case Study: "+str(basin_id))
+        print("Total Basins in the Case Study: " + str(basin_id))
         return basin_id     # The final count indicates how many basins were found
 
     def delineate_flow_paths(self, blockslist, map_attr):
@@ -1213,6 +1214,11 @@ class DelinBlocks(UBModule):
             current_sinkid = sink_ids[i]
             self.notify("Attemtping to unblock flow from BlockID"+str(current_sinkid))
             current_block = self.scenario.get_asset_with_name("BlockID"+str(current_sinkid))
+
+            if current_block.get_attribute("HasRiver") or current_block.get_attribute("HasLake"):
+                # If the Block is a river or lake block, do not attempt to unblock it
+                current_block.set_attribute("downID", -2)  # signifies that Block is an outlet
+                continue
 
             z = current_block.get_attribute("AvgElev")
             nhd = current_block.get_attribute("Neighbours")
