@@ -650,12 +650,6 @@ class DelinBlocks(UBModule):
         else:
             map_attr.add_attribute("HasSTORMDRAINS", 0)
 
-        # if self.include_sewer:      # Wastewater sewer network - coming soon!
-        #     pass  # NATALIA - check this out!
-
-        # if self.include_supply          # Water distribution network - coming soon!
-        #     pass
-
         # - STEP 6 - Delineate Flow Paths and Drainage Basins
         if map_attr.get_attribute("HasELEV") and self.flowpaths:
             # Delineate flow paths
@@ -700,8 +694,6 @@ class DelinBlocks(UBModule):
                 self.notify("Warning, no open spaces in map, cannot check for links")
                 map_attr.add_attribute("HasOSLINK", 0)
                 map_attr.add_attribute("HasOSNET", 0)
-
-        # 7.3 - Sewer and Water Supply Systems (COMING SOON) [TO DO]
 
         # - CLEAN-UP - RESET ALL VARIABLES FOR GARBAGE COLLECTOR
         self.notify("End of Delinblocks")

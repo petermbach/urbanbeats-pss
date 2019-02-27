@@ -1072,7 +1072,7 @@ class Ui_MainWindow(object):
         self.Settings_Toolbar.addAction(self.actionShare_on_Twiter)
 
         self.retranslateUi(MainWindow)
-        self.ScenarioView_Widget.setCurrentIndex(2)
+        self.ScenarioView_Widget.setCurrentIndex(0)
         self.actionMinimize.triggered.connect(MainWindow.hide)
         self.actionQuit.triggered.connect(MainWindow.close)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
