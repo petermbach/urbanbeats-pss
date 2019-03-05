@@ -185,6 +185,7 @@ class DelinBlocks(UBModule):
         self.ignore_rivers = 0
         self.ignore_lakes = 0
 
+
         # NON-VISIBLE PARAMETER LIST - USED THROUGHOUT THE SIMULATION
         self.xllcorner = float(0.0)     # Obtained from the loaded raster data (elevation) upon run-time
         self.yllcorner = float(0.0)     # Spatial extents of the input map
@@ -299,7 +300,7 @@ class DelinBlocks(UBModule):
         for y in range(blocks_tall):        # Loop across the number of blocks tall and blocks wide
             for x in range(blocks_wide):
                 # self.notify("Current BLOCK ID: "+str(blockIDcount))
-                print("Current BLOCK ID: " + str(blockIDcount))
+                # print("Current BLOCK ID: " + str(blockIDcount))
 
                 # - STEP 1 - CREATE BLOCK GEOMETRY
                 current_block = self.create_block_face(x, y, bs, blockIDcount, boundarypoly)
@@ -505,7 +506,7 @@ class DelinBlocks(UBModule):
 
         # - STEP 3 - FIND BLOCK NEIGHBOURHOOD
         self.notify("Establishing neighbourhoods")
-        print("Establishing neighbourhoods")
+        # print("Establishing neighbourhoods")
         for i in range(len(blockslist)):  # Loop across current Blocks
             curblock = blockslist[i]    # curblock is the reference to the UBVector() instance in blockslist
             if curblock.get_attribute("Status") == 0:
@@ -529,7 +530,7 @@ class DelinBlocks(UBModule):
         # - STEP 4 - Assign Municipal Regions and Suburban Regions to Blocks
         municipalities = []
         self.notify("Loading Municipality Map")
-        print("Loading Municipality Map")
+        # print("Loading Municipality Map")
         if self.include_geopolitical:                       # LOAD MUNICIPALITY MAP
             map_attr.add_attribute("HasGEOPOLITICAL", 1)
             geopol_map = self.datalibrary.get_data_with_id(self.geopolitical_map)
@@ -698,7 +699,8 @@ class DelinBlocks(UBModule):
                 map_attr.add_attribute("HasOSLINK", 0)
                 map_attr.add_attribute("HasOSNET", 0)
 
-        # 7.3 - Sewer and Water Supply Systems (COMING SOON) [TO DO]
+
+
 
         # - CLEAN-UP - RESET ALL VARIABLES FOR GARBAGE COLLECTOR
         self.notify("End of Delinblocks")
@@ -1050,7 +1052,7 @@ class DelinBlocks(UBModule):
 
             # Now assign Basin IDs, do this if the current Block has downstream ID -2
             if hash_table[1][hash_table[0].index(current_id)] == -2:    # If the block is an outlet
-                print "Found a basin outlet at BlockID" + str(current_id)
+                # print "Found a basin outlet at BlockID" + str(current_id)
                 self.notify("Found a basin outlet at BlockID"+str(current_id))
                 basin_id += 1
                 current_block.add_attribute("BasinID", basin_id)    # Set the current Basin ID
@@ -1169,7 +1171,7 @@ class DelinBlocks(UBModule):
         :return: a list of z-values for all the block's neighbours [ [BlockID], [Z-value] ], None otherwise
         """
         nhd = curblock.get_attribute("Neighbours")
-        nhd_z = [[],[]]
+        nhd_z = [[], []]
         # Scan neighbourhood for Blocks with Rivers/Lakes
         for n in nhd:
             nblock = self.scenario.get_asset_with_name("BlockID"+str(n))
@@ -1181,6 +1183,7 @@ class DelinBlocks(UBModule):
                 if nblock.get_attribute("HasSWDrain") and n not in nhd_z[0]:
                     nhd_z[0].append(n)
                     nhd_z[1].append(nblock.get_attribute("AvgElev"))
+
         if len(nhd_z[0]) == 0:
             return None
         else:
@@ -1285,12 +1288,12 @@ class DelinBlocks(UBModule):
         """
         dz = []
         for i in range(len(nhd_z[1])):
-            dz.append(nhd_z[1][i] - z)     # Calculate the elevation difference
-        if min(dz) < 0:    # If there is a drop in elevation - this also means the area cannot be flat!
-            down_id = nhd_z[0][dz.index(min(dz))]    # The ID corresponds to the minimum elevation difference
+            dz.append(z - nhd_z[1][i])     # Calculate the elevation difference
+        if max(dz) > 0:    # If there is a drop in elevation - this also means the area cannot be flat!
+            down_id = nhd_z[0][dz.index(max(dz))]    # The ID corresponds to the maximum elevation difference
         else:
-            down_id = -9999 # Otherwise there is a sink in the current Block
-        return down_id, min(dz)
+            down_id = -9999  # Otherwise there is a sink in the current Block
+        return down_id, max(dz)
 
     def find_downstream_dinf(self, z, nhd_z):
         """Adapted D-infinity method to only direct water in one direction based on the steepest slope

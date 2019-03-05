@@ -614,6 +614,7 @@ class UrbanPlanning(UBModule):
             if block_attr.get_attribute("Status") == 0 or block_attr.get_attribute("Active") == 0:
                 self.notify("BlockID"+str(currentID)+" is not active, moving to next ID")
                 block_attr.change_attribute("Status", 0)
+                block_attr.add_attribute("TOTALjobs", 0)
                 block_attr.add_attribute("Blk_TIA", -9999)      # Default no-data value
                 block_attr.add_attribute("Blk_EIF", -9999)
                 block_attr.add_attribute("Blk_TIF", -9999)
@@ -1038,7 +1039,7 @@ class UrbanPlanning(UBModule):
                     blk_avspace += orc_dict["Estates"] * (orc_dict["EstateGreenArea"] + orc_dict["av_St"])
 
             # 2.7 - TALLY UP TOTAL LAND AREAS FOR GENERAL PROPERTIES  ---------------------
-            block_attr.change_attribute("Employ", totalblockemployed)
+            block_attr.change_attribute("TOTALjobs", totalblockemployed)
             block_attr.add_attribute("Blk_TIA", blk_tia)
             block_attr.add_attribute("Blk_EIA", blk_eia)
 
@@ -1849,7 +1850,7 @@ class UrbanPlanning(UBModule):
         """
         if method == "I" and map_attr.get_attribute("include_employment") == 1:
             # Condition required to do this: there has to be data on employment input
-            employed = block_attr.get_attribute("Employ")  # total employment for Block
+            employed = block_attr.get_attribute("TOTALjobs")  # total employment for Block
             # Scale this value based on the hypothetical area and employee distribution
 
         elif method == "S":

@@ -627,6 +627,9 @@ class UrbanBeatsScenario(threading.Thread):
         ubspatial.export_patch_buffers_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
                                                     self.projectpath + "/output", file_basename + "_OSBuffer",
                                                     int(epsg))
+        ubspatial.export_sww_network_to_gis_shapefile(self.get_assets_with_identifier("SwwID"), map_attributes,
+                                                    self.projectpath + "/output", file_basename + "_SwwNet",
+                                                    int(epsg), "Blocks")
         # [TO DO] Export options - WSUD Systems
         # [TO DO] Export options - centrepoints
 
