@@ -1289,11 +1289,11 @@ class DelinBlocks(UBModule):
         dz = []
         for i in range(len(nhd_z[1])):
             dz.append(z - nhd_z[1][i])     # Calculate the elevation difference
-        if max(dz) > 0:    # If there is a drop in elevation - this also means the area cannot be flat!
-            down_id = nhd_z[0][dz.index(max(dz))]    # The ID corresponds to the maximum elevation difference
+        if min(dz) > 0:    # If there is a drop in elevation - this also means the area cannot be flat!
+            down_id = nhd_z[0][dz.index(min(dz))]    # The ID corresponds to the maximum elevation difference
         else:
             down_id = -9999  # Otherwise there is a sink in the current Block
-        return down_id, max(dz)
+        return down_id, min(dz)
 
     def find_downstream_dinf(self, z, nhd_z):
         """Adapted D-infinity method to only direct water in one direction based on the steepest slope
