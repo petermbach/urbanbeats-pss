@@ -558,7 +558,7 @@ class UrbanDevelopment(UBModule):
                 if csc > 1.0:       # Then the cell size greater than the input raster resolution
                     landuse_cat, activity = self.determine_dominant_landusecat(landusedatamatrix)
                     if landuse_cat is None:
-                        current_cell.change_attribute("Base_LUC", "Unclassified")
+                        current_cell.change_attribute("Status", 0)
                     else:
                         current_cell.add_attribute("Base_LUC", landuse_cat)
                         current_cell.add_attribute("Active", float(activity))
@@ -573,10 +573,49 @@ class UrbanDevelopment(UBModule):
 
         # - 2.3 - POPULATION ---
         # STEP 2.3.1 :: Load Population Map
-        
+        if self.pop_inputmap:
+            pop_dref = self.datalibrary.get_data_with_id(self.pop_inputmap)  # Retrieve the population data reference
+            fullfilepath = pop_dref.get_data_file_path() + pop_dref.get_metadata("filename")
+            self.notify("Loading: " + str(fullfilepath))
+            print("Loading: " + str(fullfilepath))
+            populationraster = ubspatial.import_ascii_raster(fullfilepath, self.pop_inputmap)
+            self.notify("Load Complete!")
+            print("Load Complete!")
+            population_offset = ubspatial.calculate_offsets(populationraster, map_attr)
+            pop_res = populationraster.get_cellsize()
+            csc = int(self.cellsize / pop_res)  # csc = cell selection count - knowing how many cells wide and tall
 
-        # STEP 2.3.2 :: Transfer Population to Cells
+            # STEP 2.3.2 :: Transfer Population to Cells
+            for i in range(len(cellslist)):
+                current_cell = cellslist[i]
+                col_start = int(current_cell.get_attribute("OriginX") / luc_res)
+                row_start = int(current_cell.get_attribute("OriginY") / luc_res)
+                popdatamatrix = populationraster.get_data_square(col_start, row_start, csc, csc)
 
+                popfactor = 1.0
+                if pop_dref.get_metadata("sub") == "Density":
+                    popfactor = (float(pop_res) * float(pop_res)) / 10000.0  # Area of a single cell (persons/ha)
+                elif pop_dref.get_metadata("sub") == "Count":
+                    popfactor = 1.0  # No multiplication
+
+                if csc > 1.0:
+                    pop_values = popdatamatrix.flatten()
+                    pop_values[pop_values == populationraster.get_nodatavalue()] = 0
+                    total_population = float(sum(pop_values) * popfactor)
+
+                    current_cell.add_attribute("Base_POP", int(total_population))
+                else:
+                    # The cell is either the same size of bigger that of the current cell
+                    if pop_dref.get_metadata("sub") == "Density":
+                        total_population = popdatamatrix * (self.cellsize * self.cellsize) / 10000.0
+                    elif pop_dref.get_metadata("sub") == "Count":
+                        total_population = popdatamatrix / (float(pop_res) * float(pop_res)/ 10000.0)
+                        total_population = total_population * (self.cellsize * self.cellsize) / 10000.0
+                    current_cell.add_attribute("Base_POP", int(total_population))
+
+            map_attr.add_attribute("HasPOP", 1)
+        else:
+            map_attr.add_attribute("HasPOP", 0)
 
         # - 2.4 - EMPLOYMENT ---
         # STEP 2.4.1 :: Calculate/Load Employment
