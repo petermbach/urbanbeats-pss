@@ -635,7 +635,37 @@ class UrbanBeatsScenario(threading.Thread):
 
     def run_dynamic_simulation(self):
         """This function presents the logical module flow for a DYNAMIC simulation."""
-        pass
+        self.update_observers("Scenario Type: DYNAMIC")
+        temp_directory = self.simulation.get_global_options("tempdir")
+        self.update_observers("Current temp directory: " + str(temp_directory))
+        self.simulation.update_runtime_progress(5)
+
+        # --- DYNAMIC STEP 1: Urban Development Module ---
+        self.simulation.update_runtime_progress(10)
+        urbdev = self.get_module_object("URBDEV", 0)
+        if urbdev is None:
+            pass
+        else:
+            urbdev.attach(self.__observers)
+            urbdev.run_module()
+
+        # --- DYNAMIC STEP 2: Block delineation ---
+
+        # --- DYNAMIC STEP 3: Climate setup ---
+        # --- DYNAMIC STEP 4: Urban Planning ---
+        # --- DYNAMIC STEP 5: Socio-Economic ---
+        # --- DYNAMIC STEP 6: Spatial Maping ---
+        # --- DYNAMIC STEP 7: Regulation ---
+        # --- DYNAMIC STEP 8: Infrastructure ---
+        # --- DYNAMIC STEP 9: Performance ---
+        # --- DYNAMIC STEP 10: Impact ---
+        # --- DYNAMIC STEP 11: Decision Analysis ---
+
+
+        # --- DATA EXPORT AND CLEANUP STEPS ---
+        ubspatial.export_urbandev_cells_to_gis_shapefile()
+        ubspatial.export_municipalities_to_gis_shapefile()
+
         self.simulation.update_runtime_progress(100)
 
     def run_benchmark_simulation(self):

@@ -33,10 +33,15 @@ import threading
 import os
 import gc
 import tempfile
+import random as rand
+import math
+from shapely.geometry import Polygon, LineString
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 from ubmodule import *
-
+import model.ublibs.ubspatial as ubspatial
+import model.ublibs.ubmethods as ubmethods
+import model.ublibs.ubdatatypes as ubdata
 
 # --- MODULE CLASS DEFINITION ---
 class UrbanDevelopment(UBModule):
@@ -71,6 +76,11 @@ class UrbanDevelopment(UBModule):
         self.dt = self.scenario.get_metadata("dt")
 
         # --- TAB 1 - GENERAL: DATA INPUTS AND DETAILS ---
+        self.create_parameter("lga_inputmap", STRING, "local municipality map to be used in simulation")
+        self.create_parameter("lga_attribute", STRING, "attribute name for identifiers in input map")
+        self.lga_inputmap = ""
+        self.lga_attribute = ""
+
         self.create_parameter("luc_inputmap", STRING, "land use map to be used in the simulation")
         self.create_parameter("luc_aggregation", STRING, "aggregation method for the land use")
         self.luc_inputmap = ""
@@ -394,4 +404,145 @@ class UrbanDevelopment(UBModule):
 
         :return: A map of urban cells containing land use, population and other information.
         """
-        pass
+        self.notify("Begin Urban Development Simulation")
+        print "Begin Urban Development Simulation"
+        rand.seed()
+
+        # --- SECTION 1 - Get Boundary, Setup Details for the Simulation Grid and MapAttributes Component
+        xmin, xmax, ymin, ymax = self.activesim.get_project_boundary_info("mapextents")
+        mapwidth = xmax - xmin  # width of the map [m]
+        mapheight = ymax - ymin  # height of map [m]
+
+        self.notify("Map Width [km] = " + str(mapwidth / 1000.0))
+        self.notify("Map Height [km] = " + str(mapheight / 1000.0))
+        self.notify("---===---")
+        print("Map Width [km] = " + str(mapwidth / 1000.0))
+        print("Map Height [km] = " + str(mapheight / 1000.0))
+        print("---===---")
+
+        # DETERMINE SIMULATION GRID
+        self.notify("Creating Simulation Grid with size: "+str(self.cellsize)+" m")
+        print("Creating Simulation Grid with size: "+str(self.cellsize)+" m")
+
+        cells_wide = int(math.ceil(mapwidth / float(self.cellsize)))
+        cells_tall = int(math.ceil(mapheight / float(self.cellsize)))
+        numcells = cells_wide * cells_tall
+
+        self.notify("Map Dimensions WxH [cells]: "+str(cells_wide)+" x "+str(cells_tall))
+        self.notify("Total Cells in map: "+str(numcells))
+        print("Map Dimensions WxH [cells]: " + str(cells_wide) + " x " + str(cells_tall))
+        print("Total Cells in map: " + str(numcells))
+
+        # CREATE MAP ATTRIBUTES UBCOMPONENT() to track
+        map_attr = ubdata.UBCollection()
+        map_attr.add_attribute("HasURBANDEV", 1)
+        map_attr.add_attribute("NumCells", numcells)
+        map_attr.add_attribute("CellsWide", cells_wide)
+        map_attr.add_attribute("CellsTall", cells_tall)
+        map_attr.add_attribute("CellSize", self.cellsize)
+
+        self.scenario.add_asset("MapAttributes", map_attr)
+
+        # --- SECTION 2 - Create the simulation grid ---
+        boundarygeom = self.activesim.get_project_boundary_info("coordinates")
+        boundarygeom_zeroorigin = []    # Contains the polygon's coordinates shifted to the zero origin
+        for coord in boundarygeom:      # Shift the map to (0,0) origin
+            boundarygeom_zeroorigin.append((coord[0] - xmin, coord[1] - ymin))
+
+        boundarypoly = Polygon(boundarygeom_zeroorigin)  # Test intersect with Block Polygon later using
+
+        cellIDcount = 1     # Setup counter for cells
+        cellslist = []
+        print ("Creating cell grid")
+        for y in range(cells_tall):
+            for x in range(cells_wide):
+                print ("Current Cell_ID: "+str(cellIDcount))
+
+                # - STEP 1 - GENERATE CELL GEOMETRIES
+                current_cell = self.create_cell_face(x, y, self.cellsize, cellIDcount, boundarypoly)
+                if current_cell is None:
+                    cellIDcount += 1    # Increase the ID counter by one
+                    continue
+
+                xcentre = x * self.cellsize + 0.5 * self.cellsize
+                ycentre = y * self.cellsize + 0.5 * self.cellsize
+
+                xorigin = x * self.cellsize
+                yorigin = y * self.cellsize
+
+                current_cell.add_attribute("CentreX", xcentre)      # ATTRIBUTE: geographic information
+                current_cell.add_attribute("CentreY", ycentre)
+                current_cell.add_attribute("OriginX", xorigin)
+                current_cell.add_attribute("OriginY", yorigin)
+                current_cell.add_attribute("Region", "None")
+                current_cell.add_attribute("Status", 1)     # Start with Status = 1 by default
+
+                self.scenario.add_asset("CellID"+str(cellIDcount), current_cell)
+                cellslist.append(current_cell)
+                cellIDcount += 1    # Increase the Cell ID Count by one
+
+        # - STEP 2 - TRANSFER RASTER DATA TO CELLS
+        # Depending on availability, start with municipality
+        self.notify("Loading input maps")
+        print ("Loading input maps")
+
+        # - 2.1 - MUNICIPALITIES ---
+        # STEP 2.1.1 :: Load Municipalities
+
+        # STEP 2.1.2 :: Assign Municipalities to Blocks and create municipality polygons
+
+
+        # - 2.2 - LAND USE ---
+        # STEP 2.2.1 :: Load Land Use
+
+        # STEP 2.2.2 :: Aggregate Land Use
+
+
+        # - 2.3 - POPULATION ---
+        # STEP 2.3.1 :: Load Population Map
+
+        # STEP 2.3.2 :: Transfer Population to Cells
+
+
+        # - 2.4 - EMPLOYMENT ---
+        # STEP 2.4.1 :: Calculate/Load Employment
+
+
+        self.notify("Current End of Module")
+        print ("Current end of module")
+        return True
+
+    def create_cell_face(self, x, y, cellsize, id, boundary):
+        """Creates the Cell Face, the polygon of the cell as a UBVector
+
+        :param x: The starting x coordinate (on 0,0 origin)
+        :param y: The starting y coordinate (on 0,0 origin)
+        :param cellsize: Cell Size size [m]
+        :param id: the current ID number to be assigned to the Block
+        :param boundary: A Shapely polygon object, used to test if the block face intersects
+        with it. Also determines whether to save the Block or not.
+        :return: UBVector object containing the BlockID attribute and geometry
+        """
+        # Define points
+        n1 = (x * cellsize, y * cellsize, 0)  # Bottom left (x, y, z)
+        n2 = ((x + 1) * cellsize, y * cellsize, 0)  # Bottom right
+        n3 = ((x + 1) * cellsize, (y + 1) * cellsize, 0)  # Top right
+        n4 = (x * cellsize, (y + 1) * cellsize, 0)  # Top left
+
+        # Create the Shapely Polygon and test against the boundary to determine active/inactive.
+        cellpoly = Polygon((n1[:2], n2[:2], n3[:2], n4[:2]))
+        if Polygon.intersects(boundary, cellpoly):
+            # Define edges
+            e1 = (n1, n2)  # Bottom left to bottom right
+            e2 = (n2, n3)  # Bottom right to top right
+            e3 = (n3, n4)  # Top right to top left
+            e4 = (n4, n1)  # Top left to bottom left
+
+            # Define the UrbanBEATS Vector Asset
+            cell_attr = ubdata.UBVector((n1, n2, n3, n4, n1), (e1, e2, e3, e4))
+            cell_attr.add_attribute("BlockID", int(id))  # ATTRIBUTE: Block Identification
+            return cell_attr
+        else:
+            # Block not within boundary, do not return anything
+            return None
+

@@ -797,6 +797,86 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
     return True
 
 
+def export_municipalities_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg):
+    """Exports all the assets in 'asset_col' to a GIS Shapefile based on the current filepath.
+
+    :param asset_col: a list containing all assets to be exported to a shapefile
+    :param map_attr: the global map attributes to track any relevant information
+    :param filepath: the active filepath to export these assets to
+    :param filename: name of the file to export (without the 'shp' extension)
+    :param epsg: the EPSG code for the coordinate system to use
+    """
+    pass  # [TO DO]
+
+
+def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg):
+    """Exports all the assets in 'asset_col' to a GIS Shapefile based on the current filepath.
+
+    :param asset_col: a list containing all assets to be exported to a shapefile
+    :param map_attr: the global map attributes to track any relevant information
+    :param filepath: the active filepath to export these assets to
+    :param filename: name of the file to export (without the 'shp' extension)
+    :param epsg: the EPSG code for the coordinate system to use
+    """
+    xmin = map_attr.get_attribute("xllcorner")
+    ymin = map_attr.get_attribute("yllcorner")
+
+    fullname = filepath + "/" + filename
+
+    spatialRef = osr.SpatialReference()
+    spatialRef.ImportFromEPSG(epsg)
+
+    driver = ogr.GetDriverByName('ESRI Shapefile')
+
+    usefilename = fullname  # A placeholder filename
+    fileduplicate_counter = 0  # Tracks the number of duplicates
+    while os.path.exists(str(usefilename + ".shp")):
+        fileduplicate_counter += 1
+        usefilename = fullname + "(" + str(fileduplicate_counter) + ")"
+    shapefile = driver.CreateDataSource(str(usefilename) + ".shp")
+
+    layer = shapefile.CreateLayer('layer1', spatialRef, ogr.wkbPolygon)
+    layerDefinition = layer.GetLayerDefn()
+
+    fielddefmatrix = []
+    fielddefmatrix.append(ogr.FieldDefn("BlockID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("CentreX", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("CentreY", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("Region", ogr.OFTString))
+
+    # Create the fields
+    for field in fielddefmatrix:
+        layer.CreateField(field)
+        layer.GetLayerDefn()
+
+    # Get Cell Data
+    for i in range(len(asset_col)):
+        currentAttList = asset_col[i]
+        if currentAttList.get_attribute("Status") == 0:
+            continue
+
+        # Draw Geometry
+        line = ogr.Geometry(ogr.wkbPolygon)
+        ring = ogr.Geometry(ogr.wkbLinearRing)
+        nl = currentAttList.get_points()
+        for point in nl:
+            ring.AddPoint(point[0] + xmin, point[1] + ymin)
+        line.AddGeometry(ring)
+
+        feature = ogr.Feature(layerDefinition)
+        feature.SetGeometry(line)
+        feature.SetFID(0)
+
+        # Add Attributes
+        feature.SetField("CellID", int(currentAttList.get_attribute("CellID")))
+        feature.SetField("CentreX", float(currentAttList.get_attribute("CentreX")))
+        feature.SetField("CentreY", float(currentAttList.get_attribute("CentreY")))
+        feature.SetField("Region", str(currentAttList.get_attribute("Region")))
+        layer.CreateFeature(feature)
+
+    shapefile.Destroy()
+    return True
+
 def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg):
     """Exports all the assets in 'asset_col' to a GIS Shapefile based on the current filepath.
 

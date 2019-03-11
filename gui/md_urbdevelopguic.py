@@ -88,6 +88,11 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.poptrends = ["E", "L", "S", "P", "C"]  # Trend combo boxes for population rates
 
         # TAB 1 - Land use, population, employment
+        # MUNICIPALITIES
+        self.municipalmaps = self.get_dataref_array("spatial", "Boundaries", "Geopolitical")
+        self.ui.input_lga_combo.clear()
+        [self.ui.input_lga_combo.addItem(str(self.municipalmaps[0][i])) for i in range(len(self.municipalmaps[0]))]
+
         # LAND USE
         self.lumaps = self.get_dataref_array("spatial", "Land Use")  # Obtain the data ref array
         # self.lumaps is used later on in other combo boxes too.
@@ -171,13 +176,15 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         # self.ui.reset_button.clicked.connect(self.reset_parameters_to_default)
 
         # GENERAL
+        self.ui.input_lga_combo.currentIndexChanged.connect(self.enable_disable_general_tab_widgets)
+        self.ui.input_luc_combo.currentIndexChanged.connect(self.enable_disable_general_tab_widgets)
+        self.ui.input_pop_combo.currentIndexChanged.connect(self.enable_disable_general_tab_widgets)
         self.ui.input_birthrate_custom.clicked.connect(self.call_birthrate_custom)
         self.ui.input_deathrate_custom.clicked.connect(self.call_deathrate_custom)
         self.ui.input_migration_custom.clicked.connect(self.call_migration_custom)
         self.ui.input_birthrate_trend.currentIndexChanged.connect(self.enable_disable_general_tab_widgets)
         self.ui.input_deathrate_trend.currentIndexChanged.connect(self.enable_disable_general_tab_widgets)
         self.ui.input_migration_trend.currentIndexChanged.connect(self.enable_disable_general_tab_widgets)
-        self.ui.input_pop_summary.clicked.connect(self.display_population_summary)
         self.ui.employ_inputmap.clicked.connect(self.update_employment_stack)
         self.ui.employ_pop.clicked.connect(self.update_employment_stack)
         self.ui.employ_land.clicked.connect(self.update_employment_stack)
@@ -254,10 +261,6 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
     def autofill_from_previous_year(self):  # TO DO
         """Autofills all GUI parameters from the previous year's class instance."""
         pass    # Figure out some automatic parameter filling function that can be called in the delinblocks module
-
-    def display_population_summary(self):
-        """Opens a summary widget displaying a summary of the population settings entered into the model."""
-        pass    # [TO DO]
 
     def display_accessibility_summary(self):
         """Displays a summary of all the accessibility information entered into the model for the user to gain an
@@ -435,10 +438,20 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
 
     def enable_disable_general_tab_widgets(self):
         """Enables and disables all the widgets in the general Tab area depending on what is selected."""
+        if self.ui.input_lga_combo.currentIndex() == 0:
+            self.ui.input_lga_name.setEnabled(0)
+        else:
+            self.ui.input_lga_name.setEnabled(1)
+
         if self.ui.input_luc_combo.currentIndex() == 0:
             self.ui.input_aggreg_combo.setEnabled(0)
         else:
             self.ui.input_aggreg_combo.setEnabled(1)
+
+        if self.ui.input_pop_combo.currentIndex() == 0:
+            self.ui.input_pop_widget.setEnabled(0)
+        else:
+            self.ui.input_pop_widget.setEnabled(1)
 
         if self.ui.input_birthrate_trend.currentIndex() == 4:
             self.ui.input_birthrate_custom.setEnabled(1)
@@ -487,6 +500,14 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.basic_dt.setText(str(self.active_scenario.get_metadata("dt"))+" year(s)")
         self.ui.basic_nhd.setValue(float(self.module.get_parameter("nhd_radius")))
         self.ui.basic_stochastic.setText(str(self.module.get_parameter("alpha")))
+
+        try:    # MUNICIPALITY COMBO - retrieve the dataID from module
+            self.ui.input_lga_combo.setCurrentIndex(
+                self.municipalmaps[1].index(self.module.get_parameter("lga_inputmap")))
+        except ValueError:
+            self.ui.input_lga_combo.setCurrentIndex(0)     # map doesn't exist or single municipality option chosen
+
+        self.ui.input_lga_name.setText(str(self.module.get_parameter("lga_attribute")))
 
         try:    # LAND USE COMBO - retrieve the dataID from module
             self.ui.input_luc_combo.setCurrentIndex(self.lumaps[1].index(self.module.get_parameter("luc_inputmap")))
@@ -785,6 +806,9 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("cellsize", int(self.ui.basic_cellsize.value()))
         self.module.set_parameter("nhd_radius", float(self.ui.basic_nhd.value()))
         self.module.set_parameter("alpha", float(self.ui.basic_stochastic.text()))
+
+        self.module.set_parameter("lga_inputmap", self.municipalmaps[1][self.ui.input_lga_combo.currentIndex()])
+        self.module.set_parameter("lga_attribute", str(self.ui.input_lga_name.text()))
 
         self.module.set_parameter("luc_inputmap", self.lumaps[1][self.ui.input_luc_combo.currentIndex()])
         self.module.set_parameter("luc_aggregation",
