@@ -49,6 +49,12 @@ import modules.md_infrastructure as md_techplacement
 import modules.md_urbandev as md_urbandev
 import modules.md_urbplanbb as md_urbplanbb
 import ublibs.ubspatial as ubspatial
+import ubexports.blocks as xblocks
+import ubexports.flowpaths as xflowpaths
+import ubexports.openspace as xopenspace
+import ubexports.patches as xpatches
+import ubexports.regions as xregions
+import ubexports.urbanmodel as xurbanmodel
 
 
 # --- SCENARIO CLASS DEFINITION ---
@@ -609,22 +615,22 @@ class UrbanBeatsScenario(threading.Thread):
         epsg = self.simulation.get_project_parameter("project_epsg")
 
         # SHAPEFILE EXPORT FUNCTIONS
-        ubspatial.export_block_assets_to_gis_shapefile(self.get_assets_with_identifier("BlockID"), map_attributes,
+        xblocks.export_block_assets_to_gis_shapefile(self.get_assets_with_identifier("BlockID"), map_attributes,
                                                        self.projectpath+"/output", file_basename + "_Blocks",
                                                        int(epsg))
-        ubspatial.export_patches_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
+        xpatches.export_patches_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
                                                   self.projectpath+"/output", file_basename + "_Patches",
                                                   int(epsg))
-        ubspatial.export_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("FlowID"), map_attributes,
+        xflowpaths.export_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("FlowID"), map_attributes,
                                                     self.projectpath + "/output", file_basename + "_Flowpaths",
                                                     int(epsg), "Blocks")  # Export Block FlowPaths
-        ubspatial.export_oslink_to_gis_shapefile(self.get_assets_with_identifier("OSLinkID"), map_attributes,
+        xopenspace.export_oslink_to_gis_shapefile(self.get_assets_with_identifier("OSLinkID"), map_attributes,
                                                     self.projectpath + "/output", file_basename + "_OSLink",
                                                     int(epsg))
-        ubspatial.export_osnet_to_gis_shapefile(self.get_assets_with_identifier("OSNetID"), map_attributes,
+        xopenspace.export_osnet_to_gis_shapefile(self.get_assets_with_identifier("OSNetID"), map_attributes,
                                                     self.projectpath + "/output", file_basename + "_OSNet",
                                                     int(epsg))
-        ubspatial.export_patch_buffers_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
+        xopenspace.export_patch_buffers_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
                                                     self.projectpath + "/output", file_basename + "_OSBuffer",
                                                     int(epsg))
         # [TO DO] Export options - WSUD Systems
@@ -663,8 +669,9 @@ class UrbanBeatsScenario(threading.Thread):
 
 
         # --- DATA EXPORT AND CLEANUP STEPS ---
-        ubspatial.export_urbandev_cells_to_gis_shapefile()
-        ubspatial.export_municipalities_to_gis_shapefile()
+
+        xurbanmodel.export_urbandev_cells_to_gis_shapefile()
+        xregions.export_municipalities_to_gis_shapefile()
 
         self.simulation.update_runtime_progress(100)
 
