@@ -42,6 +42,7 @@ from ubmodule import *
 import model.ublibs.ubspatial as ubspatial
 import model.ublibs.ubmethods as ubmethods
 import model.ublibs.ubdatatypes as ubdata
+from ..progref import ubglobals
 
 # --- MODULE CLASS DEFINITION ---
 class UrbanDevelopment(UBModule):
@@ -540,24 +541,39 @@ class UrbanDevelopment(UBModule):
             fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
             self.notify("Loading: "+str(fullfilepath))
             print ("Loading: " + str(fullfilepath))
-            landuseraster = ubspatial.import_ascii_raster(fullfilepath, self.landuse_map)
+            landuseraster = ubspatial.import_ascii_raster(fullfilepath, self.luc_inputmap)
             self.notify("Load Complete!")
             print("Load Complete!")
             landuse_offset = ubspatial.calculate_offsets(landuseraster, map_attr)
             luc_res = landuseraster.get_cellsize()
             csc = int(self.cellsize / luc_res)  # csc = cell selection count - knowing how many cells wide and tall
 
-        # STEP 2.2.2 :: Aggregate Land Use
-        for i in range(len(cellslist)):
-            current_cell = cellslist[i]
-            col_start = int(current_cell.get_attribute("OriginX") / luc_res)
-            row_start = int(current_cell.get_attribute("OriginY") / luc_res)
-            landusedatamatrix = landuseraster.get_data_square(col_start, row_start, csc, csc)
-            
+            # STEP 2.2.2 :: Aggregate Land Use
+            for i in range(len(cellslist)):
+                current_cell = cellslist[i]
+                col_start = int(current_cell.get_attribute("OriginX") / luc_res)
+                row_start = int(current_cell.get_attribute("OriginY") / luc_res)
+                landusedatamatrix = landuseraster.get_data_square(col_start, row_start, csc, csc)
 
+                if csc > 1.0:       # Then the cell size greater than the input raster resolution
+                    landuse_cat, activity = self.determine_dominant_landusecat(landusedatamatrix)
+                    if landuse_cat is None:
+                        current_cell.change_attribute("Base_LUC", "Unclassified")
+                    else:
+                        current_cell.add_attribute("Base_LUC", landuse_cat)
+                        current_cell.add_attribute("Active", float(activity))
+                else:   # Single value from landusedata matrix
+                    landuse_cat = ubglobals.LANDUSENAMES[int(landusedatamatrix - 1)]
+                    current_cell.add_attribute("Base_LUC", landuse_cat)
+                    current_cell.add_attribute("Active", 1.0)
+
+            map_attr.set_attribute("HasLUC", 1)
+        else:
+            map_attr.set_attribute("HasLUC", 1)
 
         # - 2.3 - POPULATION ---
         # STEP 2.3.1 :: Load Population Map
+        
 
         # STEP 2.3.2 :: Transfer Population to Cells
 
@@ -570,19 +586,13 @@ class UrbanDevelopment(UBModule):
         print ("Current end of module")
         return True
 
-    def get_dominant_luc_class(self, x, y, cs, csc):
-        """
-
-        :param x:
-        :param y:
-        :param cs:
-        :param csc:
-        :return:
-        """
-        activity = 1.0
-        luc_class = ""
-
-
+    def determine_dominant_landusecat(self, lucdata):
+        """Analyses the available LUC data based on frequency and returns category with the highest frequency."""
+        lucprop, activity = ubmethods.calculate_frequency_of_lu_classes(lucdata)
+        if activity == 0:
+            return None, 0
+        else:
+            luc_class = ubglobals.LANDUSENAMES[lucprop.index(max(lucprop))]
         return luc_class, activity
 
     def create_cell_face(self, x, y, cellsize, id, boundary):

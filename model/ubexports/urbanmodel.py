@@ -63,10 +63,12 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     layerDefinition = layer.GetLayerDefn()
 
     fielddefmatrix = []
-    fielddefmatrix.append(ogr.FieldDefn("BlockID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("CellID", ogr.OFTInteger))
     fielddefmatrix.append(ogr.FieldDefn("CentreX", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("CentreY", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("Region", ogr.OFTString))
+    fielddefmatrix.append(ogr.FieldDefn("Base_LUC", ogr.OFTString))
+    fielddefmatrix.append(ogr.FieldDefn("Active", ogr.OFTReal))
 
     # Create the fields
     for field in fielddefmatrix:
@@ -96,6 +98,8 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("CentreX", float(currentAttList.get_attribute("CentreX")))
         feature.SetField("CentreY", float(currentAttList.get_attribute("CentreY")))
         feature.SetField("Region", str(currentAttList.get_attribute("Region")))
+        feature.SetField("Base_LUC", str(currentAttList.get_attribute("Base_LUC")))
+        feature.SetField("Active", str(currentAttList.get_attribute("Active")))
         layer.CreateFeature(feature)
 
     shapefile.Destroy()
