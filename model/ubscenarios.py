@@ -54,7 +54,7 @@ import ubexports.flowpaths as xflowpaths
 import ubexports.openspace as xopenspace
 import ubexports.patches as xpatches
 import ubexports.regions as xregions
-import ubexports.urbanmodel as xurbanmodel
+import ubexports.urban as xurbanmodel
 
 
 # --- SCENARIO CLASS DEFINITION ---
