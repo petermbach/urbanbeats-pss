@@ -636,8 +636,8 @@ class UrbanBeatsScenario(threading.Thread):
         # [TO DO] Export options - WSUD Systems
         # [TO DO] Export options - centrepoints
 
-
         self.simulation.update_runtime_progress(100)
+        return True
 
     def run_dynamic_simulation(self):
         """This function presents the logical module flow for a DYNAMIC simulation."""
@@ -667,11 +667,23 @@ class UrbanBeatsScenario(threading.Thread):
         # --- DYNAMIC STEP 10: Impact ---
         # --- DYNAMIC STEP 11: Decision Analysis ---
 
-
         # --- DATA EXPORT AND CLEANUP STEPS ---
+        self.simulation.update_runtime_progress(95)
 
-        xurbanmodel.export_urbandev_cells_to_gis_shapefile()
-        xregions.export_municipalities_to_gis_shapefile()
+        # Export the data maps available - first check scenario name
+        if int(self.get_metadata("usescenarioname")):
+            file_basename = self.get_metadata("name").replace(" ", "_")
+        else:
+            file_basename = self.get_metadata("filename")
+
+        print self.projectpath
+        map_attributes = self.get_asset_with_name("MapAttributes")
+        epsg = self.simulation.get_project_parameter("project_epsg")
+
+        xurbanmodel.export_urbandev_cells_to_gis_shapefile(self.get_assets_with_identifier("CellID"), map_attributes,
+                                                           self.projectpath+"/output", file_basename + "_Cells",
+                                                           int(epsg))
+        # xregions.export_municipalities_to_gis_shapefile()
 
         self.simulation.update_runtime_progress(100)
 

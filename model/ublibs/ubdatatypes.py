@@ -106,6 +106,8 @@ class UBRasterData(object):
         :return a matrix of raster data.
         """
         datamatrix = self.__data[row_start:row_start + cells_tall, col_start:col_start+cells_wide]
+        if not datamatrix:      # If the resolutions are identical
+            return self.__data[[row_start], [col_start]]
         return datamatrix
 
     def set_value(self, col, row, value):

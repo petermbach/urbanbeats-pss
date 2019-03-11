@@ -35,7 +35,7 @@ import gc
 import tempfile
 import random as rand
 import math
-from shapely.geometry import Polygon, LineString
+from shapely.geometry import Polygon, Point
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 from ubmodule import *
@@ -68,7 +68,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("alpha", DOUBLE, "stochastic perturbation factor alpha")
         self.cellsize = 100
         self.nhd_radius = 0.8
-        self.alpha = 0
+        self.alpha = 0.0
 
         self.create_parameter("baseyear", DOUBLE, "the base year of the simulation")
         self.create_parameter("dt", DOUBLE, "simulation time step in [years]")
@@ -108,7 +108,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("employ_inputmap", STRING, "input map for mployment")
         self.create_parameter("employ_inputmaprate", DOUBLE, "annual rate of change for employment")
         self.employ_inputmap = ""
-        self.employ_inputmaprate = 6
+        self.employ_inputmaprate = 6.0
 
         # Employment parameters when using estimates from population
         self.create_parameter("employ_pop_comfactor", DOUBLE, "factor for estimating commercial employment")
@@ -120,7 +120,7 @@ class UrbanDevelopment(UBModule):
         self.employ_pop_indfactor = 0.9
         self.employ_pop_officefactor = 0.3
         self.employ_pop_rocbool = 0
-        self.employ_pop_roc = 6
+        self.employ_pop_roc = 6.0
 
         # Employment parameters when using estimates from land use
         self.create_parameter("employ_land_comfactor", DOUBLE, "factor for estimating commercial employment from land")
@@ -128,11 +128,11 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("employ_land_officefactor", DOUBLE, "factor for estimating office employment from land")
         self.create_parameter("employ_land_rocbool", BOOL, "use separate rate of change?")
         self.create_parameter("employ_land_roc", DOUBLE, "rate of change in employment")
-        self.employ_land_comfactor = 70
-        self.employ_land_indfactor = 50
-        self.employ_land_officefactor = 100
+        self.employ_land_comfactor = 70.0
+        self.employ_land_indfactor = 50.0
+        self.employ_land_officefactor = 100.0
         self.employ_land_rocbool = 0
-        self.employ_land_roc = 6
+        self.employ_land_roc = 6.0
 
         # --- TAB 2 - SPATIAL RELATIONSHIPS: ACCESSIBILITY ---
         self.create_parameter("access_export_combined", BOOL, "export combined accessibility map?")
@@ -154,7 +154,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("access_roads_aoffices", DOUBLE, "a-value for road access to offices areas")
         self.access_roads_include = 1
         self.access_roads_data = ""
-        self.access_roads_weight = 0
+        self.access_roads_weight = 0.0
         self.access_roads_res = 1
         self.access_roads_com = 1
         self.access_roads_ind = 1
@@ -202,7 +202,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("access_waterways_aoffices", DOUBLE, "a-value for waterway access to offices areas")
         self.access_waterways_include = 1
         self.access_waterways_data = ""
-        self.access_waterways_weight = 0
+        self.access_waterways_weight = 0.0
         self.access_waterways_res = 1
         self.access_waterways_com = 1
         self.access_waterways_ind = 1
@@ -226,7 +226,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("access_lakes_aoffices", DOUBLE, "a-value for lake access to offices areas")
         self.access_lakes_include = 1
         self.access_lakes_data = ""
-        self.access_lakes_weight = 0
+        self.access_lakes_weight = 0.0
         self.access_lakes_res = 1
         self.access_lakes_com = 1
         self.access_lakes_ind = 1
@@ -250,7 +250,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("access_pos_aoffices", DOUBLE, "a-value for POS access to offices areas")
         self.access_pos_include = 1
         self.access_pos_data = ""
-        self.access_pos_weight = 0
+        self.access_pos_weight = 0.0
         self.access_pos_res = 1
         self.access_pos_com = 1
         self.access_pos_ind = 1
@@ -274,7 +274,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("access_poi_aoffices", DOUBLE, "a-value for POI access to offices areas")
         self.access_poi_include = 1
         self.access_poi_data = ""
-        self.access_poi_weight = 0
+        self.access_poi_weight = 0.0
         self.access_poi_res = 1
         self.access_poi_com = 1
         self.access_poi_ind = 1
@@ -295,7 +295,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("suit_slope_attract", BOOL, "should slope be an attraction factor?")
         self.suit_slope_include = 1
         self.suit_slope_data = ""
-        self.suit_slope_weight = 5
+        self.suit_slope_weight = 5.0
         self.suit_slope_attract = 0
 
         self.create_parameter("suit_gw_include", BOOL, "include groundwater assessment in suitability?")
@@ -304,7 +304,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("suit_gw_attract", BOOL, "should groundwater be an attraction factor?")
         self.suit_gw_include = 1
         self.suit_gw_data = ""
-        self.suit_gw_weight = 5
+        self.suit_gw_weight = 5.0
         self.suit_gw_attract = 0
 
         self.create_parameter("suit_soil_include", BOOL, "include soil assessment in suitability?")
@@ -313,7 +313,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("suit_soil_attract", BOOL, "should soil be an attraction factor?")
         self.suit_soil_include = 1
         self.suit_soil_data = ""
-        self.suit_soil_weight = 5
+        self.suit_soil_weight = 5.0
         self.suit_soil_attract = 0
 
         self.create_parameter("suit_custom1_include", BOOL, "include custom1 assessment in suitability?")
@@ -322,7 +322,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("suit_custom1_attract", BOOL, "should custom1 be an attraction factor?")
         self.suit_custom1_include = 1
         self.suit_custom1_data = ""
-        self.suit_custom1_weight = 5
+        self.suit_custom1_weight = 5.0
         self.suit_custom1_attract = 0
 
         self.create_parameter("suit_custom2_include", BOOL, "include custom2 assessment in suitability?")
@@ -331,7 +331,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("suit_custom2_attract", BOOL, "should custom2 be an attraction factor?")
         self.suit_custom2_include = 1
         self.suit_custom2_data = ""
-        self.suit_custom2_weight = 5
+        self.suit_custom2_weight = 5.0
         self.suit_custom2_attract = 0
 
         # [TO DO] THRESHOLDS FOR LAND USE CATEGORIES
@@ -397,7 +397,6 @@ class UrbanDevelopment(UBModule):
 
         # ADVANCED PARAMETERS
 
-
     def run_module(self):
         """Runs the urban development module's simulation. Processes all inputs to simulate changes in land use and
         population over time. The run_module function only runs for ONE simulation time step.
@@ -434,9 +433,11 @@ class UrbanDevelopment(UBModule):
         print("Total Cells in map: " + str(numcells))
 
         # CREATE MAP ATTRIBUTES UBCOMPONENT() to track
-        map_attr = ubdata.UBCollection()
-        map_attr.add_attribute("HasURBANDEV", 1)
+        map_attr = ubdata.UBComponent()
+        map_attr.add_attribute("xllcorner", xmin)  # The geographic coordinate x-pos of the actual map
+        map_attr.add_attribute("yllcorner", ymin)  # The geographic coordinate y-pos of the actual map
         map_attr.add_attribute("NumCells", numcells)
+        map_attr.add_attribute("HasURBANDEV", 1)
         map_attr.add_attribute("CellsWide", cells_wide)
         map_attr.add_attribute("CellsTall", cells_tall)
         map_attr.add_attribute("CellSize", self.cellsize)
@@ -488,14 +489,71 @@ class UrbanDevelopment(UBModule):
 
         # - 2.1 - MUNICIPALITIES ---
         # STEP 2.1.1 :: Load Municipalities
+        if self.lga_inputmap == "":
+            self.notify("Region is treated as a single municipality")
+            print ("Region is treated as a single municipality")
+            map_attr.add_attribute("HasGEOPOLITICAL", 0)
+        else:
+            self.notify("Loading and Assigning Municipalities")
+            print("Loading and Assigning Municipalities")
+            municipalities = []
+            map_attr.add_attribute("HasGEOPOLITICAL", 1)
+            geopol_map = self.datalibrary.get_data_with_id(self.lga_inputmap)
+            fullfilepath = geopol_map.get_data_file_path() + geopol_map.get_metadata("filename")
+            municipalities = ubspatial.import_polygonal_map(fullfilepath, "native", "Municipality",
+                                                            (map_attr.get_attribute("xllcorner"),
+                                                             map_attr.get_attribute("yllcorner")))
 
         # STEP 2.1.2 :: Assign Municipalities to Blocks and create municipality polygons
+        for i in range(len(municipalities)):
+            self.scenario.add_asset(municipalities[i].get_attribute("Map_Naming"), municipalities[i])
 
+        # Assign municipality to cells - based on centroids first, then polygonal intersection
+        for i in range(len(cellslist)):
+            current_cell = cellslist[i]
+            coordinates = current_cell.get_points()
+            # List comprehension: creates a list of coordinates with only
+            # x, y points. I.e. removes the Z-coordinate
+            coordinates = [c[:2] for c in coordinates]
+            cellpoly = Polygon(coordinates)
+
+            intersectarea = 0
+            intersectname = ""
+            for m in municipalities:
+                featpoly = Polygon(m.get_points())
+                if not featpoly.intersects(cellpoly):  # If there is no intersection...
+                    continue
+                newisectionarea = featpoly.intersection(cellpoly).area
+                if newisectionarea > intersectarea:
+                    intersectarea = newisectionarea
+                    intersectname = m.get_attribute(self.lga_attribute)
+
+            if intersectname != "" and intersectarea > 0:
+                current_cell.add_attribute("Region", intersectname)
+            else:
+                current_cell.add_attribute("Region", "Unassigned")
 
         # - 2.2 - LAND USE ---
         # STEP 2.2.1 :: Load Land Use
+        if self.luc_inputmap:
+            lu_dref = self.datalibrary.get_data_with_id(self.luc_inputmap)      # Retrieve the land use map
+            fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
+            self.notify("Loading: "+str(fullfilepath))
+            print ("Loading: " + str(fullfilepath))
+            landuseraster = ubspatial.import_ascii_raster(fullfilepath, self.landuse_map)
+            self.notify("Load Complete!")
+            print("Load Complete!")
+            landuse_offset = ubspatial.calculate_offsets(landuseraster, map_attr)
+            luc_res = landuseraster.get_cellsize()
+            csc = int(self.cellsize / luc_res)  # csc = cell selection count - knowing how many cells wide and tall
 
         # STEP 2.2.2 :: Aggregate Land Use
+        for i in range(len(cellslist)):
+            current_cell = cellslist[i]
+            col_start = int(current_cell.get_attribute("OriginX") / luc_res)
+            row_start = int(current_cell.get_attribute("OriginY") / luc_res)
+            landusedatamatrix = landuseraster.get_data_square(col_start, row_start, csc, csc)
+            
 
 
         # - 2.3 - POPULATION ---
@@ -511,6 +569,21 @@ class UrbanDevelopment(UBModule):
         self.notify("Current End of Module")
         print ("Current end of module")
         return True
+
+    def get_dominant_luc_class(self, x, y, cs, csc):
+        """
+
+        :param x:
+        :param y:
+        :param cs:
+        :param csc:
+        :return:
+        """
+        activity = 1.0
+        luc_class = ""
+
+
+        return luc_class, activity
 
     def create_cell_face(self, x, y, cellsize, id, boundary):
         """Creates the Cell Face, the polygon of the cell as a UBVector
@@ -540,7 +613,7 @@ class UrbanDevelopment(UBModule):
 
             # Define the UrbanBEATS Vector Asset
             cell_attr = ubdata.UBVector((n1, n2, n3, n4, n1), (e1, e2, e3, e4))
-            cell_attr.add_attribute("BlockID", int(id))  # ATTRIBUTE: Block Identification
+            cell_attr.add_attribute("CellID", int(id))  # ATTRIBUTE: Block Identification
             return cell_attr
         else:
             # Block not within boundary, do not return anything
