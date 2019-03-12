@@ -348,7 +348,7 @@ class UrbanDevelopment(UBModule):
         # Passive and Constrained Land Uses
         self.create_parameter("zoning_passive_luc", LISTDOUBLE, "Land use categories in passive group of uses")
         self.create_parameter("zoning_constrained_luc", LISTDOUBLE, "Land use categories in constrained group")
-        self.zoning_passive_luc = [5, 6, 7, 8, 9, 10, 11, 12]   # These are numerical encodings of LUC categories
+        self.zoning_passive_luc = [5, 6, 7, 8, 9, 10, 11, 12, 14, 15]   # These are numerical encodings of LUC categories
         self.zoning_constrained_luc = []                        # refer to ubglobals.py for key
 
         # Additional Zoning Areas for Land uses
@@ -404,6 +404,11 @@ class UrbanDevelopment(UBModule):
 
         :return: A map of urban cells containing land use, population and other information.
         """
+        # --- PRECURSOR: CHECK IF THE MODEL IS ABLE TO RUN ---
+        # if not self.lga_inputmap and not self.pop_inputmap and not self.luc_inputmap:
+        #     self.notify("Error, data missing, cannot run the Urban Development Module")
+        #   [TO DO IN FUTURE]
+
         self.notify("Begin Urban Development Simulation")
         print "Begin Urban Development Simulation"
         rand.seed()
@@ -535,6 +540,9 @@ class UrbanDevelopment(UBModule):
                 current_cell.add_attribute("Region", "Unassigned")
 
         # - 2.2 - LAND USE ---
+        # INTERIM STEP - get active/passive/constrained land use type
+        active, passive, constrained = self.determine_land_use_types()
+
         # STEP 2.2.1 :: Load Land Use
         if self.luc_inputmap:
             lu_dref = self.datalibrary.get_data_with_id(self.luc_inputmap)      # Retrieve the land use map
@@ -567,6 +575,16 @@ class UrbanDevelopment(UBModule):
                     current_cell.add_attribute("Base_LUC", landuse_cat)
                     current_cell.add_attribute("Active", 1.0)
 
+                # STEP 2.2.3 :: ASSIGN LAND USE TYPE
+                if landuse_cat in active:
+                    current_cell.add_attribute("LUC_Type", "Active")
+                elif landuse_cat in passive:
+                    current_cell.add_attribute("LUC_Type", "Passive")
+                elif landuse_cat in constrained:
+                    current_cell.add_attribute("LUC_Type", "Constrained")
+                else:
+                    current_cell.add_attribute("LUC_Type", "UNDEFINED")
+
             map_attr.set_attribute("HasLUC", 1)
         else:
             map_attr.set_attribute("HasLUC", 1)
@@ -584,6 +602,8 @@ class UrbanDevelopment(UBModule):
             population_offset = ubspatial.calculate_offsets(populationraster, map_attr)
             pop_res = populationraster.get_cellsize()
             csc = int(self.cellsize / pop_res)  # csc = cell selection count - knowing how many cells wide and tall
+            map_population = 0
+            discrepancy_pop = 0
 
             # STEP 2.3.2 :: Transfer Population to Cells
             for i in range(len(cellslist)):
@@ -602,7 +622,7 @@ class UrbanDevelopment(UBModule):
                     pop_values = popdatamatrix.flatten()
                     pop_values[pop_values == populationraster.get_nodatavalue()] = 0
                     total_population = float(sum(pop_values) * popfactor)
-
+                    map_population += total_population
                     current_cell.add_attribute("Base_POP", int(total_population))
                 else:
                     # The cell is either the same size of bigger that of the current cell
@@ -612,21 +632,146 @@ class UrbanDevelopment(UBModule):
                         total_population = popdatamatrix / (float(pop_res) * float(pop_res)/ 10000.0)
                         total_population = total_population * (self.cellsize * self.cellsize) / 10000.0
                     current_cell.add_attribute("Base_POP", int(total_population))
+                    map_population += total_population
+
+                if current_cell.get_attribute("Base_LUC") is not "Residential":
+                    discrepancy_pop += current_cell.get_attribute("Base_POP")
+                    current_cell.add_attribute("Base_POP", 0)
+                    continue
 
             map_attr.add_attribute("HasPOP", 1)
+            map_attr.add_attribute("POP_Map", map_population)
+            map_attr.add_attribute("POP_Discrepancy", discrepancy_pop)
+            self.notify("The Total Population across the case study: "+str(int(map_population)))
+            self.notify("The removed population is: "+str(int(discrepancy_pop)))
+            self.notify("The discrepancy is: "+str(int(float(discrepancy_pop / map_population) * 100.0)))
         else:
             map_attr.add_attribute("HasPOP", 0)
+            map_attr.add_attribute("POP_Map", 0)
+            map_attr.add_attribute("POP_Discrepancy", 0)
 
-        # - 2.4 - EMPLOYMENT ---
-        # STEP 2.4.1 :: Calculate/Load Employment
+        # - 2.4 - EMPLOYMENT Calculate/Load Employment ---
+        if self.employ_datasource == "I":   # Input Map
+            pass    # [TO DO]
+        elif self.employ_datasource == "P":     # From Population
+            self.calculate_employment_from_population(cellslist, self.cellsize)
+        else:   # From Land use
+            for i in range(len(cellslist)):
+                current_cell = cellslist[i]
+                if current_cell.get_attribute("Base_LUC") not in ["Commercial", "Offices Res Mix",
+                                                                  "Light Industry", "Heavy Industry"]:
+                    current_cell.add_attribute("Base_EMP", 0)
+                    continue
+                self.calculate_employment_from_land_use(current_cell, self.cellsize)
 
+        # - 2.5 - DETERMINE NEIGHBOURHOODS ---
+        self.notify("Establishing Neighbourhoods")
+        print ("Establishing Neighbourhoods")
+        hashtable = [[], []]    # [Cell_Obj, NhD_Objs]
+        nhd_rad = self.nhd_radius * 1000    # Convert to [m]
+        sqdist = nhd_rad * nhd_rad
+
+        for i in range(len(cellslist)):
+            cur_cell = cellslist[i]
+            hashtable[0].append(cur_cell)   # Add the current cell object to the hash_table
+            neighbours = []
+            neighbour_IDs = []
+            coords = (cur_cell.get_attribute("CentreX"), cur_cell.get_attribute("CentreY"))
+            for j in range(len(cellslist)):
+                dx = (cellslist[j].get_attribute("CentreX") - coords[0])
+                dy = (cellslist[j].get_attribute("CentreY") - coords[1])
+                if (dx * dx + dy * dy) <= sqdist:
+                    # The Cell is part of the neighbourhood
+                    neighbours.append(cellslist[j])
+                    neighbour_IDs.append(cellslist[j].get_attribute("CellID"))
+            cur_cell.add_attribute("NHD_IDs", neighbour_IDs)
+            cur_cell.add_attribute("NHD_N", len(neighbour_IDs))
+            hashtable[1].append(neighbours)
 
         self.notify("Current End of Module")
         print ("Current end of module")
         return True
 
+    def determine_land_use_types(self):
+        """Analyses based on user inputs the land use categories for active, passive and constrained types and returns
+        three specific lists of categories.
+
+        :return: active, passive and constrained, [ ] lists containing category names.
+        """
+        active = ['Residential', 'Commercial', 'Offices Res Mix', 'Light Industry', 'Heavy Industry']   # ALWAYS ACTIVE
+        passive = []
+        constrained = ['Water']
+        for luc in self.zoning_passive_luc:
+            passive.append(ubglobals.LANDUSENAMES[int(luc)])
+        for luc in self.zoning_constrained_luc:
+            constrained.append(ubglobals.LANDUSENAMES[int(luc)])
+        return active, passive, constrained
+
+    def calculate_employment_from_land_use(self, cell, res):
+        """Calculates the total employment in a cell based on the land use data. The current cell's land use
+        is passed to the function to calculate based on employment densities specified by the user input.
+
+        :param cell: The UBComponent() object of the current cell to analyse.
+        :param res: cell size [m]
+        :return: Nothing, the cell object's attribute list is updated to include "Base_EMP"
+        """
+        base_luc = cell.get_attribute("Base_LUC")
+        if base_luc == "Commercial":
+            cell.add_attribute("Base_EMP", int(self.employ_land_comfactor * (res * res)/10000.0))
+        elif base_luc == "Offices Res Mix":
+            cell.add_attribute("Base_EMP", int(self.employ_land_officefactor * (res * res)/10000.0))
+        else:
+            cell.add_attribute("Base_EMP", int(self.employ_land_indfactor * (res * res)/10000.0))
+        return True
+
+    def calculate_employment_from_population(self, cellslist, res):
+        """Calculates the employment as a proportion of employment and returns an employee density for each land
+        use based on the factors used.
+
+        :param cellslist: the list of case study cells
+        :param res: resolution of the cell
+        :return:
+        """
+        # ANALYZE FREQUENCIES AND TOTALS ACROSS MAP
+        total_pop = 0
+        total_luc = [0, 0, 0]    # COM, LI/HI, ORC
+        cellarea = res * res
+        for i in range(len(cellslist)):
+            cur_cell = cellslist[i]
+            total_pop += cur_cell.get_attribute("Base_POP")
+            if cur_cell.get_attribute("Base_LUC") == "Commercial":
+                total_luc[0] += cellarea
+            elif cur_cell.get_attribute("Base_LUC") == "Offices Res Mix":
+                total_luc[2] += cellarea
+            elif cur_cell.get_attribute("Base_LUC") in ["Light Industry", "Heavy Industry"]:
+                total_luc[1] += cellarea
+            else:
+                pass
+
+        # CALCULATE DENSITIES FOR EACH MAIN EMPLOYMENT SECTOR [jobs/cell]
+        emp_com = self.employ_pop_comfactor * total_pop / (total_luc[0] / 10000.0) * (cellarea / 10000.0)
+        emp_ind = self.employ_pop_indfactor * total_pop / (total_luc[1] / 10000.0) * (cellarea / 10000.0)
+        emp_orc = self.employ_pop_officefactor * total_pop / (total_luc[2] / 10000.0) * (cellarea / 10000.0)
+
+        # ASSIGN TO ALL BLOCKS
+        for i in range(len(cellslist)):
+            cur_cell = cellslist[i]
+            if cur_cell.get_attribute("Base_LUC") == "Commercial":
+                cur_cell.add_attribute("Base_EMP", emp_com)
+            elif cur_cell.get_attribute("Base_LUC") == "Offices Res Mix":
+                cur_cell.add_attribute("Base_EMP", emp_orc)
+            elif cur_cell.get_attribute("Base_LUC") in ["Light Industry", "Heavy Industry"]:
+                cur_cell.add_attribute("Base_EMP", emp_ind)
+            else:
+                cur_cell.add_attribute("Base_EMP", 0)
+        return True
+
     def determine_dominant_landusecat(self, lucdata):
-        """Analyses the available LUC data based on frequency and returns category with the highest frequency."""
+        """Analyses the available LUC data based on frequency and returns category with the highest frequency.
+
+        :param lucdata: the lucdatamatrix containing the section of geographic data currently being analysed
+        :return: luc_class (the dominant land use category), activity (the proportion of cell space occupied by data)
+        """
         lucprop, activity = ubmethods.calculate_frequency_of_lu_classes(lucdata)
         if activity == 0:
             return None, 0

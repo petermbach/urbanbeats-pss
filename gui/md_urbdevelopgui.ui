@@ -933,7 +933,7 @@ p, li { white-space: pre-wrap; }
                          </size>
                         </property>
                         <property name="currentIndex">
-                         <number>0</number>
+                         <number>2</number>
                         </property>
                         <widget class="QWidget" name="page">
                          <layout class="QGridLayout" name="gridLayout_3">
@@ -1271,6 +1271,9 @@ p, li { white-space: pre-wrap; }
                                  <height>0</height>
                                 </size>
                                </property>
+                               <property name="decimals">
+                                <number>0</number>
+                               </property>
                               </widget>
                              </item>
                              <item row="3" column="0">
@@ -1287,6 +1290,9 @@ p, li { white-space: pre-wrap; }
                                  <width>80</width>
                                  <height>0</height>
                                 </size>
+                               </property>
+                               <property name="decimals">
+                                <number>0</number>
                                </property>
                               </widget>
                              </item>
@@ -1408,6 +1414,9 @@ p, li { white-space: pre-wrap; }
                                  <width>80</width>
                                  <height>0</height>
                                 </size>
+                               </property>
+                               <property name="decimals">
+                                <number>0</number>
                                </property>
                               </widget>
                              </item>
@@ -3741,7 +3750,7 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>455</width>
+                   <width>490</width>
                    <height>477</height>
                   </rect>
                  </property>
@@ -4308,8 +4317,8 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>460</width>
-                   <height>840</height>
+                   <width>490</width>
+                   <height>827</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_13">

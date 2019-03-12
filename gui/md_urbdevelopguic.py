@@ -837,11 +837,11 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("employ_pop_rocbool", int(self.ui.employ_pop_roc.isChecked()))
         self.module.set_parameter("employ_pop_roc", float(self.ui.employ_pop_roc_spin.value()))
 
-        self.module.set_parameter("employ_land_comfactor", float(self.ui.employ_pop_com.value()))
-        self.module.set_parameter("employ_land_indfactor", float(self.ui.employ_pop_ind.value()))
-        self.module.set_parameter("employ_land_officefactor", float(self.ui.employ_pop_office.value()))
-        self.module.set_parameter("employ_land_rocbool", int(self.ui.employ_pop_roc.isChecked()))
-        self.module.set_parameter("employ_land_roc", float(self.ui.employ_pop_roc_spin.value()))
+        self.module.set_parameter("employ_land_comfactor", float(self.ui.employ_land_com.value()))
+        self.module.set_parameter("employ_land_indfactor", float(self.ui.employ_land_ind.value()))
+        self.module.set_parameter("employ_land_officefactor", float(self.ui.employ_land_office.value()))
+        self.module.set_parameter("employ_land_rocbool", int(self.ui.employ_land_roc.isChecked()))
+        self.module.set_parameter("employ_land_roc", float(self.ui.employ_land_roc_spin.value()))
 
         # TAB 2 - 2.1 - ACCESSIBILITY
         self.module.set_parameter("access_export_combined", int(self.ui.access_export_combined.isChecked()))
