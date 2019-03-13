@@ -690,30 +690,45 @@ class UrbanDevelopment(UBModule):
 
         # - 2.6 - SPATIAL RELATIONSHIPS - ACCESSIBILITY
         # - 2.6.1 - Determine individual accessibility maps
+        self.notify("Entering Accessibility Calculations")
+        print("Entering Accessibility Calculations")
+
         if self.access_roads_include:
-            parameter_set = []
-            self.calculate_accessibility_linearfeatures(self.access_roads_data, parameter_set,
-                                                        cellslist, "ACC_ROAD_")
+            aj = [float(self.access_roads_res * self.access_roads_ares),
+                  float(self.access_roads_com * self.access_roads_acom),
+                  float(self.access_roads_ind * self.access_roads_aind),
+                  float(self.access_roads_offices * self.access_roads_aoffices)]
+            self.calculate_accessibility_linearfeatures(self.access_roads_data, map_attr, aj, cellslist, "ROAD")
         if self.access_rail_include:
-            parameter_set = []
-            self.calculate_accessibility_linearfeatures(self.access_rail_data, parameter_set,
-                                                        cellslist, "ACC_RAIL_")
+            aj = [float(self.access_rail_res * self.access_rail_ares),
+                  float(self.access_rail_com * self.access_rail_acom),
+                  float(self.access_rail_ind * self.access_rail_aind),
+                  float(self.access_rail_offices * self.access_rail_aoffices)]
+            self.calculate_accessibility_linearfeatures(self.access_rail_data, map_attr, aj, cellslist, "RAIL")
         if self.access_waterways_include:
-            parameter_set = []
-            self.calculate_accessibility_linearfeatures(self.access_waterways_data, parameter_set,
-                                                        cellslist, "ACC_WWAY_")
+            aj = [float(self.access_waterways_res * self.access_waterways_ares),
+                  float(self.access_waterways_com * self.access_waterways_acom),
+                  float(self.access_waterways_ind * self.access_waterways_aind),
+                  float(self.access_waterways_offices * self.access_waterways_aoffices)]
+            self.calculate_accessibility_linearfeatures(self.access_waterways_data, map_attr, aj, cellslist, "WWAY")
         if self.access_lakes_include:
-            parameter_set = []
-            self.calculate_accessibility_polygonfeatures(self.access_lakes_data, parameter_set,
-                                                         cellslist, "ACC_LAKE_")
+            aj = [float(self.access_lakes_res * self.access_lakes_ares),
+                  float(self.access_lakes_com * self.access_lakes_acom),
+                  float(self.access_lakes_ind * self.access_lakes_aind),
+                  float(self.access_lakes_offices * self.access_lakes_aoffices)]
+            self.calculate_accessibility_polygonfeatures(self.access_lakes_data, map_attr, aj, cellslist, "LAKE")
         if self.access_pos_include:
-            parameter_set = []
-            self.calculate_accessibility_polygonfeatures(self.access_pos_data, parameter_set,
-                                                         cellslist, "ACC_POSS_")
+            aj = [float(self.access_pos_res * self.access_pos_ares),
+                  float(self.access_pos_com * self.access_pos_acom),
+                  float(self.access_pos_ind * self.access_pos_aind),
+                  float(self.access_pos_offices * self.access_pos_aoffices)]
+            self.calculate_accessibility_polygonfeatures(self.access_pos_data, map_attr, aj, cellslist, "POSS")
         if self.access_poi_include:
-            parameter_set = []
-            self.calculate_accessibility_pointfeatures(self.access_poi_data, parameter_set,
-                                                       cellslist, "ACC_POIS_")
+            aj = [float(self.access_poi_res * self.access_poi_ares),
+                  float(self.access_poi_com * self.access_poi_acom),
+                  float(self.access_poi_ind * self.access_poi_aind),
+                  float(self.access_poi_offices * self.access_poi_aoffices)]
+            self.calculate_accessibility_pointfeatures(self.access_poi_data, map_attr, aj, cellslist, "POIS")
 
         # - 2.6.2 - Combine Accessibility criteria into full map
         accessibility_weights = [float(self.access_roads_weight * self.access_roads_include),
@@ -770,43 +785,110 @@ class UrbanDevelopment(UBModule):
         print ("Current end of module")
         return True
 
-    def calculate_accessibility_pointfeatures(self, map_input, params, cellslist, att_name):
+    def calculate_accessibility_pointfeatures(self, map_input, map_attr, aj, cellslist, att_name):
         """Calculates the accessibility from a Point Features Map and adds the individual accessibility values
         to the map.
 
         :param map_input: the input map to calculate the accessibility from
-        :param params: the list of parameters for accessibility calculations
+        :param aj: the list of parameters for accessibility calculations - the importance factors
         :param cellslist: the list of cells in the simulation
         :param att_name: the prefix attribute name to use (e.g. ROADS --> "ACC_ROAD_"
         :return:
         """
+        self.notify("Determining Accessibility to: " + att_name)
 
+        # LOAD POINT FEATURES GET POINTS COORDINATES
+        pointfeatures = []
+
+        # CALCULATE CLOSEST DISTANCE TO EACH CELL
+        for i in range(len(cellslist)):
+            cur_cell = cellslist[i]
+            loc = Point(cellslist[i].get_attribute("CentreX"), cellslist[i].get_attribute("CentreY"))
+            dist = 99999999.0
+            for j in range(len(pointfeatures)):  # Loop through all feature points
+                feat_point = Point(pointfeatures[j])  # Make a Shapely point
+                if loc.distance(feat_point) < dist:
+                    dist = loc.distance(feat_point)  # Get the shortest distance
+
+            cur_cell.add_attribute("ACC_" + att_name + "_RES",
+                                   ubmethods.calculate_accessibility_factor(dist, params[0]))
+            cur_cell.add_attribute("ACC_" + att_name + "_COM",
+                                   ubmethods.calculate_accessibility_factor(dist, params[1]))
+            cur_cell.add_attribute("ACC_" + att_name + "_IND",
+                                   ubmethods.calculate_accessibility_factor(dist, params[2]))
+            cur_cell.add_attribute("ACC_" + att_name + "_ORC",
+                                   ubmethods.calculate_accessibility_factor(dist, params[3]))
         return True
 
-    def calculate_accessibility_linearfeatures(self, map_input, params, cellslist, att_name):
+    def calculate_accessibility_linearfeatures(self, map_input, map_attr, params, cellslist, att_name):
         """Calculates the accessibility from a Point Features Map and adds the individual accessibility values
         to the map.
 
         :param map_input: the input map to calculate the accessibility from
-        :param params: the list of parameters for accessibility calculations
+        :param aj: the list of parameters for accessibility calculations - the importance factors
         :param cellslist: the list of cells in the simulation
-        :param att_name: the prefix attribute name to use (e.g. ROADS --> "ACC_ROAD_"
+        :param att_name: the prefix attribute name to use (e.g. ROADS --> "ROAD"
         :return:
         """
+        self.notify("Determining Accessibility to: "+att_name)
 
+        # LOAD LINEAR FEATURES AND SEGMENTIZE
+        linearfeatures = ubspatial.import_linear_network(map_input, "POINTS",
+                                                         (map_attr.get_attribute("xllcorner"),
+                                                          map_attr.get_attribute("yllcorner")),
+                                                         Segments=self.cellsize / 4.0)  # Segmentation
+        for i in range(len(cellslist)):
+            cur_cell = cellslist[i]
+            loc = Point(cellslist[i].get_attribute("CentreX"), cellslist[i].get_attribute("CentreY"))
+            dist = 99999999.0
+            for j in range(len(linearfeatures)):        # Loop through all feature points
+                feat_point = Point(linearfeatures[j])   # Make a Shapely point
+                if loc.distance(feat_point) < dist:
+                    dist = loc.distance(feat_point)     # Get the shortest distance
+
+            cur_cell.add_attribute("ACC_"+att_name+"_RES", ubmethods.calculate_accessibility_factor(dist, params[0]))
+            cur_cell.add_attribute("ACC_"+att_name+"_COM", ubmethods.calculate_accessibility_factor(dist, params[1]))
+            cur_cell.add_attribute("ACC_"+att_name+"_IND", ubmethods.calculate_accessibility_factor(dist, params[2]))
+            cur_cell.add_attribute("ACC_"+att_name+"_ORC", ubmethods.calculate_accessibility_factor(dist, params[3]))
         return True
 
-    def calculate_accessibility_polygonfeatures(self, map_input, params, cellslist, att_name):
+    def calculate_accessibility_polygonfeatures(self, map_input, map_attr, params, cellslist, att_name):
         """Calculates the accessibility from a Point Features Map and adds the individual accessibility values
         to the map.
 
         :param map_input: the input map to calculate the accessibility from
-        :param params: the list of parameters for accessibility calculations
+        :param aj: the list of parameters for accessibility calculations - the importance factors
         :param cellslist: the list of cells in the simulation
         :param att_name: the prefix attribute name to use (e.g. ROADS --> "ACC_ROAD_"
         :return:
         """
+        self.notify("Determining Accessibility to: " + att_name)
 
+        # LOAD POLYGONAL FEATURES
+        linearfeatures = ubspatial.import_linear_network(map_input, "POINTS",
+                                                         (map_attr.get_attribute("xllcorner"),
+                                                          map_attr.get_attribute("yllcorner")),
+                                                         Segments=self.cellsize / 4.0)  # Segmentation
+        # GET RING COORDINATES FROM POLYGONAL FEATURES
+
+
+        for i in range(len(cellslist)):
+            cur_cell = cellslist[i]
+            loc = Point(cellslist[i].get_attribute("CentreX"), cellslist[i].get_attribute("CentreY"))
+            dist = 99999999.0
+            for j in range(len(linearfeatures)):  # Loop through all feature points
+                feat_point = Point(linearfeatures[j])  # Make a Shapely point
+                if loc.distance(feat_point) < dist:
+                    dist = loc.distance(feat_point)  # Get the shortest distance
+
+            cur_cell.add_attribute("ACC_" + att_name + "_RES",
+                                   ubmethods.calculate_accessibility_factor(dist, params[0]))
+            cur_cell.add_attribute("ACC_" + att_name + "_COM",
+                                   ubmethods.calculate_accessibility_factor(dist, params[1]))
+            cur_cell.add_attribute("ACC_" + att_name + "_IND",
+                                   ubmethods.calculate_accessibility_factor(dist, params[2]))
+            cur_cell.add_attribute("ACC_" + att_name + "_ORC",
+                                   ubmethods.calculate_accessibility_factor(dist, params[3]))
         return True
 
     def determine_land_use_types(self):

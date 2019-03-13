@@ -75,6 +75,16 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     fielddefmatrix.append(ogr.FieldDefn("NHD_N", ogr.OFTInteger))
     # fielddefmatrix.append(ogr.FieldDefn("NHD_IDs", ogr.OFTString))
 
+    # ACCESSIBILIY INDICATORS
+    fielddefmatrix.append(ogr.FieldDefn("ACC_ROAD_R", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("ACC_ROAD_C", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("ACC_ROAD_I", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("ACC_ROAD_O", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("ACCESS_RES", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("ACCESS_COM", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("ACCESS_IND", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("ACCESS_ORC", ogr.OFTReal))
+
     # Create the fields
     for field in fielddefmatrix:
         layer.CreateField(field)
@@ -111,6 +121,17 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("NHD_N", str(currentAttList.get_attribute("NHD_N")))
         # feature.SetField("NHD_IDs", str(",".join(map(str, currentAttList.get_attribute("NHD_IDs")))))
         # Neighbourhood attribute converts the [ ] array of BlockIDs to a comma-separated list "#,#,#,#"
+
+        feature.SetField("ACC_ROAD_R", float(currentAttList.get_attribute("ACC_ROAD_RES")))
+        feature.SetField("ACC_ROAD_C", float(currentAttList.get_attribute("ACC_ROAD_COM")))
+        feature.SetField("ACC_ROAD_I", float(currentAttList.get_attribute("ACC_ROAD_IND")))
+        feature.SetField("ACC_ROAD_O", float(currentAttList.get_attribute("ACC_ROAD_ORC")))
+        feature.SetField("ACCESS_RES", float(currentAttList.get_attribute("ACCESS_RES")))
+        feature.SetField("ACCESS_COM", float(currentAttList.get_attribute("ACCESS_COM")))
+        feature.SetField("ACCESS_IND", float(currentAttList.get_attribute("ACCESS_IND")))
+        feature.SetField("ACCESS_ORC", float(currentAttList.get_attribute("ACCESS_ORC")))
+
+
         layer.CreateFeature(feature)
 
     shapefile.Destroy()

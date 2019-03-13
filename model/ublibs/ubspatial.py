@@ -168,7 +168,7 @@ def import_linear_network(filename, format, global_offsets, **kwargs):
     :param filename: Full filepath to the shapefile to be imported
     :param format: Data format to be returned by the function "Points" or "Lines" or "Leaflet"
     :param global_offsets: The global xmin/ymin to convert the data to (0,0) origin
-    :param kwargs: "Segmentmax" - specifies the number of segmentations if using POINTS format, usually Blocksize / 4
+    :param kwargs: "Segments" - specifies the number of segmentations if using POINTS format, usually Blocksize / 4
     :return: A list of tuples containing all points of the river (POINTS) or a list of UBVector() instances.
     """
     driver = ogr.GetDriverByName('ESRI Shapefile')  # Open the file and get the total number of features
@@ -252,6 +252,18 @@ def import_linear_network(filename, format, global_offsets, **kwargs):
                         linefeature.add_attribute(str(a), currentfeature.GetFieldAsString(a))
                     linefeatures.append(linefeature)
         return linefeatures
+
+
+def import_point_features(filepath, option, naming, global_offsets):
+    """
+
+    :param filepath:
+    :param option:
+    :param naming:
+    :param global_offsets:
+    :return:
+    """
+
 
 
 def calculate_offsets(map_input, global_extents):
