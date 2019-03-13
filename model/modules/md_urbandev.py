@@ -688,8 +688,125 @@ class UrbanDevelopment(UBModule):
             cur_cell.add_attribute("NHD_N", len(neighbour_IDs))
             hashtable[1].append(neighbours)
 
+        # - 2.6 - SPATIAL RELATIONSHIPS - ACCESSIBILITY
+        # - 2.6.1 - Determine individual accessibility maps
+        if self.access_roads_include:
+            parameter_set = []
+            self.calculate_accessibility_linearfeatures(self.access_roads_data, parameter_set,
+                                                        cellslist, "ACC_ROAD_")
+        if self.access_rail_include:
+            parameter_set = []
+            self.calculate_accessibility_linearfeatures(self.access_rail_data, parameter_set,
+                                                        cellslist, "ACC_RAIL_")
+        if self.access_waterways_include:
+            parameter_set = []
+            self.calculate_accessibility_linearfeatures(self.access_waterways_data, parameter_set,
+                                                        cellslist, "ACC_WWAY_")
+        if self.access_lakes_include:
+            parameter_set = []
+            self.calculate_accessibility_polygonfeatures(self.access_lakes_data, parameter_set,
+                                                         cellslist, "ACC_LAKE_")
+        if self.access_pos_include:
+            parameter_set = []
+            self.calculate_accessibility_polygonfeatures(self.access_pos_data, parameter_set,
+                                                         cellslist, "ACC_POSS_")
+        if self.access_poi_include:
+            parameter_set = []
+            self.calculate_accessibility_pointfeatures(self.access_poi_data, parameter_set,
+                                                       cellslist, "ACC_POIS_")
+
+        # - 2.6.2 - Combine Accessibility criteria into full map
+        accessibility_weights = [float(self.access_roads_weight * self.access_roads_include),
+                                 float(self.access_rail_weight * self.access_rail_include),
+                                 float(self.access_waterways_weight * self.access_waterways_include),
+                                 float(self.access_lakes_weight * self.access_lakes_include),
+                                 float(self.access_pos_weight * self.access_pos_include),
+                                 float(self.access_poi_weight * self.access_poi_include)]
+        accessibility_weights = ubmethods.normalize_weights(accessibility_weights, "SUM")   # 0 to 1 normalize
+        accessibility_attributes = ["ACC_ROAD", "ACC_RAIL", "ACC_WWAY", "ACC_LAKE", "ACC_POSS", "ACC_POIS"]
+
+        for i in range(len(cellslist)):
+            final_acc_res, final_acc_com, final_acc_ind, final_acc_orc = 0, 0, 0, 0
+            val_res, val_com, val_ind, val_orc = 0, 0, 0, 0     # Initialize
+            for acc in range(len(accessibility_attributes)):
+                val_res = cellslist[i].get_attribute(accessibility_attributes[acc]+"_RES")
+                if val_res is None: val_res = 0
+                final_acc_res += accessibility_weights[acc] * val_res
+
+                val_com = cellslist[i].get_attribute(accessibility_attributes[acc] + "_COM")
+                if val_com is None: val_com = 0
+                final_acc_com += accessibility_weights[acc] * val_com
+
+                val_ind = cellslist[i].get_attribute(accessibility_attributes[acc] + "_IND")
+                if val_ind is None: val_ind = 0
+                final_acc_ind += accessibility_weights[acc] * val_ind
+
+                val_orc = cellslist[i].get_attribute(accessibility_attributes[acc] + "_ORC")
+                if val_orc is None: val_orc = 0
+                final_acc_orc += accessibility_weights[acc] * val_orc
+
+            cellslist[i].add_attribute("ACCESS_RES", final_acc_res)
+            cellslist[i].add_attribute("ACCESS_COM", final_acc_com)
+            cellslist[i].add_attribute("ACCESS_IND", final_acc_ind)
+            cellslist[i].add_attribute("ACCESS_ORC", final_acc_orc)
+
+        # Loop across blocks, get the five attributes and calculate total accessibility
+
+
+        # - 2.7 - SPATIAL RELATIONSHIPS - SUITABILITY
+
+
+
+        # - 2.8 - SPATIAL RELATIONSHIPS - ZONING
+
+
+
+        # - 2.9 - SPATIAL RELATIONSHIPS - NEIGHBOURHOOD EFFECT
+
+
+
+
         self.notify("Current End of Module")
         print ("Current end of module")
+        return True
+
+    def calculate_accessibility_pointfeatures(self, map_input, params, cellslist, att_name):
+        """Calculates the accessibility from a Point Features Map and adds the individual accessibility values
+        to the map.
+
+        :param map_input: the input map to calculate the accessibility from
+        :param params: the list of parameters for accessibility calculations
+        :param cellslist: the list of cells in the simulation
+        :param att_name: the prefix attribute name to use (e.g. ROADS --> "ACC_ROAD_"
+        :return:
+        """
+
+        return True
+
+    def calculate_accessibility_linearfeatures(self, map_input, params, cellslist, att_name):
+        """Calculates the accessibility from a Point Features Map and adds the individual accessibility values
+        to the map.
+
+        :param map_input: the input map to calculate the accessibility from
+        :param params: the list of parameters for accessibility calculations
+        :param cellslist: the list of cells in the simulation
+        :param att_name: the prefix attribute name to use (e.g. ROADS --> "ACC_ROAD_"
+        :return:
+        """
+
+        return True
+
+    def calculate_accessibility_polygonfeatures(self, map_input, params, cellslist, att_name):
+        """Calculates the accessibility from a Point Features Map and adds the individual accessibility values
+        to the map.
+
+        :param map_input: the input map to calculate the accessibility from
+        :param params: the list of parameters for accessibility calculations
+        :param cellslist: the list of cells in the simulation
+        :param att_name: the prefix attribute name to use (e.g. ROADS --> "ACC_ROAD_"
+        :return:
+        """
+
         return True
 
     def determine_land_use_types(self):

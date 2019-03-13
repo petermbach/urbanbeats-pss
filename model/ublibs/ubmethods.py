@@ -396,3 +396,39 @@ def patchdelin_obtain_patch_from_indices(datamatrix, dataresolution, indices, or
         pass
         # Do something with indices...
     return True
+
+
+def normalize_weights(weights_matrix, method):
+    """Normalizes the weights within a weights matrix based on the sum of weights. According to a specific method.
+
+    :param weights_matrix: a list of weight scores [ ] of any length.
+    :param method: S = sum, normalize 0 to 1, A = average, normalize against average
+    :return: a list [ ] of equal length with the normalized weights."""
+    if method == "SUM":
+        for i in range(len(weights_matrix)):
+            weights_matrix[i] = float(weights_matrix[i] / sum(weights_matrix))
+    elif method == "AVG":
+        avg = float(sum(weights_matrix) / len(weights_matrix))
+        for i in range(len(weights_matrix)):
+            weights_matrix[i] = float(weights_matrix[i] / avg)
+    return weights_matrix
+
+
+def calculate_accessibility_factor(dist, aj):
+    """Calculates the accessibility factor Aij for cell i and land use j as a function of distance from the
+    cell to the nearest map feature. Depending on the value of aj, a specific equation is used.
+
+    :param dist: the Euclidean distance [m] between cell i's centroid and the nearest feature
+    :param aj: the importance for land use j of accessibility to the feature in question
+    :return: Aij - the accessibility factor
+    """
+    try:
+        if aj == 0:
+            return 0    # No accessibility influence
+        if aj > 0:
+            return float(aj / (aj + dist))
+        else:
+            return float(dist / (abs(aj) + dist))
+    except ZeroDivisionError:
+        print "Zero division!"
+        return 0
