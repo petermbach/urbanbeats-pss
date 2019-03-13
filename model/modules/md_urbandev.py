@@ -665,28 +665,28 @@ class UrbanDevelopment(UBModule):
                 self.calculate_employment_from_land_use(current_cell, self.cellsize)
 
         # - 2.5 - DETERMINE NEIGHBOURHOODS ---
-        self.notify("Establishing Neighbourhoods")
-        print ("Establishing Neighbourhoods")
-        hashtable = [[], []]    # [Cell_Obj, NhD_Objs]
-        nhd_rad = self.nhd_radius * 1000    # Convert to [m]
-        sqdist = nhd_rad * nhd_rad
-
-        for i in range(len(cellslist)):
-            cur_cell = cellslist[i]
-            hashtable[0].append(cur_cell)   # Add the current cell object to the hash_table
-            neighbours = []
-            neighbour_IDs = []
-            coords = (cur_cell.get_attribute("CentreX"), cur_cell.get_attribute("CentreY"))
-            for j in range(len(cellslist)):
-                dx = (cellslist[j].get_attribute("CentreX") - coords[0])
-                dy = (cellslist[j].get_attribute("CentreY") - coords[1])
-                if (dx * dx + dy * dy) <= sqdist:
-                    # The Cell is part of the neighbourhood
-                    neighbours.append(cellslist[j])
-                    neighbour_IDs.append(cellslist[j].get_attribute("CellID"))
-            cur_cell.add_attribute("NHD_IDs", neighbour_IDs)
-            cur_cell.add_attribute("NHD_N", len(neighbour_IDs))
-            hashtable[1].append(neighbours)
+        # self.notify("Establishing Neighbourhoods")
+        # print ("Establishing Neighbourhoods")
+        # hashtable = [[], []]    # [Cell_Obj, NhD_Objs]
+        # nhd_rad = self.nhd_radius * 1000    # Convert to [m]
+        # sqdist = nhd_rad * nhd_rad
+        #
+        # for i in range(len(cellslist)):
+        #     cur_cell = cellslist[i]
+        #     hashtable[0].append(cur_cell)   # Add the current cell object to the hash_table
+        #     neighbours = []
+        #     neighbour_IDs = []
+        #     coords = (cur_cell.get_attribute("CentreX"), cur_cell.get_attribute("CentreY"))
+        #     for j in range(len(cellslist)):
+        #         dx = (cellslist[j].get_attribute("CentreX") - coords[0])
+        #         dy = (cellslist[j].get_attribute("CentreY") - coords[1])
+        #         if (dx * dx + dy * dy) <= sqdist:
+        #             # The Cell is part of the neighbourhood
+        #             neighbours.append(cellslist[j])
+        #             neighbour_IDs.append(cellslist[j].get_attribute("CellID"))
+        #     cur_cell.add_attribute("NHD_IDs", neighbour_IDs)
+        #     cur_cell.add_attribute("NHD_N", len(neighbour_IDs))
+        #     hashtable[1].append(neighbours)
 
         # - 2.6 - SPATIAL RELATIONSHIPS - ACCESSIBILITY
         # - 2.6.1 - Determine individual accessibility maps
@@ -832,20 +832,31 @@ class UrbanDevelopment(UBModule):
         """
         self.notify("Determining Accessibility to: "+att_name)
 
+        # GET THE FULL FILENAME OF THE MAP INPUT
+        dref = self.datalibrary.get_data_with_id(map_input)  # Retrieve the land use map
+        fullfilepath = dref.get_data_file_path() + dref.get_metadata("filename")
+
         # LOAD LINEAR FEATURES AND SEGMENTIZE
-        linearfeatures = ubspatial.import_linear_network(map_input, "POINTS",
+        linearfeatures = ubspatial.import_linear_network(fullfilepath, "POINTS",
                                                          (map_attr.get_attribute("xllcorner"),
                                                           map_attr.get_attribute("yllcorner")),
-                                                         Segments=self.cellsize / 4.0)  # Segmentation
+                                                         Segments=self.cellsize)  # Segmentation
+
+        self.notify("Number of loaded features to compare: "+str(len(linearfeatures)))
+        print "Length of the featurepoints list: ", str(len(linearfeatures))
+
         for i in range(len(cellslist)):
             cur_cell = cellslist[i]
-            loc = Point(cellslist[i].get_attribute("CentreX"), cellslist[i].get_attribute("CentreY"))
+            loc = (cellslist[i].get_attribute("CentreX"), cellslist[i].get_attribute("CentreY"))
             dist = 99999999.0
             for j in range(len(linearfeatures)):        # Loop through all feature points
-                feat_point = Point(linearfeatures[j])   # Make a Shapely point
-                if loc.distance(feat_point) < dist:
-                    dist = loc.distance(feat_point)     # Get the shortest distance
-
+                feat_point = linearfeatures[j]   # Make a Shapely point
+                dx = loc[0] - feat_point[0]
+                dy = loc[1] - feat_point[1]
+                newdist = math.sqrt(dx * dx + dy * dy)
+                if newdist < dist:
+                    dist = newdist
+            cur_cell.add_attribute("ACC_"+att_name+"_DIST", dist / 1000.0)   # Distance in [km]
             cur_cell.add_attribute("ACC_"+att_name+"_RES", ubmethods.calculate_accessibility_factor(dist, params[0]))
             cur_cell.add_attribute("ACC_"+att_name+"_COM", ubmethods.calculate_accessibility_factor(dist, params[1]))
             cur_cell.add_attribute("ACC_"+att_name+"_IND", ubmethods.calculate_accessibility_factor(dist, params[2]))

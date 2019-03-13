@@ -72,10 +72,11 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     fielddefmatrix.append(ogr.FieldDefn("Base_POP", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("Base_EMP", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("LUC_Type", ogr.OFTString))
-    fielddefmatrix.append(ogr.FieldDefn("NHD_N", ogr.OFTInteger))
+    # fielddefmatrix.append(ogr.FieldDefn("NHD_N", ogr.OFTInteger))
     # fielddefmatrix.append(ogr.FieldDefn("NHD_IDs", ogr.OFTString))
 
     # ACCESSIBILIY INDICATORS
+    fielddefmatrix.append(ogr.FieldDefn("DIST_ROAD", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("ACC_ROAD_R", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("ACC_ROAD_C", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("ACC_ROAD_I", ogr.OFTReal))
@@ -118,10 +119,11 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("Base_POP", int(currentAttList.get_attribute("Base_POP")))
         feature.SetField("Base_EMP", int(currentAttList.get_attribute("Base_EMP")))
         feature.SetField("LUC_Type", str(currentAttList.get_attribute("LUC_Type")))
-        feature.SetField("NHD_N", str(currentAttList.get_attribute("NHD_N")))
+        # feature.SetField("NHD_N", str(currentAttList.get_attribute("NHD_N")))
         # feature.SetField("NHD_IDs", str(",".join(map(str, currentAttList.get_attribute("NHD_IDs")))))
         # Neighbourhood attribute converts the [ ] array of BlockIDs to a comma-separated list "#,#,#,#"
 
+        feature.SetField("DIST_ROAD", float(currentAttList.get_attribute("ACC_ROAD_DIST")))
         feature.SetField("ACC_ROAD_R", float(currentAttList.get_attribute("ACC_ROAD_RES")))
         feature.SetField("ACC_ROAD_C", float(currentAttList.get_attribute("ACC_ROAD_COM")))
         feature.SetField("ACC_ROAD_I", float(currentAttList.get_attribute("ACC_ROAD_IND")))
