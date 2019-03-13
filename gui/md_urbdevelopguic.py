@@ -151,11 +151,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         # CUSTOM CRITERIA 2 - Uses ALL maps [TO DO]
 
         # TAB 2 ZONING - Water bodies, residential zoning maps
-        # WATER BODIES
-        self.ui.zoning_constraints_water_combo.clear()
-        [self.ui.zoning_constraints_water_combo.addItem(str(self.lakemaps[0][i])) for i in range(len(self.lakemaps[0]))]
-
-        # LAND USE MAPS FOR RES, COM, IND, OFFICES
+        # GENERAL ZONING RULES FOR ACTIVE LAND USES
         self.ui.zoning_rules_rescombo.clear()  # Clear the combo box first before setting it up
         [self.ui.zoning_rules_rescombo.addItem(str(self.lumaps[0][i])) for i in range(len(self.lumaps[0]))]
         self.ui.zoning_rules_comcombo.clear()  # Clear the combo box first before setting it up
@@ -164,6 +160,27 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         [self.ui.zoning_rules_indcombo.addItem(str(self.lumaps[0][i])) for i in range(len(self.lumaps[0]))]
         self.ui.zoning_rules_officescombo.clear()  # Clear the combo box first before setting it up
         [self.ui.zoning_rules_officescombo.addItem(str(self.lumaps[0][i])) for i in range(len(self.lumaps[0]))]
+
+        # SPECIFIC PLANNING CONSTRAINTS
+        self.ui.zoning_constraints_water_combo.clear()
+        [self.ui.zoning_constraints_water_combo.addItem(str(self.lakemaps[0][i])) for i in range(len(self.lakemaps[0]))]
+
+        self.overlaymaps = self.get_dataref_array("spatial", "Overlays")  # Obtain the data ref array
+        self.ui.zoning_constraints_heritage_combo.clear()
+        [self.ui.zoning_constraints_heritage_combo.addItem(str(self.overlaymaps[0][i]))
+         for i in range(len(self.overlaymaps[0]))]
+
+        self.ui.zoning_constraints_enviro_combo.clear()
+        [self.ui.zoning_constraints_enviro_combo.addItem(str(self.overlaymaps[0][i]))
+         for i in range(len(self.overlaymaps[0]))]
+
+        self.ui.zoning_constraints_flood_combo.clear()
+        [self.ui.zoning_constraints_flood_combo.addItem(str(self.overlaymaps[0][i]))
+         for i in range(len(self.overlaymaps[0]))]
+
+        self.ui.zoning_constraints_custom_combo.clear()
+        [self.ui.zoning_constraints_custom_combo.addItem(str(self.overlaymaps[0][i]))
+         for i in range(len(self.overlaymaps[0]))]
 
         # TAB 3 - COMING SOON
         # ---
@@ -182,6 +199,8 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.input_lga_combo.currentIndexChanged.connect(self.enable_disable_general_tab_widgets)
         self.ui.input_luc_combo.currentIndexChanged.connect(self.enable_disable_general_tab_widgets)
         self.ui.input_pop_combo.currentIndexChanged.connect(self.enable_disable_general_tab_widgets)
+        self.ui.zoning_move_to_constrained.clicked.connect(self.move_zone_to_constrained)
+        self.ui.zoning_move_to_passive.clicked.connect(self.move_zone_to_passive)
         self.ui.input_birthrate_custom.clicked.connect(self.call_birthrate_custom)
         self.ui.input_deathrate_custom.clicked.connect(self.call_deathrate_custom)
         self.ui.input_migration_custom.clicked.connect(self.call_migration_custom)
@@ -212,8 +231,6 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.suit_custom2_check.clicked.connect(self.enable_disable_suitability_widgets)
 
         # ZONING
-        self.ui.zoning_move_to_constrained.clicked.connect(self.move_zone_to_constrained)
-        self.ui.zoning_move_to_passive.clicked.connect(self.move_zone_to_passive)
         self.ui.zoning_rules_resauto.clicked.connect(self.enable_disable_zoning_widgets)
         self.ui.zoning_rules_comauto.clicked.connect(self.enable_disable_zoning_widgets)
         self.ui.zoning_rules_indauto.clicked.connect(self.enable_disable_zoning_widgets)
@@ -222,6 +239,10 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.zoning_rules_comlimit.clicked.connect(self.enable_disable_zoning_widgets)
         self.ui.zoning_rules_indlimit.clicked.connect(self.enable_disable_zoning_widgets)
         self.ui.zoning_rules_officeslimit.clicked.connect(self.enable_disable_zoning_widgets)
+        self.ui.zoning_constraints_heritage_combo.currentIndexChanged.connect(self.enable_disable_zoning_widgets)
+        self.ui.zoning_constraints_enviro_combo.currentIndexChanged.connect(self.enable_disable_zoning_widgets)
+        self.ui.zoning_constraints_flood_combo.currentIndexChanged.connect(self.enable_disable_zoning_widgets)
+        self.ui.zoning_constraints_custom_combo.currentIndexChanged.connect(self.enable_disable_zoning_widgets)
 
         # FOOTER
         self.ui.buttonBox.accepted.connect(self.save_values)
@@ -322,29 +343,65 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.zoning_rules_reslimit.setEnabled(self.ui.zoning_rules_resauto.isChecked())
         self.ui.zoning_rules_respassive.setEnabled(self.ui.zoning_rules_resauto.isChecked() and
                                                    self.ui.zoning_rules_reslimit.isChecked())
-        self.ui.zoning_rules_resundev.setEnabled(self.ui.zoning_rules_resauto.isChecked() and
-                                                   self.ui.zoning_rules_reslimit.isChecked())
 
         self.ui.zoning_rules_comcombo.setEnabled(not self.ui.zoning_rules_comauto.isChecked())  # COMMERCIAL
         self.ui.zoning_rules_comlimit.setEnabled(self.ui.zoning_rules_comauto.isChecked())
         self.ui.zoning_rules_compassive.setEnabled(self.ui.zoning_rules_comauto.isChecked() and
                                                    self.ui.zoning_rules_comlimit.isChecked())
-        self.ui.zoning_rules_comundev.setEnabled(self.ui.zoning_rules_comauto.isChecked() and
-                                                 self.ui.zoning_rules_comlimit.isChecked())
 
         self.ui.zoning_rules_indcombo.setEnabled(not self.ui.zoning_rules_indauto.isChecked())  # INDUSTRIAL
         self.ui.zoning_rules_indlimit.setEnabled(self.ui.zoning_rules_indauto.isChecked())
         self.ui.zoning_rules_indpassive.setEnabled(self.ui.zoning_rules_indauto.isChecked() and
-                                                   self.ui.zoning_rules_indlimit.isChecked())
-        self.ui.zoning_rules_indundev.setEnabled(self.ui.zoning_rules_indauto.isChecked() and
                                                    self.ui.zoning_rules_indlimit.isChecked())
 
         self.ui.zoning_rules_officescombo.setEnabled(not self.ui.zoning_rules_officesauto.isChecked())  # OFFICES
         self.ui.zoning_rules_officeslimit.setEnabled(self.ui.zoning_rules_officesauto.isChecked())
         self.ui.zoning_rules_officespassive.setEnabled(self.ui.zoning_rules_officesauto.isChecked() and
                                                        self.ui.zoning_rules_officeslimit.isChecked())
-        self.ui.zoning_rules_officesundev.setEnabled(self.ui.zoning_rules_officesauto.isChecked() and
-                                                     self.ui.zoning_rules_officeslimit.isChecked())
+
+        if self.ui.zoning_constraints_heritage_combo.currentIndex() == 0:
+            self.ui.zoning_constraints_heritage_res.setEnabled(0)
+            self.ui.zoning_constraints_heritage_com.setEnabled(0)
+            self.ui.zoning_constraints_heritage_ind.setEnabled(0)
+            self.ui.zoning_constraints_heritage_orc.setEnabled(0)
+        else:
+            self.ui.zoning_constraints_heritage_res.setEnabled(1)
+            self.ui.zoning_constraints_heritage_com.setEnabled(1)
+            self.ui.zoning_constraints_heritage_ind.setEnabled(1)
+            self.ui.zoning_constraints_heritage_orc.setEnabled(1)
+
+        if self.ui.zoning_constraints_enviro_combo.currentIndex() == 0:
+            self.ui.zoning_constraints_enviro_res.setEnabled(0)
+            self.ui.zoning_constraints_enviro_com.setEnabled(0)
+            self.ui.zoning_constraints_enviro_ind.setEnabled(0)
+            self.ui.zoning_constraints_enviro_orc.setEnabled(0)
+        else:
+            self.ui.zoning_constraints_enviro_res.setEnabled(1)
+            self.ui.zoning_constraints_enviro_com.setEnabled(1)
+            self.ui.zoning_constraints_enviro_ind.setEnabled(1)
+            self.ui.zoning_constraints_enviro_orc.setEnabled(1)
+
+        if self.ui.zoning_constraints_flood_combo.currentIndex() == 0:
+            self.ui.zoning_constraints_flood_res.setEnabled(0)
+            self.ui.zoning_constraints_flood_com.setEnabled(0)
+            self.ui.zoning_constraints_flood_ind.setEnabled(0)
+            self.ui.zoning_constraints_flood_orc.setEnabled(0)
+        else:
+            self.ui.zoning_constraints_flood_res.setEnabled(1)
+            self.ui.zoning_constraints_flood_com.setEnabled(1)
+            self.ui.zoning_constraints_flood_ind.setEnabled(1)
+            self.ui.zoning_constraints_flood_orc.setEnabled(1)
+
+        if self.ui.zoning_constraints_custom_combo.currentIndex() == 0:
+            self.ui.zoning_constraints_custom_res.setEnabled(0)
+            self.ui.zoning_constraints_custom_com.setEnabled(0)
+            self.ui.zoning_constraints_custom_ind.setEnabled(0)
+            self.ui.zoning_constraints_custom_orc.setEnabled(0)
+        else:
+            self.ui.zoning_constraints_custom_res.setEnabled(1)
+            self.ui.zoning_constraints_custom_com.setEnabled(1)
+            self.ui.zoning_constraints_custom_ind.setEnabled(1)
+            self.ui.zoning_constraints_custom_orc.setEnabled(1)
         return True
 
     def enable_disable_suitability_widgets(self):
@@ -519,6 +576,20 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
 
         self.ui.input_aggreg_combo.setCurrentIndex(self.aggregation_methods.index(
             self.module.get_parameter("luc_aggregation")))
+
+        # Passive and Constrained Land Uses
+        # Fill out the list widget
+        lunames = ubglobals.LANDUSENAMES
+        self.ui.zoning_passive_box.clear()
+        for lu_id in self.module.get_parameter("zoning_passive_luc"):
+            a = QtWidgets.QListWidgetItem()
+            a.setText(lunames[int(lu_id)])
+            self.ui.zoning_passive_box.addItem(a)
+        self.ui.zoning_constrained_box.clear()
+        for lu_id in self.module.get_parameter("zoning_constrained_luc"):
+            a = QtWidgets.QListWidgetItem()
+            a.setText(lunames[int(lu_id)])
+            self.ui.zoning_constrained_box.addItem(a)
 
         try:    # POPULATION COMBO - retrieve the dataID from module
             self.ui.input_pop_combo.setCurrentIndex(self.popmaps[1].index(self.module.get_parameter("pop_inputmap")))
@@ -736,26 +807,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         # TAB 2.3 - Zoning
         self.ui.zoning_export.setChecked(int(self.module.get_parameter("zoning_export")))
 
-        try:    # ZONING WATER BODIES COMBO BOX
-            self.ui.zoning_constraints_water_combo.setCurrentIndex(self.lakemaps[1].index(
-                self.module.get_parameter("zoning_constraint_water")))
-        except ValueError:
-            self.ui.zoning_constraints_water_combo.setCurrentIndex(0)
-
-        # Passive and Constrained Land Uses
-        # Fill out the list widget
-        lunames = ubglobals.LANDUSENAMES
-        self.ui.zoning_passive_box.clear()
-        for lu_id in self.module.get_parameter("zoning_passive_luc"):
-            a = QtWidgets.QListWidgetItem()
-            a.setText(lunames[int(lu_id)])
-            self.ui.zoning_passive_box.addItem(a)
-        self.ui.zoning_constrained_box.clear()
-        for lu_id in self.module.get_parameter("zoning_constrained_luc"):
-            a = QtWidgets.QListWidgetItem()
-            a.setText(lunames[int(lu_id)])
-            self.ui.zoning_constrained_box.addItem(a)
-
+        # GENERAL ZONING RULES FOR ACTIVE LAND USES
         try:    # ZONING RESIDENTIAL COMBO
             self.ui.zoning_rules_rescombo.setCurrentIndex(self.lumaps[1].index(
                 self.module.get_parameter("zoning_rules_resmap")))
@@ -764,7 +816,6 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.zoning_rules_resauto.setChecked(self.module.get_parameter("zoning_rules_resauto"))
         self.ui.zoning_rules_reslimit.setChecked(self.module.get_parameter("zoning_rules_reslimit"))
         self.ui.zoning_rules_respassive.setChecked(self.module.get_parameter("zoning_rules_respassive"))
-        self.ui.zoning_rules_resundev.setChecked(self.module.get_parameter("zoning_rules_resundev"))
 
         try:    # ZONING COMMERCIAL COMBO
             self.ui.zoning_rules_comcombo.setCurrentIndex(self.lumaps[1].index(
@@ -774,7 +825,6 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.zoning_rules_comauto.setChecked(self.module.get_parameter("zoning_rules_comauto"))
         self.ui.zoning_rules_comlimit.setChecked(self.module.get_parameter("zoning_rules_comlimit"))
         self.ui.zoning_rules_compassive.setChecked(self.module.get_parameter("zoning_rules_compassive"))
-        self.ui.zoning_rules_comundev.setChecked(self.module.get_parameter("zoning_rules_comundev"))
 
         try:    # ZONING INDUSTRIAL COMBO
             self.ui.zoning_rules_indcombo.setCurrentIndex(self.lumaps[1].index(
@@ -784,9 +834,8 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.zoning_rules_indauto.setChecked(self.module.get_parameter("zoning_rules_indauto"))
         self.ui.zoning_rules_indlimit.setChecked(self.module.get_parameter("zoning_rules_indlimit"))
         self.ui.zoning_rules_indpassive.setChecked(self.module.get_parameter("zoning_rules_indpassive"))
-        self.ui.zoning_rules_indundev.setChecked(self.module.get_parameter("zoning_rules_indundev"))
 
-        try:    # ZONING officesIDENTIAL COMBO
+        try:    # ZONING OFFICES COMBO
             self.ui.zoning_rules_officescombo.setCurrentIndex(self.lumaps[1].index(
                 self.module.get_parameter("zoning_rules_officesmap")))
         except ValueError:
@@ -794,7 +843,57 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.zoning_rules_officesauto.setChecked(self.module.get_parameter("zoning_rules_officesauto"))
         self.ui.zoning_rules_officeslimit.setChecked(self.module.get_parameter("zoning_rules_officeslimit"))
         self.ui.zoning_rules_officespassive.setChecked(self.module.get_parameter("zoning_rules_officespassive"))
-        self.ui.zoning_rules_officesundev.setChecked(self.module.get_parameter("zoning_rules_officesundev"))
+
+        # SPECIFIC PLANNING CONSTRAINTS FOR ZONING
+        try:    # ZONING WATER BODIES COMBO BOX
+            self.ui.zoning_constraints_water_combo.setCurrentIndex(self.lakemaps[1].index(
+                self.module.get_parameter("zoning_water")))
+        except ValueError:
+            self.ui.zoning_constraints_water_combo.setCurrentIndex(0)
+
+        try:    # ZONING HERITAGE COMBO
+            self.ui.zoning_constraints_heritage_combo.setCurrentIndex(self.overlaymaps[1].index(
+                self.module.get_parameter("zoning_heritage")))
+        except ValueError:
+            self.ui.zoning_constraints_heritage_combo.setCurrentIndex(0)
+
+        try:    # ZONING ENVIRONMENTAL SIGNIFICANCE COMBO
+            self.ui.zoning_constraints_enviro_combo.setCurrentIndex(self.overlaymaps[1].index(
+                self.module.get_parameter("zoning_enviro")))
+        except ValueError:
+            self.ui.zoning_constraints_enviro_combo.setCurrentIndex(0)
+
+        try:  # ZONING LAND SUBJECT TO INUNDATION COMBO
+            self.ui.zoning_constraints_flood_combo.setCurrentIndex(self.overlaymaps[1].index(
+                self.module.get_parameter("zoning_flood")))
+        except ValueError:
+            self.ui.zoning_constraints_flood_combo.setCurrentIndex(0)
+
+        try:  # ZONING CUSTOM COMBO
+            self.ui.zoning_constraints_custom_combo.setCurrentIndex(self.overlaymaps[1].index(
+                self.module.get_parameter("zoning_custom")))
+        except ValueError:
+            self.ui.zoning_constraints_custom_combo.setCurrentIndex(0)
+
+        self.ui.zoning_constraints_heritage_res.setChecked(int(self.module.get_parameter("zoning_heritage_res")))
+        self.ui.zoning_constraints_heritage_com.setChecked(int(self.module.get_parameter("zoning_heritage_com")))
+        self.ui.zoning_constraints_heritage_ind.setChecked(int(self.module.get_parameter("zoning_heritage_ind")))
+        self.ui.zoning_constraints_heritage_orc.setChecked(int(self.module.get_parameter("zoning_heritage_orc")))
+
+        self.ui.zoning_constraints_enviro_res.setChecked(int(self.module.get_parameter("zoning_enviro_res")))
+        self.ui.zoning_constraints_enviro_com.setChecked(int(self.module.get_parameter("zoning_enviro_com")))
+        self.ui.zoning_constraints_enviro_ind.setChecked(int(self.module.get_parameter("zoning_enviro_ind")))
+        self.ui.zoning_constraints_enviro_orc.setChecked(int(self.module.get_parameter("zoning_enviro_orc")))
+
+        self.ui.zoning_constraints_flood_res.setChecked(int(self.module.get_parameter("zoning_flood_res")))
+        self.ui.zoning_constraints_flood_com.setChecked(int(self.module.get_parameter("zoning_flood_com")))
+        self.ui.zoning_constraints_flood_ind.setChecked(int(self.module.get_parameter("zoning_flood_ind")))
+        self.ui.zoning_constraints_flood_orc.setChecked(int(self.module.get_parameter("zoning_flood_orc")))
+
+        self.ui.zoning_constraints_custom_res.setChecked(int(self.module.get_parameter("zoning_custom_res")))
+        self.ui.zoning_constraints_custom_com.setChecked(int(self.module.get_parameter("zoning_custom_com")))
+        self.ui.zoning_constraints_custom_ind.setChecked(int(self.module.get_parameter("zoning_custom_ind")))
+        self.ui.zoning_constraints_custom_orc.setChecked(int(self.module.get_parameter("zoning_custom_orc")))
 
         self.enable_disable_zoning_widgets()
 
@@ -816,6 +915,22 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("luc_inputmap", self.lumaps[1][self.ui.input_luc_combo.currentIndex()])
         self.module.set_parameter("luc_aggregation",
                                   self.aggregation_methods[self.ui.input_aggreg_combo.currentIndex()])
+
+        # Passive and Constrained uses
+        lunames = ubglobals.LANDUSENAMES
+        zoning_passive_luc = []
+        for rows in range(self.ui.zoning_passive_box.count()):
+            item = self.ui.zoning_passive_box.item(rows)
+            zoning_passive_luc.append(lunames.index(item.text()))
+
+        zoning_constrained_luc = []
+        for rows in range(self.ui.zoning_constrained_box.count()):
+            item = self.ui.zoning_constrained_box.item(rows)
+            zoning_constrained_luc.append(lunames.index(item.text()))
+
+        self.module.set_parameter("zoning_passive_luc", zoning_passive_luc)
+        self.module.set_parameter("zoning_constrained_luc", zoning_constrained_luc)
+
         self.module.set_parameter("pop_inputmap", self.popmaps[1][self.ui.input_pop_combo.currentIndex()])
         self.module.set_parameter("pop_birthrate", float(self.ui.input_birthrate_spin.value()))
         self.module.set_parameter("pop_birthtrend", self.poptrends[self.ui.input_birthrate_trend.currentIndex()])
@@ -959,46 +1074,55 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
 
         # TAB 2 - 2.3 Zoning
         self.module.set_parameter("zoning_export", int(self.ui.zoning_export.isChecked()))
-        self.module.set_parameter("zoning_constraint_water",
+        self.module.set_parameter("zoning_water",
                                   self.lakemaps[1][self.ui.zoning_constraints_water_combo.currentIndex()])
+        self.module.set_parameter("zoning_heritage",
+                                  self.overlaymaps[1][self.ui.zoning_constraints_heritage_combo.currentIndex()])
+        self.module.set_parameter("zoning_enviro",
+                                  self.overlaymaps[1][self.ui.zoning_constraints_enviro_combo.currentIndex()])
+        self.module.set_parameter("zoning_flood",
+                                  self.overlaymaps[1][self.ui.zoning_constraints_flood_combo.currentIndex()])
+        self.module.set_parameter("zoning_flood",
+                                  self.overlaymaps[1][self.ui.zoning_constraints_custom_combo.currentIndex()])
 
-        # Passive and Constrained uses
-        lunames = ubglobals.LANDUSENAMES
-        zoning_passive_luc = []
-        for rows in range(self.ui.zoning_passive_box.count()):
-            item = self.ui.zoning_passive_box.item(rows)
-            zoning_passive_luc.append(lunames.index(item.text()))
+        self.module.set_parameter("zoning_heritage_res", int(self.ui.zoning_constraints_heritage_res.isChecked()))
+        self.module.set_parameter("zoning_heritage_com", int(self.ui.zoning_constraints_heritage_com.isChecked()))
+        self.module.set_parameter("zoning_heritage_ind", int(self.ui.zoning_constraints_heritage_ind.isChecked()))
+        self.module.set_parameter("zoning_heritage_orc", int(self.ui.zoning_constraints_heritage_orc.isChecked()))
 
-        zoning_constrained_luc = []
-        for rows in range(self.ui.zoning_constrained_box.count()):
-            item = self.ui.zoning_constrained_box.item(rows)
-            zoning_constrained_luc.append(lunames.index(item.text()))
+        self.module.set_parameter("zoning_enviro_res", int(self.ui.zoning_constraints_enviro_res.isChecked()))
+        self.module.set_parameter("zoning_enviro_com", int(self.ui.zoning_constraints_enviro_com.isChecked()))
+        self.module.set_parameter("zoning_enviro_ind", int(self.ui.zoning_constraints_enviro_ind.isChecked()))
+        self.module.set_parameter("zoning_enviro_orc", int(self.ui.zoning_constraints_enviro_orc.isChecked()))
 
-        self.module.set_parameter("zoning_passive_luc", zoning_passive_luc)
-        self.module.set_parameter("zoning_constrained_luc", zoning_constrained_luc)
+        self.module.set_parameter("zoning_flood_res", int(self.ui.zoning_constraints_flood_res.isChecked()))
+        self.module.set_parameter("zoning_flood_com", int(self.ui.zoning_constraints_flood_com.isChecked()))
+        self.module.set_parameter("zoning_flood_ind", int(self.ui.zoning_constraints_flood_ind.isChecked()))
+        self.module.set_parameter("zoning_flood_orc", int(self.ui.zoning_constraints_flood_orc.isChecked()))
+
+        self.module.set_parameter("zoning_custom_res", int(self.ui.zoning_constraints_custom_res.isChecked()))
+        self.module.set_parameter("zoning_custom_com", int(self.ui.zoning_constraints_custom_com.isChecked()))
+        self.module.set_parameter("zoning_custom_ind", int(self.ui.zoning_constraints_custom_ind.isChecked()))
+        self.module.set_parameter("zoning_custom_orc", int(self.ui.zoning_constraints_custom_orc.isChecked()))
 
         self.module.set_parameter("zoning_rules_resmap", self.lumaps[1][self.ui.zoning_rules_rescombo.currentIndex()])
         self.module.set_parameter("zoning_rules_resauto", int(self.ui.zoning_rules_resauto.isChecked()))
         self.module.set_parameter("zoning_rules_reslimit", int(self.ui.zoning_rules_reslimit.isChecked()))
         self.module.set_parameter("zoning_rules_respassive", int(self.ui.zoning_rules_respassive.isChecked()))
-        self.module.set_parameter("zoning_rules_resundev", int(self.ui.zoning_rules_resundev.isChecked()))
 
         self.module.set_parameter("zoning_rules_commap", self.lumaps[1][self.ui.zoning_rules_comcombo.currentIndex()])
         self.module.set_parameter("zoning_rules_comauto", int(self.ui.zoning_rules_comauto.isChecked()))
         self.module.set_parameter("zoning_rules_comlimit", int(self.ui.zoning_rules_comlimit.isChecked()))
         self.module.set_parameter("zoning_rules_compassive", int(self.ui.zoning_rules_compassive.isChecked()))
-        self.module.set_parameter("zoning_rules_comundev", int(self.ui.zoning_rules_comundev.isChecked()))
 
         self.module.set_parameter("zoning_rules_indmap", self.lumaps[1][self.ui.zoning_rules_indcombo.currentIndex()])
         self.module.set_parameter("zoning_rules_indauto", int(self.ui.zoning_rules_indauto.isChecked()))
         self.module.set_parameter("zoning_rules_indlimit", int(self.ui.zoning_rules_indlimit.isChecked()))
         self.module.set_parameter("zoning_rules_indpassive", int(self.ui.zoning_rules_indpassive.isChecked()))
-        self.module.set_parameter("zoning_rules_indundev", int(self.ui.zoning_rules_indundev.isChecked()))
 
         self.module.set_parameter("zoning_rules_officesmap",
                                   self.lumaps[1][self.ui.zoning_rules_officescombo.currentIndex()])
         self.module.set_parameter("zoning_rules_officesauto", int(self.ui.zoning_rules_officesauto.isChecked()))
         self.module.set_parameter("zoning_rules_officeslimit", int(self.ui.zoning_rules_officeslimit.isChecked()))
         self.module.set_parameter("zoning_rules_officespassive", int(self.ui.zoning_rules_officespassive.isChecked()))
-        self.module.set_parameter("zoning_rules_officesundev", int(self.ui.zoning_rules_officesundev.isChecked()))
         return True

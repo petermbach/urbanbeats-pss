@@ -238,7 +238,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>537</width>
-               <height>832</height>
+               <height>1056</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -526,6 +526,23 @@ p, li { white-space: pre-wrap; }
                    </size>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_14">
+                   <item row="7" column="0" colspan="3">
+                    <widget class="QLabel" name="zoning_passive_lbl">
+                     <property name="text">
+                      <string>Determine which land uses are allowed to change and which land uses remain static in the simulation. Note that constrained land uses are recovered in area post simulation.</string>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="6" column="0">
+                    <widget class="QLabel" name="zoning_passive_title">
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Passive and Constrained Land Uses&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                    </widget>
+                   </item>
                    <item row="2" column="0">
                     <widget class="QLabel" name="input_lga_name_lbl">
                      <property name="text">
@@ -536,7 +553,7 @@ p, li { white-space: pre-wrap; }
                    <item row="2" column="2">
                     <widget class="QLineEdit" name="input_lga_name"/>
                    </item>
-                   <item row="7" column="0">
+                   <item row="10" column="0">
                     <widget class="QLabel" name="input_pop_lbl">
                      <property name="text">
                       <string>Select Input Map:</string>
@@ -553,11 +570,11 @@ p, li { white-space: pre-wrap; }
                    <item row="0" column="0">
                     <widget class="QLabel" name="input_luc_title_2">
                      <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Municipalities&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;MUNICIPALITY BOUNDARIES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="8" column="0" colspan="3">
+                   <item row="11" column="0" colspan="3">
                     <widget class="QWidget" name="input_pop_widget" native="true">
                      <layout class="QGridLayout" name="gridLayout_23">
                       <item row="3" column="1">
@@ -911,7 +928,7 @@ p, li { white-space: pre-wrap; }
                      </layout>
                     </widget>
                    </item>
-                   <item row="10" column="0" colspan="3">
+                   <item row="13" column="0" colspan="3">
                     <widget class="QWidget" name="input_employment_widget" native="true">
                      <layout class="QGridLayout" name="gridLayout_21">
                       <property name="bottomMargin">
@@ -1522,17 +1539,17 @@ p, li { white-space: pre-wrap; }
                    <item row="1" column="2">
                     <widget class="QComboBox" name="input_lga_combo"/>
                    </item>
-                   <item row="6" column="0">
+                   <item row="9" column="0">
                     <widget class="QLabel" name="input_pop_title">
                      <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Population Map&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;POPULATION MAP&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="9" column="0">
+                   <item row="12" column="0">
                     <widget class="QLabel" name="input_employment_title">
                      <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Employment&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;EMPLOYMENT DATA&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
@@ -1558,7 +1575,7 @@ p, li { white-space: pre-wrap; }
                    <item row="3" column="0">
                     <widget class="QLabel" name="input_luc_title">
                      <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Land Use&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;LAND USE CLASSIFICATION&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
@@ -1579,8 +1596,134 @@ p, li { white-space: pre-wrap; }
                      </property>
                     </widget>
                    </item>
-                   <item row="7" column="2">
+                   <item row="10" column="2">
                     <widget class="QComboBox" name="input_pop_combo"/>
+                   </item>
+                   <item row="8" column="0" colspan="3">
+                    <widget class="QWidget" name="zoning_passive_widget" native="true">
+                     <layout class="QGridLayout" name="gridLayout_7">
+                      <item row="1" column="1">
+                       <widget class="QPushButton" name="zoning_move_to_constrained">
+                        <property name="maximumSize">
+                         <size>
+                          <width>50</width>
+                          <height>16777215</height>
+                         </size>
+                        </property>
+                        <property name="text">
+                         <string>&gt;&gt;</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="0" rowspan="3">
+                       <widget class="QListWidget" name="zoning_passive_box">
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>130</height>
+                         </size>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>16777215</width>
+                          <height>130</height>
+                         </size>
+                        </property>
+                        <item>
+                         <property name="text">
+                          <string>Civic</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Parks and Gardens</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Reserves and Floodways</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Road</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Transport</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Undeveloped</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>Unclassified</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                      <item row="1" column="2" rowspan="3">
+                       <widget class="QListWidget" name="zoning_constrained_box">
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>130</height>
+                         </size>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>16777215</width>
+                          <height>130</height>
+                         </size>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="2" column="1">
+                       <widget class="QPushButton" name="zoning_move_to_passive">
+                        <property name="maximumSize">
+                         <size>
+                          <width>50</width>
+                          <height>16777215</height>
+                         </size>
+                        </property>
+                        <property name="text">
+                         <string>&lt;&lt;</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="3" column="1">
+                       <spacer name="verticalSpacer">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item row="0" column="0">
+                       <widget class="QLabel" name="zonining_passive_lbl2">
+                        <property name="text">
+                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Passive Land Use (dynamic)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="2">
+                       <widget class="QLabel" name="zonining_passive_lbl3">
+                        <property name="text">
+                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Constrained Land Use (static)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
                    </item>
                   </layout>
                  </widget>
@@ -4318,7 +4461,7 @@ p, li { white-space: pre-wrap; }
                    <x>0</x>
                    <y>0</y>
                    <width>490</width>
-                   <height>827</height>
+                   <height>917</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -4330,7 +4473,7 @@ p, li { white-space: pre-wrap; }
                     <item>
                      <widget class="QLabel" name="zoning_general_title">
                       <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;General Settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Export Settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
@@ -4339,6 +4482,177 @@ p, li { white-space: pre-wrap; }
                       <property name="text">
                        <string>Export aggregated zoning maps for each land use</string>
                       </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="zoning_rules_title">
+                      <property name="text">
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;General Zoning Rules for Active Land Uses&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="zoning_rules_lbl">
+                      <property name="text">
+                       <string>For the four active land uses, define areas allowed for future development (note that these maps will be combined with the constraints for static land use classes defined previously).</string>
+                      </property>
+                      <property name="wordWrap">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QWidget" name="zoning_rules_widget" native="true">
+                      <layout class="QGridLayout" name="gridLayout_10">
+                       <item row="4" column="2">
+                        <widget class="QCheckBox" name="zoning_rules_comauto">
+                         <property name="text">
+                          <string>Auto</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="zoning_rules_lbl2">
+                         <property name="text">
+                          <string>Residential Land Use:</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="10" column="2">
+                        <widget class="QCheckBox" name="zoning_rules_officesauto">
+                         <property name="text">
+                          <string>Auto</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="6" column="1">
+                        <widget class="QCheckBox" name="zoning_rules_compassive">
+                         <property name="text">
+                          <string>+ Include all passive land use areas</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="1">
+                        <widget class="QCheckBox" name="zoning_rules_respassive">
+                         <property name="text">
+                          <string>+ Include all passive land use areas</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="9" column="1">
+                        <widget class="QCheckBox" name="zoning_rules_indpassive">
+                         <property name="text">
+                          <string>+ Include all passive land use areas</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="7" column="2">
+                        <widget class="QCheckBox" name="zoning_rules_indauto">
+                         <property name="text">
+                          <string>Auto</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="5" column="1">
+                        <widget class="QCheckBox" name="zoning_rules_comlimit">
+                         <property name="text">
+                          <string>Limit only to currently occupied areas</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="11" column="1">
+                        <widget class="QCheckBox" name="zoning_rules_officeslimit">
+                         <property name="text">
+                          <string>Limit only to currently occupied areas</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="1">
+                        <widget class="QCheckBox" name="zoning_rules_reslimit">
+                         <property name="text">
+                          <string>Llimit only to currently occupied areas</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="8" column="1">
+                        <widget class="QCheckBox" name="zoning_rules_indlimit">
+                         <property name="text">
+                          <string>Limit only to currently occupied areas</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="7" column="0">
+                        <widget class="QLabel" name="zoning_rules_lbl4">
+                         <property name="text">
+                          <string>Industrial Land Use:</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="4" column="1">
+                        <widget class="QComboBox" name="zoning_rules_comcombo">
+                         <item>
+                          <property name="text">
+                           <string>(select Zoning map)</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item row="0" column="2">
+                        <widget class="QCheckBox" name="zoning_rules_resauto">
+                         <property name="text">
+                          <string>Auto</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="10" column="1">
+                        <widget class="QComboBox" name="zoning_rules_officescombo">
+                         <item>
+                          <property name="text">
+                           <string>(select Zoning map)</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item row="7" column="1">
+                        <widget class="QComboBox" name="zoning_rules_indcombo">
+                         <item>
+                          <property name="text">
+                           <string>(select Zoning map)</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item row="12" column="1">
+                        <widget class="QCheckBox" name="zoning_rules_officespassive">
+                         <property name="text">
+                          <string>+ Include all passive land use areas</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="4" column="0">
+                        <widget class="QLabel" name="zoning_rules_lbl3">
+                         <property name="text">
+                          <string>Commercial Land Use:</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="10" column="0">
+                        <widget class="QLabel" name="zoning_rules_lbl5">
+                         <property name="text">
+                          <string>Mixed Development Land Use:</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QComboBox" name="zoning_rules_rescombo">
+                         <item>
+                          <property name="text">
+                           <string>(select Zoning map)</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                      </layout>
                      </widget>
                     </item>
                     <item>
@@ -4351,7 +4665,7 @@ p, li { white-space: pre-wrap; }
                     <item>
                      <widget class="QLabel" name="zoning_constraints_lbl">
                       <property name="text">
-                       <string>Use various key input maps to create general constraints to zoning within the region.</string>
+                       <string>Use various key input maps to limit land use change in certain areas within the region.</string>
                       </property>
                       <property name="wordWrap">
                        <bool>true</bool>
@@ -4361,15 +4675,6 @@ p, li { white-space: pre-wrap; }
                     <item>
                      <widget class="QWidget" name="zoning_constraints_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_19">
-                       <item row="0" column="2" colspan="2">
-                        <widget class="QComboBox" name="zoning_constraints_water_combo">
-                         <item>
-                          <property name="text">
-                           <string>(select map)</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
                        <item row="0" column="1">
                         <spacer name="horizontalSpacer_44">
                          <property name="orientation">
@@ -4386,352 +4691,310 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </spacer>
                        </item>
+                       <item row="0" column="2" colspan="2">
+                        <widget class="QComboBox" name="zoning_constraints_water_combo">
+                         <item>
+                          <property name="text">
+                           <string>(select map)</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
                        <item row="0" column="0">
                         <widget class="QLabel" name="zoning_constraints_water">
                          <property name="text">
-                          <string>Water Bodies:</string>
+                          <string>Water Bodies and Wetlands:</string>
                          </property>
                         </widget>
                        </item>
-                      </layout>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="zoning_passive_title">
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Passive and Constrained Land Uses&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="zoning_passive_lbl">
-                      <property name="text">
-                       <string>Determine which land uses are allowed to change and which land uses remain static in the simulation. Note that constrained land uses are recovered in area post simulation.</string>
-                      </property>
-                      <property name="wordWrap">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QWidget" name="zoning_passive_widget" native="true">
-                      <layout class="QGridLayout" name="gridLayout_7">
-                       <item row="1" column="1">
-                        <widget class="QPushButton" name="zoning_move_to_constrained">
-                         <property name="maximumSize">
-                          <size>
-                           <width>50</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
+                       <item row="19" column="3">
+                        <widget class="QCheckBox" name="zoning_constraints_custom_com">
                          <property name="text">
-                          <string>&gt;&gt;</string>
+                          <string>Commercial</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="1" column="0" rowspan="3">
-                        <widget class="QListWidget" name="zoning_passive_box">
-                         <property name="minimumSize">
-                          <size>
-                           <width>0</width>
-                           <height>130</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>16777215</width>
-                           <height>130</height>
-                          </size>
-                         </property>
+                       <item row="7" column="2" colspan="2">
+                        <widget class="QComboBox" name="zoning_constraints_enviro_combo">
                          <item>
                           <property name="text">
-                           <string>Civic</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>Parks and Gardens</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>Reserves and Floodways</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>Road</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>Transport</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>Undeveloped</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>Unclassified</string>
+                           <string>(select map)</string>
                           </property>
                          </item>
                         </widget>
                        </item>
-                       <item row="1" column="2" rowspan="3">
-                        <widget class="QListWidget" name="zoning_constrained_box">
-                         <property name="minimumSize">
-                          <size>
-                           <width>0</width>
-                           <height>130</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>16777215</width>
-                           <height>130</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="1">
-                        <widget class="QPushButton" name="zoning_move_to_passive">
-                         <property name="maximumSize">
-                          <size>
-                           <width>50</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
+                       <item row="20" column="2">
+                        <widget class="QCheckBox" name="zoning_constraints_custom_ind">
                          <property name="text">
-                          <string>&lt;&lt;</string>
+                          <string>Industrial</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="3" column="1">
-                        <spacer name="verticalSpacer">
+                       <item row="13" column="0">
+                        <widget class="QLabel" name="zoning_constraints_flood">
+                         <property name="text">
+                          <string>Land subject to Inundation:</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="20" column="3">
+                        <widget class="QCheckBox" name="zoning_constraints_custom_orc">
+                         <property name="text">
+                          <string>Mixed Development</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="13" column="1">
+                        <spacer name="horizontalSpacer_47">
                          <property name="orientation">
-                          <enum>Qt::Vertical</enum>
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeType">
+                          <enum>QSizePolicy::Fixed</enum>
                          </property>
                          <property name="sizeHint" stdset="0">
                           <size>
                            <width>20</width>
-                           <height>40</height>
+                           <height>20</height>
                           </size>
                          </property>
                         </spacer>
                        </item>
-                       <item row="0" column="0">
-                        <widget class="QLabel" name="zonining_passive_lbl2">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Passive Land Use (dynamic)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="2">
-                        <widget class="QLabel" name="zonining_passive_lbl3">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Constrained Land Use (static)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="zoning_rules_title">
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Define Additional Zoning Areas for Active Land Uses&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="zoning_rules_lbl">
-                      <property name="text">
-                       <string>For the four major land uses, define areas allowed for future development (note that these maps will be combined with the constraints for static land use classes defined previously).</string>
-                      </property>
-                      <property name="wordWrap">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QWidget" name="zoning_rules_widget" native="true">
-                      <layout class="QGridLayout" name="gridLayout_10">
-                       <item row="12" column="1">
-                        <widget class="QCheckBox" name="zoning_rules_indundev">
-                         <property name="text">
-                          <string>Include all undeveloped land</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="5" column="2">
-                        <widget class="QCheckBox" name="zoning_rules_comauto">
-                         <property name="text">
-                          <string>Auto</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="13" column="2">
-                        <widget class="QCheckBox" name="zoning_rules_officesauto">
-                         <property name="text">
-                          <string>Auto</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="7" column="1">
-                        <widget class="QCheckBox" name="zoning_rules_compassive">
-                         <property name="text">
-                          <string>Include all passive areas</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="16" column="1">
-                        <widget class="QCheckBox" name="zoning_rules_officesundev">
-                         <property name="text">
-                          <string>Include all undeveloped land</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="0">
-                        <widget class="QLabel" name="zoning_rules_lbl2">
-                         <property name="text">
-                          <string>Residential Land Use:</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="6" column="1">
-                        <widget class="QCheckBox" name="zoning_rules_comlimit">
-                         <property name="text">
-                          <string>Limit to current base year active area</string>
-                         </property>
-                        </widget>
-                       </item>
                        <item row="9" column="2">
-                        <widget class="QCheckBox" name="zoning_rules_indauto">
+                        <widget class="QCheckBox" name="zoning_constraints_enviro_res">
                          <property name="text">
-                          <string>Auto</string>
+                          <string>Residential</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="4" column="2">
+                        <widget class="QLabel" name="zoning_constraints_heritage_lbl">
+                         <property name="text">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(select applicable land uses)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="13" column="2" colspan="2">
+                        <widget class="QComboBox" name="zoning_constraints_flood_combo">
+                         <item>
+                          <property name="text">
+                           <string>(select map)</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item row="9" column="3">
+                        <widget class="QCheckBox" name="zoning_constraints_enviro_com">
+                         <property name="text">
+                          <string>Commercial</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="10" column="3">
+                        <widget class="QCheckBox" name="zoning_constraints_enviro_orc">
+                         <property name="text">
+                          <string>Mixed Development</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="17" column="0">
+                        <widget class="QLabel" name="zoning_constraints_custom">
+                         <property name="text">
+                          <string>Custom Constraint:</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="15" column="2">
+                        <widget class="QCheckBox" name="zoning_constraints_flood_res">
+                         <property name="text">
+                          <string>Residential</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="17" column="1">
+                        <spacer name="horizontalSpacer_48">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeType">
+                          <enum>QSizePolicy::Fixed</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>20</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item row="15" column="3">
+                        <widget class="QCheckBox" name="zoning_constraints_flood_com">
+                         <property name="text">
+                          <string>Commercial</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="8" column="2">
+                        <widget class="QLabel" name="zoning_constraints_enviro_lbl">
+                         <property name="text">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(select applicable land uses)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="10" column="2">
+                        <widget class="QCheckBox" name="zoning_constraints_enviro_ind">
+                         <property name="text">
+                          <string>Industrial</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="17" column="2" colspan="2">
+                        <widget class="QComboBox" name="zoning_constraints_custom_combo">
+                         <item>
+                          <property name="text">
+                           <string>(select map)</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item row="16" column="2">
+                        <widget class="QCheckBox" name="zoning_constraints_flood_ind">
+                         <property name="text">
+                          <string>Industrial</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="1">
-                        <widget class="QCheckBox" name="zoning_rules_respassive">
+                        <spacer name="horizontalSpacer_45">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeType">
+                          <enum>QSizePolicy::Fixed</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>20</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item row="14" column="2">
+                        <widget class="QLabel" name="zoning_constraints_flood_lbl">
                          <property name="text">
-                          <string>Include all passive areas</string>
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(select applicable land uses)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="11" column="1">
-                        <widget class="QCheckBox" name="zoning_rules_indpassive">
+                       <item row="16" column="3">
+                        <widget class="QCheckBox" name="zoning_constraints_flood_orc">
                          <property name="text">
-                          <string>Include all passive areas</string>
+                          <string>Mixed Development</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="8" column="1">
-                        <widget class="QCheckBox" name="zoning_rules_comundev">
+                       <item row="18" column="2">
+                        <widget class="QLabel" name="zoning_constraints_custom_lbl">
                          <property name="text">
-                          <string>Include all undeveloped land</string>
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(select applicable land uses)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="4" column="1">
-                        <widget class="QCheckBox" name="zoning_rules_resundev">
+                       <item row="7" column="0">
+                        <widget class="QLabel" name="zoning_constraints_enviro">
                          <property name="text">
-                          <string>Include all undeveloped land</string>
+                          <string>Environmental Significance:</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="2" column="1">
-                        <widget class="QCheckBox" name="zoning_rules_reslimit">
+                       <item row="19" column="2">
+                        <widget class="QCheckBox" name="zoning_constraints_custom_res">
                          <property name="text">
-                          <string>Limit to current base year active area</string>
+                          <string>Residential</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="10" column="1">
-                        <widget class="QCheckBox" name="zoning_rules_indlimit">
+                       <item row="7" column="1">
+                        <spacer name="horizontalSpacer_46">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeType">
+                          <enum>QSizePolicy::Fixed</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>20</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item row="3" column="0">
+                        <widget class="QLabel" name="zoning_constraints_heritage">
                          <property name="text">
-                          <string>Limit to current base year active area</string>
+                          <string>Historical/Heritage Areas:</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="14" column="1">
-                        <widget class="QCheckBox" name="zoning_rules_officeslimit">
-                         <property name="text">
-                          <string>Limit to current base year active area</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="2">
-                        <widget class="QCheckBox" name="zoning_rules_resauto">
-                         <property name="text">
-                          <string>Auto</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="5" column="1">
-                        <widget class="QComboBox" name="zoning_rules_comcombo">
+                       <item row="3" column="2" colspan="2">
+                        <widget class="QComboBox" name="zoning_constraints_heritage_combo">
                          <item>
                           <property name="text">
-                           <string>(select Zoning map)</string>
+                           <string>(select map)</string>
                           </property>
                          </item>
                         </widget>
                        </item>
-                       <item row="13" column="1">
-                        <widget class="QComboBox" name="zoning_rules_officescombo">
-                         <item>
-                          <property name="text">
-                           <string>(select Zoning map)</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item row="9" column="0">
-                        <widget class="QLabel" name="zoning_rules_lbl4">
+                       <item row="6" column="3">
+                        <widget class="QCheckBox" name="zoning_constraints_heritage_orc">
                          <property name="text">
-                          <string>Industrial Land Use:</string>
+                          <string>Mixed Development</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="9" column="1">
-                        <widget class="QComboBox" name="zoning_rules_indcombo">
-                         <item>
-                          <property name="text">
-                           <string>(select Zoning map)</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item row="0" column="1">
-                        <widget class="QComboBox" name="zoning_rules_rescombo">
-                         <item>
-                          <property name="text">
-                           <string>(select Zoning map)</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item row="13" column="0">
-                        <widget class="QLabel" name="zoning_rules_lbl5">
+                       <item row="5" column="2">
+                        <widget class="QCheckBox" name="zoning_constraints_heritage_res">
                          <property name="text">
-                          <string>Mixed Development Land Use:</string>
+                          <string>Residential</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="5" column="0">
-                        <widget class="QLabel" name="zoning_rules_lbl3">
+                       <item row="5" column="3">
+                        <widget class="QCheckBox" name="zoning_constraints_heritage_com">
                          <property name="text">
-                          <string>Commercial Land Use:</string>
+                          <string>Commercial</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="15" column="1">
-                        <widget class="QCheckBox" name="zoning_rules_officespassive">
+                       <item row="6" column="2">
+                        <widget class="QCheckBox" name="zoning_constraints_heritage_ind">
                          <property name="text">
-                          <string>Include all passive areas</string>
+                          <string>Industrial</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="2">
+                        <widget class="QCheckBox" name="zoning_waterbodies_check">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="text">
+                          <string>All Land Uses</string>
+                         </property>
+                         <property name="checked">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="2">
+                        <widget class="QLabel" name="zoning_waterbodies_lbl">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="text">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(select applicable land uses)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>

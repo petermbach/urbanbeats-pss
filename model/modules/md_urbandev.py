@@ -87,6 +87,12 @@ class UrbanDevelopment(UBModule):
         self.luc_inputmap = ""
         self.luc_aggregation = "S"  # S = single, MS = mixed static, MA = mixed all fully dynamic
 
+        # Passive and Constrained Land Uses
+        self.create_parameter("zoning_passive_luc", LISTDOUBLE, "Land use categories in passive group of uses")
+        self.create_parameter("zoning_constrained_luc", LISTDOUBLE, "Land use categories in constrained group")
+        self.zoning_passive_luc = [5, 6, 7, 8, 9, 10, 11, 12, 14, 15]   # These are numerical encodings of LUC categories
+        self.zoning_constrained_luc = []                        # refer to ubglobals.py for key
+
         self.create_parameter("pop_inputmap", STRING, "population input map used in the simulation")
         self.create_parameter("pop_birthrate", DOUBLE, "birth rate")
         self.create_parameter("pop_birthtrend", STRING, "the growth trend to apply")
@@ -342,59 +348,89 @@ class UrbanDevelopment(UBModule):
         self.zoning_export = 1
 
         # General Zoning Constraints
-        self.create_parameter("zoning_constraint_water", STRING, "water bodies map to use in creating zoning.")
-        self.zoning_constraint_water = ""
+        self.create_parameter("zoning_water", STRING, "water bodies map to use in creating zoning.")
+        self.create_parameter("zoning_heritage", STRING, "historical significant/heritage.")
+        self.create_parameter("zoning_enviro", STRING, "environmental significant overlay usable for zoning.")
+        self.create_parameter("zoning_flood", STRING, "land subject to inundation overlay.")
+        self.create_parameter("zoning_custom", STRING, "custom map that can be used to further constrain development.")
+        self.zoning_water = ""
+        self.zoning_heritage = ""
+        self.zoning_enviro = ""
+        self.zoning_flood = ""
+        self.zoning_custom = ""
 
-        # Passive and Constrained Land Uses
-        self.create_parameter("zoning_passive_luc", LISTDOUBLE, "Land use categories in passive group of uses")
-        self.create_parameter("zoning_constrained_luc", LISTDOUBLE, "Land use categories in constrained group")
-        self.zoning_passive_luc = [5, 6, 7, 8, 9, 10, 11, 12, 14, 15]   # These are numerical encodings of LUC categories
-        self.zoning_constrained_luc = []                        # refer to ubglobals.py for key
+        self.create_parameter("zoning_heritage_res", BOOL, "disallow residential in heritage areas?")
+        self.create_parameter("zoning_heritage_com", BOOL, "disallow commercial in heritage areas?")
+        self.create_parameter("zoning_heritage_ind", BOOL, "disallow industrial in heritage areas?")
+        self.create_parameter("zoning_heritage_orc", BOOL, "disallow mixed development in heritage areas?")
+        self.zoning_heritage_res = 1
+        self.zoning_heritage_com = 0
+        self.zoning_heritage_ind = 1
+        self.zoning_heritage_orc = 0
+
+        self.create_parameter("zoning_enviro_res", BOOL, "disallow residential in enviro areas?")
+        self.create_parameter("zoning_enviro_com", BOOL, "disallow commercial in enviro areas?")
+        self.create_parameter("zoning_enviro_ind", BOOL, "disallow industrial in enviro areas?")
+        self.create_parameter("zoning_enviro_orc", BOOL, "disallow mixed development in enviro areas?")
+        self.zoning_enviro_res = 1
+        self.zoning_enviro_com = 1
+        self.zoning_enviro_ind = 1
+        self.zoning_enviro_orc = 1
+
+        self.create_parameter("zoning_flood_res", BOOL, "disallow residential in flood areas?")
+        self.create_parameter("zoning_flood_com", BOOL, "disallow commercial in flood areas?")
+        self.create_parameter("zoning_flood_ind", BOOL, "disallow industrial in flood areas?")
+        self.create_parameter("zoning_flood_orc", BOOL, "disallow mixed development in flood areas?")
+        self.zoning_flood_res = 1
+        self.zoning_flood_com = 0
+        self.zoning_flood_ind = 1
+        self.zoning_flood_orc = 0
+
+        self.create_parameter("zoning_custom_res", BOOL, "disallow residential in custom areas?")
+        self.create_parameter("zoning_custom_com", BOOL, "disallow commercial in custom areas?")
+        self.create_parameter("zoning_custom_ind", BOOL, "disallow industrial in custom areas?")
+        self.create_parameter("zoning_custom_orc", BOOL, "disallow mixed development in custom areas?")
+        self.zoning_custom_res = 1
+        self.zoning_custom_com = 0
+        self.zoning_custom_ind = 1
+        self.zoning_custom_orc = 0
 
         # Additional Zoning Areas for Land uses
         self.create_parameter("zoning_rules_resmap", STRING, "Zoning map for designating residential uses")
         self.create_parameter("zoning_rules_resauto", BOOL, "Auto-determine residential regions?")
         self.create_parameter("zoning_rules_reslimit", BOOL, "Limit zoning to current base year active area?")
         self.create_parameter("zoning_rules_respassive", BOOL, "Include all passive areas?")
-        self.create_parameter("zoning_rules_resundev", BOOL, "Include all undeveloped areas?")
         self.zoning_rules_resmap = ""
         self.zoning_rules_resauto = 1
         self.zoning_rules_reslimit = 0
         self.zoning_rules_respassive = 1
-        self.zoning_rules_resundev = 1
 
         self.create_parameter("zoning_rules_commap", STRING, "Zoning map for designating comidential uses")
         self.create_parameter("zoning_rules_comauto", BOOL, "Auto-determine comidential regions?")
         self.create_parameter("zoning_rules_comlimit", BOOL, "Limit zoning to current base year active area?")
         self.create_parameter("zoning_rules_compassive", BOOL, "Include all passive areas?")
-        self.create_parameter("zoning_rules_comundev", BOOL, "Include all undeveloped areas?")
         self.zoning_rules_commap = ""
         self.zoning_rules_comauto = 1
         self.zoning_rules_comlimit = 0
         self.zoning_rules_compassive = 1
-        self.zoning_rules_comundev = 1
 
         self.create_parameter("zoning_rules_indmap", STRING, "Zoning map for designating indidential uses")
         self.create_parameter("zoning_rules_indauto", BOOL, "Auto-determine indidential regions?")
         self.create_parameter("zoning_rules_indlimit", BOOL, "Limit zoning to current base year active area?")
         self.create_parameter("zoning_rules_indpassive", BOOL, "Include all passive areas?")
-        self.create_parameter("zoning_rules_indundev", BOOL, "Include all undeveloped areas?")
         self.zoning_rules_indmap = ""
         self.zoning_rules_indauto = 1
         self.zoning_rules_indlimit = 0
         self.zoning_rules_indpassive = 1
-        self.zoning_rules_indundev = 1
 
         self.create_parameter("zoning_rules_officesmap", STRING, "Zoning map for designating officesidential uses")
         self.create_parameter("zoning_rules_officesauto", BOOL, "Auto-determine officesidential regions?")
         self.create_parameter("zoning_rules_officeslimit", BOOL, "Limit zoning to current base year active area?")
         self.create_parameter("zoning_rules_officespassive", BOOL, "Include all passive areas?")
-        self.create_parameter("zoning_rules_officesundev", BOOL, "Include all undeveloped areas?")
         self.zoning_rules_officesmap = ""
         self.zoning_rules_officesauto = 1
         self.zoning_rules_officeslimit = 0
         self.zoning_rules_officespassive = 1
-        self.zoning_rules_officesundev = 1
 
         # ADVANCED PARAMETERS
 
@@ -743,6 +779,7 @@ class UrbanDevelopment(UBModule):
         accessibility_weights = ubmethods.normalize_weights(accessibility_weights, "SUM")   # 0 to 1 normalize
         accessibility_attributes = ["ACC_ROAD", "ACC_RAIL", "ACC_WWAY", "ACC_LAKE", "ACC_POSS", "ACC_POIS"]
 
+        # Loop across blocks, get the five attributes and calculate total accessibility
         for i in range(len(cellslist)):
             final_acc_res, final_acc_com, final_acc_ind, final_acc_orc = 0, 0, 0, 0
             val_res, val_com, val_ind, val_orc = 0, 0, 0, 0     # Initialize
@@ -768,18 +805,14 @@ class UrbanDevelopment(UBModule):
             cellslist[i].add_attribute("ACCESS_IND", final_acc_ind)
             cellslist[i].add_attribute("ACCESS_ORC", final_acc_orc)
 
-        # Loop across blocks, get the five attributes and calculate total accessibility
-
-
         # - 2.7 - SPATIAL RELATIONSHIPS - SUITABILITY
-
-
 
         # - 2.8 - SPATIAL RELATIONSHIPS - ZONING
 
 
 
         # - 2.9 - SPATIAL RELATIONSHIPS - NEIGHBOURHOOD EFFECT
+        # We have the land use types defined, now we need to define the maps for the individual four active land uses
 
 
 
