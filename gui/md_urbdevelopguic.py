@@ -116,6 +116,9 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         [self.ui.access_roads_data.addItem(str(self.roadmaps[0][i])) for i in range(len(self.roadmaps[0]))]
 
         # RAIL
+        self.railmaps = self.get_dataref_array("spatial", "Built Infrastructure", "Rail Network")
+        self.ui.access_rail_data.clear()    # Clear the combo box first before setting it up
+        [self.ui.access_rail_data.addItem(str(self.railmaps[0][i])) for i in range(len(self.railmaps[0]))]
 
         # WATERWAYS
         self.rivermaps = self.get_dataref_array("spatial", "Water Bodies", "Rivers")
@@ -132,7 +135,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         [self.ui.access_pos_data.addItem(str(self.lumaps[0][i])) for i in range(len(self.lumaps[0]))]
 
         # POINTS OF INTEREST
-        self.localitymaps = self.get_dataref_array("spatial", "Employment")  # Obtain the data ref array
+        self.localitymaps = self.get_dataref_array("spatial", "Locality Maps")  # Obtain the data ref array
         self.ui.access_poi_data.clear()  # Clear the combo box first before setting it up
         [self.ui.access_poi_data.addItem(str(self.localitymaps[0][i])) for i in range(len(self.localitymaps[0]))]
 
@@ -598,11 +601,11 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.access_rail_acom.setText(str(self.module.get_parameter("access_rail_acom")))
         self.ui.access_rail_aind.setText(str(self.module.get_parameter("access_rail_aind")))
         self.ui.access_rail_aoffices.setText(str(self.module.get_parameter("access_rail_aoffices")))
-        # try:  # RAIL COMBO BOX
-        #     self.ui.access_rail_data.setCurrentIndex(self.railmaps[1].index(
-        #         self.module.get_parameter("access_rail_data")))
-        # except ValueError:
-        #     self.ui.access_rail_data.setCurrentIndex(0)
+        try:    # RAIL COMBO BOX
+            self.ui.access_rail_data.setCurrentIndex(self.railmaps[1].index(
+                self.module.get_parameter("access_rail_data")))
+        except ValueError:
+            self.ui.access_rail_data.setCurrentIndex(0)
 
         # Major Waterways
         self.ui.access_waterways_include.setChecked(int(self.module.get_parameter("access_waterways_include")))
@@ -862,7 +865,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
 
         # Accessibility to Rail
         self.module.set_parameter("access_rail_include", int(self.ui.access_rail_include.isChecked()))
-        # self.module.set_parameter("access_rail_data", self.ui.access_rail_data.currentText())
+        self.module.set_parameter("access_rail_data", self.railmaps[1][self.ui.access_rail_data.currentIndex()])
         self.module.set_parameter("access_rail_weight", self.ui.access_rail_weight.value())
         self.module.set_parameter("access_rail_res", int(self.ui.access_rail_res.isChecked()))
         self.module.set_parameter("access_rail_com", int(self.ui.access_rail_com.isChecked()))

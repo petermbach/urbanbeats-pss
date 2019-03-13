@@ -86,6 +86,7 @@ def import_polygonal_map(filepath, option, naming, global_offsets):
 
     :param filepath: full filepath to the file
     :param option: can obtain coordinates either in the input coordinate system or EPSG4326
+                    if the option is "RINGPOINTS", returns simply a points list of all ring points
     :param naming: naming convention of type str() to be used.
     :param global_offsets: (x, y) coordinates that are used to offset the map's coordinates to 0,0 system
     """
@@ -131,13 +132,17 @@ def import_polygonal_map(filepath, option, naming, global_offsets):
                 coordinates = []
                 for j in range(points):
                     coordinates.append((ring.GetX(j) - global_offsets[0], ring.GetY(j) - global_offsets[1]))
-                polygon = ubdata.UBVector(coordinates)
-                polygon.determine_geometry(coordinates)
-                polygon.add_attribute("Map_Naming", str(naming)+"_ID"+str(i+1)+"-"+str(j+1))
-                polygon.add_attribute("Area_sqkm", area)
-                for n in attnames:      # Assign all attribute data to the UBVector() instance
-                    polygon.add_attribute(str(n), feature.GetFieldAsString(n))
-                geometry_collection.append(polygon)
+                if option == "RINGPOINTS":
+                    for c in coordinates:
+                        geometry_collection.append(c)
+                else:
+                    polygon = ubdata.UBVector(coordinates)
+                    polygon.determine_geometry(coordinates)
+                    polygon.add_attribute("Map_Naming", str(naming)+"_ID"+str(i+1)+"-"+str(j+1))
+                    polygon.add_attribute("Area_sqkm", area)
+                    for n in attnames:      # Assign all attribute data to the UBVector() instance
+                        polygon.add_attribute(str(n), feature.GetFieldAsString(n))
+                    geometry_collection.append(polygon)
         else:
             ring = geom.GetGeometryRef(0)
             if ring.GetGeometryType() == -2147483645:   # POLYGON25D
@@ -148,25 +153,28 @@ def import_polygonal_map(filepath, option, naming, global_offsets):
             coordinates = []
             for j in range(points):
                 coordinates.append((ring.GetX(j) - global_offsets[0], ring.GetY(j) - global_offsets[1]))
-
-            polygon = ubdata.UBVector(coordinates)
-            polygon.determine_geometry(coordinates)
-            polygon.add_attribute("Map_Naming", str(naming)+"_ID"+str(i+1))
-            polygon.add_attribute("Area_sqkm", area)
-            for n in attnames:
-                polygon.add_attribute(str(n), feature.GetFieldAsString(n))
-            geometry_collection.append(polygon)
+            if option == "RINGPOINTS":      # Just want a map of points
+                for c in coordinates:
+                    geometry_collection.append(c)
+            else:
+                polygon = ubdata.UBVector(coordinates)
+                polygon.determine_geometry(coordinates)
+                polygon.add_attribute("Map_Naming", str(naming)+"_ID"+str(i+1))
+                polygon.add_attribute("Area_sqkm", area)
+                for n in attnames:
+                    polygon.add_attribute(str(n), feature.GetFieldAsString(n))
+                geometry_collection.append(polygon)
     return geometry_collection
 
 
-def import_linear_network(filename, format, global_offsets, **kwargs):
+def import_linear_network(filename, option, global_offsets, **kwargs):
     """Imports the shapefile containing the line data and transfers the information into an array of tuples.
     The import algorithm checks the shapefile's geometry and Segmentizes Lines and MultiLine geometry. The function
     should be called on operations involving rivers, water infrastructure, roads and other types of networks. If a
     UBVector() object is returned, then all attributes from the original shapefile will be contained therein.
 
     :param filename: Full filepath to the shapefile to be imported
-    :param format: Data format to be returned by the function "Points" or "Lines" or "Leaflet"
+    :param option: Data format to be returned by the function "Points" or "Lines" or "Leaflet"
     :param global_offsets: The global xmin/ymin to convert the data to (0,0) origin
     :param kwargs: "Segments" - specifies the number of segmentations if using POINTS format, usually Blocksize / 4
     :return: A list of tuples containing all points of the river (POINTS) or a list of UBVector() instances.
@@ -190,10 +198,10 @@ def import_linear_network(filename, format, global_offsets, **kwargs):
         attnames.append(layerDef.GetFieldDefn(f).GetName())
 
     # LEAFLET FORMAT , need to do Projection [TO DO]
-    if format == "LEAFLET":  # [TO DO]
+    if option == "LEAFLET":  # [TO DO]
         pass
 
-    if format == "POINTS":      # We only care about the coordinates, but not the actual lines and attributes
+    if option == "POINTS":      # We only care about the coordinates, but not the actual lines and attributes
         try:
             segmentmax = kwargs["Segments"]     # Checks the segments, if this hasn't been specified, continue
         except KeyError:
@@ -219,7 +227,7 @@ def import_linear_network(filename, format, global_offsets, **kwargs):
                         featurepoints.append((linestring.GetX(k) - global_offsets[0],
                                               linestring.GetY(k) - global_offsets[1]))
         return featurepoints
-    elif format == "LINES":     # We want UBVector() instances of line objects to do geometric operations with
+    elif option == "LINES":     # We want UBVector() instances of line objects to do geometric operations with
         linefeatures = []
         for i in range(totfeatures):
             currentfeature = layer.GetFeature(i)
@@ -254,16 +262,71 @@ def import_linear_network(filename, format, global_offsets, **kwargs):
         return linefeatures
 
 
-def import_point_features(filepath, option, naming, global_offsets):
-    """
+def import_point_features(filepath, option, global_offsets):
+    """Imports a map of points and saves the information into a UBVector format. Returns a list [ ] of UBVector()
+    objects.
 
-    :param filepath:
-    :param option:
-    :param naming:
-    :param global_offsets:
-    :return:
+    :param filepath: full filepath to the file
+    :param option: "LEAFLET" - uses coordinate system or EPSG4326, "POINTS" - returns UBVectors() in corresponding CS
+                    "POINTCOORD" - returns just the coordinates in local coordinate system.
+    :param global_offsets: (x, y) coordinates that are used to offset the map's coordinates to 0,0 system
     """
+    driver = ogr.GetDriverByName('ESRI Shapefile')  # Create the Shapefile driver
+    datasource = driver.Open(filepath)
+    if datasource is None:
+        return None     # Return none if there is no map
 
+    layer = datasource.GetLayer(0)  # Get the first layer, which should be the only layer!
+
+    spatialref = layer.GetSpatialRef()
+    inputprojcs = spatialref.GetAttrValue("PROJCS")
+    if inputprojcs is None:
+        print "Warning, spatial reference epsg cannot be found"
+        return None
+
+    featurecount = layer.GetFeatureCount()
+
+    layerDefinition = layer.GetLayerDefn()
+    attnames = []
+    for att in range(layerDefinition.GetFieldCount()):
+        attnames.append(layerDefinition.GetFieldDefn(att).GetName())
+
+    # LEAFLET FORMAT, need to do Project [TO DO]
+    if option == "LEAFLET":
+        pass
+
+    if option in ["POINTS", "POINTCOORDS"]:     # POINTS --> UBVECTORS() get return, otherwise just coordinates
+        pointfeatures = []
+        for i in range(featurecount):
+            feature = layer.GetFeature(i)
+            geom = feature.GetGeometryRef()  # GET GEOMETRY
+            if geom.GetGeometryType() in [4, -2147483644]:      # MULTIPOINT or MULTIPOINT25D
+                if geom.GetGeometryType == -2147483644:
+                    geom.FlattenTo2D()
+                for g in range(geom.GetGeometryCount()):
+                    pt = geom.GetGeometryRef(g)
+                    coordinates = (pt.GetX() - global_offsets[0], pt.GetY() - global_offsets[1])
+                    if option == "POINTS":
+                        pointfeature = ubdata.UBVector(coordinates)
+                        pointfeature.determine_geometry(coordinates)
+                        for a in attnames:
+                            pointfeature.add_attribute(str(a), feature.GetFieldAsString(a))
+                        pointfeatures.append(pointfeature)
+                    else:
+                        pointfeatures.append(coordinates)
+            else:  # Geometry Type in [1, -2147483647] # Point or Point 25D
+                if geom.GetGeometryType() == -2147483647:  # POINT25D
+                    geom.FlattenTo2D()
+                coordinates = (geom.GetX() - global_offsets[0], geom.GetY() - global_offsets[1])
+                if option == "POINTS":
+                    pointfeature = ubdata.UBVector(coordinates)
+                    pointfeature.determine_geometry(coordinates)
+                    for a in attnames:
+                        pointfeature.add_attribute(str(a), feature.GetFieldAsString(a))
+                    pointfeatures.append(pointfeature)
+                else:
+                    pointfeatures.append(coordinates)
+        return pointfeatures
 
 
 def calculate_offsets(map_input, global_extents):

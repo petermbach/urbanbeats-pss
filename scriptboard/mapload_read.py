@@ -4,7 +4,8 @@ import osgeo
 import osgeo.ogr as ogr
 import osgeo.osr as osr
 
-MAPPATH = "C:/Users/peter/Documents/TempDocs/Files/Upperdandy/Suburbs_UTM.shp"
+MAPPATH = "C:/Users/peter/Dropbox/Documents RESEARCH/Current Projects/Future Water/Case Study Upper Dandy Ck/Accessibility Maps/UD_Lakes_UTM.shp"
+
 
 driver = ogr.GetDriverByName('ESRI Shapefile')  # Create the Shapefile driver
 print "Driver: ", type(driver)
