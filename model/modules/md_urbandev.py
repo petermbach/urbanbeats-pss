@@ -291,6 +291,30 @@ class UrbanDevelopment(UBModule):
         self.access_poi_aind = 0.4
         self.access_poi_aoffices = 0.4
 
+        # Accessibility to Public Transport Hubs (PTHs)
+        self.create_parameter("access_pth_include", BOOL, "Include accessibility assessment to nearest pth?")
+        self.create_parameter("access_pth_data", STRING, "data set to use for pth.")
+        self.create_parameter("access_pth_weight", DOUBLE, "Weight assigned to the importance of pth access")
+        self.create_parameter("access_pth_res", BOOL, "consider for residential?")
+        self.create_parameter("access_pth_com", BOOL, "consider for commercial?")
+        self.create_parameter("access_pth_ind", BOOL, "consider for industrial?")
+        self.create_parameter("access_pth_offices", BOOL, "consider for offices?")
+        self.create_parameter("access_pth_ares", DOUBLE, "a-value for pth access to residential areas")
+        self.create_parameter("access_pth_acom", DOUBLE, "a-value for pth access to commercial areas")
+        self.create_parameter("access_pth_aind", DOUBLE, "a-value for pth access to industrial areas")
+        self.create_parameter("access_pth_aoffices", DOUBLE, "a-value for pth access to offices areas")
+        self.access_pth_include = 1
+        self.access_pth_data = ""
+        self.access_pth_weight = 0.0
+        self.access_pth_res = 1
+        self.access_pth_com = 1
+        self.access_pth_ind = 1
+        self.access_pth_offices = 1
+        self.access_pth_ares = 0.4
+        self.access_pth_acom = 0.4
+        self.access_pth_aind = 0.4
+        self.access_pth_aoffices = 0.4
+
         # --- TAB 2 - SPATIAL RELATIONSHIPS: SUITABILITY ---
         self.create_parameter("suit_export", BOOL, "export the created suitability map?")
         self.suit_export = 1
@@ -443,9 +467,8 @@ class UrbanDevelopment(UBModule):
         self.zoning_custom_ind = 1
         self.zoning_custom_orc = 0
 
-
-
         # ADVANCED PARAMETERS
+        self.global_offsets = None
 
     def run_module(self):
         """Runs the urban development module's simulation. Processes all inputs to simulate changes in land use and
@@ -496,7 +519,7 @@ class UrbanDevelopment(UBModule):
         map_attr.add_attribute("CellsWide", cells_wide)
         map_attr.add_attribute("CellsTall", cells_tall)
         map_attr.add_attribute("CellSize", self.cellsize)
-
+        self.global_offsets = (xmin, ymin)
         self.scenario.add_asset("MapAttributes", map_attr)
 
         # --- SECTION 2 - Create the simulation grid ---
@@ -555,9 +578,7 @@ class UrbanDevelopment(UBModule):
             map_attr.add_attribute("HasGEOPOLITICAL", 1)
             geopol_map = self.datalibrary.get_data_with_id(self.lga_inputmap)
             fullfilepath = geopol_map.get_data_file_path() + geopol_map.get_metadata("filename")
-            municipalities = ubspatial.import_polygonal_map(fullfilepath, "native", "Municipality",
-                                                            (map_attr.get_attribute("xllcorner"),
-                                                             map_attr.get_attribute("yllcorner")))
+            municipalities = ubspatial.import_polygonal_map(fullfilepath, "native", "Municipality", self.global_offsets)
 
         # STEP 2.1.2 :: Assign Municipalities to Blocks and create municipality polygons
         for i in range(len(municipalities)):
@@ -630,7 +651,7 @@ class UrbanDevelopment(UBModule):
                 elif landuse_cat in passive:
                     current_cell.add_attribute("LUC_Type", "Passive")
                 elif landuse_cat in constrained:
-                    current_cell.add_attribute("LUC_Type", "Constrained")
+                    current_cell.add_attribute("LUC_Type", "Fixed")
                 else:
                     current_cell.add_attribute("LUC_Type", "UNDEFINED")
 
@@ -782,6 +803,13 @@ class UrbanDevelopment(UBModule):
                   float(self.access_poi_offices * self.access_poi_aoffices)]
             self.calculate_accessibility_pointfeatures(self.access_poi_data, map_attr, aj, cellslist, "POIS")
 
+        if self.access_pth_include:
+            aj = [float(self.access_pth_res * self.access_pth_ares),
+                  float(self.access_pth_com * self.access_pth_acom),
+                  float(self.access_pth_ind * self.access_pth_aind),
+                  float(self.access_pth_offices * self.access_pth_aoffices)]
+            self.calculate_accessibility_pointfeatures(self.access_pth_data, map_attr, aj, cellslist, "PTHS")
+
         # - 2.6.2 - Combine Accessibility criteria into full map
         accessibility_weights = [float(self.access_roads_weight * self.access_roads_include),
                                  float(self.access_rail_weight * self.access_rail_include),
@@ -789,8 +817,9 @@ class UrbanDevelopment(UBModule):
                                  float(self.access_lakes_weight * self.access_lakes_include),
                                  float(self.access_pos_weight * self.access_pos_include),
                                  float(self.access_poi_weight * self.access_poi_include)]
+
         accessibility_weights = ubmethods.normalize_weights(accessibility_weights, "SUM")   # 0 to 1 normalize
-        accessibility_attributes = ["ACC_ROAD", "ACC_RAIL", "ACC_WWAY", "ACC_LAKE", "ACC_POSS", "ACC_POIS"]
+        accessibility_attributes = ["ACC_ROAD", "ACC_RAIL", "ACC_WWAY", "ACC_LAKE", "ACC_POSS", "ACC_POIS", "ACC_PTHS"]
 
         # Loop across blocks, get the five attributes and calculate total accessibility
         for i in range(len(cellslist)):
@@ -822,20 +851,248 @@ class UrbanDevelopment(UBModule):
 
         # - 2.8 - SPATIAL RELATIONSHIPS - ZONING
         # Start by loading all relevant zoning maps. Preferably want to do this in one single loop
+        self.notify("Creating Zoning maps for active land uses...")
+        print("Creating Zoning maps for active land uses...")
 
-        # - 2.8.1 - Load the Overlay Maps
+
+
+
+
+
+
+
 
 
 
         for i in range(len(cellslist)):
-            zone_binaries = [1, 1, 1, 1]    # by default 1 otherwise 0 - [RES, COM, IND, ORC]
+            if cellslist[i].get_attribute("LUC_Type") in ["Fixed", "UNDEFINED"]:
+                cellslist[i].add_attribute("ZONE_RES", 0)  # If fixed or undefined, immediately set to zero
+                cellslist[i].add_attribute("ZONE_COM", 0)  # no exceptions, if not fixed, move to passive
+                cellslist[i].add_attribute("ZONE_IND", 0)
+                cellslist[i].add_attribute("ZONE_ORC", 0)
+            elif cellslist[i].get_attribute("LUC_Type") == "Passive":  # If passive, set based on parameter
+                cellslist[i].add_attribute("ZONE_RES", int(respassive))
+                cellslist[i].add_attribute("ZONE_COM", int(compassive))
+                cellslist[i].add_attribute("ZONE_IND", int(indpassive))
+                cellslist[i].add_attribute("ZONE_ORC", int(orcpassive))
+                if sum([respassive, compassive, indpassive, orcpassive]) != 0:
+                    # If at least one of the four passive booleans is not zero, the cell is added to the 'to check list'
+                    cellstocheck.append(cellslist[i])
+            elif cellslist[i].get_attribute("Base_LUC") == "Residential":
+                cellslist[i].add_attribute("ZONE_RES", 1)  # Always, regardless
+                cellslist[i].add_attribute("ZONE_COM", int(not self.zoning_rules_comlimit))  # The reverse of limit
+                cellslist[i].add_attribute("ZONE_IND", int(not self.zoning_rules_indlimit))
+                cellslist[i].add_attribute("ZONE_ORC", int(not self.zoning_rules_officeslimit))
+                cellstocheck.append(cellslist[i])
+            elif cellslist[i].get_attribute("Base_LUC") == "Commercial":
+                cellslist[i].add_attribute("ZONE_RES", int(not self.zoning_rules_reslimit))
+                cellslist[i].add_attribute("ZONE_COM", 1)  # Always, regardless
+                cellslist[i].add_attribute("ZONE_IND", int(not self.zoning_rules_indlimit))
+                cellslist[i].add_attribute("ZONE_ORC", int(not self.zoning_rules_officeslimit))
+                cellstocheck.append(cellslist[i])
+            elif cellslist[i].get_attribute("Base_LUC") in ["Light Industry", "Heavy Industry"]:
+                cellslist[i].add_attribute("ZONE_RES", int(not self.zoning_rules_reslimit))
+                cellslist[i].add_attribute("ZONE_COM", int(not self.zoning_rules_comlimit))  # The reverse of limit
+                cellslist[i].add_attribute("ZONE_IND", 1)
+                cellslist[i].add_attribute("ZONE_ORC", int(not self.zoning_rules_officeslimit))
+                cellstocheck.append(cellslist[i])
+            elif cellslist[i].get_attribute("Base_LUC") in ["Offices Res Mix"]:
+                cellslist[i].add_attribute("ZONE_RES", int(not self.zoning_rules_reslimit))
+                cellslist[i].add_attribute("ZONE_COM", int(not self.zoning_rules_comlimit))  # The reverse of limit
+                cellslist[i].add_attribute("ZONE_IND", int(not self.zoning_rules_indlimit))
+                cellslist[i].add_attribute("ZONE_ORC", 1)
+                cellstocheck.append(cellslist[i])
+            else:
+                cellslist[i].add_attribute("ZONE_RES", 1)  # Unsure... set to 1 and check for other conditions
+                cellslist[i].add_attribute("ZONE_COM", 1)
+                cellslist[i].add_attribute("ZONE_IND", 1)
+                cellslist[i].add_attribute("ZONE_ORC", 1)
+                cellstocheck.append(cellslist[i])
 
-            #CHECK STUFF
 
-            cellslist[i].add_attribute("ZONE_RES", zone_binaries[0])
-            cellslist[i].add_attribute("ZONE_COM", zone_binaries[1])
-            cellslist[i].add_attribute("ZONE_IND", zone_binaries[2])
-            cellslist[i].add_attribute("ZONE_ORC", zone_binaries[3])
+
+
+
+
+
+
+
+
+
+
+
+
+
+        # - 2.8.1a - Auto-Assign Algorithm
+        # Go through all cells, undertake the auto-assign algorithm
+        if self.zoning_rules_resauto:
+            respassive = self.zoning_rules_resauto * int((not self.zoning_rules_reslimit or
+                                                          (self.zoning_rules_reslimit * self.zoning_rules_respassive)))
+
+        if self.zoning_rules_comauto:
+            compassive = self.zoning_rules_comauto * int((not self.zoning_rules_comlimit or
+                                                          (self.zoning_rules_comlimit * self.zoning_rules_compassive)))
+
+        if self.zoning_rules_indauto:
+            indpassive = self.zoning_rules_indauto * int((not self.zoning_rules_indlimit or
+                                                          (self.zoning_rules_indlimit * self.zoning_rules_indpassive)))
+
+        if self.zoning_rules_officesauto:
+            orcpassive = self.zoning_rules_officesauto * int((not self.zoning_rules_officeslimit or
+                                                              (self.zoning_rules_officeslimit *
+                                                               self.zoning_rules_officespassive)))
+
+
+
+
+        # - 2.8.2 - Load the Active Land use Zoning Maps
+        if not self.zoning_rules_resauto:
+            dref = self.datalibrary.get_data_with_id(self.zoning_rules_resmap)  # Retrieve the land use map
+            if dref is None:
+                respolygons = []
+            else:
+                fullfilepath = dref.get_data_file_path() + dref.get_metadata("filename")
+                respolygons = ubspatial.import_polygonal_map(fullfilepath, "RINGS", None, self.global_offsets)
+        if not self.zoning_rules_comauto:
+            dref = self.datalibrary.get_data_with_id(self.zoning_rules_commap)  # Retrieve the land use map
+            if dref is None:
+                compolygons = []
+            else:
+                fullfilepath = dref.get_data_file_path() + dref.get_metadata("filename")
+                compolygons = ubspatial.import_polygonal_map(fullfilepath, "RINGS", None, self.global_offsets)
+        if not self.zoning_rules_indauto:
+            dref = self.datalibrary.get_data_with_id(self.zoning_rules_indmap)  # Retrieve the land use map
+            if dref is None:
+                indpolygons = []
+            else:
+                fullfilepath = dref.get_data_file_path() + dref.get_metadata("filename")
+                indpolygons = ubspatial.import_polygonal_map(fullfilepath, "RINGS", None, self.global_offsets)
+        if not self.zoning_rules_officesauto:
+            dref = self.datalibrary.get_data_with_id(self.zoning_rules_officesmap)  # Retrieve the land use map
+            if dref is None:
+                officespolygons = []
+            else:
+                fullfilepath = dref.get_data_file_path() + dref.get_metadata("filename")
+                officespolygons = ubspatial.import_polygonal_map(fullfilepath, "RINGS", None,
+                                                                 self.global_offsets)
+
+
+        cellstocheck = []
+        print ("Going from ", len(cellslist), " to ", len(cellstocheck), " cells to check.")    # Much smaller list
+
+        if len(cellstocheck) > 0:
+            # - 2.8.3 - Load the Overlay Maps
+            # WATER BODIES
+            waterpoly = self.get_rings_maps_for_zoning(self.zoning_water)
+            heritagepoly = self.get_rings_maps_for_zoning(self.zoning_heritage)
+            publicpoly = self.get_rings_maps_for_zoning(self.zoning_public)
+            enviropoly = self.get_rings_maps_for_zoning(self.zoning_enviro)
+            floodpoly = self.get_rings_maps_for_zoning(self.zoning_flood)
+            custompoly = self.get_rings_maps_for_zoning(self.zoning_custom)
+
+            totfeatures = len(waterpoly) + len(heritagepoly) + len(publicpoly) + len(enviropoly) + len(floodpoly) + len(custompoly)
+            print "Total Features of overlays to check against...", totfeatures
+        else:
+            waterpoly, heritagepoly, publicpoly, enviropoly, floodpoly, custompoly = [], [], [], [], [], []
+
+        # - 2.8.4 - Scan all remaining cells against overlay conditions
+        for i in range(len(cellstocheck)):
+            zstates = self.get_zoning_states(cellstocheck[i])
+            if sum(zstates) == 0:
+                continue
+
+            coordinates = cellstocheck[i].get_points()
+            coordinates = [c[:2] for c in coordinates]
+            cellpoly = Polygon(coordinates)
+
+            # CHECK WATER BODIES - 100% threshold - i.e. cells must be fully covered
+            if len(waterpoly) != 0:
+                restrict = self.determine_zoning_against_polygons(cellpoly, waterpoly, self.cellsize, 1.0)
+                # One-liner If Statement: If the zoning state is already 0 i.e. False, then don't change the state
+                bool(zstates[0]) and cellstocheck[i].change_attribute("ZONE_RES", restrict)
+                bool(zstates[1]) and cellstocheck[i].change_attribute("ZONE_COM", restrict)
+                bool(zstates[2]) and cellstocheck[i].change_attribute("ZONE_IND", restrict)
+                bool(zstates[3]) and cellstocheck[i].change_attribute("ZONE_ORC", restrict)
+
+                zstates = self.get_zoning_states(cellstocheck[i])   # Update zstates
+                if sum(zstates) == 0:
+                    continue
+
+            # CHECK HERITAGE - 50% threshold - i.e. half of the cell must be designated heritage
+            if len(heritagepoly) != 0:
+                restrict = self.determine_zoning_against_polygons(cellpoly, heritagepoly, self.cellsize, 0.5)
+                if zstates[0] and self.zoning_heritage_res:     # If zoning allowed AND heritage considered?
+                    cellstocheck[i].change_attribute("ZONE_RES", restrict)
+                if zstates[1] and self.zoning_heritage_com:
+                    cellstocheck[i].change_attribute("ZONE_COM", restrict)
+                if zstates[2] and self.zoning_heritage_ind:
+                    cellstocheck[i].change_attribute("ZONE_IND", restrict)
+                if zstates[3] and self.zoning_heritage_orc:
+                    cellstocheck[i].change_attribute("ZONE_ORC", restrict)
+
+                zstates = self.get_zoning_states(cellstocheck[i])   # Update zstates
+                if sum(zstates) == 0:
+                    continue
+
+            # CHECK PUBLIC ACQUISITION - 51% Threshold, absolute majority of the cell for land use dominance
+            if len(publicpoly) != 0:
+                restrict = self.determine_zoning_against_polygons(cellpoly, publicpoly, self.cellsize, 0.51)
+                if zstates[0] and self.zoning_public_res:
+                    cellstocheck[i].change_attribute("ZONE_RES", restrict)
+                if zstates[1] and self.zoning_public_com:
+                    cellstocheck[i].change_attribute("ZONE_COM", restrict)
+                if zstates[2] and self.zoning_public_ind:
+                    cellstocheck[i].change_attribute("ZONE_IND", restrict)
+                if zstates[3] and self.zoning_public_orc:
+                    cellstocheck[i].change_attribute("ZONE_ORC", restrict)
+
+                zstates = self.get_zoning_states(cellstocheck[i])  # Update zstates
+                if sum(zstates) == 0:
+                    continue
+
+            # CHECK ENVIRONMENTAL SIGNIFICANCE
+            if len(enviropoly) != 0:
+                restrict = self.determine_zoning_against_polygons(cellpoly, enviropoly, self.cellsize, 0.51)
+                if zstates[0] and self.zoning_enviro_res:
+                    cellstocheck[i].change_attribute("ZONE_RES", restrict)
+                if zstates[1] and self.zoning_enviro_com:
+                    cellstocheck[i].change_attribute("ZONE_COM", restrict)
+                if zstates[2] and self.zoning_enviro_ind:
+                    cellstocheck[i].change_attribute("ZONE_IND", restrict)
+                if zstates[3] and self.zoning_enviro_orc:
+                    cellstocheck[i].change_attribute("ZONE_ORC", restrict)
+
+                zstates = self.get_zoning_states(cellstocheck[i])  # Update zstates
+                if sum(zstates) == 0:
+                    continue
+
+            # CHECK INUNDATION
+            if len(floodpoly) != 0:
+                restrict = self.determine_zoning_against_polygons(cellpoly, floodpoly, self.cellsize, 0.51)
+                if zstates[0] and self.zoning_flood_res:
+                    cellstocheck[i].change_attribute("ZONE_RES", restrict)
+                if zstates[1] and self.zoning_flood_com:
+                    cellstocheck[i].change_attribute("ZONE_COM", restrict)
+                if zstates[2] and self.zoning_flood_ind:
+                    cellstocheck[i].change_attribute("ZONE_IND", restrict)
+                if zstates[3] and self.zoning_flood_orc:
+                    cellstocheck[i].change_attribute("ZONE_ORC", restrict)
+
+                zstates = self.get_zoning_states(cellstocheck[i])  # Update zstates
+                if sum(zstates) == 0:
+                    continue
+
+            # CHECK CUSTOM
+            if len(custompoly) != 0:
+                restrict = self.determine_zoning_against_polygons(cellpoly, custompoly, self.cellsize, 0.51)
+                if zstates[0] and self.zoning_custom_res:
+                    cellstocheck[i].change_attribute("ZONE_RES", restrict)
+                if zstates[1] and self.zoning_custom_com:
+                    cellstocheck[i].change_attribute("ZONE_COM", restrict)
+                if zstates[2] and self.zoning_custom_ind:
+                    cellstocheck[i].change_attribute("ZONE_IND", restrict)
+                if zstates[3] and self.zoning_custom_orc:
+                    cellstocheck[i].change_attribute("ZONE_ORC", restrict)
 
         # - 2.9 - SPATIAL RELATIONSHIPS - NEIGHBOURHOOD EFFECT
         # We have the land use types defined, now we need to define the maps for the individual four active land uses
@@ -846,6 +1103,80 @@ class UrbanDevelopment(UBModule):
         self.notify("Current End of Module")
         print ("Current end of module")
         return True
+
+    def zoning_auto_designate(self, cellslist, luc_code, luc_passive, limited):
+        """Algorithm for automatically assigning zoning states depending on various characteristics of the current cell
+        space.
+
+        :param cellslist: the full list of cells to run through the algorithm
+        :return: cellstocheck - the list of remaining cells that may need to be checked.
+        """
+        cellstocheck = []  # a sub-list of cells to check for zoning if necessary
+        for i in range(len(cellslist)):
+            if cellslist[i].get_attribute("LUC_Type") in ["Fixed", "UNDEFINED"]:
+                cellslist[i].add_attribute("ZONE_"+str(luc_code), 0)    # if fixed or undefined, immediately 0
+            elif cellslist[i].get_attribute("LUC_Type") == "Passive":  # If passive, set based on parameter
+                cellslist[i].add_attribute("ZONE_"+str(luc_code), int(luc_passive)) # If Passive, based on parameter
+                bool(luc_passive) and cellstocheck.append(cellslist[i])
+            elif cellslist[i].get_attribute("Base_LUC") == "Residential":
+                if luc_code == "RES":
+                    cellslist[i].add_attribute("ZONE_"+str(luc_code), 1)  # Always, regardless
+                else:
+                    cellslist[i].add_attribute("ZONE_"+str(luc_code), int(not limited)) # The reverse of the limit
+            elif cellslist[i].get_attribute("Base_LUC") == "Commercial":
+
+            elif cellslist[i].get_attribute("Base_LUC") in ["Light Industry", "Heavy Industry"]:
+
+            elif cellslist[i].get_attribute("Base_LUC") in ["Offices Res Mix"]:
+
+            else:
+                cellslist[i].add_attribute("ZONE_"+str(luc_code), 1)    # Otherwise just designate as 1
+                cellstocheck.append(cellslist[i])
+
+
+
+
+        return cellstocheck
+
+    def get_zoning_states(self, cell):
+        """Gets a 4-element list of booleans denoting the zoning states of the four active land uses RES, COM, IND, ORC
+        based on the current input cell.
+
+        :param cell: the UBVector () Object of the active cell being checked.
+        :return: [bool, bool, bool, bool] where 0 = zoning prohibited, 1 = zoning allowed.
+        """
+        return [cell.get_attribute("ZONE_RES"), cell.get_attribute("ZONE_COM"), cell.get_attribute("ZONE_IND"),
+                cell.get_attribute("ZONE_ORC")]
+
+    def determine_zoning_against_polygons(self, cellpoly, polygonlist, cellsize, threshold):
+        """Compares the current cell polygon to that of a polygon list for potential intersections with an area greater
+        than the threshold value until a zoning constraint has been found. Returns 0 if the zoning is to be disallowed,
+        1 if no match has been found.
+
+        :param cellpoly: the cell polygon (Shapely Polygon)
+        :param polygonlist: the list of polygonal rings to compare the cell polygon against
+        :param threshold: the proportion of cell area that needs to be covered for the zoning to apply
+        :return: 0 if an intersection area > threshold has been found, 1 if no big enough intersection has been found.
+        """
+        threshold_area = (cellsize * cellsize) * threshold  # Threshold is if x% of cell area < intersection area
+        for p in polygonlist:
+            if Polygon(p).intersection(cellpoly).area > threshold_area:
+                return 0    # Intersection found, stop algorithm
+        return 1    # No intersection found, cell is OK to be treated as potential zone for active LUC
+
+    def get_rings_maps_for_zoning(self, map_input):
+        """Gets and returns a list of ring polygons from
+
+        :param map_input: the input dataref ID to search for
+        :return: the list of ring coordinates (used to make polygons)
+        """
+        dref = self.datalibrary.get_data_with_id(map_input)
+        if dref is None:
+            return []
+        else:
+            fullfilepath = dref.get_data_file_path() + dref.get_metadata("filename")
+            polylist = ubspatial.import_polygonal_map(fullfilepath, "RINGS", None, self.global_offsets)
+        return polylist
 
     def calculate_accessibility_pointfeatures(self, map_input, map_attr, aj, cellslist, att_name):
         """Calculates the accessibility from a Point Features Map and adds the individual accessibility values
@@ -865,9 +1196,7 @@ class UrbanDevelopment(UBModule):
         fullfilepath = dref.get_data_file_path() + dref.get_metadata("filename")
 
         # LOAD THE POINT FEATURES
-        pointfeatures = ubspatial.import_point_features(fullfilepath, "POINTCOORDS",
-                                                        (map_attr.get_attribute("xllcorner"),
-                                                         map_attr.get_attribute("yllcorner")))
+        pointfeatures = ubspatial.import_point_features(fullfilepath, "POINTCOORDS", self.global_offsets)
 
         self.notify("Number of loaded features to compare: " + str(len(pointfeatures)))
         print "Length of the featurepoints list: ", str(len(pointfeatures))
@@ -909,9 +1238,7 @@ class UrbanDevelopment(UBModule):
         fullfilepath = dref.get_data_file_path() + dref.get_metadata("filename")
 
         # LOAD LINEAR FEATURES AND SEGMENTIZE
-        linearfeatures = ubspatial.import_linear_network(fullfilepath, "POINTS",
-                                                         (map_attr.get_attribute("xllcorner"),
-                                                          map_attr.get_attribute("yllcorner")),
+        linearfeatures = ubspatial.import_linear_network(fullfilepath, "POINTS", self.global_offsets,
                                                          Segments=self.cellsize)  # Segmentation
 
         self.notify("Number of loaded features to compare: "+str(len(linearfeatures)))
@@ -955,9 +1282,7 @@ class UrbanDevelopment(UBModule):
         fullfilepath = dref.get_data_file_path() + dref.get_metadata("filename")
 
         # LOAD POLYGONAL FEATURES AS RING POINTS COORDINATES
-        polypoints = ubspatial.import_polygonal_map(fullfilepath, "RINGPOINTS", None,
-                                                    (map_attr.get_attribute("xllcorner"),
-                                                     map_attr.get_attribute("yllcorner")))
+        polypoints = ubspatial.import_polygonal_map(fullfilepath, "RINGPOINTS", None, self.global_offsets)
 
         self.notify("Number of loaded features to compare: " + str(len(polypoints)))
         print "Length of the featurepoints list: ", str(len(polypoints))

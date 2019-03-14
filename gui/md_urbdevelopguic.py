@@ -139,6 +139,11 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.access_poi_data.clear()  # Clear the combo box first before setting it up
         [self.ui.access_poi_data.addItem(str(self.localitymaps[0][i])) for i in range(len(self.localitymaps[0]))]
 
+        # PUBLIC TRANSPORT HUBS
+        self.localitymaps = self.get_dataref_array("spatial", "Locality Maps")  # Obtain the data ref array
+        self.ui.access_pth_data.clear()  # Clear the combo box first before setting it up
+        [self.ui.access_pth_data.addItem(str(self.localitymaps[0][i])) for i in range(len(self.localitymaps[0]))]
+
         # TAB 2 SUITABILITY - Elevation, Groundwater Depth, Soil Infiltration Rate, Custom Criteria
         # SLOPE
         self.elevmaps = self.get_dataref_array("spatial", "Elevation")
@@ -225,6 +230,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.access_lakes_include.clicked.connect(self.enable_disable_accessibility_widgets)
         self.ui.access_pos_include.clicked.connect(self.enable_disable_accessibility_widgets)
         self.ui.access_poi_include.clicked.connect(self.enable_disable_accessibility_widgets)
+        self.ui.access_pth_include.clicked.connect(self.enable_disable_accessibility_widgets)
 
         # SUITABILITY
         self.ui.suit_general_summary.clicked.connect(self.display_suitability_summary)
@@ -510,6 +516,17 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.access_poi_acom.setEnabled(self.ui.access_poi_include.isChecked())
         self.ui.access_poi_aind.setEnabled(self.ui.access_poi_include.isChecked())
         self.ui.access_poi_aoffices.setEnabled(self.ui.access_poi_include.isChecked())
+
+        self.ui.access_pth_data.setEnabled(self.ui.access_pth_include.isChecked())  # Public Transport Hubs (PTH)
+        self.ui.access_pth_weight.setEnabled(self.ui.access_pth_include.isChecked())
+        self.ui.access_pth_res.setEnabled(self.ui.access_pth_include.isChecked())
+        self.ui.access_pth_com.setEnabled(self.ui.access_pth_include.isChecked())
+        self.ui.access_pth_ind.setEnabled(self.ui.access_pth_include.isChecked())
+        self.ui.access_pth_offices.setEnabled(self.ui.access_pth_include.isChecked())
+        self.ui.access_pth_ares.setEnabled(self.ui.access_pth_include.isChecked())
+        self.ui.access_pth_acom.setEnabled(self.ui.access_pth_include.isChecked())
+        self.ui.access_pth_aind.setEnabled(self.ui.access_pth_include.isChecked())
+        self.ui.access_pth_aoffices.setEnabled(self.ui.access_pth_include.isChecked())
         return True
 
     def enable_disable_general_tab_widgets(self):
@@ -761,6 +778,23 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
                 self.module.get_parameter("access_poi_data")))
         except ValueError:
             self.ui.access_poi_data.setCurrentIndex(0)
+
+        # Public Transport Hubs (PTHs)
+        self.ui.access_pth_include.setChecked(int(self.module.get_parameter("access_pth_include")))
+        self.ui.access_pth_weight.setValue(int(self.module.get_parameter("access_pth_weight")))
+        self.ui.access_pth_res.setChecked(int(self.module.get_parameter("access_pth_res")))
+        self.ui.access_pth_com.setChecked(int(self.module.get_parameter("access_pth_com")))
+        self.ui.access_pth_ind.setChecked(int(self.module.get_parameter("access_pth_ind")))
+        self.ui.access_pth_offices.setChecked(int(self.module.get_parameter("access_pth_offices")))
+        self.ui.access_pth_ares.setText(str(self.module.get_parameter("access_pth_ares")))
+        self.ui.access_pth_acom.setText(str(self.module.get_parameter("access_pth_acom")))
+        self.ui.access_pth_aind.setText(str(self.module.get_parameter("access_pth_aind")))
+        self.ui.access_pth_aoffices.setText(str(self.module.get_parameter("access_pth_aoffices")))
+        try:  # PTH COMBO BOX
+            self.ui.access_pth_data.setCurrentIndex(self.localitymaps[1].index(
+                self.module.get_parameter("access_pth_data")))
+        except ValueError:
+            self.ui.access_pth_data.setCurrentIndex(0)
 
         self.enable_disable_accessibility_widgets()
 
@@ -1070,6 +1104,19 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("access_poi_acom", float(self.ui.access_poi_acom.text()))
         self.module.set_parameter("access_poi_aind", float(self.ui.access_poi_aind.text()))
         self.module.set_parameter("access_poi_aoffices", float(self.ui.access_poi_aoffices.text()))
+
+        # Accessibility to Public Transport Hubs (PTHs)
+        self.module.set_parameter("access_pth_include", int(self.ui.access_pth_include.isChecked()))
+        self.module.set_parameter("access_pth_data", self.localitymaps[1][self.ui.access_pth_data.currentIndex()])
+        self.module.set_parameter("access_pth_weight", self.ui.access_pth_weight.value())
+        self.module.set_parameter("access_pth_res", int(self.ui.access_pth_res.isChecked()))
+        self.module.set_parameter("access_pth_com", int(self.ui.access_pth_com.isChecked()))
+        self.module.set_parameter("access_pth_ind", int(self.ui.access_pth_ind.isChecked()))
+        self.module.set_parameter("access_pth_offices", int(self.ui.access_pth_offices.isChecked()))
+        self.module.set_parameter("access_pth_ares", float(self.ui.access_pth_ares.text()))
+        self.module.set_parameter("access_pth_acom", float(self.ui.access_pth_acom.text()))
+        self.module.set_parameter("access_pth_aind", float(self.ui.access_pth_aind.text()))
+        self.module.set_parameter("access_pth_aoffices", float(self.ui.access_pth_aoffices.text()))
 
         # TAB 2 - 2.2 Suitability
         self.module.set_parameter("suit_export", int(self.ui.suit_export_maps.isChecked()))

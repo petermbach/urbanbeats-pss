@@ -135,6 +135,8 @@ def import_polygonal_map(filepath, option, naming, global_offsets):
                 if option == "RINGPOINTS":
                     for c in coordinates:
                         geometry_collection.append(c)
+                elif option == "RINGS":
+                    geometry_collection.append(coordinates)
                 else:
                     polygon = ubdata.UBVector(coordinates)
                     polygon.determine_geometry(coordinates)
@@ -156,6 +158,8 @@ def import_polygonal_map(filepath, option, naming, global_offsets):
             if option == "RINGPOINTS":      # Just want a map of points
                 for c in coordinates:
                     geometry_collection.append(c)
+            elif option == "RINGS":
+                geometry_collection.append(coordinates)
             else:
                 polygon = ubdata.UBVector(coordinates)
                 polygon.determine_geometry(coordinates)
