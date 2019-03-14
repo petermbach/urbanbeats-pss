@@ -170,6 +170,10 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         [self.ui.zoning_constraints_heritage_combo.addItem(str(self.overlaymaps[0][i]))
          for i in range(len(self.overlaymaps[0]))]
 
+        self.ui.zoning_constraints_public_combo.clear()
+        [self.ui.zoning_constraints_public_combo.addItem(str(self.overlaymaps[0][i]))
+         for i in range(len(self.overlaymaps[0]))]
+
         self.ui.zoning_constraints_enviro_combo.clear()
         [self.ui.zoning_constraints_enviro_combo.addItem(str(self.overlaymaps[0][i]))
          for i in range(len(self.overlaymaps[0]))]
@@ -240,6 +244,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.zoning_rules_indlimit.clicked.connect(self.enable_disable_zoning_widgets)
         self.ui.zoning_rules_officeslimit.clicked.connect(self.enable_disable_zoning_widgets)
         self.ui.zoning_constraints_heritage_combo.currentIndexChanged.connect(self.enable_disable_zoning_widgets)
+        self.ui.zoning_constraints_public_combo.currentIndexChanged.connect(self.enable_disable_zoning_widgets)
         self.ui.zoning_constraints_enviro_combo.currentIndexChanged.connect(self.enable_disable_zoning_widgets)
         self.ui.zoning_constraints_flood_combo.currentIndexChanged.connect(self.enable_disable_zoning_widgets)
         self.ui.zoning_constraints_custom_combo.currentIndexChanged.connect(self.enable_disable_zoning_widgets)
@@ -369,6 +374,17 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
             self.ui.zoning_constraints_heritage_com.setEnabled(1)
             self.ui.zoning_constraints_heritage_ind.setEnabled(1)
             self.ui.zoning_constraints_heritage_orc.setEnabled(1)
+
+        if self.ui.zoning_constraints_public_combo.currentIndex() == 0:
+            self.ui.zoning_constraints_public_res.setEnabled(0)
+            self.ui.zoning_constraints_public_com.setEnabled(0)
+            self.ui.zoning_constraints_public_ind.setEnabled(0)
+            self.ui.zoning_constraints_public_orc.setEnabled(0)
+        else:
+            self.ui.zoning_constraints_public_res.setEnabled(1)
+            self.ui.zoning_constraints_public_com.setEnabled(1)
+            self.ui.zoning_constraints_public_ind.setEnabled(1)
+            self.ui.zoning_constraints_public_orc.setEnabled(1)
 
         if self.ui.zoning_constraints_enviro_combo.currentIndex() == 0:
             self.ui.zoning_constraints_enviro_res.setEnabled(0)
@@ -857,6 +873,12 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         except ValueError:
             self.ui.zoning_constraints_heritage_combo.setCurrentIndex(0)
 
+        try:    # ZONING PUBLIC COMBO
+            self.ui.zoning_constraints_public_combo.setCurrentIndex(self.overlaymaps[1].index(
+                self.module.get_parameter("zoning_public")))
+        except ValueError:
+            self.ui.zoning_constraints_public_combo.setCurrentIndex(0)
+
         try:    # ZONING ENVIRONMENTAL SIGNIFICANCE COMBO
             self.ui.zoning_constraints_enviro_combo.setCurrentIndex(self.overlaymaps[1].index(
                 self.module.get_parameter("zoning_enviro")))
@@ -879,6 +901,11 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.zoning_constraints_heritage_com.setChecked(int(self.module.get_parameter("zoning_heritage_com")))
         self.ui.zoning_constraints_heritage_ind.setChecked(int(self.module.get_parameter("zoning_heritage_ind")))
         self.ui.zoning_constraints_heritage_orc.setChecked(int(self.module.get_parameter("zoning_heritage_orc")))
+
+        self.ui.zoning_constraints_public_res.setChecked(int(self.module.get_parameter("zoning_public_res")))
+        self.ui.zoning_constraints_public_com.setChecked(int(self.module.get_parameter("zoning_public_com")))
+        self.ui.zoning_constraints_public_ind.setChecked(int(self.module.get_parameter("zoning_public_ind")))
+        self.ui.zoning_constraints_public_orc.setChecked(int(self.module.get_parameter("zoning_public_orc")))
 
         self.ui.zoning_constraints_enviro_res.setChecked(int(self.module.get_parameter("zoning_enviro_res")))
         self.ui.zoning_constraints_enviro_com.setChecked(int(self.module.get_parameter("zoning_enviro_com")))
@@ -1078,6 +1105,8 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
                                   self.lakemaps[1][self.ui.zoning_constraints_water_combo.currentIndex()])
         self.module.set_parameter("zoning_heritage",
                                   self.overlaymaps[1][self.ui.zoning_constraints_heritage_combo.currentIndex()])
+        self.module.set_parameter("zoning_public",
+                                  self.overlaymaps[1][self.ui.zoning_constraints_public_combo.currentIndex()])
         self.module.set_parameter("zoning_enviro",
                                   self.overlaymaps[1][self.ui.zoning_constraints_enviro_combo.currentIndex()])
         self.module.set_parameter("zoning_flood",
@@ -1089,6 +1118,11 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("zoning_heritage_com", int(self.ui.zoning_constraints_heritage_com.isChecked()))
         self.module.set_parameter("zoning_heritage_ind", int(self.ui.zoning_constraints_heritage_ind.isChecked()))
         self.module.set_parameter("zoning_heritage_orc", int(self.ui.zoning_constraints_heritage_orc.isChecked()))
+
+        self.module.set_parameter("zoning_public_res", int(self.ui.zoning_constraints_public_res.isChecked()))
+        self.module.set_parameter("zoning_public_com", int(self.ui.zoning_constraints_public_com.isChecked()))
+        self.module.set_parameter("zoning_public_ind", int(self.ui.zoning_constraints_public_ind.isChecked()))
+        self.module.set_parameter("zoning_public_orc", int(self.ui.zoning_constraints_public_orc.isChecked()))
 
         self.module.set_parameter("zoning_enviro_res", int(self.ui.zoning_constraints_enviro_res.isChecked()))
         self.module.set_parameter("zoning_enviro_com", int(self.ui.zoning_constraints_enviro_com.isChecked()))

@@ -4461,7 +4461,7 @@ p, li { white-space: pre-wrap; }
                    <x>0</x>
                    <y>0</y>
                    <width>490</width>
-                   <height>917</height>
+                   <height>1008</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -4707,14 +4707,24 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
-                       <item row="19" column="3">
+                       <item row="1" column="2">
+                        <widget class="QLabel" name="zoning_waterbodies_lbl">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="text">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(select applicable land uses)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="24" column="3">
                         <widget class="QCheckBox" name="zoning_constraints_custom_com">
                          <property name="text">
                           <string>Commercial</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="7" column="2" colspan="2">
+                       <item row="12" column="2" colspan="2">
                         <widget class="QComboBox" name="zoning_constraints_enviro_combo">
                          <item>
                           <property name="text">
@@ -4723,28 +4733,28 @@ p, li { white-space: pre-wrap; }
                          </item>
                         </widget>
                        </item>
-                       <item row="20" column="2">
+                       <item row="25" column="2">
                         <widget class="QCheckBox" name="zoning_constraints_custom_ind">
                          <property name="text">
                           <string>Industrial</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="13" column="0">
+                       <item row="18" column="0">
                         <widget class="QLabel" name="zoning_constraints_flood">
                          <property name="text">
                           <string>Land subject to Inundation:</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="20" column="3">
+                       <item row="25" column="3">
                         <widget class="QCheckBox" name="zoning_constraints_custom_orc">
                          <property name="text">
                           <string>Mixed Development</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="13" column="1">
+                       <item row="18" column="1">
                         <spacer name="horizontalSpacer_47">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
@@ -4760,21 +4770,14 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </spacer>
                        </item>
-                       <item row="9" column="2">
+                       <item row="14" column="2">
                         <widget class="QCheckBox" name="zoning_constraints_enviro_res">
                          <property name="text">
                           <string>Residential</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="4" column="2">
-                        <widget class="QLabel" name="zoning_constraints_heritage_lbl">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(select applicable land uses)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="13" column="2" colspan="2">
+                       <item row="18" column="2" colspan="2">
                         <widget class="QComboBox" name="zoning_constraints_flood_combo">
                          <item>
                           <property name="text">
@@ -4783,35 +4786,35 @@ p, li { white-space: pre-wrap; }
                          </item>
                         </widget>
                        </item>
-                       <item row="9" column="3">
+                       <item row="14" column="3">
                         <widget class="QCheckBox" name="zoning_constraints_enviro_com">
                          <property name="text">
                           <string>Commercial</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="10" column="3">
+                       <item row="15" column="3">
                         <widget class="QCheckBox" name="zoning_constraints_enviro_orc">
                          <property name="text">
                           <string>Mixed Development</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="17" column="0">
+                       <item row="22" column="0">
                         <widget class="QLabel" name="zoning_constraints_custom">
                          <property name="text">
                           <string>Custom Constraint:</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="15" column="2">
+                       <item row="20" column="2">
                         <widget class="QCheckBox" name="zoning_constraints_flood_res">
                          <property name="text">
                           <string>Residential</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="17" column="1">
+                       <item row="22" column="1">
                         <spacer name="horizontalSpacer_48">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
@@ -4827,28 +4830,28 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </spacer>
                        </item>
-                       <item row="15" column="3">
+                       <item row="20" column="3">
                         <widget class="QCheckBox" name="zoning_constraints_flood_com">
                          <property name="text">
                           <string>Commercial</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="8" column="2">
+                       <item row="13" column="2">
                         <widget class="QLabel" name="zoning_constraints_enviro_lbl">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(select applicable land uses)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="10" column="2">
+                       <item row="15" column="2">
                         <widget class="QCheckBox" name="zoning_constraints_enviro_ind">
                          <property name="text">
                           <string>Industrial</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="17" column="2" colspan="2">
+                       <item row="22" column="2" colspan="2">
                         <widget class="QComboBox" name="zoning_constraints_custom_combo">
                          <item>
                           <property name="text">
@@ -4857,7 +4860,7 @@ p, li { white-space: pre-wrap; }
                          </item>
                         </widget>
                        </item>
-                       <item row="16" column="2">
+                       <item row="21" column="2">
                         <widget class="QCheckBox" name="zoning_constraints_flood_ind">
                          <property name="text">
                           <string>Industrial</string>
@@ -4880,42 +4883,42 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </spacer>
                        </item>
-                       <item row="14" column="2">
+                       <item row="19" column="2">
                         <widget class="QLabel" name="zoning_constraints_flood_lbl">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(select applicable land uses)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="16" column="3">
+                       <item row="21" column="3">
                         <widget class="QCheckBox" name="zoning_constraints_flood_orc">
                          <property name="text">
                           <string>Mixed Development</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="18" column="2">
+                       <item row="23" column="2">
                         <widget class="QLabel" name="zoning_constraints_custom_lbl">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(select applicable land uses)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="7" column="0">
+                       <item row="12" column="0">
                         <widget class="QLabel" name="zoning_constraints_enviro">
                          <property name="text">
                           <string>Environmental Significance:</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="19" column="2">
+                       <item row="24" column="2">
                         <widget class="QCheckBox" name="zoning_constraints_custom_res">
                          <property name="text">
                           <string>Residential</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="7" column="1">
+                       <item row="12" column="1">
                         <spacer name="horizontalSpacer_46">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
@@ -4947,28 +4950,88 @@ p, li { white-space: pre-wrap; }
                          </item>
                         </widget>
                        </item>
-                       <item row="6" column="3">
+                       <item row="7" column="3">
                         <widget class="QCheckBox" name="zoning_constraints_heritage_orc">
                          <property name="text">
                           <string>Mixed Development</string>
                          </property>
                         </widget>
                        </item>
+                       <item row="8" column="0">
+                        <widget class="QLabel" name="zoning_constraints_public">
+                         <property name="text">
+                          <string>Land for Public Development:</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="9" column="2">
+                        <widget class="QLabel" name="zoning_constraints_public_lbl">
+                         <property name="text">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(select applicable land uses)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="8" column="1">
+                        <spacer name="horizontalSpacer_49">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeType">
+                          <enum>QSizePolicy::Fixed</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>20</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
                        <item row="5" column="2">
+                        <widget class="QLabel" name="zoning_constraints_heritage_lbl">
+                         <property name="text">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(select applicable land uses)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="8" column="2" colspan="2">
+                        <widget class="QComboBox" name="zoning_constraints_public_combo">
+                         <item>
+                          <property name="text">
+                           <string>(select map)</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item row="10" column="2">
+                        <widget class="QCheckBox" name="zoning_constraints_public_res">
+                         <property name="text">
+                          <string>Residential</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="6" column="2">
                         <widget class="QCheckBox" name="zoning_constraints_heritage_res">
                          <property name="text">
                           <string>Residential</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="5" column="3">
+                       <item row="6" column="3">
                         <widget class="QCheckBox" name="zoning_constraints_heritage_com">
                          <property name="text">
                           <string>Commercial</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="6" column="2">
+                       <item row="10" column="3">
+                        <widget class="QCheckBox" name="zoning_constraints_public_com">
+                         <property name="text">
+                          <string>Commercial</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="7" column="2">
                         <widget class="QCheckBox" name="zoning_constraints_heritage_ind">
                          <property name="text">
                           <string>Industrial</string>
@@ -4988,13 +5051,17 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
-                       <item row="1" column="2">
-                        <widget class="QLabel" name="zoning_waterbodies_lbl">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
+                       <item row="11" column="2">
+                        <widget class="QCheckBox" name="zoning_constraints_public_ind">
                          <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(select applicable land uses)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                          <string>Industrial</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="11" column="3">
+                        <widget class="QCheckBox" name="zoning_constraints_public_orc">
+                         <property name="text">
+                          <string>Mixed Development</string>
                          </property>
                         </widget>
                        </item>

@@ -347,55 +347,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("zoning_export", BOOL, "export aggregated zoning maps for each land use?")
         self.zoning_export = 1
 
-        # General Zoning Constraints
-        self.create_parameter("zoning_water", STRING, "water bodies map to use in creating zoning.")
-        self.create_parameter("zoning_heritage", STRING, "historical significant/heritage.")
-        self.create_parameter("zoning_enviro", STRING, "environmental significant overlay usable for zoning.")
-        self.create_parameter("zoning_flood", STRING, "land subject to inundation overlay.")
-        self.create_parameter("zoning_custom", STRING, "custom map that can be used to further constrain development.")
-        self.zoning_water = ""
-        self.zoning_heritage = ""
-        self.zoning_enviro = ""
-        self.zoning_flood = ""
-        self.zoning_custom = ""
-
-        self.create_parameter("zoning_heritage_res", BOOL, "disallow residential in heritage areas?")
-        self.create_parameter("zoning_heritage_com", BOOL, "disallow commercial in heritage areas?")
-        self.create_parameter("zoning_heritage_ind", BOOL, "disallow industrial in heritage areas?")
-        self.create_parameter("zoning_heritage_orc", BOOL, "disallow mixed development in heritage areas?")
-        self.zoning_heritage_res = 1
-        self.zoning_heritage_com = 0
-        self.zoning_heritage_ind = 1
-        self.zoning_heritage_orc = 0
-
-        self.create_parameter("zoning_enviro_res", BOOL, "disallow residential in enviro areas?")
-        self.create_parameter("zoning_enviro_com", BOOL, "disallow commercial in enviro areas?")
-        self.create_parameter("zoning_enviro_ind", BOOL, "disallow industrial in enviro areas?")
-        self.create_parameter("zoning_enviro_orc", BOOL, "disallow mixed development in enviro areas?")
-        self.zoning_enviro_res = 1
-        self.zoning_enviro_com = 1
-        self.zoning_enviro_ind = 1
-        self.zoning_enviro_orc = 1
-
-        self.create_parameter("zoning_flood_res", BOOL, "disallow residential in flood areas?")
-        self.create_parameter("zoning_flood_com", BOOL, "disallow commercial in flood areas?")
-        self.create_parameter("zoning_flood_ind", BOOL, "disallow industrial in flood areas?")
-        self.create_parameter("zoning_flood_orc", BOOL, "disallow mixed development in flood areas?")
-        self.zoning_flood_res = 1
-        self.zoning_flood_com = 0
-        self.zoning_flood_ind = 1
-        self.zoning_flood_orc = 0
-
-        self.create_parameter("zoning_custom_res", BOOL, "disallow residential in custom areas?")
-        self.create_parameter("zoning_custom_com", BOOL, "disallow commercial in custom areas?")
-        self.create_parameter("zoning_custom_ind", BOOL, "disallow industrial in custom areas?")
-        self.create_parameter("zoning_custom_orc", BOOL, "disallow mixed development in custom areas?")
-        self.zoning_custom_res = 1
-        self.zoning_custom_com = 0
-        self.zoning_custom_ind = 1
-        self.zoning_custom_orc = 0
-
-        # Additional Zoning Areas for Land uses
+        # GENERAL Zoning rules for active land uses
         self.create_parameter("zoning_rules_resmap", STRING, "Zoning map for designating residential uses")
         self.create_parameter("zoning_rules_resauto", BOOL, "Auto-determine residential regions?")
         self.create_parameter("zoning_rules_reslimit", BOOL, "Limit zoning to current base year active area?")
@@ -431,6 +383,67 @@ class UrbanDevelopment(UBModule):
         self.zoning_rules_officesauto = 1
         self.zoning_rules_officeslimit = 0
         self.zoning_rules_officespassive = 1
+
+        # Additional Zoning Constraints
+        self.create_parameter("zoning_water", STRING, "water bodies map to use in creating zoning.")
+        self.create_parameter("zoning_heritage", STRING, "historical significant/heritage.")
+        self.create_parameter("zoning_public", STRING, "historical significant/heritage.")
+        self.create_parameter("zoning_enviro", STRING, "environmental significant overlay usable for zoning.")
+        self.create_parameter("zoning_flood", STRING, "land subject to inundation overlay.")
+        self.create_parameter("zoning_custom", STRING, "custom map that can be used to further constrain development.")
+        self.zoning_water = ""
+        self.zoning_heritage = ""
+        self.zoning_public = ""
+        self.zoning_enviro = ""
+        self.zoning_flood = ""
+        self.zoning_custom = ""
+
+        self.create_parameter("zoning_heritage_res", BOOL, "disallow residential in heritage areas?")
+        self.create_parameter("zoning_heritage_com", BOOL, "disallow commercial in heritage areas?")
+        self.create_parameter("zoning_heritage_ind", BOOL, "disallow industrial in heritage areas?")
+        self.create_parameter("zoning_heritage_orc", BOOL, "disallow mixed development in heritage areas?")
+        self.zoning_heritage_res = 1
+        self.zoning_heritage_com = 0
+        self.zoning_heritage_ind = 1
+        self.zoning_heritage_orc = 0
+
+        self.create_parameter("zoning_public_res", BOOL, "disallow residential in public areas?")
+        self.create_parameter("zoning_public_com", BOOL, "disallow commercial in public areas?")
+        self.create_parameter("zoning_public_ind", BOOL, "disallow industrial in public areas?")
+        self.create_parameter("zoning_public_orc", BOOL, "disallow mixed development in public areas?")
+        self.zoning_public_res = 1
+        self.zoning_public_com = 0
+        self.zoning_public_ind = 1
+        self.zoning_public_orc = 0
+
+        self.create_parameter("zoning_enviro_res", BOOL, "disallow residential in enviro areas?")
+        self.create_parameter("zoning_enviro_com", BOOL, "disallow commercial in enviro areas?")
+        self.create_parameter("zoning_enviro_ind", BOOL, "disallow industrial in enviro areas?")
+        self.create_parameter("zoning_enviro_orc", BOOL, "disallow mixed development in enviro areas?")
+        self.zoning_enviro_res = 1
+        self.zoning_enviro_com = 1
+        self.zoning_enviro_ind = 1
+        self.zoning_enviro_orc = 1
+
+        self.create_parameter("zoning_flood_res", BOOL, "disallow residential in flood areas?")
+        self.create_parameter("zoning_flood_com", BOOL, "disallow commercial in flood areas?")
+        self.create_parameter("zoning_flood_ind", BOOL, "disallow industrial in flood areas?")
+        self.create_parameter("zoning_flood_orc", BOOL, "disallow mixed development in flood areas?")
+        self.zoning_flood_res = 1
+        self.zoning_flood_com = 0
+        self.zoning_flood_ind = 1
+        self.zoning_flood_orc = 0
+
+        self.create_parameter("zoning_custom_res", BOOL, "disallow residential in custom areas?")
+        self.create_parameter("zoning_custom_com", BOOL, "disallow commercial in custom areas?")
+        self.create_parameter("zoning_custom_ind", BOOL, "disallow industrial in custom areas?")
+        self.create_parameter("zoning_custom_orc", BOOL, "disallow mixed development in custom areas?")
+        self.zoning_custom_res = 1
+        self.zoning_custom_com = 0
+        self.zoning_custom_ind = 1
+        self.zoning_custom_orc = 0
+
+
 
         # ADVANCED PARAMETERS
 
@@ -808,8 +821,21 @@ class UrbanDevelopment(UBModule):
         # - 2.7 - SPATIAL RELATIONSHIPS - SUITABILITY
 
         # - 2.8 - SPATIAL RELATIONSHIPS - ZONING
+        # Start by loading all relevant zoning maps. Preferably want to do this in one single loop
+
+        # - 2.8.1 - Load the Overlay Maps
 
 
+
+        for i in range(len(cellslist)):
+            zone_binaries = [1, 1, 1, 1]    # by default 1 otherwise 0 - [RES, COM, IND, ORC]
+
+            #CHECK STUFF
+
+            cellslist[i].add_attribute("ZONE_RES", zone_binaries[0])
+            cellslist[i].add_attribute("ZONE_COM", zone_binaries[1])
+            cellslist[i].add_attribute("ZONE_IND", zone_binaries[2])
+            cellslist[i].add_attribute("ZONE_ORC", zone_binaries[3])
 
         # - 2.9 - SPATIAL RELATIONSHIPS - NEIGHBOURHOOD EFFECT
         # We have the land use types defined, now we need to define the maps for the individual four active land uses
