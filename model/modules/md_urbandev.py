@@ -141,7 +141,7 @@ class UrbanDevelopment(UBModule):
         self.employ_land_rocbool = 0
         self.employ_land_roc = 6.0
 
-        # --- TAB 2 - SPATIAL RELATIONSHIPS: ACCESSIBILITY ---
+        # --- TAB 1 - SPATIAL RELATIONSHIPS: ACCESSIBILITY ---
         self.create_parameter("access_export_combined", BOOL, "export combined accessibility map?")
         self.create_parameter("access_export_individual", BOOL, "export individual accessibility maps?")
         self.access_export_combined = 1
@@ -320,54 +320,165 @@ class UrbanDevelopment(UBModule):
         self.suit_export = 1
 
         # Suitability Criteria
-        self.create_parameter("suit_slope_include", BOOL, "include slope assessment in suitability?")
-        self.create_parameter("suit_slope_data", STRING, "dataset to use for slope")
-        self.create_parameter("suit_slope_weight", DOUBLE, "weight assigned to slope in suitability assessment")
-        self.create_parameter("suit_slope_attract", BOOL, "should slope be an attraction factor?")
-        self.suit_slope_include = 1
+        self.create_parameter("suit_elevation_data", STRING, "dataset to use for slope")
         self.suit_slope_data = ""
-        self.suit_slope_weight = 5.0
-        self.suit_slope_attract = 0
 
-        self.create_parameter("suit_gw_include", BOOL, "include groundwater assessment in suitability?")
-        self.create_parameter("suit_gw_data", STRING, "dataset to use for groundwater")
-        self.create_parameter("suit_gw_weight", DOUBLE, "weight assigned to groundwater in suitability assessment")
-        self.create_parameter("suit_gw_attract", BOOL, "should groundwater be an attraction factor?")
-        self.suit_gw_include = 1
-        self.suit_gw_data = ""
-        self.suit_gw_weight = 5.0
-        self.suit_gw_attract = 0
+        self.create_parameter("suit_slope_include", BOOL, "include slope assessment in suitability?")
+        self.create_parameter("suit_slope_weight", DOUBLE, "weight assigned to slope in suitability assessment")
+        self.suit_slope_include = 1
+        self.suit_slope_weight = 5.0
+
+        self.create_parameter("suit_aspect_include", BOOL, "include slope assessment in suitability?")
+        self.create_parameter("suit_aspect_weight", DOUBLE, "weight assigned to slope in suitability assessment")
+        self.suit_slope_include = 1
+        self.suit_slope_weight = 5.0
 
         self.create_parameter("suit_soil_include", BOOL, "include soil assessment in suitability?")
         self.create_parameter("suit_soil_data", STRING, "dataset to use for soil")
         self.create_parameter("suit_soil_weight", DOUBLE, "weight assigned to soil in suitability assessment")
-        self.create_parameter("suit_soil_attract", BOOL, "should soil be an attraction factor?")
         self.suit_soil_include = 1
         self.suit_soil_data = ""
         self.suit_soil_weight = 5.0
-        self.suit_soil_attract = 0
 
-        self.create_parameter("suit_custom1_include", BOOL, "include custom1 assessment in suitability?")
-        self.create_parameter("suit_custom1_data", STRING, "dataset to use for custom1")
-        self.create_parameter("suit_custom1_weight", DOUBLE, "weight assigned to custom1 in suitability assessment")
-        self.create_parameter("suit_custom1_attract", BOOL, "should custom1 be an attraction factor?")
-        self.suit_custom1_include = 1
-        self.suit_custom1_data = ""
-        self.suit_custom1_weight = 5.0
-        self.suit_custom1_attract = 0
+        self.create_parameter("suit_gw_include", BOOL, "include groundwater assessment in suitability?")
+        self.create_parameter("suit_gw_data", STRING, "dataset to use for groundwater")
+        self.create_parameter("suit_gw_weight", DOUBLE, "weight assigned to groundwater in suitability assessment")
+        self.suit_gw_include = 1
+        self.suit_gw_data = ""
+        self.suit_gw_weight = 5.0
 
-        self.create_parameter("suit_custom2_include", BOOL, "include custom2 assessment in suitability?")
-        self.create_parameter("suit_custom2_data", STRING, "dataset to use for custom2")
-        self.create_parameter("suit_custom2_weight", DOUBLE, "weight assigned to custom2 in suitability assessment")
-        self.create_parameter("suit_custom2_attract", BOOL, "should custom2 be an attraction factor?")
-        self.suit_custom2_include = 1
-        self.suit_custom2_data = ""
-        self.suit_custom2_weight = 5.0
-        self.suit_custom2_attract = 0
+        self.create_parameter("suit_custom_include", BOOL, "include custom1 assessment in suitability?")
+        self.create_parameter("suit_custom_data", STRING, "dataset to use for custom1")
+        self.create_parameter("suit_custom_weight", DOUBLE, "weight assigned to custom1 in suitability assessment")
+        self.suit_custom_include = 1
+        self.suit_custom_data = ""
+        self.suit_custom_weight = 5.0
 
-        # [TO DO] THRESHOLDS FOR LAND USE CATEGORIES
+        # SUITABILITY - SLOPE
+        self.create_parameter("slope_res", DOUBLE, "threshold % at which slope no longer suitable for RES land use")
+        self.create_parameter("slope_com", DOUBLE, "threshold % at which slope no longer suitable for COM land use")
+        self.create_parameter("slope_ind", DOUBLE, "threshold % at which slope no longer suitable for IND land use")
+        self.create_parameter("slope_orc", DOUBLE, "threshold % at which slope no longer suitable for ORC land use")
+        self.create_parameter("slope_trend", STRING, "trend to use for in between values on slope scale")
+        self.create_parameter("slope_midpoint", DOUBLE, "mid-point value to use if this is selected for suitability")
+        self.slope_res = 25.0
+        self.slope_com = 25.0
+        self.slope_ind = 25.0
+        self.slope_orc = 25.0
+        self.slope_trend = "L"      # L (Linear), Q (Quadratic), C (Cubic), S (sigmoid), M (midpoint), IQ/IC (inverse)
+        self.slope_midpoint = 12.5
 
-        # --- TAB 2 - SPATIAL RELATIONSHIPS: ZONING ---
+        # SUITABILITY - ASPECT
+        self.create_parameter("aspect_res_north", DOUBLE, "suitability value for north-facing aspects in RES land use")
+        self.create_parameter("aspect_res_east", DOUBLE, "suitability value for north-facing aspects in RES land use")
+        self.create_parameter("aspect_res_south", DOUBLE, "suitability value for north-facing aspects in RES land use")
+        self.create_parameter("aspect_res_west", DOUBLE, "suitability value for north-facing aspects in RES land use")
+        self.aspect_res_north = 0.0
+        self.aspect_res_east = 80.0
+        self.aspect_res_south = 100.0
+        self.aspect_res_west = 40.0
+
+        self.create_parameter("aspect_com_north", DOUBLE, "suitability value for north-facing aspects in com land use")
+        self.create_parameter("aspect_com_east", DOUBLE, "suitability value for north-facing aspects in com land use")
+        self.create_parameter("aspect_com_south", DOUBLE, "suitability value for north-facing aspects in com land use")
+        self.create_parameter("aspect_com_west", DOUBLE, "suitability value for north-facing aspects in com land use")
+        self.aspect_com_north = 0.0
+        self.aspect_com_east = 80.0
+        self.aspect_com_south = 100.0
+        self.aspect_com_west = 40.0
+
+        self.create_parameter("aspect_ind_north", DOUBLE, "suitability value for north-facing aspects in ind land use")
+        self.create_parameter("aspect_ind_east", DOUBLE, "suitability value for north-facing aspects in ind land use")
+        self.create_parameter("aspect_ind_south", DOUBLE, "suitability value for north-facing aspects in ind land use")
+        self.create_parameter("aspect_ind_west", DOUBLE, "suitability value for north-facing aspects in ind land use")
+        self.aspect_ind_north = 0.0
+        self.aspect_ind_east = 80.0
+        self.aspect_ind_south = 100.0
+        self.aspect_ind_west = 40.0
+
+        self.create_parameter("aspect_orc_north", DOUBLE, "suitability value for north-facing aspects in orc land use")
+        self.create_parameter("aspect_orc_east", DOUBLE, "suitability value for north-facing aspects in orc land use")
+        self.create_parameter("aspect_orc_south", DOUBLE, "suitability value for north-facing aspects in orc land use")
+        self.create_parameter("aspect_orc_west", DOUBLE, "suitability value for north-facing aspects in orc land use")
+        self.aspect_orc_north = 0.0
+        self.aspect_orc_east = 80.0
+        self.aspect_orc_south = 100.0
+        self.aspect_orc_west = 40.0
+
+        # SUITABILITY - SOIL CLASSIFICATION
+        self.create_parameter("soil_res_sand", DOUBLE, "suitability value for sand soils in RES land use")
+        self.create_parameter("soil_res_sandclay", DOUBLE, "suitability value for sandy clay soils in RES land use")
+        self.create_parameter("soil_res_medclay", DOUBLE, "suitability value for med. clay soils in RES land use")
+        self.create_parameter("soil_res_heavyclay", DOUBLE, "suitability value for heavy clay soils in RES land use")
+        self.soil_res_sand = 100.0
+        self.soil_res_sandclay = 100.0
+        self.soil_res_medclay = 80.0
+        self.soil_res_heavyclay = 60.0
+
+        self.create_parameter("soil_com_sand", DOUBLE, "suitability value for sand soils in com land use")
+        self.create_parameter("soil_com_sandclay", DOUBLE, "suitability value for sandy clay soils in com land use")
+        self.create_parameter("soil_com_medclay", DOUBLE, "suitability value for med. clay soils in com land use")
+        self.create_parameter("soil_com_heavyclay", DOUBLE, "suitability value for heavy clay soils in com land use")
+        self.soil_com_sand = 100.0
+        self.soil_com_sandclay = 100.0
+        self.soil_com_medclay = 80.0
+        self.soil_com_heavyclay = 60.0
+
+        self.create_parameter("soil_ind_sand", DOUBLE, "suitability value for sand soils in ind land use")
+        self.create_parameter("soil_ind_sandclay", DOUBLE, "suitability value for sandy clay soils in ind land use")
+        self.create_parameter("soil_ind_medclay", DOUBLE, "suitability value for med. clay soils in ind land use")
+        self.create_parameter("soil_ind_heavyclay", DOUBLE, "suitability value for heavy clay soils in ind land use")
+        self.soil_ind_sand = 100.0
+        self.soil_ind_sandclay = 100.0
+        self.soil_ind_medclay = 100.0
+        self.soil_ind_heavyclay = 100.0
+
+        self.create_parameter("soil_orc_sand", DOUBLE, "suitability value for sand soils in orc land use")
+        self.create_parameter("soil_orc_sandclay", DOUBLE, "suitability value for sandy clay soils in orc land use")
+        self.create_parameter("soil_orc_medclay", DOUBLE, "suitability value for med. clay soils in orc land use")
+        self.create_parameter("soil_orc_heavyclay", DOUBLE, "suitability value for heavy clay soils in orc land use")
+        self.soil_orc_sand = 100.0
+        self.soil_orc_sandclay = 100.0
+        self.soil_orc_medclay = 60.0
+        self.soil_orc_heavyclay = 60.0
+
+        # SUITABILITY - DEPTH TO GROUNDWATER TABLE [m]
+        self.create_parameter("gw_res", DOUBLE, "threshold % at which groundwater no longer suitable for RES land use")
+        self.create_parameter("gw_com", DOUBLE, "threshold % at which groundwater no longer suitable for COM land use")
+        self.create_parameter("gw_ind", DOUBLE, "threshold % at which groundwater no longer suitable for IND land use")
+        self.create_parameter("gw_orc", DOUBLE, "threshold % at which groundwater no longer suitable for ORC land use")
+        self.create_parameter("gw_trend", STRING, "trend to use for in-between values")
+        self.create_parameter("gw_midpoint", DOUBLE, "mid-point value for suitability scale")
+        self.gw_res = 10.0
+        self.gw_com = 10.0
+        self.gw_ind = 10.0
+        self.gw_orc = 10.0
+        self.gw_trend = "L"  # L (Linear), Q (Quadratic), C (Cubic), S (sigmoid), M (midpoint), IQ/IC (inverse)
+        self.gw_midpoint = 5.0
+
+        # SUITABILITY - CUSTOM CRITERION
+        self.create_parameter("custom_res_min", DOUBLE, "minimum threshold at which suitability is 0%")
+        self.create_parameter("custom_res_max", DOUBLE, "maximum threshold at which suitability is 0%")
+        self.create_parameter("custom_com_min", DOUBLE, "minimum threshold at which suitability is 0%")
+        self.create_parameter("custom_com_max", DOUBLE, "maximum threshold at which suitability is 0%")
+        self.create_parameter("custom_ind_min", DOUBLE, "minimum threshold at which suitability is 0%")
+        self.create_parameter("custom_ind_max", DOUBLE, "maximum threshold at which suitability is 0%")
+        self.create_parameter("custom_orc_min", DOUBLE, "minimum threshold at which suitability is 0%")
+        self.create_parameter("custom_orc_max", DOUBLE, "maximum threshold at which suitability is 0%")
+        self.create_parameter("custom_trend", STRING, "trend to use for the suitability scaling")
+        self.create_parameter("custom_midpoint", DOUBLE, "mid-point value to use if this trend is selected")
+        self.custom_res_min = 0.0
+        self.custom_res_max = 0.0
+        self.custom_com_min = 0.0
+        self.custom_com_max = 0.0
+        self.custom_ind_min = 0.0
+        self.custom_ind_max = 0.0
+        self.custom_orc_min = 0.0
+        self.custom_orc_max = 0.0
+        self.custom_trend = "L"  # L (Linear), Q (Quadratic), C (Cubic), S (sigmoid), M (midpoint), IQ/IC (inverse)
+        self.gw_midpoint = 0.0
+
+        # --- TAB 3 - SPATIAL RELATIONSHIPS: ZONING ---
         self.create_parameter("zoning_export", BOOL, "export aggregated zoning maps for each land use?")
         self.zoning_export = 1
 
@@ -467,6 +578,8 @@ class UrbanDevelopment(UBModule):
         self.zoning_custom_ind = 1
         self.zoning_custom_orc = 0
 
+        # --- TAB 4 - NEIGHBOURHOOD INTERACTION
+        
         # ADVANCED PARAMETERS
         self.global_offsets = None
 
