@@ -330,8 +330,8 @@ class UrbanDevelopment(UBModule):
 
         self.create_parameter("suit_aspect_include", BOOL, "include slope assessment in suitability?")
         self.create_parameter("suit_aspect_weight", DOUBLE, "weight assigned to slope in suitability assessment")
-        self.suit_slope_include = 1
-        self.suit_slope_weight = 5.0
+        self.suit_aspect_include = 1
+        self.suit_aspect_weight = 5.0
 
         self.create_parameter("suit_soil_include", BOOL, "include soil assessment in suitability?")
         self.create_parameter("suit_soil_data", STRING, "dataset to use for soil")
@@ -476,7 +476,7 @@ class UrbanDevelopment(UBModule):
         self.custom_orc_min = 0.0
         self.custom_orc_max = 0.0
         self.custom_trend = "L"  # L (Linear), Q (Quadratic), C (Cubic), S (sigmoid), M (midpoint), IQ/IC (inverse)
-        self.gw_midpoint = 0.0
+        self.custom_midpoint = 0.0
 
         # --- TAB 3 - SPATIAL RELATIONSHIPS: ZONING ---
         self.create_parameter("zoning_export", BOOL, "export aggregated zoning maps for each land use?")

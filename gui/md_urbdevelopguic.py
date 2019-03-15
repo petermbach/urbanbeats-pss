@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-@file   md_urbplanbbguic.py
+@file   md_urbdevelopguic.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 
@@ -256,10 +256,12 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.slope_com_slider.valueChanged.connect(self.update_suitability_sliders_slope)
         self.ui.slope_ind_slider.valueChanged.connect(self.update_suitability_sliders_slope)
         self.ui.slope_orc_slider.valueChanged.connect(self.update_suitability_sliders_slope)
+        self.ui.slope_midpoint_slider.valueChanged.connect(self.update_suitability_sliders_slope)
         self.ui.gw_res_slider.valueChanged.connect(self.update_suitability_sliders_gw)
         self.ui.gw_com_slider.valueChanged.connect(self.update_suitability_sliders_gw)
         self.ui.gw_ind_slider.valueChanged.connect(self.update_suitability_sliders_gw)
         self.ui.gw_orc_slider.valueChanged.connect(self.update_suitability_sliders_gw)
+        self.ui.gw_midpoint_slider.valueChanged.connect(self.update_suitability_sliders_gw)
 
         # ZONING
         self.ui.zoning_rules_resauto.clicked.connect(self.enable_disable_zoning_widgets)
@@ -482,19 +484,19 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
 
     def update_suitability_sliders_slope(self):
         """Updates the value of the slider boxes for the slope sliders."""
-        self.ui.slope_res_box.setText(str(round(float(self.ui.slope_res_slider.value() / 10), 1)))
-        self.ui.slope_com_box.setText(str(round(float(self.ui.slope_com_slider.value() / 10), 1)))
-        self.ui.slope_ind_box.setText(str(round(float(self.ui.slope_ind_slider.value() / 10), 1)))
-        self.ui.slope_orc_box.setText(str(round(float(self.ui.slope_orc_slider.value() / 10), 1)))
-        self.ui.slope_midpoint_box.setText(str(round(float(self.ui.slope_midpoint_slider.value() / 10), 1)))
+        self.ui.slope_res_box.setText(str(round(float(self.ui.slope_res_slider.value() / 10), 1))+"%")
+        self.ui.slope_com_box.setText(str(round(float(self.ui.slope_com_slider.value() / 10), 1))+"%")
+        self.ui.slope_ind_box.setText(str(round(float(self.ui.slope_ind_slider.value() / 10), 1))+"%")
+        self.ui.slope_orc_box.setText(str(round(float(self.ui.slope_orc_slider.value() / 10), 1))+"%")
+        self.ui.slope_midpoint_box.setText(str(round(float(self.ui.slope_midpoint_slider.value() / 10), 1))+"%")
 
     def update_suitability_sliders_gw(self):
         """Updates the value of the slider boxes for the groundwater sliders."""
-        self.ui.gw.setText(str(round(float(self.ui.gw_res_slider.value() / 10), 1)))
-        self.ui.gw_com_box.setText(str(round(float(self.ui.gw_com_slider.value() / 10), 1)))
-        self.ui.gw_ind_box.setText(str(round(float(self.ui.gw_ind_slider.value() / 10), 1)))
-        self.ui.gw_orc_box.setText(str(round(float(self.ui.gw_orc_slider.value() / 10), 1)))
-        self.ui.gw_midpoint_box.setText(str(round(float(self.ui.gw_midpoint_slider.value() / 10), 1)))
+        self.ui.gw_res_box.setText(str(round(float(self.ui.gw_res_slider.value() / 10), 1))+"%")
+        self.ui.gw_com_box.setText(str(round(float(self.ui.gw_com_slider.value() / 10), 1))+"%")
+        self.ui.gw_ind_box.setText(str(round(float(self.ui.gw_ind_slider.value() / 10), 1))+"%")
+        self.ui.gw_orc_box.setText(str(round(float(self.ui.gw_orc_slider.value() / 10), 1))+"%")
+        self.ui.gw_midpoint_box.setText(str(round(float(self.ui.gw_midpoint_slider.value() / 10), 1))+"%")
 
     def enable_disable_suitability_midpoint_widgets(self):
         """Enables and disables the 'mid-point' widgets in the slope, groundwater and custom criteria."""
@@ -959,8 +961,8 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.gw_midpoint_slider.setValue(int(self.module.get_parameter("gw_midpoint")))
 
         # CRITERION - CUSTOM
-        self.ui.suit_custom_check.setChecked(int(self.module.get_parameter("suit_custom1_include")))
-        self.ui.suit_custom_weight.setValue(int(self.module.get_parameter("suit_custom1_weight")))
+        self.ui.suit_custom_check.setChecked(int(self.module.get_parameter("suit_custom_include")))
+        self.ui.suit_custom_weight.setValue(int(self.module.get_parameter("suit_custom_weight")))
         try:  # CUSTOM COMBO
             self.ui.suit_custom_data.setCurrentIndex(self.overlaymaps[1].index(
                 self.module.get_parameter("suit_custom_data")))
@@ -976,9 +978,11 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.custom_orc_max.setText(str(self.module.get_parameter("custom_orc_max")))
         self.ui.custom_trend_combo.setCurrentIndex(int(ubglobals.VALUE_SCALE_METHODS.index(
             self.module.get_parameter("custom_trend"))))
-        self.ui.custom_midpoint_slider.setValue(int(self.module.get_parameter("custom_midpoint")))
+        self.ui.custom_midpoint_box.setText(str(self.module.get_parameter("custom_midpoint")))
 
         self.enable_disable_suitability_widgets()
+        self.update_suitability_sliders_slope()
+        self.update_suitability_sliders_gw()
         self.ui.suit_threshold_stack.setCurrentIndex(int(self.ui.suit_criteria_combo.currentIndex()))
 
         # TAB 2.3 - Zoning
@@ -1292,7 +1296,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("gw_midpoint", float(self.ui.gw_midpoint_slider.value()))
         self.module.set_parameter("gw_trend",
                                   ubglobals.VALUE_SCALE_METHODS[self.ui.gw_trend_combo.currentIndex()])
-        
+
         # SOIL
         self.module.set_parameter("suit_soil_include", int(self.ui.suit_soil_check.isChecked()))
         self.module.set_parameter("suit_soil_data", self.soilmaps[1][self.ui.suit_soil_data.currentIndex()])
@@ -1326,7 +1330,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("custom_ind_max", float(self.ui.custom_ind_max.text()))
         self.module.set_parameter("custom_orc_min", float(self.ui.custom_orc_min.text()))
         self.module.set_parameter("custom_orc_max", float(self.ui.custom_orc_max.text()))
-        self.module.set_parameter("custom_midpoint", float(self.ui.custom_midpoint_slider.value()))
+        self.module.set_parameter("custom_midpoint", float(self.ui.custom_midpoint_box.text()))
         self.module.set_parameter("custom_trend",
                                   ubglobals.VALUE_SCALE_METHODS[self.ui.custom_trend_combo.currentIndex()])
 
