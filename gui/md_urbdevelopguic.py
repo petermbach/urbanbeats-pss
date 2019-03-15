@@ -1253,26 +1253,82 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         # SLOPE
         self.module.set_parameter("suit_slope_include", int(self.ui.suit_slope_check.isChecked()))
         self.module.set_parameter("suit_slope_weight", int(self.ui.suit_slope_weight.value()))
-        
+        self.module.set_parameter("slope_res", float(self.ui.slope_res_slider.value() / 10.0))
+        self.module.set_parameter("slope_com", float(self.ui.slope_com_slider.value() / 10.0))
+        self.module.set_parameter("slope_ind", float(self.ui.slope_ind_slider.value() / 10.0))
+        self.module.set_parameter("slope_orc", float(self.ui.slope_orc_slider.value() / 10.0))
+        self.module.set_parameter("slope_midpoint", float(self.ui.slope_midpoint_slider.value() / 10.0))
+        self.module.set_parameter("slope_trend",
+                                  ubglobals.VALUE_SCALE_METHODS[self.ui.slope_trend_combo.currentIndex()])
+
         # ASPECT
         self.module.set_parameter("suit_aspect_include", int(self.ui.suit_aspect_check.isChecked()))
         self.module.set_parameter("suit_aspect_weight", int(self.ui.suit_aspect_weight.value()))
+        self.module.set_parameter("aspect_res_north", float(self.ui.aspect_res_north.value()))
+        self.module.set_parameter("aspect_res_east", float(self.ui.aspect_res_east.value()))
+        self.module.set_parameter("aspect_res_south", float(self.ui.aspect_res_south.value()))
+        self.module.set_parameter("aspect_res_west", float(self.ui.aspect_res_west.value()))
+        self.module.set_parameter("aspect_com_north", float(self.ui.aspect_com_north.value()))
+        self.module.set_parameter("aspect_com_east", float(self.ui.aspect_com_east.value()))
+        self.module.set_parameter("aspect_com_south", float(self.ui.aspect_com_south.value()))
+        self.module.set_parameter("aspect_com_west", float(self.ui.aspect_com_west.value()))
+        self.module.set_parameter("aspect_ind_north", float(self.ui.aspect_ind_north.value()))
+        self.module.set_parameter("aspect_ind_east", float(self.ui.aspect_ind_east.value()))
+        self.module.set_parameter("aspect_ind_south", float(self.ui.aspect_ind_south.value()))
+        self.module.set_parameter("aspect_ind_west", float(self.ui.aspect_ind_west.value()))
+        self.module.set_parameter("aspect_orc_north", float(self.ui.aspect_orc_north.value()))
+        self.module.set_parameter("aspect_orc_east", float(self.ui.aspect_orc_east.value()))
+        self.module.set_parameter("aspect_orc_south", float(self.ui.aspect_orc_south.value()))
+        self.module.set_parameter("aspect_orc_west", float(self.ui.aspect_orc_west.value()))
 
         # GROUNDWATER
         self.module.set_parameter("suit_gw_include", int(self.ui.suit_gw_check.isChecked()))
         self.module.set_parameter("suit_gw_data", self.gwmaps[1][self.ui.suit_gw_data.currentIndex()])
         self.module.set_parameter("suit_gw_weight", int(self.ui.suit_gw_weight.value()))
-
+        self.module.set_parameter("gw_res", float(self.ui.gw_res_slider.value()))
+        self.module.set_parameter("gw_com", float(self.ui.gw_com_slider.value()))
+        self.module.set_parameter("gw_ind", float(self.ui.gw_ind_slider.value()))
+        self.module.set_parameter("gw_orc", float(self.ui.gw_orc_slider.value()))
+        self.module.set_parameter("gw_midpoint", float(self.ui.gw_midpoint_slider.value()))
+        self.module.set_parameter("gw_trend",
+                                  ubglobals.VALUE_SCALE_METHODS[self.ui.gw_trend_combo.currentIndex()])
+        
         # SOIL
         self.module.set_parameter("suit_soil_include", int(self.ui.suit_soil_check.isChecked()))
         self.module.set_parameter("suit_soil_data", self.soilmaps[1][self.ui.suit_soil_data.currentIndex()])
         self.module.set_parameter("suit_soil_weight", int(self.ui.suit_soil_weight.value()))
+        self.module.set_parameter("soil_res_sand", float(self.ui.soil_res_sand.value()))
+        self.module.set_parameter("soil_res_sandclay", float(self.ui.soil_res_sandclay.value()))
+        self.module.set_parameter("soil_res_medclay", float(self.ui.soil_res_medclay.value()))
+        self.module.set_parameter("soil_res_heavyclay", float(self.ui.soil_res_heavyclay.value()))
+        self.module.set_parameter("soil_com_sand", float(self.ui.soil_com_sand.value()))
+        self.module.set_parameter("soil_com_sandclay", float(self.ui.soil_com_sandclay.value()))
+        self.module.set_parameter("soil_com_medclay", float(self.ui.soil_com_medclay.value()))
+        self.module.set_parameter("soil_com_heavyclay", float(self.ui.soil_com_heavyclay.value()))
+        self.module.set_parameter("soil_ind_sand", float(self.ui.soil_ind_sand.value()))
+        self.module.set_parameter("soil_ind_sandclay", float(self.ui.soil_ind_sandclay.value()))
+        self.module.set_parameter("soil_ind_medclay", float(self.ui.soil_ind_medclay.value()))
+        self.module.set_parameter("soil_ind_heavyclay", float(self.ui.soil_ind_heavyclay.value()))
+        self.module.set_parameter("soil_orc_sand", float(self.ui.soil_orc_sand.value()))
+        self.module.set_parameter("soil_orc_sandclay", float(self.ui.soil_orc_sandclay.value()))
+        self.module.set_parameter("soil_orc_medclay", float(self.ui.soil_orc_medclay.value()))
+        self.module.set_parameter("soil_orc_heavyclay", float(self.ui.soil_orc_heavyclay.value()))
 
         # CUSTOM
         self.module.set_parameter("suit_custom_include", int(self.ui.suit_custom_check.isChecked()))
         self.module.set_parameter("suit_custom_data", self.ui.suit_custom_data.currentText())
         self.module.set_parameter("suit_custom_weight", int(self.ui.suit_custom_weight.value()))
-
+        self.module.set_parameter("custom_res_min", float(self.ui.custom_res_min.text()))
+        self.module.set_parameter("custom_res_max", float(self.ui.custom_res_max.text()))
+        self.module.set_parameter("custom_com_min", float(self.ui.custom_com_min.text()))
+        self.module.set_parameter("custom_com_max", float(self.ui.custom_com_max.text()))
+        self.module.set_parameter("custom_ind_min", float(self.ui.custom_ind_min.text()))
+        self.module.set_parameter("custom_ind_max", float(self.ui.custom_ind_max.text()))
+        self.module.set_parameter("custom_orc_min", float(self.ui.custom_orc_min.text()))
+        self.module.set_parameter("custom_orc_max", float(self.ui.custom_orc_max.text()))
+        self.module.set_parameter("custom_midpoint", float(self.ui.custom_midpoint_slider.value()))
+        self.module.set_parameter("custom_trend",
+                                  ubglobals.VALUE_SCALE_METHODS[self.ui.custom_trend_combo.currentIndex()])
 
         # TAB 2 - 2.3 Zoning
         self.module.set_parameter("zoning_export", int(self.ui.zoning_export.isChecked()))
