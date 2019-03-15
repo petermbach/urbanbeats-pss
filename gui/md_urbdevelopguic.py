@@ -149,6 +149,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.elevmaps = self.get_dataref_array("spatial", "Elevation")
         self.ui.suit_slope_data.clear()
         [self.ui.suit_slope_data.addItem(str(self.elevmaps[0][i])) for i in range(len(self.elevmaps[0]))]
+        self.ui.suit_
 
         # DEPTH TO GROUNDWATER
         # SOIL INFILTRATION RATES

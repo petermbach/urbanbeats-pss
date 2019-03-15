@@ -321,7 +321,7 @@ class UrbanDevelopment(UBModule):
 
         # Suitability Criteria
         self.create_parameter("suit_elevation_data", STRING, "dataset to use for slope")
-        self.suit_slope_data = ""
+        self.suit_elevation_data = ""
 
         self.create_parameter("suit_slope_include", BOOL, "include slope assessment in suitability?")
         self.create_parameter("suit_slope_weight", DOUBLE, "weight assigned to slope in suitability assessment")
@@ -579,7 +579,7 @@ class UrbanDevelopment(UBModule):
         self.zoning_custom_orc = 0
 
         # --- TAB 4 - NEIGHBOURHOOD INTERACTION
-        
+
         # ADVANCED PARAMETERS
         self.global_offsets = None
 

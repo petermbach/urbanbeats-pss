@@ -4056,6 +4056,10 @@ p, li { white-space: pre-wrap; }
              </layout>
             </widget>
             <widget class="QWidget" name="neighbourhood">
+             <attribute name="icon">
+              <iconset resource="../graphics/ubeats.qrc">
+               <normaloff>:/icons/Social-network-icon.png</normaloff>:/icons/Social-network-icon.png</iconset>
+             </attribute>
              <attribute name="title">
               <string>Neighbourhood</string>
              </attribute>
@@ -4574,7 +4578,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="3" column="0">
-                        <widget class="QCheckBox" name="suit_gw_check">
+                        <widget class="QCheckBox" name="suit_aspect_check">
                          <property name="text">
                           <string>Aspect [degrees]</string>
                          </property>
@@ -4597,7 +4601,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="5" column="1">
-                        <widget class="QComboBox" name="suit_custom1_data">
+                        <widget class="QComboBox" name="suit_gw_data">
                          <item>
                           <property name="text">
                            <string>(select map)</string>
@@ -4625,7 +4629,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="5" column="2">
-                        <widget class="QSpinBox" name="suit_custom1_weight">
+                        <widget class="QSpinBox" name="suit_gw_weight">
                          <property name="maximumSize">
                           <size>
                            <width>50</width>
@@ -4672,7 +4676,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="3" column="2">
-                        <widget class="QSpinBox" name="suit_gw_weight">
+                        <widget class="QSpinBox" name="suit_aspect_weight">
                          <property name="maximumSize">
                           <size>
                            <width>50</width>
@@ -4691,7 +4695,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="5" column="0">
-                        <widget class="QCheckBox" name="suit_custom1_check">
+                        <widget class="QCheckBox" name="suit_gw_check">
                          <property name="text">
                           <string>Depth to Groundwater [m]</string>
                          </property>
@@ -4712,14 +4716,14 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="6" column="0">
-                        <widget class="QCheckBox" name="suit_custom2_check">
+                        <widget class="QCheckBox" name="suit_custom_check">
                          <property name="text">
                           <string>Custom Criterion [ ]</string>
                          </property>
                         </widget>
                        </item>
                        <item row="6" column="1">
-                        <widget class="QComboBox" name="suit_custom2_data">
+                        <widget class="QComboBox" name="suit_custom_data">
                          <item>
                           <property name="text">
                            <string>(select map)</string>
@@ -4728,7 +4732,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="6" column="2">
-                        <widget class="QSpinBox" name="suit_custom2_weight">
+                        <widget class="QSpinBox" name="suit_custom_weight">
                          <property name="maximumSize">
                           <size>
                            <width>50</width>
@@ -4747,7 +4751,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="3" column="1">
-                        <widget class="QComboBox" name="suit_gw_data">
+                        <widget class="QComboBox" name="suit_aspect_data">
                          <item>
                           <property name="text">
                            <string>(select map)</string>
@@ -4761,7 +4765,7 @@ p, li { white-space: pre-wrap; }
                     <item>
                      <widget class="QLabel" name="suit_thresholds_title">
                       <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Suitability Thresholds for Active Land Uses&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Define Suitability Value Scaling for Active Land Uses&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
@@ -7443,7 +7447,7 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>490</width>
+                   <width>541</width>
                    <height>1008</height>
                   </rect>
                  </property>
