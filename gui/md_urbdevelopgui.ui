@@ -1747,7 +1747,7 @@ p, li { white-space: pre-wrap; }
              <enum>QTabWidget::West</enum>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="accessibility">
              <attribute name="icon">
@@ -4780,7 +4780,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item>
-                        <widget class="QComboBox" name="suit_threshold_luccombo">
+                        <widget class="QComboBox" name="suit_criteria_combo">
                          <item>
                           <property name="text">
                            <string>Slope [%]</string>
@@ -4820,7 +4820,7 @@ p, li { white-space: pre-wrap; }
                        </size>
                       </property>
                       <property name="currentIndex">
-                       <number>4</number>
+                       <number>0</number>
                       </property>
                       <widget class="QWidget" name="page_4">
                        <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -5328,7 +5328,7 @@ p, li { white-space: pre-wrap; }
                                </widget>
                               </item>
                               <item row="4" column="3">
-                               <widget class="QSpinBox" name="aspect_east_orc">
+                               <widget class="QSpinBox" name="aspect_orc_east">
                                 <property name="minimumSize">
                                  <size>
                                   <width>60</width>
@@ -5353,7 +5353,7 @@ p, li { white-space: pre-wrap; }
                                </widget>
                               </item>
                               <item row="3" column="3">
-                               <widget class="QSpinBox" name="aspect_east_ind">
+                               <widget class="QSpinBox" name="aspect_ind_east">
                                 <property name="minimumSize">
                                  <size>
                                   <width>60</width>
@@ -6419,7 +6419,7 @@ p, li { white-space: pre-wrap; }
                             <bool>true</bool>
                            </property>
                           </widget>
-                          <widget class="QWidget" name="gw_widgets" native="true">
+                          <widget class="QWidget" name="gw_widget" native="true">
                            <property name="geometry">
                             <rect>
                              <x>10</x>
@@ -8174,7 +8174,7 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>suit_threshold_luccombo</sender>
+   <sender>suit_criteria_combo</sender>
    <signal>currentIndexChanged(int)</signal>
    <receiver>suit_threshold_stack</receiver>
    <slot>setCurrentIndex(int)</slot>

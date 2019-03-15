@@ -149,14 +149,22 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.elevmaps = self.get_dataref_array("spatial", "Elevation")
         self.ui.suit_slope_data.clear()
         [self.ui.suit_slope_data.addItem(str(self.elevmaps[0][i])) for i in range(len(self.elevmaps[0]))]
-        self.ui.suit_
+        self.ui.suit_aspect_data.clear()
+        [self.ui.suit_aspect_data.addItem(str(self.elevmaps[0][i])) for i in range(len(self.elevmaps[0]))]
 
-        # DEPTH TO GROUNDWATER
-        # SOIL INFILTRATION RATES
-        # CUSTOM CRITERIA 1 - Uses ALL maps [TO DO]
-        # CUSTOM CRITERIA 2 - Uses ALL maps [TO DO]
+        self.soilmaps = self.get_dataref_array("spatial", "Soil")
+        self.ui.suit_soil_data.clear()
+        [self.ui.suit_soil_data.addItem(str(self.soilmaps[0][i])) for i in range(len(self.soilmaps[0]))]
 
-        # TAB 2 ZONING - Water bodies, residential zoning maps
+        self.gwmaps = self.get_dataref_array("spatial", "Overlays", "Groundwater")
+        self.ui.suit_gw_data.clear()
+        [self.ui.suit_gw_data.addItem(str(self.gwmaps[0][i])) for i in range(len(self.gwmaps[0]))]
+
+        self.overlaymaps = self.get_dataref_array("spatial", "Overlays")  # Obtain the data ref array
+        self.ui.suit_custom_data.clear()
+        [self.ui.suit_custom_data.addItem(str(self.overlaymaps[0][i])) for i in range(len(self.overlaymaps[0]))]
+
+        # TAB 3 ZONING - Water bodies, residential zoning maps
         # GENERAL ZONING RULES FOR ACTIVE LAND USES
         self.ui.zoning_rules_rescombo.clear()  # Clear the combo box first before setting it up
         [self.ui.zoning_rules_rescombo.addItem(str(self.lumaps[0][i])) for i in range(len(self.lumaps[0]))]
@@ -171,7 +179,6 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.zoning_constraints_water_combo.clear()
         [self.ui.zoning_constraints_water_combo.addItem(str(self.lakemaps[0][i])) for i in range(len(self.lakemaps[0]))]
 
-        self.overlaymaps = self.get_dataref_array("spatial", "Overlays")  # Obtain the data ref array
         self.ui.zoning_constraints_heritage_combo.clear()
         [self.ui.zoning_constraints_heritage_combo.addItem(str(self.overlaymaps[0][i]))
          for i in range(len(self.overlaymaps[0]))]
@@ -192,7 +199,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         [self.ui.zoning_constraints_custom_combo.addItem(str(self.overlaymaps[0][i]))
          for i in range(len(self.overlaymaps[0]))]
 
-        # TAB 3 - COMING SOON
+        # TAB 4 - NEIGHBOURHOOD INTERACTION (COMING SOON)
         # ---
 
         self.gui_state = "initial"
@@ -236,10 +243,23 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         # SUITABILITY
         self.ui.suit_general_summary.clicked.connect(self.display_suitability_summary)
         self.ui.suit_slope_check.clicked.connect(self.enable_disable_suitability_widgets)
+        self.ui.suit_aspect_check.clicked.connect(self.enable_disable_suitability_widgets)
+        self.ui.suit_slope_data.currentIndexChanged.connect(self.sync_aspect_to_slope_combobox)
+        self.ui.suit_aspect_data.currentIndexChanged.connect(self.sync_slope_to_aspect_combobox)
         self.ui.suit_gw_check.clicked.connect(self.enable_disable_suitability_widgets)
         self.ui.suit_soil_check.clicked.connect(self.enable_disable_suitability_widgets)
-        self.ui.suit_custom1_check.clicked.connect(self.enable_disable_suitability_widgets)
-        self.ui.suit_custom2_check.clicked.connect(self.enable_disable_suitability_widgets)
+        self.ui.suit_custom_check.clicked.connect(self.enable_disable_suitability_widgets)
+        self.ui.slope_trend_combo.currentIndexChanged.connect(self.enable_disable_suitability_midpoint_widgets)
+        self.ui.gw_trend_combo.currentIndexChanged.connect(self.enable_disable_suitability_midpoint_widgets)
+        self.ui.custom_trend_combo.currentIndexChanged.connect(self.enable_disable_suitability_midpoint_widgets)
+        self.ui.slope_res_slider.valueChanged.connect(self.update_suitability_sliders_slope)
+        self.ui.slope_com_slider.valueChanged.connect(self.update_suitability_sliders_slope)
+        self.ui.slope_ind_slider.valueChanged.connect(self.update_suitability_sliders_slope)
+        self.ui.slope_orc_slider.valueChanged.connect(self.update_suitability_sliders_slope)
+        self.ui.gw_res_slider.valueChanged.connect(self.update_suitability_sliders_gw)
+        self.ui.gw_com_slider.valueChanged.connect(self.update_suitability_sliders_gw)
+        self.ui.gw_ind_slider.valueChanged.connect(self.update_suitability_sliders_gw)
+        self.ui.gw_orc_slider.valueChanged.connect(self.update_suitability_sliders_gw)
 
         # ZONING
         self.ui.zoning_rules_resauto.clicked.connect(self.enable_disable_zoning_widgets)
@@ -349,6 +369,16 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
             self.ui.zoning_constrained_box.takeItem(self.ui.zoning_constrained_box.currentRow())
             self.ui.zoning_passive_box.addItem(item)
 
+    def sync_aspect_to_slope_combobox(self):
+        """Synchronizes the current index of the aspect combo box to that of the slope. They both rely on the same
+        data set."""
+        self.ui.suit_aspect_data.setCurrentIndex(self.ui.suit_slope_data.currentIndex())
+
+    def sync_slope_to_aspect_combobox(self):
+        """Synchronizes the current index of the slope combo box to that of the aspect. They both rely on the same
+        data set."""
+        self.ui.suit_slope_data.setCurrentIndex(self.ui.suit_aspect_data.currentIndex())
+
     def enable_disable_zoning_widgets(self):
         """Scans the zoning list and enables and disables the criteria list accordingly."""
         self.ui.zoning_rules_rescombo.setEnabled(not self.ui.zoning_rules_resauto.isChecked())  # RESIDENTIAL
@@ -431,24 +461,61 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         """Scans the suitability list and enables and disables the criteria list accordingly."""
         self.ui.suit_slope_data.setEnabled(self.ui.suit_slope_check.isChecked())        # Slope
         self.ui.suit_slope_weight.setEnabled(self.ui.suit_slope_check.isChecked())
-        self.ui.suit_slope_attract.setEnabled(self.ui.suit_slope_check.isChecked())
+        self.ui.slope_widget.setEnabled(self.ui.suit_slope_check.isChecked())
+
+        self.ui.suit_aspect_data.setEnabled(self.ui.suit_aspect_check.isChecked())      # Aspect
+        self.ui.suit_aspect_weight.setEnabled(self.ui.suit_aspect_check.isChecked())
+        self.ui.aspect_widget.setEnabled(self.ui.suit_aspect_check.isChecked())
 
         self.ui.suit_gw_data.setEnabled(self.ui.suit_gw_check.isChecked())      # Groundwater
         self.ui.suit_gw_weight.setEnabled(self.ui.suit_gw_check.isChecked())
-        self.ui.suit_gw_attract.setEnabled(self.ui.suit_gw_check.isChecked())
+        self.ui.gw_widget.setEnabled(self.ui.suit_gw_check.isChecked())
 
         self.ui.suit_soil_data.setEnabled(self.ui.suit_soil_check.isChecked())      # Soil
         self.ui.suit_soil_weight.setEnabled(self.ui.suit_soil_check.isChecked())
-        self.ui.suit_soil_attract.setEnabled(self.ui.suit_soil_check.isChecked())
+        self.ui.soil_widget.setEnabled(self.ui.suit_soil_check.isChecked())
 
-        self.ui.suit_custom1_data.setEnabled(self.ui.suit_custom1_check.isChecked())    # Custom1
-        self.ui.suit_custom1_weight.setEnabled(self.ui.suit_custom1_check.isChecked())
-        self.ui.suit_custom1_attract.setEnabled(self.ui.suit_custom1_check.isChecked())
-
-        self.ui.suit_custom2_data.setEnabled(self.ui.suit_custom2_check.isChecked())    # Custom2
-        self.ui.suit_custom2_weight.setEnabled(self.ui.suit_custom2_check.isChecked())
-        self.ui.suit_custom2_attract.setEnabled(self.ui.suit_custom2_check.isChecked())
+        self.ui.suit_custom_data.setEnabled(self.ui.suit_custom_check.isChecked())    # Custom
+        self.ui.suit_custom_weight.setEnabled(self.ui.suit_custom_check.isChecked())
+        self.ui.custom_widget.setEnabled(self.ui.suit_custom_check.isChecked())
         return True
+
+    def update_suitability_sliders_slope(self):
+        """Updates the value of the slider boxes for the slope sliders."""
+        self.ui.slope_res_box.setText(str(round(float(self.ui.slope_res_slider.value() / 10), 1)))
+        self.ui.slope_com_box.setText(str(round(float(self.ui.slope_com_slider.value() / 10), 1)))
+        self.ui.slope_ind_box.setText(str(round(float(self.ui.slope_ind_slider.value() / 10), 1)))
+        self.ui.slope_orc_box.setText(str(round(float(self.ui.slope_orc_slider.value() / 10), 1)))
+        self.ui.slope_midpoint_box.setText(str(round(float(self.ui.slope_midpoint_slider.value() / 10), 1)))
+
+    def update_suitability_sliders_gw(self):
+        """Updates the value of the slider boxes for the groundwater sliders."""
+        self.ui.gw.setText(str(round(float(self.ui.gw_res_slider.value() / 10), 1)))
+        self.ui.gw_com_box.setText(str(round(float(self.ui.gw_com_slider.value() / 10), 1)))
+        self.ui.gw_ind_box.setText(str(round(float(self.ui.gw_ind_slider.value() / 10), 1)))
+        self.ui.gw_orc_box.setText(str(round(float(self.ui.gw_orc_slider.value() / 10), 1)))
+        self.ui.gw_midpoint_box.setText(str(round(float(self.ui.gw_midpoint_slider.value() / 10), 1)))
+
+    def enable_disable_suitability_midpoint_widgets(self):
+        """Enables and disables the 'mid-point' widgets in the slope, groundwater and custom criteria."""
+        if self.ui.slope_trend_combo.currentIndex() == 6:   # SLOPE
+            self.ui.slope_midpoint_box.setEnabled(0)
+            self.ui.slope_midpoint_slider.setEnabled(0)
+        else:
+            self.ui.slope_midpoint_box.setEnabled(1)
+            self.ui.slope_midpoint_slider.setEnabled(1)
+        if self.ui.gw_trend_combo.currentIndex() == 6:      # GROUNDWATER
+            self.ui.gw_midpoint_box.setEnabled(0)
+            self.ui.gw_midpoint_slider.setEnabled(0)
+        else:
+            self.ui.gw_midpoint_box.setEnabled(1)
+            self.ui.gw_midpoint_slider.setEnabled(1)
+        if self.ui.custom_trend_combo.currentIndex() == 6:  # CUSTOM
+            self.ui.custom_midpoint_box.setEnabled(0)
+            self.ui.custom_midpoint_slider.setEnabled(0)
+        else:
+            self.ui.custom_midpoint_box.setEnabled(1)
+            self.ui.custom_midpoint_slider.setEnabled(1)
 
     def enable_disable_accessibility_widgets(self):
         """Scans the entire accessibility list and enables and disables all respective widgets accordingly."""
@@ -801,59 +868,118 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
 
         # TAB 2.2 - Suitability
         self.ui.suit_export_maps.setChecked(int(self.module.get_parameter("suit_export")))
+        self.ui.suit_criteria_combo.setCurrentIndex(0)
 
-        # Slope
+        # CRITERION - SLOPE
         self.ui.suit_slope_check.setChecked(int(self.module.get_parameter("suit_slope_include")))
         self.ui.suit_slope_weight.setValue(int(self.module.get_parameter("suit_slope_weight")))
-        self.ui.suit_slope_attract.setChecked(int(self.module.get_parameter("suit_slope_attract")))
-        try:    # SLOPE COMBO
+        try:    # SLOPE DATA COMBO
             self.ui.suit_slope_data.setCurrentIndex(self.elevmaps[1].index(
-                self.module.get_parameter("suit_slope_data")))
+                self.module.get_parameter("suit_elevation_data")))
         except ValueError:
             self.ui.suit_slope_data.setCurrentIndex(0)
+        self.ui.slope_res_slider.setValue(int(float(self.module.get_parameter("slope_res"))*10.0))
+        self.ui.slope_com_slider.setValue(int(float(self.module.get_parameter("slope_com"))*10.0))
+        self.ui.slope_ind_slider.setValue(int(float(self.module.get_parameter("slope_ind"))*10.0))
+        self.ui.slope_orc_slider.setValue(int(float(self.module.get_parameter("slope_orc"))*10.0))
+        self.ui.slope_trend_combo.setCurrentIndex(int(ubglobals.VALUE_SCALE_METHODS.index(
+            self.module.get_parameter("slope_trend"))))
+        self.ui.slope_midpoint_slider.setValue(int(float(self.module.get_parameter("slope_midpoint"))*10.0))
 
-        # Groundwater Depth
-        self.ui.suit_gw_check.setChecked(int(self.module.get_parameter("suit_gw_include")))
-        self.ui.suit_gw_weight.setValue(int(self.module.get_parameter("suit_gw_weight")))
-        self.ui.suit_gw_attract.setChecked(int(self.module.get_parameter("suit_gw_attract")))
-        # try:  # gw COMBO
-        #     self.ui.suit_gw_data.setCurrentIndex(self.[1].index(
-        #         self.module.get_parameter("suit_gw_data")))
-        # except ValueError:
-        #     self.ui.suit_gw_data.setCurrentIndex(0)
+        # CRITERION - ASPECT
+        self.ui.suit_aspect_check.setChecked(int(self.module.get_parameter("suit_aspect_include")))
+        self.ui.suit_aspect_weight.setValue(int(self.module.get_parameter("suit_aspect_weight")))
+        try:  # ASPECT DATA COMBO
+            self.ui.suit_aspect_data.setCurrentIndex(self.elevmaps[1].index(
+                self.module.get_parameter("suit_elevation_data")))
+        except ValueError:
+            self.ui.suit_aspect_data.setCurrentIndex(0)
+        self.ui.aspect_res_north.setValue(int(self.module.get_parameter("aspect_res_north")))
+        self.ui.aspect_res_east.setValue(int(self.module.get_parameter("aspect_res_east")))
+        self.ui.aspect_res_south.setValue(int(self.module.get_parameter("aspect_res_south")))
+        self.ui.aspect_res_west.setValue(int(self.module.get_parameter("aspect_res_west")))
 
-        # Soil
+        self.ui.aspect_com_north.setValue(int(self.module.get_parameter("aspect_com_north")))
+        self.ui.aspect_com_east.setValue(int(self.module.get_parameter("aspect_com_east")))
+        self.ui.aspect_com_south.setValue(int(self.module.get_parameter("aspect_com_south")))
+        self.ui.aspect_com_west.setValue(int(self.module.get_parameter("aspect_com_west")))
+
+        self.ui.aspect_ind_north.setValue(int(self.module.get_parameter("aspect_ind_north")))
+        self.ui.aspect_ind_east.setValue(int(self.module.get_parameter("aspect_ind_east")))
+        self.ui.aspect_ind_south.setValue(int(self.module.get_parameter("aspect_ind_south")))
+        self.ui.aspect_ind_west.setValue(int(self.module.get_parameter("aspect_ind_west")))
+
+        self.ui.aspect_orc_north.setValue(int(self.module.get_parameter("aspect_orc_north")))
+        self.ui.aspect_orc_east.setValue(int(self.module.get_parameter("aspect_orc_east")))
+        self.ui.aspect_orc_south.setValue(int(self.module.get_parameter("aspect_orc_south")))
+        self.ui.aspect_orc_west.setValue(int(self.module.get_parameter("aspect_orc_west")))
+
+        # CRITERION - SOIL
         self.ui.suit_soil_check.setChecked(int(self.module.get_parameter("suit_soil_include")))
         self.ui.suit_soil_weight.setValue(int(self.module.get_parameter("suit_soil_weight")))
-        self.ui.suit_soil_attract.setChecked(int(self.module.get_parameter("suit_soil_attract")))
-        # try:  # soil COMBO
-        #     self.ui.suit_soil_data.setCurrentIndex(self.soilmaps[1].index(
-        #         self.module.get_parameter("suit_soil_data")))
-        # except ValueError:
-        #     self.ui.suit_soil_data.setCurrentIndex(0)
+        try:  # SOIL DATA COMBO
+            self.ui.suit_soil_data.setCurrentIndex(self.soilmaps[1].index(
+                self.module.get_parameter("suit_soil_data")))
+        except ValueError:
+            self.ui.suit_soil_data.setCurrentIndex(0)
+        self.ui.soil_res_sand.setValue(int(self.module.get_parameter("soil_res_sand")))
+        self.ui.soil_res_sandclay.setValue(int(self.module.get_parameter("soil_res_sandclay")))
+        self.ui.soil_res_medclay.setValue(int(self.module.get_parameter("soil_res_medclay")))
+        self.ui.soil_res_heavyclay.setValue(int(self.module.get_parameter("soil_res_heavyclay")))
 
-        # Custom 1
-        self.ui.suit_custom1_check.setChecked(int(self.module.get_parameter("suit_custom1_include")))
-        self.ui.suit_custom1_weight.setValue(int(self.module.get_parameter("suit_custom1_weight")))
-        self.ui.suit_custom1_attract.setChecked(int(self.module.get_parameter("suit_custom1_attract")))
-        # try:  # custom1 COMBO
-        #     self.ui.suit_custom1_data.setCurrentIndex(self.custommaps[1].index(
-        #         self.module.get_parameter("suit_custom1_data")))
-        # except ValueError:
-        #     self.ui.suit_custom1_data.setCurrentIndex(0)
+        self.ui.soil_com_sand.setValue(int(self.module.get_parameter("soil_com_sand")))
+        self.ui.soil_com_sandclay.setValue(int(self.module.get_parameter("soil_com_sandclay")))
+        self.ui.soil_com_medclay.setValue(int(self.module.get_parameter("soil_com_medclay")))
+        self.ui.soil_com_heavyclay.setValue(int(self.module.get_parameter("soil_com_heavyclay")))
 
-        # Custom 2
-        self.ui.suit_custom2_check.setChecked(int(self.module.get_parameter("suit_custom2_include")))
-        self.ui.suit_custom2_weight.setValue(int(self.module.get_parameter("suit_custom2_weight")))
-        self.ui.suit_custom2_attract.setChecked(int(self.module.get_parameter("suit_custom2_attract")))
-        # try:  # custom2 COMBO
-        #     self.ui.suit_custom2_data.setCurrentIndex(self.custommaps[1].index(
-        #         self.module.get_parameter("suit_custom2_data")))
-        # except ValueError:
-        #     self.ui.suit_custom2_data.setCurrentIndex(0)
+        self.ui.soil_ind_sand.setValue(int(self.module.get_parameter("soil_ind_sand")))
+        self.ui.soil_ind_sandclay.setValue(int(self.module.get_parameter("soil_ind_sandclay")))
+        self.ui.soil_ind_medclay.setValue(int(self.module.get_parameter("soil_ind_medclay")))
+        self.ui.soil_ind_heavyclay.setValue(int(self.module.get_parameter("soil_ind_heavyclay")))
+
+        self.ui.soil_orc_sand.setValue(int(self.module.get_parameter("soil_orc_sand")))
+        self.ui.soil_orc_sandclay.setValue(int(self.module.get_parameter("soil_orc_sandclay")))
+        self.ui.soil_orc_medclay.setValue(int(self.module.get_parameter("soil_orc_medclay")))
+        self.ui.soil_orc_heavyclay.setValue(int(self.module.get_parameter("soil_orc_heavyclay")))
+
+        # CRITERION - GROUNDWATER DEPTH [m]
+        self.ui.suit_gw_check.setChecked(int(self.module.get_parameter("suit_gw_include")))
+        self.ui.suit_gw_weight.setValue(int(self.module.get_parameter("suit_gw_weight")))
+        try:  # GROUNDWATER DATA COMBO
+            self.ui.suit_gw_data.setCurrentIndex(self.gwmaps[1].index(
+                self.module.get_parameter("suit_gw_data")))
+        except ValueError:
+            self.ui.suit_gw_data.setCurrentIndex(0)
+        self.ui.gw_res_slider.setValue(int(self.module.get_parameter("gw_res")))
+        self.ui.gw_com_slider.setValue(int(self.module.get_parameter("gw_com")))
+        self.ui.gw_ind_slider.setValue(int(self.module.get_parameter("gw_ind")))
+        self.ui.gw_orc_slider.setValue(int(self.module.get_parameter("gw_orc")))
+        self.ui.gw_trend_combo.setCurrentIndex(int(ubglobals.VALUE_SCALE_METHODS.index(
+            self.module.get_parameter("gw_trend"))))
+        self.ui.gw_midpoint_slider.setValue(int(self.module.get_parameter("gw_midpoint")))
+
+        # CRITERION - CUSTOM
+        self.ui.suit_custom_check.setChecked(int(self.module.get_parameter("suit_custom1_include")))
+        self.ui.suit_custom_weight.setValue(int(self.module.get_parameter("suit_custom1_weight")))
+        try:  # CUSTOM COMBO
+            self.ui.suit_custom_data.setCurrentIndex(self.overlaymaps[1].index(
+                self.module.get_parameter("suit_custom_data")))
+        except ValueError:
+            self.ui.suit_custom_data.setCurrentIndex(0)
+        self.ui.custom_res_min.setText(str(self.module.get_parameter("custom_res_min")))
+        self.ui.custom_res_max.setText(str(self.module.get_parameter("custom_res_max")))
+        self.ui.custom_com_min.setText(str(self.module.get_parameter("custom_com_min")))
+        self.ui.custom_com_max.setText(str(self.module.get_parameter("custom_com_max")))
+        self.ui.custom_ind_min.setText(str(self.module.get_parameter("custom_ind_min")))
+        self.ui.custom_ind_max.setText(str(self.module.get_parameter("custom_ind_max")))
+        self.ui.custom_orc_min.setText(str(self.module.get_parameter("custom_orc_min")))
+        self.ui.custom_orc_max.setText(str(self.module.get_parameter("custom_orc_max")))
+        self.ui.custom_trend_combo.setCurrentIndex(int(ubglobals.VALUE_SCALE_METHODS.index(
+            self.module.get_parameter("custom_trend"))))
+        self.ui.custom_midpoint_slider.setValue(int(self.module.get_parameter("custom_midpoint")))
 
         self.enable_disable_suitability_widgets()
-        self.ui.suit_threshold_stack.setCurrentIndex(int(self.ui.suit_threshold_luccombo.currentIndex()))
+        self.ui.suit_threshold_stack.setCurrentIndex(int(self.ui.suit_criteria_combo.currentIndex()))
 
         # TAB 2.3 - Zoning
         self.ui.zoning_export.setChecked(int(self.module.get_parameter("zoning_export")))
@@ -959,7 +1085,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
 
         self.enable_disable_zoning_widgets()
 
-        # TAB 3 - Neighbourhood Effect
+        # TAB 4 - Neighbourhood Effect
 
         # END OF FILING IN GUI VALUES
         return True
@@ -1122,30 +1248,31 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         # TAB 2 - 2.2 Suitability
         self.module.set_parameter("suit_export", int(self.ui.suit_export_maps.isChecked()))
 
+        self.module.set_parameter("suit_elevation_data", self.elevmaps[1][self.ui.suit_slope_data.currentIndex()])
+
+        # SLOPE
         self.module.set_parameter("suit_slope_include", int(self.ui.suit_slope_check.isChecked()))
-        self.module.set_parameter("suit_slope_data", self.elevmaps[1][self.ui.suit_slope_data.currentIndex()])
         self.module.set_parameter("suit_slope_weight", int(self.ui.suit_slope_weight.value()))
-        self.module.set_parameter("suit_slope_attract", int(self.ui.suit_slope_attract.isChecked()))
+        
+        # ASPECT
+        self.module.set_parameter("suit_aspect_include", int(self.ui.suit_aspect_check.isChecked()))
+        self.module.set_parameter("suit_aspect_weight", int(self.ui.suit_aspect_weight.value()))
 
+        # GROUNDWATER
         self.module.set_parameter("suit_gw_include", int(self.ui.suit_gw_check.isChecked()))
-        # self.module.set_parameter("suit_gw_data", self.ui.suit_gw_data.currentText())
+        self.module.set_parameter("suit_gw_data", self.gwmaps[1][self.ui.suit_gw_data.currentIndex()])
         self.module.set_parameter("suit_gw_weight", int(self.ui.suit_gw_weight.value()))
-        self.module.set_parameter("suit_gw_attract", int(self.ui.suit_gw_attract.isChecked()))
 
+        # SOIL
         self.module.set_parameter("suit_soil_include", int(self.ui.suit_soil_check.isChecked()))
-        # self.module.set_parameter("suit_soil_data", self.ui.suit_soil_data.currentText())
+        self.module.set_parameter("suit_soil_data", self.soilmaps[1][self.ui.suit_soil_data.currentIndex()])
         self.module.set_parameter("suit_soil_weight", int(self.ui.suit_soil_weight.value()))
-        self.module.set_parameter("suit_soil_attract", int(self.ui.suit_soil_attract.isChecked()))
 
-        self.module.set_parameter("suit_custom1_include", int(self.ui.suit_custom1_check.isChecked()))
-        # self.module.set_parameter("suit_custom1_data", self.ui.suit_custom1_data.currentText())
-        self.module.set_parameter("suit_custom1_weight", int(self.ui.suit_custom1_weight.value()))
-        self.module.set_parameter("suit_custom1_attract", int(self.ui.suit_custom1_attract.isChecked()))
+        # CUSTOM
+        self.module.set_parameter("suit_custom_include", int(self.ui.suit_custom_check.isChecked()))
+        self.module.set_parameter("suit_custom_data", self.ui.suit_custom_data.currentText())
+        self.module.set_parameter("suit_custom_weight", int(self.ui.suit_custom_weight.value()))
 
-        self.module.set_parameter("suit_custom2_include", int(self.ui.suit_custom2_check.isChecked()))
-        # self.module.set_parameter("suit_custom2_data", self.ui.suit_custom2_data.currentText())
-        self.module.set_parameter("suit_custom2_weight", int(self.ui.suit_custom2_weight.value()))
-        self.module.set_parameter("suit_custom2_attract", int(self.ui.suit_custom2_attract.isChecked()))
 
         # TAB 2 - 2.3 Zoning
         self.module.set_parameter("zoning_export", int(self.ui.zoning_export.isChecked()))

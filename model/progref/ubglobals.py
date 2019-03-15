@@ -146,6 +146,8 @@ DIURNAL_LABELS = ["Kitchen", "Shower", "Toilet", "Laundry", "Dishwasher", "Garde
                   "Residential Indoor", "Commercial and Offices", "Industries", "Non-residential Outdoor",
                   "Public Irrigation"]
 
+VALUE_SCALE_METHODS = ["L", "Q", "C", "IQ", "IC", "S", "M"]
+
 # --- ASSET IDENTIFIERS ---
 ASSET_IDENTIFIERS = {"Block": "The most basic building block of the city in UrbanBEATS, the square cell containing all"
                               "relevant geodata",
