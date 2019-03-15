@@ -822,7 +822,8 @@ class UrbanDevelopment(UBModule):
                                  float(self.access_waterways_weight * self.access_waterways_include),
                                  float(self.access_lakes_weight * self.access_lakes_include),
                                  float(self.access_pos_weight * self.access_pos_include),
-                                 float(self.access_poi_weight * self.access_poi_include)]
+                                 float(self.access_poi_weight * self.access_poi_include),
+                                 float(self.access_pth_weight * self.access_pth_include)]
 
         accessibility_weights = ubmethods.normalize_weights(accessibility_weights, "SUM")   # 0 to 1 normalize
         accessibility_attributes = ["ACC_ROAD", "ACC_RAIL", "ACC_WWAY", "ACC_LAKE", "ACC_POSS", "ACC_POIS", "ACC_PTHS"]
@@ -854,7 +855,7 @@ class UrbanDevelopment(UBModule):
             cellslist[i].add_attribute("ACCESS_ORC", final_acc_orc)
 
         # - 2.7 - SPATIAL RELATIONSHIPS - SUITABILITY
-        
+
 
 
         # - 2.8 - SPATIAL RELATIONSHIPS - ZONING
@@ -899,7 +900,7 @@ class UrbanDevelopment(UBModule):
             if not self.zoning_rules_indauto:       # INDUSTRIAL LAND
                 if not self.determine_zoning_against_polygons(cellpoly, indpolygons, 0):
                     cellslist[i].change_attribute("ZONE_IND", 0)
-            if not self.zoning_rules_officesautoauto:  # MIXED DEVELOPMENT LAND
+            if not self.zoning_rules_officesauto:  # MIXED DEVELOPMENT LAND
                 if not self.determine_zoning_against_polygons(cellpoly, officespolygons, 0):
                     cellslist[i].change_attribute("ZONE_ORC", 0)
 
@@ -1032,7 +1033,7 @@ class UrbanDevelopment(UBModule):
                 if sum(zstates) == 0:
                     continue
 
-            # CHECK ENVIRONMENTAL SIGNIFICANCE
+            # CHECK ENVIRONMENTAL SIGNIFICANCE - 50% threshold, enough environmental significance to disallow zone
             if len(enviropoly) != 0:
                 restrict = self.determine_zoning_against_polygons(cellpoly, enviropoly, 0.50)
                 if zstates[0] and self.zoning_enviro_res:
@@ -1048,7 +1049,7 @@ class UrbanDevelopment(UBModule):
                 if sum(zstates) == 0:
                     continue
 
-            # CHECK INUNDATION
+            # CHECK INUNDATION - using a 20% threshold. If land is subject to flooding, somewhat, then disallow zone!
             if len(floodpoly) != 0:
                 restrict = self.determine_zoning_against_polygons(cellpoly, floodpoly, 0.20)
                 if zstates[0] and self.zoning_flood_res:
@@ -1064,7 +1065,7 @@ class UrbanDevelopment(UBModule):
                 if sum(zstates) == 0:
                     continue
 
-            # CHECK CUSTOM
+            # CHECK CUSTOM - using a 50% threshold by default
             if len(custompoly) != 0:
                 restrict = self.determine_zoning_against_polygons(cellpoly, custompoly, 0.50)
                 if zstates[0] and self.zoning_custom_res:
@@ -1150,8 +1151,8 @@ class UrbanDevelopment(UBModule):
         # LOAD THE POINT FEATURES
         pointfeatures = ubspatial.import_point_features(fullfilepath, "POINTCOORDS", self.global_offsets)
 
-        self.notify("Number of loaded features to compare: " + str(len(pointfeatures)))
-        print "Length of the featurepoints list: ", str(len(pointfeatures))
+        self.notify("Number of loaded features to compare for "+str(att_name)+": " + str(len(pointfeatures)))
+        print "Length of the featurepoints list for "+str(att_name)+": ", str(len(pointfeatures))
 
         # CALCULATE CLOSEST DISTANCE TO EACH CELL
         for i in range(len(cellslist)):
@@ -1193,8 +1194,8 @@ class UrbanDevelopment(UBModule):
         linearfeatures = ubspatial.import_linear_network(fullfilepath, "POINTS", self.global_offsets,
                                                          Segments=self.cellsize)  # Segmentation
 
-        self.notify("Number of loaded features to compare: "+str(len(linearfeatures)))
-        print "Length of the featurepoints list: ", str(len(linearfeatures))
+        self.notify("Number of loaded features to compare for "+str(att_name)+": "+str(len(linearfeatures)))
+        print "Length of the featurepoints list for "+str(att_name)+": ", str(len(linearfeatures))
 
         for i in range(len(cellslist)):
             cur_cell = cellslist[i]
@@ -1236,8 +1237,8 @@ class UrbanDevelopment(UBModule):
         # LOAD POLYGONAL FEATURES AS RING POINTS COORDINATES
         polypoints = ubspatial.import_polygonal_map(fullfilepath, "RINGPOINTS", None, self.global_offsets)
 
-        self.notify("Number of loaded features to compare: " + str(len(polypoints)))
-        print "Length of the featurepoints list: ", str(len(polypoints))
+        self.notify("Number of loaded features to compare for "+str(att_name)+": " + str(len(polypoints)))
+        print "Length of the featurepoints list for "+str(att_name)+": ", str(len(polypoints))
 
         for i in range(len(cellslist)):
             cur_cell = cellslist[i]

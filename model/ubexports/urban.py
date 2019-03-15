@@ -112,10 +112,21 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     fielddefmatrix.append(ogr.FieldDefn("ACC_POIS_I", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("ACC_POIS_O", ogr.OFTReal))
 
+    fielddefmatrix.append(ogr.FieldDefn("DIST_PTHS", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("ACC_PTHS_R", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("ACC_PTHS_C", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("ACC_PTHS_I", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("ACC_PTHS_O", ogr.OFTReal))
+
     fielddefmatrix.append(ogr.FieldDefn("ACCESS_RES", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("ACCESS_COM", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("ACCESS_IND", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("ACCESS_ORC", ogr.OFTReal))
+
+    fielddefmatrix.append(ogr.FieldDefn("ZONE_RES", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("ZONE_COM", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("ZONE_IND", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("ZONE_ORC", ogr.OFTInteger))
 
     # Create the fields
     for field in fielddefmatrix:
@@ -190,12 +201,21 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("ACC_POIS_I", float(currentAttList.get_attribute("ACC_POIS_IND")))
         feature.SetField("ACC_POIS_O", float(currentAttList.get_attribute("ACC_POIS_ORC")))
 
+        feature.SetField("DIST_PTHS", float(currentAttList.get_attribute("ACC_PTHS_DIST")))
+        feature.SetField("ACC_PTHS_R", float(currentAttList.get_attribute("ACC_PTHS_RES")))
+        feature.SetField("ACC_PTHS_C", float(currentAttList.get_attribute("ACC_PTHS_COM")))
+        feature.SetField("ACC_PTHS_I", float(currentAttList.get_attribute("ACC_PTHS_IND")))
+        feature.SetField("ACC_PTHS_O", float(currentAttList.get_attribute("ACC_PTHS_ORC")))
+
         feature.SetField("ACCESS_RES", float(currentAttList.get_attribute("ACCESS_RES")))
         feature.SetField("ACCESS_COM", float(currentAttList.get_attribute("ACCESS_COM")))
         feature.SetField("ACCESS_IND", float(currentAttList.get_attribute("ACCESS_IND")))
         feature.SetField("ACCESS_ORC", float(currentAttList.get_attribute("ACCESS_ORC")))
 
-
+        feature.SetField("ZONE_RES", int(currentAttList.get_attribute("ZONE_RES")))
+        feature.SetField("ZONE_COM", int(currentAttList.get_attribute("ZONE_COM")))
+        feature.SetField("ZONE_IND", int(currentAttList.get_attribute("ZONE_IND")))
+        feature.SetField("ZONE_ORC", int(currentAttList.get_attribute("ZONE_ORC")))
         layer.CreateFeature(feature)
 
     shapefile.Destroy()
