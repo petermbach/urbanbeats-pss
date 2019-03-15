@@ -866,6 +866,8 @@ class UrbanDevelopment(UBModule):
         # - 2.8.1 - LOAD ALL RELEVANT MAPS IF NECESSARY AND TRANSFER DATA ACROSS - MASK = TRUE
         # If the map is not used or doesn't exist, then the polygon list will be empty [], there are four polygonal
         # lists in total.
+        self.notify("Loading Zoning Maps...")
+        print("Loading Zoning Maps...")
         respolygons, compolygons, indpolygons, officespolygons = [], [], [], []
         if not self.zoning_rules_resauto:   # RESIDENTIAL MAP
             respolygons = self.get_rings_maps_for_zoning(self.zoning_rules_resmap)
@@ -1166,7 +1168,8 @@ class UrbanDevelopment(UBModule):
                 newdist = math.sqrt(dx * dx + dy * dy)
                 if newdist < dist:
                     dist = newdist
-            cur_cell.add_attribute("ACC_" + att_name + "_DIST", dist / 1000.0)  # Distance in [km]
+            dist = dist / 1000.0        # Convert to [km]
+            cur_cell.add_attribute("ACC_" + att_name + "_DIST", dist)  # Distance in [km]
             cur_cell.add_attribute("ACC_" + att_name + "_RES", ubmethods.calculate_accessibility_factor(dist, aj[0]))
             cur_cell.add_attribute("ACC_" + att_name + "_COM", ubmethods.calculate_accessibility_factor(dist, aj[1]))
             cur_cell.add_attribute("ACC_" + att_name + "_IND", ubmethods.calculate_accessibility_factor(dist, aj[2]))
@@ -1208,7 +1211,8 @@ class UrbanDevelopment(UBModule):
                 newdist = math.sqrt(dx * dx + dy * dy)
                 if newdist < dist:
                     dist = newdist
-            cur_cell.add_attribute("ACC_"+att_name+"_DIST", dist / 1000.0)   # Distance in [km]
+            dist = dist / 1000.0  # Convert to [km]
+            cur_cell.add_attribute("ACC_"+att_name+"_DIST", dist)   # Distance in [km]
             cur_cell.add_attribute("ACC_"+att_name+"_RES", ubmethods.calculate_accessibility_factor(dist, aj[0]))
             cur_cell.add_attribute("ACC_"+att_name+"_COM", ubmethods.calculate_accessibility_factor(dist, aj[1]))
             cur_cell.add_attribute("ACC_"+att_name+"_IND", ubmethods.calculate_accessibility_factor(dist, aj[2]))
@@ -1255,7 +1259,8 @@ class UrbanDevelopment(UBModule):
                     newdist = math.sqrt(dx * dx + dy * dy)
                     if newdist < dist:
                         dist = newdist
-            cur_cell.add_attribute("ACC_" + att_name + "_DIST", dist / 1000.0)  # Distance in [km]
+            dist = dist / 1000.0  # Convert to [km]
+            cur_cell.add_attribute("ACC_" + att_name + "_DIST", dist)  # Distance in [km]
             cur_cell.add_attribute("ACC_" + att_name + "_RES", ubmethods.calculate_accessibility_factor(dist, aj[0]))
             cur_cell.add_attribute("ACC_" + att_name + "_COM", ubmethods.calculate_accessibility_factor(dist, aj[1]))
             cur_cell.add_attribute("ACC_" + att_name + "_IND", ubmethods.calculate_accessibility_factor(dist, aj[2]))
