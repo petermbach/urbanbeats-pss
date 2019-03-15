@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>780</width>
+    <width>831</width>
     <height>645</height>
    </rect>
   </property>
@@ -237,7 +237,7 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>537</width>
+               <width>588</width>
                <height>1056</height>
               </rect>
              </property>
@@ -1864,8 +1864,8 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>490</width>
-                   <height>1667</height>
+                   <width>541</width>
+                   <height>1664</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -4076,7 +4076,7 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>521</width>
+                   <width>541</width>
                    <height>435</height>
                   </rect>
                  </property>
@@ -4465,8 +4465,8 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>455</width>
-                   <height>477</height>
+                   <width>541</width>
+                   <height>742</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -4535,12 +4535,34 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
+                     <widget class="QLabel" name="suit_general_lbl_2">
+                      <property name="minimumSize">
+                       <size>
+                        <width>320</width>
+                        <height>0</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777215</width>
+                        <height>16777215</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string>Select the suitability criteria to use in the simulation and assign weights (from 1 to 10) to each criteria based on the level of importance</string>
+                      </property>
+                      <property name="wordWrap">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
                      <widget class="QWidget" name="suit_crit_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_11">
                        <item row="4" column="0">
                         <widget class="QCheckBox" name="suit_soil_check">
                          <property name="text">
-                          <string>Soil infiltration rate [mm/hr]</string>
+                          <string>Soil Type [class]</string>
                          </property>
                         </widget>
                        </item>
@@ -4554,7 +4576,7 @@ p, li { white-space: pre-wrap; }
                        <item row="3" column="0">
                         <widget class="QCheckBox" name="suit_gw_check">
                          <property name="text">
-                          <string>Depth to groundwater [m]</string>
+                          <string>Aspect [degrees]</string>
                          </property>
                         </widget>
                        </item>
@@ -4574,8 +4596,8 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
-                       <item row="3" column="1">
-                        <widget class="QComboBox" name="suit_gw_data">
+                       <item row="5" column="1">
+                        <widget class="QComboBox" name="suit_custom1_data">
                          <item>
                           <property name="text">
                            <string>(select map)</string>
@@ -4599,37 +4621,6 @@ p, li { white-space: pre-wrap; }
                          </property>
                          <property name="value">
                           <number>5</number>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="5" column="1">
-                        <widget class="QComboBox" name="suit_custom1_data">
-                         <item>
-                          <property name="text">
-                           <string>(select map)</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item row="4" column="1">
-                        <widget class="QComboBox" name="suit_soil_data">
-                         <item>
-                          <property name="text">
-                           <string>(select map)</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item row="2" column="3">
-                        <widget class="QCheckBox" name="suit_slope_attract">
-                         <property name="maximumSize">
-                          <size>
-                           <width>60</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>Attract</string>
                          </property>
                         </widget>
                        </item>
@@ -4671,30 +4662,13 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
-                       <item row="3" column="3">
-                        <widget class="QCheckBox" name="suit_gw_attract">
-                         <property name="maximumSize">
-                          <size>
-                           <width>60</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>Attract</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="5" column="3">
-                        <widget class="QCheckBox" name="suit_custom1_attract">
-                         <property name="maximumSize">
-                          <size>
-                           <width>60</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>Attract</string>
-                         </property>
+                       <item row="4" column="1">
+                        <widget class="QComboBox" name="suit_soil_data">
+                         <item>
+                          <property name="text">
+                           <string>(select map)</string>
+                          </property>
+                         </item>
                         </widget>
                        </item>
                        <item row="3" column="2">
@@ -4716,30 +4690,10 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
-                       <item row="4" column="3">
-                        <widget class="QCheckBox" name="suit_soil_attract">
-                         <property name="maximumSize">
-                          <size>
-                           <width>60</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>Attract</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="3">
-                        <widget class="QLabel" name="suit_crit_lbl4">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;EFFECT&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
                        <item row="5" column="0">
                         <widget class="QCheckBox" name="suit_custom1_check">
                          <property name="text">
-                          <string>Custom Criterion 1</string>
+                          <string>Depth to Groundwater [m]</string>
                          </property>
                         </widget>
                        </item>
@@ -4750,10 +4704,17 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
+                       <item row="2" column="0">
+                        <widget class="QCheckBox" name="suit_slope_check">
+                         <property name="text">
+                          <string>Slope [%]</string>
+                         </property>
+                        </widget>
+                       </item>
                        <item row="6" column="0">
                         <widget class="QCheckBox" name="suit_custom2_check">
                          <property name="text">
-                          <string>Custom Criterion 2</string>
+                          <string>Custom Criterion [ ]</string>
                          </property>
                         </widget>
                        </item>
@@ -4785,24 +4746,13 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
-                       <item row="6" column="3">
-                        <widget class="QCheckBox" name="suit_custom2_attract">
-                         <property name="maximumSize">
-                          <size>
-                           <width>60</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>Attract</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="0">
-                        <widget class="QCheckBox" name="suit_slope_check">
-                         <property name="text">
-                          <string>Slope [%]</string>
-                         </property>
+                       <item row="3" column="1">
+                        <widget class="QComboBox" name="suit_gw_data">
+                         <item>
+                          <property name="text">
+                           <string>(select map)</string>
+                          </property>
+                         </item>
                         </widget>
                        </item>
                       </layout>
@@ -4821,7 +4771,7 @@ p, li { white-space: pre-wrap; }
                        <item>
                         <widget class="QLabel" name="suit_threshold_lbl">
                          <property name="text">
-                          <string>Select Active Land Use Category:</string>
+                          <string>Select Criterion:</string>
                          </property>
                         </widget>
                        </item>
@@ -4829,22 +4779,27 @@ p, li { white-space: pre-wrap; }
                         <widget class="QComboBox" name="suit_threshold_luccombo">
                          <item>
                           <property name="text">
-                           <string>Residential</string>
+                           <string>Slope [%]</string>
                           </property>
                          </item>
                          <item>
                           <property name="text">
-                           <string>Commercial</string>
+                           <string>Aspect</string>
                           </property>
                          </item>
                          <item>
                           <property name="text">
-                           <string>Industrial</string>
+                           <string>Soil Type</string>
                           </property>
                          </item>
                          <item>
                           <property name="text">
-                           <string>Mixed Use Development</string>
+                           <string>Depth to Groundwater</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Custom Criterion</string>
                           </property>
                          </item>
                         </widget>
@@ -4857,19 +4812,460 @@ p, li { white-space: pre-wrap; }
                       <property name="minimumSize">
                        <size>
                         <width>0</width>
-                        <height>100</height>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="currentIndex">
-                       <number>3</number>
+                       <number>4</number>
                       </property>
                       <widget class="QWidget" name="page_4">
                        <layout class="QVBoxLayout" name="verticalLayout_18">
                         <item>
-                         <widget class="QGroupBox" name="suit_thresh_res">
+                         <widget class="QGroupBox" name="slope_box">
                           <property name="title">
-                           <string>Residential</string>
+                           <string>Slope [%]</string>
                           </property>
+                          <layout class="QVBoxLayout" name="verticalLayout_30">
+                           <item>
+                            <widget class="QLabel" name="slope_descr">
+                             <property name="text">
+                              <string>Suitability will range from 100% at 0% slope to 0% at threshold value based on the selected relationship.</string>
+                             </property>
+                             <property name="wordWrap">
+                              <bool>true</bool>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QWidget" name="slope_widget" native="true">
+                             <layout class="QGridLayout" name="gridLayout_6">
+                              <item row="0" column="0">
+                               <widget class="QLabel" name="slope_header1">
+                                <property name="text">
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;LAND USE&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="3">
+                               <spacer name="horizontalSpacer_24">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item row="3" column="3">
+                               <spacer name="horizontalSpacer_36">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item row="4" column="3">
+                               <spacer name="horizontalSpacer_42">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item row="0" column="1">
+                               <widget class="QLabel" name="slope_header2">
+                                <property name="text">
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;THRESHOLD&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="2">
+                               <widget class="QLabel" name="slope_header3">
+                                <property name="text">
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;VALUE&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="0">
+                               <widget class="QLabel" name="slope_lbl1">
+                                <property name="text">
+                                 <string>Residential</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="1">
+                               <widget class="QSlider" name="slope_res_slider">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>200</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximum">
+                                 <number>250</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>5</number>
+                                </property>
+                                <property name="pageStep">
+                                 <number>50</number>
+                                </property>
+                                <property name="value">
+                                 <number>250</number>
+                                </property>
+                                <property name="sliderPosition">
+                                 <number>250</number>
+                                </property>
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="invertedAppearance">
+                                 <bool>false</bool>
+                                </property>
+                                <property name="tickPosition">
+                                 <enum>QSlider::TicksBelow</enum>
+                                </property>
+                                <property name="tickInterval">
+                                 <number>50</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="2" column="2">
+                               <widget class="QLineEdit" name="slope_com_box">
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>40</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="3" column="0">
+                               <widget class="QLabel" name="slope_lbl3">
+                                <property name="text">
+                                 <string>Industrial</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="2" column="0">
+                               <widget class="QLabel" name="slope_lbl2">
+                                <property name="text">
+                                 <string>Commercial</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="3" column="2">
+                               <widget class="QLineEdit" name="slope_ind_box">
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>40</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="4" column="0">
+                               <widget class="QLabel" name="slope_lbl4">
+                                <property name="text">
+                                 <string>Mixed Development</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="4" column="2">
+                               <widget class="QLineEdit" name="slope_orc_box">
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>40</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="2">
+                               <widget class="QLineEdit" name="slope_res_box">
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>40</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="text">
+                                 <string>25.0%</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="2" column="1">
+                               <widget class="QSlider" name="slope_com_slider">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>200</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximum">
+                                 <number>250</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>5</number>
+                                </property>
+                                <property name="pageStep">
+                                 <number>50</number>
+                                </property>
+                                <property name="value">
+                                 <number>250</number>
+                                </property>
+                                <property name="sliderPosition">
+                                 <number>250</number>
+                                </property>
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="tickPosition">
+                                 <enum>QSlider::TicksBelow</enum>
+                                </property>
+                                <property name="tickInterval">
+                                 <number>50</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="8" column="0">
+                               <widget class="QLabel" name="slope_lbl5">
+                                <property name="text">
+                                 <string>Trend:</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="8" column="1">
+                               <widget class="QComboBox" name="slope_trend_combo">
+                                <item>
+                                 <property name="text">
+                                  <string>Linear</string>
+                                 </property>
+                                </item>
+                                <item>
+                                 <property name="text">
+                                  <string>Quadratic</string>
+                                 </property>
+                                </item>
+                                <item>
+                                 <property name="text">
+                                  <string>Cubic</string>
+                                 </property>
+                                </item>
+                                <item>
+                                 <property name="text">
+                                  <string>Inverse Quadratic</string>
+                                 </property>
+                                </item>
+                                <item>
+                                 <property name="text">
+                                  <string>Inverse Cubic</string>
+                                 </property>
+                                </item>
+                                <item>
+                                 <property name="text">
+                                  <string>Sigmoid</string>
+                                 </property>
+                                </item>
+                                <item>
+                                 <property name="text">
+                                  <string>Mid-Point</string>
+                                 </property>
+                                </item>
+                               </widget>
+                              </item>
+                              <item row="2" column="3">
+                               <spacer name="horizontalSpacer_27">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item row="8" column="3">
+                               <spacer name="horizontalSpacer_43">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item row="6" column="0">
+                               <widget class="QLabel" name="slope_header4">
+                                <property name="text">
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;RELATIONSHIP&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="5" column="0" colspan="4">
+                               <widget class="Line" name="line">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="9" column="0">
+                               <widget class="QLabel" name="slope_lbl6">
+                                <property name="text">
+                                 <string>Define Midpoint:</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="9" column="2">
+                               <widget class="QLineEdit" name="slope_midpoint_box">
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>40</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="text">
+                                 <string>12.5%</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="3" column="1">
+                               <widget class="QSlider" name="slope_ind_slider">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>200</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximum">
+                                 <number>250</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>5</number>
+                                </property>
+                                <property name="pageStep">
+                                 <number>50</number>
+                                </property>
+                                <property name="value">
+                                 <number>250</number>
+                                </property>
+                                <property name="sliderPosition">
+                                 <number>250</number>
+                                </property>
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="tickPosition">
+                                 <enum>QSlider::TicksBelow</enum>
+                                </property>
+                                <property name="tickInterval">
+                                 <number>50</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="4" column="1">
+                               <widget class="QSlider" name="slope_orc_slider">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>200</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximum">
+                                 <number>250</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>5</number>
+                                </property>
+                                <property name="pageStep">
+                                 <number>50</number>
+                                </property>
+                                <property name="value">
+                                 <number>250</number>
+                                </property>
+                                <property name="sliderPosition">
+                                 <number>250</number>
+                                </property>
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="tickPosition">
+                                 <enum>QSlider::TicksBelow</enum>
+                                </property>
+                                <property name="tickInterval">
+                                 <number>50</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="9" column="1">
+                               <widget class="QSlider" name="slope_midpoint_slider">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>200</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximum">
+                                 <number>250</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>5</number>
+                                </property>
+                                <property name="pageStep">
+                                 <number>50</number>
+                                </property>
+                                <property name="value">
+                                 <number>250</number>
+                                </property>
+                                <property name="sliderPosition">
+                                 <number>250</number>
+                                </property>
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="tickPosition">
+                                 <enum>QSlider::TicksBelow</enum>
+                                </property>
+                                <property name="tickInterval">
+                                 <number>50</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="9" column="3">
+                               <spacer name="horizontalSpacer_50">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
+                          </layout>
                          </widget>
                         </item>
                        </layout>
@@ -4877,10 +5273,520 @@ p, li { white-space: pre-wrap; }
                       <widget class="QWidget" name="page_5">
                        <layout class="QVBoxLayout" name="verticalLayout_19">
                         <item>
-                         <widget class="QGroupBox" name="suit_thresh_com">
+                         <widget class="QGroupBox" name="aspect_box">
                           <property name="title">
-                           <string>Commercial</string>
+                           <string>Aspect [degrees]</string>
                           </property>
+                          <layout class="QVBoxLayout" name="verticalLayout_31">
+                           <item>
+                            <widget class="QLabel" name="aspect_descr">
+                             <property name="text">
+                              <string>Specify the suitability of aspects in each of the four cardinal directions. The model will linearly interpolate in between them.</string>
+                             </property>
+                             <property name="wordWrap">
+                              <bool>true</bool>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QWidget" name="aspect_widgets" native="true">
+                             <layout class="QGridLayout" name="gridLayout_16">
+                              <item row="1" column="0">
+                               <widget class="QLabel" name="aspect_lbl1">
+                                <property name="text">
+                                 <string>Residential</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="3" column="2">
+                               <widget class="QSpinBox" name="aspect_ind_north">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="4" column="3">
+                               <widget class="QSpinBox" name="aspect_east_orc">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="3" column="3">
+                               <widget class="QSpinBox" name="aspect_east_ind">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="2" column="5">
+                               <widget class="QSpinBox" name="aspect_com_west">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="2" column="2">
+                               <widget class="QSpinBox" name="aspect_com_north">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="2" column="3">
+                               <widget class="QSpinBox" name="aspect_com_east">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="4" column="4">
+                               <widget class="QSpinBox" name="aspect_orc_south">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="4" column="2">
+                               <widget class="QSpinBox" name="aspect_orc_north">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="3" column="4">
+                               <widget class="QSpinBox" name="aspect_ind_south">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="2" column="4">
+                               <widget class="QSpinBox" name="aspect_com_south">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="5">
+                               <widget class="QSpinBox" name="aspect_res_west">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="4">
+                               <widget class="QSpinBox" name="aspect_res_south">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="4" column="5">
+                               <widget class="QSpinBox" name="aspect_orc_west">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="3">
+                               <widget class="QSpinBox" name="aspect_res_east">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="3" column="5">
+                               <widget class="QSpinBox" name="aspect_ind_west">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="4">
+                               <widget class="QLabel" name="aspect_header4">
+                                <property name="text">
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;SOUTH&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="0">
+                               <widget class="QLabel" name="aspect_header1">
+                                <property name="text">
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;LAND USE&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="3" column="0">
+                               <widget class="QLabel" name="aspect_lbl3">
+                                <property name="text">
+                                 <string>Industrial</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="4" column="0">
+                               <widget class="QLabel" name="aspect_lbl4">
+                                <property name="text">
+                                 <string>Mixed Development</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="2" column="0">
+                               <widget class="QLabel" name="aspect_lbl2">
+                                <property name="text">
+                                 <string>Commercial</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="2">
+                               <widget class="QLabel" name="aspect_header2">
+                                <property name="text">
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;NORTH&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="5">
+                               <widget class="QLabel" name="aspect_header5">
+                                <property name="text">
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;WEST&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="3">
+                               <widget class="QLabel" name="aspect_header3">
+                                <property name="text">
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;EAST&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="1">
+                               <spacer name="horizontalSpacer_52">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                 <enum>QSizePolicy::Fixed</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>30</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item row="1" column="2">
+                               <widget class="QSpinBox" name="aspect_res_north">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
+                           <item>
+                            <spacer name="verticalSpacer_2">
+                             <property name="orientation">
+                              <enum>Qt::Vertical</enum>
+                             </property>
+                             <property name="sizeHint" stdset="0">
+                              <size>
+                               <width>20</width>
+                               <height>40</height>
+                              </size>
+                             </property>
+                            </spacer>
+                           </item>
+                          </layout>
                          </widget>
                         </item>
                        </layout>
@@ -4888,10 +5794,600 @@ p, li { white-space: pre-wrap; }
                       <widget class="QWidget" name="page_6">
                        <layout class="QVBoxLayout" name="verticalLayout_20">
                         <item>
-                         <widget class="QGroupBox" name="suit_thresh_ind">
+                         <widget class="QGroupBox" name="soil_box">
                           <property name="title">
-                           <string>Industrial</string>
+                           <string>Soil Type [class]</string>
                           </property>
+                          <layout class="QVBoxLayout" name="verticalLayout_32">
+                           <item>
+                            <widget class="QLabel" name="soil_descr">
+                             <property name="text">
+                              <string>Specify the suitability of aspects in each of the four cardinal directions. The model will linearly interpolate in between them.</string>
+                             </property>
+                             <property name="wordWrap">
+                              <bool>true</bool>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QWidget" name="soil_widget" native="true">
+                             <layout class="QGridLayout" name="gridLayout_17">
+                              <item row="0" column="3" rowspan="2">
+                               <widget class="QLabel" name="soil_header4">
+                                <property name="text">
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;MEDIUM&lt;br/&gt;CLAY&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="4" rowspan="2">
+                               <widget class="QLabel" name="soil_header5">
+                                <property name="text">
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;HEAVY&lt;br/&gt;CLAY&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="2" rowspan="2">
+                               <widget class="QLabel" name="soil_header3">
+                                <property name="text">
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;SANDY&lt;br/&gt;CLAY&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="1" rowspan="2">
+                               <widget class="QLabel" name="soil_header2">
+                                <property name="text">
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;COARSE&lt;br/&gt;SAND&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="3" column="0">
+                               <widget class="QLabel" name="soil_lbl2">
+                                <property name="text">
+                                 <string>Commercial</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="4" column="0">
+                               <widget class="QLabel" name="soil_lbl3">
+                                <property name="text">
+                                 <string>Industrial</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="5" column="0">
+                               <widget class="QLabel" name="soil_lbl4">
+                                <property name="text">
+                                 <string>Mixed Development</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="0" rowspan="2">
+                               <widget class="QLabel" name="soil_header1">
+                                <property name="text">
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;LAND USE&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="2" column="0">
+                               <widget class="QLabel" name="soil_lbl1">
+                                <property name="text">
+                                 <string>Residential</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="2" column="1">
+                               <widget class="QSpinBox" name="soil_res_sand">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="prefix">
+                                 <string/>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>1</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="2" column="2">
+                               <widget class="QSpinBox" name="soil_res_sandclay">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="prefix">
+                                 <string/>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>1</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="2" column="3">
+                               <widget class="QSpinBox" name="soil_res_medclay">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="prefix">
+                                 <string/>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>1</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="2" column="4">
+                               <widget class="QSpinBox" name="soil_res_heavyclay">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="prefix">
+                                 <string/>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>1</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="3" column="1">
+                               <widget class="QSpinBox" name="soil_com_sand">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="prefix">
+                                 <string/>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>1</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="3" column="2">
+                               <widget class="QSpinBox" name="soil_com_sandclay">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="prefix">
+                                 <string/>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>1</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="3" column="3">
+                               <widget class="QSpinBox" name="soil_com_medclay">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="prefix">
+                                 <string/>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>1</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="3" column="4">
+                               <widget class="QSpinBox" name="soil_com_heavyclay">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="prefix">
+                                 <string/>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>1</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="4" column="1">
+                               <widget class="QSpinBox" name="soil_ind_sand">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="prefix">
+                                 <string/>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>1</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="4" column="2">
+                               <widget class="QSpinBox" name="soil_ind_sandclay">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="prefix">
+                                 <string/>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>1</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="4" column="3">
+                               <widget class="QSpinBox" name="soil_ind_medclay">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="prefix">
+                                 <string/>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>1</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="4" column="4">
+                               <widget class="QSpinBox" name="soil_ind_heavyclay">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="prefix">
+                                 <string/>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>1</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="5" column="1">
+                               <widget class="QSpinBox" name="soil_orc_sand">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="prefix">
+                                 <string/>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>1</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="5" column="2">
+                               <widget class="QSpinBox" name="soil_orc_sandclay">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="prefix">
+                                 <string/>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>1</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="5" column="3">
+                               <widget class="QSpinBox" name="soil_orc_medclay">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="prefix">
+                                 <string/>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>1</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="5" column="4">
+                               <widget class="QSpinBox" name="soil_orc_heavyclay">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>0</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="suffix">
+                                 <string>%</string>
+                                </property>
+                                <property name="prefix">
+                                 <string/>
+                                </property>
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>1</number>
+                                </property>
+                                <property name="value">
+                                 <number>100</number>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
+                           <item>
+                            <spacer name="verticalSpacer_4">
+                             <property name="orientation">
+                              <enum>Qt::Vertical</enum>
+                             </property>
+                             <property name="sizeHint" stdset="0">
+                              <size>
+                               <width>20</width>
+                               <height>40</height>
+                              </size>
+                             </property>
+                            </spacer>
+                           </item>
+                          </layout>
                          </widget>
                         </item>
                        </layout>
@@ -4899,10 +6395,925 @@ p, li { white-space: pre-wrap; }
                       <widget class="QWidget" name="page_7">
                        <layout class="QVBoxLayout" name="verticalLayout_21">
                         <item>
-                         <widget class="QGroupBox" name="suit_thresh_office">
+                         <widget class="QGroupBox" name="gw_box">
                           <property name="title">
-                           <string>Mixed Use Development</string>
+                           <string>Depth to Groundwater [m]</string>
                           </property>
+                          <widget class="QLabel" name="gw_descr">
+                           <property name="geometry">
+                            <rect>
+                             <x>10</x>
+                             <y>20</y>
+                             <width>467</width>
+                             <height>26</height>
+                            </rect>
+                           </property>
+                           <property name="text">
+                            <string>Suitability will range from 0% at 0m depth (i.e. groundwater at surface level) to 100% at threshold depth beyond which groundwater has no impact on land use suitability.</string>
+                           </property>
+                           <property name="wordWrap">
+                            <bool>true</bool>
+                           </property>
+                          </widget>
+                          <widget class="QWidget" name="gw_widgets" native="true">
+                           <property name="geometry">
+                            <rect>
+                             <x>10</x>
+                             <y>60</y>
+                             <width>467</width>
+                             <height>250</height>
+                            </rect>
+                           </property>
+                           <layout class="QGridLayout" name="gridLayout_20">
+                            <item row="9" column="3">
+                             <spacer name="horizontalSpacer_87">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="7" column="0">
+                             <widget class="QLabel" name="gw_header4">
+                              <property name="text">
+                               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;RELATIONSHIP&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="6" column="0" colspan="4">
+                             <widget class="Line" name="line_2">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="10" column="0">
+                             <widget class="QLabel" name="gw_lbl6">
+                              <property name="text">
+                               <string>Define Midpoint:</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="3">
+                             <spacer name="horizontalSpacer_86">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="0" column="0">
+                             <widget class="QLabel" name="gw_header1">
+                              <property name="text">
+                               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;LAND USE&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="3" column="3">
+                             <spacer name="horizontalSpacer_84">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="4" column="3">
+                             <spacer name="horizontalSpacer_85">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="1" column="3">
+                             <spacer name="horizontalSpacer_53">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="0" column="1">
+                             <widget class="QLabel" name="gw_header2">
+                              <property name="text">
+                               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;THRESHOLD&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="1">
+                             <widget class="QSlider" name="gw_com_slider">
+                              <property name="minimumSize">
+                               <size>
+                                <width>200</width>
+                                <height>0</height>
+                               </size>
+                              </property>
+                              <property name="maximum">
+                               <number>20</number>
+                              </property>
+                              <property name="singleStep">
+                               <number>1</number>
+                              </property>
+                              <property name="pageStep">
+                               <number>5</number>
+                              </property>
+                              <property name="value">
+                               <number>10</number>
+                              </property>
+                              <property name="sliderPosition">
+                               <number>10</number>
+                              </property>
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="invertedAppearance">
+                               <bool>false</bool>
+                              </property>
+                              <property name="tickPosition">
+                               <enum>QSlider::TicksBelow</enum>
+                              </property>
+                              <property name="tickInterval">
+                               <number>2</number>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="3" column="1">
+                             <widget class="QSlider" name="gw_ind_slider">
+                              <property name="minimumSize">
+                               <size>
+                                <width>200</width>
+                                <height>0</height>
+                               </size>
+                              </property>
+                              <property name="maximum">
+                               <number>20</number>
+                              </property>
+                              <property name="singleStep">
+                               <number>1</number>
+                              </property>
+                              <property name="pageStep">
+                               <number>5</number>
+                              </property>
+                              <property name="value">
+                               <number>10</number>
+                              </property>
+                              <property name="sliderPosition">
+                               <number>10</number>
+                              </property>
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="invertedAppearance">
+                               <bool>false</bool>
+                              </property>
+                              <property name="tickPosition">
+                               <enum>QSlider::TicksBelow</enum>
+                              </property>
+                              <property name="tickInterval">
+                               <number>2</number>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="10" column="3">
+                             <spacer name="horizontalSpacer_88">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="4" column="0">
+                             <widget class="QLabel" name="gw_lbl4">
+                              <property name="text">
+                               <string>Mixed Development</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="4" column="2">
+                             <widget class="QLineEdit" name="gw_orc_box">
+                              <property name="maximumSize">
+                               <size>
+                                <width>40</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="2">
+                             <widget class="QLineEdit" name="gw_res_box">
+                              <property name="maximumSize">
+                               <size>
+                                <width>40</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="text">
+                               <string>10 m</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="9" column="0">
+                             <widget class="QLabel" name="gw_lbl5">
+                              <property name="text">
+                               <string>Trend:</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="9" column="1">
+                             <widget class="QComboBox" name="gw_trend_combo">
+                              <item>
+                               <property name="text">
+                                <string>Linear</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Quadratic</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Cubic</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Inverse Quadratic</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Inverse Cubic</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Sigmoid</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Mid-Point</string>
+                               </property>
+                              </item>
+                             </widget>
+                            </item>
+                            <item row="3" column="0">
+                             <widget class="QLabel" name="gw_lbl3">
+                              <property name="text">
+                               <string>Industrial</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="0">
+                             <widget class="QLabel" name="gw_lbl2">
+                              <property name="text">
+                               <string>Commercial</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="3" column="2">
+                             <widget class="QLineEdit" name="gw_ind_box">
+                              <property name="maximumSize">
+                               <size>
+                                <width>40</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="2">
+                             <widget class="QLabel" name="gw_header3">
+                              <property name="text">
+                               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;VALUE&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="0">
+                             <widget class="QLabel" name="gw_lbl1">
+                              <property name="text">
+                               <string>Residential</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="1">
+                             <widget class="QSlider" name="gw_res_slider">
+                              <property name="minimumSize">
+                               <size>
+                                <width>200</width>
+                                <height>0</height>
+                               </size>
+                              </property>
+                              <property name="maximum">
+                               <number>20</number>
+                              </property>
+                              <property name="singleStep">
+                               <number>1</number>
+                              </property>
+                              <property name="pageStep">
+                               <number>5</number>
+                              </property>
+                              <property name="value">
+                               <number>10</number>
+                              </property>
+                              <property name="sliderPosition">
+                               <number>10</number>
+                              </property>
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="invertedAppearance">
+                               <bool>false</bool>
+                              </property>
+                              <property name="tickPosition">
+                               <enum>QSlider::TicksBelow</enum>
+                              </property>
+                              <property name="tickInterval">
+                               <number>2</number>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="2">
+                             <widget class="QLineEdit" name="gw_com_box">
+                              <property name="maximumSize">
+                               <size>
+                                <width>40</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="10" column="2">
+                             <widget class="QLineEdit" name="gw_midpoint_box">
+                              <property name="maximumSize">
+                               <size>
+                                <width>40</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="text">
+                               <string>5 m</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="4" column="1">
+                             <widget class="QSlider" name="gw_orc_slider">
+                              <property name="minimumSize">
+                               <size>
+                                <width>200</width>
+                                <height>0</height>
+                               </size>
+                              </property>
+                              <property name="maximum">
+                               <number>20</number>
+                              </property>
+                              <property name="singleStep">
+                               <number>1</number>
+                              </property>
+                              <property name="pageStep">
+                               <number>5</number>
+                              </property>
+                              <property name="value">
+                               <number>10</number>
+                              </property>
+                              <property name="sliderPosition">
+                               <number>10</number>
+                              </property>
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="invertedAppearance">
+                               <bool>false</bool>
+                              </property>
+                              <property name="tickPosition">
+                               <enum>QSlider::TicksBelow</enum>
+                              </property>
+                              <property name="tickInterval">
+                               <number>2</number>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="10" column="1">
+                             <widget class="QSlider" name="gw_midpoint_slider">
+                              <property name="minimumSize">
+                               <size>
+                                <width>200</width>
+                                <height>0</height>
+                               </size>
+                              </property>
+                              <property name="maximum">
+                               <number>20</number>
+                              </property>
+                              <property name="singleStep">
+                               <number>1</number>
+                              </property>
+                              <property name="pageStep">
+                               <number>5</number>
+                              </property>
+                              <property name="value">
+                               <number>5</number>
+                              </property>
+                              <property name="sliderPosition">
+                               <number>5</number>
+                              </property>
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="invertedAppearance">
+                               <bool>false</bool>
+                              </property>
+                              <property name="tickPosition">
+                               <enum>QSlider::TicksBelow</enum>
+                              </property>
+                              <property name="tickInterval">
+                               <number>2</number>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                      <widget class="QWidget" name="page_8">
+                       <layout class="QVBoxLayout" name="verticalLayout_29">
+                        <item>
+                         <widget class="QGroupBox" name="custom_box">
+                          <property name="title">
+                           <string>Custom Criterion [ ]</string>
+                          </property>
+                          <widget class="QLabel" name="custom_descr">
+                           <property name="geometry">
+                            <rect>
+                             <x>10</x>
+                             <y>20</y>
+                             <width>467</width>
+                             <height>26</height>
+                            </rect>
+                           </property>
+                           <property name="text">
+                            <string>Define the minimum and maximum values for suitability in the custom data set for each land use and set the relationship.</string>
+                           </property>
+                           <property name="wordWrap">
+                            <bool>true</bool>
+                           </property>
+                          </widget>
+                          <widget class="QWidget" name="custom_widget" native="true">
+                           <property name="geometry">
+                            <rect>
+                             <x>10</x>
+                             <y>60</y>
+                             <width>467</width>
+                             <height>250</height>
+                            </rect>
+                           </property>
+                           <layout class="QGridLayout" name="gridLayout_24">
+                            <item row="5" column="2">
+                             <widget class="QLineEdit" name="custom_orc_min">
+                              <property name="maximumSize">
+                               <size>
+                                <width>60</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="text">
+                               <string/>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="4" column="2">
+                             <widget class="QLineEdit" name="custom_ind_min">
+                              <property name="maximumSize">
+                               <size>
+                                <width>60</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="text">
+                               <string/>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="3" column="3">
+                             <widget class="QLineEdit" name="custom_com_max">
+                              <property name="maximumSize">
+                               <size>
+                                <width>60</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="text">
+                               <string/>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="3" column="2">
+                             <widget class="QLineEdit" name="custom_com_min">
+                              <property name="maximumSize">
+                               <size>
+                                <width>60</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="text">
+                               <string/>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="4" column="3">
+                             <widget class="QLineEdit" name="custom_ind_max">
+                              <property name="maximumSize">
+                               <size>
+                                <width>60</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="text">
+                               <string/>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="7" column="0" colspan="5">
+                             <widget class="Line" name="line_4">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="8" column="0">
+                             <widget class="QLabel" name="custom_header4">
+                              <property name="text">
+                               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;RELATIONSHIP&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="10" column="4">
+                             <spacer name="horizontalSpacer_89">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="5" column="4">
+                             <spacer name="horizontalSpacer_92">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="1" column="4">
+                             <spacer name="horizontalSpacer_93">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="11" column="0">
+                             <widget class="QLabel" name="custom_lbl6">
+                              <property name="text">
+                               <string>Define Midpoint:</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="4" column="4">
+                             <spacer name="horizontalSpacer_91">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="0" column="0">
+                             <widget class="QLabel" name="custom_header1">
+                              <property name="text">
+                               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;LAND USE&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="3" column="4">
+                             <spacer name="horizontalSpacer_90">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="0" column="2">
+                             <widget class="QLabel" name="custom_header2">
+                              <property name="text">
+                               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;MIN &lt;br/&gt;THRESHOLD&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="3">
+                             <widget class="QLineEdit" name="custom_res_max">
+                              <property name="maximumSize">
+                               <size>
+                                <width>60</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="text">
+                               <string/>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="5" column="0">
+                             <widget class="QLabel" name="custom_lbl4">
+                              <property name="text">
+                               <string>Mixed Development</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="11" column="4">
+                             <spacer name="horizontalSpacer_94">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>40</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="10" column="0">
+                             <widget class="QLabel" name="custom_lbl5">
+                              <property name="text">
+                               <string>Trend:</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="10" column="2" colspan="2">
+                             <widget class="QComboBox" name="custom_trend_combo">
+                              <property name="minimumSize">
+                               <size>
+                                <width>200</width>
+                                <height>0</height>
+                               </size>
+                              </property>
+                              <item>
+                               <property name="text">
+                                <string>Linear</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Quadratic</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Cubic</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Inverse Quadratic</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Inverse Cubic</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Sigmoid</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Mid-Point</string>
+                               </property>
+                              </item>
+                             </widget>
+                            </item>
+                            <item row="4" column="0">
+                             <widget class="QLabel" name="custom_lbl3">
+                              <property name="text">
+                               <string>Industrial</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="3">
+                             <widget class="QLabel" name="custom_header3">
+                              <property name="text">
+                               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;MAX &lt;br/&gt;THRESHOLD&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="3" column="0">
+                             <widget class="QLabel" name="custom_lbl2">
+                              <property name="text">
+                               <string>Commercial</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="0">
+                             <widget class="QLabel" name="custom_lbl1">
+                              <property name="text">
+                               <string>Residential</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="11" column="2">
+                             <widget class="QLineEdit" name="custom_midpoint_box">
+                              <property name="maximumSize">
+                               <size>
+                                <width>60</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="text">
+                               <string/>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="5" column="3">
+                             <widget class="QLineEdit" name="custom_orc_max">
+                              <property name="maximumSize">
+                               <size>
+                                <width>60</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="text">
+                               <string/>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="2">
+                             <widget class="QLineEdit" name="custom_res_min">
+                              <property name="maximumSize">
+                               <size>
+                                <width>60</width>
+                                <height>16777215</height>
+                               </size>
+                              </property>
+                              <property name="text">
+                               <string/>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="1">
+                             <spacer name="horizontalSpacer_95">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeType">
+                               <enum>QSizePolicy::Fixed</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>20</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="3" column="1">
+                             <spacer name="horizontalSpacer_96">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeType">
+                               <enum>QSizePolicy::Fixed</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>20</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="4" column="1">
+                             <spacer name="horizontalSpacer_97">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeType">
+                               <enum>QSizePolicy::Fixed</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>20</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="5" column="1">
+                             <spacer name="horizontalSpacer_98">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeType">
+                               <enum>QSizePolicy::Fixed</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>20</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="10" column="1">
+                             <spacer name="horizontalSpacer_99">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeType">
+                               <enum>QSizePolicy::Fixed</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>20</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="11" column="1">
+                             <spacer name="horizontalSpacer_100">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeType">
+                               <enum>QSizePolicy::Fixed</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>20</width>
+                                <height>20</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                           </layout>
+                          </widget>
                          </widget>
                         </item>
                        </layout>
@@ -5654,7 +8065,7 @@ p, li { white-space: pre-wrap; }
         </widget>
         <widget class="QWidget" name="transitions">
          <attribute name="title">
-          <string>Transition Rules</string>
+          <string>Transition Dynamics</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_6"/>
         </widget>

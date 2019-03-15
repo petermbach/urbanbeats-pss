@@ -1158,7 +1158,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
                                   self.overlaymaps[1][self.ui.zoning_constraints_enviro_combo.currentIndex()])
         self.module.set_parameter("zoning_flood",
                                   self.overlaymaps[1][self.ui.zoning_constraints_flood_combo.currentIndex()])
-        self.module.set_parameter("zoning_flood",
+        self.module.set_parameter("zoning_custom",
                                   self.overlaymaps[1][self.ui.zoning_constraints_custom_combo.currentIndex()])
 
         self.module.set_parameter("zoning_heritage_res", int(self.ui.zoning_constraints_heritage_res.isChecked()))
