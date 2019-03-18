@@ -950,7 +950,7 @@ class UrbanDevelopment(UBModule):
         # - 2.6.1 - Determine Immediate Cardinal and Ordinal direction neighbours (use Moore)
         self.notify("Determining adjacent neighbours")
         print("Determining adjacent neighbours")
-        for i in cellslist:
+        for i in range(len(cellslist)):
             cellslist[i].add_attribute("NHD_N", 0)
             cellslist[i].add_attribute("NHD_NE", 0)
             cellslist[i].add_attribute("NHD_E", 0)
@@ -961,7 +961,7 @@ class UrbanDevelopment(UBModule):
             cellslist[i].add_attribute("NHD_NW", 0)
             neighbours = []
             ixy = ubmethods.get_central_coordinates(cellslist[i])
-            for j in cellslist:     # Oh how I hate to use double for loops.... looping across gianourmous arrays...
+            for j in range(len(cellslist)):     # Oh how I hate to use double for loops.... looping across gianourmous arrays...
                 if cellslist[j] == cellslist[i]:
                     continue
                 jxy = ubmethods.get_central_coordinates(cellslist[j])
@@ -981,7 +981,7 @@ class UrbanDevelopment(UBModule):
                     if d == "":     # DEBUG
                         print "Something went wrong!!!"
 
-                    cellslist[i].add_attribute("NHD_"+d, cellslist.get_attribute("CellID"))
+                    cellslist[i].add_attribute("NHD_"+d, cellslist[j].get_attribute("CellID"))
                     neighbours.append(cellslist[j].get_attribute("CellID"))
             cellslist[i].add_attribute("AdjacentNH", neighbours)
 
@@ -990,6 +990,7 @@ class UrbanDevelopment(UBModule):
         print("Loading map for suitability assessment...")
         if (self.suit_slope_include or self.suit_aspect_include) and self.suit_elevation_data:
             # If either criteria has been included, map elevation to cells
+            print "Loading Elevation"
             elev_dref = self.datalibrary.get_data_with_id(self.suit_elevation_data)
             fullfilepath = elev_dref.get_data_file_path() + elev_dref.get_metadata("filename")
             elevraster = ubspatial.import_ascii_raster(fullfilepath, self.suit_elevation_data)
@@ -998,6 +999,7 @@ class UrbanDevelopment(UBModule):
             elev_csc = int(self.cellsize / elev_res)     # knowing how many cells wide and tall
 
         if self.suit_soil_include and self.suit_soil_data:
+            print "Loading Soil"
             soil_dref = self.datalibrary.get_data_with_id(self.suit_soil_data)
             fullfilepath = soil_dref.get_data_file_path() + soil_dref.get_metadata("filename")
             soilraster = ubspatial.import_ascii_raster(fullfilepath, self.suit_soil_data)
@@ -1006,6 +1008,7 @@ class UrbanDevelopment(UBModule):
             soil_csc = int(self.cellsize / soil_res)
 
         if self.suit_gw_include and self.suit_gw_data:
+            print "Loading Groundwater Depth"
             gw_dref = self.datalibrary.get_data_with_id(self.suit_gw_data)
             fullfilepath = gw_dref.get_data_file_path() + gw_dref.get_metadata("filename")
             gwraster = ubspatial.import_ascii_raster(fullfilepath, self.suit_gw_data)
@@ -1027,7 +1030,7 @@ class UrbanDevelopment(UBModule):
             row_start = int(current_cell.get_attribute("OriginY") / elev_res)
 
             # SLOPE AND ASPECT - MAP ELEVATION DATA TO THE CELLS
-            if self.suit_slope_include or self.suit_aspect_include:
+            if (self.suit_slope_include or self.suit_aspect_include) and self.suit_elevation_data:
                 elevdatamatrix = elevraster.get_data_square(col_start, row_start, elev_csc, elev_csc)
 
                 # TRANSFER ELEVATION TO CELLS
@@ -1039,8 +1042,10 @@ class UrbanDevelopment(UBModule):
                             continue
                         avg_elev += j
                         n_elev += 1
-                    avg_elev = float(avg_elev / n_elev)
-                    current_cell.add_attribute("Elevation", avg_elev)
+                    if n_elev == 0:
+                        current_cell.add_attribute("Elevation", -9999)
+                    else:
+                        current_cell.add_attribute("Elevation", float(avg_elev / n_elev))
                 else:
                     if elevdatamatrix == elevraster.get_nodatavalue():
                         current_cell.add_attribute("Elevation", -9999)
@@ -1064,7 +1069,7 @@ class UrbanDevelopment(UBModule):
                     else:
                         current_cell.add_attribute("SoilClass", ubglobals.SOILCLASSES[int(soildatamatrix) - 1])
 
-            # GROUNDWTAER DEPTH - MAP GROUNDWATER DEPTHS TO THE CELLS
+            # GROUNDWATER DEPTH - MAP GROUNDWATER DEPTHS TO THE CELLS
             if self.suit_gw_include:
                 gwdatamatrix = gwraster.get_data_square(col_start, row_start, gw_csc, gw_csc)
 
@@ -1077,8 +1082,10 @@ class UrbanDevelopment(UBModule):
                             continue
                         avg_gwd += j
                         n_gw += 1
-                    avg_gwd = float(avg_gwd / n_gw)
-                    current_cell.add_attribute("DepthToGW", avg_gwd)
+                    if n_gw == 0:
+                        current_cell.add_attribute("DepthToGW", -9999)
+                    else:
+                        current_cell.add_attribute("DepthToGW", float(avg_gwd / n_gw))
                 else:
                     if gwdatamatrix == gwraster.get_nodatavalue():
                         current_cell.add_attribute("DepthToGW", -9999)

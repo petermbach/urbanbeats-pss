@@ -1864,8 +1864,8 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>461</width>
-                   <height>1667</height>
+                   <width>541</width>
+                   <height>1664</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -4080,7 +4080,7 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>521</width>
+                   <width>541</width>
                    <height>435</height>
                   </rect>
                  </property>
@@ -4469,8 +4469,8 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>486</width>
-                   <height>801</height>
+                   <width>541</width>
+                   <height>788</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -7465,8 +7465,8 @@ p, li { white-space: pre-wrap; }
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>0</y>
-                   <width>484</width>
+                   <y>-15</y>
+                   <width>541</width>
                    <height>1008</height>
                   </rect>
                  </property>

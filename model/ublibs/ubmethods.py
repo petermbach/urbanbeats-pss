@@ -172,6 +172,7 @@ def calculate_metric_shannon(landclassprop, richness):
         shaneven = shandiv / math.log(richness)
     return shandiv, shandom, shaneven
 
+
 def find_dominant_category(datamatrix, nodatavalue):
     """Finds the dominant category in a data matrix and returns the category name.
 
@@ -179,18 +180,20 @@ def find_dominant_category(datamatrix, nodatavalue):
     :param nodatavalue: the nodata value of the data set, used if no data is available.
     """
     datavalues = datamatrix.flatten()       # Flatten the 2D matrix
-    categories = list(set(datamatrix))      # Get the set of unique categories
+    categories = list(set(datavalues))      # Get the set of unique categories
     freq = np.zeros(len(categories))        # Set up a zeros list for each category
     for i in datavalues:
         freq[int(categories.index(i))] += 1     # Tally up frequencies
     if sum(freq) == 0:          # If everything is zero (i.e. nodata)
         return nodatavalue
     else:
-        return categories[freq.index(max(freq))]    # Could also return nodata!
+        return categories[freq.tolist().index(max(freq))]    # Could also return nodata!
+
 
 def get_central_coordinates(ubvec):
     """Returns the CentreX, CentreY of the current ubVector object as a tuple."""
     return (ubvec.get_attribute("CentreX"), ubvec.get_attribute("CentreY"))
+
 
 def review_filename(fname):
     """Checks the filename for illegal characters, if there are illegal characters, function

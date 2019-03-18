@@ -136,7 +136,7 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     fielddefmatrix.append(ogr.FieldDefn("NHD_SW", ogr.OFTInteger))
     fielddefmatrix.append(ogr.FieldDefn("NHD_W", ogr.OFTInteger))
     fielddefmatrix.append(ogr.FieldDefn("NHD_NW", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("NHAdjacent", ogr.OFTString))
+    # fielddefmatrix.append(ogr.FieldDefn("NHAdjacent", ogr.OFTString))
 
     fielddefmatrix.append(ogr.FieldDefn("Elevation", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("SoilClass", ogr.OFTString))
@@ -246,7 +246,7 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("NHD_SW", int(currentAttList.get_attribute("NHD_SW")))
         feature.SetField("NHD_W", int(currentAttList.get_attribute("NHD_W")))
         feature.SetField("NHD_NW", int(currentAttList.get_attribute("NHD_NW")))
-        feature.SetField("NHAdjacent", str(",".join(map(str, currentAttList.get_attribute("NHAdjacent")))))
+        # feature.SetField("NHAdjacent", str(",".join(map(str, currentAttList.get_attribute("NHAdjacent")))))
         # Neighbourhood attribute converts the [ ] array of BlockIDs to a comma-separated list "#,#,#,#"
 
         feature.SetField("Elevation", float(currentAttList.get_attribute("Elevation")))
