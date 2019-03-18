@@ -172,6 +172,15 @@ def calculate_metric_shannon(landclassprop, richness):
         shaneven = shandiv / math.log(richness)
     return shandiv, shandom, shaneven
 
+def find_dominant_category(datamatrix):
+    """Finds the dominant category in a data matrix and returns the category name."""
+    datamatrix = datamatrix.flatten()       # Flatten the 2D matrix
+    categories = list(set(datamatrix))      # Get the set of unique categories
+    freq = np.zeros(len(categories))        #
+    for i in datamatrix:
+        freq[int(categories.index(i))] += 1
+
+
 def get_central_coordinates(ubvec):
     """Returns the CentreX, CentreY of the current ubVector object as a tuple."""
     return (ubvec.get_attribute("CentreX"), ubvec.get_attribute("CentreY"))

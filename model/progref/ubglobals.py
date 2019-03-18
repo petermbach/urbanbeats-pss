@@ -104,6 +104,9 @@ MODULENAMES = ["SPATIAL", "CLIMATE", "URBDEV", "URBPLAN", "SOCIO", "MAP", "REG",
 
 # NATURAL ELEMENTS
 SOILDICTIONARY = [180, 36, 3.6, 0.36] #mm/hr - 1=sand, 2=sandy clay, 3=medium clay, 4=heavy clay
+SOILCLASSES = ["Sand", "Sandy Clay", "Medium Clay", "Heavy Clay"]
+SOILABBREVIATIONS = ["S", "SC", "MC", "HC"]
+
 LANDCOVERMATERIALS = ["AS", "CO", "DG"]  # AS = asphalt, CO = concrete, DG = bare dirt ground
 TREETYPES = ["RB", "RN", "TB", "TN", "OB", "ON"]
         # Explanation of tree types: R = round, T = tall, O = open, B = broad leaves, N = needle leaves
