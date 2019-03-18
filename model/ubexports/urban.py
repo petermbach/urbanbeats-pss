@@ -138,6 +138,17 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     fielddefmatrix.append(ogr.FieldDefn("NHD_NW", ogr.OFTInteger))
     fielddefmatrix.append(ogr.FieldDefn("NHAdjacent", ogr.OFTString))
 
+    fielddefmatrix.append(ogr.FieldDefn("Elevation", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SoilClass", ogr.OFTString))
+    fielddefmatrix.append(ogr.FieldDefn("DepthToGW", ogr.OFTReal))
+
+    # fielddefmatrix.append(ogr.FieldDefn("SUIT_SLOPE", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("Elevation", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("Elevation", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("Elevation", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("Elevation", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("Elevation", ogr.OFTReal))
+
     # Create the fields
     for field in fielddefmatrix:
         layer.CreateField(field)
@@ -171,7 +182,7 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("Base_POP", int(currentAttList.get_attribute("Base_POP")))
         feature.SetField("Base_EMP", int(currentAttList.get_attribute("Base_EMP")))
         feature.SetField("LUC_Type", str(currentAttList.get_attribute("LUC_Type")))
-        feature.SetField("NHD_Num", int(currentAttList.get_attribute("NHD_Num")))
+        # feature.SetField("NHD_Num", int(currentAttList.get_attribute("NHD_Num")))
         # feature.SetField("NHD_IDs", str(",".join(map(str, currentAttList.get_attribute("NHD_IDs")))))
         # Neighbourhood attribute converts the [ ] array of BlockIDs to a comma-separated list "#,#,#,#"
 
@@ -235,8 +246,14 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("NHD_SW", int(currentAttList.get_attribute("NHD_SW")))
         feature.SetField("NHD_W", int(currentAttList.get_attribute("NHD_W")))
         feature.SetField("NHD_NW", int(currentAttList.get_attribute("NHD_NW")))
-        feature.SetField("NHAdjacentNH", str(",".join(map(str, currentAttList.get_attribute("NHAdjacent")))))
+        feature.SetField("NHAdjacent", str(",".join(map(str, currentAttList.get_attribute("NHAdjacent")))))
         # Neighbourhood attribute converts the [ ] array of BlockIDs to a comma-separated list "#,#,#,#"
+
+        feature.SetField("Elevation", float(currentAttList.get_attribute("Elevation")))
+        feature.SetField("SoilClass", str(currentAttList.get_attribute("SoilClass")))
+        feature.SetField("DepthToGW", float(currentAttList.get_attribute("DepthToGW")))
+
+
 
         layer.CreateFeature(feature)
     shapefile.Destroy()
