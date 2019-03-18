@@ -944,7 +944,12 @@ class UrbanDevelopment(UBModule):
             cellslist[i].add_attribute("ACCESS_ORC", final_acc_orc)
 
         # - 2.7 - SPATIAL RELATIONSHIPS - SUITABILITY
+        self.notify("Beginning Suitability calculations...")
+        print("Beginning Suitability calculations...")
+
         # - 2.7.1 - Determine Immediate Cardinal and Ordinal direction neighbours (use Moore)
+        self.notify("Determining adjacent neighbours")
+        print("Determining adjacent neighbours")
         for i in cellslist:
             cellslist[i].add_attribute("NHD_N", 0)
             cellslist[i].add_attribute("NHD_NE", 0)
@@ -975,19 +980,119 @@ class UrbanDevelopment(UBModule):
 
                     if d == "":     # DEBUG
                         print "Something went wrong!!!"
+
                     cellslist[i].add_attribute("NHD_"+d, cellslist.get_attribute("CellID"))
                     neighbours.append(cellslist[j].get_attribute("CellID"))
             cellslist[i].add_attribute("AdjacentNH", neighbours)
 
-        # - 2.7.2 - LOAD ALL THE RELEVANT DATA SETS AND ASSIGN TO CELLS AND CALCULATE VALUES
+        # - 2.7.2 - LOAD ALL THE RELEVANT DATA SETS AND ASSIGN TO CELLS
+        self.notify("Loading maps for suitability assessment...")
+        print("Loading map for suitability assessment...")
+        if (self.suit_slope_include or self.suit_aspect_include) and self.suit_elevation_data:
+            # If either criteria has been included, map elevation to cells
+            elev_dref = self.datalibrary.get_data_with_id(self.suit_elevation_data)
+            fullfilepath = elev_dref.get_data_file_path() + elev_dref.get_metadata("filename")
+            elevraster = ubspatial.import_ascii_raster(fullfilepath, self.suit_elevation_data)
+            elev_offset = ubspatial.calculate_offsets(elevraster, map_attr)
+            elev_res = elevraster.get_cellsize()
+            elev_csc = int(self.cellsize / elev_res)     # knowing how many cells wide and tall
 
-        # - 2.7.2.1 - SLOPE AND ASPECT
+        if self.suit_soil_include and self.suit_soil_data:
+            soil_dref = self.datalibrary.get_data_with_id(self.suit_soil_data)
+            fullfilepath = soil_dref.get_data_file_path() + soil_dref.get_metadata("filename")
+            soilraster = ubspatial.import_ascii_raster(fullfilepath, self.suit_soil_data)
+            soil_offset = ubspatial.calcualte_offsets(soilraster, map_attr)
+            soil_res = soilraster.get_cellsize()
+            soil_csc = int(self.cellsize / soil_res)
 
-        # - 2.7.2.2 - SOIL CLASSIFICATION
+        if self.suit_gw_include and self.suit_gw_data:
+            gw_dref = self.datalibrary.get_data_with_id(self.suit_gw_data)
+            fullfilepath = gw_dref.get_data_file_path() + gw_dref.get_metadata("filename")
+            gwraster = ubspatial.import_ascii_raster(fullfilepath, self.suit_gw_data)
+            gw_offset = ubspatial.calcualte_offsets(gwraster, map_attr)
+            gw_res = gwraster.get_cellsize()
+            gw_csc = int(self.cellsize / gw_res)
 
-        # - 2.7.2.3 - GROUNDWATER DEPTH [m]
+        if self.suit_custom_include and self.suit_custom_data:
+            pass
+            # CUSTOM - [TO DO]
+            # Need to figure out 'data type', 'data format', etc.
 
-        # - 2.7.2.4 - CUSTOM CRITERION
+        # PREPARE ARRAYS FOR COMBINING SUITABILITY VALUES
+        suitability_bools = [self.suit_slope_include, self.suit_aspect_include, self.suit_soil_include,
+                             self.suit_gw_include, self.suit_custom_include]
+        all_weights = [self.suit_slope_weight, self.suit_aspect_weight, self.suit_soil_weight,
+                               self.suit_gw_weight, self.suit_custom_weight]
+        suit_weights = [all_weights[s] for s in range(len(suitability_bools)) if suitability_bools[s]]  # relevant ones
+        map_suitability_values = []     # Will hold all the final suitability values for normalization
+
+        # - 2.7.3 - ASSIGN ALL THE DATA TO THE CELLS AND DO CALCULATIONS IF NECESSARY - THEN CONVERT TO SUITABILITY
+        for i in range(len(cellslist)):
+            current_cell = cellslist[i]
+            suit_values = []
+            col_start = int(current_cell.get_attribute("OriginX") / elev_res)
+            row_start = int(current_cell.get_attribute("OriginY") / elev_res)
+
+            # SLOPE AND ASPECT
+            if self.suit_slope_include or self.suit_aspect_include:
+                elevdatamatrix = elevraster.get_data_square(col_start, row_start, elev_csc, elev_csc)
+
+                if elev_csc > 1.0:   # Then the cell size greater than the input raster resolution
+                    pass
+                    current_cell.add_attribute("AvgElev", 0)
+                else:
+                    avg_elev =
+                    current_cell.add_attribute("AvgElev", 0)
+
+                # - 2.7.4a - SUITABILITY CALCULATION FOR SLOPE
+                if self.suit_slope_include:
+                    pass
+
+                # - 2.7.4b - SUITABILITY CALCULATION FOR ASPECT
+                if self.suit_aspect_include:
+                    pass
+
+            # SOIL CLASSIFICATION
+            if self.suit_soil_include:
+                soildatamatrix = soilraster.get_data_square(col_start, row_start, soil_csc, soil_csc)
+                if soil_csc > 1.0:
+                    pass
+                    current_cell.add_attribute("SoilClass", 0)
+                else:
+                    pass
+                    current_cell.add_attribute("SoilClass", 0)
+
+                # - 2.7.4c - SUITABILITY CALCULATION FOR SOIL TYPE
+
+            # GROUNDWTAER DEPTH
+            if self.suit_gw_include:
+                gwdatamatrix = gwraster.get_data_square(col_start, row_start, gw_csc, gw_csc)
+                if gw_csc > 1.0:
+                    pass
+                    current_cell.add_attribute("DepthToGW", 0)
+                else:
+                    pass
+                    current_cell.add_attribute("DepthToGW", 0)
+
+                # - 2.7.4d - SUITABILITY CALCULATION FOR GROUNDWATER DEPTH
+
+            # CUSTOM DATA SET
+            if self.suit_custom_include:
+                pass    # [TO DO]
+                # - 2.7.4e - SUITABILITY CALCULATION FOR CUSTOM CRITERION
+
+            # COMBINED SUITABILITY
+            combined_suitability = 0
+            for i in range(len(suit_values)):
+                combined_suitability = suit_values[i] * suit_weights[i]
+            map_suitability_values.append(combined_suitability)
+            current_cell.add_attribute("SUIT_COM", combined_suitability)
+
+        # - 2.7.4 - NORMALIZE SUITABILITY VALUES
+        normalization_value = max(map_suitability_values)
+        for i in range(len(cellslist)):
+            cellslist[i].change_attribute("SUIT_COM", float(cellslist[i].get_attribute("SUIT_COM")/normalization_value))
+        # ----- END OF SUITABILITY CALCULATIONS -----
 
         # - 2.8 - SPATIAL RELATIONSHIPS - ZONING
         # Start by loading all relevant zoning maps. Preferably want to do this in one single loop
