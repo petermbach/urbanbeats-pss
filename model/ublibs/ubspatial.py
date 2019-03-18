@@ -1110,6 +1110,8 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
         if map_attr.get_attribute("HasSWW"):
             fielddefmatrix.append(ogr.FieldDefn("HasSWW", ogr.OFTReal))
             fielddefmatrix.append(ogr.FieldDefn("HasWWTP", ogr.OFTReal))
+            fielddefmatrix.append(ogr.FieldDefn("Sww_DownID", ogr.OFTReal))
+            fielddefmatrix.append(ogr.FieldDefn("ModAvgElev", ogr.OFTReal))
 
 
     # More attributes to come in future
@@ -1425,6 +1427,8 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
             if map_attr.get_attribute("HasSWW"):
                 feature.SetField("HasSWW", int(currentAttList.get_attribute("HasSWW")))
                 feature.SetField("HasWWTP", int(currentAttList.get_attribute("HasWWTP")))
+                feature.SetField("Sww_DownID", int(currentAttList.get_attribute("Sww_DownID")))
+                feature.SetField("ModAvgElev", float(currentAttList.get_attribute("ModAvgElev")))
 
         layer.CreateFeature(feature)
 
