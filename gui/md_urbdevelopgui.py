@@ -2875,7 +2875,7 @@ class Ui_Urbandev_Dialog(object):
         self.retranslateUi(Urbandev_Dialog)
         self.parameters.setCurrentIndex(0)
         self.employ_stack.setCurrentIndex(2)
-        self.spatialrelation_tabwidget.setCurrentIndex(2)
+        self.spatialrelation_tabwidget.setCurrentIndex(0)
         self.suit_threshold_stack.setCurrentIndex(0)
         self.buttonBox.accepted.connect(Urbandev_Dialog.accept)
         self.buttonBox.rejected.connect(Urbandev_Dialog.reject)

@@ -172,6 +172,9 @@ def calculate_metric_shannon(landclassprop, richness):
         shaneven = shandiv / math.log(richness)
     return shandiv, shandom, shaneven
 
+def get_central_coordinates(ubvec):
+    """Returns the CentreX, CentreY of the current ubVector object as a tuple."""
+    return (ubvec.get_attribute("CentreX"), ubvec.get_attribute("CentreY"))
 
 def review_filename(fname):
     """Checks the filename for illegal characters, if there are illegal characters, function

@@ -1747,7 +1747,7 @@ p, li { white-space: pre-wrap; }
              <enum>QTabWidget::West</enum>
             </property>
             <property name="currentIndex">
-             <number>2</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="accessibility">
              <attribute name="icon">
@@ -1864,8 +1864,8 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>541</width>
-                   <height>1664</height>
+                   <width>461</width>
+                   <height>1667</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -4080,7 +4080,7 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>541</width>
+                   <width>521</width>
                    <height>435</height>
                   </rect>
                  </property>
@@ -4469,8 +4469,8 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>541</width>
-                   <height>788</height>
+                   <width>486</width>
+                   <height>801</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -7466,7 +7466,7 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>541</width>
+                   <width>484</width>
                    <height>1008</height>
                   </rect>
                  </property>
@@ -8157,7 +8157,7 @@ p, li { white-space: pre-wrap; }
  <resources>
   <include location="../graphics/ubeats.qrc"/>
   <include location="../graphics/ubeats.qrc"/>
-  <include location="../../../../.designer/graphics/ubeats.qrc"/>
+  <include location="../graphics/ubeats.qrc"/>
  </resources>
  <connections>
   <connection>

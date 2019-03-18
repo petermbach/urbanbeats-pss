@@ -853,30 +853,6 @@ class UrbanDevelopment(UBModule):
                     continue
                 self.calculate_employment_from_land_use(current_cell, self.cellsize)
 
-        # - 2.5 - DETERMINE NEIGHBOURHOODS ---
-        # self.notify("Establishing Neighbourhoods")
-        # print ("Establishing Neighbourhoods")
-        # hashtable = [[], []]    # [Cell_Obj, NhD_Objs]
-        # nhd_rad = self.nhd_radius * 1000    # Convert to [m]
-        # sqdist = nhd_rad * nhd_rad
-        #
-        # for i in range(len(cellslist)):
-        #     cur_cell = cellslist[i]
-        #     hashtable[0].append(cur_cell)   # Add the current cell object to the hash_table
-        #     neighbours = []
-        #     neighbour_IDs = []
-        #     coords = (cur_cell.get_attribute("CentreX"), cur_cell.get_attribute("CentreY"))
-        #     for j in range(len(cellslist)):
-        #         dx = (cellslist[j].get_attribute("CentreX") - coords[0])
-        #         dy = (cellslist[j].get_attribute("CentreY") - coords[1])
-        #         if (dx * dx + dy * dy) <= sqdist:
-        #             # The Cell is part of the neighbourhood
-        #             neighbours.append(cellslist[j])
-        #             neighbour_IDs.append(cellslist[j].get_attribute("CellID"))
-        #     cur_cell.add_attribute("NHD_IDs", neighbour_IDs)
-        #     cur_cell.add_attribute("NHD_N", len(neighbour_IDs))
-        #     hashtable[1].append(neighbours)
-
         # - 2.6 - SPATIAL RELATIONSHIPS - ACCESSIBILITY
         # - 2.6.1 - Determine individual accessibility maps
         self.notify("Entering Accessibility Calculations")
@@ -968,8 +944,50 @@ class UrbanDevelopment(UBModule):
             cellslist[i].add_attribute("ACCESS_ORC", final_acc_orc)
 
         # - 2.7 - SPATIAL RELATIONSHIPS - SUITABILITY
+        # - 2.7.1 - Determine Immediate Cardinal and Ordinal direction neighbours (use Moore)
+        for i in cellslist:
+            cellslist[i].add_attribute("NHD_N", 0)
+            cellslist[i].add_attribute("NHD_NE", 0)
+            cellslist[i].add_attribute("NHD_E", 0)
+            cellslist[i].add_attribute("NHD_SE", 0)
+            cellslist[i].add_attribute("NHD_S", 0)
+            cellslist[i].add_attribute("NHD_SW", 0)
+            cellslist[i].add_attribute("NHD_W", 0)
+            cellslist[i].add_attribute("NHD_NW", 0)
+            neighbours = []
+            ixy = ubmethods.get_central_coordinates(cellslist[i])
+            for j in cellslist:     # Oh how I hate to use double for loops.... looping across gianourmous arrays...
+                if cellslist[j] == cellslist[i]:
+                    continue
+                jxy = ubmethods.get_central_coordinates(cellslist[j])
+                if abs(ixy[0] - jxy[0]) <= self.cellsize and abs(ixy[1] - jxy[1]) <= self.cellsize:
+                    # ASSIGN THE CARDINAL/ORDINAL DIRECTION
+                    d = ""  # Piece together the direction from dx, dy rules.
+                    if (ixy[1] - jxy[1]) < 0:   # If dy < 0, then jxy is greater i.e NORTH
+                        d += "N"
+                    elif (ixy[1] - jxy [1]) >0: # if dy > 0, then jxy is less i.e. SOUTH
+                        d += "S"
 
+                    if (ixy[0] - jxy[0]) < 0:   # If dx < 0, then jxy is greater i.e. EAST
+                        d += "E"
+                    elif (ixy[0] - jxy[0]) > 0: # if dx > 0, then jxy is less i.e. WEST
+                        d += "W"
 
+                    if d == "":     # DEBUG
+                        print "Something went wrong!!!"
+                    cellslist[i].add_attribute("NHD_"+d, cellslist.get_attribute("CellID"))
+                    neighbours.append(cellslist[j].get_attribute("CellID"))
+            cellslist[i].add_attribute("AdjacentNH", neighbours)
+
+        # - 2.7.2 - LOAD ALL THE RELEVANT DATA SETS AND ASSIGN TO CELLS AND CALCULATE VALUES
+
+        # - 2.7.2.1 - SLOPE AND ASPECT
+
+        # - 2.7.2.2 - SOIL CLASSIFICATION
+
+        # - 2.7.2.3 - GROUNDWATER DEPTH [m]
+
+        # - 2.7.2.4 - CUSTOM CRITERION
 
         # - 2.8 - SPATIAL RELATIONSHIPS - ZONING
         # Start by loading all relevant zoning maps. Preferably want to do this in one single loop
@@ -1191,6 +1209,30 @@ class UrbanDevelopment(UBModule):
                     cellslist[i].change_attribute("ZONE_IND", restrict)
                 if zstates[3] and self.zoning_custom_orc:
                     cellslist[i].change_attribute("ZONE_ORC", restrict)
+
+        # - 2.8 - DETERMINE LARGE NEIGHBOURHOODS ---
+        # self.notify("Establishing Neighbourhoods")
+        # print ("Establishing Neighbourhoods")
+        # hashtable = [[], []]    # [Cell_Obj, NhD_Objs]
+        # nhd_rad = self.nhd_radius * 1000    # Convert to [m]
+        # sqdist = nhd_rad * nhd_rad
+        #
+        # for i in range(len(cellslist)):
+        #     cur_cell = cellslist[i]
+        #     hashtable[0].append(cur_cell)   # Add the current cell object to the hash_table
+        #     neighbours = []
+        #     neighbour_IDs = []
+        #     coords = (cur_cell.get_attribute("CentreX"), cur_cell.get_attribute("CentreY"))
+        #     for j in range(len(cellslist)):
+        #         dx = (cellslist[j].get_attribute("CentreX") - coords[0])
+        #         dy = (cellslist[j].get_attribute("CentreY") - coords[1])
+        #         if (dx * dx + dy * dy) <= sqdist:
+        #             # The Cell is part of the neighbourhood
+        #             neighbours.append(cellslist[j])
+        #             neighbour_IDs.append(cellslist[j].get_attribute("CellID"))
+        #     cur_cell.add_attribute("NHD_IDs", neighbour_IDs)
+        #     cur_cell.add_attribute("NHD_Num", len(neighbour_IDs))
+        #     hashtable[1].append(neighbours)
 
         # - 2.9 - SPATIAL RELATIONSHIPS - NEIGHBOURHOOD EFFECT
         # We have the land use types defined, now we need to define the maps for the individual four active land uses

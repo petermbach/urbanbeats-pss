@@ -72,7 +72,7 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     fielddefmatrix.append(ogr.FieldDefn("Base_POP", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("Base_EMP", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("LUC_Type", ogr.OFTString))
-    # fielddefmatrix.append(ogr.FieldDefn("NHD_N", ogr.OFTInteger))
+    # fielddefmatrix.append(ogr.FieldDefn("NHD_Num", ogr.OFTInteger))
     # fielddefmatrix.append(ogr.FieldDefn("NHD_IDs", ogr.OFTString))
 
     # ACCESSIBILIY INDICATORS
@@ -128,6 +128,16 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     fielddefmatrix.append(ogr.FieldDefn("ZONE_IND", ogr.OFTInteger))
     fielddefmatrix.append(ogr.FieldDefn("ZONE_ORC", ogr.OFTInteger))
 
+    fielddefmatrix.append(ogr.FieldDefn("NHD_N", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("NHD_NE", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("NHD_E", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("NHD_SE", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("NHD_S", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("NHD_SW", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("NHD_W", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("NHD_NW", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("NHAdjacent", ogr.OFTString))
+
     # Create the fields
     for field in fielddefmatrix:
         layer.CreateField(field)
@@ -161,7 +171,7 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("Base_POP", int(currentAttList.get_attribute("Base_POP")))
         feature.SetField("Base_EMP", int(currentAttList.get_attribute("Base_EMP")))
         feature.SetField("LUC_Type", str(currentAttList.get_attribute("LUC_Type")))
-        # feature.SetField("NHD_N", str(currentAttList.get_attribute("NHD_N")))
+        feature.SetField("NHD_Num", int(currentAttList.get_attribute("NHD_Num")))
         # feature.SetField("NHD_IDs", str(",".join(map(str, currentAttList.get_attribute("NHD_IDs")))))
         # Neighbourhood attribute converts the [ ] array of BlockIDs to a comma-separated list "#,#,#,#"
 
@@ -216,7 +226,18 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("ZONE_COM", int(currentAttList.get_attribute("ZONE_COM")))
         feature.SetField("ZONE_IND", int(currentAttList.get_attribute("ZONE_IND")))
         feature.SetField("ZONE_ORC", int(currentAttList.get_attribute("ZONE_ORC")))
-        layer.CreateFeature(feature)
 
+        feature.SetField("NHD_N", int(currentAttList.get_attribute("NHD_N")))
+        feature.SetField("NHD_NE", int(currentAttList.get_attribute("NHD_NE")))
+        feature.SetField("NHD_E", int(currentAttList.get_attribute("NHD_E")))
+        feature.SetField("NHD_SE", int(currentAttList.get_attribute("NHD_SE")))
+        feature.SetField("NHD_S", int(currentAttList.get_attribute("NHD_S")))
+        feature.SetField("NHD_SW", int(currentAttList.get_attribute("NHD_SW")))
+        feature.SetField("NHD_W", int(currentAttList.get_attribute("NHD_W")))
+        feature.SetField("NHD_NW", int(currentAttList.get_attribute("NHD_NW")))
+        feature.SetField("NHAdjacentNH", str(",".join(map(str, currentAttList.get_attribute("NHAdjacent")))))
+        # Neighbourhood attribute converts the [ ] array of BlockIDs to a comma-separated list "#,#,#,#"
+
+        layer.CreateFeature(feature)
     shapefile.Destroy()
     return True
