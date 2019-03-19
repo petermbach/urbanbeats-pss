@@ -427,8 +427,9 @@ def normalize_weights(weights_matrix, method):
     :param method: S = sum, normalize 0 to 1, A = average, normalize against average
     :return: a list [ ] of equal length with the normalized weights."""
     if method == "SUM":
+        tot = sum(weights_matrix)
         for i in range(len(weights_matrix)):
-            weights_matrix[i] = float(weights_matrix[i] / sum(weights_matrix))
+            weights_matrix[i] = float(weights_matrix[i] / tot)
     elif method == "AVG":
         avg = float(sum(weights_matrix) / len(weights_matrix))
         for i in range(len(weights_matrix)):

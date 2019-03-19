@@ -913,10 +913,11 @@ class UrbanDevelopment(UBModule):
                                  float(self.access_pos_weight * self.access_pos_include),
                                  float(self.access_poi_weight * self.access_poi_include),
                                  float(self.access_pth_weight * self.access_pth_include)]
-
+        print "ACCESS WEIGHTS", accessibility_weights
         accessibility_weights = ubmethods.normalize_weights(accessibility_weights, "SUM")   # 0 to 1 normalize
-        accessibility_attributes = ["ACC_ROAD", "ACC_RAIL", "ACC_WWAY", "ACC_LAKE", "ACC_POSS", "ACC_POIS", "ACC_PTHS"]
 
+        accessibility_attributes = ["ACC_ROAD", "ACC_RAIL", "ACC_WWAY", "ACC_LAKE", "ACC_POSS", "ACC_POIS", "ACC_PTHS"]
+        print "ACCESS WEIGHTS", accessibility_weights
         # Loop across blocks, get the five attributes and calculate total accessibility
         for i in range(len(cellslist)):
             final_acc_res, final_acc_com, final_acc_ind, final_acc_orc = 0, 0, 0, 0
@@ -1073,7 +1074,7 @@ class UrbanDevelopment(UBModule):
             if self.suit_gw_include:
                 gwdatamatrix = gwraster.get_data_square(col_start, row_start, gw_csc, gw_csc)
 
-                # TRANSFER ELEVATION TO CELLS
+                # TRANSFER GROUNDWATER TO CELLS
                 if gw_csc > 1.0:
                     gwvalues = gwdatamatrix.flatten()
                     avg_gwd, n_gw = 0, 0
@@ -1087,6 +1088,7 @@ class UrbanDevelopment(UBModule):
                     else:
                         current_cell.add_attribute("DepthToGW", float(avg_gwd / n_gw))
                 else:
+                    print gwdatamatrix
                     if gwdatamatrix == gwraster.get_nodatavalue():
                         current_cell.add_attribute("DepthToGW", -9999)
                     else:
@@ -1111,84 +1113,84 @@ class UrbanDevelopment(UBModule):
                         suitability_bools[s]]  # relevant ones
         map_suitability_values = [[], [], [], []]  # Will hold all the final suitability values for normalization
 
-        # for i in range(len(cellslist)):
-        #     suit_values = [[], [], [], []]  # [ [RES], [COM], [IND], [ORC] ]
-        #
-        #     # - 2.7.4a - SUITABILITY CALCULATION FOR SLOPE
-        #     if self.suit_slope_include and self.suit_elevation_data:
-        #         pass
-        #         suitability = self.calculate_suitability_value()
-        #         current_cell.add_attribute("SU_SLOPE_R", suitability)
-        #         current_cell.add_attribute("SU_SLOPE_C", suitability)
-        #         current_cell.add_attribute("SU_SLOPE_I", suitability)
-        #         current_cell.add_attribute("SU_SLOPE_O", suitability)
-        #
-        #         suit_values[0].append(suitability)
-        #         suit_values[1].append(suitability)
-        #         suit_values[2].append(suitability)
-        #         suit_values[3].append(suitability)
-        #
-        #     # - 2.7.4b - SUITABILITY CALCULATION FOR ASPECT
-        #     if self.suit_aspect_include and self.suit_elevation_data:
-        #         pass
-        #         suitability = self.calculate_suitability_value()
-        #         current_cell.add_attribute("SU_ASPCT_R", suitability)
-        #         current_cell.add_attribute("SU_ASPCT_C", suitability)
-        #         current_cell.add_attribute("SU_ASPCT_I", suitability)
-        #         current_cell.add_attribute("SU_ASPCT_O", suitability)
-        #         suit_values.append(suitability)
-        #
-        #     # - 2.7.4c - SUITABILITY CALCULATION FOR SOIL TYPE
-        #     if self.suit_soil_include and self.suit_soil_data:
-        #         pass
-        #         suitability = self.calculate_suitability_value()
-        #         current_cell.add_attribute("SU_SOIL_R", suitability)
-        #         current_cell.add_attribute("SU_SOIL_C", suitability)
-        #         current_cell.add_attribute("SU_SOIL_I", suitability)
-        #         current_cell.add_attribute("SU_SOIL_O", suitability)
-        #         suit_values.append(suitability)
-        #
-        #     # - 2.7.4d - SUITABILITY CALCULATION FOR GROUNDWATER DEPTH
-        #     if self.suit_gw_include and self.suit_gw_data:
-        #         pass
-        #         suitability = self.calculate_suitability_value()
-        #         current_cell.add_attribute("SU_GWATD_R", suitability)
-        #         current_cell.add_attribute("SU_GWATD_C", suitability)
-        #         current_cell.add_attribute("SU_GWATD_I", suitability)
-        #         current_cell.add_attribute("SU_GWATD_O", suitability)
-        #         suit_values.append(suitability)
-        #
-        #     # - 2.7.4e - SUITABILITY CALCULATION FOR CUSTOM CRITERION
-        #     if self.suit_custom_include and self.suit_custom_data:
-        #         pass
-        #         suitability = self.calculate_suitability_value()
-        #         current_cell.add_attribute("SU_CUSTO_R", suitability)
-        #         current_cell.add_attribute("SU_CUSTO_C", suitability)
-        #         current_cell.add_attribute("SU_CUSTO_I", suitability)
-        #         current_cell.add_attribute("SU_CUSTO_O", suitability)
-        #         suit_values.append(suitability)
-        #
-        #     # COMBINED SUITABILITY
-        #     combined_suitability = [0, 0, 0, 0]     # ["RES", "COM", "IND", "ORC"]
-        #     for luc_cat in range(len(suit_values)):     # Loop across land uses
-        #         for j in range(len(suit_values[luc_cat])):      # Loop across criteria
-        #             combined_suitability[luc_cat] += suit_values[luc_cat][j] * suit_weights[j]
-        #         map_suitability_values[luc_cat].append(combined_suitability)
-        #     current_cell.add_attribute("SUIT_RES", combined_suitability[0])
-        #     current_cell.add_attribute("SUIT_COM", combined_suitability[1])
-        #     current_cell.add_attribute("SUIT_IND", combined_suitability[2])
-        #     current_cell.add_attribute("SUIT_ORC", combined_suitability[3])
-        #
-        # # - 2.7.5 - NORMALIZE SUITABILITY VALUES
-        # norm_values = [0, 0, 0, 0]      # The maximums of each land use suitability for normalization purposes
-        # for luc_cat in range(len(map_suitability_values)):
-        #     norm_values[luc_cat] = max(map_suitability_values[luc_cat])
-        #
-        # for i in range(len(cellslist)):
-        #     cellslist[i].change_attribute("SUIT_RES", float(cellslist[i].get_attribute("SUIT_RES") / norm_values[0]))
-        #     cellslist[i].change_attribute("SUIT_COM", float(cellslist[i].get_attribute("SUIT_COM") / norm_values[1]))
-        #     cellslist[i].change_attribute("SUIT_IND", float(cellslist[i].get_attribute("SUIT_IND") / norm_values[2]))
-        #     cellslist[i].change_attribute("SUIT_ORC", float(cellslist[i].get_attribute("SUIT_ORC") / norm_values[3]))
+        for i in range(len(cellslist)):
+            suit_values = [[], [], [], []]  # [ [RES], [COM], [IND], [ORC] ]
+
+            # - 2.7.4a - SUITABILITY CALCULATION FOR SLOPE
+            if self.suit_slope_include and self.suit_elevation_data:
+                pass
+                suitability = self.calculate_suitability_value()
+                current_cell.add_attribute("SU_SLOPE_R", suitability)
+                current_cell.add_attribute("SU_SLOPE_C", suitability)
+                current_cell.add_attribute("SU_SLOPE_I", suitability)
+                current_cell.add_attribute("SU_SLOPE_O", suitability)
+
+                suit_values[0].append(suitability)
+                suit_values[1].append(suitability)
+                suit_values[2].append(suitability)
+                suit_values[3].append(suitability)
+
+            # - 2.7.4b - SUITABILITY CALCULATION FOR ASPECT
+            if self.suit_aspect_include and self.suit_elevation_data:
+                pass
+                suitability = self.calculate_suitability_value()
+                current_cell.add_attribute("SU_ASPCT_R", suitability)
+                current_cell.add_attribute("SU_ASPCT_C", suitability)
+                current_cell.add_attribute("SU_ASPCT_I", suitability)
+                current_cell.add_attribute("SU_ASPCT_O", suitability)
+                suit_values.append(suitability)
+
+            # - 2.7.4c - SUITABILITY CALCULATION FOR SOIL TYPE
+            if self.suit_soil_include and self.suit_soil_data:
+                pass
+                suitability = self.calculate_suitability_value()
+                current_cell.add_attribute("SU_SOIL_R", suitability)
+                current_cell.add_attribute("SU_SOIL_C", suitability)
+                current_cell.add_attribute("SU_SOIL_I", suitability)
+                current_cell.add_attribute("SU_SOIL_O", suitability)
+                suit_values.append(suitability)
+
+            # - 2.7.4d - SUITABILITY CALCULATION FOR GROUNDWATER DEPTH
+            if self.suit_gw_include and self.suit_gw_data:
+                pass
+                suitability = self.calculate_suitability_value()
+                current_cell.add_attribute("SU_GWATD_R", suitability)
+                current_cell.add_attribute("SU_GWATD_C", suitability)
+                current_cell.add_attribute("SU_GWATD_I", suitability)
+                current_cell.add_attribute("SU_GWATD_O", suitability)
+                suit_values.append(suitability)
+
+            # - 2.7.4e - SUITABILITY CALCULATION FOR CUSTOM CRITERION
+            if self.suit_custom_include and self.suit_custom_data:
+                pass
+                suitability = self.calculate_suitability_value()
+                current_cell.add_attribute("SU_CUSTO_R", suitability)
+                current_cell.add_attribute("SU_CUSTO_C", suitability)
+                current_cell.add_attribute("SU_CUSTO_I", suitability)
+                current_cell.add_attribute("SU_CUSTO_O", suitability)
+                suit_values.append(suitability)
+
+            # COMBINED SUITABILITY
+            combined_suitability = [0, 0, 0, 0]     # ["RES", "COM", "IND", "ORC"]
+            for luc_cat in range(len(suit_values)):     # Loop across land uses
+                for j in range(len(suit_values[luc_cat])):      # Loop across criteria
+                    combined_suitability[luc_cat] += suit_values[luc_cat][j] * suit_weights[j]
+                map_suitability_values[luc_cat].append(combined_suitability)
+            current_cell.add_attribute("SUIT_RES", combined_suitability[0])
+            current_cell.add_attribute("SUIT_COM", combined_suitability[1])
+            current_cell.add_attribute("SUIT_IND", combined_suitability[2])
+            current_cell.add_attribute("SUIT_ORC", combined_suitability[3])
+
+        # - 2.7.5 - NORMALIZE SUITABILITY VALUES
+        norm_values = [0, 0, 0, 0]      # The maximums of each land use suitability for normalization purposes
+        for luc_cat in range(len(map_suitability_values)):
+            norm_values[luc_cat] = max(map_suitability_values[luc_cat])
+
+        for i in range(len(cellslist)):
+            cellslist[i].change_attribute("SUIT_RES", float(cellslist[i].get_attribute("SUIT_RES") / norm_values[0]))
+            cellslist[i].change_attribute("SUIT_COM", float(cellslist[i].get_attribute("SUIT_COM") / norm_values[1]))
+            cellslist[i].change_attribute("SUIT_IND", float(cellslist[i].get_attribute("SUIT_IND") / norm_values[2]))
+            cellslist[i].change_attribute("SUIT_ORC", float(cellslist[i].get_attribute("SUIT_ORC") / norm_values[3]))
         # ----- END OF SUITABILITY CALCULATIONS -----
 
         # - 2.8 - SPATIAL RELATIONSHIPS - ZONING
