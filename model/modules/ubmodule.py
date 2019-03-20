@@ -72,7 +72,7 @@ class UBModule(object):
         :param updateMessage: message to be sent to all observers, gets converted to a string.
         :return: True
         """
-        self.__observers[0].update_observer(str(updateMessage)) # [0] is the console observer
+        self.__observers[0].update_observer(str(updateMessage))  # [0] is the console observer
         return True
 
     def notify_progress(self, value):
@@ -114,7 +114,7 @@ class UBModule(object):
         return self.__dict__.get(name)
 
     def set_parameter(self, name, value):
-        """Sets the paramter 'name' with the value 'value' by looking up the class' attributes for the specific class
+        """Sets the parameter 'name' with the value 'value' by looking up the class' attributes for the specific class
         variable self.??? with the name <name>.
 
         :param name: Parameter name

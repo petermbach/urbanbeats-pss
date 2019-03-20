@@ -343,6 +343,14 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
         fielddefmatrix.append(ogr.FieldDefn("Blk_WWB", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("Blk_Loss", ogr.OFTReal))
 
+    if map_attr.get_attribute("HasINFRA"):
+        if map_attr.get_attribute("HasSWW"):
+            fielddefmatrix.append(ogr.FieldDefn("HasSWW", ogr.OFTReal))
+            fielddefmatrix.append(ogr.FieldDefn("HasWWTP", ogr.OFTReal))
+            fielddefmatrix.append(ogr.FieldDefn("HasCarved", ogr.OFTReal))
+            fielddefmatrix.append(ogr.FieldDefn("Sww_DownID", ogr.OFTReal))
+            fielddefmatrix.append(ogr.FieldDefn("ModAvgElev", ogr.OFTReal))
+
     # More attributes to come in future
     # Create the fields
     for field in fielddefmatrix:
@@ -653,6 +661,14 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
             feature.SetField("Blk_WWG", float(currentAttList.get_attribute("Blk_WWGrey")))
             feature.SetField("Blk_WWB", float(currentAttList.get_attribute("Blk_WWBlack")))
             feature.SetField("Blk_Loss", float(currentAttList.get_attribute("Blk_Losses")))
+
+        if map_attr.get_attribute("HasINFRA"):
+            if map_attr.get_attribute("HasSWW"):
+                feature.SetField("HasSWW", int(currentAttList.get_attribute("HasSWW")))
+                feature.SetField("HasWWTP", int(currentAttList.get_attribute("HasWWTP")))
+                feature.SetField("HasCarved", int(currentAttList.get_attribute("HasCarved")))
+                feature.SetField("Sww_DownID", int(currentAttList.get_attribute("Sww_DownID")))
+                feature.SetField("ModAvgElev", float(currentAttList.get_attribute("ModAvgElev")))
 
         layer.CreateFeature(feature)
 

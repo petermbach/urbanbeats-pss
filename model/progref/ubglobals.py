@@ -130,7 +130,7 @@ DPS = ["SDD", "CDP", "OHT", "AHC", "USER"]    # Types of diurnal patterns
 SDD = [0.3, 0.3, 0.3, 0.3, 0.5, 1.0, 1.5, 1.5, 1.3, 1.0, 1.0, 1.5, 1.5, 1.2, 1.0, 1.0, 1.0, 1.3, 1.3, 0.8,
        0.8, 0.5, 0.5, 0.5]
 
-# CDP = CONSATNT DAILY DIURNAL PATTERN SCALING FACTORS
+# CDP = CONSTANT DAILY DIURNAL PATTERN SCALING FACTORS
 CDP = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
        1.0, 1.0, 1.0, 1.0]
 
@@ -159,7 +159,7 @@ ASSET_IDENTIFIERS = {"Block": "The most basic building block of the city in Urba
                      "BlockCentre": "Centroid of a Block, simply for reference and distance calculations",
                      "Flow": "The link between two Blocks representing the water flow directions.",
                      "FlowP": "The link between two Patches representing the water flow directions.",
-                     "OSLink": "The link between open space and other land uses representing distance between",
+                     "OSLink": "The link between open space and other land uses representing the distance between them",
                      "OSNet": "The link between open space land uses representing interconnectivity of spaces",
                      "UrbanCell": "The cell at 50m or 100m resolution on which the urban modelling and cellular "
                                   "automata is conducted is run. UrbanCells are aggregated to Blocks later on.",

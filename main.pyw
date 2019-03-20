@@ -659,7 +659,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.printc("New Project Initialized")
             activesimulation.initialize_simulation("new")
         else:
-            self.printc("Loading Project "+ activesimulation.get_project_parameter("name"))
+            self.printc("Loading Project " + activesimulation.get_project_parameter("name"))
             activesimulation.initialize_simulation("open")
 
         self.set_current_project_name(activesimulation.get_project_parameter("name"))
