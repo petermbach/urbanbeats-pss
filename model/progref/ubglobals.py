@@ -104,15 +104,18 @@ MODULENAMES = ["SPATIAL", "CLIMATE", "URBDEV", "URBPLAN", "SOCIO", "MAP", "REG",
 
 # NATURAL ELEMENTS
 SOILDICTIONARY = [180, 36, 3.6, 0.36] #mm/hr - 1=sand, 2=sandy clay, 3=medium clay, 4=heavy clay
+SOILCLASSES = ["Sand", "Sandy Clay", "Medium Clay", "Heavy Clay"]
+SOILABBREVIATIONS = ["S", "SC", "MC", "HC"]
+
 LANDCOVERMATERIALS = ["AS", "CO", "DG"]  # AS = asphalt, CO = concrete, DG = bare dirt ground
 TREETYPES = ["RB", "RN", "TB", "TN", "OB", "ON"]
         # Explanation of tree types: R = round, T = tall, O = open, B = broad leaves, N = needle leaves
 
 # LAND USE AND PLANNING ELEMENTS
-LANDUSEABBR = ['RES', 'COM', 'ORC', 'LI', 'HI', 'CIV', 'SVU', 'RD', 'TR', 'PG', 'REF', 'UND', 'NA']
+LANDUSEABBR = ['RES', 'COM', 'ORC', 'LI', 'HI', 'CIV', 'SVU', 'RD', 'TR', 'PG', 'REF', 'UND', 'NA', 'WAT', 'FOR', 'AGR']
 LANDUSENAMES = ['Residential', 'Commercial', 'Offices Res Mix', 'Light Industry', 'Heavy Industry',
                 'Civic', 'Service and Utility', 'Road', 'Transport', 'Parks and Gardens', 'Reserves and Floodway',
-                'Undeveloped', 'Unclassified']
+                'Undeveloped', 'Unclassified', 'Water', 'Forest', 'Agriculture']
 
 PLANTYPES = ["Suburbia", "European", "Megacity"]
 PLANPARAMSET = ["Custom", "Melbourne"]
@@ -145,6 +148,8 @@ DIURNAL_CATS = ["res_kitchen", "res_shower", "res_toilet", "res_laundry", "res_d
 DIURNAL_LABELS = ["Kitchen", "Shower", "Toilet", "Laundry", "Dishwasher", "Garden",
                   "Residential Indoor", "Commercial and Offices", "Industries", "Non-residential Outdoor",
                   "Public Irrigation"]
+
+VALUE_SCALE_METHODS = ["L", "Q", "C", "IQ", "IC", "S", "M"]
 
 # --- ASSET IDENTIFIERS ---
 ASSET_IDENTIFIERS = {"Block": "The most basic building block of the city in UrbanBEATS, the square cell containing all"

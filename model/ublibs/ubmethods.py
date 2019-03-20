@@ -106,8 +106,8 @@ def calculate_frequency_of_lu_classes(lucdatamatrix):
     :return a list of all 13 classes and their relative proportion, activity, the total data coverage.
     """
     # Step 1 - Order all data entries into a lit of 13 elements
-    # Categories: 'RES', 'COM', 'ORC', 'LI', 'HI', 'CIV', 'SVU', 'RD', 'TR', 'PG', 'REF', 'UND', 'NA'
-    lucprop = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    # Cats: 'RES', 'COM', 'ORC', 'LI', 'HI', 'CIV', 'SVU', 'RD', 'TR', 'PG', 'REF', 'UND', 'NA', 'WAT', 'FOR', 'AGR'
+    lucprop = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     total_n_luc = 0     # Counts the total elements of valid land use classes i.e. skips counting NODATA
     matrix_size = 0     # Counts total elements in the 2D array
     for i in range(len(lucdatamatrix)):
@@ -122,7 +122,7 @@ def calculate_frequency_of_lu_classes(lucdatamatrix):
 
     # Step 2 - Convert frequency to proportion
     if total_n_luc == 0:
-        return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 0
+        return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 0
     for i in range(len(lucprop)):
         lucprop[i] = float(lucprop[i]) / float(total_n_luc)
     activity = float(total_n_luc) / float(matrix_size)
@@ -171,6 +171,28 @@ def calculate_metric_shannon(landclassprop, richness):
     else:
         shaneven = shandiv / math.log(richness)
     return shandiv, shandom, shaneven
+
+
+def find_dominant_category(datamatrix, nodatavalue):
+    """Finds the dominant category in a data matrix and returns the category name.
+
+    :param datamatrix: the 2D array containing a snippet of the loaded data
+    :param nodatavalue: the nodata value of the data set, used if no data is available.
+    """
+    datavalues = datamatrix.flatten()       # Flatten the 2D matrix
+    categories = list(set(datavalues))      # Get the set of unique categories
+    freq = np.zeros(len(categories))        # Set up a zeros list for each category
+    for i in datavalues:
+        freq[int(categories.index(i))] += 1     # Tally up frequencies
+    if sum(freq) == 0:          # If everything is zero (i.e. nodata)
+        return nodatavalue
+    else:
+        return categories[freq.tolist().index(max(freq))]    # Could also return nodata!
+
+
+def get_central_coordinates(ubvec):
+    """Returns the CentreX, CentreY of the current ubVector object as a tuple."""
+    return (ubvec.get_attribute("CentreX"), ubvec.get_attribute("CentreY"))
 
 
 def review_filename(fname):
@@ -396,3 +418,40 @@ def patchdelin_obtain_patch_from_indices(datamatrix, dataresolution, indices, or
         pass
         # Do something with indices...
     return True
+
+
+def normalize_weights(weights_matrix, method):
+    """Normalizes the weights within a weights matrix based on the sum of weights. According to a specific method.
+
+    :param weights_matrix: a list of weight scores [ ] of any length.
+    :param method: S = sum, normalize 0 to 1, A = average, normalize against average
+    :return: a list [ ] of equal length with the normalized weights."""
+    if method == "SUM":
+        tot = sum(weights_matrix)
+        for i in range(len(weights_matrix)):
+            weights_matrix[i] = float(weights_matrix[i] / tot)
+    elif method == "AVG":
+        avg = float(sum(weights_matrix) / len(weights_matrix))
+        for i in range(len(weights_matrix)):
+            weights_matrix[i] = float(weights_matrix[i] / avg)
+    return weights_matrix
+
+
+def calculate_accessibility_factor(dist, aj):
+    """Calculates the accessibility factor Aij for cell i and land use j as a function of distance from the
+    cell to the nearest map feature. Depending on the value of aj, a specific equation is used.
+
+    :param dist: the Euclidean distance [m] between cell i's centroid and the nearest feature
+    :param aj: the importance for land use j of accessibility to the feature in question
+    :return: Aij - the accessibility factor
+    """
+    try:
+        if aj == 0:
+            return 0    # No accessibility influence
+        if aj > 0:
+            return float(aj / (aj + dist))
+        else:
+            return float(dist / (abs(aj) + dist))
+    except ZeroDivisionError:
+        print "Zero division!"
+        return 0

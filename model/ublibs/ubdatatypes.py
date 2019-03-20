@@ -105,6 +105,8 @@ class UBRasterData(object):
         :param cells_tall: number of cells along rows
         :return a matrix of raster data.
         """
+        if cells_tall == 0 and cells_wide == 0:      # If the resolutions are identical or the input resolution > cells
+            return self.__data[row_start, col_start]
         datamatrix = self.__data[row_start:row_start + cells_tall, col_start:col_start+cells_wide]
         return datamatrix
 

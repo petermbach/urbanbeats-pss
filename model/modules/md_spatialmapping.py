@@ -826,11 +826,11 @@ class SpatialMapping(UBModule):
             return True
         blocksize = map_attr.get_attribute("BlockSize")
 
-        green_patches, grey_patches, non_patches = self.retrieve_patch_groups()
+        green_patches, grey_patches, non_patches, non2_patches = self.retrieve_patch_groups()
         if len(green_patches) > 0:
             # 7.1 - Open Space Distances
             if self.osnet_accessibility:
-                self.find_open_space_distances(green_patches, grey_patches, non_patches)
+                self.find_open_space_distances(green_patches, grey_patches, non_patches, non2_patches)
                 map_attr.add_attribute("HasOSLINK", 1)
             else:
                 map_attr.add_attribute("HasOSLINK", 0)
@@ -839,7 +839,7 @@ class SpatialMapping(UBModule):
                 # The minimum acceptable distance to connect the network is taken as the final block size, if two
                 # entire Block patches exist, they are adjacent and connected by Block centroid
                 min_dist = blocksize * math.sqrt(2)
-                self.delineate_open_space_network(green_patches, grey_patches, non_patches, min_dist)
+                self.delineate_open_space_network(green_patches, grey_patches, non_patches, non2_patches, min_dist)
                 map_attr.add_attribute("HasOSNET", 1)
             else:
                 map_attr.add_attribute("HasOSNET", 0)
@@ -864,16 +864,19 @@ class SpatialMapping(UBModule):
         greenpatches = []
         greypatches = []
         roadpatches = []
+        nonusable_patches = []
         for i in patches:
-            if i.get_attribute("Landuse") in [10, 11]:
+            if i.get_attribute("Landuse") in [10, 11, 15]:
                 greenpatches.append(i)
             elif i.get_attribute("Landuse") in [8]:
                 roadpatches.append(i)
+            elif i.get_attribute("Landuse") in [9, 12, 14, 16]:
+                nonusable_patches.append(i)
             else:
                 greypatches.append(i)
-        return greenpatches, greypatches, roadpatches
+        return greenpatches, greypatches, roadpatches, nonusable_patches
 
-    def find_open_space_distances(self, green_patches, grey_patches, non_patches):
+    def find_open_space_distances(self, green_patches, grey_patches, non_patches, non2_patches):
         """Calculates the location of the closest green space within the map. Considers PG and REF land uses. Distances
         are calculated between the grey patches, which is a list of non-park patches and green patches.
 
@@ -936,9 +939,15 @@ class SpatialMapping(UBModule):
             non.add_attribute("GSD_Loc", "")
             non.add_attribute("GSD_Deg", 0)
             non.add_attribute("GSD_ACon", 0)
+        for non in non2_patches:    # Add attributes to non-usable patches
+            non.add_attribute("GSD_Dist", -1)
+            non.add_attribute("GSD_Loc", "")
+            non.add_attribute("GSD_Deg", 0)
+            non.add_attribute("GSD_ACon", 0)
+
         return True
 
-    def delineate_open_space_network(self, green_patches, grey_patches, non_patches, min_dist):
+    def delineate_open_space_network(self, green_patches, grey_patches, non_patches, non2_patches, min_dist):
         """Create a network of open spaces, only considers Parks and Reserves/Floodways
 
         :param green_patches: a list containing UBVector() instances of green patches
@@ -981,6 +990,9 @@ class SpatialMapping(UBModule):
             g.add_attribute("OSNet_Deg", 0)
             g.add_attribute("OSNet_MinD", -1)
         for n in non_patches:
+            n.add_attribute("OSNet_Deg", 0)
+            n.add_attribute("OSNet_MinD", -1)
+        for n in non2_patches:
             n.add_attribute("OSNet_Deg", 0)
             n.add_attribute("OSNet_MinD", -1)
         return True

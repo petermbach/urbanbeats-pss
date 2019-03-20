@@ -49,6 +49,12 @@ import modules.md_infrastructure as md_techplacement
 import modules.md_urbandev as md_urbandev
 import modules.md_urbplanbb as md_urbplanbb
 import ublibs.ubspatial as ubspatial
+import ubexports.blocks as xblocks
+import ubexports.flowpaths as xflowpaths
+import ubexports.openspace as xopenspace
+import ubexports.patches as xpatches
+import ubexports.regions as xregions
+import ubexports.urban as xurbanmodel
 
 
 # --- SCENARIO CLASS DEFINITION ---
@@ -213,7 +219,7 @@ class UrbanBeatsScenario(threading.Thread):
             print "Error, cannot find module instance!"
             return None
         except IndexError:
-            print "No module instances found for current time step."
+            print "No module instances of", modulecat, " found for current time step."
             return None
 
     def setup_scenario(self):
@@ -609,22 +615,22 @@ class UrbanBeatsScenario(threading.Thread):
         epsg = self.simulation.get_project_parameter("project_epsg")
 
         # SHAPEFILE EXPORT FUNCTIONS
-        ubspatial.export_block_assets_to_gis_shapefile(self.get_assets_with_identifier("BlockID"), map_attributes,
+        xblocks.export_block_assets_to_gis_shapefile(self.get_assets_with_identifier("BlockID"), map_attributes,
                                                        self.projectpath+"/output", file_basename + "_Blocks",
                                                        int(epsg))
-        ubspatial.export_patches_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
+        xpatches.export_patches_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
                                                   self.projectpath+"/output", file_basename + "_Patches",
                                                   int(epsg))
-        ubspatial.export_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("FlowID"), map_attributes,
+        xflowpaths.export_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("FlowID"), map_attributes,
                                                     self.projectpath + "/output", file_basename + "_Flowpaths",
                                                     int(epsg), "Blocks")  # Export Block FlowPaths
-        ubspatial.export_oslink_to_gis_shapefile(self.get_assets_with_identifier("OSLinkID"), map_attributes,
+        xopenspace.export_oslink_to_gis_shapefile(self.get_assets_with_identifier("OSLinkID"), map_attributes,
                                                     self.projectpath + "/output", file_basename + "_OSLink",
                                                     int(epsg))
-        ubspatial.export_osnet_to_gis_shapefile(self.get_assets_with_identifier("OSNetID"), map_attributes,
+        xopenspace.export_osnet_to_gis_shapefile(self.get_assets_with_identifier("OSNetID"), map_attributes,
                                                     self.projectpath + "/output", file_basename + "_OSNet",
                                                     int(epsg))
-        ubspatial.export_patch_buffers_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
+        xopenspace.export_patch_buffers_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
                                                     self.projectpath + "/output", file_basename + "_OSBuffer",
                                                     int(epsg))
         ubspatial.export_sww_network_to_gis_shapefile(self.get_assets_with_identifier("SwwID"), map_attributes,
@@ -633,12 +639,55 @@ class UrbanBeatsScenario(threading.Thread):
         # [TO DO] Export options - WSUD Systems
         # [TO DO] Export options - centrepoints
 
-
         self.simulation.update_runtime_progress(100)
+        return True
 
     def run_dynamic_simulation(self):
         """This function presents the logical module flow for a DYNAMIC simulation."""
-        pass
+        self.update_observers("Scenario Type: DYNAMIC")
+        temp_directory = self.simulation.get_global_options("tempdir")
+        self.update_observers("Current temp directory: " + str(temp_directory))
+        self.simulation.update_runtime_progress(5)
+
+        # --- DYNAMIC STEP 1: Urban Development Module ---
+        self.simulation.update_runtime_progress(10)
+        urbdev = self.get_module_object("URBDEV", 0)
+        if urbdev is None:
+            pass
+        else:
+            urbdev.attach(self.__observers)
+            urbdev.run_module()
+
+        # --- DYNAMIC STEP 2: Block delineation ---
+
+        # --- DYNAMIC STEP 3: Climate setup ---
+        # --- DYNAMIC STEP 4: Urban Planning ---
+        # --- DYNAMIC STEP 5: Socio-Economic ---
+        # --- DYNAMIC STEP 6: Spatial Maping ---
+        # --- DYNAMIC STEP 7: Regulation ---
+        # --- DYNAMIC STEP 8: Infrastructure ---
+        # --- DYNAMIC STEP 9: Performance ---
+        # --- DYNAMIC STEP 10: Impact ---
+        # --- DYNAMIC STEP 11: Decision Analysis ---
+
+        # --- DATA EXPORT AND CLEANUP STEPS ---
+        self.simulation.update_runtime_progress(95)
+
+        # Export the data maps available - first check scenario name
+        if int(self.get_metadata("usescenarioname")):
+            file_basename = self.get_metadata("name").replace(" ", "_")
+        else:
+            file_basename = self.get_metadata("filename")
+
+        print self.projectpath
+        map_attributes = self.get_asset_with_name("MapAttributes")
+        epsg = self.simulation.get_project_parameter("project_epsg")
+
+        xurbanmodel.export_urbandev_cells_to_gis_shapefile(self.get_assets_with_identifier("CellID"), map_attributes,
+                                                           self.projectpath+"/output", file_basename + "_Cells",
+                                                           int(epsg))
+        # xregions.export_municipalities_to_gis_shapefile()
+
         self.simulation.update_runtime_progress(100)
 
     def run_benchmark_simulation(self):

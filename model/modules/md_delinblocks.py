@@ -185,7 +185,6 @@ class DelinBlocks(UBModule):
         self.ignore_rivers = 0
         self.ignore_lakes = 0
 
-
         # NON-VISIBLE PARAMETER LIST - USED THROUGHOUT THE SIMULATION
         self.xllcorner = float(0.0)     # Obtained from the loaded raster data (elevation) upon run-time
         self.yllcorner = float(0.0)     # Spatial extents of the input map
@@ -300,7 +299,7 @@ class DelinBlocks(UBModule):
         for y in range(blocks_tall):        # Loop across the number of blocks tall and blocks wide
             for x in range(blocks_wide):
                 # self.notify("Current BLOCK ID: "+str(blockIDcount))
-                # print("Current BLOCK ID: " + str(blockIDcount))
+                print("Current BLOCK ID: " + str(blockIDcount))
 
                 # - STEP 1 - CREATE BLOCK GEOMETRY
                 current_block = self.create_block_face(x, y, bs, blockIDcount, boundarypoly)
@@ -377,6 +376,9 @@ class DelinBlocks(UBModule):
                 current_block.add_attribute("pLU_REF", landclassprop[10])   # REF = Reserves & Floodways
                 current_block.add_attribute("pLU_UND", landclassprop[11])   # UND = Undeveloped
                 current_block.add_attribute("pLU_NA", landclassprop[12])    # NA = Unclassified
+                current_block.add_attribute("pLU_WAT", landclassprop[12])  # WAT = Water
+                current_block.add_attribute("pLU_FOR", landclassprop[12])  # FOR = Forest
+                current_block.add_attribute("pLU_AGR", landclassprop[12])  # AGR = Agriculture
                 map_attr.set_attribute("HasLUC", 1)
 
                 # STEP 2.2.2 - Calculate Spatial Metrics
@@ -506,7 +508,7 @@ class DelinBlocks(UBModule):
 
         # - STEP 3 - FIND BLOCK NEIGHBOURHOOD
         self.notify("Establishing neighbourhoods")
-        # print("Establishing neighbourhoods")
+        print("Establishing neighbourhoods")
         for i in range(len(blockslist)):  # Loop across current Blocks
             curblock = blockslist[i]    # curblock is the reference to the UBVector() instance in blockslist
             if curblock.get_attribute("Status") == 0:
@@ -530,7 +532,7 @@ class DelinBlocks(UBModule):
         # - STEP 4 - Assign Municipal Regions and Suburban Regions to Blocks
         municipalities = []
         self.notify("Loading Municipality Map")
-        # print("Loading Municipality Map")
+        print("Loading Municipality Map")
         if self.include_geopolitical:                       # LOAD MUNICIPALITY MAP
             map_attr.add_attribute("HasGEOPOLITICAL", 1)
             geopol_map = self.datalibrary.get_data_with_id(self.geopolitical_map)
@@ -648,12 +650,6 @@ class DelinBlocks(UBModule):
         else:
             map_attr.add_attribute("HasSTORMDRAINS", 0)
 
-        # if self.include_sewer:      # Wastewater sewer network - coming soon!
-        #     pass  # NATALIA - check this out!
-
-        # if self.include_supply          # Water distribution network - coming soon!
-        #     pass
-
         # - STEP 6 - Delineate Flow Paths and Drainage Basins
         if map_attr.get_attribute("HasELEV") and self.flowpaths:
             # Delineate flow paths
@@ -699,9 +695,6 @@ class DelinBlocks(UBModule):
                 map_attr.add_attribute("HasOSLINK", 0)
                 map_attr.add_attribute("HasOSNET", 0)
 
-
-
-
         # - CLEAN-UP - RESET ALL VARIABLES FOR GARBAGE COLLECTOR
         self.notify("End of Delinblocks")
         print("End of Delinblocks")
@@ -729,7 +722,7 @@ class DelinBlocks(UBModule):
 
             for green in green_patches:
                 pts2 = green.get_points()
-                current_dist = math.sqrt(pow(pts1[0] - pts2[0], 2) + pow(pts1[1] - pts2[1], 2))
+                current_dist = math.sqrt(pow(pts1[0] - pts2[0], 2) + pow(pts1[1] - pts2[1],2))
                 if current_dist < prev_dist:
                     prev_dist = current_dist
                     pts_current = pts2
@@ -1052,7 +1045,7 @@ class DelinBlocks(UBModule):
 
             # Now assign Basin IDs, do this if the current Block has downstream ID -2
             if hash_table[1][hash_table[0].index(current_id)] == -2:    # If the block is an outlet
-                # print "Found a basin outlet at BlockID" + str(current_id)
+                print "Found a basin outlet at BlockID" + str(current_id)
                 self.notify("Found a basin outlet at BlockID"+str(current_id))
                 basin_id += 1
                 current_block.add_attribute("BasinID", basin_id)    # Set the current Basin ID
@@ -1063,6 +1056,7 @@ class DelinBlocks(UBModule):
                     upblock.add_attribute("Outlet", 0)              # Upstream blocks are NOT outlets!
 
         self.notify("Total Basins in the Case Study: "+str(basin_id))
+        print("Total Basins in the Case Study: " + str(basin_id))
         return basin_id     # The final count indicates how many basins were found
 
     def delineate_flow_paths(self, blockslist, map_attr):
@@ -1171,7 +1165,7 @@ class DelinBlocks(UBModule):
         :return: a list of z-values for all the block's neighbours [ [BlockID], [Z-value] ], None otherwise
         """
         nhd = curblock.get_attribute("Neighbours")
-        nhd_z = [[], []]
+        nhd_z = [[],[]]
         # Scan neighbourhood for Blocks with Rivers/Lakes
         for n in nhd:
             nblock = self.scenario.get_asset_with_name("BlockID"+str(n))
@@ -1183,7 +1177,6 @@ class DelinBlocks(UBModule):
                 if nblock.get_attribute("HasSWDrain") and n not in nhd_z[0]:
                     nhd_z[0].append(n)
                     nhd_z[1].append(nblock.get_attribute("AvgElev"))
-
         if len(nhd_z[0]) == 0:
             return None
         else:
@@ -1213,6 +1206,11 @@ class DelinBlocks(UBModule):
             current_sinkid = sink_ids[i]
             self.notify("Attemtping to unblock flow from BlockID"+str(current_sinkid))
             current_block = self.scenario.get_asset_with_name("BlockID"+str(current_sinkid))
+
+            if current_block.get_attribute("HasRiver") or current_block.get_attribute("HasLake"):
+                # If the Block is a river or lake block, do not attempt to unblock it
+                current_block.set_attribute("downID", -2)  # signifies that Block is an outlet
+                continue
 
             z = current_block.get_attribute("AvgElev")
             nhd = current_block.get_attribute("Neighbours")
@@ -1288,17 +1286,17 @@ class DelinBlocks(UBModule):
         """
         dz = []
         for i in range(len(nhd_z[1])):
-            dz.append(z - nhd_z[1][i])     # Calculate the elevation difference
-        if min(dz) > 0:    # If there is a drop in elevation - this also means the area cannot be flat!
-            down_id = nhd_z[0][dz.index(min(dz))]    # The ID corresponds to the maximum elevation difference
+            dz.append(nhd_z[1][i] - z)     # Calculate the elevation difference
+        if min(dz) < 0:    # If there is a drop in elevation - this also means the area cannot be flat!
+            down_id = nhd_z[0][dz.index(min(dz))]    # The ID corresponds to the minimum elevation difference
         else:
-            down_id = -9999  # Otherwise there is a sink in the current Block
+            down_id = -9999 # Otherwise there is a sink in the current Block
         return down_id, min(dz)
 
     def find_downstream_dinf(self, z, nhd_z):
         """Adapted D-infinity method to only direct water in one direction based on the steepest slope
         of the 8 triangular facets surrounding a Block's neighbourhood and a probabilistic choice weighted
-        by the proportioning of flow. This is the stochastic option of flowpath delineation for UrbanBEATS
+        by the propotioning of flow. This is the stochastic option of flowpath delineation for UrbanBEATS
         and ONLY works with the Moore neighbourhood.
 
         :param z: elevation of the current central Block

@@ -223,11 +223,11 @@ class UrbanBeatsSim(object):
         projectpath = self.get_project_parameter("projectpath")
         projectname = self.get_project_parameter("name")
         namecounter = 0
-        projectnewname = projectname
+        projectnewname = projectname.rstrip(" ")    # Cull whitespaces at the end of the name
         while os.path.isdir(projectpath+"/"+projectnewname):
             namecounter += 1
             projectnewname = projectname+"_"+str(namecounter)
-            self.set_project_parameter("name", projectnewname)
+        self.set_project_parameter("name", projectnewname)
         os.makedirs(projectpath+"/"+projectnewname)
         os.makedirs(projectpath+"/"+projectnewname+"/datalib")
         os.makedirs(projectpath+"/"+projectnewname+"/scenarios")
