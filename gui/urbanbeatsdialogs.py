@@ -345,8 +345,8 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.timestep_irregular.setEnabled(0)
         self.ui.timestep_irregular_button.setEnabled(self.ui.timestep_irregular.isChecked())
         self.ui.scrollArea.setEnabled(0)
-        self.ui.naming_line.setEnabled(0)
-        self.ui.naming_check.setEnabled(0)
+        # self.ui.naming_line.setEnabled(0)
+        # self.ui.naming_check.setEnabled(0)
         self.ui.create_button.setText("Update...")
         self.ui.clear_button.setEnabled(0)
 
@@ -584,6 +584,8 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         create button will display the words 'Update...' during the edit scenario mode.
         Things that can be updated include the narrative and the data used."""
         self.scenario.set_metadata("narrative", str(self.ui.narrative_box.toPlainText()))
+        self.scenario.set_metadata("filename", str(self.ui.naming_line.text()))
+        self.scenario.set_metadata("usescenarioname", int(self.ui.naming_check.isChecked()))
         self.update_scenario_datasets()
 
     def update_scenario_datasets(self):
