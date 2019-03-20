@@ -273,12 +273,14 @@ class Infrastructure(UBModule):
             if pop > 1 or employees > 1:
                 current_block.add_attribute("HasSWW", 1)
                 current_block.add_attribute("HasWWTP", 0)
+                current_block.add_attribute("HasCarved", 0)
                 current_block.add_attribute("BlockID", current_block.get_attribute("BlockID"))
                 sww_blocks.append(current_block)  # Append this block to a list of blocks with a sewer network
             else:
                 current_block.add_attribute("HasSWW", 0)
                 current_block.add_attribute("HasWWTP", 0)
                 current_block.add_attribute("Sww_DownID", 0)
+                current_block.add_attribute("HasCarved", 0)
 
         print(str(len(sww_blocks)) + " BLOCKS WITH SWW ----------------------------------------------------")
 
@@ -1032,6 +1034,10 @@ class Infrastructure(UBModule):
 
             for i in nhd:
                 n_block = self.scenario.get_asset_with_name("BlockID" + str(i))
+                # if n_block.get_attribute("HasCarved"):
+                #     continue
+
+
                 elev_n = n_block.get_attribute("ModAvgElev")
 
                 if elev_n is None:
@@ -1047,6 +1053,7 @@ class Infrastructure(UBModule):
                 priority_queue[1].append(dz)
 
             min_dz = 999999
+            # id_min_dz = id
             for j in range(len(priority_queue[1])):
                 dz = priority_queue[1][j]
                 n_id = priority_queue[0][j]
@@ -1054,12 +1061,14 @@ class Infrastructure(UBModule):
                     min_dz = dz
                     id_min_dz = n_id
 
-            if min_dz > 0 and id_min_dz not in priority_tree:
+
+            if min_dz >= 0 and id_min_dz not in priority_tree:
                 priority_tree.append(id_min_dz)
                 id = id_min_dz
                 b = self.scenario.get_asset_with_name("BlockID" + str(id))
                 b.set_attribute("ModAvgElev", elev_s - 0.0001)
-            elif min_dz <= 0 and id_min_dz not in priority_tree:
+                b.add_attribute("HasCarved", 1)
+            elif min_dz < 0 and id_min_dz not in priority_tree:
                 priority_tree.append(id_min_dz)
                 id = None
             else:
