@@ -34,18 +34,18 @@ import shutil
 import xml.etree.ElementTree as ET
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-import progref.ubglobals as ubglobals
-import modules.md_decisionanalysis
-import modules.md_climatesetup
-import modules.md_delinblocks
-import modules.md_impactassess
-import modules.md_perfassess
-import modules.md_regulation
-import modules.md_socioecon
-import modules.md_spatialmapping
-import modules.md_infrastructure
-import modules.md_urbandev
-import modules.md_urbplanbb
+import model.progref.ubglobals as ubglobals
+# import modules.md_decisionanalysis
+# import modules.md_climatesetup
+# import modules.md_delinblocks
+# import modules.md_impactassess
+# import modules.md_perfassess
+# import modules.md_regulation
+# import modules.md_socioecon
+# import modules.md_spatialmapping
+# import modules.md_infrastructure
+# import modules.md_urbandev
+# import modules.md_urbplanbb
 
 
 # --- URBANBEATS DATA LIBRARY CLASS DEFINITION ---

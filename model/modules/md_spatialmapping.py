@@ -33,7 +33,7 @@ import random
 import math
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-from ubmodule import *
+from model.modules.ubmodule import *
 import model.progref.ubglobals as ubglobals
 import model.ublibs.ubdatatypes as ubdata
 
@@ -483,7 +483,7 @@ class SpatialMapping(UBModule):
             for block_attr in blockslist:
                 if block_attr.get_attribute("Status") == 0:
                     continue
-                print "Now calculating demands for Block: ", str(block_attr.get_attribute("BlockID"))
+                print("Now calculating demands for Block: ", str(block_attr.get_attribute("BlockID")))
                 self.map_water_consumption(block_attr)
             # SAVE PATTERN DATA INTO MAP ATTRIBUTES
             categories = ubglobals.DIURNAL_CATS
@@ -1046,7 +1046,7 @@ class SpatialMapping(UBModule):
         """Conducts end use analysis for residential districts. Returns the flow rates for all demand sub-components.
         in a dictionary that can be queries. Demands returned are daily values except for irrigation, which is annual.
         """
-        print "Entering End Use Analysis"
+        print("Entering End Use Analysis")
         if block_attr.get_attribute("HasHouses") or block_attr.get_attribute("HasFlats"):
             # RESIDENTIAL INDOOR WATER DEMANDS
             if block_attr.get_attribute("HasHouses"):
@@ -1174,7 +1174,7 @@ class SpatialMapping(UBModule):
     def res_irrigation(self, block_attr):
         """Calculates the irrigation water demands for residential households or apartments."""
         # GET METRICS FOR GARDEN SPACE
-        print "Entering Irrigation Analysis"
+        print("Entering Irrigation Analysis")
         if block_attr.get_attribute("HasHouses") or block_attr.get_attribute("HasFlats"):
             if block_attr.get_attribute("HasHouses"):
                 garden = block_attr.get_attribute("ResGarden")
@@ -1195,7 +1195,7 @@ class SpatialMapping(UBModule):
         """Calculates non-residential water demands for commercial, industrial, offices land uses based on the unit
         flow rate or Population Equivalents method, which assumes water demands per floor space or employee."""
         # COMMERCIAL AREAS
-        print "Entering Non-Res Analysis"
+        print("Entering Non-Res Analysis")
         if block_attr.get_attribute("Has_COM"):
             if self.com_units == "LSQMD":
                 floorspace = block_attr.get_attribute("COMFloors") * block_attr.get_attribute("COMAeBldg") * \
@@ -1304,7 +1304,7 @@ class SpatialMapping(UBModule):
     def public_spaces_wateruse(self, block_attr):
         """Calculates the public open spaces water use, including mainly the irrigation of open spaces and landmark
         areas."""
-        print "Entering Public Space Water Use"
+        print("Entering Public Space Water Use")
         parkspace = block_attr.get_attribute("AGreenOS") * int(self.irrigate_parks)
         landmarkspace = block_attr.get_attribute("MiscAirr") * int(self.irrigate_landmarks)
         refspace = block_attr.get_attribute("REF_av") * int(self.irrigate_reserves)
@@ -1314,7 +1314,7 @@ class SpatialMapping(UBModule):
 
     def tally_total_block_wateruse(self, block_attr):
         """Scans the water demand attributes and calculates total demands for various sub-categories. Includes losses"""
-        print "Getting total water use."
+        print("Getting total water use.")
         total_blk_indoor = block_attr.get_attribute("WD_Indoor") + block_attr.get_attribute("WD_NRes")
         total_irrigation = block_attr.get_attribute("WD_Outdoor") + block_attr.get_attribute("WD_NResIrri") + \
                            block_attr.get_attribute("WD_POSIrri")

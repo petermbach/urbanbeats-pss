@@ -30,28 +30,24 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 import random
-import time
 import os
-import sys
-import xml.etree.ElementTree as ET
-import gc
-
+import xml.etree.ElementTree as xmlElementTree
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-import ubdatalibrary
-import ubscenarios
-import ublibs.ubspatial as ubspatial
-import modules.md_decisionanalysis
-import modules.md_climatesetup
-import modules.md_delinblocks
-import modules.md_impactassess
-import modules.md_perfassess
-import modules.md_regulation
-import modules.md_socioecon
-import modules.md_spatialmapping
-import modules.md_infrastructure
-import modules.md_urbandev
-import modules.md_urbplanbb
+import model.ubdatalibrary as ubdatalibrary
+import model.ubscenarios as ubscenarios
+import model.ublibs.ubspatial as ubspatial
+import model.modules.md_decisionanalysis as md_decisionanalysis
+import model.modules.md_climatesetup as md_climatesetup
+import model.modules.md_delinblocks as md_delinblocks
+import model.modules.md_impactassess as md_impactassess
+import model.modules.md_perfassess as md_perfassess
+import model.modules.md_regulation as md_regulation
+import model.modules.md_socioecon as md_socioecon
+import model.modules.md_spatialmapping as md_spatialmapping
+import model.modules.md_infrastructure as md_infrastructure
+import model.modules.md_urbandev as md_urbandev
+import model.modules.md_urbplanbb as md_urbplanbb
 
 
 # --- URBANBEATS SIMULATION CLASS DEFINITION ---
@@ -177,10 +173,10 @@ class UrbanBeatsSim(object):
     def load_project_info_xml(self, projectpath):
         """Loads the project's info.xml file and writes the information into the simulation core."""
         try:
-            projinfo = ET.parse(projectpath+"/info.xml")
+            projinfo = xmlElementTree.parse(projectpath + "/info.xml")
         except IOError:
             return False
-        print (projectpath + "/info.xml")
+        print(projectpath + "/info.xml")
         root = projinfo.getroot()
         projdict = {}
         projdata = root.find('projectinfo')
@@ -259,7 +255,7 @@ class UrbanBeatsSim(object):
         """Creates a new scenario object and sets it as the active scenario."""
         newscenario = ubscenarios.UrbanBeatsScenario(self, self.__datalibrary, self.__projectlog)
         self.__activescenario = newscenario     # Set the active scenario's name
-        print ("Created")
+        print("Created")
 
     def add_new_scenario(self, scenario_object):
         """Adds a new scenario to the simulation by creating a UrbanBeatsScenario() instance and initializing

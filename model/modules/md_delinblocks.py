@@ -44,7 +44,7 @@ import time
 from shapely.geometry import Polygon, LineString
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-from ubmodule import *
+from model.modules.ubmodule import *
 import model.ublibs.ubspatial as ubspatial
 import model.ublibs.ubmethods as ubmethods
 import model.ublibs.ubdatatypes as ubdata
@@ -206,7 +206,7 @@ class DelinBlocks(UBModule):
         :return: True upon successful completion
         """
         self.notify("Start Spatial Delineation Module")     # Module start
-        print "Start Spatial Delineation Module"
+        print("Start Spatial Delineation Module")
         rand.seed()     # Seed the random number generator
 
         # --- SECTION 1 - PREPARATION FOR CREATING THE GRIDDED MAP BASED ON THE INPUT BOUNDARY MAP ---
@@ -353,7 +353,7 @@ class DelinBlocks(UBModule):
                 # STEP 2.2.1 - Tally Frequency of Land uses
                 landclassprop, activity = ubmethods.calculate_frequency_of_lu_classes(lucdatamatrix)
 
-                # print current_block.get_attribute("BlockID"), "LUC Props: ", landclassprop
+                # print(current_block.get_attribute("BlockID"), "LUC Props: ", landclassprop)
                 if activity == 0:
                     blockstatus = 0
                 else:
@@ -1045,7 +1045,7 @@ class DelinBlocks(UBModule):
 
             # Now assign Basin IDs, do this if the current Block has downstream ID -2
             if hash_table[1][hash_table[0].index(current_id)] == -2:    # If the block is an outlet
-                print "Found a basin outlet at BlockID" + str(current_id)
+                print("Found a basin outlet at BlockID" + str(current_id))
                 self.notify("Found a basin outlet at BlockID"+str(current_id))
                 basin_id += 1
                 current_block.add_attribute("BasinID", basin_id)    # Set the current Basin ID
@@ -1111,7 +1111,7 @@ class DelinBlocks(UBModule):
             else:
                 neighbours_z = self.scenario.retrieve_attribute_value_list("Block", "AvgElev",
                                                                            current_block.get_attribute("Neighbours"))
-            # print "Neighbour Z: ", neighbours_z
+            # print("Neighbour Z: ", neighbours_z)
 
             # Find the downstream block unless it's a sink
             if self.flowpath_method == "D8":
@@ -1368,7 +1368,7 @@ class DelinBlocks(UBModule):
         # p1 = alpha1 / (alpha1 + alpha2)
         # p2 = alpha2 / (alpha2 + alpha1)
         #
-        # print "Proportioned Flows:", p1, p2
+        # print("Proportioned Flows:", p1, p2)
         #
         # if rand.random() < p1:
         #     choice = p1
@@ -1377,7 +1377,7 @@ class DelinBlocks(UBModule):
         #     choice = p2
         #     directionfacet = int(theta2 / (math.pi / 4))
         #
-        # print "Choice:", choice
+        # print("Choice:", choice)
         #
         # direction = neighboursZ.index(sortedneighb[directionfacet - 1])
         # return direction, max_Zdrop
@@ -1398,8 +1398,8 @@ class DelinBlocks(UBModule):
                 for n in neighbours:
                     ne_block = self.scenario.get_asset_with_name("BlockID"+str(n)).get_attribute("Elevation")
                     elevs.append(ne_block)
-                # print elevs
-                # print float(sum(elevs)/len(elevs))
+                # print(elevs)
+                # print(float(sum(elevs)/len(elevs)))
                 new_elevs[str(current_block.get_attribute("BlockID"))] = float(sum(elevs) / len(elevs))
             for b in range(len(blockslist)):
                 blockslist[i].set_attribute("Elevation", new_elevs[str(blockslist[i].get_attribute("BlockID"))])

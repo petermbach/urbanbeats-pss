@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 @file   ubspatial.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
@@ -30,7 +30,7 @@ import numpy as np
 import os
 
 # URBANBEATS IMPORT
-import ubdatatypes as ubdata
+import model.ublibs.ubdatatypes as ubdata
 from ..progref import ubglobals
 
 
@@ -59,7 +59,7 @@ def import_ascii_raster(filepath, naming):
         dataarray = np.empty([int(metadata["nrows"]), int(metadata["ncols"])])
         # Numpy Array is created by specifying the "ROWS" first then "COLUMNS"
     except KeyError:
-        print "Error, ASCII data not correctly labelled"
+        print("Error, ASCII data not correctly labelled")
         return 0
 
     irow = 0     # To track the rows - i-th row and j-th column below
@@ -93,7 +93,7 @@ def import_polygonal_map(filepath, option, naming, global_offsets):
     driver = ogr.GetDriverByName('ESRI Shapefile')  # Load the shapefile driver and data source
     datasource = driver.Open(filepath)
     if datasource is None:
-        print "Could not open shapefile!"
+        print("Could not open shapefile!")
         return None
 
     layer = datasource.GetLayer(0)
@@ -106,20 +106,20 @@ def import_polygonal_map(filepath, option, naming, global_offsets):
     spatialref = layer.GetSpatialRef()
     inputprojcs = spatialref.GetAttrValue("PROJCS")
     if inputprojcs is None:
-        print "Warning, spatial reference epsg cannot be found!"
+        print("Warning, spatial reference epsg cannot be found!")
         return None
 
     geometry_collection = []
     featurecount = layer.GetFeatureCount()
-    # print "Feature Count in Map: ", featurecount  # For Debugging
-    # print attnames    # For Debugging
+    # print("Feature Count in Map: ", featurecount  # For Debugging)
+    # print(attnames)    # For Debugging
 
     for i in range(featurecount):
         feature = layer.GetFeature(i)
         geom = feature.GetGeometryRef()
         area = geom.GetArea() / 1000000.0   # Conversion to km2
-        # print "Name", str(naming) + "_ID" + str(i + 1)    # For Debugging
-        # print "Area: ", area  # For Debugging
+        # print("Name", str(naming) + "_ID" + str(i + 1))    # For Debugging
+        # print("Area: ", area ) # For Debugging
 
         # Projection    check for later... [TO DO]
         if option == "leaflet":     # [TO DO]
@@ -193,7 +193,7 @@ def import_linear_network(filename, option, global_offsets, **kwargs):
     spatial_ref = layer.GetSpatialRef()     # Obtain spatial reference
     inputprojcs = spatial_ref.GetAttrValue("PROJCS")
     if inputprojcs is None:
-        print "Warning, spatial reference epsg cannot be found!"
+        print("Warning, spatial reference epsg cannot be found!")
         return None
 
     layerDef = layer.GetLayerDefn()
@@ -209,7 +209,7 @@ def import_linear_network(filename, option, global_offsets, **kwargs):
         try:
             segmentmax = kwargs["Segments"]     # Checks the segments, if this hasn't been specified, continue
         except KeyError:
-            print "Error, no segments specified."
+            print("Error, no segments specified.")
             return None
         featurepoints = []
         for i in range(totfeatures):
@@ -285,7 +285,7 @@ def import_point_features(filepath, option, global_offsets):
     spatialref = layer.GetSpatialRef()
     inputprojcs = spatialref.GetAttrValue("PROJCS")
     if inputprojcs is None:
-        print "Warning, spatial reference epsg cannot be found"
+        print("Warning, spatial reference epsg cannot be found")
         return None
 
     featurecount = layer.GetFeatureCount()
@@ -405,12 +405,12 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
     driver = ogr.GetDriverByName('ESRI Shapefile')  # Load the shapefile driver and data source
     datasource = driver.Open(boundaryfile)
     if datasource is None:
-        print "Could not open shapefile!"
+        print("Could not open shapefile!")
         return []
 
     layer = datasource.GetLayer(0)  # Get the first layer, which should be the only layer!
     xmin, xmax, ymin, ymax = layer.GetExtent()
-    # print xmin, xmax, ymin, ymax
+    # print(xmin, xmax, ymin, ymax)
 
     # Get some Map Metadata - the extents of the map, this is displayed later on in the pop-up window.
     point1 = ogr.Geometry(ogr.wkbPoint)
@@ -420,14 +420,14 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
 
     # Get the spatial reference of the map
     spatialref = layer.GetSpatialRef()
-    # print spatialref  # Debug Comment - if you want to view shapefile metadata, use this
+    # print(spatialref)  # Debug Comment - if you want to view shapefile metadata, use this
     inputprojcs = spatialref.GetAttrValue("PROJCS")
     if inputprojcs is None:
-        print "Warning, spatial reference epsg cannot be found"
+        print("Warning, spatial reference epsg cannot be found")
         return []
 
     featurecount = layer.GetFeatureCount()
-    # print "Total number of features: ", featurecount
+    # print("Total number of features: ", featurecount)
 
     feature = layer.GetFeature(0)
     geom = feature.GetGeometryRef()
@@ -455,7 +455,7 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
         ymin = point1.GetY()
         xmax = point2.GetX()
         ymax = point2.GetY()
-        # print xmin, xmax, ymin, ymax
+        # print(xmin, xmax, ymin, ymax)
 
     mapstats["xmin"] = xmin
     mapstats["xmax"] = xmax
@@ -477,7 +477,7 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
     #   https://gist.github.com/walkermatt/7121427
 
     points = ring.GetPointCount()
-    # print "Ring Points: ", points
+    # print("Ring Points: ", points)
     for i in range(points):
         coordinates.append((ring.GetX(i), ring.GetY(i)))
 
@@ -492,5 +492,5 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
 # MAPPATH = "C:/Users/peter/Documents/TempDocs/Files/Upperdandy/Boundary.shp"
 # coordinates, mapstats = get_bounding_polygon(MAPPATH, "leaflet",
 #                                              "C:/Users/peter/Documents/Coding Projects/UrbanBEATS-PSS")
-# print mapstats
-# print coordinates
+# print(mapstats)
+# print(coordinates)

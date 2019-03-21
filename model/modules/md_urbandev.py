@@ -38,11 +38,12 @@ import math
 from shapely.geometry import Polygon, Point
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-from ubmodule import *
+from model.modules.ubmodule import *
 import model.ublibs.ubspatial as ubspatial
 import model.ublibs.ubmethods as ubmethods
 import model.ublibs.ubdatatypes as ubdata
 from ..progref import ubglobals
+
 
 # --- MODULE CLASS DEFINITION ---
 class UrbanDevelopment(UBModule):
@@ -595,7 +596,7 @@ class UrbanDevelopment(UBModule):
         #   [TO DO IN FUTURE]
 
         self.notify("Begin Urban Development Simulation")
-        print "Begin Urban Development Simulation"
+        print("Begin Urban Development Simulation")
         rand.seed()
 
         # --- SECTION 1 - Get Boundary, Setup Details for the Simulation Grid and MapAttributes Component
@@ -645,10 +646,10 @@ class UrbanDevelopment(UBModule):
 
         cellIDcount = 1     # Setup counter for cells
         cellslist = []
-        print ("Creating cell grid")
+        print("Creating cell grid")
         for y in range(cells_tall):
             for x in range(cells_wide):
-                print ("Current Cell_ID: "+str(cellIDcount))
+                print("Current Cell_ID: "+str(cellIDcount))
 
                 # - STEP 1 - GENERATE CELL GEOMETRIES
                 current_cell = self.create_cell_face(x, y, self.cellsize, cellIDcount, boundarypoly)
@@ -676,13 +677,13 @@ class UrbanDevelopment(UBModule):
         # - STEP 2 - TRANSFER RASTER DATA TO CELLS
         # Depending on availability, start with municipality
         self.notify("Loading input maps")
-        print ("Loading input maps")
+        print("Loading input maps")
 
         # - 2.1 - MUNICIPALITIES ---
         # STEP 2.1.1 :: Load Municipalities
         if self.lga_inputmap == "":
             self.notify("Region is treated as a single municipality")
-            print ("Region is treated as a single municipality")
+            print("Region is treated as a single municipality")
             map_attr.add_attribute("HasGEOPOLITICAL", 0)
         else:
             self.notify("Loading and Assigning Municipalities")
@@ -731,7 +732,7 @@ class UrbanDevelopment(UBModule):
             lu_dref = self.datalibrary.get_data_with_id(self.luc_inputmap)      # Retrieve the land use map
             fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
             self.notify("Loading: "+str(fullfilepath))
-            print ("Loading: " + str(fullfilepath))
+            print("Loading: " + str(fullfilepath))
             landuseraster = ubspatial.import_ascii_raster(fullfilepath, self.luc_inputmap)
             self.notify("Load Complete!")
             print("Load Complete!")
@@ -913,11 +914,11 @@ class UrbanDevelopment(UBModule):
                                  float(self.access_pos_weight * self.access_pos_include),
                                  float(self.access_poi_weight * self.access_poi_include),
                                  float(self.access_pth_weight * self.access_pth_include)]
-        print "ACCESS WEIGHTS", accessibility_weights
+        print("ACCESS WEIGHTS", accessibility_weights)
         accessibility_weights = ubmethods.normalize_weights(accessibility_weights, "SUM")   # 0 to 1 normalize
 
         accessibility_attributes = ["ACC_ROAD", "ACC_RAIL", "ACC_WWAY", "ACC_LAKE", "ACC_POSS", "ACC_POIS", "ACC_PTHS"]
-        print "ACCESS WEIGHTS", accessibility_weights
+        print("ACCESS WEIGHTS", accessibility_weights)
         # Loop across blocks, get the five attributes and calculate total accessibility
         for i in range(len(cellslist)):
             final_acc_res, final_acc_com, final_acc_ind, final_acc_orc = 0, 0, 0, 0
@@ -980,7 +981,7 @@ class UrbanDevelopment(UBModule):
                         d += "W"
 
                     if d == "":     # DEBUG
-                        print "Something went wrong!!!"
+                        print("Something went wrong!!!")
 
                     cellslist[i].add_attribute("NHD_"+d, cellslist[j].get_attribute("CellID"))
                     neighbours.append(cellslist[j].get_attribute("CellID"))
@@ -991,7 +992,7 @@ class UrbanDevelopment(UBModule):
         print("Loading map for suitability assessment...")
         if (self.suit_slope_include or self.suit_aspect_include) and self.suit_elevation_data:
             # If either criteria has been included, map elevation to cells
-            print "Loading Elevation"
+            print("Loading Elevation")
             elev_dref = self.datalibrary.get_data_with_id(self.suit_elevation_data)
             fullfilepath = elev_dref.get_data_file_path() + elev_dref.get_metadata("filename")
             elevraster = ubspatial.import_ascii_raster(fullfilepath, self.suit_elevation_data)
@@ -1000,7 +1001,7 @@ class UrbanDevelopment(UBModule):
             elev_csc = int(self.cellsize / elev_res)     # knowing how many cells wide and tall
 
         if self.suit_soil_include and self.suit_soil_data:
-            print "Loading Soil"
+            print("Loading Soil")
             soil_dref = self.datalibrary.get_data_with_id(self.suit_soil_data)
             fullfilepath = soil_dref.get_data_file_path() + soil_dref.get_metadata("filename")
             soilraster = ubspatial.import_ascii_raster(fullfilepath, self.suit_soil_data)
@@ -1009,7 +1010,7 @@ class UrbanDevelopment(UBModule):
             soil_csc = int(self.cellsize / soil_res)
 
         if self.suit_gw_include and self.suit_gw_data:
-            print "Loading Groundwater Depth"
+            print("Loading Groundwater Depth")
             gw_dref = self.datalibrary.get_data_with_id(self.suit_gw_data)
             fullfilepath = gw_dref.get_data_file_path() + gw_dref.get_metadata("filename")
             gwraster = ubspatial.import_ascii_raster(fullfilepath, self.suit_gw_data)
@@ -1088,7 +1089,7 @@ class UrbanDevelopment(UBModule):
                     else:
                         current_cell.add_attribute("DepthToGW", float(avg_gwd / n_gw))
                 else:
-                    print gwdatamatrix
+                    print(gwdatamatrix)
                     if gwdatamatrix == gwraster.get_nodatavalue():
                         current_cell.add_attribute("DepthToGW", -9999)
                     else:
@@ -1302,7 +1303,7 @@ class UrbanDevelopment(UBModule):
                 bool(self.zoning_rules_indauto) and \
                 cellslist[i].change_attribute("ZONE_IND", int(not self.zoning_rules_indlimit))
             else:
-                print "DEBUG: Should not be here..."
+                print("DEBUG: Should not be here...")
 
         # - 2.8.5 - Overlay Maps - THIRD MASK
         waterpoly = self.get_rings_maps_for_zoning(self.zoning_water)           # Water bodies
@@ -1313,7 +1314,7 @@ class UrbanDevelopment(UBModule):
         custompoly = self.get_rings_maps_for_zoning(self.zoning_custom)         # Custom Overlay
 
         totfeatures = len(waterpoly) + len(heritagepoly) + len(publicpoly) + len(enviropoly) + len(floodpoly) + len(custompoly)
-        print "Total Features of overlays to check against...", totfeatures
+        print("Total Features of overlays to check against...", totfeatures)
 
         # Scan all remaining cells against overlay conditions
         for i in range(len(cellslist)):
@@ -1416,7 +1417,7 @@ class UrbanDevelopment(UBModule):
 
         # - 2.8 - DETERMINE LARGE NEIGHBOURHOODS ---
         # self.notify("Establishing Neighbourhoods")
-        # print ("Establishing Neighbourhoods")
+        # print("Establishing Neighbourhoods")
         # hashtable = [[], []]    # [Cell_Obj, NhD_Objs]
         # nhd_rad = self.nhd_radius * 1000    # Convert to [m]
         # sqdist = nhd_rad * nhd_rad
@@ -1442,7 +1443,7 @@ class UrbanDevelopment(UBModule):
         # We have the land use types defined, now we need to define the maps for the individual four active land uses
 
         self.notify("Current End of Module")
-        print ("Current end of module")
+        print("Current end of module")
         return True
 
     def calculate_suitability_value(self):
@@ -1518,7 +1519,7 @@ class UrbanDevelopment(UBModule):
         pointfeatures = ubspatial.import_point_features(fullfilepath, "POINTCOORDS", self.global_offsets)
 
         self.notify("Number of loaded features to compare for "+str(att_name)+": " + str(len(pointfeatures)))
-        print "Length of the featurepoints list for "+str(att_name)+": ", str(len(pointfeatures))
+        print("Length of the featurepoints list for "+str(att_name)+": ", str(len(pointfeatures)))
 
         # CALCULATE CLOSEST DISTANCE TO EACH CELL
         for i in range(len(cellslist)):
@@ -1562,7 +1563,7 @@ class UrbanDevelopment(UBModule):
                                                          Segments=self.cellsize)  # Segmentation
 
         self.notify("Number of loaded features to compare for "+str(att_name)+": "+str(len(linearfeatures)))
-        print "Length of the featurepoints list for "+str(att_name)+": ", str(len(linearfeatures))
+        print("Length of the featurepoints list for "+str(att_name)+": ", str(len(linearfeatures)))
 
         for i in range(len(cellslist)):
             cur_cell = cellslist[i]
@@ -1606,7 +1607,7 @@ class UrbanDevelopment(UBModule):
         polypoints = ubspatial.import_polygonal_map(fullfilepath, "RINGPOINTS", None, self.global_offsets)
 
         self.notify("Number of loaded features to compare for "+str(att_name)+": " + str(len(polypoints)))
-        print "Length of the featurepoints list for "+str(att_name)+": ", str(len(polypoints))
+        print("Length of the featurepoints list for "+str(att_name)+": ", str(len(polypoints)))
 
         for i in range(len(cellslist)):
             cur_cell = cellslist[i]

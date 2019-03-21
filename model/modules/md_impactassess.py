@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 @file   main.pyw
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
@@ -35,7 +35,7 @@ import gc
 import tempfile
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-from ubmodule import *
+from model.modules.ubmodule import *
 
 
 # --- MODULE CLASS DEFINITION ---

@@ -35,7 +35,7 @@ import gc
 import tempfile
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-from ubmodule import *
+from model.modules.ubmodule import *
 
 
 # --- MODULE CLASS DEFINITION ---

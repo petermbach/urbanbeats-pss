@@ -36,7 +36,7 @@ import tempfile
 import random, math
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-from ubmodule import *
+from model.modules.ubmodule import *
 import model.ublibs.ubspatial as ubspatial
 import model.ublibs.ubmethods as ubmethods
 import model.ublibs.ubdatatypes as ubdata
@@ -1254,7 +1254,7 @@ class UrbanPlanning(UBModule):
             Nallotments = Ndwunits / DWperLot
             Alot = Aca / Nallotments
             Wlot = Alot / Dlot
-            # print Wlot, self.min_allot_width, "dwellings per lot:", DWperLot, Ndwunits, Nallotments, Alot
+            # print(Wlot, self.min_allot_width, "dwellings per lot:", DWperLot, Ndwunits, Nallotments, Alot)
             # self.notify(str(DWperLot)+str(Nallotments)+str(Alot)+str(Wlot))
 
         self.notify("For this block, we need " + str(DWperLot) + " dwellings on each allotment")
@@ -1783,7 +1783,7 @@ class UrbanPlanning(UBModule):
 
         setbackArea = math.sqrt(Aestate) * minsetback * 2 - minsetback * minsetback  # take setback area on two faces
         Asite_remain = Aca - Afootprintfinal - setbackArea
-        # print "Debug"
+        # print("Debug")
         if (Asite_remain - Acarpark - Aloadingbay) > 0:
             # Case 1: It all fits, hooray! --> Alandscape = setback area + remaining area
             Alandscape = (Asite_remain - Acarpark - Aloadingbay) + setbackArea

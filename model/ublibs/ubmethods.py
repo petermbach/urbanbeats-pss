@@ -83,7 +83,7 @@ def autosize_blocks(width, height):
     tot_area = width * height
     ideal_blocksize = math.sqrt(tot_area / float(block_limit))
 
-    print "IdBS:", ideal_blocksize
+    print("IdBS:", ideal_blocksize)
 
     if ideal_blocksize <= 200:       # If less than 200m, size to 200m x 200m as minimum
         blocksize = 200
@@ -453,5 +453,5 @@ def calculate_accessibility_factor(dist, aj):
         else:
             return float(dist / (abs(aj) + dist))
     except ZeroDivisionError:
-        print "Zero division!"
+        print("Zero division!")
         return 0

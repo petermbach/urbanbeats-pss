@@ -39,8 +39,8 @@ from shapely.geometry import Polygon, LineString, Point
 from random import randint
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-from ubmodule import *
-from md_delinblocks import *
+from model.modules.ubmodule import *
+from model.modules.md_delinblocks import *
 import model.ublibs.ubspatial as ubspatial
 import model.ublibs.ubmethods as ubmethods
 import model.ublibs.ubdatatypes as ubdata
@@ -433,7 +433,7 @@ class Infrastructure(UBModule):
         :return: a list of all the block's neighbours [[BlockID], [X], [Y], [Z], [direction]], None otherwise
         """
         nhd_ids = curblock.get_attribute("Neighbours")
-        print nhd_ids
+        print(nhd_ids)
         nhd_info = [[], [], [], []]  # Neighbours [[0=id], [1=x], [2=y], [3=z]]
 
         # Scan neighbourhood for Blocks with Rivers/Lakes
@@ -459,7 +459,7 @@ class Infrastructure(UBModule):
                         nhd_info[2].append(y2)
                         nhd_info[3].append(z2)
 
-        print curblock.get_attribute("BlockID"), nhd_info[0]
+        print(curblock.get_attribute("BlockID"), nhd_info[0])
 
         if len(nhd_info[0]) == 0:
             return None
@@ -559,7 +559,7 @@ class Infrastructure(UBModule):
             down_id = -9999  # Otherwise there is a sink in the current Block
             dz = 0
 
-        print ("FOR BLOCK: " + str(curblock[0]) + "DOWN ID: " + str(down_id) + " dz: " + str(dz))
+        print("FOR BLOCK: " + str(curblock[0]) + "DOWN ID: " + str(down_id) + " dz: " + str(dz))
 
         # if max(dz) > 0:  # If there is a drop in elevation - this also means the area cannot be flat!
         #     down_id = nhd[0][dz.index(max(dz))]  # The ID corresponds to the maximum elevation difference
@@ -716,7 +716,7 @@ class Infrastructure(UBModule):
         :return: block with closest treatment.
         """
         if treatments is None:
-            print ("No treatment detected")
+            print("No treatment detected")
             pass
 
         x_b = current_block.get_attribute("CentreX")
@@ -772,7 +772,7 @@ class Infrastructure(UBModule):
 
 
         if river_blocks is None:
-            print ("No rivers detected")
+            print("No rivers detected")
             pass
 
         x_b = current_block.get_attribute("CentreX")
