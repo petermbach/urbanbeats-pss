@@ -180,7 +180,7 @@ class UrbanBeatsSim(object):
             projinfo = ET.parse(projectpath+"/info.xml")
         except IOError:
             return False
-        print projectpath + "/info.xml"
+        print (projectpath + "/info.xml")
         root = projinfo.getroot()
         projdict = {}
         projdata = root.find('projectinfo')
@@ -259,7 +259,7 @@ class UrbanBeatsSim(object):
         """Creates a new scenario object and sets it as the active scenario."""
         newscenario = ubscenarios.UrbanBeatsScenario(self, self.__datalibrary, self.__projectlog)
         self.__activescenario = newscenario     # Set the active scenario's name
-        print "Created"
+        print ("Created")
 
     def add_new_scenario(self, scenario_object):
         """Adds a new scenario to the simulation by creating a UrbanBeatsScenario() instance and initializing

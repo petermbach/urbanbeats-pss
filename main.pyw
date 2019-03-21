@@ -482,7 +482,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def reset_default_options(self):
         """Completely restores the default options based on the .cfg's default attribute for each option type.
         Also closes the options window."""
-        print "RESETTING"       #[TO DO]
+        print ("RESETTING")       #[TO DO]
 
     def update_gui_elements(self):
         """Updates elements on the main window GUI depending on what has changed in the options menu. This
@@ -995,7 +995,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.expcolData.setIcon(icon14)
             self.ui.expcolData.setIconSize(QtCore.QSize(20, 20))
         else:
-            print "Something Wrong"
+            print ("Something Wrong")
 
     # GETTERS and SETTERS
     def set_active_simulation_object(self, simobjectfromcore):

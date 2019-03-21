@@ -158,7 +158,7 @@ class UBComponent(object):
         try:
             self.__attributes[name] = value
         except KeyError:
-            print "WARNING NO ATTRIBUTE NAMED: "+str(name)
+            print ("WARNING NO ATTRIBUTE NAMED: "+str(name))
         return True
 
     def change_attribute(self, name, value):
@@ -202,7 +202,7 @@ class UBVector(UBComponent):
         self.__points = points
         self.determine_geometry(self.__points)
         if currentgeometry != self.__dtype:
-            print "WARNING: GEOMETRY TYPE HAS CHANGED!"
+            print ("WARNING: GEOMETRY TYPE HAS CHANGED!")
 
     def get_points(self):
         """Returns an array of points (tuples), each having (x, y, z) sets of
