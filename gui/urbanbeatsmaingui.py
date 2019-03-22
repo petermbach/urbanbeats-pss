@@ -2,11 +2,12 @@
 
 # Form implementation generated from reading ui file 'urbanbeatsmaingui.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.12.1
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -25,7 +26,6 @@ class Ui_MainWindow(object):
         self.Progress_Widget.setMinimumSize(QtCore.QSize(450, 0))
         self.Progress_Widget.setObjectName("Progress_Widget")
         self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.Progress_Widget)
-        self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_7.setObjectName("verticalLayout_7")
         self.ScenarioView_lbl = QtWidgets.QLabel(self.Progress_Widget)
         self.ScenarioView_lbl.setObjectName("ScenarioView_lbl")
@@ -41,7 +41,6 @@ class Ui_MainWindow(object):
         self.Project_tab = QtWidgets.QWidget()
         self.Project_tab.setObjectName("Project_tab")
         self.verticalLayout_10 = QtWidgets.QVBoxLayout(self.Project_tab)
-        self.verticalLayout_10.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_10.setObjectName("verticalLayout_10")
         self.Project = QtWidgets.QTextEdit(self.Project_tab)
         self.Project.setReadOnly(True)
@@ -51,7 +50,6 @@ class Ui_MainWindow(object):
         self.Narrative_tab = QtWidgets.QWidget()
         self.Narrative_tab.setObjectName("Narrative_tab")
         self.verticalLayout_8 = QtWidgets.QVBoxLayout(self.Narrative_tab)
-        self.verticalLayout_8.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_8.setObjectName("verticalLayout_8")
         self.Narrative = QtWidgets.QPlainTextEdit(self.Narrative_tab)
         self.Narrative.setObjectName("Narrative")
@@ -60,7 +58,6 @@ class Ui_MainWindow(object):
         self.Simulation_tab = QtWidgets.QWidget()
         self.Simulation_tab.setObjectName("Simulation_tab")
         self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.Simulation_tab)
-        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_6.setObjectName("verticalLayout_6")
         self.verticalLayout_16 = QtWidgets.QVBoxLayout()
         self.verticalLayout_16.setObjectName("verticalLayout_16")
@@ -84,7 +81,6 @@ class Ui_MainWindow(object):
         self.simcaching_widget = QtWidgets.QWidget(self.Simulation_tab)
         self.simcaching_widget.setObjectName("simcaching_widget")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.simcaching_widget)
-        self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.simcaching_current = QtWidgets.QLineEdit(self.simcaching_widget)
         self.simcaching_current.setObjectName("simcaching_current")
@@ -126,7 +122,6 @@ class Ui_MainWindow(object):
         self.DataSummary_tab = QtWidgets.QWidget()
         self.DataSummary_tab.setObjectName("DataSummary_tab")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.DataSummary_tab)
-        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.DataSummary = QtWidgets.QTableWidget(self.DataSummary_tab)
         self.DataSummary.setObjectName("DataSummary")
@@ -143,7 +138,6 @@ class Ui_MainWindow(object):
         self.Log_tab = QtWidgets.QWidget()
         self.Log_tab.setObjectName("Log_tab")
         self.verticalLayout_9 = QtWidgets.QVBoxLayout(self.Log_tab)
-        self.verticalLayout_9.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_9.setObjectName("verticalLayout_9")
         self.Log = QtWidgets.QPlainTextEdit(self.Log_tab)
         self.Log.setReadOnly(True)
@@ -176,7 +170,6 @@ class Ui_MainWindow(object):
         self.DataView_Widget.setSizePolicy(sizePolicy)
         self.DataView_Widget.setObjectName("DataView_Widget")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.DataView_Widget)
-        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.DataView_lbl = QtWidgets.QLabel(self.DataView_Widget)
         self.DataView_lbl.setMinimumSize(QtCore.QSize(0, 13))
@@ -193,7 +186,6 @@ class Ui_MainWindow(object):
         self.DataView_Controls.setMaximumSize(QtCore.QSize(16777215, 50))
         self.DataView_Controls.setObjectName("DataView_Controls")
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.DataView_Controls)
-        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.DataView_extent = QtWidgets.QPushButton(self.DataView_Controls)
         icon = QtGui.QIcon()
@@ -214,13 +206,7 @@ class Ui_MainWindow(object):
         self.DataView_options.setObjectName("DataView_options")
         self.horizontalLayout_4.addWidget(self.DataView_options)
         self.verticalLayout_5.addWidget(self.DataView_Controls)
-        self.DataView_web = QtWebKitWidgets.QWebView(self.DataView_Widget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.DataView_web.sizePolicy().hasHeightForWidth())
-        self.DataView_web.setSizePolicy(sizePolicy)
-        self.DataView_web.setUrl(QtCore.QUrl("about:blank"))
+        self.DataView_web = QtWebEngineWidgets.QWebEngineView(self.DataView_Widget)
         self.DataView_web.setObjectName("DataView_web")
         self.verticalLayout_5.addWidget(self.DataView_web)
         self.horizontalLayout_3.addWidget(self.DataView_Widget)
@@ -304,7 +290,6 @@ class Ui_MainWindow(object):
         self.DataDock_Contents = QtWidgets.QWidget()
         self.DataDock_Contents.setObjectName("DataDock_Contents")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.DataDock_Contents)
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.verticalLayout_12 = QtWidgets.QVBoxLayout()
         self.verticalLayout_12.setContentsMargins(9, 9, 9, 9)
@@ -354,7 +339,6 @@ class Ui_MainWindow(object):
         self.DataDock_Controls.setMinimumSize(QtCore.QSize(0, 50))
         self.DataDock_Controls.setObjectName("DataDock_Controls")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.DataDock_Controls)
-        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.addData = QtWidgets.QPushButton(self.DataDock_Controls)
         self.addData.setText("")
@@ -407,7 +391,6 @@ class Ui_MainWindow(object):
         self.ScenarioDock_Contents = QtWidgets.QWidget()
         self.ScenarioDock_Contents.setObjectName("ScenarioDock_Contents")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.ScenarioDock_Contents)
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.verticalLayout_13 = QtWidgets.QVBoxLayout()
         self.verticalLayout_13.setContentsMargins(9, 9, 9, 9)
@@ -498,7 +481,6 @@ class Ui_MainWindow(object):
         self.ScenarioDock_Controls = QtWidgets.QWidget(self.ScenarioDock_Contents)
         self.ScenarioDock_Controls.setObjectName("ScenarioDock_Controls")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.ScenarioDock_Controls)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.newScenario = QtWidgets.QPushButton(self.ScenarioDock_Controls)
         self.newScenario.setIcon(icon11)
@@ -527,7 +509,6 @@ class Ui_MainWindow(object):
         self.ModuleDock_Contents = QtWidgets.QWidget()
         self.ModuleDock_Contents.setObjectName("ModuleDock_Contents")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.ModuleDock_Contents)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
         self.widget = QtWidgets.QWidget(self.ModuleDock_Contents)
         self.widget.setObjectName("widget")
@@ -660,7 +641,6 @@ class Ui_MainWindow(object):
         self.SimDock_Contents = QtWidgets.QWidget()
         self.SimDock_Contents.setObjectName("SimDock_Contents")
         self.verticalLayout_14 = QtWidgets.QVBoxLayout(self.SimDock_Contents)
-        self.verticalLayout_14.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_14.setObjectName("verticalLayout_14")
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setContentsMargins(5, 5, 5, 5)
@@ -1091,8 +1071,7 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.OutputConsole, self.DataView_extent)
         MainWindow.setTabOrder(self.DataView_extent, self.DataView_meta)
         MainWindow.setTabOrder(self.DataView_meta, self.DataView_options)
-        MainWindow.setTabOrder(self.DataView_options, self.DataView_web)
-        MainWindow.setTabOrder(self.DataView_web, self.SimDock_resultsview)
+        MainWindow.setTabOrder(self.DataView_options, self.SimDock_resultsview)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -1335,5 +1314,6 @@ class Ui_MainWindow(object):
         self.actionSSANTO.setText(_translate("MainWindow", "SSANTO"))
         self.actionLand_Use_Reclassifier.setText(_translate("MainWindow", "Land Use Reclassifier"))
 
-from PyQt5 import QtWebKitWidgets
+
+from PyQt5 import QtWebEngineWidgets
 import ubeats_rc

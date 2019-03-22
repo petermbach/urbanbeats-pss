@@ -1022,7 +1022,7 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         """Updates the coordinate system's combobox and the UI elements associated with it."""
         self.ui.coords_combo.clear()
         self.ui.coords_combo.addItem("(select coordinate system)")
-        names = self.epsg_dict.keys()
+        names = list(self.epsg_dict.keys())
         names.sort()
         for i in names:
             self.ui.coords_combo.addItem(i)
@@ -1032,10 +1032,10 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
     def update_combo_from_epsg(self):
         """Updates the coordinate system combo box based on the EPSG code entered in the text box, if the EPSG
         does not exist in the dictionary, the combo box displays "Other...". """
-        names = self.epsg_dict.keys()
+        names = list(self.epsg_dict.keys())
         names.sort()
         try:
-            for name, epsg in self.epsg_dict.iteritems():
+            for name, epsg in self.epsg_dict.items():
                 if int(epsg) == int(self.ui.epsg_line.text()):
                     curindex = names.index(name) + 1    # +1 to account for Index 0 < > text
                     self.ui.coords_combo.setCurrentIndex(curindex)
@@ -1271,7 +1271,7 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         """Updates the coordinate system's combobox and the UI elements associated with it."""
         self.ui.coords_combo.clear()
         self.ui.coords_combo.addItem("(select coordinate system)")
-        names = self.epsg_dict.keys()
+        names = list(self.epsg_dict.keys())
         names.sort()
         for i in names:
             self.ui.coords_combo.addItem(i)
@@ -1281,10 +1281,10 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
     def update_combo_from_epsg(self):
         """Updates the coordinate system combo box based on the EPSG code entered in the text box, if the EPSG
         does not exist in the dictionary, the combo box displays "Other...". """
-        names = self.epsg_dict.keys()
+        names = list(self.epsg_dict.keys())
         names.sort()
         try:
-            for name, epsg in self.epsg_dict.iteritems():
+            for name, epsg in self.epsg_dict.items():
                 if int(epsg) == int(self.ui.epsg_line.text()):
                     curindex = names.index(name) + 1    # +1 to account for Index 0 < > text
                     self.ui.coords_combo.setCurrentIndex(curindex)

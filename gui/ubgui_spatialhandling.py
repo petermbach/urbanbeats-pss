@@ -41,7 +41,7 @@ def generate_initial_leaflet_map(coordinates, tileserver, rootpath):
     :return: html code for the initial leaflet map.
     """
 
-    leafletpath = rootpath + "/libs/leaflet/"
+    leafletpath = str(rootpath + "/libs/leaflet/")
     leaflethtml = """<!DOCTYPE html>
         <html>
         <head>
@@ -69,6 +69,33 @@ def generate_initial_leaflet_map(coordinates, tileserver, rootpath):
         </script>
         </body>
         </html>"""
+    leaflethtml = """<!DOCTYPE html>
+            <html>
+            <head>
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" />
+            <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+            <style>
+            html, body, #map {
+            height: 100%;
+            width: 100%;
+            }
+            body {
+            padding: 0;
+            margin: 0;
+            }
+            </style>
+            </head>
+            <body>
+            <div id="map"></div>
+            <script type="text/javascript">
+            var map = L.map('map', {
+            center: [""" + str(coordinates[0]) + ", " + str(coordinates[1]) + """],
+            zoom: 12
+            });""" + tileserver + """
+            mapstyle.addTo(map);
+            </script>
+            </body>
+            </html>"""
     return leaflethtml
 
 

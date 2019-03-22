@@ -518,6 +518,9 @@ class MainWindow(QtWidgets.QMainWindow):
         tileserver = ubglobals.TILESERVERS[self.get_option("mapstyle")]
 
         leaflet_html = gui_ubspatial.generate_initial_leaflet_map(coordinates, tileserver, UBEATSROOT)
+        #print(leaflet_html)
+        # url = QtCore.QUrl.fromLocalFile(r"C:\Users\peter\Documents\Coding Projects\UrbanBEATS-PSS\default_html.html")
+        # self.ui.DataView_web.load(url)
         self.ui.DataView_web.setHtml(leaflet_html)
         self.__dataview_displaystate = "default"
 
@@ -1260,7 +1263,7 @@ if __name__ == "__main__":
 
     # --- OBTAIN AND STORE PATH DATA FOR PROGRAM ---
     UBEATSROOT = os.path.dirname(sys.argv[0])  # Obtains the program's root directory
-    UBEATSROOT = UBEATSROOT.encode('string-escape')  # To avoid weird bugs e.g. if someone's folder path
+    # UBEATSROOT = UBEATSROOT.encode('string-escape')  # To avoid weird bugs e.g. if someone's folder path
 
     random.seed()
 
