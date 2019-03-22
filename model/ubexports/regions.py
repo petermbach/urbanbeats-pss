@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 @file   model\ubexports\blocks.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
@@ -43,3 +43,4 @@ def export_municipalities_to_gis_shapefile(asset_col, map_attr, filepath, filena
     :param epsg: the EPSG code for the coordinate system to use
     """
     pass  # [TO DO]
+    return True

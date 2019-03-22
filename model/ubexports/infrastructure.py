@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 @file   model\ubexports\blocks.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
@@ -45,7 +45,7 @@ def export_sww_network_to_gis_shapefile(asset_col, map_attr, filepath, filename,
     :param fptype: type of Flowpath ("Blocks", "Patches")
     :return:
     """
-    print fptype
+    print(fptype)
     if map_attr.get_attribute("HasSWW") != 1:
         return True
 

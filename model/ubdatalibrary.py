@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 @file   ubdatalibrary.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
@@ -35,17 +35,17 @@ import xml.etree.ElementTree as ET
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 import model.progref.ubglobals as ubglobals
-# import modules.md_decisionanalysis
-# import modules.md_climatesetup
-# import modules.md_delinblocks
-# import modules.md_impactassess
-# import modules.md_perfassess
-# import modules.md_regulation
-# import modules.md_socioecon
-# import modules.md_spatialmapping
-# import modules.md_infrastructure
-# import modules.md_urbandev
-# import modules.md_urbplanbb
+# import model.modules.md_decisionanalysis as md_decisionanalysis
+# import model.modules.md_climatesetup as md_climatesetup
+# import model.modules.md_delinblocks as md_delinblocks
+# import model.modules.md_impactassess as md_impactassess
+# import model.modules.md_perfassess as md_perfassess
+# import model.modules.md_regulation as md_regulation
+# import model.modules.md_socioecon as md_socioecon
+# import model.modules.md_spatialmapping as md_spatialmapping
+# import model.modules.md_infrastructure as md_infrastructure
+# import model.modules.md_urbandev as md_urbandev
+# import model.modules.md_urbplanbb as md_urbplanbb
 
 
 # --- URBANBEATS DATA LIBRARY CLASS DEFINITION ---

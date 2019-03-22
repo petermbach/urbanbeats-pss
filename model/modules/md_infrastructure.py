@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 @file   md_infrastructure.pyw
 @author Peter M Bach <peterbach@gmail.com>, Natalia Duque <natalia.duquevillarreal@eawag.ch>
 @section LICENSE

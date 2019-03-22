@@ -1286,8 +1286,8 @@ if __name__ == "__main__":
     #app.installTranslator(translator)
 
     # --- SPLASH SCREEN ---
-    splash_matrix = ["1", "2", "3", "4", "5"]
-    splash_pix = QtGui.QPixmap("media/splashscreen" + splash_matrix[random.randint(0, 4)] + ".png")
+    splash_matrix = ["1", "2", "3", "4", "5", "6"]
+    splash_pix = QtGui.QPixmap("media/splashscreen" + splash_matrix[random.randint(0, 5)] + ".png")
     splash = QtWidgets.QSplashScreen(splash_pix, QtCore.Qt.WindowStaysOnTopHint)
     splash.setMask(splash_pix.mask())
     splash.show()

@@ -1,5 +1,5 @@
 # coding=utf-8
-"""
+r"""
 @file DesignNode
 @author Natalia Duque
 @section LICENSE

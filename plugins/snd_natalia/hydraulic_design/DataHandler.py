@@ -1,5 +1,5 @@
 # coding=utf-8
-"""
+r"""
 @file DataHandler
 @author Natalia Duque
 @section LICENSE
@@ -64,7 +64,7 @@ class DataHandler(object):
             path.exists(self.path)               # Check if the path exists
             f = open(self.path, "r") 	            # Get input file
         except KeyError:
-            print ("The path does not exist or could not be opened")
+            print("The path does not exist or could not be opened")
 
         if f is None:
             print("File is None")

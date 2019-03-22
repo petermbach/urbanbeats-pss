@@ -1,5 +1,5 @@
 # coding=utf-8
-"""
+r"""
 @file DesignGraphBuilder
 @author Natalia Duque
 @section LICENSE
@@ -297,7 +297,7 @@ class DesignGraphBuilder(object):
         ax = fig.add_subplot(111, projection='3d')
 
         for sol in self.solution:
-            print str(sol)
+            print(str(sol))
 
             # print([(str(sol.dn_up.ls_node) + " " + str(sol.dn_down.ls_node) + "\n") for sol in new_l])
 

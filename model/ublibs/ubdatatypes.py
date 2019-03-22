@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 @file   ubdatatypes.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
@@ -35,6 +35,7 @@ import gc
 import tempfile
 
 # --- URBANBEATS LIBRARY IMPORTS ---
+
 
 class UBRasterData(object):
     """The UrbanBEATS Raster Data Object, which holds raster information and allows querying of raster cell
