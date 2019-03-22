@@ -1,25 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-@file   md_spatialmappingguic.py
-@author Peter M Bach <peterbach@gmail.com>
-@section LICENSE
-
-Urban Biophysical Environments and Technologies Simulator (UrbanBEATS)
-Copyright (C) 2018  Peter M. Bach
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-"""
 
 __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2018. Peter M. Bach"
@@ -31,8 +10,8 @@ import model.progref.ubglobals as ubglobals
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
-from md_spatialmappinggui import Ui_Spatialmap_Dialog
-from md_subgui_dp import Ui_CustomPatternDialog
+from gui.md_spatialmappinggui import Ui_Spatialmap_Dialog
+from gui.md_subgui_dp import Ui_CustomPatternDialog
 
 
 # --- MAIN GUI FUNCTION ---

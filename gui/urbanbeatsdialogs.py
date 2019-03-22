@@ -1,25 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-@file   urbanbeatsdialogs.py
-@author Peter M Bach <peterbach@gmail.com>
-@section LICENSE
-
-Urban Biophysical Environments and Technologies Simulator (UrbanBEATS)
-Copyright (C) 2018  Peter M. Bach
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-"""
 
 __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2018. Peter M. Bach"
@@ -35,23 +14,23 @@ import sys
 import os
 import webbrowser
 import xml.etree.ElementTree as ET
-from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKit
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 import model.progref.ubglobals as ubglobals
 import model.ubdatalibrary as ubdatalibrary
 import model.ublibs.ubspatial as ubspatial
 
-from aboutdialog import Ui_AboutDialog      # About UrbanBEATS Dialog
-from preferencesdialog import Ui_PreferencesDialog      # Preferences Dialog
-from startnewprojectdialog import Ui_ProjectSetupDialog     # Start New Project Dialog
-from openprojectdialog import Ui_OpenProjectDialog      # Open Existing Project Dialog
-from logdialog import Ui_LogDialog         # Project Log Dialog
-from adddatadialog import Ui_AddDataDialog      # Add Data Dialog
-from newscenario import Ui_NewScenarioDialog    # Scenario Creation Dialog
-from newscenario_timestep import Ui_TimeStep_Dialog     # Irregular time step customization
-from mapexportoptions import Ui_MapExportDialog
-from reportoptions import Ui_ReportingDialog
+from gui.aboutdialog import Ui_AboutDialog      # About UrbanBEATS Dialog
+from gui.preferencesdialog import Ui_PreferencesDialog      # Preferences Dialog
+from gui.startnewprojectdialog import Ui_ProjectSetupDialog     # Start New Project Dialog
+from gui.openprojectdialog import Ui_OpenProjectDialog      # Open Existing Project Dialog
+from gui.logdialog import Ui_LogDialog         # Project Log Dialog
+from gui.adddatadialog import Ui_AddDataDialog      # Add Data Dialog
+from gui.newscenario import Ui_NewScenarioDialog    # Scenario Creation Dialog
+from gui.newscenario_timestep import Ui_TimeStep_Dialog     # Irregular time step customization
+from gui.mapexportoptions import Ui_MapExportDialog
+from gui.reportoptions import Ui_ReportingDialog
 
 
 # --- ABOUT DIALOG ---
@@ -603,8 +582,8 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
                 dref.assign_scenario(self.scenario.get_metadata("name"))
             newdatasets.append(dref)
 
-        print "Old Data Set Length", len(olddatasets)
-        print "New Data Set Length", len(newdatasets)
+        print("Old Data Set Length", len(olddatasets))
+        print("New Data Set Length", len(newdatasets))
         data_to_remove = []
         for dref in olddatasets:
             if dref not in newdatasets:
@@ -893,27 +872,27 @@ class OpenProjectDialogLaunch(QtWidgets.QDialog):
 
     def info_button_activate(self):
         """Called when the info button has been clicked."""
-        print "Info Button"
+        print("Info Button")
         pass
 
     def clear_button_activate(self):
         """Called when the clear button has been clicked."""
-        print "Clear Button"
+        print("Clear Button")
         pass
 
     def delete_button_activate(self):
         """Called when the delete button has been clicked."""
-        print "Delete Button"
+        print("Delete Button")
         pass
 
     def import_button_activate(self):
         """Called when the import button has been clicked."""
-        print "Import Button"
+        print("Import Button")
         pass
 
     def export_button_activate(self):
         """Called when the export button has been clicked."""
-        print "Export Button"
+        print("Export Button")
         pass
 
     def table_selection_to_path_box(self):

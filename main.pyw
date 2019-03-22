@@ -63,6 +63,7 @@ from gui.md_spatialmappingguic import SpatialMappingGuiLaunch
 
 from gui.md_infrastructureguic import InfrastructureGuiLaunch
 
+
 # --- MAIN GUI FUNCTION ---
 class MainWindow(QtWidgets.QMainWindow):
     """The class definition for the UrbanBEATS Main Window. The main window
