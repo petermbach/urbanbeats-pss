@@ -410,7 +410,7 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
 
     layer = datasource.GetLayer(0)  # Get the first layer, which should be the only layer!
     xmin, xmax, ymin, ymax = layer.GetExtent()
-    # print xmin, xmax, ymin, ymax
+    print xmin, xmax, ymin, ymax
 
     # Get some Map Metadata - the extents of the map, this is displayed later on in the pop-up window.
     point1 = ogr.Geometry(ogr.wkbPoint)
@@ -420,14 +420,14 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
 
     # Get the spatial reference of the map
     spatialref = layer.GetSpatialRef()
-    # print spatialref  # Debug Comment - if you want to view shapefile metadata, use this
+    print spatialref  # Debug Comment - if you want to view shapefile metadata, use this
     inputprojcs = spatialref.GetAttrValue("PROJCS")
     if inputprojcs is None:
         print "Warning, spatial reference epsg cannot be found"
         return []
 
     featurecount = layer.GetFeatureCount()
-    # print "Total number of features: ", featurecount
+    print "Total number of features: ", featurecount
 
     feature = layer.GetFeature(0)
     geom = feature.GetGeometryRef()
