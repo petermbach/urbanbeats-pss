@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 r"""
 @file   model\ubexports\openspace.py
 @author Peter M Bach <peterbach@gmail.com>

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Form implementation generated from reading ui file 'md_spatialmappinggui.ui'
 #
 # Created by: PyQt5 UI code generator 5.6

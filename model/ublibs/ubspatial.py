@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 r"""
 @file   ubspatial.py
 @author Peter M Bach <peterbach@gmail.com>
@@ -367,7 +366,7 @@ def get_epsg(projcs, rootpath):
 
 def get_epsg_all(rootpath):
     """Returns a full list of all EPSG entries as a dictionary from ancillary/epsg.cfg"""
-    f = open(rootpath+"/ancillary/epsg.cfg", 'r')   # Open the EPSG.cfg file and extract all data
+    f = open(rootpath+r"/ancillary/epsg.cfg", 'r')   # Open the EPSG.cfg file and extract all data
     f.readline()
     epsg_dict = {}
     for lines in f:

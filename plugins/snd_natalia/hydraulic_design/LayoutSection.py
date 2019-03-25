@@ -1,4 +1,3 @@
-# coding=utf-8
 r"""
 @file LayoutSection
 @author Natalia Duque

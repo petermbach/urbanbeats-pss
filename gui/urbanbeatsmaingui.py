@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Form implementation generated from reading ui file 'urbanbeatsmaingui.ui'
 #
 # Created by: PyQt5 UI code generator 5.12.1

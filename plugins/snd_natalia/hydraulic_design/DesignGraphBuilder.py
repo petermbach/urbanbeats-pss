@@ -1,4 +1,3 @@
-# coding=utf-8
 r"""
 @file DesignGraphBuilder
 @author Natalia Duque

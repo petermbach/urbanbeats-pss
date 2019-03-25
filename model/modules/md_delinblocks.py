@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 r"""
 @file   md_delinblocks.py
 @author Peter M Bach <peterbach@gmail.com>

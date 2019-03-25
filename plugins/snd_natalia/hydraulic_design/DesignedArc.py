@@ -1,4 +1,3 @@
-# coding=utf-8
 r"""
 @file DesignedArc
 @author Natalia Duque

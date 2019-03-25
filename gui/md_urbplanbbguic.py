@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2018. Peter M. Bach"
 

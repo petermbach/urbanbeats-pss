@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 r"""
 @file   model\ubexports\flowpaths.py
 @author Peter M Bach <peterbach@gmail.com>

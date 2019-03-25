@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 r"""
 @file   ubmodule.py
 @author Peter M Bach <peterbach@gmail.com>
