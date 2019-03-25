@@ -1252,7 +1252,7 @@ sys._excepthook = sys.excepthook
 
 def exception_hook(exctype, value, traceback):
     print(exctype, value, traceback)
-    sys._excepthook(exctype, value, traceback)
+    sys.excepthook(exctype, value, traceback)
     sys.exit(1)
 
 sys.excepthook = exception_hook
@@ -1262,7 +1262,7 @@ if __name__ == "__main__":
 
     # --- OBTAIN AND STORE PATH DATA FOR PROGRAM ---
     UBEATSROOT = os.path.dirname(sys.argv[0])  # Obtains the program's root directory
-    UBEATSROOT = UBEATSROOT.encode('unicode-escape')  # To avoid weird bugs e.g. if someone's folder path
+    UBEATSROOT = UBEATSROOT.encode('unicode-escape').decode('utf-8')  # To avoid weird bugs with folder paths
 
     random.seed()
 
