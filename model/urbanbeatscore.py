@@ -189,7 +189,8 @@ class UrbanBeatsSim(object):
         """Loads the boundary map shapefile, obtains coordinates of the bounding polygon and spatial
         stats including simulation area, extents, etc. Information is saved to self.__boundaryinfo."""
         boundaryshp = self.get_project_parameter("boundaryshp")
-        coordinates, mapstats = ubspatial.get_bounding_polygon(boundaryshp, "native", self.__rootpath)
+        coordinates, mapstats = ubspatial.get_bounding_polygon(boundaryshp, "native", self.__rootpath,
+                                                               defaultepsg=self.__project_info["project_epsg"])
         self.__boundaryinfo = mapstats.copy()
         self.__boundaryinfo["coordinates"] = coordinates
         return True

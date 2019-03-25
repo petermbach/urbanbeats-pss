@@ -534,8 +534,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if maptype == "boundary":
             projboundarymap = self.get_active_simulation_object().get_project_parameter("boundaryshp")
-            coordinates, mapstats = ubspatial.get_bounding_polygon(projboundarymap, "leaflet", UBEATSROOT)
-            leaflet_html = gui_ubspatial.generate_leaflet_boundary_map(coordinates, mapstats, projectdata, tileserver, UBEATSROOT)
+            coordinates, mapstats = ubspatial.get_bounding_polygon(projboundarymap, "leaflet", UBEATSROOT,
+                                                                   defaultepsg=4326)
+            leaflet_html = gui_ubspatial.generate_leaflet_boundary_map(coordinates, mapstats, projectdata,
+                                                                       tileserver, UBEATSROOT)
             self.ui.DataView_web.setHtml(leaflet_html)
             self.__dataview_displaystate = "boundary"
 

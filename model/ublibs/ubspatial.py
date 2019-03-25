@@ -393,16 +393,18 @@ def create_coord_transformation_leaflet(inputEPSG):
     return coordTrans
 
 
-def get_bounding_polygon(boundaryfile, option, rootpath):
+def get_bounding_polygon(boundaryfile, option, rootpath, **kwargs):
     """Loads the boundary Shapefile and obtains the coordinates of the bounding polygon, returns as a list of coords.
 
     :param boundaryfile: full filepath to the boundary shapefile to load
     :param option: can obtain coordinates either in the input coordinate system or EPSG4326
+    :param **kwargs: 'defaultepsg' specifies the default EPSG code to use if the map's EPSG is corrupted
     :return: a list() of coordinates in the format []
     """
     mapstats = {}
     driver = ogr.GetDriverByName('ESRI Shapefile')  # Load the shapefile driver and data source
     datasource = driver.Open(boundaryfile)
+    # print(datasource)
     if datasource is None:
         print("Could not open shapefile!")
         return []
@@ -421,8 +423,9 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
     spatialref = layer.GetSpatialRef()
     # print(spatialref)  # Debug Comment - if you want to view shapefile metadata, use this
     inputprojcs = spatialref.GetAttrValue("PROJCS")
+    # print(inputprojcs)
     if inputprojcs is None:
-        print("Warning, spatial reference epsg cannot be found")
+        # print("Warning, spatial reference epsg cannot be found")
         return []
 
     featurecount = layer.GetFeatureCount()
@@ -435,8 +438,12 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
 
     inputepsg1 = spatialref.GetAttrValue("AUTHORITY", 1)
     inputepsg2 = get_epsg(inputprojcs, rootpath)
-    if inputepsg1 is None:
+    if inputepsg1 is None and inputepsg2 is None:
+        inputepsg = kwargs["defaultepsg"]
+    elif inputepsg1 is None:
         inputepsg = inputepsg2
+    elif inputepsg2 is None:
+        inputepsg = inputepsg1
     else:
         if int(inputepsg1) == int(inputepsg2):
             inputepsg = inputepsg1
