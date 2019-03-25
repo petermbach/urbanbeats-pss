@@ -282,6 +282,7 @@ def import_point_features(filepath, option, global_offsets):
     layer = datasource.GetLayer(0)  # Get the first layer, which should be the only layer!
 
     spatialref = layer.GetSpatialRef()
+
     inputprojcs = spatialref.GetAttrValue("PROJCS")
     if inputprojcs is None:
         print("Warning, spatial reference epsg cannot be found")
@@ -411,7 +412,7 @@ def get_bounding_polygon(boundaryfile, option, rootpath, **kwargs):
 
     layer = datasource.GetLayer(0)  # Get the first layer, which should be the only layer!
     xmin, xmax, ymin, ymax = layer.GetExtent()
-    # print(xmin, xmax, ymin, ymax)
+    print(xmin, xmax, ymin, ymax)
 
     # Get some Map Metadata - the extents of the map, this is displayed later on in the pop-up window.
     point1 = ogr.Geometry(ogr.wkbPoint)
@@ -419,17 +420,18 @@ def get_bounding_polygon(boundaryfile, option, rootpath, **kwargs):
     point2 = ogr.Geometry(ogr.wkbPoint)
     point2.AddPoint(xmax, ymax)
 
-    # Get the spatial reference of the map
     spatialref = layer.GetSpatialRef()
-    # print(spatialref)  # Debug Comment - if you want to view shapefile metadata, use this
+    print(spatialref)  # Debug Comment - if you want to view shapefile metadata, use this
+    newspatialref = osr.SpatialReference()
+    newspatialref.ImportFromWkt()
     inputprojcs = spatialref.GetAttrValue("PROJCS")
-    # print(inputprojcs)
+    print(inputprojcs)
     if inputprojcs is None:
         # print("Warning, spatial reference epsg cannot be found")
         return []
 
     featurecount = layer.GetFeatureCount()
-    # print("Total number of features: ", featurecount)
+    print("Total number of features: ", featurecount)
 
     feature = layer.GetFeature(0)
     geom = feature.GetGeometryRef()
