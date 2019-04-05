@@ -36,14 +36,25 @@ def calculateParameters(land_uses, para_lu_tss, para_lu_tn, para_lu_tp):
     return [para_tss, para_tn, para_tp]
 
 
-def calculatePollutionConcentrations(adwp, vol, temp, para_tss, para_tn, para_tp):
+def calculatePollutionConcentrations(adwp, vol, temp, para_tss="", para_tn="", para_tp="", type="ALL"):
     """This function calculates runoff concentration for an UrbanBEATS block and the pollutants TSS, TP and TN"""
 
-    c_tss = (para_tss[2] + para_tss[1] * adwp) ** (-vol * para_tss[0])
-    c_tn = (para_tn[2] + para_tn[1] * adwp) ** (-vol * para_tn[0])
-    c_tp = (para_tp[1] * adwp * temp) ** (-vol * para_tp[0])
+    if type == "TSS":
+        c_tss = (para_tss[2] + para_tss[1] * adwp) ** (-vol * para_tss[0])
+        parameters = c_tss
+    elif type == "TN":
+        c_tn = (para_tn[2] + para_tn[1] * adwp) ** (-vol * para_tn[0])
+        parameters = c_tn
+    elif type == "TP":
+        c_tp = (para_tp[1] * adwp * temp) ** (-vol * para_tp[0])
+        parameters = c_tp
+    else:
+        c_tss = (para_tss[2] + para_tss[1] * adwp) ** (-vol * para_tss[0])
+        c_tn = (para_tn[2] + para_tn[1] * adwp) ** (-vol * para_tn[0])
+        c_tp = (para_tp[1] * adwp * temp) ** (-vol * para_tp[0])
+        parameters = [c_tss, c_tn, c_tp]
 
-    return [c_tss, c_tn, c_tp]
+    return parameters
 
 # |||||||||||||||||||||||||||||||| SET OR IMPORT THE GLOBAL VARIABLES |||||||||||||||||||||||||||||||||||||||||||||||||
 # |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
