@@ -5,6 +5,11 @@
 import psycopg2 as ps
 import itertools
 import numpy as np
+import time
+import random as rn
+
+# Set clock for measuring time of simulation
+start_time = time.time()
 
 # Connect to the database
 try:
@@ -23,16 +28,17 @@ cur = con.cursor()
 # |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
-def calculatePollutionConcentrations(adwp, vol, temp, para_tss="", para_tn="", para_tp="", type="ALL"):
-    """This function calculates runoff concentration for an UrbanBEATS block and the pollutants TSS, TP and TN"""
+def calculatePollutionConcentrations(adwp, vol, temp, para_tss="", para_tn="", para_tp="", pol_type="ALL"):
+    """This function calculates runoff concentration for an UrbanBEATS block and the pollutants TSS, TP and TN,
+    either separately or all together"""
 
-    if type == "TSS":
+    if pol_type == "tss":
         c_tss = (para_tss[2] + para_tss[1] * adwp) ** (-vol * para_tss[0])
         parameters = c_tss
-    elif type == "TN":
+    elif pol_type == "tn":
         c_tn = (para_tn[2] + para_tn[1] * adwp) ** (-vol * para_tn[0])
         parameters = c_tn
-    elif type == "TP":
+    elif pol_type == "tp":
         c_tp = (para_tp[1] * adwp * temp) ** (-vol * para_tp[0])
         parameters = c_tp
     else:
@@ -47,54 +53,62 @@ def calculatePollutionConcentrations(adwp, vol, temp, para_tss="", para_tn="", p
 # |||||||||||||||||||||||||||||||| SET OR IMPORT THE GLOBAL VARIABLES |||||||||||||||||||||||||||||||||||||||||||||||||
 # |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
-# Generate ranges of parameter values for calibration
-k_tss = np.arange(0.1, 0.4, 0.1)
-beta_tss = np.arange(0.1, 0.4, 0.1)
-alpha_tss = np.arange(0.1, 0.4, 0.1)
-
-list_ranges_tss = [k_tss, beta_tss, alpha_tss]
-comb_ranges_tss = list(itertools.product(*list_ranges_tss))
-
-# Input variables which should be loaded from input files containing climate series (rain and temperature).
-# These files should be stored in our database.
-# rain_series = [0, 0, 0.5, 1, 1.5, 1, 0, 0]
-# temp_series = [23, 23, 22.5, 22.5, 22, 22.5, 22.5, 23.5]
+# Indicate the pollutant type and concentration series for calibration
+pol_type = "tss"
 
 # |||||||||||||||||||||||||||||||| DO THE SIMULATION ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 # |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 # Create a table for the pollutant to calibrate for.
-table_name = "cal_tss"
-cur.execute(f"CREATE TABLE {table_name} (timestep serial PRIMARY KEY);")
+if pol_type == "tss":
+    table_name = "cal_tss"
+elif pol_type == "tn":
+    table_name = "cal_tn"
+elif pol_type == "tp":
+    table_name = "cal_tp"
+
+cur.execute(f"CREATE TABLE {table_name} (iterations serial PRIMARY KEY, k float, beta float, alpha float, E float);")
 con.commit()
 
 # Get the number of time steps from our rain series in the database.
 cur.execute("SELECT count(*) FROM rain_series")
 count = cur.fetchone()[0]
 
-# Insert timesteps into table.
+# Load the measured pollutograph
+C_measured = []
 for timestep in range(count):
-    cur.execute(f"INSERT INTO {table_name} (timestep) VALUES ({timestep});")
-    con.commit()
-
-
+    cur.execute(f"SELECT {pol_type} FROM measured_pollution WHERE timestep = {timestep}")
+    concentration = cur.fetchone()[0]
+    C_measured.append(concentration)
 
 # This for loop checks for each time step if it rains and calculates the concentrations for each time step if it
 # rains. If it does not rain, the concentrations are recorded as 0.
+iterations = 2
 
-number = 1
-for parameters in comb_ranges_tss:
-    column_name = "column_" + str(number)
-    number += 1
-    cur.execute(f"ALTER TABLE {table_name} ADD COLUMN {column_name} float;")
-    con.commit()
-
+for iteration in range(iterations):
     # set ADWP and cumulative volume (or depth) and the rainfall at the start of the simulation
     # time = 0
     adwp = 0
     volume = 0
     rainfall = 0.0
+    C_modelled = []
 
+    # Randomly sample parameters from their flat distribution
+    if pol_type == "tss":
+        alpha = rn.uniform(0, 100000)  # unit kg
+        beta = rn.uniform(0, 2)
+        k = rn.uniform(0, 3)
+    elif pol_type == "tn":
+        alpha = rn.uniform(0, 5000)  # unit kg
+        beta = rn.uniform(0, 2)
+        k = rn.uniform(0, 0.1)
+    elif pol_type == "tp":
+        alpha = rn.uniform(0, 1000)  # unit mg
+        beta = rn.uniform(0, 3)
+        k = rn.uniform(0, 3)
+    parameters = [k, beta, alpha]
+
+    # Model the pollutograph using the randomly sampled parameters
     for timestep in range(count):
         rainfall_previous = rainfall
         cur.execute(f"SELECT rainfall FROM rain_series WHERE timestep = {timestep}")
@@ -107,18 +121,42 @@ for parameters in comb_ranges_tss:
                 volume = 0
 
             # Add the time step and concentration of 0 (no rain) to the pollutograph.
-            cur.execute(f"UPDATE {table_name} SET {column_name} = 0 WHERE timestep = {timestep};")
-            con.commit()
+            C_modelled.append(0)
         else:
             volume += rainfall
             cur.execute(f"SELECT temp FROM temp_series WHERE timestep = {timestep}")
             temperature = cur.fetchone()[0]
 
-            concentration = calculatePollutionConcentrations(adwp=adwp, vol=volume, temp=temperature,
-                                                             para_tss=parameters, type="TSS")
-            cur.execute(f"UPDATE {table_name} SET {column_name} = {concentration} WHERE timestep = {timestep};")
-            con.commit()
+            if pol_type == 'tss':
+                concentration = calculatePollutionConcentrations(adwp=adwp, vol=volume, temp=temperature,
+                                                             para_tss=parameters, pol_type=pol_type)
+            elif pol_type == 'tn':
+                concentration = calculatePollutionConcentrations(adwp=adwp, vol=volume, temp=temperature,
+                                                                 para_tn=parameters, pol_type=pol_type)
+            elif pol_type == 'tp':
+                concentration = calculatePollutionConcentrations(adwp=adwp, vol=volume, temp=temperature,
+                                                             para_tp=parameters, pol_type=pol_type)
+            C_modelled.append(concentration)
+
+    # Calculate the Nash-Sutcliffe coefficient E
+    E_part1 = []  # numerator for Nash-Sutcliffe (O-M)^2
+    E_part2 = []  # denominator for Nash-Sutcliffe (O-Oavg)^2
+    for item in range(count):
+        E_part1.append((float(C_modelled[item]) - float(C_measured[item])) ** 2)
+        E_part2.append((float(C_measured[item]) - sum(C_measured) / len(C_measured)) ** 2)
+    E = 1 - (sum(E_part1) / sum(E_part2))
+
+    # Write everything to the database
+    cur.execute(f"INSERT INTO {table_name} (iterations, k, beta, alpha, E) VALUES (%s, %s, %s, %s, %s)",
+                (iteration, k, beta, alpha, E))
+    con.commit()
 
 # Close the database cursor and connection
 cur.close()
 con.close()
+
+# Make a record of the time
+end_time = time.time()    #records time of simulation end
+run_time = end_time - start_time   #calculates total simulation time
+print("Total runtime: %s sec"%(run_time))
+print("Time elapsed: %s min" % ((end_time - start_time)/60))

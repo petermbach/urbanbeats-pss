@@ -37,7 +37,8 @@ def calculateParameters(land_uses, para_lu_tss, para_lu_tn, para_lu_tp):
 
 
 def calculatePollutionConcentrations(adwp, vol, temp, para_tss="", para_tn="", para_tp="", type="ALL"):
-    """This function calculates runoff concentration for an UrbanBEATS block and the pollutants TSS, TP and TN"""
+    """This function calculates runoff concentration for an UrbanBEATS block and the pollutants TSS, TP and TN,
+    either separately or all together"""
 
     if type == "TSS":
         c_tss = (para_tss[2] + para_tss[1] * adwp) ** (-vol * para_tss[0])
