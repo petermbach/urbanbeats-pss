@@ -299,7 +299,7 @@ class DelinBlocks(UBModule):
         for y in range(blocks_tall):        # Loop across the number of blocks tall and blocks wide
             for x in range(blocks_wide):
                 # self.notify("Current BLOCK ID: "+str(blockIDcount))
-                print("Current BLOCK ID: " + str(blockIDcount))
+                # print("Current BLOCK ID: " + str(blockIDcount))
 
                 # - STEP 1 - CREATE BLOCK GEOMETRY
                 current_block = self.create_block_face(x, y, bs, blockIDcount, boundarypoly)
@@ -1045,7 +1045,7 @@ class DelinBlocks(UBModule):
 
             # Now assign Basin IDs, do this if the current Block has downstream ID -2
             if hash_table[1][hash_table[0].index(current_id)] == -2:    # If the block is an outlet
-                print "Found a basin outlet at BlockID" + str(current_id)
+                # print "Found a basin outlet at BlockID" + str(current_id)
                 self.notify("Found a basin outlet at BlockID"+str(current_id))
                 basin_id += 1
                 current_block.add_attribute("BasinID", basin_id)    # Set the current Basin ID

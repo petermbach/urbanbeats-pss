@@ -111,3 +111,142 @@ def export_sww_network_to_gis_shapefile(asset_col, map_attr, filepath, filename,
 
         layer.CreateFeature(feature)
     shapefile.Destroy()
+
+
+def export_sww_links_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg, fptype):
+    """Exports all sewer networks in the asset_col list to a GIS Shapefile based on the current filepath.
+
+    :param asset_col: [] list containing all UBVector() Flowpath objects
+    :param map_attr: global map attributes to track any relevant information
+    :param filepath: the active filepath to export these assets to
+    :param filename: name of the file to export (without the 'shp' extension)
+    :param epsg: the EPSG code for the coordinate system to use
+    :param fptype: type of Flowpath ("Blocks", "Patches")
+    :return:
+    """
+    print fptype
+    if map_attr.get_attribute("HasSWW") != 1:
+        return True
+
+    xmin = map_attr.get_attribute("xllcorner")
+    ymin = map_attr.get_attribute("yllcorner")
+
+    fullname = filepath + "/" + filename
+
+    spatial_ref = osr.SpatialReference()
+    spatial_ref.ImportFromEPSG(epsg)
+
+    driver = ogr.GetDriverByName('ESRI Shapefile')
+
+    usefilename = fullname      # Placeholder filename
+    fileduplicate_counter = 0
+    while os.path.exists(str(usefilename+".shp")):
+        fileduplicate_counter += 1
+        usefilename = fullname + "(" + str(fileduplicate_counter) + ")"
+    shapefile = driver.CreateDataSource(str(usefilename)+".shp")
+
+    layer = shapefile.CreateLayer('layer1', spatial_ref, ogr.wkbLineString)
+    layerDefinition = layer.GetLayerDefn()
+
+    fielddefmatrix = []
+    fielddefmatrix.append(ogr.FieldDefn("LinkID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("v1", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("v2", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("Length", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("HasSWW", ogr.OFTReal))
+
+    for field in fielddefmatrix:
+        layer.CreateField(field)
+        layer.GetLayerDefn()
+
+    for i in range(len(asset_col)):
+        current_path = asset_col[i]
+        linepoints = current_path.get_points()
+        line = ogr.Geometry(ogr.wkbLineString)
+        p1 = linepoints[0]
+        p2 = linepoints[1]
+        line.AddPoint(p1[0] + xmin, p1[1] + ymin)
+        line.AddPoint(p2[0] + xmin, p2[1] + ymin)
+
+        feature = ogr.Feature(layerDefinition)
+        feature.SetGeometry(line)
+        feature.SetFID(0)
+
+        feature.SetField("LinkID", int(current_path.get_attribute("LinkID")))
+        feature.SetField("v1", int(current_path.get_attribute("v1")))
+        feature.SetField("v2", int(current_path.get_attribute("v2")))
+        feature.SetField("Length", float(current_path.get_attribute("Length")))
+        # feature.SetField("HasSWW", int(current_path.get_attribute("HasSWW")))
+
+        layer.CreateFeature(feature)
+    shapefile.Destroy()
+
+
+def export_sww_mst_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg, fptype):
+    """Exports links that belong to the minimum spanning tree of the sewer network in the asset_col list
+    to a GIS Shapefile based on the current filepath.
+
+    :param asset_col: [] list containing all UBVector() Flowpath objects
+    :param map_attr: global map attributes to track any relevant information
+    :param filepath: the active filepath to export these assets to
+    :param filename: name of the file to export (without the 'shp' extension)
+    :param epsg: the EPSG code for the coordinate system to use
+    :param fptype: type of Flowpath ("Blocks", "Patches")
+    :return:
+    """
+    print fptype
+    if map_attr.get_attribute("HasSWW") != 1:
+        return True
+
+    xmin = map_attr.get_attribute("xllcorner")
+    ymin = map_attr.get_attribute("yllcorner")
+
+    fullname = filepath + "/" + filename
+
+    spatial_ref = osr.SpatialReference()
+    spatial_ref.ImportFromEPSG(epsg)
+
+    driver = ogr.GetDriverByName('ESRI Shapefile')
+
+    usefilename = fullname      # Placeholder filename
+    fileduplicate_counter = 0
+    while os.path.exists(str(usefilename+".shp")):
+        fileduplicate_counter += 1
+        usefilename = fullname + "(" + str(fileduplicate_counter) + ")"
+    shapefile = driver.CreateDataSource(str(usefilename)+".shp")
+
+    layer = shapefile.CreateLayer('layer1', spatial_ref, ogr.wkbLineString)
+    layerDefinition = layer.GetLayerDefn()
+
+    fielddefmatrix = []
+    fielddefmatrix.append(ogr.FieldDefn("MST_ID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("v1", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("v2", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("Length", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("HasSWW", ogr.OFTReal))
+
+    for field in fielddefmatrix:
+        layer.CreateField(field)
+        layer.GetLayerDefn()
+
+    for i in range(len(asset_col)):
+        current_path = asset_col[i]
+        linepoints = current_path.get_points()
+        line = ogr.Geometry(ogr.wkbLineString)
+        p1 = linepoints[0]
+        p2 = linepoints[1]
+        line.AddPoint(p1[0] + xmin, p1[1] + ymin)
+        line.AddPoint(p2[0] + xmin, p2[1] + ymin)
+
+        feature = ogr.Feature(layerDefinition)
+        feature.SetGeometry(line)
+        feature.SetFID(0)
+
+        feature.SetField("MST_ID", int(current_path.get_attribute("MST_ID")))
+        feature.SetField("v1", int(current_path.get_attribute("v1")))
+        feature.SetField("v2", int(current_path.get_attribute("v2")))
+        feature.SetField("Length", float(current_path.get_attribute("Length")))
+        # feature.SetField("HasSWW", int(current_path.get_attribute("HasSWW")))
+
+        layer.CreateFeature(feature)
+    shapefile.Destroy()

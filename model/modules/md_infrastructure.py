@@ -35,6 +35,13 @@ import gc
 import tempfile
 import numpy as np
 from math import *
+import sys
+# Graph Algorithms
+from py_alg_dat.graph import UnDirectedWeightedGraph
+from py_alg_dat.graph_vertex import GraphVertex
+from py_alg_dat.graph_algorithms import GraphAlgorithms
+
+# Spatial geometry
 from shapely.geometry import Polygon, LineString, Point
 from random import randint
 
@@ -283,23 +290,28 @@ class Infrastructure(UBModule):
                 current_block.add_attribute("HasCarved", 0)
 
         print(str(len(sww_blocks)) + " BLOCKS WITH SWW ----------------------------------------------------")
+        vertices, edges = self.undirected_graph(sww_blocks)
+        self.spanning_tree(vertices, edges)
+
+        # graph = self.undirected_graph_(sww_blocks)
+        # MST = self.m_spanning_tree(graph)
 
         sinks = []
         river_blocks = []
         lake_ids = []
 
         sinks_list = self.identify_sinks(sww_blocks)
-        print("SINKS: " + str(len(sinks_list)) + str(sinks_list))
+        # print("SINKS: " + str(len(sinks_list)) + str(sinks_list))
 
         self.copy_DEM()
         for s in sinks_list:
-            self.pfs_algorithm(s)
+            self.carving_algorithm(s)
 
         ids = []
         for i in sww_blocks:
             ids.append(i.get_attribute("BlockID"))
         ids.sort()
-        print(ids)
+        # print(ids)
 
 
         # Step 2 - Detect the block with sewer facilities and save them as starting points
@@ -312,7 +324,7 @@ class Infrastructure(UBModule):
         for i in range(len(sww_blocks)):
             current_block = sww_blocks[i]
             current_blockid = current_block.get_attribute("BlockID")
-            print("CURRENT BLOCK >>> " + str(current_blockid))
+            # print("CURRENT BLOCK >>> " + str(current_blockid))
 
             # From the list of treatment facilities identify the closest.
             # TP_block= self.identify_closest_treatment_facility(current_block, treat_blocks)
@@ -341,7 +353,7 @@ class Infrastructure(UBModule):
 
             # Find the downstream block unless it's a sink
 
-            print("Neighbours: ", current_blockid, ndh_info[0])
+            # print("Neighbours: ", current_blockid, ndh_info[0])
 
 
             # # SKIP CONDITION 2 - Block already contains a river
@@ -394,7 +406,7 @@ class Infrastructure(UBModule):
 
     def get_sww_neighbours_z(self, curblock):
         """Retrieves the z-values of all adjacent blocks within the current block's neighbourhood accounting for
-        the presence of drainage infrastructure or natural features.
+        the presence of drainage infrastructure.
 
         :param curblock: the current block UBVector() instance
         :return: a list of all the block's neighbours [[BlockID], [X], [Y], [Z], [direction]], None otherwise
@@ -427,7 +439,7 @@ class Infrastructure(UBModule):
 
     def get_sww_modified_neighbours_z(self, curblock):
         """Retrieves the z-values of all adjacent blocks within the current block's neighbourhood accounting for
-        the presence of drainage infrastructure or natural features.
+        the presence of drainage infrastructure or natural features. If we use natural or built features as a guide.
 
         :param curblock: the current block UBVector() instance
         :return: a list of all the block's neighbours [[BlockID], [X], [Y], [Z], [direction]], None otherwise
@@ -559,7 +571,7 @@ class Infrastructure(UBModule):
             down_id = -9999  # Otherwise there is a sink in the current Block
             dz = 0
 
-        print ("FOR BLOCK: " + str(curblock[0]) + "DOWN ID: " + str(down_id) + " dz: " + str(dz))
+        # print ("FOR BLOCK: " + str(curblock[0]) + "DOWN ID: " + str(down_id) + " dz: " + str(dz))
 
         # if max(dz) > 0:  # If there is a drop in elevation - this also means the area cannot be flat!
         #     down_id = nhd[0][dz.index(max(dz))]  # The ID corresponds to the maximum elevation difference
@@ -753,7 +765,7 @@ class Infrastructure(UBModule):
 
         return TP_block
 
-    def identify_closest_river(self, blockslist, current_block):
+    def identify_closest_river(self, blockslist, current_block):                # [TO DO]
         """Identifies the closest treatment facility from the current block
 
         :param current_block: current ID of the block in evaluation
@@ -833,6 +845,58 @@ class Infrastructure(UBModule):
         radians = angle * (pi/180)
         return radians
 
+    def define_distance(self, pt1, pt2):
+        """Identifies the distance between two points.
+
+        :param pt1: center point of the current block
+        :param pt2: neighbouring block
+        :return: distance
+        """
+
+        x1 = pt1[0]     # current point
+        y1 = pt1[1]
+
+        x2 = pt2[0]     # reference point
+        y2 = pt2[1]
+
+        dx = x1 - x2
+        dy = y1 - y2
+
+        dist = float(math.sqrt((dx * dx) + (dy * dy)))
+
+        return dist
+
+    def identify_sinks(self, blockslist):
+        """ Identify all depressions in the DEM.
+
+        :return: sinks: list of sinks in the DEM
+        """
+
+        # blockslist = self.blocks
+        sinks = []
+        for current_block in blockslist:
+
+            # SKIP CONDITION 1 - Block has zero status
+            if current_block.get_attribute("Status") == 0:
+                continue
+
+            nhd = current_block.get_attribute("Neighbours")
+            if nhd == None:
+                print("NO NEIGHBOURS")
+                continue
+            id = current_block.get_attribute("BlockID")
+            z = current_block.get_attribute("AvgElev")
+            neighbours_z = self.scenario.retrieve_attribute_value_list("Block", "AvgElev",
+                                                                       current_block.get_attribute(
+                                                                           "Neighbours"))
+
+            if z >= min(neighbours_z):
+                continue
+            sinks.append(id)
+            # print("SINKS: " + str(sinks))
+        return sinks
+
+
     def connect_sinks(self, sink_ids):
         """Runs the algorithm for scanning all sink blocks and attempting to find a flowpath beyond them.
         This function may also identify certain sinks as definitive catchment outlets.
@@ -869,11 +933,11 @@ class Infrastructure(UBModule):
 
                     extended_neighbours.append(i)
 
-            print("NHD " + str(nhd) +" Extended: " + str(extended_neighbours))
+            # print("NHD " + str(nhd) + " Extended: " + str(extended_neighbours))
 
             minElev = z_b
             distance = 999999999
-            lowest=999999
+            lowest = 999999
             for j in range(len(extended_neighbours)):
 
                 n_nhd = extended_neighbours[j]
@@ -911,7 +975,7 @@ class Infrastructure(UBModule):
                 # current_block.set_attribute("h_pond", sink_path)    # If ponding depth > 0, then there was a sink
                 network_link = self.draw_sewer_lines_down(sink_block, "Sink")
                 self.scenario.add_asset("SwwID" + str(current_sinkid), network_link)
-                print("Imprimiendo sinks... " + str(current_sinkid) + " -> " + str(lowest))
+                # print("Imprimiendo sinks... " + str(current_sinkid) + " -> " + str(lowest))
             else:
                 sink_block.set_attribute("Sww_DownID", -1)  # signifies that Block is an outlet
 
@@ -956,10 +1020,6 @@ class Infrastructure(UBModule):
             # network_link = self.draw_sewer_lines_down(current_block, "Sink")
             #
             # self.scenario.add_asset("SwwID" + str(current_blockid), network_link)
-
-
-
-
         return True
 
     def copy_DEM(self):
@@ -979,37 +1039,7 @@ class Infrastructure(UBModule):
             current_block.add_attribute("ModAvgElev", z)
         return True
 
-    def identify_sinks(self,blockslist):
-        """ Identify all depressions in the DEM.
-
-        :return: sinks: list of sinks in the DEM
-        """
-
-        # blockslist = self.blocks
-        sinks = []
-        for current_block in blockslist:
-
-            # SKIP CONDITION 1 - Block has zero status
-            if current_block.get_attribute("Status") == 0:
-                continue
-
-            nhd = current_block.get_attribute("Neighbours")
-            if nhd == None:
-                print("NO NEIGHBOURS")
-                continue
-            id = current_block.get_attribute("BlockID")
-            z = current_block.get_attribute("AvgElev")
-            neighbours_z = self.scenario.retrieve_attribute_value_list("Block", "AvgElev",
-                                                                       current_block.get_attribute(
-                                                                           "Neighbours"))
-
-            if z >= min(neighbours_z):
-                continue
-            sinks.append(id)
-            # print("SINKS: " + str(sinks))
-        return sinks
-
-    def pfs_algorithm(self, sink):
+    def carving_algorithm(self, sink):
         """ The Priority First Search (PFS) algorithm (Sedgewick, 1988) creates an adjusted DEM by removing
             terrain depressions. Starting from the sinks (depressions) the algorithm combines digging and
             filling approaches to reach a cell with lower elevation than the sink.
@@ -1037,11 +1067,10 @@ class Infrastructure(UBModule):
                 # if n_block.get_attribute("HasCarved"):
                 #     continue
 
-
                 elev_n = n_block.get_attribute("ModAvgElev")
 
                 if elev_n is None:
-                    print("why is elev_n None?????")
+                    #[TO DO]  Check why the elevation is None
                     continue
 
                 dz = elev_n - elev_s
@@ -1053,7 +1082,7 @@ class Infrastructure(UBModule):
                 priority_queue[1].append(dz)
 
             min_dz = 999999
-            # id_min_dz = id
+            id_min_dz = id
             for j in range(len(priority_queue[1])):
                 dz = priority_queue[1][j]
                 n_id = priority_queue[0][j]
@@ -1061,11 +1090,12 @@ class Infrastructure(UBModule):
                     min_dz = dz
                     id_min_dz = n_id
 
-
             if min_dz >= 0 and id_min_dz not in priority_tree:
                 priority_tree.append(id_min_dz)
                 id = id_min_dz
                 b = self.scenario.get_asset_with_name("BlockID" + str(id))
+                # if b.get_attribute("HasCarved"):
+                #     continue
                 b.set_attribute("ModAvgElev", elev_s - 0.0001)
                 b.add_attribute("HasCarved", 1)
             elif min_dz < 0 and id_min_dz not in priority_tree:
@@ -1076,3 +1106,358 @@ class Infrastructure(UBModule):
             #     print(" EXIST IN PRIORITY TREE----------------------------")
 
         return True
+
+    def undirected_graph(self, swwblocks):
+        vertices = {}       # id: x, y coordinates
+        edges = {}
+        counter = 0
+        for b in swwblocks:
+            v1 = b.get_attribute("BlockID")
+
+            # print ("                      v1", str(b.get_attribute("BlockID")))
+            x1 = b.get_attribute("CentreX")
+            y1 = b.get_attribute("CentreY")
+            pt1 = [x1, y1]
+            if v1 not in vertices.keys():
+                vertices[v1] = [x1, y1]
+
+
+            # List of Neighbours [id], [x], [y], [z]
+            neighbours = self.get_sww_neighbours_z(b)
+            for i in range(len(neighbours[0])):
+
+                v2 = neighbours[0][i]
+                # if (v1, v2)in edges.keys() or (v2, v1) in edges.keys():
+                #     print("EDGE ALREADY EXISTS")
+                #     continue
+                # print("v2", v2)
+                x2 = neighbours[1][i]
+                y2 = neighbours[2][i]
+                pt2 = [x2, y2]
+                if v2 not in vertices.keys():
+                    vertices[v2] = [x2, y2]
+
+                if (v1, v2) in edges.keys() or (v2, v1) in edges.keys():
+                    continue
+
+
+                lenght = self.define_distance(pt1, pt2)
+                edges[v1, v2] = lenght
+                counter += 1
+                # print(counter, len(edges))
+
+                link = ubdata.UBVector((pt1, pt2))
+                link.determine_geometry((pt1, pt2))
+                link.add_attribute("LinkID", counter)
+                link.add_attribute("v1", v1)
+                link.add_attribute("v2", v2)
+                link.add_attribute("Length", lenght)
+                self.scenario.add_asset("LinkID" + str(counter), link)
+
+        vertices.keys().sort()
+
+        print ("Printing undirected graph....", len(edges))
+        print ([str(e)+"/t" for e in edges])
+        print("vertices " + str(vertices))
+        return vertices, edges
+
+    def spanning_tree(self, vertices, edges):
+        a = 1026  # starting node
+        k = None  # Current node
+        p = {}  # Dictionary of predecessor nodes
+        b = {}  # Weight of an edge (in this case the lenght of the pipe between the centroids of adjacent blocks)
+
+        M = []  # List of neighbours (Block IDs) that have not being visit
+        L = []  # List of nodes (block IDs) in the spanning tree
+
+        links = self.scenario.get_assets_with_identifier("LinkID")
+
+        k = a
+        p[a] = a
+
+        while len(L) < len(vertices.keys()):
+
+            tempK = {}
+
+            for i in edges.keys():
+                if k != i[0] and k != i[1]:
+                    continue
+                if k == i[0]:
+                    if i[1] not in M and i[1] not in L:
+                        M.append(i[1])
+                elif k == i[1]:
+                    if i[0] not in M and i[0] not in L:
+                        M.append(i[0])
+
+            print ("M: ", M)
+            L.append(k)
+            print("L: ", L)
+
+            for j in M:
+
+                if (k, j) in edges.keys():
+                    lenght = edges[(k, j)] # Weight of an edge (in this case the lenght of the pipe between the centroids of adjacent blocks)
+                elif (j, k) in edges.keys():
+                    lenght = edges[(j, k)]
+                else:
+                    continue
+
+                if j not in b.keys():
+                    b[j] = lenght
+                    p[j] = k
+                    tempK[j] = b[j]
+                if lenght < b[j]:
+                    b[j] = lenght
+                    p[j] = k
+                    tempK[j] = b[j]
+            print("tempK:", tempK)
+            if tempK:
+                minB = tempK.values().index(min(tempK.values()))
+                k = M.pop(M.index(tempK.keys()[minB]))
+            else:
+                if M:
+                    k = M.pop(0)
+                else:
+                    if len(L) < len(vertices.keys()):
+                        missVert = []
+
+                        for v in vertices.keys():
+                            if v not in L:
+                                k = v
+                                break
+
+                        # randID = randint(0, len(missVert))
+                        # k = missVert[randID] #missing blocks to connect
+
+                    else:
+                        k = None
+
+        print(p)
+
+        for i in range(len(p.keys())):
+
+            v1 = p.keys()[i]
+            v2 = p.values()[i]
+
+            pt1 = vertices[v1]
+            pt2 = vertices[v2]
+
+            if v2 in b.keys():
+                lenght = b[v2]
+            else:
+                lenght = 0
+
+            link = ubdata.UBVector((pt1, pt2))
+            link.determine_geometry((pt1, pt2))
+            link.add_attribute("MST_ID", i)
+            link.add_attribute("v1", v1)
+            link.add_attribute("v2", v2)
+            link.add_attribute("Length", lenght)
+            self.scenario.add_asset("MST_ID" + str(i), link)
+
+        return True
+
+    # def undirected_graph_(self, swwblocks):
+    #
+    #     # Create an empty undirected weighted graph
+    #     graph = UnDirectedWeightedGraph(len(swwblocks))
+    #     counter = 0
+    #     vertices = []
+    #     coun = 0
+    #
+    #     # Create all unweighted vertices of the graph
+    #     for b in swwblocks:
+    #         v1 = b.get_attribute("BlockID")
+    #
+    #         if v1 in vertices:
+    #             for k in range(len(graph.get_vertices())):
+    #                 v = graph.get_vertices()[k]
+    #                 if v is None:
+    #                     continue
+    #                 v_name = v.__getattribute__("vertex_name")
+    #                 if v_name == v1:
+    #                     vertex1 = graph.get_vertices()[k]
+    #                     break
+    #         else:
+    #             # Create vertex
+    #             vertex1 = GraphVertex(graph, v1)
+    #             # Add vertex
+    #             graph.add_vertex(vertex1)
+    #             coun += 1
+    #             vertices.append(v1)
+    #         # print("V1 " + str(coun) + " : " + str(vertex1))
+    #
+    #         x1 = b.get_attribute("CentreX")
+    #         vertex1.__setattr__("CentreX", x1)
+    #         y1 = b.get_attribute("CentreY")
+    #         vertex1.__setattr__("CentreY", y1)
+    #
+    #     # for g in graph.vertices:
+    #     #     if g is None:
+    #     #         continue
+    #     #     print(g.__getattribute__("vertex_name"))
+    #     #
+    #     # for b in swwblocks:
+    #     #     v1 = b.get_attribute("BlockID")
+    #
+    #
+    #         # x1 = b.get_attribute("CentreX")
+    #         # vertex1.__setattr__("CentreX", x1)
+    #         # y1 = b.get_attribute("CentreY")
+    #         # vertex1.__setattr__("CentreY", y1)
+    #         # print("x,y : " + str(vertex1))
+    #         pt1 = [x1, y1]
+    #
+    #         # List of Neighbours [id], [x], [y], [z]
+    #         neighbours = self.get_sww_neighbours_z(b)
+    #         for i in range(len(neighbours[0])):
+    #
+    #             v2 = neighbours[0][i]
+    #
+    #             if v2 in vertices:
+    #                 for j in range(len(graph.get_vertices())):
+    #                     v = graph.get_vertices()[j]
+    #                     if v is None:
+    #                         continue
+    #                     v_name = v.__getattribute__("vertex_name")
+    #                     if v_name == v2:
+    #                         vertex2 = graph.get_vertices()[j]
+    #                         break
+    #
+    #             else:
+    #                 # Create vertex
+    #                 vertex2 = GraphVertex(graph, v2)
+    #                 # Add vertex
+    #                 graph.add_vertex(vertex2)
+    #                 vertices.append(v2)
+    #                 coun += 1
+    #
+    #             # print("V2 " + str(coun) + " : " + str(vertex2))
+    #
+    #             # if graph.get_edge(vertex1, vertex2) or graph.get_edge(vertex2, vertex1):
+    #             #     print("edge exists")
+    #             #     continue
+    #             e = graph.get_edge(vertex1, vertex2)
+    #             f = graph.get_edge(vertex2, vertex1)
+    #             if e is not None:
+    #                 continue
+    #             if f is not None:
+    #                 continue
+    #
+    #             x2 = neighbours[1][i]
+    #             vertex2.__setattr__("CentreX", x2)
+    #             y2 = neighbours[2][i]
+    #             vertex2.__setattr__("CentreY", y2)
+    #             pt2 = [x2, y2]
+    #             lenght = self.define_distance(pt1, pt2)
+    #
+    #
+    #             # Add edges
+    #             graph.add_edge(vertex1, vertex2, lenght)  # (A - B, weight)
+    #             e = graph.get_edge(vertex1, vertex2)
+    #             # print ("-->" + str(e.__str__()))
+    #
+    #             counter += 1
+    #
+    #             link = ubdata.UBVector((pt1, pt2))
+    #             link.determine_geometry((pt1, pt2))
+    #             link.add_attribute("LinkID", counter)
+    #             link.add_attribute("v1", v1)
+    #             link.add_attribute("v2", v2)
+    #             link.add_attribute("Length", lenght)
+    #             self.scenario.add_asset("LinkID" + str(counter), link)
+    #
+    #     print ("Printing undirected graph....", graph.get_number_of_vertices(), graph.get_number_of_edges())
+    #     return graph
+    #
+    # def m_spanning_tree(self, graph):
+    #     MST = GraphAlgorithms.prims_algorithm(graph, graph.get_vertex_at_index(0))
+    #
+    #     for i in range(len(MST.get_edges())):
+    #         e = MST.edges.__dict__.items()
+    #         print e
+    #         vertex1 = e[0]
+    #         vertex2 = e[1]
+    #         weight = e[2]
+    #
+    #         print(vertex1, vertex2, weight)
+    #
+    #
+    #     print(str(MST.get_total_weight()))
+    #     print(str(MST.get_edges()))
+    #     return MST
+
+    def delineate_basin_structures(self, blockslist):
+        """Delineates sub-basins across the entire blocksmap specified by the collection of blocks in 'blockslist'.
+        Returns the number of sub-basins in the map, but also writes BasinID information to each Block. Delineation is
+        carried out by creating a hash table of BlockID and downstream ID.
+
+        Each block is scanned and all its upstream and downstream Block IDs identified, each is also assigned a
+        BasinID.
+
+        :param blocklist: the list [] of UBVector() instances that represent Blocks
+        :return: number of total basins. Also writes the "BasinID" attribute to each Block.
+        """
+        hash_table = self.create_block_flow_hashtable(blockslist)    # Start by creating a hash tables
+        basin_id = 0    # Set Basin ID to zero, it will start counting up as soon as basins are found
+
+        for i in range(len(blockslist)):    # Loop  across all Blocks
+            current_block = blockslist[i]
+            if current_block.get_attribute("Status") == 0:
+                continue    # Skip if Status = 0
+
+            # Check if the Block is a single-basin Block
+            current_id = current_block.get_attribute("BlockID")
+            if current_id not in hash_table[1]:                 # If the current Block not downstream of something...
+                current_block.add_attribute("UpstrIDs", [])     # ...then it has NO upstream IDs (empty list)
+                if current_id in hash_table[0]:                 # ... if it is in the first column of the hash table
+                    if hash_table[1][hash_table[0].index(current_id)] == -2:    # if its second column is -2
+                        self.notify("Found a single block basin at BlockID"+str(current_id))
+                        basin_id += 1   # Then we have found a single-block Basin
+                        current_block.add_attribute("BasinID", basin_id)
+                        current_block.add_attribute("DownstrIDs", [])
+                        current_block.add_attribute("Outlet", 1)
+                        continue
+
+            # Search the current Block for its upstream IDs
+            upstream_ids = [current_id]         # Otherwise current ID DOES have upstream blocks
+            for uid in upstream_ids:             # Begin scanning! Note that upstream_ids will grow in length!
+                for j in range(len(hash_table[1])):
+                    if uid == hash_table[1][j]:
+                        if hash_table[0][j] not in upstream_ids:    # Only want unique upstream_ids!
+                            upstream_ids.append(hash_table[0][j])   # Slowly append more IDs to the hash_table
+
+            # Once scan is complete, remove the current Block's ID from the list as it is NOT upstream of itself.
+            upstream_ids.remove(current_id)
+            self.notify("BlockID"+str(current_id)+" Upstream: "+str(upstream_ids))
+            current_block.add_attribute("UpstrIDs", upstream_ids)
+
+            # Repeat the whole process now for the downstream IDs
+            downstream_ids = [current_id]
+            for uid in downstream_ids:
+                for j in range(len(hash_table[0])):
+                    if uid == hash_table[0][j]:
+                        if hash_table[1][j] not in downstream_ids:
+                            downstream_ids.append(hash_table[1][j])
+
+            # Once scan is complete, remove the current Block's ID from the list as it is NOT downstream of itself.
+            downstream_ids.remove(current_id)
+            # downstream_ids.remove(-2)   # Also remove the -2, which is specified if the Outlet Block is found
+            self.notify("BlockID"+str(current_id)+" DownstreamL "+str(downstream_ids))
+            current_block.add_attribute("DownstrIDs", downstream_ids)
+
+            # Now assign Basin IDs, do this if the current Block has downstream ID -2
+            if hash_table[1][hash_table[0].index(current_id)] == -2:    # If the block is an outlet
+                # print "Found a basin outlet at BlockID" + str(current_id)
+                self.notify("Found a basin outlet at BlockID"+str(current_id))
+                basin_id += 1
+                current_block.add_attribute("BasinID", basin_id)    # Set the current Basin ID
+                current_block.add_attribute("Outlet", 1)            # Outlet = TRUE at current Block
+                for j in upstream_ids:
+                    upblock = self.scenario.get_asset_with_name("BlockID"+str(int(j)))
+                    upblock.add_attribute("BasinID", basin_id)      # Assign basin ID to all upstream blocks
+                    upblock.add_attribute("Outlet", 0)              # Upstream blocks are NOT outlets!
+
+        self.notify("Total Basins in the Case Study: "+str(basin_id))
+        print("Total Basins in the Case Study: " + str(basin_id))
+        return basin_id     # The final count indicates how many basins were found
