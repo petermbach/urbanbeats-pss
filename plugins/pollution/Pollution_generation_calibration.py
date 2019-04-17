@@ -70,8 +70,8 @@ elif pol_type == "tp":
 cur.execute(f"CREATE TABLE {table_name} (iterations serial PRIMARY KEY, k float, beta float, alpha float, E float);")
 con.commit()
 
-# Get the number of time steps from our rain series in the database.
-cur.execute("SELECT count(*) FROM rain_series")
+# Get the number of time steps from our runoff series in the database.
+cur.execute("SELECT count(*) FROM runoff_series")
 count = cur.fetchone()[0]
 
 # Load the measured pollutograph
@@ -81,16 +81,14 @@ for timestep in range(count):
     concentration = cur.fetchone()[0]
     C_measured.append(concentration)
 
-# This for loop checks for each time step if it rains and calculates the concentrations for each time step if it
-# rains. If it does not rain, the concentrations are recorded as 0.
-iterations = 2
+# This for loop checks for each time step if there's runoff and calculates the concentrations for each time step if
+# there's runoff. If it there's none, the concentrations are recorded as 0.
+iterations = 1000
 
 for iteration in range(iterations):
-    # set ADWP and cumulative volume (or depth) and the rainfall at the start of the simulation
+    # set ADWP at the start of the simulation
     # time = 0
-    adwp = 0
-    volume = 0
-    rainfall = 0.0
+    adwp = 23
     C_modelled = []
 
     # Randomly sample parameters from their flat distribution
@@ -109,34 +107,33 @@ for iteration in range(iterations):
     parameters = [k, beta, alpha]
 
     # Model the pollutograph using the randomly sampled parameters
+    runoff_previous = 0
     for timestep in range(count):
-        rainfall_previous = rainfall
-        cur.execute(f"SELECT rainfall FROM rain_series WHERE timestep = {timestep}")
-        rainfall = cur.fetchone()[0]
-        if rainfall == 0:
-            if rainfall_previous == 0:
+        cur.execute(f"SELECT runoff FROM runoff_series WHERE timestep = {timestep}")
+        runoff = cur.fetchone()[0]
+        if runoff == 0:
+            if runoff_previous == 0:
                 adwp += 1
             else:
-                adwp = 0
-                volume = 0
+                adwp = 1
 
-            # Add the time step and concentration of 0 (no rain) to the pollutograph.
+            # Add the time step and concentration of 0 (no runoff) to the pollutograph.
             C_modelled.append(0)
         else:
-            volume += rainfall
             cur.execute(f"SELECT temp FROM temp_series WHERE timestep = {timestep}")
             temperature = cur.fetchone()[0]
 
             if pol_type == 'tss':
-                concentration = calculatePollutionConcentrations(adwp=adwp, vol=volume, temp=temperature,
+                concentration = calculatePollutionConcentrations(adwp=adwp, vol=runoff, temp=temperature,
                                                              para_tss=parameters, pol_type=pol_type)
             elif pol_type == 'tn':
-                concentration = calculatePollutionConcentrations(adwp=adwp, vol=volume, temp=temperature,
+                concentration = calculatePollutionConcentrations(adwp=adwp, vol=runoff, temp=temperature,
                                                                  para_tn=parameters, pol_type=pol_type)
             elif pol_type == 'tp':
-                concentration = calculatePollutionConcentrations(adwp=adwp, vol=volume, temp=temperature,
+                concentration = calculatePollutionConcentrations(adwp=adwp, vol=runoff, temp=temperature,
                                                              para_tp=parameters, pol_type=pol_type)
             C_modelled.append(concentration)
+            runoff_previous = runoff
 
     # Calculate the Nash-Sutcliffe coefficient E
     E_part1 = []  # numerator for Nash-Sutcliffe (O-M)^2
@@ -150,6 +147,8 @@ for iteration in range(iterations):
     cur.execute(f"INSERT INTO {table_name} (iterations, k, beta, alpha, E) VALUES (%s, %s, %s, %s, %s)",
                 (iteration, k, beta, alpha, E))
     con.commit()
+    print("Modelled concentrations: " + str(C_modelled))
+    print("Measured concentrations: "  + str(C_measured))
 
 # Close the database cursor and connection
 cur.close()
