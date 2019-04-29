@@ -71,14 +71,18 @@ def export_sww_network_to_gis_shapefile(asset_col, map_attr, filepath, filename,
 
     fielddefmatrix = []
     fielddefmatrix.append(ogr.FieldDefn("SwwID", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("BlockID", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("FlowID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("UpID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("DownID", ogr.OFTInteger))
     fielddefmatrix.append(ogr.FieldDefn("Z_up", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("Z_down", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("Length", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("Min_zdrop", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("LinkType", ogr.OFTString))
     fielddefmatrix.append(ogr.FieldDefn("Slope", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("BasinID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("Outlet", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("UpstrIDs", ogr.OFTString))
+    fielddefmatrix.append(ogr.FieldDefn("DownstrIDs", ogr.OFTString))
     # fielddefmatrix.append(ogr.FieldDefn("HasSWW", ogr.OFTReal))
 
     for field in fielddefmatrix:
@@ -99,14 +103,19 @@ def export_sww_network_to_gis_shapefile(asset_col, map_attr, filepath, filename,
         feature.SetFID(0)
 
         feature.SetField("SwwID", int(current_path.get_attribute("SwwID")))
-        feature.SetField("BlockID", int(current_path.get_attribute("BlockID")))
-        feature.SetField("FlowID", int(current_path.get_attribute("FlowID")))
+        feature.SetField("UpID", int(current_path.get_attribute("UpID")))
+        feature.SetField("DownID", int(current_path.get_attribute("DownID")))
         feature.SetField("Z_up", float(current_path.get_attribute("Z_up")))
         feature.SetField("Z_down", float(current_path.get_attribute("Z_down")))
         feature.SetField("Length", float(current_path.get_attribute("Length")))
         feature.SetField("Min_zdrop", float(current_path.get_attribute("Min_zdrop")))
         feature.SetField("LinkType", str(current_path.get_attribute("LinkType")))
         feature.SetField("Slope", float(current_path.get_attribute("Slope")))
+        feature.SetField("BasinID", int(current_path.get_attribute("BasinID")))
+        feature.SetField("Outlet", int(current_path.get_attribute("Outlet")))
+        feature.SetField("UpstrIDs", str(current_path.get_attribute("UpstrIDs")))
+        feature.SetField("DownstrIDs", str(current_path.get_attribute("DownstrIDs")))
+
         # feature.SetField("HasSWW", int(current_path.get_attribute("HasSWW")))
 
         layer.CreateFeature(feature)

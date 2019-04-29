@@ -126,10 +126,52 @@ class Infrastructure(UBModule):
 
         # Get all the Blocks
         self.blocks = self.scenario.get_assets_with_identifier("BlockID")    # returns [ ] of UBVector() objects
-        # for b in self.blocks:
-        #     print "Current Block", b.get_attribute("BlockID")
-        #     print b.get_attribute("AvgElev")
-        self.delineate_sww_flow_paths(self.blocks)
+
+        if not self.sewer:
+            pass
+
+        sww_blocks = []
+
+        # Step 1 - Determine suitable blocks to place sewer networks.
+        # No sewers when Population = 0 and there is no industry (total employees = 0)
+
+        for current_block in self.blocks:
+
+            # SKIP CONDITION 1 - Block has zero status
+            current_blockid = current_block.get_attribute("BlockID")
+            if current_block.get_attribute("Status") == 0:
+                continue
+
+            pop = current_block.get_attribute("Population")
+            employees = current_block.get_attribute("TOTALjobs")
+            if pop > 1 or employees > 1:
+                current_block.add_attribute("HasSWW", 1)
+                current_block.add_attribute("HasWWTP", 0)
+                current_block.add_attribute("HasCarved", 0)
+                current_block.add_attribute("BlockID", current_block.get_attribute("BlockID"))
+                sww_blocks.append(current_block)  # Append this block to a list of blocks with a sewer network
+            else:
+                current_block.add_attribute("HasSWW", 0)
+                current_block.add_attribute("HasWWTP", 0)
+                current_block.add_attribute("Sww_DownID", 0)
+                current_block.add_attribute("HasCarved", 0)
+
+        print(str(len(sww_blocks)) + " BLOCKS WITH SWW ----------------------------------------------------")
+
+        # Step 2 - Delineate the sewer network for the blocks with population or employment greater than 1 person.
+
+        self.delineate_sww_flow_paths(sww_blocks)
+
+        # Step 3 - Get the Minimum spanning Tree as a benchmark for the minimum lenght required to connect all blocks.
+
+        vertices, edges = self.undirected_graph(sww_blocks)
+        self.spanning_tree(vertices, edges)
+
+        # Step 4 - Design the generated network with SND.
+
+        # Step 5 - Design the generated network with UWIM.
+
+
 
         return True
 
@@ -255,46 +297,13 @@ class Infrastructure(UBModule):
     #
     #     return True
 
-    def delineate_sww_flow_paths(self, blockslist):
-        """Delineates the sewer network flow paths according to the chosen method and saves the information to the blocks.
+    def delineate_sww_flow_paths(self, sww_blocks):
+        """Delineates the sewer network flow paths within the blocks that should have Sewer
+            according to the chosen method and saves the information to the blocks.
 
         :param sww_blocks: a list [] of UBVector instances representing the Blocks
         :return: all data is saved to the UBVector instances as new Block data.
         """
-        if not self.sewer:
-            pass
-
-        sww_blocks = []
-        # Step 1 - Determine suitable blocks to place sewer networks.
-        # No sewers when Population = 0 and there is no industry (total employees = 0)
-
-        for current_block in blockslist:
-
-            # SKIP CONDITION 1 - Block has zero status
-            current_blockid = current_block.get_attribute("BlockID")
-            if current_block.get_attribute("Status") == 0:
-                continue
-
-            pop = current_block.get_attribute("Population")
-            employees = current_block.get_attribute("TOTALjobs")
-            if pop > 1 or employees > 1:
-                current_block.add_attribute("HasSWW", 1)
-                current_block.add_attribute("HasWWTP", 0)
-                current_block.add_attribute("HasCarved", 0)
-                current_block.add_attribute("BlockID", current_block.get_attribute("BlockID"))
-                sww_blocks.append(current_block)  # Append this block to a list of blocks with a sewer network
-            else:
-                current_block.add_attribute("HasSWW", 0)
-                current_block.add_attribute("HasWWTP", 0)
-                current_block.add_attribute("Sww_DownID", 0)
-                current_block.add_attribute("HasCarved", 0)
-
-        print(str(len(sww_blocks)) + " BLOCKS WITH SWW ----------------------------------------------------")
-        vertices, edges = self.undirected_graph(sww_blocks)
-        self.spanning_tree(vertices, edges)
-
-        # graph = self.undirected_graph_(sww_blocks)
-        # MST = self.m_spanning_tree(graph)
 
         sinks = []
         river_blocks = []
@@ -313,6 +322,10 @@ class Infrastructure(UBModule):
         ids.sort()
         # print(ids)
 
+
+
+        # graph = self.undirected_graph_(sww_blocks)
+        # MST = self.m_spanning_tree(graph)
 
         # Step 2 - Detect the block with sewer facilities and save them as starting points
         # treatments = [(125, 6375)]    # (i, j) coordinates of the treatment facilities
@@ -394,28 +407,28 @@ class Infrastructure(UBModule):
             current_block.add_attribute("Sww_slope", slope)
 
             # Draw Networks
-            if downstream_id != -1 and downstream_id != 0:
+            if downstream_id != 0 and downstream_id != -1:
                 network_link = self.draw_sewer_lines_down(current_block, 1)
                 self.scenario.add_asset("SwwID"+str(current_blockid), network_link)
 
+
         # connect the Sinks
-        self.connect_sinks(sinks)
-        print(len(blocks_checked))
+        # self.connect_sinks(sinks)
+        # print(len(blocks_checked))
+
+        self.delineate_clustered_networks(sww_blocks)
 
         return True
 
     def get_sww_neighbours_z(self, curblock):
-        """Retrieves the z-values of all adjacent blocks within the current block's neighbourhood accounting for
-        the presence of drainage infrastructure.
+        """Retrieves the id, x-, y- and z-values of all adjacent blocks within the current block's neighbourhood
+           accounting for the presence of drainage infrastructure.
 
         :param curblock: the current block UBVector() instance
         :return: a list of all the block's neighbours [[BlockID], [X], [Y], [Z], [direction]], None otherwise
         """
         nhd_ids = curblock.get_attribute("Neighbours")
-        # print nhd_ids
         nhd_info = [[], [], [], []]  # Neighbours [[0=id], [1=x], [2=y], [3=z]]
-
-        # Scan neighbourhood for Blocks with Rivers/Lakes
 
         for n in nhd_ids:
             nblock = self.scenario.get_asset_with_name("BlockID" + str(n))
@@ -430,12 +443,40 @@ class Infrastructure(UBModule):
                 nhd_info[2].append(y2)
                 nhd_info[3].append(z2)
 
-        # print curblock.get_attribute("BlockID"), nhd_info[0]
-
         if len(nhd_info[0]) == 0:
             return None
         else:
             return nhd_info
+
+    def get_extended_neighbours(self, block):
+        """Retrieves the id of all the neighbours of the immediate neighbours of a block
+           accounting for the presence of drainage infrastructure.
+
+        :param block: the current block UBVector() instance
+        :return: a list of all the id of the extended block's neighbours [BlockID], None otherwise
+        """
+        extended_neighbours = []
+
+        sink_block = self.scenario.get_asset_with_name("BlockID" + str(block))
+
+        nhd = sink_block.get_attribute("Neighbours")
+
+        for n in nhd:
+            n_block = self.scenario.get_asset_with_name("BlockID" + str(n))
+            for i in n_block.get_attribute("Neighbours"):
+                if i in extended_neighbours or i is block or i in nhd:
+                    continue
+                e_block = self.scenario.get_asset_with_name("BlockID" + str(i))
+                if not e_block.get_attribute("HasSWW"):
+                    continue
+                # if e_block.get_attribute("Sww_DownID") in nhd:
+                #     continue
+
+                extended_neighbours.append(i)
+        if not extended_neighbours:
+            return None
+
+        return extended_neighbours
 
     def get_sww_modified_neighbours_z(self, curblock):
         """Retrieves the z-values of all adjacent blocks within the current block's neighbourhood accounting for
@@ -445,7 +486,6 @@ class Infrastructure(UBModule):
         :return: a list of all the block's neighbours [[BlockID], [X], [Y], [Z], [direction]], None otherwise
         """
         nhd_ids = curblock.get_attribute("Neighbours")
-        print nhd_ids
         nhd_info = [[], [], [], []]  # Neighbours [[0=id], [1=x], [2=y], [3=z]]
 
         # Scan neighbourhood for Blocks with Rivers/Lakes
@@ -550,7 +590,7 @@ class Infrastructure(UBModule):
         :return: down_id: block ID that water drains to, min(dz) the lowest elevation difference.
         """
         z = curblock[3]
-        min_elev = 99999
+        min_elev = 9999
         down_id = None
         dz = 0
         for i in range(len(nhd[3])):
@@ -638,8 +678,8 @@ class Infrastructure(UBModule):
         network_link = ubdata.UBVector((up_point, down_point))
         network_link.determine_geometry((up_point, down_point))
         network_link.add_attribute("SwwID", current_id)
-        network_link.add_attribute("BlockID", current_id)
-        network_link.add_attribute("FlowID", upstream_id)
+        network_link.add_attribute("UpID", current_id)
+        network_link.add_attribute("DownID", upstream_id)
         network_link.add_attribute("Z_up", z_up)
         network_link.add_attribute("Z_down", z_down)
         network_link.add_attribute("Length", current_block.get_attribute("Sww_dist"))
@@ -657,32 +697,47 @@ class Infrastructure(UBModule):
         """
 
         current_id = current_block.get_attribute("BlockID")
-        downstream_id = current_block.get_attribute("Sww_DownID")
-        down_block = self.scenario.get_asset_with_name("BlockID"+str(downstream_id))
-
-        # print(str(current_id) + " -> " + str(downstream_id))
-
         x_up = current_block.get_attribute("CentreX")
         y_up = current_block.get_attribute("CentreY")
         z_up = current_block.get_attribute("ModAvgElev")
         up_point = (x_up, y_up, z_up)
 
-        x_down = down_block.get_attribute("CentreX")
-        y_down = down_block.get_attribute("CentreY")
-        z_down = down_block.get_attribute("ModAvgElev")
-        down_point = (x_down, y_down, z_down)
+        downstream_id = current_block.get_attribute("Sww_DownID")
 
-        network_link = ubdata.UBVector((up_point, down_point))
-        network_link.determine_geometry((up_point, down_point))
-        network_link.add_attribute("SwwID", current_id)
-        network_link.add_attribute("BlockID", current_id)
-        network_link.add_attribute("FlowID", downstream_id)
-        network_link.add_attribute("Z_up", z_up)
-        network_link.add_attribute("Z_down", z_down)
-        network_link.add_attribute("Length", current_block.get_attribute("Sww_dist"))
-        network_link.add_attribute("Min_zdrop", current_block.get_attribute("Sww_zdrop"))
-        network_link.add_attribute("LinkType", flow_type)
-        network_link.add_attribute("Slope", current_block.get_attribute("Sww_slope"))
+
+        if downstream_id == -1:
+            network_link = ubdata.UBVector(up_point)
+            network_link.determine_geometry(up_point)
+            network_link.add_attribute("SwwID", current_id)
+            network_link.add_attribute("UpID", current_id)
+            network_link.add_attribute("DownID", -1)
+            network_link.add_attribute("Z_up", z_up)
+            network_link.add_attribute("Z_down", 0.0)
+            network_link.add_attribute("Length", 0.0)
+            network_link.add_attribute("Min_zdrop", 0.0)
+            network_link.add_attribute("LinkType", flow_type)
+            network_link.add_attribute("Slope", 0.0)
+        else:
+
+            down_block = self.scenario.get_asset_with_name("BlockID" + str(downstream_id))
+
+            x_down = down_block.get_attribute("CentreX")
+            y_down = down_block.get_attribute("CentreY")
+            z_down = down_block.get_attribute("ModAvgElev")
+            down_point = (x_down, y_down, z_down)
+
+            network_link = ubdata.UBVector((up_point, down_point))
+            network_link.determine_geometry((up_point, down_point))
+            network_link.add_attribute("SwwID", current_id)
+            network_link.add_attribute("UpID", current_id)
+            network_link.add_attribute("DownID", downstream_id)
+            network_link.add_attribute("Z_up", z_up)
+            network_link.add_attribute("Z_down", z_down)
+            network_link.add_attribute("Length", current_block.get_attribute("Sww_dist"))
+            network_link.add_attribute("Min_zdrop", current_block.get_attribute("Sww_zdrop"))
+            network_link.add_attribute("LinkType", flow_type)
+            network_link.add_attribute("Slope", current_block.get_attribute("Sww_slope"))
+
         return network_link
 
     def detect_treatment(self, blocks_list, treatments):
@@ -896,7 +951,6 @@ class Infrastructure(UBModule):
             # print("SINKS: " + str(sinks))
         return sinks
 
-
     def connect_sinks(self, sink_ids):
         """Runs the algorithm for scanning all sink blocks and attempting to find a flowpath beyond them.
         This function may also identify certain sinks as definitive catchment outlets.
@@ -1108,7 +1162,7 @@ class Infrastructure(UBModule):
         return True
 
     def undirected_graph(self, swwblocks):
-        vertices = {}       # id: x, y coordinates
+        vertices = {}       # id: x, y, z coordinates
         edges = {}
         counter = 0
         for b in swwblocks:
@@ -1117,9 +1171,10 @@ class Infrastructure(UBModule):
             # print ("                      v1", str(b.get_attribute("BlockID")))
             x1 = b.get_attribute("CentreX")
             y1 = b.get_attribute("CentreY")
+            z1 = b.get_attribute("ModAvgElev")
             pt1 = [x1, y1]
             if v1 not in vertices.keys():
-                vertices[v1] = [x1, y1]
+                vertices[v1] = [x1, y1, z1]
 
 
             # List of Neighbours [id], [x], [y], [z]
@@ -1133,16 +1188,20 @@ class Infrastructure(UBModule):
                 # print("v2", v2)
                 x2 = neighbours[1][i]
                 y2 = neighbours[2][i]
+                z2 = neighbours[3][i]
                 pt2 = [x2, y2]
                 if v2 not in vertices.keys():
-                    vertices[v2] = [x2, y2]
+                    vertices[v2] = [x2, y2, z2]
 
                 if (v1, v2) in edges.keys() or (v2, v1) in edges.keys():
                     continue
 
 
                 lenght = self.define_distance(pt1, pt2)
-                edges[v1, v2] = lenght
+
+                slope = -(z2-z1)/lenght
+
+                edges[v1, v2] = z2-z1
                 counter += 1
                 # print(counter, len(edges))
 
@@ -1162,7 +1221,7 @@ class Infrastructure(UBModule):
         return vertices, edges
 
     def spanning_tree(self, vertices, edges):
-        a = 1026  # starting node
+        a = vertices.keys()[randint(0, len(vertices.keys()))]  # starting node
         k = None  # Current node
         p = {}  # Dictionary of predecessor nodes
         b = {}  # Weight of an edge (in this case the lenght of the pipe between the centroids of adjacent blocks)
@@ -1175,9 +1234,11 @@ class Infrastructure(UBModule):
         k = a
         p[a] = a
 
-        while len(L) < len(vertices.keys()):
+        while k:
 
             tempK = {}
+            L.append(k)
+            print("L: ", L)
 
             for i in edges.keys():
                 if k != i[0] and k != i[1]:
@@ -1190,8 +1251,7 @@ class Infrastructure(UBModule):
                         M.append(i[0])
 
             print ("M: ", M)
-            L.append(k)
-            print("L: ", L)
+
 
             for j in M:
 
@@ -1219,7 +1279,6 @@ class Infrastructure(UBModule):
                     k = M.pop(0)
                 else:
                     if len(L) < len(vertices.keys()):
-                        missVert = []
 
                         for v in vertices.keys():
                             if v not in L:
@@ -1246,6 +1305,7 @@ class Infrastructure(UBModule):
                 lenght = b[v2]
             else:
                 lenght = 0
+
 
             link = ubdata.UBVector((pt1, pt2))
             link.determine_geometry((pt1, pt2))
@@ -1387,36 +1447,56 @@ class Infrastructure(UBModule):
     #     print(str(MST.get_edges()))
     #     return MST
 
-    def delineate_basin_structures(self, blockslist):
-        """Delineates sub-basins across the entire blocksmap specified by the collection of blocks in 'blockslist'.
+    def create_block_flow_hashtable(self, swwblocks):
+        """Creates a hash table of BlockIDs for quick lookup, this allows the basin delineation algorithm to rapidly
+        delineate the sub-catchment
+
+        :param swwlinks: the list of UBVector() instances of all links in the sewer
+        :return: a 2D list [ [upstreamID], [downstreamID] ]
+        """
+
+        hash_table = [[], []]     # COL#1: BlockID (upstream), COL#2: BlockID (downstream)
+        for i in range(len(swwblocks)):
+            current_block = swwblocks[i]
+            current_id = current_block.get_attribute("BlockID")
+
+            hash_table[0].append(int(current_id))
+            hash_table[1].append(int(current_block.get_attribute("Sww_DownID")))    # [ID or -2]
+        return hash_table
+
+    def delineate_clustered_networks(self, swwblocks):
+        """Delineates sub-basins across the entire blocksmap specified by the collection of blocks in 'swwlinks'.
         Returns the number of sub-basins in the map, but also writes BasinID information to each Block. Delineation is
         carried out by creating a hash table of BlockID and downstream ID.
 
         Each block is scanned and all its upstream and downstream Block IDs identified, each is also assigned a
         BasinID.
 
-        :param blocklist: the list [] of UBVector() instances that represent Blocks
         :return: number of total basins. Also writes the "BasinID" attribute to each Block.
         """
-        hash_table = self.create_block_flow_hashtable(blockslist)    # Start by creating a hash tables
+        hash_table = self.create_block_flow_hashtable(swwblocks)    # Start by creating a hash tables
+        print(hash_table)
+
         basin_id = 0    # Set Basin ID to zero, it will start counting up as soon as basins are found
 
-        for i in range(len(blockslist)):    # Loop  across all Blocks
-            current_block = blockslist[i]
-            if current_block.get_attribute("Status") == 0:
-                continue    # Skip if Status = 0
+        for i in range(len(swwblocks)):    # Loop  across all Blocks
+            current_block = swwblocks[i]
 
             # Check if the Block is a single-basin Block
             current_id = current_block.get_attribute("BlockID")
-            if current_id not in hash_table[1]:                 # If the current Block not downstream of something...
-                current_block.add_attribute("UpstrIDs", [])     # ...then it has NO upstream IDs (empty list)
+            # if hash_table[1][hash_table[0].index(current_id)] == -1 and current_id == hash_table[0][hash_table[0].index(current_id)]:
+            #     print("sink")
+            # if current_id not in hash_table[1]:                 # If the current Block not downstream of something...
+            if hash_table[1][hash_table[0].index(current_id)] == -1:
+                current_block.add_attribute("SwwUpstrIDs", [])      # ...then it has NO upstream IDs (empty list)
                 if current_id in hash_table[0]:                 # ... if it is in the first column of the hash table
-                    if hash_table[1][hash_table[0].index(current_id)] == -2:    # if its second column is -2
-                        self.notify("Found a single block basin at BlockID"+str(current_id))
+                    if hash_table[0][hash_table[1].index(-1)] == current_id:    # if its second column is -1 (is a sink)
+                        self.notify("Found a single sewer basin at SwwID"+str(current_id))
                         basin_id += 1   # Then we have found a single-block Basin
-                        current_block.add_attribute("BasinID", basin_id)
-                        current_block.add_attribute("DownstrIDs", [])
-                        current_block.add_attribute("Outlet", 1)
+                        current_block.add_attribute("SwwBasinID", basin_id)
+                        # print(current_id, current_block.get_attribute("SwwBasinID"))
+                        current_block.add_attribute("SwwDownstrIDs", [])
+                        current_block.add_attribute("SwwOutlet", 1)
                         continue
 
             # Search the current Block for its upstream IDs
@@ -1429,8 +1509,8 @@ class Infrastructure(UBModule):
 
             # Once scan is complete, remove the current Block's ID from the list as it is NOT upstream of itself.
             upstream_ids.remove(current_id)
-            self.notify("BlockID"+str(current_id)+" Upstream: "+str(upstream_ids))
-            current_block.add_attribute("UpstrIDs", upstream_ids)
+            self.notify("SwwID"+str(current_id)+" Upstream: "+str(upstream_ids))
+            current_block.add_attribute("SwwUpstrIDs", upstream_ids)
 
             # Repeat the whole process now for the downstream IDs
             downstream_ids = [current_id]
@@ -1442,22 +1522,48 @@ class Infrastructure(UBModule):
 
             # Once scan is complete, remove the current Block's ID from the list as it is NOT downstream of itself.
             downstream_ids.remove(current_id)
-            # downstream_ids.remove(-2)   # Also remove the -2, which is specified if the Outlet Block is found
-            self.notify("BlockID"+str(current_id)+" DownstreamL "+str(downstream_ids))
-            current_block.add_attribute("DownstrIDs", downstream_ids)
 
-            # Now assign Basin IDs, do this if the current Block has downstream ID -2
-            if hash_table[1][hash_table[0].index(current_id)] == -2:    # If the block is an outlet
+            # downstream_ids.remove(-2)   # Also remove the -2, which is specified if the Outlet Block is found
+            self.notify("SwwID"+str(current_id)+" Downstream: "+str(downstream_ids))
+            current_block.add_attribute("SwwDownstrIDs", downstream_ids)
+
+            # Now assign Basin IDs, do this if the current Block has downstream ID -1
+            if hash_table[1][hash_table[0].index(current_id)] == -1:    # If the block is an outlet
                 # print "Found a basin outlet at BlockID" + str(current_id)
-                self.notify("Found a basin outlet at BlockID"+str(current_id))
+                self.notify("Found a basin outlet at SwwID"+str(current_id))
                 basin_id += 1
-                current_block.add_attribute("BasinID", basin_id)    # Set the current Basin ID
-                current_block.add_attribute("Outlet", 1)            # Outlet = TRUE at current Block
+                current_block.add_attribute("SwwBasinID", basin_id)    # Set the current Basin ID
+                # print(current_id, current_block.get_attribute("SwwBasinID"))
+                current_block.add_attribute("SwwOutlet", 1)            # Outlet = TRUE at current Block
                 for j in upstream_ids:
                     upblock = self.scenario.get_asset_with_name("BlockID"+str(int(j)))
-                    upblock.add_attribute("BasinID", basin_id)      # Assign basin ID to all upstream blocks
-                    upblock.add_attribute("Outlet", 0)              # Upstream blocks are NOT outlets!
+                    upblock.add_attribute("SwwBasinID", basin_id)      # Assign basin ID to all upstream blocks
+                    # print(j, upblock.get_attribute("SwwBasinID"))
+                    upblock.add_attribute("SwwOutlet", 0)              # Upstream blocks are NOT outlets!
+
+
+        swwlinks = self.scenario.get_assets_with_identifier("SwwID")
+
+        for l in range(len(swwlinks)):
+            swwlink = swwlinks[l]
+            swwid = swwlink.get_attribute("DownID")
+
+            block = self.scenario.get_asset_with_name("BlockID"+str(swwid))
+            blockID = block.get_attribute("BlockID")
+            if block.get_attribute("SwwBasinID") == None:
+                print(swwid, "basin None")
+            basin = block.get_attribute("SwwBasinID")
+            outlet = block.get_attribute("SwwOutlet")
+            upList = block.get_attribute("SwwDownstrIDs")
+            downList =block.get_attribute("SwwUpstrIDs")
+            swwlink.add_attribute("BasinID", block.get_attribute("SwwBasinID"))
+            swwlink.add_attribute("Outlet", block.get_attribute("SwwOutlet"))
+            swwlink.add_attribute("DownstrIDs", block.get_attribute("SwwDownstrIDs"))
+            swwlink.add_attribute("UpstrIDs", block.get_attribute("SwwUpstrIDs"))
+
 
         self.notify("Total Basins in the Case Study: "+str(basin_id))
         print("Total Basins in the Case Study: " + str(basin_id))
         return basin_id     # The final count indicates how many basins were found
+
+
