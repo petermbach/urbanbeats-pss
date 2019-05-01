@@ -54,12 +54,12 @@ def calculatePollutionConcentrations(adwp, vol, temp, para_tss="", para_tn="", p
 # |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 # Indicate the pollutant type and concentration series for calibration
-pol_type = "tss"
+pol_type = "tn"
 
 # |||||||||||||||||||||||||||||||| DO THE SIMULATION ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 # |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
-# Create a table for the pollutant to calibrate for.
+# Create an output table for the pollutant to calibrate for.
 if pol_type == "tss":
     table_name = "cal_tss"
 elif pol_type == "tn":
@@ -67,88 +67,112 @@ elif pol_type == "tn":
 elif pol_type == "tp":
     table_name = "cal_tp"
 
-cur.execute(f"CREATE TABLE {table_name} (iterations serial PRIMARY KEY, k float, beta float, alpha float, E float);")
+cur.execute(f"CREATE TABLE {table_name} (event integer, iteration integer, k float, beta float, alpha float, E float);")
 con.commit()
 
-# Get the number of time steps from our runoff series in the database.
+# Get the number of time steps from our runoff series in the database, for each rainfall event (in case there
+# are more than one - rainfall events are simulated separately, this is done using cutoff points).
+series_ranges = [] # holds the cutoff points separating individual rainfall events
 cur.execute("SELECT count(*) FROM runoff_series")
-count = cur.fetchone()[0]
+total = cur.fetchone()[0] + 1 # Total number of timesteps of all rainfall events in the dataset
+timestep_prev = 0
+for key in range(1, total):
+    cur.execute(f"SELECT timestep FROM runoff_series WHERE key = {key}")
+    timestep = cur.fetchone()[0]
+    if timestep >= timestep_prev:
+        timestep_prev = timestep
+    else:
+        series_ranges.append(key)
+        timestep_prev = timestep
+series_ranges.append(total)
 
-# Load the measured pollutograph
-C_measured = []
-for timestep in range(count):
-    cur.execute(f"SELECT {pol_type} FROM measured_pollution WHERE timestep = {timestep}")
-    concentration = cur.fetchone()[0]
-    C_measured.append(concentration)
+# Main loop doing the calibration for each individual rain event in our dataset
+cutoff_prev = 1
+event = 1
+for cutoff in series_ranges:
+    # Load the measured pollutograph
+    C_measured = []
+    for key in range(cutoff_prev, cutoff):
+        cur.execute(f"SELECT {pol_type} FROM runoff_series WHERE key = {key}")
+        concentration = cur.fetchone()[0]
+        C_measured.append(concentration)
 
-# This for loop checks for each time step if there's runoff and calculates the concentrations for each time step if
-# there's runoff. If it there's none, the concentrations are recorded as 0.
-iterations = 1000
+    cur.execute(f"SELECT adwp FROM runoff_series WHERE key = {cutoff_prev}")
+    adwp = cur.fetchone()[0]
 
-for iteration in range(iterations):
-    # set ADWP at the start of the simulation
-    # time = 0
-    adwp = 23
-    C_modelled = []
+    # This for loop checks for each time step if there's runoff and calculates the concentrations for each time step if
+    # there's runoff. If it there's none, the concentrations are recorded as 0.
+    iterations = 1000
 
-    # Randomly sample parameters from their flat distribution
-    if pol_type == "tss":
-        alpha = rn.uniform(0, 100000)  # unit kg
-        beta = rn.uniform(0, 2)
-        k = rn.uniform(0, 3)
-    elif pol_type == "tn":
-        alpha = rn.uniform(0, 5000)  # unit kg
-        beta = rn.uniform(0, 2)
-        k = rn.uniform(0, 0.1)
-    elif pol_type == "tp":
-        alpha = rn.uniform(0, 1000)  # unit mg
-        beta = rn.uniform(0, 3)
-        k = rn.uniform(0, 3)
-    parameters = [k, beta, alpha]
+    for iteration in range(iterations):
+        # set ADWP at the start of the simulation
+        # time = 0
+        # adwp = 2
+        C_modelled = []
 
-    # Model the pollutograph using the randomly sampled parameters
-    runoff_previous = 0
-    for timestep in range(count):
-        cur.execute(f"SELECT runoff FROM runoff_series WHERE timestep = {timestep}")
-        runoff = cur.fetchone()[0]
-        if runoff == 0:
-            if runoff_previous == 0:
-                adwp += 1
+        # Randomly sample parameters from their flat distribution
+        if pol_type == "tss":
+            alpha = rn.uniform(0, 100000)  # unit kg
+            beta = rn.uniform(0, 2)
+            k = rn.uniform(0, 3)
+        elif pol_type == "tn":
+            alpha = rn.uniform(0, 5000)  # unit kg
+            beta = rn.uniform(0, 2)
+            k = rn.uniform(0, 0.25)
+        elif pol_type == "tp":
+            alpha = rn.uniform(0, 1000)  # unit mg
+            beta = rn.uniform(0, 3)
+            k = rn.uniform(0, 0.5)
+        parameters = [k, beta, alpha]
+
+        # Model the pollutograph using the randomly sampled parameters
+        runoff_previous = 0
+        for key in range(cutoff_prev, cutoff):
+            cur.execute(f"SELECT runoff FROM runoff_series WHERE key = {key}")
+            runoff = cur.fetchone()[0]
+            # This if statement is only used when we're doing continuous modelling and calculating our adwp. Otherwise
+            # adwp comes from our dataset
+            if runoff == 0:
+                if runoff_previous == 0:
+                    adwp += 1
+                else:
+                    adwp = 1
+
+                # Add the time step and concentration of 0 (no runoff) to the pollutograph.
+                C_modelled.append(0)
             else:
-                adwp = 1
+                cur.execute(f"SELECT temp FROM runoff_series WHERE key = {key}")
+                temperature = cur.fetchone()[0]
 
-            # Add the time step and concentration of 0 (no runoff) to the pollutograph.
-            C_modelled.append(0)
-        else:
-            cur.execute(f"SELECT temp FROM temp_series WHERE timestep = {timestep}")
-            temperature = cur.fetchone()[0]
+                if pol_type == 'tss':
+                    concentration = calculatePollutionConcentrations(adwp=adwp, vol=runoff, temp=temperature,
+                                                                 para_tss=parameters, pol_type=pol_type)
+                elif pol_type == 'tn':
+                    concentration = calculatePollutionConcentrations(adwp=adwp, vol=runoff, temp=temperature,
+                                                                     para_tn=parameters, pol_type=pol_type)
+                elif pol_type == 'tp':
+                    concentration = calculatePollutionConcentrations(adwp=adwp, vol=runoff, temp=temperature,
+                                                                 para_tp=parameters, pol_type=pol_type)
+                C_modelled.append(concentration)
+                runoff_previous = runoff
 
-            if pol_type == 'tss':
-                concentration = calculatePollutionConcentrations(adwp=adwp, vol=runoff, temp=temperature,
-                                                             para_tss=parameters, pol_type=pol_type)
-            elif pol_type == 'tn':
-                concentration = calculatePollutionConcentrations(adwp=adwp, vol=runoff, temp=temperature,
-                                                                 para_tn=parameters, pol_type=pol_type)
-            elif pol_type == 'tp':
-                concentration = calculatePollutionConcentrations(adwp=adwp, vol=runoff, temp=temperature,
-                                                             para_tp=parameters, pol_type=pol_type)
-            C_modelled.append(concentration)
-            runoff_previous = runoff
+        # Calculate the Nash-Sutcliffe coefficient E
+        E_part1 = []  # numerator for Nash-Sutcliffe (O-M)^2
+        E_part2 = []  # denominator for Nash-Sutcliffe (O-Oavg)^2
+        for item in range(len(C_modelled)):
+            E_part1.append((float(C_modelled[item]) - float(C_measured[item])) ** 2)
+            E_part2.append((float(C_measured[item]) - sum(C_measured) / len(C_measured)) ** 2)
+        E = 1 - (sum(E_part1) / sum(E_part2))
 
-    # Calculate the Nash-Sutcliffe coefficient E
-    E_part1 = []  # numerator for Nash-Sutcliffe (O-M)^2
-    E_part2 = []  # denominator for Nash-Sutcliffe (O-Oavg)^2
-    for item in range(count):
-        E_part1.append((float(C_modelled[item]) - float(C_measured[item])) ** 2)
-        E_part2.append((float(C_measured[item]) - sum(C_measured) / len(C_measured)) ** 2)
-    E = 1 - (sum(E_part1) / sum(E_part2))
-
-    # Write everything to the database
-    cur.execute(f"INSERT INTO {table_name} (iterations, k, beta, alpha, E) VALUES (%s, %s, %s, %s, %s)",
-                (iteration, k, beta, alpha, E))
-    con.commit()
-    print("Modelled concentrations: " + str(C_modelled))
-    print("Measured concentrations: "  + str(C_measured))
+        # Write everything to the database
+        cur.execute(f"INSERT INTO {table_name} (event, iteration, k, beta, alpha, E) VALUES (%s, %s, %s, %s, %s, %s)",
+                    (event, iteration, k, beta, alpha, E))
+        con.commit()
+        
+    cutoff_prev = cutoff
+    event += 1
+        # print("Modelled concentrations: " + str(C_modelled))
+        # print("Measured concentrations: " + str(C_measured))
 
 # Close the database cursor and connection
 cur.close()
