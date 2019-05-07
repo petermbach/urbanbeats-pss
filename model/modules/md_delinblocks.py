@@ -299,7 +299,7 @@ class DelinBlocks(UBModule):
         for y in range(blocks_tall):        # Loop across the number of blocks tall and blocks wide
             for x in range(blocks_wide):
                 # self.notify("Current BLOCK ID: "+str(blockIDcount))
-                print("Current BLOCK ID: " + str(blockIDcount))
+                # print("Current BLOCK ID: " + str(blockIDcount))
 
                 # - STEP 1 - CREATE BLOCK GEOMETRY
                 current_block = self.create_block_face(x, y, bs, blockIDcount, boundarypoly)
@@ -518,6 +518,7 @@ class DelinBlocks(UBModule):
             nhd = []    # Will contain all block IDs in the Neighbourhood (nhd)
             for j in range(len(blockslist)):  # Loop across blocks again
                 comp_block_id = blockslist[j].get_attribute("BlockID")
+
                 if comp_block_id == curblock_id or blockslist[j].get_attribute("Status") == 0:
                     # If the IDs are identical or the Block has zero status, then skip
                     continue
@@ -1045,7 +1046,7 @@ class DelinBlocks(UBModule):
 
             # Now assign Basin IDs, do this if the current Block has downstream ID -2
             if hash_table[1][hash_table[0].index(current_id)] == -2:    # If the block is an outlet
-                print "Found a basin outlet at BlockID" + str(current_id)
+                # print "Found a basin outlet at BlockID" + str(current_id)
                 self.notify("Found a basin outlet at BlockID"+str(current_id))
                 basin_id += 1
                 current_block.add_attribute("BasinID", basin_id)    # Set the current Basin ID
@@ -1290,7 +1291,7 @@ class DelinBlocks(UBModule):
         if min(dz) < 0:    # If there is a drop in elevation - this also means the area cannot be flat!
             down_id = nhd_z[0][dz.index(min(dz))]    # The ID corresponds to the minimum elevation difference
         else:
-            down_id = -9999 # Otherwise there is a sink in the current Block
+            down_id = -9999  # Otherwise there is a sink in the current Block
         return down_id, min(dz)
 
     def find_downstream_dinf(self, z, nhd_z):

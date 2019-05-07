@@ -483,7 +483,7 @@ class SpatialMapping(UBModule):
             for block_attr in blockslist:
                 if block_attr.get_attribute("Status") == 0:
                     continue
-                print "Now calculating demands for Block: ", str(block_attr.get_attribute("BlockID"))
+                # print "Now calculating demands for Block: ", str(block_attr.get_attribute("BlockID"))
                 self.map_water_consumption(block_attr)
             # SAVE PATTERN DATA INTO MAP ATTRIBUTES
             categories = ubglobals.DIURNAL_CATS
