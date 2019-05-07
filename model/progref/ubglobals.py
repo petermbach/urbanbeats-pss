@@ -121,6 +121,8 @@ PLANTYPES = ["Suburbia", "European", "Megacity"]
 PLANPARAMSET = ["Custom", "Melbourne"]
 UNDEVSTATES = ['GF', 'BF', 'AG']
 
+COMPASS = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]      # Compass directions, also neighbourhoods
+
 # WATER-RELATED ELEMENTS
 RESSTANDARDS = ["AS6400", "Others..."]
 FFP = ["PO", "NP", "RW", "SW", "GW"]    # Fit for purpose water qualities

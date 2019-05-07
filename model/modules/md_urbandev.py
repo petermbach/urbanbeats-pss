@@ -35,6 +35,7 @@ import gc
 import tempfile
 import random as rand
 import math
+import numpy as np
 from shapely.geometry import Polygon, Point
 
 # --- URBANBEATS LIBRARY IMPORTS ---
@@ -43,6 +44,7 @@ import model.ublibs.ubspatial as ubspatial
 import model.ublibs.ubmethods as ubmethods
 import model.ublibs.ubdatatypes as ubdata
 from ..progref import ubglobals
+
 
 # --- MODULE CLASS DEFINITION ---
 class UrbanDevelopment(UBModule):
@@ -161,7 +163,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("access_roads_aoffices", DOUBLE, "a-value for road access to offices areas")
         self.access_roads_include = 1
         self.access_roads_data = ""
-        self.access_roads_weight = 0.0
+        self.access_roads_weight = 1.0
         self.access_roads_res = 1
         self.access_roads_com = 1
         self.access_roads_ind = 1
@@ -185,7 +187,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("access_rail_aoffices", DOUBLE, "a-value for rail access to offices areas")
         self.access_rail_include = 1
         self.access_rail_data = ""
-        self.access_rail_weight = 0
+        self.access_rail_weight = 1.0
         self.access_rail_res = 1
         self.access_rail_com = 1
         self.access_rail_ind = 1
@@ -209,7 +211,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("access_waterways_aoffices", DOUBLE, "a-value for waterway access to offices areas")
         self.access_waterways_include = 1
         self.access_waterways_data = ""
-        self.access_waterways_weight = 0.0
+        self.access_waterways_weight = 1.0
         self.access_waterways_res = 1
         self.access_waterways_com = 1
         self.access_waterways_ind = 1
@@ -233,7 +235,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("access_lakes_aoffices", DOUBLE, "a-value for lake access to offices areas")
         self.access_lakes_include = 1
         self.access_lakes_data = ""
-        self.access_lakes_weight = 0.0
+        self.access_lakes_weight = 1.0
         self.access_lakes_res = 1
         self.access_lakes_com = 1
         self.access_lakes_ind = 1
@@ -257,7 +259,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("access_pos_aoffices", DOUBLE, "a-value for POS access to offices areas")
         self.access_pos_include = 1
         self.access_pos_data = ""
-        self.access_pos_weight = 0.0
+        self.access_pos_weight = 1.0
         self.access_pos_res = 1
         self.access_pos_com = 1
         self.access_pos_ind = 1
@@ -281,7 +283,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("access_poi_aoffices", DOUBLE, "a-value for POI access to offices areas")
         self.access_poi_include = 1
         self.access_poi_data = ""
-        self.access_poi_weight = 0.0
+        self.access_poi_weight = 1.0
         self.access_poi_res = 1
         self.access_poi_com = 1
         self.access_poi_ind = 1
@@ -305,7 +307,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("access_pth_aoffices", DOUBLE, "a-value for pth access to offices areas")
         self.access_pth_include = 1
         self.access_pth_data = ""
-        self.access_pth_weight = 0.0
+        self.access_pth_weight = 1.0
         self.access_pth_res = 1
         self.access_pth_com = 1
         self.access_pth_ind = 1
@@ -680,6 +682,7 @@ class UrbanDevelopment(UBModule):
 
         # - 2.1 - MUNICIPALITIES ---
         # STEP 2.1.1 :: Load Municipalities
+        municipalities = []
         if self.lga_inputmap == "":
             self.notify("Region is treated as a single municipality")
             print ("Region is treated as a single municipality")
@@ -687,7 +690,6 @@ class UrbanDevelopment(UBModule):
         else:
             self.notify("Loading and Assigning Municipalities")
             print("Loading and Assigning Municipalities")
-            municipalities = []
             map_attr.add_attribute("HasGEOPOLITICAL", 1)
             geopol_map = self.datalibrary.get_data_with_id(self.lga_inputmap)
             fullfilepath = geopol_map.get_data_file_path() + geopol_map.get_metadata("filename")
@@ -797,8 +799,8 @@ class UrbanDevelopment(UBModule):
             # STEP 2.3.2 :: Transfer Population to Cells
             for i in range(len(cellslist)):
                 current_cell = cellslist[i]
-                col_start = int(current_cell.get_attribute("OriginX") / luc_res)
-                row_start = int(current_cell.get_attribute("OriginY") / luc_res)
+                col_start = int(current_cell.get_attribute("OriginX") / pop_res)
+                row_start = int(current_cell.get_attribute("OriginY") / pop_res)
                 popdatamatrix = populationraster.get_data_square(col_start, row_start, csc, csc)
 
                 popfactor = 1.0
@@ -858,24 +860,31 @@ class UrbanDevelopment(UBModule):
         self.notify("Entering Accessibility Calculations")
         print("Entering Accessibility Calculations")
 
+        map_attr.add_attribute("ACCESS_ROAD", 0)
         if self.access_roads_include:
             aj = [float(self.access_roads_res * self.access_roads_ares),
                   float(self.access_roads_com * self.access_roads_acom),
                   float(self.access_roads_ind * self.access_roads_aind),
                   float(self.access_roads_offices * self.access_roads_aoffices)]
             self.calculate_accessibility_linearfeatures(self.access_roads_data, map_attr, aj, cellslist, "ROAD")
+
+        map_attr.add_attribute("ACCESS_RAIL", 0)
         if self.access_rail_include:
             aj = [float(self.access_rail_res * self.access_rail_ares),
                   float(self.access_rail_com * self.access_rail_acom),
                   float(self.access_rail_ind * self.access_rail_aind),
                   float(self.access_rail_offices * self.access_rail_aoffices)]
             self.calculate_accessibility_linearfeatures(self.access_rail_data, map_attr, aj, cellslist, "RAIL")
+
+        map_attr.add_attribute("ACCESS_WWAY", 0)
         if self.access_waterways_include:
             aj = [float(self.access_waterways_res * self.access_waterways_ares),
                   float(self.access_waterways_com * self.access_waterways_acom),
                   float(self.access_waterways_ind * self.access_waterways_aind),
                   float(self.access_waterways_offices * self.access_waterways_aoffices)]
             self.calculate_accessibility_linearfeatures(self.access_waterways_data, map_attr, aj, cellslist, "WWAY")
+
+        map_attr.add_attribute("ACCESS_LAKE", 0)
         if self.access_lakes_include:
             aj = [float(self.access_lakes_res * self.access_lakes_ares),
                   float(self.access_lakes_com * self.access_lakes_acom),
@@ -883,6 +892,8 @@ class UrbanDevelopment(UBModule):
                   float(self.access_lakes_offices * self.access_lakes_aoffices)]
             self.calculate_accessibility_polygonfeatures(self.access_lakes_data, map_attr, aj, cellslist, "LAKE",
                                                          Landuses=["Water"])
+
+        map_attr.add_attribute("ACCESS_POSS", 0)
         if self.access_pos_include:
             aj = [float(self.access_pos_res * self.access_pos_ares),
                   float(self.access_pos_com * self.access_pos_acom),
@@ -891,6 +902,8 @@ class UrbanDevelopment(UBModule):
             self.calculate_accessibility_polygonfeatures(self.access_pos_data, map_attr, aj, cellslist, "POSS",
                                                          Landuses=["Parks and Gardens", "Reserves and Floodway",
                                                                    "Forest"])
+
+        map_attr.add_attribute("ACCESS_POIS", 0)
         if self.access_poi_include:
             aj = [float(self.access_poi_res * self.access_poi_ares),
                   float(self.access_poi_com * self.access_poi_acom),
@@ -898,6 +911,7 @@ class UrbanDevelopment(UBModule):
                   float(self.access_poi_offices * self.access_poi_aoffices)]
             self.calculate_accessibility_pointfeatures(self.access_poi_data, map_attr, aj, cellslist, "POIS")
 
+        map_attr.add_attribute("ACCESS_PTHS", 0)
         if self.access_pth_include:
             aj = [float(self.access_pth_res * self.access_pth_ares),
                   float(self.access_pth_com * self.access_pth_acom),
@@ -913,15 +927,16 @@ class UrbanDevelopment(UBModule):
                                  float(self.access_pos_weight * self.access_pos_include),
                                  float(self.access_poi_weight * self.access_poi_include),
                                  float(self.access_pth_weight * self.access_pth_include)]
+
         print "ACCESS WEIGHTS", accessibility_weights
         accessibility_weights = ubmethods.normalize_weights(accessibility_weights, "SUM")   # 0 to 1 normalize
 
         accessibility_attributes = ["ACC_ROAD", "ACC_RAIL", "ACC_WWAY", "ACC_LAKE", "ACC_POSS", "ACC_POIS", "ACC_PTHS"]
         print "ACCESS WEIGHTS", accessibility_weights
+
         # Loop across blocks, get the five attributes and calculate total accessibility
         for i in range(len(cellslist)):
             final_acc_res, final_acc_com, final_acc_ind, final_acc_orc = 0, 0, 0, 0
-            val_res, val_com, val_ind, val_orc = 0, 0, 0, 0     # Initialize
             for acc in range(len(accessibility_attributes)):
                 val_res = cellslist[i].get_attribute(accessibility_attributes[acc]+"_RES")
                 if val_res is None: val_res = 0
@@ -948,7 +963,7 @@ class UrbanDevelopment(UBModule):
         self.notify("Beginning Suitability calculations...")
         print("Beginning Suitability calculations...")
 
-        # - 2.6.1 - Determine Immediate Cardinal and Ordinal direction neighbours (use Moore)
+        # - 2.6.1 - Neighbourhood - Determine Immediate Cardinal and Ordinal direction neighbours (use Moore)
         self.notify("Determining adjacent neighbours")
         print("Determining adjacent neighbours")
         for i in range(len(cellslist)):
@@ -962,7 +977,7 @@ class UrbanDevelopment(UBModule):
             cellslist[i].add_attribute("NHD_NW", 0)
             neighbours = []
             ixy = ubmethods.get_central_coordinates(cellslist[i])
-            for j in range(len(cellslist)):     # Oh how I hate to use double for loops.... looping across gianourmous arrays...
+            for j in range(len(cellslist)):     # Oh how I hate to use double for loops....
                 if cellslist[j] == cellslist[i]:
                     continue
                 jxy = ubmethods.get_central_coordinates(cellslist[j])
@@ -986,52 +1001,59 @@ class UrbanDevelopment(UBModule):
                     neighbours.append(cellslist[j].get_attribute("CellID"))
             cellslist[i].add_attribute("AdjacentNH", neighbours)
 
-        # - 2.6.2 - LOAD ALL THE RELEVANT DATA SETS
+        # - 2.6.2 - Load all relevant data sets
         self.notify("Loading maps for suitability assessment...")
         print("Loading map for suitability assessment...")
+
+        map_attr.add_attribute("SUIT_ELEV", 0)
         if (self.suit_slope_include or self.suit_aspect_include) and self.suit_elevation_data:
             # If either criteria has been included, map elevation to cells
-            print "Loading Elevation"
             elev_dref = self.datalibrary.get_data_with_id(self.suit_elevation_data)
             fullfilepath = elev_dref.get_data_file_path() + elev_dref.get_metadata("filename")
             elevraster = ubspatial.import_ascii_raster(fullfilepath, self.suit_elevation_data)
             elev_offset = ubspatial.calculate_offsets(elevraster, map_attr)
             elev_res = elevraster.get_cellsize()
             elev_csc = int(self.cellsize / elev_res)     # knowing how many cells wide and tall
+            map_attr.change_attribute("SUIT_ELEV", 1)
 
+        map_attr.add_attribute("SUIT_SOIL", 0)
         if self.suit_soil_include and self.suit_soil_data:
-            print "Loading Soil"
             soil_dref = self.datalibrary.get_data_with_id(self.suit_soil_data)
             fullfilepath = soil_dref.get_data_file_path() + soil_dref.get_metadata("filename")
             soilraster = ubspatial.import_ascii_raster(fullfilepath, self.suit_soil_data)
             soil_offset = ubspatial.calculate_offsets(soilraster, map_attr)
             soil_res = soilraster.get_cellsize()
             soil_csc = int(self.cellsize / soil_res)
+            map_attr.change_attribute("SUIT_SOIL", 1)
 
+        map_attr.add_attribute("SUIT_GW", 0)
         if self.suit_gw_include and self.suit_gw_data:
-            print "Loading Groundwater Depth"
             gw_dref = self.datalibrary.get_data_with_id(self.suit_gw_data)
             fullfilepath = gw_dref.get_data_file_path() + gw_dref.get_metadata("filename")
             gwraster = ubspatial.import_ascii_raster(fullfilepath, self.suit_gw_data)
             gw_offset = ubspatial.calculate_offsets(gwraster, map_attr)
             gw_res = gwraster.get_cellsize()
             gw_csc = int(self.cellsize / gw_res)
+            map_attr.change_attribute("SUIT_GW", 1)
 
         if self.suit_custom_include and self.suit_custom_data:
             pass
             # CUSTOM - [TO DO]
             # Need to figure out 'data type', 'data format', etc.
 
-        # - 2.7.3 - ASSIGN ALL THE DATA TO THE CELLS
+        # - 2.6.3 - ASSIGN ALL DATA TO CELLS
         self.notify("Assigning data to cells...")
         print("Assigning data to cells...")
+
+        nodata_cells_elev, nodata_cells_gw, nodata_cells_soil = [], [], []  # Lists to hold no-data cells
+
         for i in range(len(cellslist)):
             current_cell = cellslist[i]
-            col_start = int(current_cell.get_attribute("OriginX") / elev_res)
-            row_start = int(current_cell.get_attribute("OriginY") / elev_res)
 
             # SLOPE AND ASPECT - MAP ELEVATION DATA TO THE CELLS
             if (self.suit_slope_include or self.suit_aspect_include) and self.suit_elevation_data:
+                col_start = int(current_cell.get_attribute("OriginX") / elev_res)
+                row_start = int(current_cell.get_attribute("OriginY") / elev_res)
                 elevdatamatrix = elevraster.get_data_square(col_start, row_start, elev_csc, elev_csc)
 
                 # TRANSFER ELEVATION TO CELLS
@@ -1045,16 +1067,20 @@ class UrbanDevelopment(UBModule):
                         n_elev += 1
                     if n_elev == 0:
                         current_cell.add_attribute("Elevation", -9999)
+                        nodata_cells_elev.append(current_cell)
                     else:
                         current_cell.add_attribute("Elevation", float(avg_elev / n_elev))
-                else:
+                else:   # The cell size is not greater, either smaller or same size as raster resolution
                     if elevdatamatrix == elevraster.get_nodatavalue():
                         current_cell.add_attribute("Elevation", -9999)
+                        nodata_cells_elev.append(current_cell)
                     else:
                         current_cell.add_attribute("Elevation", elevdatamatrix)
 
             # SOIL CLASSIFICATION - MAP SOIL CLASSES TO THE CELLS
             if self.suit_soil_include:      # SOIL CLASSES: 1=sand, 2=sandy clay, 3=medium clay, 4=heavy clay
+                col_start = int(current_cell.get_attribute("OriginX") / soil_res)
+                row_start = int(current_cell.get_attribute("OriginY") / soil_res)
                 soildatamatrix = soilraster.get_data_square(col_start, row_start, soil_csc, soil_csc)
 
                 # TRANSFER ELEVATION TO CELLS
@@ -1062,16 +1088,20 @@ class UrbanDevelopment(UBModule):
                     soilclass = ubmethods.find_dominant_category(soildatamatrix, soilraster.get_nodatavalue())
                     if soilclass == soilraster.get_nodatavalue():
                         current_cell.add_attribute("SoilClass", "Undefined")
+                        nodata_cells_soil.append(current_cell)
                     else:
                         current_cell.add_attribute("SoilClass", ubglobals.SOILCLASSES[int(soilclass) - 1])
                 else:       # Cell < raster - only one class
                     if soildatamatrix == soilraster.get_nodatavalue():
                         current_cell.add_attribute("SoilClass", "Undefined")
+                        nodata_cells_soil.append(current_cell)
                     else:
                         current_cell.add_attribute("SoilClass", ubglobals.SOILCLASSES[int(soildatamatrix) - 1])
 
             # GROUNDWATER DEPTH - MAP GROUNDWATER DEPTHS TO THE CELLS
             if self.suit_gw_include:
+                col_start = int(current_cell.get_attribute("OriginX") / gw_res)
+                row_start = int(current_cell.get_attribute("OriginY") / gw_res)
                 gwdatamatrix = gwraster.get_data_square(col_start, row_start, gw_csc, gw_csc)
 
                 # TRANSFER GROUNDWATER TO CELLS
@@ -1085,12 +1115,13 @@ class UrbanDevelopment(UBModule):
                         n_gw += 1
                     if n_gw == 0:
                         current_cell.add_attribute("DepthToGW", -9999)
+                        nodata_cells_gw.append(current_cell)
                     else:
                         current_cell.add_attribute("DepthToGW", float(avg_gwd / n_gw))
                 else:
-                    print gwdatamatrix
                     if gwdatamatrix == gwraster.get_nodatavalue():
                         current_cell.add_attribute("DepthToGW", -9999)
+                        nodata_cells_gw.append(current_cell)
                     else:
                         current_cell.add_attribute("DepthToGW", gwdatamatrix)
 
@@ -1098,10 +1129,19 @@ class UrbanDevelopment(UBModule):
             if self.suit_custom_include:
                 pass    # [TO DO]
 
-        # - 2.6.4 - CALCULATE SUITABILITIES
+        # - 2.6.4 - INFILL MISSING VALUES
+        print("Infilling missing values...")
+        self.infill_nodata_values(nodata_cells_elev, "Elevation", "Average", elevraster.get_nodatavalue())
+        self.infill_nodata_values(nodata_cells_soil, "SoilClass", "Categorical", "Undefined")
+        self.infill_nodata_values(nodata_cells_gw, "DepthToGW", "Average", gwraster.get_nodatavalue())
+
+        # - 2.6.5 - CALCULATE SUITABILITIES
         # PREPARE ARRAYS FOR COMBINING SUITABILITY VALUES
         self.notify("Now calculating suitabilities...")
         print("Now calculating suitabilities...")
+
+        # Setup arrays - suitability_bools = booleans of 'include' x 'has data', all_weights = weights params
+        # suit_weights = relevant weights ONLY, map_suitability = 2D array, one for each Land use
         suitability_bools = [self.suit_slope_include * bool(self.suit_elevation_data),
                              self.suit_aspect_include * bool(self.suit_elevation_data),
                              self.suit_soil_include * bool(self.suit_soil_data),
@@ -1113,85 +1153,84 @@ class UrbanDevelopment(UBModule):
                         suitability_bools[s]]  # relevant ones
         map_suitability_values = [[], [], [], []]  # Will hold all the final suitability values for normalization
 
-        for i in range(len(cellslist)):
-            suit_values = [[], [], [], []]  # [ [RES], [COM], [IND], [ORC] ]
-
-            # - 2.7.4a - SUITABILITY CALCULATION FOR SLOPE
-            if self.suit_slope_include and self.suit_elevation_data:
-                pass
-                suitability = self.calculate_suitability_value()
-                current_cell.add_attribute("SU_SLOPE_R", suitability)
-                current_cell.add_attribute("SU_SLOPE_C", suitability)
-                current_cell.add_attribute("SU_SLOPE_I", suitability)
-                current_cell.add_attribute("SU_SLOPE_O", suitability)
-
-                suit_values[0].append(suitability)
-                suit_values[1].append(suitability)
-                suit_values[2].append(suitability)
-                suit_values[3].append(suitability)
-
-            # - 2.7.4b - SUITABILITY CALCULATION FOR ASPECT
-            if self.suit_aspect_include and self.suit_elevation_data:
-                pass
-                suitability = self.calculate_suitability_value()
-                current_cell.add_attribute("SU_ASPCT_R", suitability)
-                current_cell.add_attribute("SU_ASPCT_C", suitability)
-                current_cell.add_attribute("SU_ASPCT_I", suitability)
-                current_cell.add_attribute("SU_ASPCT_O", suitability)
-                suit_values.append(suitability)
-
-            # - 2.7.4c - SUITABILITY CALCULATION FOR SOIL TYPE
-            if self.suit_soil_include and self.suit_soil_data:
-                pass
-                suitability = self.calculate_suitability_value()
-                current_cell.add_attribute("SU_SOIL_R", suitability)
-                current_cell.add_attribute("SU_SOIL_C", suitability)
-                current_cell.add_attribute("SU_SOIL_I", suitability)
-                current_cell.add_attribute("SU_SOIL_O", suitability)
-                suit_values.append(suitability)
-
-            # - 2.7.4d - SUITABILITY CALCULATION FOR GROUNDWATER DEPTH
-            if self.suit_gw_include and self.suit_gw_data:
-                pass
-                suitability = self.calculate_suitability_value()
-                current_cell.add_attribute("SU_GWATD_R", suitability)
-                current_cell.add_attribute("SU_GWATD_C", suitability)
-                current_cell.add_attribute("SU_GWATD_I", suitability)
-                current_cell.add_attribute("SU_GWATD_O", suitability)
-                suit_values.append(suitability)
-
-            # - 2.7.4e - SUITABILITY CALCULATION FOR CUSTOM CRITERION
-            if self.suit_custom_include and self.suit_custom_data:
-                pass
-                suitability = self.calculate_suitability_value()
-                current_cell.add_attribute("SU_CUSTO_R", suitability)
-                current_cell.add_attribute("SU_CUSTO_C", suitability)
-                current_cell.add_attribute("SU_CUSTO_I", suitability)
-                current_cell.add_attribute("SU_CUSTO_O", suitability)
-                suit_values.append(suitability)
-
-            # COMBINED SUITABILITY
-            combined_suitability = [0, 0, 0, 0]     # ["RES", "COM", "IND", "ORC"]
-            for luc_cat in range(len(suit_values)):     # Loop across land uses
-                for j in range(len(suit_values[luc_cat])):      # Loop across criteria
-                    combined_suitability[luc_cat] += suit_values[luc_cat][j] * suit_weights[j]
-                map_suitability_values[luc_cat].append(combined_suitability)
-            current_cell.add_attribute("SUIT_RES", combined_suitability[0])
-            current_cell.add_attribute("SUIT_COM", combined_suitability[1])
-            current_cell.add_attribute("SUIT_IND", combined_suitability[2])
-            current_cell.add_attribute("SUIT_ORC", combined_suitability[3])
-
-        # - 2.7.5 - NORMALIZE SUITABILITY VALUES
-        norm_values = [0, 0, 0, 0]      # The maximums of each land use suitability for normalization purposes
-        for luc_cat in range(len(map_suitability_values)):
-            norm_values[luc_cat] = max(map_suitability_values[luc_cat])
-
-        for i in range(len(cellslist)):
-            cellslist[i].change_attribute("SUIT_RES", float(cellslist[i].get_attribute("SUIT_RES") / norm_values[0]))
-            cellslist[i].change_attribute("SUIT_COM", float(cellslist[i].get_attribute("SUIT_COM") / norm_values[1]))
-            cellslist[i].change_attribute("SUIT_IND", float(cellslist[i].get_attribute("SUIT_IND") / norm_values[2]))
-            cellslist[i].change_attribute("SUIT_ORC", float(cellslist[i].get_attribute("SUIT_ORC") / norm_values[3]))
-        # ----- END OF SUITABILITY CALCULATIONS -----
+        # for i in range(len(cellslist)):
+        #     suit_values = [[], [], [], []]  # [ [RES], [COM], [IND], [ORC] ]
+        #
+        #     # - 2.7.4a - SUITABILITY CALCULATION FOR SLOPE
+        #     if self.suit_slope_include and self.suit_elevation_data:    # If slope is considered...
+        #         suitability = self.calculate_suitability_value()
+        #         current_cell.add_attribute("SU_SLOPE_R", suitability)
+        #         current_cell.add_attribute("SU_SLOPE_C", suitability)
+        #         current_cell.add_attribute("SU_SLOPE_I", suitability)
+        #         current_cell.add_attribute("SU_SLOPE_O", suitability)
+        #
+        #         suit_values[0].append(suitability)
+        #         suit_values[1].append(suitability)
+        #         suit_values[2].append(suitability)
+        #         suit_values[3].append(suitability)
+        #
+        #     # - 2.7.4b - SUITABILITY CALCULATION FOR ASPECT
+        #     if self.suit_aspect_include and self.suit_elevation_data:
+        #         pass
+        #         suitability = self.calculate_suitability_value()
+        #         current_cell.add_attribute("SU_ASPCT_R", suitability)
+        #         current_cell.add_attribute("SU_ASPCT_C", suitability)
+        #         current_cell.add_attribute("SU_ASPCT_I", suitability)
+        #         current_cell.add_attribute("SU_ASPCT_O", suitability)
+        #         suit_values.append(suitability)
+        #
+        #     # - 2.7.4c - SUITABILITY CALCULATION FOR SOIL TYPE
+        #     if self.suit_soil_include and self.suit_soil_data:
+        #         pass
+        #         suitability = self.calculate_suitability_value()
+        #         current_cell.add_attribute("SU_SOIL_R", suitability)
+        #         current_cell.add_attribute("SU_SOIL_C", suitability)
+        #         current_cell.add_attribute("SU_SOIL_I", suitability)
+        #         current_cell.add_attribute("SU_SOIL_O", suitability)
+        #         suit_values.append(suitability)
+        #
+        #     # - 2.7.4d - SUITABILITY CALCULATION FOR GROUNDWATER DEPTH
+        #     if self.suit_gw_include and self.suit_gw_data:
+        #         pass
+        #         suitability = self.calculate_suitability_value()
+        #         current_cell.add_attribute("SU_GWATD_R", suitability)
+        #         current_cell.add_attribute("SU_GWATD_C", suitability)
+        #         current_cell.add_attribute("SU_GWATD_I", suitability)
+        #         current_cell.add_attribute("SU_GWATD_O", suitability)
+        #         suit_values.append(suitability)
+        #
+        #     # - 2.7.4e - SUITABILITY CALCULATION FOR CUSTOM CRITERION
+        #     if self.suit_custom_include and self.suit_custom_data:
+        #         pass
+        #         suitability = self.calculate_suitability_value()
+        #         current_cell.add_attribute("SU_CUSTO_R", suitability)
+        #         current_cell.add_attribute("SU_CUSTO_C", suitability)
+        #         current_cell.add_attribute("SU_CUSTO_I", suitability)
+        #         current_cell.add_attribute("SU_CUSTO_O", suitability)
+        #         suit_values.append(suitability)
+        #
+        #     # COMBINED SUITABILITY
+        #     combined_suitability = [0, 0, 0, 0]     # ["RES", "COM", "IND", "ORC"]
+        #     for luc_cat in range(len(suit_values)):     # Loop across land uses
+        #         for j in range(len(suit_values[luc_cat])):      # Loop across criteria
+        #             combined_suitability[luc_cat] += suit_values[luc_cat][j] * suit_weights[j]
+        #         map_suitability_values[luc_cat].append(combined_suitability)
+        #     current_cell.add_attribute("SUIT_RES", combined_suitability[0])
+        #     current_cell.add_attribute("SUIT_COM", combined_suitability[1])
+        #     current_cell.add_attribute("SUIT_IND", combined_suitability[2])
+        #     current_cell.add_attribute("SUIT_ORC", combined_suitability[3])
+        #
+        # # - 2.7.5 - NORMALIZE SUITABILITY VALUES
+        # norm_values = [0, 0, 0, 0]      # The maximums of each land use suitability for normalization purposes
+        # for luc_cat in range(len(map_suitability_values)):
+        #     norm_values[luc_cat] = max(map_suitability_values[luc_cat])
+        #
+        # for i in range(len(cellslist)):
+        #     cellslist[i].change_attribute("SUIT_RES", float(cellslist[i].get_attribute("SUIT_RES") / norm_values[0]))
+        #     cellslist[i].change_attribute("SUIT_COM", float(cellslist[i].get_attribute("SUIT_COM") / norm_values[1]))
+        #     cellslist[i].change_attribute("SUIT_IND", float(cellslist[i].get_attribute("SUIT_IND") / norm_values[2]))
+        #     cellslist[i].change_attribute("SUIT_ORC", float(cellslist[i].get_attribute("SUIT_ORC") / norm_values[3]))
+        # # ----- END OF SUITABILITY CALCULATIONS -----
 
         # - 2.8 - SPATIAL RELATIONSHIPS - ZONING
         # Start by loading all relevant zoning maps. Preferably want to do this in one single loop
@@ -1415,8 +1454,8 @@ class UrbanDevelopment(UBModule):
                     cellslist[i].change_attribute("ZONE_ORC", restrict)
 
         # - 2.8 - DETERMINE LARGE NEIGHBOURHOODS ---
-        # self.notify("Establishing Neighbourhoods")
-        # print ("Establishing Neighbourhoods")
+        self.notify("Establishing Neighbourhoods")
+        print ("Establishing Neighbourhoods")
         # hashtable = [[], []]    # [Cell_Obj, NhD_Objs]
         # nhd_rad = self.nhd_radius * 1000    # Convert to [m]
         # sqdist = nhd_rad * nhd_rad
@@ -1443,6 +1482,48 @@ class UrbanDevelopment(UBModule):
 
         self.notify("Current End of Module")
         print ("Current end of module")
+        return True
+
+    def infill_nodata_values(self, nodata_cells, att_name, infill_method, nodatavalue):
+        """Attempts to infill cells with no-data values of a given attribute based on the attributes of its
+        neighbours.
+
+        :param nodata_cells: list of no-data cell objects, function performs infill on each object
+        :param att_name: the attribute name of the no-data value
+        :param infill_method: the infill_method, "Average" - uses the average of the neighbour values, "Median"
+                                - uses the median, "Categorical" - uses the most common category, otherwise
+                                randomly assigns, "Min/Max", uses minimum or maximum value among neighbours.
+        :param nodatavalue: the data set's standard no-data value
+        :return:
+        """
+        for i in range(len(nodata_cells)):
+            cur_cell = nodata_cells[i]
+            nhd_values = []
+            for n in ubglobals.COMPASS:     # Get all neighbours
+                nhd_id = cur_cell.get_attribute("NHD_"+n)
+                if nhd_id == 0:     # No neighbour in that direction
+                    continue
+                else:   # If it has a neighbour
+                    nhd_cell = self.scenario.get_asset_with_name("CellID"+str(int(nhd_id)))
+                    if nhd_cell.get_attribute(att_name) == nodatavalue:     # Neighbour has nodata value
+                        continue
+                    else:
+                        nhd_values.append(nhd_cell.get_attribute(att_name))
+
+            if len(nhd_values) == 0:
+                continue    # If there is no data around, just skip, we are looking for 'edge effects'
+            elif infill_method == "Average":    # Otherwise figure out what to do
+                cur_cell.change_attribute(att_name, float(sum(nhd_values) / len(nhd_values)))
+            elif infill_method == "Median":
+                cur_cell.change_attribute(att_name, np.median(nhd_values))
+            elif infill_method == "Min":
+                cur_cell.change_attribute(att_name, min(nhd_values))
+            elif infill_method == "Max":
+                cur_cell.change_attribute(att_name, max(nhd_values))
+            elif infill_method == "Categorical":
+                cur_cell.change_attribute(att_name, nhd_values[0])      # Need to figure out how to calculate mode
+            else:
+                pass    # Should never get here...
         return True
 
     def calculate_suitability_value(self):
@@ -1538,6 +1619,8 @@ class UrbanDevelopment(UBModule):
             cur_cell.add_attribute("ACC_" + att_name + "_COM", ubmethods.calculate_accessibility_factor(dist, aj[1]))
             cur_cell.add_attribute("ACC_" + att_name + "_IND", ubmethods.calculate_accessibility_factor(dist, aj[2]))
             cur_cell.add_attribute("ACC_" + att_name + "_ORC", ubmethods.calculate_accessibility_factor(dist, aj[3]))
+
+        map_attr.add_attribute("ACCESS_" + att_name, 1)
         return True
 
     def calculate_accessibility_linearfeatures(self, map_input, map_attr, aj, cellslist, att_name):
@@ -1581,6 +1664,8 @@ class UrbanDevelopment(UBModule):
             cur_cell.add_attribute("ACC_"+att_name+"_COM", ubmethods.calculate_accessibility_factor(dist, aj[1]))
             cur_cell.add_attribute("ACC_"+att_name+"_IND", ubmethods.calculate_accessibility_factor(dist, aj[2]))
             cur_cell.add_attribute("ACC_"+att_name+"_ORC", ubmethods.calculate_accessibility_factor(dist, aj[3]))
+
+        map_attr.add_attribute("ACCESS_"+att_name, 1)
         return True
 
     def calculate_accessibility_polygonfeatures(self, map_input, map_attr, aj, cellslist, att_name, **kwargs):
@@ -1629,6 +1714,8 @@ class UrbanDevelopment(UBModule):
             cur_cell.add_attribute("ACC_" + att_name + "_COM", ubmethods.calculate_accessibility_factor(dist, aj[1]))
             cur_cell.add_attribute("ACC_" + att_name + "_IND", ubmethods.calculate_accessibility_factor(dist, aj[2]))
             cur_cell.add_attribute("ACC_" + att_name + "_ORC", ubmethods.calculate_accessibility_factor(dist, aj[3]))
+
+        map_attr.add_attribute("ACCESS_" + att_name, 1)
         return True
 
     def determine_land_use_types(self):
