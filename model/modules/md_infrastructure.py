@@ -148,7 +148,7 @@ class Infrastructure(UBModule):
                 current_block.add_attribute("HasSWW", 1)
                 current_block.add_attribute("HasWWTP", 0)
                 current_block.add_attribute("HasCarved", 0)
-                current_block.add_attribute("BlockID", current_block.get_attribute("BlockID"))
+                current_block.add_attribute("BlockID", current_blockid)
                 sww_blocks.append(current_block)  # Append this block to a list of blocks with a sewer network
             else:
                 current_block.add_attribute("HasSWW", 0)
@@ -159,19 +159,15 @@ class Infrastructure(UBModule):
         print(str(len(sww_blocks)) + " BLOCKS WITH SWW ----------------------------------------------------")
 
         # Step 2 - Delineate the sewer network for the blocks with population or employment greater than 1 person.
-
         self.delineate_sww_flow_paths(sww_blocks)
 
         # Step 3 - Get the Minimum spanning Tree as a benchmark for the minimum lenght required to connect all blocks.
-
         vertices, edges = self.undirected_graph(sww_blocks)
         self.spanning_tree(vertices, edges)
 
         # Step 4 - Design the generated network with SND.
 
         # Step 5 - Design the generated network with UWIM.
-
-
 
         return True
 
@@ -248,7 +244,7 @@ class Infrastructure(UBModule):
     #             current_blockid = current_block.get_attribute("BlockID")
     #             # print ("current id " + str(current_blockid))
     #
-    #             ndz = self.get_sww_neighbours_z(current_block, current_search)
+    #             ndz = self.get_sww_neighbours(current_block, current_search)
     #             # print ndz
     #             if ndz is None:
     #                 continue
@@ -312,20 +308,15 @@ class Infrastructure(UBModule):
         sinks_list = self.identify_sinks(sww_blocks)
         # print("SINKS: " + str(len(sinks_list)) + str(sinks_list))
 
-        self.copy_DEM()
+        self.copy_dem()
         for s in sinks_list:
             self.carving_algorithm(s)
 
-        ids = []
-        for i in sww_blocks:
-            ids.append(i.get_attribute("BlockID"))
-        ids.sort()
+        # ids = []
+        # for i in sww_blocks:
+        #     ids.append(i.get_attribute("BlockID"))
+        # ids.sort()
         # print(ids)
-
-
-
-        # graph = self.undirected_graph_(sww_blocks)
-        # MST = self.m_spanning_tree(graph)
 
         # Step 2 - Detect the block with sewer facilities and save them as starting points
         # treatments = [(125, 6375)]    # (i, j) coordinates of the treatment facilities
@@ -358,11 +349,11 @@ class Infrastructure(UBModule):
 
             # Get the list of neighbours and their corresponding x, y, z coordinates and direction towards treatment
             if self.sww_guide_natural or self.sww_guide_built:      # If we use natural or built features as a guide, then...
-                ndh_info = self.get_sww_modified_neighbours_z(current_block)
+                ndh_info = self.get_sww_modified_neighbours(current_block)
                 if ndh_info is None:        # If the current block has no natural or built features adjacent...
-                    ndh_info = self.get_sww_neighbours_z(current_block)
+                    ndh_info = self.get_sww_neighbours(current_block)
             else:
-                ndh_info = self.get_sww_neighbours_z(current_block)
+                ndh_info = self.get_sww_neighbours(current_block)
 
             # Find the downstream block unless it's a sink
 
@@ -416,55 +407,214 @@ class Infrastructure(UBModule):
         # self.connect_sinks(sinks)
         # print(len(blocks_checked))
 
-        self.delineate_clustered_networks(sww_blocks)
+        # self.delineate_clustered_networks(sww_blocks)
 
         return True
 
-    def get_sww_neighbours_z(self, curblock):
+    def copy_dem(self):
+        """ Creates a copy of the average elevation of each block into a new attribute. The copy will be used when the
+            DEM information needs to be modified.
+        """
+
+        blockslist = self.blocks
+
+        for current_block in blockslist:
+
+            # SKIP CONDITION 1 - Block has zero status
+            if current_block.get_attribute("Status") == 0:
+                continue
+
+            z = float(current_block.get_attribute("AvgElev"))
+            current_block.add_attribute("ModAvgElev", z)
+        return True
+
+    def identify_sinks(self, blocks_list):
+        """ Identify all depressions in the original DEM.
+
+        :param blocks_list
+        :return: sinks: list of sinks in the original DEM
+        """
+        sinks = []
+        for current_block in blocks_list:
+
+            # SKIP CONDITION 1 - Block has zero status
+            if current_block.get_attribute("Status") == 0:
+                continue
+
+            nhd = current_block.get_attribute("Neighbours")
+            # a = 756
+            # if a in nhd:
+            #     nhd.pop(nhd.index(a))
+            #     current_block.change_attribute("Neighbours", nhd)
+            if nhd is None:
+                print("NO NEIGHBOURS")
+                continue
+            block_id = current_block.get_attribute("BlockID")
+            z = current_block.get_attribute("AvgElev")
+
+            # List of neighbours and elevations [id],[z]
+            neighbours_z = self.scenario.retrieve_attribute_value_list("Block", "AvgElev",
+                                                                       current_block.get_attribute(
+                                                                           "Neighbours"))
+            min_n_elev = min(neighbours_z[1])
+            if z >= min_n_elev:
+                continue
+            # print("..sink: " + str(block_id) + " " + str(z) + " neighbours_z: " + str(neighbours_z))
+            sinks.append(block_id)
+        print("SINKS: " + str(sinks))
+        return sinks
+
+    def carving_algorithm(self, sink):
+        """ The Priority First Search (PFS) algorithm (Sedgewick, 1988) creates an adjusted DEM by removing
+            terrain depressions. Starting from the sinks (depressions) the algorithm combines digging and
+            filling approaches to reach a cell with lower elevation than the sink.
+
+        :param sink: ID of a blocks with a sink (terrain depression)
+        :return: True
+        """
+        print("carving: " + str(sink))
+
+        priority_queue = [], []  # List of neighbouring blocks to visit [[id], [dz]]
+        priority_tree = [], []  # List of carved blocks ids  [id], [z]
+        block_id = sink
+
+        current_sink = self.scenario.get_asset_with_name("BlockID" + str(sink))
+
+        # Elevation of the current block. Works with the copy of the DEM, to avoid damaging the original DEM.
+        elev_sink = current_sink.get_attribute("ModAvgElev")
+
+        count = 0
+
+        priority_tree[0].append(sink)
+        priority_tree[1].append(elev_sink)
+        # print("T: " + str(priority_tree[0]))
+
+        while block_id:
+
+            count += 1
+
+            current_block = self.scenario.get_asset_with_name("BlockID" + str(block_id))
+
+            # Elevation of the current block. Works with the copy of the DEM, to avoid damaging the original DEM.
+            elev_s = current_block.get_attribute("ModAvgElev")
+
+            # Neighbours of the current block under evaluation
+            nhd = current_block.get_attribute("Neighbours")
+
+
+            for i in nhd:
+
+                n_block = self.scenario.get_asset_with_name("BlockID" + str(i))
+
+                if n_block.get_attribute("Status") == 0:
+                    continue
+
+                # if n_block.get_attribute("HasCarved"):
+                #     continue
+
+                # Elevation of a neighbouring block. Works with the copy of the DEM, to avoid damaging the original DEM.
+                elev_n = n_block.get_attribute("ModAvgElev")
+
+                if elev_n is None:
+                    # [TO DO]  Check why the elevation is None
+                    print("___ELEVATION NONE____, checking status: " + str(n_block.get_attribute("Status")))
+                    continue
+
+                dz = elev_n - elev_sink
+
+                if i in priority_queue[0] or i in priority_tree[0]:
+                    continue
+
+                priority_queue[0].append(i)
+                priority_queue[1].append(dz)
+
+            # The block under evaluation can be deleted from the list of pending blocks.
+            if block_id in priority_queue[0] or block_id in priority_tree:
+                priority_queue[1].pop(priority_queue[0].index(block_id))
+                priority_queue[0].pop(priority_queue[0].index(block_id))
+
+            print("T: " + str(priority_tree[0]))
+            print("PQ: " + str(priority_queue[0]))
+
+            min_dz = 999999
+            id_min_dz = block_id
+            for j in range(len(priority_queue[0])):
+                n_id = priority_queue[0][j]
+                dz = priority_queue[1][j]
+
+                if dz < min_dz:
+                    min_dz = dz
+                    id_min_dz = n_id
+
+            if min_dz >= 0 and id_min_dz not in priority_tree:
+                modElev = elev_sink - 0.0001*count
+
+                priority_tree[0].append(id_min_dz)
+                priority_tree[1].append(modElev)
+
+                block_id = id_min_dz
+                b = self.scenario.get_asset_with_name("BlockID" + str(block_id))
+                # if b.get_attribute("HasCarved"):
+                #     continue
+
+                b.set_attribute("ModAvgElev", modElev)
+                b.add_attribute("HasCarved", 1)
+            elif min_dz < 0 and id_min_dz not in priority_tree:
+                priority_tree[0].append(id_min_dz)
+                priority_tree[1].append(elev_sink + min_dz)
+                block_id = None
+            else:
+                block_id = None
+            #     print(" EXIST IN PRIORITY TREE----------------------------")
+
+
+
+        print("Path: " + str(priority_tree))
+        return True
+
+    def get_sww_neighbours(self, current_block):
         """Retrieves the id, x-, y- and z-values of all adjacent blocks within the current block's neighbourhood
            accounting for the presence of drainage infrastructure.
 
-        :param curblock: the current block UBVector() instance
-        :return: a list of all the block's neighbours [[BlockID], [X], [Y], [Z], [direction]], None otherwise
+        :param current_block: the current block UBVector() instance
+        :return: a list of all the block's neighbours [[BlockID], [X], [Y], [Z]], None otherwise
         """
-        nhd_ids = curblock.get_attribute("Neighbours")
+        nhd_ids = current_block.get_attribute("Neighbours")
         nhd_info = [[], [], [], []]  # Neighbours [[0=id], [1=x], [2=y], [3=z]]
 
         for n in nhd_ids:
             nblock = self.scenario.get_asset_with_name("BlockID" + str(n))
             if nblock.get_attribute("HasSWW") and n not in nhd_info[0]:
 
-                x2 = nblock.get_attribute("CentreX")
-                y2 = nblock.get_attribute("CentreY")
-                z2 = nblock.get_attribute("ModAvgElev")
+                x = nblock.get_attribute("CentreX")
+                y = nblock.get_attribute("CentreY")
+                z = nblock.get_attribute("ModAvgElev")
 
                 nhd_info[0].append(n)
-                nhd_info[1].append(x2)
-                nhd_info[2].append(y2)
-                nhd_info[3].append(z2)
+                nhd_info[1].append(x)
+                nhd_info[2].append(y)
+                nhd_info[3].append(z)
 
         if len(nhd_info[0]) == 0:
             return None
         else:
             return nhd_info
 
-    def get_extended_neighbours(self, block):
+    def get_extended_neighbours(self, current_block):
         """Retrieves the id of all the neighbours of the immediate neighbours of a block
            accounting for the presence of drainage infrastructure.
 
-        :param block: the current block UBVector() instance
-        :return: a list of all the id of the extended block's neighbours [BlockID], None otherwise
+        :param current_block: the current block UBVector() instance
+        :return: a list of all the id of the  block's extended neighbours [[BlockID], [X], [Y], [Z]], None otherwise
         """
-        extended_neighbours = []
+        extended_neighbours = [], [], [], []
 
-        sink_block = self.scenario.get_asset_with_name("BlockID" + str(block))
-
-        nhd = sink_block.get_attribute("Neighbours")
+        nhd = current_block.get_attribute("Neighbours")
 
         for n in nhd:
             n_block = self.scenario.get_asset_with_name("BlockID" + str(n))
             for i in n_block.get_attribute("Neighbours"):
-                if i in extended_neighbours or i is block or i in nhd:
+                if i in extended_neighbours or i is current_block or i in nhd:
                     continue
                 e_block = self.scenario.get_asset_with_name("BlockID" + str(i))
                 if not e_block.get_attribute("HasSWW"):
@@ -472,23 +622,30 @@ class Infrastructure(UBModule):
                 # if e_block.get_attribute("Sww_DownID") in nhd:
                 #     continue
 
-                extended_neighbours.append(i)
-        if not extended_neighbours:
+                x = e_block.get_attribute("CentreX")
+                y = e_block.get_attribute("CentreY")
+                z = e_block.get_attribute("ModAvgElev")
+
+                extended_neighbours[0].append(i)
+                extended_neighbours[1].append(x)
+                extended_neighbours[2].append(y)
+                extended_neighbours[3].append(z)
+
+        if len(extended_neighbours[0]) == 0:
             return None
+        else:
+            return extended_neighbours
 
-        return extended_neighbours
-
-    def get_sww_modified_neighbours_z(self, curblock):
-        """Retrieves the z-values of all adjacent blocks within the current block's neighbourhood accounting for
+    def get_sww_modified_neighbours(self, current_block):
+        """Retrieves the information of all adjacent blocks within the current block's neighbourhood accounting for
         the presence of drainage infrastructure or natural features. If we use natural or built features as a guide.
 
-        :param curblock: the current block UBVector() instance
-        :return: a list of all the block's neighbours [[BlockID], [X], [Y], [Z], [direction]], None otherwise
+        :param current_block: the current block UBVector() instance
+        :return: a list of all the block's neighbours [[BlockID], [X], [Y], [Z]], None otherwise
         """
-        nhd_ids = curblock.get_attribute("Neighbours")
+        nhd_ids = current_block.get_attribute("Neighbours")
         nhd_info = [[], [], [], []]  # Neighbours [[0=id], [1=x], [2=y], [3=z]]
 
-        # Scan neighbourhood for Blocks with Rivers/Lakes
         for n in nhd_ids:
 
             nblock = self.scenario.get_asset_with_name("BlockID" + str(n))
@@ -498,32 +655,69 @@ class Infrastructure(UBModule):
                 y2 = nblock.get_attribute("CentreY")
                 z2 = nblock.get_attribute("ModAvgElev")
 
+                # Scan neighbourhood for Blocks with Rivers/Lakes
                 if self.sww_guide_natural:
                     if nblock.get_attribute("HasRiver") or nblock.get_attribute("HasLake"):
-                        nhd_info[0].append(n)
-                        nhd_info[1].append(x2)
-                        nhd_info[2].append(y2)
-                        nhd_info[3].append(z2)
+                        if n not in nhd_info[0]:
+                            nhd_info[0].append(n)
+                            nhd_info[1].append(x2)
+                            nhd_info[2].append(y2)
+                            nhd_info[3].append(z2)
+
+                # Scan neighbourhood for Blocks with Roads/Pipes
                 if self.sww_guide_built:
-                    if nblock.get_attribute("HasSWDrain") and n not in nhd_info[0]:
+                    if nblock.get_attribute("HasWWTP") and n not in nhd_info[0]:
                         nhd_info[0].append(n)
                         nhd_info[1].append(x2)
                         nhd_info[2].append(y2)
                         nhd_info[3].append(z2)
 
-        print curblock.get_attribute("BlockID"), nhd_info[0]
+        print current_block.get_attribute("BlockID"), nhd_info[0]
 
         if len(nhd_info[0]) == 0:
             return None
         else:
             return nhd_info
 
-    def find_sww_downstream_d8_TP(self, curblock, nhd, direction):
+    def find_sww_downstream_d8(self, current_block, nhd, direction):
+        """Uses the standard D8 method to find the downstream neighbouring block (Max drop). Return the BlockID
+        and the delta-Z value of the drop. Elevation difference is calculated as dz = [Z-NHD_Z ] and is
+        negative if the neighbouring Block has a lower elevation than the central Block.
+
+        :param current_block: id,x,y,z coordinates of the current central Block
+        :param nhd: id,x,y,z coordinates of all its neighbours
+        :return: down_id: block ID that water drains to, min(dz) the lowest elevation difference.
+        """
+        z = current_block[3]
+        min_elev = 9999
+        down_id = None
+        dz = 0
+        for i in range(len(nhd[3])):
+            # dz.append(z - nhd[3][i])  # Calculate the elevation difference
+            n = nhd[0][i]
+            # if n in blocks_checked:
+            #     print(str(n) + " was already checked.. shouldn't be a possible neighbour")
+            #     continue
+
+            if nhd[3][i] < z and nhd[3][i] < min_elev:
+                down_id = nhd[0][i]         # The ID corresponds to the maximum elevation difference
+                dz = z - nhd[3][i]
+                min_elev = nhd[3][i]
+            # elif nhd[3][i] == z:
+            #     down_id, dz = self.find_sww_downstream_d8_TP(current_block, nhd, direction)
+
+        if down_id is None:
+            down_id = -9999  # Otherwise there is a sink in the current Block
+            dz = 0
+
+        return down_id, dz
+
+    def find_sww_downstream_d8_TP(self, current_block, nhd, direction):
         """Uses the standard D8 method to find the downstream neighbouring block. Return the BlockID
         and the delta-Z value of the drop. Elevation difference is calculated as dz = [NHD_Z - Z] and is
         negative if the neighbouring Block has a lower elevation than the central Block.
 
-        :param curblock: id,x,y,z coordinates of the current central Block
+        :param current_block: id,x,y,z coordinates of the current central Block
         :param nhd: id,x,y,z coordinates of all its neighbours
         :param direction: direction towards closest treatment.
         :return: down_id: block ID that water drains to, min(dz) the lowest elevation difference.
@@ -531,10 +725,10 @@ class Infrastructure(UBModule):
 
         nhd_z = []     # drop = [[id], [dz]]
         nhd_dir = []
-        current_block = self.scenario.get_asset_with_name("BlockID" + str(curblock[0]))
-        x1 = curblock[1]
-        y1 = curblock[2]
-        z1 = curblock[3]
+        current_block = self.scenario.get_asset_with_name("BlockID" + str(current_block[0]))
+        x1 = current_block[1]
+        y1 = current_block[2]
+        z1 = current_block[3]
         min_dz = -5
         max_dz = 10
         better = 0
@@ -580,165 +774,36 @@ class Infrastructure(UBModule):
 
         return down_id, better
 
-    def find_sww_downstream_d8(self, curblock, nhd, direction):
-        """Uses the standard D8 method to find the downstream neighbouring block. Return the BlockID
-        and the delta-Z value of the drop. Elevation difference is calculated as dz = [Z-NHD_Z ] and is
-        negative if the neighbouring Block has a lower elevation than the central Block.
-
-        :param curblock: id,x,y,z coordinates of the current central Block
-        :param nhd: id,x,y,z coordinates of all its neighbours
-        :return: down_id: block ID that water drains to, min(dz) the lowest elevation difference.
-        """
-        z = curblock[3]
-        min_elev = 9999
-        down_id = None
-        dz = 0
-        for i in range(len(nhd[3])):
-            # dz.append(z - nhd[3][i])  # Calculate the elevation difference
-            n = nhd[0][i]
-            # if n in blocks_checked:
-            #     print(str(n) + " was already checked.. shouldn't be a possible neighbour")
-            #     continue
-
-            if nhd[3][i] < z and nhd[3][i] < min_elev:
-                down_id = nhd[0][i]
-                dz = z - nhd[3][i]
-                min_elev = nhd[3][i]
-            # elif nhd[3][i] == z:
-            #     down_id, dz = self.find_sww_downstream_d8_TP(curblock, nhd, direction)
-
-        if down_id is None:
-            down_id = -9999  # Otherwise there is a sink in the current Block
-            dz = 0
-
-        # print ("FOR BLOCK: " + str(curblock[0]) + "DOWN ID: " + str(down_id) + " dz: " + str(dz))
-
-        # if max(dz) > 0:  # If there is a drop in elevation - this also means the area cannot be flat!
-        #     down_id = nhd[0][dz.index(max(dz))]  # The ID corresponds to the maximum elevation difference
-        # else
-        # else:
-        #     down_id = -9999  # Otherwise there is a sink in the current Block
-        return down_id, dz
-
-    def find_upstream_d8(self, curblock, nhd):
-        """Uses the standard D8 method to find the upstream neighbouring block. Return the BlockID
-        and the delta-Z value of the drop. Elevation difference is calculated as dz = [NHD_Z - Z] and is
-        positive if the neighbouring Block has a higher elevation than the central Block.
-
-        :param z: elevation of the current central Block
-        :param nhd_z: elevation of all its neighbours and corresponding IDs [[IDs], [Z-values]]
-        :return: up_id: block ID that water drains from, max(dz) the lowest elevation difference.
-        """
-        z = curblock[3]
-
-        dz = []
-        # print nhd_z[1]
-        for i in range(len(nhd[3])):
-            dz.append(nhd[3][i] - z)  # Calculate the elevation difference
-
-        positives = [x for x in dz if x >= 0]
-        negatives = [x for x in dz if x <= 0]
-        if positives and min(positives) >= 0:  # If there is a drop in elevation or is flat!
-                up_id = nhd[0][dz.index(min(positives))]  # The ID corresponds to the block with minimum elevation difference
-                dElev = min(positives)
-        elif max(negatives) > (-1):
-            up_id = nhd[0][
-                dz.index(max(negatives))]  # The ID corresponds to the block with minimum elevation difference
-            dElev = max(negatives)
-        else:
-            up_id = -9999  # Otherwise there is a hill in the current Block
-            dElev = 0
-
-        return up_id, dElev
-
-    def draw_sewer_lines_up(self, current_block, flow_type):
-        """Creates a link of the sewer network as a UBVector() and returns a line asset.
-
-        :param current_block: current ID of the block that the flow path is being drawn for
-        :param flow_type: type of flow path e.g. "Regular pipe"
-        :return: UBVector() instance of a network link
-        """
-
-        current_id = current_block.get_attribute("BlockID")
-        upstream_id = current_block.get_attribute("Sww_DownID")
-        upper_block = self.scenario.get_asset_with_name("BlockID"+str(upstream_id))
-
-        print(str(current_id) + " -> " + str(upstream_id))
-
-        x_up = upper_block.get_attribute("CentreX")
-        y_up = upper_block.get_attribute("CentreY")
-        z_up = upper_block.get_attribute("ModAvgElev")
-        up_point = (x_up, y_up, z_up)
-
-        x_down = current_block.get_attribute("CentreX")
-        y_down = current_block.get_attribute("CentreY")
-        z_down = current_block.get_attribute("ModAvgElev")
-        down_point = (x_down, y_down, z_down)
-
-        network_link = ubdata.UBVector((up_point, down_point))
-        network_link.determine_geometry((up_point, down_point))
-        network_link.add_attribute("SwwID", current_id)
-        network_link.add_attribute("UpID", current_id)
-        network_link.add_attribute("DownID", upstream_id)
-        network_link.add_attribute("Z_up", z_up)
-        network_link.add_attribute("Z_down", z_down)
-        network_link.add_attribute("Length", current_block.get_attribute("Sww_dist"))
-        network_link.add_attribute("Min_zdrop", current_block.get_attribute("Sww_zdrop"))
-        network_link.add_attribute("LinkType", flow_type)
-        network_link.add_attribute("Slope", current_block.get_attribute("Sww_slope"))
-        return network_link
-
-    def draw_sewer_lines_down(self, current_block, flow_type):
-        """Creates a link of the sewer network as a UBVector() and returns a line asset.
-
-        :param current_block: current ID of the block that the flow path is being drawn for
-        :param flow_type: type of flow path e.g. "Regular pipe"
-        :return: UBVector() instance of a network link
-        """
-
-        current_id = current_block.get_attribute("BlockID")
-        x_up = current_block.get_attribute("CentreX")
-        y_up = current_block.get_attribute("CentreY")
-        z_up = current_block.get_attribute("ModAvgElev")
-        up_point = (x_up, y_up, z_up)
-
-        downstream_id = current_block.get_attribute("Sww_DownID")
-
-
-        if downstream_id == -1:
-            network_link = ubdata.UBVector(up_point)
-            network_link.determine_geometry(up_point)
-            network_link.add_attribute("SwwID", current_id)
-            network_link.add_attribute("UpID", current_id)
-            network_link.add_attribute("DownID", -1)
-            network_link.add_attribute("Z_up", z_up)
-            network_link.add_attribute("Z_down", 0.0)
-            network_link.add_attribute("Length", 0.0)
-            network_link.add_attribute("Min_zdrop", 0.0)
-            network_link.add_attribute("LinkType", flow_type)
-            network_link.add_attribute("Slope", 0.0)
-        else:
-
-            down_block = self.scenario.get_asset_with_name("BlockID" + str(downstream_id))
-
-            x_down = down_block.get_attribute("CentreX")
-            y_down = down_block.get_attribute("CentreY")
-            z_down = down_block.get_attribute("ModAvgElev")
-            down_point = (x_down, y_down, z_down)
-
-            network_link = ubdata.UBVector((up_point, down_point))
-            network_link.determine_geometry((up_point, down_point))
-            network_link.add_attribute("SwwID", current_id)
-            network_link.add_attribute("UpID", current_id)
-            network_link.add_attribute("DownID", downstream_id)
-            network_link.add_attribute("Z_up", z_up)
-            network_link.add_attribute("Z_down", z_down)
-            network_link.add_attribute("Length", current_block.get_attribute("Sww_dist"))
-            network_link.add_attribute("Min_zdrop", current_block.get_attribute("Sww_zdrop"))
-            network_link.add_attribute("LinkType", flow_type)
-            network_link.add_attribute("Slope", current_block.get_attribute("Sww_slope"))
-
-        return network_link
+    # def find_upstream_d8(self, curblock, nhd):
+    #     """Uses the standard D8 method to find the upstream neighbouring block. Return the BlockID
+    #     and the delta-Z value of the drop. Elevation difference is calculated as dz = [NHD_Z - Z] and is
+    #     positive if the neighbouring Block has a higher elevation than the central Block.
+    #
+    #     :param z: elevation of the current central Block
+    #     :param nhd_z: elevation of all its neighbours and corresponding IDs [[IDs], [Z-values]]
+    #     :return: up_id: block ID that water drains from, max(dz) the lowest elevation difference.
+    #     """
+    #     z = curblock[3]
+    #
+    #     dz = []
+    #     # print nhd_z[1]
+    #     for i in range(len(nhd[3])):
+    #         dz.append(nhd[3][i] - z)  # Calculate the elevation difference
+    #
+    #     positives = [x for x in dz if x >= 0]
+    #     negatives = [x for x in dz if x <= 0]
+    #     if positives and min(positives) >= 0:  # If there is a drop in elevation or is flat!
+    #             up_id = nhd[0][dz.index(min(positives))]  # The ID corresponds to the block with minimum elevation difference
+    #             dElev = min(positives)
+    #     elif max(negatives) > (-1):
+    #         up_id = nhd[0][
+    #             dz.index(max(negatives))]  # The ID corresponds to the block with minimum elevation difference
+    #         dElev = max(negatives)
+    #     else:
+    #         up_id = -9999  # Otherwise there is a hill in the current Block
+    #         dElev = 0
+    #
+    #     return up_id, dElev
 
     def detect_treatment(self, blocks_list, treatments):
         """Identifies if there is a treatment facility inside the block
@@ -748,32 +813,32 @@ class Infrastructure(UBModule):
         :return: list of blocks with WWTP.
         """
 
-        wwtps = []
+        treat_facilities = []
         for i in range(len(blocks_list)):
             current_block = blocks_list[i]
             if current_block.get_attribute("Status") == 0:
                 continue
             coordinates = current_block.get_points()
             coordinates = [(c[0], c[1]) for c in coordinates]
-            blockpoly = Polygon(coordinates)
+            block_poly = Polygon(coordinates)
 
-            hastreatment = 0
+            has_treatment = 0
             for j in range(len(treatments)):
                 treat_point = Point(treatments[j])
-                if not treat_point.intersects(blockpoly):
+                if not treat_point.intersects(block_poly):
                     continue
-                hastreatment = 1
-            if hastreatment:
+                has_treatment = 1
+            if has_treatment:
                 current_block.set_attribute("HasWWTP", 1)
-                print("Block " + str(current_block.get_attribute("BlockID")) + " HAS TREATMENT--------------------------------------------")
-                wwtps.append(current_block)
+                # print("Block " + str(current_block.get_attribute("BlockID")) + " HAS TREATMENT---")
+                treat_facilities.append(current_block)
             else:
                 current_block.set_attribute("HasWWTP", 0)
 
-        if len(wwtps) == 0:
+        if len(treat_facilities) == 0:
             return None
-        else:
-            return wwtps
+
+        return treat_facilities
 
     def identify_closest_treatment_facility(self, current_block, treatments):
         """Identifies the closest treatment facility from the current block
@@ -816,15 +881,15 @@ class Infrastructure(UBModule):
             distance = dist
             closest_treat_id = treat_block.get_attribute("BlockID")
             current_block.set_attribute("ClosestTP", closest_treat_id)
-            TP_block = self.scenario.get_asset_with_name("BlockID" + str(closest_treat_id))
+            closest_treat_block = self.scenario.get_asset_with_name("BlockID" + str(closest_treat_id))
 
-        return TP_block
+        return closest_treat_block
 
-    def identify_closest_river(self, blockslist, current_block):                # [TO DO]
+    def identify_closest_river(self, blocks_list, current_block):                # [TO DO]
         """Identifies the closest treatment facility from the current block
 
+        :param blocks_list: list of blocks with treatment facilities
         :param current_block: current ID of the block in evaluation
-        :param treatments: list of blocks with treatment facilities
         :return: block with closest treatment.
         """
 
@@ -832,7 +897,7 @@ class Infrastructure(UBModule):
             return current_block
 
         river_blocks = []
-        for b in blockslist:
+        for b in blocks_list:
             if not b.get_attribute("HasRiver"):
                 continue
             river_blocks.append(b)
@@ -881,7 +946,7 @@ class Infrastructure(UBModule):
 
         :param pt1: center point of the current block
         :param pt2: reference point representation the block with the treatment facility, river, point of interest,etc.
-        :return: direction
+        :return: rad
         """
 
         x1 = pt1[0]     # current point
@@ -897,10 +962,10 @@ class Infrastructure(UBModule):
         else: a = dy/dx
 
         angle = atan(a)
-        radians = angle * (pi/180)
-        return radians
+        rad = angle * (pi/180)
+        return rad
 
-    def define_distance(self, pt1, pt2):
+    def calculate_distance(self, pt1, pt2):
         """Identifies the distance between two points.
 
         :param pt1: center point of the current block
@@ -920,36 +985,6 @@ class Infrastructure(UBModule):
         dist = float(math.sqrt((dx * dx) + (dy * dy)))
 
         return dist
-
-    def identify_sinks(self, blockslist):
-        """ Identify all depressions in the DEM.
-
-        :return: sinks: list of sinks in the DEM
-        """
-
-        # blockslist = self.blocks
-        sinks = []
-        for current_block in blockslist:
-
-            # SKIP CONDITION 1 - Block has zero status
-            if current_block.get_attribute("Status") == 0:
-                continue
-
-            nhd = current_block.get_attribute("Neighbours")
-            if nhd == None:
-                print("NO NEIGHBOURS")
-                continue
-            id = current_block.get_attribute("BlockID")
-            z = current_block.get_attribute("AvgElev")
-            neighbours_z = self.scenario.retrieve_attribute_value_list("Block", "AvgElev",
-                                                                       current_block.get_attribute(
-                                                                           "Neighbours"))
-
-            if z >= min(neighbours_z):
-                continue
-            sinks.append(id)
-            # print("SINKS: " + str(sinks))
-        return sinks
 
     def connect_sinks(self, sink_ids):
         """Runs the algorithm for scanning all sink blocks and attempting to find a flowpath beyond them.
@@ -1076,90 +1111,7 @@ class Infrastructure(UBModule):
             # self.scenario.add_asset("SwwID" + str(current_blockid), network_link)
         return True
 
-    def copy_DEM(self):
-        """ Creates a copy of the average elevation of each block into a new attribute. The copy will be used when the
-            DEM information needs to be modified.
-        """
 
-        blockslist = self.blocks
-
-        for current_block in blockslist:
-
-            # SKIP CONDITION 1 - Block has zero status
-            if current_block.get_attribute("Status") == 0:
-                continue
-
-            z = float(current_block.get_attribute("AvgElev"))
-            current_block.add_attribute("ModAvgElev", z)
-        return True
-
-    def carving_algorithm(self, sink):
-        """ The Priority First Search (PFS) algorithm (Sedgewick, 1988) creates an adjusted DEM by removing
-            terrain depressions. Starting from the sinks (depressions) the algorithm combines digging and
-            filling approaches to reach a cell with lower elevation than the sink.
-
-        :param sink: Blocks with a sink (terrain depression)
-        :return:
-        """
-
-        priority_queue = [], []
-        priority_tree = []
-        id = sink
-
-        while id:
-
-            current_block = self.scenario.get_asset_with_name("BlockID" + str(id))
-            nhd = current_block.get_attribute("Neighbours")
-            elev_s = current_block.get_attribute("ModAvgElev")
-
-            if id in priority_queue[0]:
-                priority_queue[1].pop(priority_queue[0].index(id))
-                priority_queue[0].pop(priority_queue[0].index(id))
-
-            for i in nhd:
-                n_block = self.scenario.get_asset_with_name("BlockID" + str(i))
-                # if n_block.get_attribute("HasCarved"):
-                #     continue
-
-                elev_n = n_block.get_attribute("ModAvgElev")
-
-                if elev_n is None:
-                    #[TO DO]  Check why the elevation is None
-                    continue
-
-                dz = elev_n - elev_s
-
-                if i in priority_queue or i in priority_tree:
-                    continue
-
-                priority_queue[0].append(i)
-                priority_queue[1].append(dz)
-
-            min_dz = 999999
-            id_min_dz = id
-            for j in range(len(priority_queue[1])):
-                dz = priority_queue[1][j]
-                n_id = priority_queue[0][j]
-                if dz < min_dz:
-                    min_dz = dz
-                    id_min_dz = n_id
-
-            if min_dz >= 0 and id_min_dz not in priority_tree:
-                priority_tree.append(id_min_dz)
-                id = id_min_dz
-                b = self.scenario.get_asset_with_name("BlockID" + str(id))
-                # if b.get_attribute("HasCarved"):
-                #     continue
-                b.set_attribute("ModAvgElev", elev_s - 0.0001)
-                b.add_attribute("HasCarved", 1)
-            elif min_dz < 0 and id_min_dz not in priority_tree:
-                priority_tree.append(id_min_dz)
-                id = None
-            else:
-                id = None
-            #     print(" EXIST IN PRIORITY TREE----------------------------")
-
-        return True
 
     def undirected_graph(self, swwblocks):
         vertices = {}       # id: x, y, z coordinates
@@ -1178,7 +1130,7 @@ class Infrastructure(UBModule):
 
 
             # List of Neighbours [id], [x], [y], [z]
-            neighbours = self.get_sww_neighbours_z(b)
+            neighbours = self.get_sww_neighbours(b)
             for i in range(len(neighbours[0])):
 
                 v2 = neighbours[0][i]
@@ -1196,8 +1148,7 @@ class Infrastructure(UBModule):
                 if (v1, v2) in edges.keys() or (v2, v1) in edges.keys():
                     continue
 
-
-                lenght = self.define_distance(pt1, pt2)
+                lenght = self.calculate_distance(pt1, pt2)
 
                 slope = -(z2-z1)/lenght
 
@@ -1211,6 +1162,12 @@ class Infrastructure(UBModule):
                 link.add_attribute("v1", v1)
                 link.add_attribute("v2", v2)
                 link.add_attribute("Length", lenght)
+                link.add_attribute("X1", x1)
+                link.add_attribute("Y1", y1)
+                link.add_attribute("Z1", z1)
+                link.add_attribute("X2", x2)
+                link.add_attribute("Y2", y2)
+                link.add_attribute("Z2", z2)
                 self.scenario.add_asset("LinkID" + str(counter), link)
 
         vertices.keys().sort()
@@ -1238,7 +1195,7 @@ class Infrastructure(UBModule):
 
             tempK = {}
             L.append(k)
-            print("L: ", L)
+            # print("L: ", L)
 
             for i in edges.keys():
                 if k != i[0] and k != i[1]:
@@ -1250,7 +1207,7 @@ class Infrastructure(UBModule):
                     if i[0] not in M and i[0] not in L:
                         M.append(i[0])
 
-            print ("M: ", M)
+            # print ("M: ", M)
 
 
             for j in M:
@@ -1270,7 +1227,7 @@ class Infrastructure(UBModule):
                     b[j] = lenght
                     p[j] = k
                     tempK[j] = b[j]
-            print("tempK:", tempK)
+            # print("tempK:", tempK)
             if tempK:
                 minB = tempK.values().index(min(tempK.values()))
                 k = M.pop(M.index(tempK.keys()[minB]))
@@ -1291,7 +1248,7 @@ class Infrastructure(UBModule):
                     else:
                         k = None
 
-        print(p)
+        # print(p)
 
         for i in range(len(p.keys())):
 
@@ -1369,7 +1326,7 @@ class Infrastructure(UBModule):
     #         pt1 = [x1, y1]
     #
     #         # List of Neighbours [id], [x], [y], [z]
-    #         neighbours = self.get_sww_neighbours_z(b)
+    #         neighbours = self.get_sww_neighbours(b)
     #         for i in range(len(neighbours[0])):
     #
     #             v2 = neighbours[0][i]
@@ -1409,7 +1366,7 @@ class Infrastructure(UBModule):
     #             y2 = neighbours[2][i]
     #             vertex2.__setattr__("CentreY", y2)
     #             pt2 = [x2, y2]
-    #             lenght = self.define_distance(pt1, pt2)
+    #             lenght = self.calculate_distance(pt1, pt2)
     #
     #
     #             # Add edges
@@ -1551,6 +1508,7 @@ class Infrastructure(UBModule):
             block = self.scenario.get_asset_with_name("BlockID"+str(swwid))
             blockID = block.get_attribute("BlockID")
             if block.get_attribute("SwwBasinID") == None:
+                block.set_attribute("SwwBasinID", -1)
                 print(swwid, "basin None")
             basin = block.get_attribute("SwwBasinID")
             outlet = block.get_attribute("SwwOutlet")
@@ -1566,4 +1524,90 @@ class Infrastructure(UBModule):
         print("Total Basins in the Case Study: " + str(basin_id))
         return basin_id     # The final count indicates how many basins were found
 
+    def draw_sewer_lines_up(self, current_block, flow_type):
+        """Creates a link of the sewer network as a UBVector() and returns a line asset.
 
+        :param current_block: current ID of the block that the flow path is being drawn for
+        :param flow_type: type of flow path e.g. "Regular pipe"
+        :return: UBVector() instance of a network link
+        """
+
+        current_id = current_block.get_attribute("BlockID")
+        upstream_id = current_block.get_attribute("Sww_DownID")
+        upper_block = self.scenario.get_asset_with_name("BlockID" + str(upstream_id))
+
+        print(str(current_id) + " -> " + str(upstream_id))
+
+        x_up = upper_block.get_attribute("CentreX")
+        y_up = upper_block.get_attribute("CentreY")
+        z_up = upper_block.get_attribute("ModAvgElev")
+        up_point = (x_up, y_up, z_up)
+
+        x_down = current_block.get_attribute("CentreX")
+        y_down = current_block.get_attribute("CentreY")
+        z_down = current_block.get_attribute("ModAvgElev")
+        down_point = (x_down, y_down, z_down)
+
+        network_link = ubdata.UBVector((up_point, down_point))
+        network_link.determine_geometry((up_point, down_point))
+        network_link.add_attribute("SwwID", current_id)
+        network_link.add_attribute("UpID", current_id)
+        network_link.add_attribute("DownID", upstream_id)
+        network_link.add_attribute("Z_up", z_up)
+        network_link.add_attribute("Z_down", z_down)
+        network_link.add_attribute("Length", current_block.get_attribute("Sww_dist"))
+        network_link.add_attribute("Min_zdrop", current_block.get_attribute("Sww_zdrop"))
+        network_link.add_attribute("LinkType", flow_type)
+        network_link.add_attribute("Slope", current_block.get_attribute("Sww_slope"))
+        return network_link
+
+    def draw_sewer_lines_down(self, current_block, flow_type):
+        """Creates a link of the sewer network as a UBVector() and returns a line asset.
+
+        :param current_block: current ID of the block that the flow path is being drawn for
+        :param flow_type: type of flow path e.g. "Regular pipe"
+        :return: UBVector() instance of a network link
+        """
+
+        current_id = current_block.get_attribute("BlockID")
+        x_up = current_block.get_attribute("CentreX")
+        y_up = current_block.get_attribute("CentreY")
+        z_up = current_block.get_attribute("ModAvgElev")
+        up_point = (x_up, y_up, z_up)
+
+        downstream_id = current_block.get_attribute("Sww_DownID")
+
+        if downstream_id == -1:
+            network_link = ubdata.UBVector(up_point)
+            network_link.determine_geometry(up_point)
+            network_link.add_attribute("SwwID", current_id)
+            network_link.add_attribute("UpID", current_id)
+            network_link.add_attribute("DownID", -1)
+            network_link.add_attribute("Z_up", z_up)
+            network_link.add_attribute("Z_down", 0.0)
+            network_link.add_attribute("Length", 0.0)
+            network_link.add_attribute("Min_zdrop", 0.0)
+            network_link.add_attribute("LinkType", flow_type)
+            network_link.add_attribute("Slope", 0.0)
+        else:
+
+            down_block = self.scenario.get_asset_with_name("BlockID" + str(downstream_id))
+
+            x_down = down_block.get_attribute("CentreX")
+            y_down = down_block.get_attribute("CentreY")
+            z_down = down_block.get_attribute("ModAvgElev")
+            down_point = (x_down, y_down, z_down)
+
+            network_link = ubdata.UBVector((up_point, down_point))
+            network_link.determine_geometry((up_point, down_point))
+            network_link.add_attribute("SwwID", current_id)
+            network_link.add_attribute("UpID", current_id)
+            network_link.add_attribute("DownID", downstream_id)
+            network_link.add_attribute("Z_up", z_up)
+            network_link.add_attribute("Z_down", z_down)
+            network_link.add_attribute("Length", current_block.get_attribute("Sww_dist"))
+            network_link.add_attribute("Min_zdrop", current_block.get_attribute("Sww_zdrop"))
+            network_link.add_attribute("LinkType", flow_type)
+            network_link.add_attribute("Slope", current_block.get_attribute("Sww_slope"))
+
+        return network_link

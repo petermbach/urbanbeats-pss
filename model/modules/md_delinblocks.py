@@ -518,6 +518,7 @@ class DelinBlocks(UBModule):
             nhd = []    # Will contain all block IDs in the Neighbourhood (nhd)
             for j in range(len(blockslist)):  # Loop across blocks again
                 comp_block_id = blockslist[j].get_attribute("BlockID")
+
                 if comp_block_id == curblock_id or blockslist[j].get_attribute("Status") == 0:
                     # If the IDs are identical or the Block has zero status, then skip
                     continue
@@ -1290,7 +1291,7 @@ class DelinBlocks(UBModule):
         if min(dz) < 0:    # If there is a drop in elevation - this also means the area cannot be flat!
             down_id = nhd_z[0][dz.index(min(dz))]    # The ID corresponds to the minimum elevation difference
         else:
-            down_id = -9999 # Otherwise there is a sink in the current Block
+            down_id = -9999  # Otherwise there is a sink in the current Block
         return down_id, min(dz)
 
     def find_downstream_dinf(self, z, nhd_z):
