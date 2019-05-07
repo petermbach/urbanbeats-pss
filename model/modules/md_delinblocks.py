@@ -478,6 +478,8 @@ class DelinBlocks(UBModule):
             # STEP 2.6 :: ASSIGN ELEVATION TO BLOCKS
             for i in range(len(blockslist)):
                 current_block = blockslist[i]
+                if current_block.get_attribute("Status") == 0:
+                    continue    # If block has Status == 0, skip
                 col_origin = int(current_block.get_attribute("OriginX") / elev_res)
                 row_origin = int(current_block.get_attribute("OriginY") / elev_res)
                 elevdatamatrix = elevationraster.get_data_square(col_origin, row_origin, csc, csc)
