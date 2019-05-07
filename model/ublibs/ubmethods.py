@@ -204,6 +204,27 @@ def review_filename(fname):
     return fname
 
 
+def remove_neighbour_from_block(block_vec, neigh_id):
+    """Removes the ID 'neigh_id' from the current Block block_vec's Neighbours attribute list. This
+    function is called if the Block status is modified to zero over the course of the simulation and
+    the Block is essentially removed from the simulation. This prevents the model from calling Blocks
+    that do not exist due to the neighbourhood later on.
+
+    :param block_vec: The UBVector() instance of the block, whose attribute Neighbours is to be modified
+    :param neigh_id: the ID int() of the Block in the neighbourhood to be removed.
+    :return: no return, the Block's "Neighbours" attribute is modified.
+    """
+    nhd = block_vec.get_attribute("Neighbours")
+    try:
+        nhd.pop(nhd.index(int(neigh_id)))
+    except IndexError:
+        return True
+    except ValueError:
+        return True
+    block_vec.change_attribute("Neighbours", nhd)
+    return True
+
+
 def patchdelin_landscape_patch_delineation(landuse, nodatavalue):
     """Performs the patch analysis and returns a full dictionary of the patches found, their properties and
     the rough position of the patch centroid.

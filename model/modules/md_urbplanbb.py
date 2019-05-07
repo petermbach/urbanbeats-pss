@@ -611,14 +611,26 @@ class UrbanPlanning(UBModule):
             self.notify("Now Developing BlockID" + str(currentID))
 
             # Skip Condition 1: Block is not active
-            if block_attr.get_attribute("Status") == 0 or block_attr.get_attribute("Active") == 0:
-                self.notify("BlockID"+str(currentID)+" is not active, moving to next ID")
+            if block_attr.get_attribute("Status") == 0:
+                # block_attr.add_attribute("TOTALjobs", 0)
+                # block_attr.add_attribute("Blk_TIA", -9999)      # Default no-data value
+                # block_attr.add_attribute("Blk_EIF", -9999)
+                # block_attr.add_attribute("Blk_TIF", -9999)
+                # block_attr.add_attribute("Blk_RoofsA", -9999)
+                continue
+
+            if block_attr.get_attribute("Active") == 0:
+                self.notify("BlockID" + str(currentID) + " is not active, moving to next ID")
                 block_attr.change_attribute("Status", 0)
                 block_attr.add_attribute("TOTALjobs", 0)
-                block_attr.add_attribute("Blk_TIA", -9999)      # Default no-data value
+                block_attr.add_attribute("Blk_TIA", -9999)  # Default no-data value
                 block_attr.add_attribute("Blk_EIF", -9999)
                 block_attr.add_attribute("Blk_TIF", -9999)
                 block_attr.add_attribute("Blk_RoofsA", -9999)
+                nhd = block_attr.get_attribute("Neighbours")
+                for n in nhd:
+                    ubmethods.remove_neighbour_from_block(self.scenario.get_asset_with_name("BlockID"+str(n)),
+                                                          currentID)
                 continue
 
             # Determine whether to update the Block at all using Dynamics Parameters

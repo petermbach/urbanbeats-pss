@@ -36,10 +36,6 @@ import tempfile
 import numpy as np
 from math import *
 import sys
-# Graph Algorithms
-from py_alg_dat.graph import UnDirectedWeightedGraph
-from py_alg_dat.graph_vertex import GraphVertex
-from py_alg_dat.graph_algorithms import GraphAlgorithms
 
 # Spatial geometry
 from shapely.geometry import Polygon, LineString, Point
