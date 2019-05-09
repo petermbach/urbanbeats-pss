@@ -55,6 +55,7 @@ from gui import urbanbeatsdialogs as ubdialogs
 import gui.ubgui_spatialhandling as gui_ubspatial
 import gui.ubgui_reporting as ubreport
 import model.ublibs.ubspatial as ubspatial
+import model.ublibs.ubconfigfiles as ubconfigfiles
 
 from gui.md_delinblocksguic import DelinBlocksGuiLaunch
 from gui.md_urbplanbbguic import UrbplanbbGuiLaunch
@@ -62,6 +63,7 @@ from gui.md_urbdevelopguic import UrbdevelopGuiLaunch
 from gui.md_spatialmappingguic import SpatialMappingGuiLaunch
 
 from gui.md_infrastructureguic import InfrastructureGuiLaunch
+
 
 # --- MAIN GUI FUNCTION ---
 class MainWindow(QtWidgets.QMainWindow):
@@ -459,6 +461,10 @@ class MainWindow(QtWidgets.QMainWindow):
         :param filepath: str, full filepath to the .cfg file. Usually UBEATSROOT
         :return: None
         """
+        if not os.path.isfile(UBEATSROOT+"/config.cfg"):
+            print "Creating Default Config File"
+            ubconfigfiles.create_default_config_cfg(UBEATSROOT)     # if config.cfg does not exist, will create default
+
         options = ET.parse(UBEATSROOT+"/config.cfg")
         root = options.getroot()
 
@@ -467,10 +473,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.__global_options[child.tag] = child.text
 
     def write_new_options(self, newoptions):
-        """Updates the config
-
-        :return:
-        """
+        """Updates the config.cfg file with the new option values set in the Options dialog."""
         options = ET.parse(UBEATSROOT+"/config.cfg")
         root = options.getroot()
         for section in root.find('options'):
@@ -483,6 +486,10 @@ class MainWindow(QtWidgets.QMainWindow):
         """Completely restores the default options based on the .cfg's default attribute for each option type.
         Also closes the options window."""
         print ("RESETTING")       #[TO DO]
+        ubconfigfiles.create_default_config_cfg(UBEATSROOT)
+        self.set_options_from_config()      # Reset everything, update it
+        self.update_gui_elements()
+        return True
 
     def update_gui_elements(self):
         """Updates elements on the main window GUI depending on what has changed in the options menu. This
@@ -769,6 +776,10 @@ class MainWindow(QtWidgets.QMainWindow):
         """Loads the information from the recent.cfg file and returns an array of project info
         with the following structure: [project_name, modeller, path]."""
         recent_projects = []
+        if not os.path.isfile(UBEATSROOT+"/recent.cfg"):
+            print "Creating Blank Recent File"
+            ubconfigfiles.create_default_recent_cfg(UBEATSROOT)
+
         recent_cfg = ET.parse(UBEATSROOT+"/recent.cfg")
         root = recent_cfg.getroot()
         projects = root.find("recentprojects")
