@@ -603,7 +603,7 @@ class Ui_Delinblocks_Dialog(object):
         self.connectivity_scrollArea_2.setWidgetResizable(True)
         self.connectivity_scrollArea_2.setObjectName("connectivity_scrollArea_2")
         self.connectivity_contents_2 = QtWidgets.QWidget()
-        self.connectivity_contents_2.setGeometry(QtCore.QRect(0, 0, 537, 717))
+        self.connectivity_contents_2.setGeometry(QtCore.QRect(0, 0, 537, 829))
         self.connectivity_contents_2.setObjectName("connectivity_contents_2")
         self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.connectivity_contents_2)
         self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)
@@ -772,9 +772,48 @@ class Ui_Delinblocks_Dialog(object):
         self.ignore_rivers_check.setObjectName("ignore_rivers_check")
         self.gridLayout_15.addWidget(self.ignore_rivers_check, 1, 0, 1, 1)
         self.verticalLayout_17.addWidget(self.flowpath_guide_widget_3)
+        self.flowpath_guide_widget_4 = QtWidgets.QWidget(self.connectivity_contents_2)
+        self.flowpath_guide_widget_4.setObjectName("flowpath_guide_widget_4")
+        self.gridLayout_16 = QtWidgets.QGridLayout(self.flowpath_guide_widget_4)
+        self.gridLayout_16.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_16.setObjectName("gridLayout_16")
+        spacerItem12 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_16.addItem(spacerItem12, 3, 4, 1, 1)
+        self.patchflow_title = QtWidgets.QLabel(self.flowpath_guide_widget_4)
+        self.patchflow_title.setObjectName("patchflow_title")
+        self.gridLayout_16.addWidget(self.patchflow_title, 0, 0, 1, 5)
+        self.patchflow_delin = QtWidgets.QCheckBox(self.flowpath_guide_widget_4)
+        self.patchflow_delin.setObjectName("patchflow_delin")
+        self.gridLayout_16.addWidget(self.patchflow_delin, 1, 0, 1, 4)
+        self.patchflow_searchradius_spin = QtWidgets.QDoubleSpinBox(self.flowpath_guide_widget_4)
+        self.patchflow_searchradius_spin.setDecimals(1)
+        self.patchflow_searchradius_spin.setMaximum(2000.0)
+        self.patchflow_searchradius_spin.setProperty("value", 500.0)
+        self.patchflow_searchradius_spin.setObjectName("patchflow_searchradius_spin")
+        self.gridLayout_16.addWidget(self.patchflow_searchradius_spin, 3, 2, 1, 1)
+        self.patchflow_searchradius_auto = QtWidgets.QCheckBox(self.flowpath_guide_widget_4)
+        self.patchflow_searchradius_auto.setObjectName("patchflow_searchradius_auto")
+        self.gridLayout_16.addWidget(self.patchflow_searchradius_auto, 3, 3, 1, 1)
+        spacerItem13 = QtWidgets.QSpacerItem(30, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_16.addItem(spacerItem13, 3, 0, 1, 1)
+        self.patchflow_searchradius_lbl = QtWidgets.QLabel(self.flowpath_guide_widget_4)
+        self.patchflow_searchradius_lbl.setObjectName("patchflow_searchradius_lbl")
+        self.gridLayout_16.addWidget(self.patchflow_searchradius_lbl, 3, 1, 1, 1)
+        self.patchflow_method_lbl = QtWidgets.QLabel(self.flowpath_guide_widget_4)
+        self.patchflow_method_lbl.setObjectName("patchflow_method_lbl")
+        self.gridLayout_16.addWidget(self.patchflow_method_lbl, 2, 1, 1, 1)
+        self.patchflow_method_combo = QtWidgets.QComboBox(self.flowpath_guide_widget_4)
+        self.patchflow_method_combo.setObjectName("patchflow_method_combo")
+        self.patchflow_method_combo.addItem("")
+        self.patchflow_method_combo.addItem("")
+        self.patchflow_method_combo.addItem("")
+        self.gridLayout_16.addWidget(self.patchflow_method_combo, 2, 2, 1, 2)
+        spacerItem14 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_16.addItem(spacerItem14, 2, 4, 1, 1)
+        self.verticalLayout_17.addWidget(self.flowpath_guide_widget_4)
         self.verticalLayout_7.addLayout(self.verticalLayout_17)
-        spacerItem12 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout_7.addItem(spacerItem12)
+        spacerItem15 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_7.addItem(spacerItem15)
         self.connectivity_scrollArea_2.setWidget(self.connectivity_contents_2)
         self.verticalLayout_8.addWidget(self.connectivity_scrollArea_2)
         self.parameters.addTab(self.tab, "")
@@ -1215,6 +1254,34 @@ class Ui_Delinblocks_Dialog(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Ignores river features in the landscape. This means that delineation continues until the lowest elevation point has been detected. Select this option if your river features do not directly determine the catchment e.g. you are including a creek in the catchment, but do not want to subdivide the catchment based on inflow points to the creek.</p></body></html>"))
         self.ignore_rivers_check.setText(_translate("Delinblocks_Dialog", "Ignore River features when determining catchment outlets"))
+        self.patchflow_title.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">How many blocks to consider when determining drainage fluxes (the greater the number, the greater the computational burden).</span></p></body></html>"))
+        self.patchflow_title.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-weight:600; font-style:italic;\">Patch Flowpaths</span></p></body></html>"))
+        self.patchflow_delin.setToolTip(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM\'s accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Correction proceeds as follows:</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If tolerance limit is not met, cell\'s water is routed directly to catchment outlet.</span></p></body></html>"))
+        self.patchflow_delin.setWhatsThis(_translate("Delinblocks_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Ignores river features in the landscape. This means that delineation continues until the lowest elevation point has been detected. Select this option if your river features do not directly determine the catchment e.g. you are including a creek in the catchment, but do not want to subdivide the catchment based on inflow points to the creek.</p></body></html>"))
+        self.patchflow_delin.setText(_translate("Delinblocks_Dialog", "Delineate Patch Natural Drainage Flowpaths"))
+        self.patchflow_searchradius_spin.setSuffix(_translate("Delinblocks_Dialog", " m"))
+        self.patchflow_searchradius_auto.setText(_translate("Delinblocks_Dialog", "Auto-determine"))
+        self.patchflow_searchradius_lbl.setText(_translate("Delinblocks_Dialog", "Search Radius:"))
+        self.patchflow_method_lbl.setText(_translate("Delinblocks_Dialog", "Delineation Method:"))
+        self.patchflow_method_combo.setItemText(0, _translate("Delinblocks_Dialog", "Minimum dz Drop"))
+        self.patchflow_method_combo.setItemText(1, _translate("Delinblocks_Dialog", "Shortest Distance dz Drop"))
+        self.patchflow_method_combo.setItemText(2, _translate("Delinblocks_Dialog", "Steepest dz Drop"))
         self.parameters.setTabText(self.parameters.indexOf(self.tab), _translate("Delinblocks_Dialog", "Water Context"))
         self.footer_lbl.setText(_translate("Delinblocks_Dialog", "<html><head/><body><p><span style=\" font-style:italic;\">UrbanBEATS - md_delinblocks module</span></p></body></html>"))
         self.reset_button.setWhatsThis(_translate("Delinblocks_Dialog", "<html><head/><body><p>Resets all parameters of this module in the current \'scenario time step\' to the default values.</p></body></html>"))

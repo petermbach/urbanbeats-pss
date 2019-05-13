@@ -146,6 +146,8 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.storm_check.clicked.connect(self.enable_disable_guis)
         # self.ui.sewer_check.clicked.connect(self.enable_disable_guis)
         # self.ui.supply_check.clicked.connect(self.enable_disable_guis)
+        self.ui.patchflow_delin.clicked.connect(self.enable_disable_guis)
+        self.ui.patchflow_searchradius_auto.clicked.connect(self.enable_disable_guis)
 
         self.ui.buttonBox.accepted.connect(self.save_values)
 
@@ -305,6 +307,12 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.ignore_rivers_check.setChecked(self.module.get_parameter("ignore_rivers"))
         self.ui.ignore_lakes_check.setChecked(self.module.get_parameter("ignore_lakes"))
 
+        self.ui.patchflow_delin.setChecked(int(self.module.get_parameter("patchflowpaths")))
+        self.ui.patchflow_method_combo.setCurrentIndex(ubglobals.PATCHFLOWMETHODS.index(
+            self.module.get_parameter("patchflowmethod")))
+        self.ui.patchflow_searchradius_spin.setValue(float(self.module.get_parameter("patchsearchradius")))
+        self.ui.patchflow_searchradius_auto.setChecked(int(self.module.get_parameter("patchsearchauto")))
+
         self.enable_disable_guis()
 
     def enable_disable_guis(self):
@@ -334,6 +342,11 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
 
         self.ui.ignore_rivers_check.setEnabled(self.ui.rivers_check.isChecked())
         self.ui.ignore_lakes_check.setEnabled(self.ui.lakes_check.isChecked())
+
+        self.ui.patchflow_method_combo.setEnabled(self.ui.patchflow_delin.isChecked())
+        self.ui.patchflow_searchradius_spin.setEnabled(self.ui.patchflow_delin.isChecked() and
+                                                       not self.ui.patchflow_searchradius_auto.isChecked())
+        self.ui.patchflow_searchradius_auto.setEnabled(self.ui.patchflow_delin.isChecked())
 
 
     def get_dataref_array(self, dataclass, datatype, *args):
@@ -425,3 +438,9 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("guide_built", int(self.ui.infrastructure_check.isChecked()))
         self.module.set_parameter("ignore_rivers", int(self.ui.ignore_rivers_check.isChecked()))
         self.module.set_parameter("ignore_lakes", int(self.ui.ignore_lakes_check.isChecked()))
+
+        self.module.set_parameter("patchflowpaths", int(self.ui.patchflow_delin.isChecked()))
+        self.module.set_parameter("patchflowmethod",
+                                  ubglobals.PATCHFLOWMETHODS[int(self.ui.patchflow_method_combo.currentIndex())])
+        self.module.set_parameter("patchsearchradius", float(self.ui.patchflow_searchradius_spin.value()))
+        self.module.set_parameter("patchsearchauto", int(self.ui.patchflow_searchradius_auto.isChecked()))
