@@ -77,6 +77,9 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
     fielddefmatrix.append(ogr.FieldDefn("CentroidX", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("CentroidY", ogr.OFTReal))
 
+    if map_attr.get_attribute("HasPOP"):
+        fielddefmatrix.append(ogr.FieldDefn("Population", ogr.OFTReal))
+
     if map_attr.get_attribute("HasOSLINK"):
         fielddefmatrix.append(ogr.FieldDefn("GSD_Dist", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("GSD_Loc", ogr.OFTString))
@@ -95,6 +98,9 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
 
     for i in range(len(asset_col)):
         current_patch = asset_col[i]
+        if current_patch.get_attribute("Status") == 0:
+            continue
+
         patchpoint = current_patch.get_points()
         centroid = ogr.Geometry(ogr.wkbPoint)
         centroid.AddPoint(patchpoint[0] + xmin, patchpoint[1] + ymin)
@@ -112,6 +118,8 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
         feature.SetField("BuffRadius", float(current_patch.get_attribute("BuffRadius")))
         feature.SetField("CentroidX", float(current_patch.get_attribute("CentroidX")))
         feature.SetField("CentroidY", float(current_patch.get_attribute("CentroidY")))
+        if map_attr.get_attribute("HasPOP"):
+            feature.SetField("Population", float(current_patch.get_attribute("Population")))
 
         if map_attr.get_attribute("HasOSLINK"):
             feature.SetField("GSD_Dist", float(current_patch.get_attribute("GSD_Dist")))
@@ -123,8 +131,8 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
             feature.SetField("OSNet_Deg", int(current_patch.get_attribute("OSNet_Deg")))
             feature.SetField("OSNet_MinD", float(current_patch.get_attribute("OSNet_MinD")))
 
-        # if map_attr.get_attribute("HasELEV"):
-        #     feature.SetField("Elevation", float(current_patch.get_attribute("Elevation")))
+        if map_attr.get_attribute("HasELEV"):
+            feature.SetField("Elevation", float(current_patch.get_attribute("Elevation")))
 
         layer.CreateFeature(feature)
     shapefile.Destroy()
