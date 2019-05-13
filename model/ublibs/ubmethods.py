@@ -441,6 +441,38 @@ def patchdelin_obtain_patch_from_indices(datamatrix, dataresolution, indices, or
     return True
 
 
+def extract_data_for_patch_from_map(originXY, input_res, mapXY, map_res, patch, datasquare):
+    """Maps data from the datasquare array to the current patch object (UBVector()) based on the origin and map
+    coordintaes. The information is then transferred based on the mathematical rule.
+
+    :param originXY:
+    :param mapXY:
+    :param patch:
+    :param datasquare:
+    :param transferrule:
+    :return:
+    """
+    offsets = [originXY[0] - mapXY[0], originXY[1] - mapXY[1]]
+    resratio = float(input_res / map_res)
+    patchpoints = patch.get_attribute("PatchIndices")
+    data = []
+    for p in patchpoints:
+        if input_res == map_res:    # if the resolutions are equal, simply transfer the data
+            try:
+                data.append(datasquare[p[0], p[1]])     # 1 for 1 data transfer
+            except IndexError:
+                print "IndexError:", p[0], p[1]
+        elif input_res < map_res:   # if the original resolution of the patch is finer than the map
+            row_loc = int((p[0] * input_res + offsets[1]) / map_res)    # using the y-offset
+            col_loc = int((p[1] * input_res + offsets[0]) / map_res)    # using the x-offset
+            data.append(datasquare[row_loc, col_loc])
+        else:   # if the map resolution is finer than the original patch
+            rowmin, rowmax = int(math.ceil(p[0] * resratio)), int(math.ceil((p[0]+1) * resratio))
+            colmin, colmax = int(math.ceil(p[1] * resratio)), int(math.ceil((p[1]+1) * resratio))
+            data = datasquare[rowmin:rowmax, colmin:colmax].flatten().tolist()
+    return data
+
+
 def normalize_weights(weights_matrix, method):
     """Normalizes the weights within a weights matrix based on the sum of weights. According to a specific method.
 

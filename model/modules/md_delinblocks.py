@@ -341,7 +341,7 @@ class DelinBlocks(UBModule):
             print("Load Complete!")
             landuse_offset = ubspatial.calculate_offsets(landuseraster, map_attr)
             luc_res = landuseraster.get_cellsize()
-            csc = int(bs / luc_res)  # csc = cell selection count - knowing how many cells wide and tall
+            csc = int(math.ceil(bs / luc_res))  # csc = cell selection count - knowing how many cells wide and tall
 
             # STEP 2.2 :: Assign land use to Blocks
             for i in range(len(blockslist)):
@@ -382,7 +382,7 @@ class DelinBlocks(UBModule):
                 map_attr.set_attribute("HasLUC", 1)
 
                 # STEP 2.2.2 - Calculate Spatial Metrics
-                if self.spatialmetrics:     # Using the land class proportions
+                if self.spatialmetrics and blockstatus:     # Using the land class proportions
                     richness = ubmethods.calculate_metric_richness(landclassprop)
                     shdiv, shdom, sheven = ubmethods.calculate_metric_shannon(landclassprop, richness)
                     current_block.add_attribute("Rich", richness)
@@ -392,10 +392,11 @@ class DelinBlocks(UBModule):
                     map_attr.add_attribute("HasSPATIALMETRICS", 1)
 
                 # STEP 2.2.3 - Delineate Patches if necessary
-                if self.patchdelin:
+                if self.patchdelin and blockstatus:     # If the user wishes to delineate patches...
+                    patchIDs = []
                     blockpatches = ubmethods.patchdelin_landscape_patch_delineation(lucdatamatrix,
                                                                                     landuseraster.get_nodatavalue())
-                    for p in range(len(blockpatches)):
+                    for p in range(len(blockpatches)):      # Scan all patches in the Block, transfer information.
                         if blockpatches[p]["Landuse"] == landuseraster.get_nodatavalue():
                             continue
                         patchxy = (blockpatches[p]["Centroid_xy"][0] * luc_res + current_block.get_attribute("OriginX"),
@@ -408,6 +409,7 @@ class DelinBlocks(UBModule):
                         patch_attr = ubdata.UBVector(patchxy)
                         patch_attr.add_attribute("PatchID", blockpatches[p]["PatchID"])   # PatchID counts from 1 to N
                         patch_attr.add_attribute("PatchIndices", blockpatches[p]["PatchIndices"])
+                        patch_attr.add_attribute("Status", 1)       # Used for exporting and working with patches
                         patch_attr.add_attribute("Landuse", blockpatches[p]["Landuse"])
                         patch_attr.add_attribute("CentroidX", patchxy[0])
                         patch_attr.add_attribute("CentroidY", patchxy[1])
@@ -420,8 +422,16 @@ class DelinBlocks(UBModule):
                         bID = current_block.get_attribute("BlockID")
                         patch_attr.add_attribute("BlockID", bID)
                         self.scenario.add_asset("B"+str(bID)+"_PatchID"+str(blockpatches[p]["PatchID"]), patch_attr)
+                        patchIDs.append("B"+str(bID)+"_PatchID"+str(blockpatches[p]["PatchID"]))
+
+                    current_block.add_attribute("PatchIDs", patchIDs)   # Used later to map other attributes to patches
+
+                else:
+                    current_block.add_attribute("PatchIDs", [])     # If no patches, empty list!
+
         else:
             landuseraster = None    # Indicate that the simulation has no land use data, limits what can be done
+            luc_res = None
             map_attr.set_attribute("HasLUC", 0)
             map_attr.add_attribute("HasSPATIALMETRICS", 0)
 
@@ -436,16 +446,17 @@ class DelinBlocks(UBModule):
             print("Load Complete!")
             population_offset = ubspatial.calculate_offsets(populationraster, map_attr)
             pop_res = populationraster.get_cellsize()
-            csc = int(bs / pop_res)  # csc = cell selection count - knowing how many cells wide and tall
+            csc = int(math.ceil(bs / pop_res))  # csc = cell selection count - knowing how many cells wide and tall
 
             # STEP 2.4 :: ASSIGN POPULATION TO BLOCKS
             for i in range(len(blockslist)):
                 current_block = blockslist[i]
-                col_origin = int(current_block.get_attribute("OriginX") / pop_res)
-                row_origin = int(current_block.get_attribute("OriginY") / pop_res)
+                originXY = [current_block.get_attribute("OriginX"), current_block.get_attribute("OriginY")]
+                col_origin = int(originXY[0] / pop_res)
+                row_origin = int(originXY[1] / pop_res)
                 popdatamatrix = populationraster.get_data_square(col_origin, row_origin, csc, csc)
 
-                # STEP 3.4.1 - Tally up total population
+                # STEP 2.4.1 - Tally up total population
                 popfactor = 1.0
                 if pop_dref.get_metadata("sub") == "Density":
                     popfactor = (float(pop_res) * float(pop_res)) / 10000.0   # Area of a single cell (persons/ha)
@@ -456,8 +467,24 @@ class DelinBlocks(UBModule):
                 pop_values[pop_values == populationraster.get_nodatavalue()] = 0    # Remove all no-data values
                 total_population = float(sum(pop_values) * popfactor)
 
-                current_block.add_attribute("Population", total_population)
+                current_block.add_attribute("Population", int(total_population))
                 map_attr.add_attribute("HasPOP", 1)
+
+                # STEP 2.4.2 - Map Population Data to Patches if they exist
+                if self.patchdelin and self.landuse_map:     # Assign population values to patches
+                    mapXY = [col_origin * pop_res, row_origin * pop_res]
+                    patchIDs = current_block.get_attribute("PatchIDs")
+                    for p in range(len(patchIDs)):
+                        # Step 1 - Get the Patch Object
+                        patch_obj = self.scenario.get_asset_with_name(str(patchIDs[p]))
+
+                        # Step 2 - Extract the data from the map
+                        popdata = ubmethods.extract_data_for_patch_from_map(originXY, luc_res, mapXY, pop_res,
+                                                                            patch_obj, popdatamatrix)
+
+                        # Step 3 - Summarise the data for the patch and write to attributes
+                        popdata[popdata == populationraster.get_nodatavalue()] = 0   # Remove all no-data values
+                        patch_obj.add_attribute("Population", int(sum(popdata) * popfactor))
         else:
             populationraster = None     # Indicates that the simulation has no population data, limits features
             map_attr.set_attribute("HasPOP", 0)
@@ -473,15 +500,16 @@ class DelinBlocks(UBModule):
             print("Load Complete!")
             elevation_offset = ubspatial.calculate_offsets(elevationraster, map_attr)
             elev_res = elevationraster.get_cellsize()
-            csc = int(bs / elev_res)    # Figure out how many cells wide and cells tall in the elevation raster
+            csc = int(math.ceil(bs / elev_res))    # Figure out how many cells wide and cells tall in elevation raster
 
             # STEP 2.6 :: ASSIGN ELEVATION TO BLOCKS
             for i in range(len(blockslist)):
                 current_block = blockslist[i]
                 if current_block.get_attribute("Status") == 0:
                     continue    # If block has Status == 0, skip
-                col_origin = int(current_block.get_attribute("OriginX") / elev_res)
-                row_origin = int(current_block.get_attribute("OriginY") / elev_res)
+                originXY = [current_block.get_attribute("OriginX"), current_block.get_attribute("OriginY")]
+                col_origin = int(originXY[0] / elev_res)
+                row_origin = int(originXY[1] / elev_res)
                 elevdatamatrix = elevationraster.get_data_square(col_origin, row_origin, csc, csc)
 
                 # STEP 2.6.1 - Calculate elevation metrics for the Block
@@ -502,7 +530,37 @@ class DelinBlocks(UBModule):
                     map_attr.add_attribute("HasELEV", 1)
 
                 # STEP 2.6.2 - Map elevation data onto Block Patches
-                pass
+                if self.patchdelin and self.landuse_map:
+                    if current_block.get_attribute("Status") == 0:
+                        patchIDs = current_block.get_attribute("PatchIDs")
+                        if patchIDs is None:
+                            pass
+                        else:
+                            for p in range(len(patchIDs)):      # If the current Block's status is zero, switch all patches
+                                patch_obj = self.scenario.get_asset_with_name(str(patchIDs[p]))     # to zero as well.
+                                patch_obj.change_attribute("Status", 0)
+                    else:
+                        mapXY = [col_origin * elev_res, row_origin * elev_res]
+                        patchIDs = current_block.get_attribute("PatchIDs")
+                        for p in range(len(patchIDs)):
+                            # Step 1 - Get the Patch Object
+                            patch_obj = self.scenario.get_asset_with_name(str(patchIDs[p]))
+
+                            # Step 2 - Extract the data from the map
+                            elevdata = ubmethods.extract_data_for_patch_from_map(originXY, luc_res, mapXY, elev_res,
+                                                                                 patch_obj, elevdatamatrix)
+
+                            # Step 3 - Summarise the data for the patch and write to attributes
+                            elevdata_clean = []
+                            for e in range(len(elevdata)):
+                                if elevdata[e] == elevationraster.get_nodatavalue():
+                                    continue
+                                elevdata_clean.append(elevdata[e])
+                            try:
+                                patch_obj.add_attribute("Elevation", float(sum(elevdata_clean)/len(elevdata_clean)))
+                            except ZeroDivisionError:
+                                patch_obj.add_attribute("Elevation", current_block.get_attribute("AvgElev"))
+                                # If no elevation data avaiable, set it to the current Block's elevation data
 
         else:
             elevationraster = None  # Indicates that the simulation has no elevation data, many water features disabled
