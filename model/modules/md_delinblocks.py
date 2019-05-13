@@ -185,6 +185,15 @@ class DelinBlocks(UBModule):
         self.ignore_rivers = 0
         self.ignore_lakes = 0
 
+        self.create_parameter("patchflowpaths", BOOL, "delineate drainage flow paths for patches?")
+        self.create_parameter("patchflowmethod", STRING, "flowpath method to use")
+        self.create_parameter("patchsearchradius", DOUBLE, "search radius to use for the patch flow paths?")
+        self.create_parameter("patchsearchauto", BOOL, "auto-determine the search radius?")
+        self.patchflowpaths = 1
+        self.patchflowmethod = "MAX"    # MAX = max drop, MIN = min drop, DIST = closest distance drop
+        self.patchsearchradius = 500.0
+        self.patchsearchauto = 1    # Auto == True --> 1.4 Block size
+
         # NON-VISIBLE PARAMETER LIST - USED THROUGHOUT THE SIMULATION
         self.xllcorner = float(0.0)     # Obtained from the loaded raster data (elevation) upon run-time
         self.yllcorner = float(0.0)     # Spatial extents of the input map
@@ -728,7 +737,17 @@ class DelinBlocks(UBModule):
         else:
             map_attr.add_attribute("HasFLOWPATHS", 0)
 
-        # - STEP 7 - Spatial Connectivity
+        # - STEP 7 Delineate Patch Flow Paths
+        if self.patchdelin and self.landuse and self.elevation and self.patchflowpaths:
+            self.notify("Delineating flow paths among patches")
+            print ("Delineating flow paths among patches")
+
+            patches = self.scenario.get_assets_with_identifier("PatchID")  # Retrieves all patches
+
+            # Get all patches in the collection
+
+
+        # - STEP 8 - Spatial Connectivity
         if self.patchdelin:
             green_patches, grey_patches, non_patches = self.retrieve_patch_groups()
             if len(green_patches) > 0:

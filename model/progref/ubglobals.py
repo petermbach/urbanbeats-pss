@@ -153,6 +153,8 @@ DIURNAL_LABELS = ["Kitchen", "Shower", "Toilet", "Laundry", "Dishwasher", "Garde
 
 VALUE_SCALE_METHODS = ["L", "Q", "C", "IQ", "IC", "S", "M"]
 
+PATCHFLOWMETHODS = ["MIN", "DIST", "MAX"]   # Patch flow path delineation methods
+
 # --- ASSET IDENTIFIERS ---
 ASSET_IDENTIFIERS = {"Block": "The most basic building block of the city in UrbanBEATS, the square cell containing all"
                               "relevant geodata",
