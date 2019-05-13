@@ -1,0 +1,8 @@
+*.pyc
+.idea/
+temp/
+graphics/
+splashscreens/
+scriptboard/
+config.cfg
+recent.cfg
