@@ -265,12 +265,23 @@ def patchdelin_landscape_patch_delineation(landuse, nodatavalue):
                 centroidY.append(i)
                 patchlanduse = int(landuse[i, j])
 
+        # Relocate the centroid into the patch itself so that it is spatially relevant in the case study
+        mindist = np.inf
+        cj = float(sum(centroidX)) / float(len(centroidX))
+        ci = float(sum(centroidY)) / float(len(centroidY))
+        centroidfinal = [cj, ci]
+        for i in range(len(patchpoints)):
+            pp = patchpoints[i]
+            dist = pow(pp[0] - ci,2) + pow(pp[1] - cj,2)    # Squared distance
+            if dist < mindist:
+                mindist = dist
+                centroidfinal = pp
+
         patchdict = {}
         patchdict["PatchID"] = 1
         patchdict["PatchIndices"] = patchpoints
         patchdict["Landuse"] = patchlanduse
-        patchdict["Centroid_xy"] = (float(sum(centroidX))/float(len(centroidX)),
-                                 float(sum(centroidY))/float(len(centroidY)))
+        patchdict["Centroid_xy"] = (centroidfinal[0], centroidfinal[1])
         patchdict["AspRatio"] = float(max(centroidX) - min(centroidX) + 1) / float(max(centroidY) - min(centroidY)+1)
         patchdict["PatchSize"] = len(patchpoints)
         return [patchdict]
@@ -461,7 +472,8 @@ def extract_data_for_patch_from_map(originXY, input_res, mapXY, map_res, patch, 
             try:
                 data.append(datasquare[p[0], p[1]])     # 1 for 1 data transfer
             except IndexError:
-                print "IndexError:", p[0], p[1]
+                # print "IndexError:", p[0], p[1]
+                pass
         elif input_res < map_res:   # if the original resolution of the patch is finer than the map
             row_loc = int((p[0] * input_res + offsets[1]) / map_res)    # using the y-offset
             col_loc = int((p[1] * input_res + offsets[0]) / map_res)    # using the x-offset
