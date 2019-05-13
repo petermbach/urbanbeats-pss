@@ -623,6 +623,9 @@ class UrbanBeatsScenario(threading.Thread):
         xpatches.export_patches_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
                                                   self.projectpath+"/output", file_basename + "_Patches",
                                                   int(epsg))
+        xpatches.export_patch_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("PatchFloID"), map_attributes,
+                                                 self.projectpath + "/output", file_basename + "_PatchFlowpaths",
+                                                 int(epsg))
         xflowpaths.export_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("FlowID"), map_attributes,
                                                     self.projectpath + "/output", file_basename + "_Flowpaths",
                                                     int(epsg), "Blocks")  # Export Block FlowPaths

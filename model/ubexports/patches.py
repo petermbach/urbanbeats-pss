@@ -69,6 +69,7 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
     fielddefmatrix = []
     fielddefmatrix.append(ogr.FieldDefn("PatchID", ogr.OFTInteger))
     fielddefmatrix.append(ogr.FieldDefn("BlockID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("PatchName", ogr.OFTString))
     fielddefmatrix.append(ogr.FieldDefn("Landuse", ogr.OFTString))
     fielddefmatrix.append(ogr.FieldDefn("AspRatio", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("PatchSize", ogr.OFTInteger))
@@ -92,6 +93,11 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
     if map_attr.get_attribute("HasELEV"):
         fielddefmatrix.append(ogr.FieldDefn("Elevation", ogr.OFTReal))
 
+    if map_attr.get_attribute("HasPATCHFLOW"):
+        fielddefmatrix.append(ogr.FieldDefn("downPatch", ogr.OFTString))
+        fielddefmatrix.append(ogr.FieldDefn("downDist", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("down_dz", ogr.OFTReal))
+
     for field in fielddefmatrix:
         layer.CreateField(field)
         layer.GetLayerDefn()
@@ -111,6 +117,7 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
 
         feature.SetField("PatchID", int(current_patch.get_attribute("PatchID")))
         feature.SetField("BlockID", int(current_patch.get_attribute("BlockID")))
+        feature.SetField("PatchName", str(current_patch.get_attribute("PatchName")))
         feature.SetField("Landuse", ubglobals.LANDUSENAMES[int(current_patch.get_attribute("Landuse"))-1])
         feature.SetField("AspRatio", float(current_patch.get_attribute("AspRatio")))
         feature.SetField("PatchSize", int(current_patch.get_attribute("PatchSize")))
@@ -133,6 +140,80 @@ def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
 
         if map_attr.get_attribute("HasELEV"):
             feature.SetField("Elevation", float(current_patch.get_attribute("Elevation")))
+
+        if map_attr.get_attribute("HasPATCHFLOW"):
+            feature.SetField("downPatch", str(current_patch.get_attribute("downPatch")))
+            feature.SetField("downDist", float(current_patch.get_attribute("downDist")))
+            feature.SetField("down_dz", float(current_patch.get_attribute("down_dz")))
+
+        layer.CreateFeature(feature)
+    shapefile.Destroy()
+    return True
+
+
+def export_patch_flowpaths_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg):
+    """Exports all the flowpaths between patches the asset_col list to a GIS Shapefile based on
+    the current filepath.
+
+    :param asset_col: [] list containing all UBVector PatchFloID objects
+    :param map_attr: global map attributes to track any relevant information
+    :param filepath: the active filepath to export these assets to
+    :param filename: name of the file to export (without the 'shp' extension)
+    :param epsg: the EPSG code for the coordinate system to use
+    :return:
+    """
+    if map_attr.get_attribute("patchdelin") != 1 or map_attr.get_attribute("HasLUC") != 1:
+        return True
+
+    xmin = map_attr.get_attribute("xllcorner")
+    ymin = map_attr.get_attribute("yllcorner")
+
+    fullname = filepath + "/" + filename
+
+    spatial_ref = osr.SpatialReference()
+    spatial_ref.ImportFromEPSG(epsg)
+
+    driver = ogr.GetDriverByName('ESRI Shapefile')
+
+    usefilename = fullname      # A placeholder filename
+    fileduplicate_counter = 0   # Tracks the number of duplicates
+    while os.path.exists(str(usefilename+".shp")):
+        fileduplicate_counter += 1
+        usefilename = fullname + "(" + str(fileduplicate_counter) + ")"
+    shapefile = driver.CreateDataSource(str(usefilename)+".shp")
+
+    layer = shapefile.CreateLayer('layer1', spatial_ref, ogr.wkbLineString)
+    layerDefinition = layer.GetLayerDefn()
+
+    fielddefmatrix = []
+    fielddefmatrix.append(ogr.FieldDefn("PatchFloID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("Upstream", ogr.OFTString))
+    fielddefmatrix.append(ogr.FieldDefn("Downstream", ogr.OFTString))
+    fielddefmatrix.append(ogr.FieldDefn("Distance", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("dZ", ogr.OFTReal))
+
+    for field in fielddefmatrix:
+        layer.CreateField(field)
+        layer.GetLayerDefn()
+
+    for i in range(len(asset_col)):
+        current_patchflow = asset_col[i]
+        linepoints = current_patchflow.get_points()
+        line = ogr.Geometry(ogr.wkbLineString)
+        p1 = linepoints[0]
+        p2 = linepoints[1]
+        line.AddPoint(p1[0] + xmin, p1[1] + ymin)
+        line.AddPoint(p2[0] + xmin, p2[1] + ymin)
+
+        feature = ogr.Feature(layerDefinition)
+        feature.SetGeometry(line)
+        feature.SetFID(0)
+
+        feature.SetField("PatchFloID", int(current_patchflow.get_attribute("PatchFloID")))
+        feature.SetField("Upstream", str(current_patchflow.get_attribute("Upstream")))
+        feature.SetField("Downstream", str(current_patchflow.get_attribute("Downstream")))
+        feature.SetField("Distance", float(current_patchflow.get_attribute("Distance")))
+        feature.SetField("dZ", int(current_patchflow.get_attribute("dZ")))
 
         layer.CreateFeature(feature)
     shapefile.Destroy()
