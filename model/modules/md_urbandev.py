@@ -1132,8 +1132,8 @@ class UrbanDevelopment(UBModule):
         # - 2.6.4 - INFILL MISSING VALUES
         print("Infilling missing values...")
         self.infill_nodata_values(nodata_cells_elev, "Elevation", "Average", elevraster.get_nodatavalue())
-        self.infill_nodata_values(nodata_cells_soil, "SoilClass", "Categorical", "Undefined")
-        self.infill_nodata_values(nodata_cells_gw, "DepthToGW", "Average", gwraster.get_nodatavalue())
+        # self.infill_nodata_values(nodata_cells_soil, "SoilClass", "Categorical", "Undefined")
+        # self.infill_nodata_values(nodata_cells_gw, "DepthToGW", "Average", gwraster.get_nodatavalue())
 
         # - 2.6.5 - CALCULATE SUITABILITIES
         # PREPARE ARRAYS FOR COMBINING SUITABILITY VALUES
