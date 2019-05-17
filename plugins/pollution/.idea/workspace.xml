@@ -9,53 +9,88 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Pollution_generation.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="437">
-              <caret line="133" column="29" selection-start-line="133" selection-start-column="29" selection-end-line="133" selection-end-column="29" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Pollution_generation_calibration.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="26">
-              <caret line="56" column="87" selection-start-line="56" selection-start-column="87" selection-end-line="56" selection-end-column="87" />
-              <folding>
-                <element signature="e#287#308#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" selection-start-line="5" selection-end-line="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/forloop_widget_ui.py">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/test.py">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/test2.py">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-    </leaf>
+    <splitter split-orientation="horizontal" split-proportion="0.5">
+      <split-first>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/forloop_widget_ui.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="765">
+                  <caret line="45" column="34" selection-start-line="45" selection-start-column="34" selection-end-line="45" selection-end-column="34" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/Test_ScrollArea_ui.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="187">
+                  <caret line="11" column="26" selection-start-line="11" selection-start-column="26" selection-end-line="11" selection-end-column="26" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/SWING_ScrollArea_ui.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="726">
+                  <caret line="491" column="31" selection-start-line="485" selection-start-column="8" selection-end-line="493" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/Pollution_generation_calibration.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="-459">
+                  <caret line="12" selection-start-line="12" selection-end-line="12" selection-end-column="24" />
+                  <folding>
+                    <element signature="e#287#308#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/test.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="85">
+                  <caret line="5" selection-start-line="5" selection-end-line="5" selection-end-column="24" />
+                  <folding>
+                    <element signature="e#0#21#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/forloop_widget_ui.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="765">
+                  <caret line="45" column="34" selection-start-line="45" selection-start-column="34" selection-end-line="45" selection-end-column="34" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/Pollution_generation.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="424">
+                  <caret line="231" lean-forward="true" selection-start-line="231" selection-end-line="231" />
+                  <folding>
+                    <element signature="e#287#308#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -69,7 +104,14 @@
       <find>insert</find>
       <find>k =</find>
       <find>type</find>
+      <find>500</find>
+      <find>layoutWidget_3</find>
+      <find>vol</find>
     </findStrings>
+    <replaceStrings>
+      <replace>layoutWidget_1</replace>
+      <replace>depth</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
@@ -77,16 +119,20 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Pollution_generation.py" />
-        <option value="$PROJECT_DIR$/test.py" />
+        <option value="$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/forloop_widget_ui.py" />
+        <option value="$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/Test_ScrollArea_ui.py" />
+        <option value="$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/SWING_ScrollArea1_ui.py" />
+        <option value="$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/SWING_ScrollArea_ui.py" />
         <option value="$PROJECT_DIR$/Pollution_generation_calibration.py" />
+        <option value="$PROJECT_DIR$/test.py" />
+        <option value="$PROJECT_DIR$/Pollution_generation.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="493" />
-    <option name="width" value="2337" />
-    <option name="height" value="2102" />
+  <component name="ProjectFrameBounds" extendedState="7">
+    <option name="x" value="491" />
+    <option name="width" value="2338" />
+    <option name="height" value="2104" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -102,6 +148,11 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../urbanbeatsv1/main.pyw" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\marti\OneDrive - UNSW\Werk\Eawag\SWING tool" />
+    </key>
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -114,7 +165,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Pollution_generation_calibration">
+  <component name="RunManager" selected="Python.Pollution_generation">
     <configuration name="Pollution_generation" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="pollution" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -136,7 +187,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Pollution_generation_calibration" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="SWING_ScrollArea1_ui" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="pollution" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -144,11 +195,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Pollution_generation_calibration.py" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/SWING_ScrollArea1_ui.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -157,7 +208,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="main.pyw" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="SWING_ScrollArea_ui" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="pollution" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -165,11 +216,32 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../urbanbeatsv1" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../../urbanbeatsv1/main.pyw" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/SWING_ScrollArea_ui.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test_ScrollArea_ui" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="pollution" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/Test_ScrollArea_ui.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -201,10 +273,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.Pollution_generation_calibration" />
-        <item itemvalue="Python.test" />
-        <item itemvalue="Python.main.pyw" />
         <item itemvalue="Python.Pollution_generation" />
+        <item itemvalue="Python.test" />
+        <item itemvalue="Python.SWING_ScrollArea_ui" />
+        <item itemvalue="Python.SWING_ScrollArea1_ui" />
+        <item itemvalue="Python.Test_ScrollArea_ui" />
       </list>
     </recent_temporary>
   </component>
@@ -222,15 +295,15 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="282" y="0" width="1335" height="1201" extended-state="0" />
+    <frame x="-7" y="-7" width="2208" height="1208" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13240954" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.07918969" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.15233645" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.15134633" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -266,33 +339,59 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test.py">
+    <entry file="file://$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/test.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/SWING_ScrollArea1_ui.py" />
+    <entry file="file://$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/gekloot.py" />
+    <entry file="file://$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/test2.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/Test_ScrollArea_ui.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
+        <state relative-caret-position="187">
+          <caret line="11" column="26" selection-start-line="11" selection-start-column="26" selection-end-line="11" selection-end-column="26" />
         </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/forloop_widget_ui.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/test.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/test2.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Pollution_generation.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="437">
-          <caret line="133" column="29" selection-start-line="133" selection-start-column="29" selection-end-line="133" selection-end-column="29" />
+        <state relative-caret-position="765">
+          <caret line="45" column="34" selection-start-line="45" selection-start-column="34" selection-end-line="45" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/OneDrive - UNSW/Werk/Eawag/SWING tool/SWING_ScrollArea_ui.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="726">
+          <caret line="491" column="31" selection-start-line="485" selection-start-column="8" selection-end-line="493" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" selection-start-line="5" selection-end-line="5" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Pollution_generation_calibration.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="26">
-          <caret line="56" column="87" selection-start-line="56" selection-start-column="87" selection-end-line="56" selection-end-column="87" />
+        <state relative-caret-position="-459">
+          <caret line="12" selection-start-line="12" selection-end-line="12" selection-end-column="24" />
+          <folding>
+            <element signature="e#287#308#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Pollution_generation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="424">
+          <caret line="231" lean-forward="true" selection-start-line="231" selection-end-line="231" />
           <folding>
             <element signature="e#287#308#0" expanded="true" />
           </folding>
