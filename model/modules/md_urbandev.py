@@ -323,10 +323,9 @@ class UrbanDevelopment(UBModule):
 
         # Suitability Criteria
         self.create_parameter("suit_elevation_data", STRING, "dataset to use for slope")
-        self.suit_elevation_data = ""
-
         self.create_parameter("suit_slope_include", BOOL, "include slope assessment in suitability?")
         self.create_parameter("suit_slope_weight", DOUBLE, "weight assigned to slope in suitability assessment")
+        self.suit_elevation_data = ""
         self.suit_slope_include = 1
         self.suit_slope_weight = 5.0
 
@@ -357,6 +356,8 @@ class UrbanDevelopment(UBModule):
         self.suit_custom_weight = 5.0
 
         # SUITABILITY - SLOPE
+        # The concept for slope is based on a maximum allowable slope. Suitability decreases from 100% at 0% slope to
+        # 0% at the maximum threshold. One parameter per land use + trend + mid-point.
         self.create_parameter("slope_res", DOUBLE, "threshold % at which slope no longer suitable for RES land use")
         self.create_parameter("slope_com", DOUBLE, "threshold % at which slope no longer suitable for COM land use")
         self.create_parameter("slope_ind", DOUBLE, "threshold % at which slope no longer suitable for IND land use")
@@ -371,6 +372,8 @@ class UrbanDevelopment(UBModule):
         self.slope_midpoint = 12.5
 
         # SUITABILITY - ASPECT
+        # The concept for Aspect is based on the compass rose. Suitability is interpolated between the different
+        # cardinal directions as specified by the user, e.g. N-W, N-E, S-W, S-E.
         self.create_parameter("aspect_res_north", DOUBLE, "suitability value for north-facing aspects in RES land use")
         self.create_parameter("aspect_res_east", DOUBLE, "suitability value for north-facing aspects in RES land use")
         self.create_parameter("aspect_res_south", DOUBLE, "suitability value for north-facing aspects in RES land use")
@@ -408,6 +411,8 @@ class UrbanDevelopment(UBModule):
         self.aspect_orc_west = 40.0
 
         # SUITABILITY - SOIL CLASSIFICATION
+        # A histogram representation, discrete suitabilities based on the type of soil, suitability is simply assigned
+        # according to soil type registered.
         self.create_parameter("soil_res_sand", DOUBLE, "suitability value for sand soils in RES land use")
         self.create_parameter("soil_res_sandclay", DOUBLE, "suitability value for sandy clay soils in RES land use")
         self.create_parameter("soil_res_medclay", DOUBLE, "suitability value for med. clay soils in RES land use")
@@ -445,6 +450,8 @@ class UrbanDevelopment(UBModule):
         self.soil_orc_heavyclay = 60.0
 
         # SUITABILITY - DEPTH TO GROUNDWATER TABLE [m]
+        # Like the slope, suitability for groundwater ranges from 0% suitable when groundwater table at surface 0m to
+        # 100% beyond a certain threshold, parameters here indicate the threshold.
         self.create_parameter("gw_res", DOUBLE, "threshold % at which groundwater no longer suitable for RES land use")
         self.create_parameter("gw_com", DOUBLE, "threshold % at which groundwater no longer suitable for COM land use")
         self.create_parameter("gw_ind", DOUBLE, "threshold % at which groundwater no longer suitable for IND land use")
@@ -459,6 +466,8 @@ class UrbanDevelopment(UBModule):
         self.gw_midpoint = 5.0
 
         # SUITABILITY - CUSTOM CRITERION
+        # Users can select a minimum/maximum threshold, a custom mid-point and then assign suitabilities in forward
+        # or reverse order.
         self.create_parameter("custom_res_min", DOUBLE, "minimum threshold at which suitability is 0%")
         self.create_parameter("custom_res_max", DOUBLE, "maximum threshold at which suitability is 0%")
         self.create_parameter("custom_com_min", DOUBLE, "minimum threshold at which suitability is 0%")

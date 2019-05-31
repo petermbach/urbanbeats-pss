@@ -107,9 +107,13 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
         fielddefmatrix.append(ogr.FieldDefn("AvgElev", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("MaxElev", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("MinElev", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("Slope_PCT", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("Slope_DEG", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("Aspect_DEG", ogr.OFTReal))
+
+    if map_attr.get_attribute("HasFLOWPATHS"):
         fielddefmatrix.append(ogr.FieldDefn("downID", ogr.OFTInteger))
         fielddefmatrix.append(ogr.FieldDefn("max_dz", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("avg_slope", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("h_pond", ogr.OFTReal))
         fielddefmatrix.append(ogr.FieldDefn("Outlet", ogr.OFTInteger))
 
@@ -419,9 +423,13 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
             feature.SetField("AvgElev", float(currentAttList.get_attribute("AvgElev")))
             feature.SetField("MaxElev", float(currentAttList.get_attribute("MaxElev")))
             feature.SetField("MinElev", float(currentAttList.get_attribute("MinElev")))
+            feature.SetField("Slope_PCT", float(currentAttList.get_attribute("Slope_PCT")))
+            feature.SetField("Slope_DEG", float(currentAttList.get_attribute("Slope_DEG")))
+            feature.SetField("Aspect_DEG", float(currentAttList.get_attribute("Aspect_DEG")))
+
+        if map_attr.get_attribute("HasFLOWPATHS"):
             feature.SetField("downID", int(currentAttList.get_attribute("downID")))
             feature.SetField("max_dz", float(currentAttList.get_attribute("max_dz")))
-            feature.SetField("avg_slope", float(currentAttList.get_attribute("avg_slope")))
             feature.SetField("h_pond", float(currentAttList.get_attribute("h_pond")))
             feature.SetField("Outlet", int(currentAttList.get_attribute("Outlet")))
 
