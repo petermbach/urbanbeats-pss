@@ -1138,11 +1138,18 @@ class UrbanDevelopment(UBModule):
             if self.suit_custom_include:
                 pass    # [TO DO]
 
-        # - 2.6.4 - INFILL MISSING VALUES
+        # - 2.6.4 - INFILL MISSING VALUES AND CALCULATE ADDITIONAL INDICATORS (e.g. SLOPE, ASPECT
         print("Infilling missing values...")
-        self.infill_nodata_values(nodata_cells_elev, "Elevation", "Average", elevraster.get_nodatavalue())
-        # self.infill_nodata_values(nodata_cells_soil, "SoilClass", "Categorical", "Undefined")
-        # self.infill_nodata_values(nodata_cells_gw, "DepthToGW", "Average", gwraster.get_nodatavalue())
+        if (self.suit_slope_include or self.suit_aspect_include) and self.suit_elevation_data:
+            self.infill_nodata_values(nodata_cells_elev, "Elevation", "Average", elevraster.get_nodatavalue())
+            self.calculate_cell_slope_and_aspect(cellslist)
+        if self.suit_soil_data:
+            self.infill_nodata_values(nodata_cells_soil, "SoilClass", "Categorical", "Undefined")
+        if self.suit_gw_data:
+            self.infill_nodata_values(nodata_cells_gw, "DepthToGW", "Average", gwraster.get_nodatavalue())
+        if self.suit_custom_data:
+            pass
+            # Infill no data values
 
         # - 2.6.5 - CALCULATE SUITABILITIES
         # PREPARE ARRAYS FOR COMBINING SUITABILITY VALUES
@@ -1534,6 +1541,33 @@ class UrbanDevelopment(UBModule):
             else:
                 pass    # Should never get here...
         return True
+
+    def calculate_cell_slope_and_aspect(self, cellslist):
+        """Evaluates the slope and aspect of each cell based on the available elevation data. The calculation writes
+        attributes "Slope" and "Aspect" to the cell."""
+        cs = self.cellsize
+        for i in range(len(cellslist)):
+            if cellslist[i].get_attribute("Status") == 0:
+                continue
+            c = cellslist[i]    # Current cell
+            c_elev = c.get_attribute("Elevation")
+            c_nhd = [c.get_attribute("NHD_N"), c.get_attribute("NHD_NE"), c.get_attribute("NHD_E"),
+                     c.get_attribute("NHD_SE"), c.get_attribute("NHD_S"), c.get_attribute("NHD_SW"),
+                     c.get_attribute("NHD_W"), c.get_attribute("NHD_NW")]
+            c_nhdZ = [-9999, -9999, -9999, -9999, -9999, -9999, -9999, -9999]
+            for j in range(len(c_nhd)):
+                if c_nhd[j] == 0:
+                    c_nhdZ[j] = c_elev
+                else:
+                    c_nhdZ[j] = self.scenario.get_asset_with_name("CellID"+str(c_nhd[j])).get_attribute("Elevation")
+            slope_rad, slope_deg = ubmethods.calculate_slope(c_elev, c_nhdZ, cs, cs, -9999)
+            c.add_attribute("Slope_PCT", round(slope_rad * 100, 2))
+            c.add_attribute("Slope_DEG", round(slope_deg * 2))
+
+            aspect_deg = ubmethods.calculate_aspect(c_elev, c_nhdZ, -9999)
+            c.add_attribute("Aspect_DEG", round(aspect_deg, 0))
+        return True
+
 
     def calculate_suitability_value(self):
         suitability = 0

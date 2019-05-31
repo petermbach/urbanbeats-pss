@@ -146,6 +146,9 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
 
     if map_attr.get_attribute("SUIT_ELEV"):
         fielddefmatrix.append(ogr.FieldDefn("Elevation", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("Slope_PCT", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("Slope_DEG", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("Aspect_DEG", ogr.OFTReal))
     if map_attr.get_attribute("SUIT_SLOPE"):
         fielddefmatrix.append(ogr.FieldDefn("Slope", ogr.OFTReal))
     if map_attr.get_attribute("SUIT_ASPECT"):
@@ -292,6 +295,9 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
 
         if map_attr.get_attribute("SUIT_ELEV"):
             feature.SetField("Elevation", float(currentAttList.get_attribute("Elevation")))
+            feature.SetField("Slope_PCT", float(currentAttList.get_attribute("Slope_PCT")))
+            feature.SetField("Slope_DEG", float(currentAttList.get_attribute("Slope_DEG")))
+            feature.SetField("Aspect_DEG", float(currentAttList.get_attribute("Aspect_DEG")))
         if map_attr.get_attribute("SUIT_SOIL"):
             feature.SetField("SoilClass", str(currentAttList.get_attribute("SoilClass")))
         if map_attr.get_attribute("SUIT_GW"):
