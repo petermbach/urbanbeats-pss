@@ -113,9 +113,8 @@ def calculate_slope(z_central, z_neighbours, L_x, L_y, nodatavalue):
     if z_central == nodatavalue:
         return nodatavalue, nodatavalue      # No data, so simply return no-datavalue
 
-    z = z_neighbours
     # Replace all no-data values in the z_neighbours with the z_central cell
-    z = [z_central if z[i] else z[i] for i in range(len(z))]
+    z = [z_central if z_neighbours[i] == nodatavalue else z_neighbours[i] for i in range(len(z_neighbours))]
 
     # Calculate slope z is mapped as [N, NE, E, SE, S, SW, W, NW]
     dz_dx = ((z[1] + 2*z[2] + z[3]) - (z[5] + 2*z[6] + z[7]))/(8 * L_x)     #[NE, 2E, SE] - [SW, W, NW]
@@ -138,9 +137,8 @@ def calculate_aspect(z_central, z_neighbours, nodatavalue):
     if z_central == nodatavalue:
         return nodatavalue, nodatavalue  # No data, so simply return no-datavalue
 
-    z = z_neighbours
     # Replace all no-data values in the z_neighbours with the z_central cell
-    z = [z_central if z[i] else z[i] for i in range(len(z))]
+    z = [z_central if z_neighbours[i] == nodatavalue else z_neighbours[i] for i in range(len(z_neighbours))]
 
     # Calculate aspect z is mapped as [N, NE, E, SE, S, SW, W, NW]
     dz_dx = ((z[1] + 2 * z[2] + z[3]) - (z[5] + 2 * z[6] + z[7])) / 8  # [NE, 2E, SE] - [SW, W, NW]
