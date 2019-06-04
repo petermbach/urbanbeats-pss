@@ -1,0 +1,7 @@
+-	Add a cumulative runoff variable to the subcatchments from the runoff before internal routing, to calculate Kefeng's pollution function
+This can be done by adding the variable as Subcatch[j].cumRunoff in the function subcatch_getRunoff
+-	for Landuse[i].washoffFunc[p]. add coefficients, exponents and a new functypes (2) (in the input file for each pollutant/lu combo)
+-	Add the two different functions for the three pollutatns to landuse_getWashoffQual. I guess we could also include stochastic functions here or unconventinoal sources functions
+
+-	Use NO_BUILDUP and Kefeng's functions? --> add adwp variable to subcachments
+-	Use buildup function? --> Change Kefeng's model to fit a buildup + washoff combination rather than adwp. 
