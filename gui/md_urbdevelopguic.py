@@ -249,19 +249,17 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.suit_gw_check.clicked.connect(self.enable_disable_suitability_widgets)
         self.ui.suit_soil_check.clicked.connect(self.enable_disable_suitability_widgets)
         self.ui.suit_custom_check.clicked.connect(self.enable_disable_suitability_widgets)
-        self.ui.slope_trend_combo.currentIndexChanged.connect(self.enable_disable_suitability_midpoint_widgets)
-        self.ui.gw_trend_combo.currentIndexChanged.connect(self.enable_disable_suitability_midpoint_widgets)
-        self.ui.custom_trend_combo.currentIndexChanged.connect(self.enable_disable_suitability_midpoint_widgets)
         self.ui.slope_res_slider.valueChanged.connect(self.update_suitability_sliders_slope)
         self.ui.slope_com_slider.valueChanged.connect(self.update_suitability_sliders_slope)
         self.ui.slope_ind_slider.valueChanged.connect(self.update_suitability_sliders_slope)
         self.ui.slope_orc_slider.valueChanged.connect(self.update_suitability_sliders_slope)
-        self.ui.slope_midpoint_slider.valueChanged.connect(self.update_suitability_sliders_slope)
         self.ui.gw_res_slider.valueChanged.connect(self.update_suitability_sliders_gw)
         self.ui.gw_com_slider.valueChanged.connect(self.update_suitability_sliders_gw)
         self.ui.gw_ind_slider.valueChanged.connect(self.update_suitability_sliders_gw)
         self.ui.gw_orc_slider.valueChanged.connect(self.update_suitability_sliders_gw)
-        self.ui.gw_midpoint_slider.valueChanged.connect(self.update_suitability_sliders_gw)
+        self.ui.slope_include_midpoints.clicked.connect(self.enable_disable_suitability_widgets)
+        self.ui.gw_include_midpoints.clicked.connect(self.enable_disable_suitability_widgets)
+        self.ui.custom_include_midpoints.clicked.connect(self.enable_disable_suitability_widgets)
 
         # ZONING
         self.ui.zoning_rules_resauto.clicked.connect(self.enable_disable_zoning_widgets)
@@ -480,44 +478,36 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.suit_custom_data.setEnabled(self.ui.suit_custom_check.isChecked())    # Custom
         self.ui.suit_custom_weight.setEnabled(self.ui.suit_custom_check.isChecked())
         self.ui.custom_widget.setEnabled(self.ui.suit_custom_check.isChecked())
+
+        self.ui.slope_res_midpoint.setEnabled(self.ui.slope_include_midpoints.isChecked())
+        self.ui.slope_com_midpoint.setEnabled(self.ui.slope_include_midpoints.isChecked())
+        self.ui.slope_ind_midpoint.setEnabled(self.ui.slope_include_midpoints.isChecked())
+        self.ui.slope_orc_midpoint.setEnabled(self.ui.slope_include_midpoints.isChecked())
+
+        self.ui.gw_res_midpoint.setEnabled(self.ui.gw_include_midpoints.isChecked())
+        self.ui.gw_com_midpoint.setEnabled(self.ui.gw_include_midpoints.isChecked())
+        self.ui.gw_ind_midpoint.setEnabled(self.ui.gw_include_midpoints.isChecked())
+        self.ui.gw_orc_midpoint.setEnabled(self.ui.gw_include_midpoints.isChecked())
+
+        self.ui.custom_res_midpoint.setEnabled(self.ui.custom_include_midpoints.isChecked())
+        self.ui.custom_com_midpoint.setEnabled(self.ui.custom_include_midpoints.isChecked())
+        self.ui.custom_ind_midpoint.setEnabled(self.ui.custom_include_midpoints.isChecked())
+        self.ui.custom_orc_midpoint.setEnabled(self.ui.custom_include_midpoints.isChecked())
         return True
 
     def update_suitability_sliders_slope(self):
         """Updates the value of the slider boxes for the slope sliders."""
-        self.ui.slope_res_box.setText(str(round(float(self.ui.slope_res_slider.value() / 10), 1))+"%")
-        self.ui.slope_com_box.setText(str(round(float(self.ui.slope_com_slider.value() / 10), 1))+"%")
-        self.ui.slope_ind_box.setText(str(round(float(self.ui.slope_ind_slider.value() / 10), 1))+"%")
-        self.ui.slope_orc_box.setText(str(round(float(self.ui.slope_orc_slider.value() / 10), 1))+"%")
-        self.ui.slope_midpoint_box.setText(str(round(float(self.ui.slope_midpoint_slider.value() / 10), 1))+"%")
+        self.ui.slope_res_box.setText(str(round(float(self.ui.slope_res_slider.value() / 10), 1))+" %")
+        self.ui.slope_com_box.setText(str(round(float(self.ui.slope_com_slider.value() / 10), 1))+" %")
+        self.ui.slope_ind_box.setText(str(round(float(self.ui.slope_ind_slider.value() / 10), 1))+" %")
+        self.ui.slope_orc_box.setText(str(round(float(self.ui.slope_orc_slider.value() / 10), 1))+" %")
 
     def update_suitability_sliders_gw(self):
         """Updates the value of the slider boxes for the groundwater sliders."""
-        self.ui.gw_res_box.setText(str(round(float(self.ui.gw_res_slider.value() / 10), 1))+"%")
-        self.ui.gw_com_box.setText(str(round(float(self.ui.gw_com_slider.value() / 10), 1))+"%")
-        self.ui.gw_ind_box.setText(str(round(float(self.ui.gw_ind_slider.value() / 10), 1))+"%")
-        self.ui.gw_orc_box.setText(str(round(float(self.ui.gw_orc_slider.value() / 10), 1))+"%")
-        self.ui.gw_midpoint_box.setText(str(round(float(self.ui.gw_midpoint_slider.value() / 10), 1))+"%")
-
-    def enable_disable_suitability_midpoint_widgets(self):
-        """Enables and disables the 'mid-point' widgets in the slope, groundwater and custom criteria."""
-        if self.ui.slope_trend_combo.currentIndex() == 6:   # SLOPE
-            self.ui.slope_midpoint_box.setEnabled(0)
-            self.ui.slope_midpoint_slider.setEnabled(0)
-        else:
-            self.ui.slope_midpoint_box.setEnabled(1)
-            self.ui.slope_midpoint_slider.setEnabled(1)
-        if self.ui.gw_trend_combo.currentIndex() == 6:      # GROUNDWATER
-            self.ui.gw_midpoint_box.setEnabled(0)
-            self.ui.gw_midpoint_slider.setEnabled(0)
-        else:
-            self.ui.gw_midpoint_box.setEnabled(1)
-            self.ui.gw_midpoint_slider.setEnabled(1)
-        if self.ui.custom_trend_combo.currentIndex() == 6:  # CUSTOM
-            self.ui.custom_midpoint_box.setEnabled(0)
-            self.ui.custom_midpoint_slider.setEnabled(0)
-        else:
-            self.ui.custom_midpoint_box.setEnabled(1)
-            self.ui.custom_midpoint_slider.setEnabled(1)
+        self.ui.gw_res_box.setText(str(round(float(self.ui.gw_res_slider.value()), 1))+" m")
+        self.ui.gw_com_box.setText(str(round(float(self.ui.gw_com_slider.value()), 1))+" m")
+        self.ui.gw_ind_box.setText(str(round(float(self.ui.gw_ind_slider.value()), 1))+" m")
+        self.ui.gw_orc_box.setText(str(round(float(self.ui.gw_orc_slider.value()), 1))+" m")
 
     def enable_disable_accessibility_widgets(self):
         """Scans the entire accessibility list and enables and disables all respective widgets accordingly."""
@@ -886,7 +876,11 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.slope_orc_slider.setValue(int(float(self.module.get_parameter("slope_orc"))*10.0))
         self.ui.slope_trend_combo.setCurrentIndex(int(ubglobals.VALUE_SCALE_METHODS.index(
             self.module.get_parameter("slope_trend"))))
-        self.ui.slope_midpoint_slider.setValue(int(float(self.module.get_parameter("slope_midpoint"))*10.0))
+        self.ui.slope_include_midpoints.setChecked(int(self.module.get_parameter("slope_midpoint")))
+        self.ui.slope_res_midpoint.setValue(float(self.module.get_parameter("slope_res_mid")))
+        self.ui.slope_com_midpoint.setValue(float(self.module.get_parameter("slope_com_mid")))
+        self.ui.slope_ind_midpoint.setValue(float(self.module.get_parameter("slope_ind_mid")))
+        self.ui.slope_orc_midpoint.setValue(float(self.module.get_parameter("slope_orc_mid")))
 
         # CRITERION - ASPECT
         self.ui.suit_aspect_check.setChecked(int(self.module.get_parameter("suit_aspect_include")))
@@ -958,7 +952,11 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.gw_orc_slider.setValue(int(self.module.get_parameter("gw_orc")))
         self.ui.gw_trend_combo.setCurrentIndex(int(ubglobals.VALUE_SCALE_METHODS.index(
             self.module.get_parameter("gw_trend"))))
-        self.ui.gw_midpoint_slider.setValue(int(self.module.get_parameter("gw_midpoint")))
+        self.ui.gw_include_midpoints.setChecked(int(self.module.get_parameter("gw_midpoint")))
+        self.ui.gw_res_midpoint.setValue(float(self.module.get_parameter("gw_res_mid")))
+        self.ui.gw_com_midpoint.setValue(float(self.module.get_parameter("gw_com_mid")))
+        self.ui.gw_ind_midpoint.setValue(float(self.module.get_parameter("gw_ind_mid")))
+        self.ui.gw_orc_midpoint.setValue(float(self.module.get_parameter("gw_orc_mid")))
 
         # CRITERION - CUSTOM
         self.ui.suit_custom_check.setChecked(int(self.module.get_parameter("suit_custom_include")))
@@ -978,7 +976,11 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.custom_orc_max.setText(str(self.module.get_parameter("custom_orc_max")))
         self.ui.custom_trend_combo.setCurrentIndex(int(ubglobals.VALUE_SCALE_METHODS.index(
             self.module.get_parameter("custom_trend"))))
-        self.ui.custom_midpoint_box.setText(str(self.module.get_parameter("custom_midpoint")))
+        self.ui.custom_include_midpoints.setChecked(int(self.module.get_parameter("custom_midpoint")))
+        self.ui.custom_res_midpoint.setText(str(float(self.module.get_parameter("custom_res_mid"))))
+        self.ui.custom_com_midpoint.setText(str(float(self.module.get_parameter("custom_com_mid"))))
+        self.ui.custom_ind_midpoint.setText(str(float(self.module.get_parameter("custom_ind_mid"))))
+        self.ui.custom_orc_midpoint.setText(str(float(self.module.get_parameter("custom_orc_mid"))))
 
         self.enable_disable_suitability_widgets()
         self.update_suitability_sliders_slope()
@@ -1257,13 +1259,17 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         # SLOPE
         self.module.set_parameter("suit_slope_include", int(self.ui.suit_slope_check.isChecked()))
         self.module.set_parameter("suit_slope_weight", int(self.ui.suit_slope_weight.value()))
+        self.module.set_parameter("slope_trend",
+                                  ubglobals.VALUE_SCALE_METHODS[self.ui.slope_trend_combo.currentIndex()])
+        self.module.set_parameter("slope_midpoint", int(self.ui.slope_include_midpoints.isChecked()))
         self.module.set_parameter("slope_res", float(self.ui.slope_res_slider.value() / 10.0))
         self.module.set_parameter("slope_com", float(self.ui.slope_com_slider.value() / 10.0))
         self.module.set_parameter("slope_ind", float(self.ui.slope_ind_slider.value() / 10.0))
         self.module.set_parameter("slope_orc", float(self.ui.slope_orc_slider.value() / 10.0))
-        self.module.set_parameter("slope_midpoint", float(self.ui.slope_midpoint_slider.value() / 10.0))
-        self.module.set_parameter("slope_trend",
-                                  ubglobals.VALUE_SCALE_METHODS[self.ui.slope_trend_combo.currentIndex()])
+        self.module.set_parameter("slope_res_mid", float(self.ui.slope_res_midpoint.value()))
+        self.module.set_parameter("slope_com_mid", float(self.ui.slope_com_midpoint.value()))
+        self.module.set_parameter("slope_ind_mid", float(self.ui.slope_ind_midpoint.value()))
+        self.module.set_parameter("slope_orc_mid", float(self.ui.slope_orc_midpoint.value()))
 
         # ASPECT
         self.module.set_parameter("suit_aspect_include", int(self.ui.suit_aspect_check.isChecked()))
@@ -1289,13 +1295,17 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("suit_gw_include", int(self.ui.suit_gw_check.isChecked()))
         self.module.set_parameter("suit_gw_data", self.gwmaps[1][self.ui.suit_gw_data.currentIndex()])
         self.module.set_parameter("suit_gw_weight", int(self.ui.suit_gw_weight.value()))
+        self.module.set_parameter("gw_trend",
+                                  ubglobals.VALUE_SCALE_METHODS[self.ui.gw_trend_combo.currentIndex()])
+        self.module.set_parameter("gw_midpoint", int(self.ui.gw_include_midpoints.isChecked()))
         self.module.set_parameter("gw_res", float(self.ui.gw_res_slider.value()))
         self.module.set_parameter("gw_com", float(self.ui.gw_com_slider.value()))
         self.module.set_parameter("gw_ind", float(self.ui.gw_ind_slider.value()))
         self.module.set_parameter("gw_orc", float(self.ui.gw_orc_slider.value()))
-        self.module.set_parameter("gw_midpoint", float(self.ui.gw_midpoint_slider.value()))
-        self.module.set_parameter("gw_trend",
-                                  ubglobals.VALUE_SCALE_METHODS[self.ui.gw_trend_combo.currentIndex()])
+        self.module.set_parameter("gw_res_mid", float(self.ui.gw_res_midpoint.value()))
+        self.module.set_parameter("gw_com_mid", float(self.ui.gw_com_midpoint.value()))
+        self.module.set_parameter("gw_ind_mid", float(self.ui.gw_ind_midpoint.value()))
+        self.module.set_parameter("gw_orc_mid", float(self.ui.gw_orc_midpoint.value()))
 
         # SOIL
         self.module.set_parameter("suit_soil_include", int(self.ui.suit_soil_check.isChecked()))
@@ -1322,17 +1332,21 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("suit_custom_include", int(self.ui.suit_custom_check.isChecked()))
         self.module.set_parameter("suit_custom_data", self.ui.suit_custom_data.currentText())
         self.module.set_parameter("suit_custom_weight", int(self.ui.suit_custom_weight.value()))
-        self.module.set_parameter("custom_res_min", float(self.ui.custom_res_min.text()))
-        self.module.set_parameter("custom_res_max", float(self.ui.custom_res_max.text()))
-        self.module.set_parameter("custom_com_min", float(self.ui.custom_com_min.text()))
-        self.module.set_parameter("custom_com_max", float(self.ui.custom_com_max.text()))
-        self.module.set_parameter("custom_ind_min", float(self.ui.custom_ind_min.text()))
-        self.module.set_parameter("custom_ind_max", float(self.ui.custom_ind_max.text()))
-        self.module.set_parameter("custom_orc_min", float(self.ui.custom_orc_min.text()))
-        self.module.set_parameter("custom_orc_max", float(self.ui.custom_orc_max.text()))
-        self.module.set_parameter("custom_midpoint", float(self.ui.custom_midpoint_box.text()))
         self.module.set_parameter("custom_trend",
                                   ubglobals.VALUE_SCALE_METHODS[self.ui.custom_trend_combo.currentIndex()])
+        self.module.set_parameter("custom_midpoint", int(self.ui.custom_include_midpoints.isChecked()))
+        self.module.set_parameter("custom_res_min", float(self.ui.custom_res_min.text()))
+        self.module.set_parameter("custom_res_max", float(self.ui.custom_res_max.text()))
+        self.module.set_parameter("custom_res_mid", float(self.ui.custom_res_midpoint.text()))
+        self.module.set_parameter("custom_com_min", float(self.ui.custom_com_min.text()))
+        self.module.set_parameter("custom_com_max", float(self.ui.custom_com_max.text()))
+        self.module.set_parameter("custom_com_mid", float(self.ui.custom_com_midpoint.text()))
+        self.module.set_parameter("custom_ind_min", float(self.ui.custom_ind_min.text()))
+        self.module.set_parameter("custom_ind_max", float(self.ui.custom_ind_max.text()))
+        self.module.set_parameter("custom_ind_mid", float(self.ui.custom_ind_midpoint.text()))
+        self.module.set_parameter("custom_orc_min", float(self.ui.custom_orc_min.text()))
+        self.module.set_parameter("custom_orc_max", float(self.ui.custom_orc_max.text()))
+        self.module.set_parameter("custom_orc_mid", float(self.ui.custom_orc_midpoint.text()))
 
         # TAB 2 - 2.3 Zoning
         self.module.set_parameter("zoning_export", int(self.ui.zoning_export.isChecked()))
