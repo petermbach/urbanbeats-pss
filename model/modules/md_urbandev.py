@@ -891,107 +891,107 @@ class UrbanDevelopment(UBModule):
 
         # - 2.5 - SPATIAL RELATIONSHIPS - ACCESSIBILITY
         # - 2.5.1 - Determine individual accessibility maps
-        self.notify("Entering Accessibility Calculations")
-        print("Entering Accessibility Calculations")
-
-        map_attr.add_attribute("ACCESS_ROAD", 0)
-        if self.access_roads_include:
-            aj = [float(self.access_roads_res * self.access_roads_ares),
-                  float(self.access_roads_com * self.access_roads_acom),
-                  float(self.access_roads_ind * self.access_roads_aind),
-                  float(self.access_roads_offices * self.access_roads_aoffices)]
-            self.calculate_accessibility_linearfeatures(self.access_roads_data, map_attr, aj, cellslist, "ROAD")
-
-        map_attr.add_attribute("ACCESS_RAIL", 0)
-        if self.access_rail_include:
-            aj = [float(self.access_rail_res * self.access_rail_ares),
-                  float(self.access_rail_com * self.access_rail_acom),
-                  float(self.access_rail_ind * self.access_rail_aind),
-                  float(self.access_rail_offices * self.access_rail_aoffices)]
-            self.calculate_accessibility_linearfeatures(self.access_rail_data, map_attr, aj, cellslist, "RAIL")
-
-        map_attr.add_attribute("ACCESS_WWAY", 0)
-        if self.access_waterways_include:
-            aj = [float(self.access_waterways_res * self.access_waterways_ares),
-                  float(self.access_waterways_com * self.access_waterways_acom),
-                  float(self.access_waterways_ind * self.access_waterways_aind),
-                  float(self.access_waterways_offices * self.access_waterways_aoffices)]
-            self.calculate_accessibility_linearfeatures(self.access_waterways_data, map_attr, aj, cellslist, "WWAY")
-
-        map_attr.add_attribute("ACCESS_LAKE", 0)
-        if self.access_lakes_include:
-            aj = [float(self.access_lakes_res * self.access_lakes_ares),
-                  float(self.access_lakes_com * self.access_lakes_acom),
-                  float(self.access_lakes_ind * self.access_lakes_aind),
-                  float(self.access_lakes_offices * self.access_lakes_aoffices)]
-            self.calculate_accessibility_polygonfeatures(self.access_lakes_data, map_attr, aj, cellslist, "LAKE",
-                                                         Landuses=["Water"])
-
-        map_attr.add_attribute("ACCESS_POSS", 0)
-        if self.access_pos_include:
-            aj = [float(self.access_pos_res * self.access_pos_ares),
-                  float(self.access_pos_com * self.access_pos_acom),
-                  float(self.access_pos_ind * self.access_pos_aind),
-                  float(self.access_pos_offices * self.access_pos_aoffices)]
-            self.calculate_accessibility_polygonfeatures(self.access_pos_data, map_attr, aj, cellslist, "POSS",
-                                                         Landuses=["Parks and Gardens", "Reserves and Floodway",
-                                                                   "Forest"])
-
-        map_attr.add_attribute("ACCESS_POIS", 0)
-        if self.access_poi_include:
-            aj = [float(self.access_poi_res * self.access_poi_ares),
-                  float(self.access_poi_com * self.access_poi_acom),
-                  float(self.access_poi_ind * self.access_poi_aind),
-                  float(self.access_poi_offices * self.access_poi_aoffices)]
-            self.calculate_accessibility_pointfeatures(self.access_poi_data, map_attr, aj, cellslist, "POIS")
-
-        map_attr.add_attribute("ACCESS_PTHS", 0)
-        if self.access_pth_include:
-            aj = [float(self.access_pth_res * self.access_pth_ares),
-                  float(self.access_pth_com * self.access_pth_acom),
-                  float(self.access_pth_ind * self.access_pth_aind),
-                  float(self.access_pth_offices * self.access_pth_aoffices)]
-            self.calculate_accessibility_pointfeatures(self.access_pth_data, map_attr, aj, cellslist, "PTHS")
-
-        # - 2.5.2 - Combine Accessibility criteria into full map
-        accessibility_weights = [float(self.access_roads_weight * self.access_roads_include),
-                                 float(self.access_rail_weight * self.access_rail_include),
-                                 float(self.access_waterways_weight * self.access_waterways_include),
-                                 float(self.access_lakes_weight * self.access_lakes_include),
-                                 float(self.access_pos_weight * self.access_pos_include),
-                                 float(self.access_poi_weight * self.access_poi_include),
-                                 float(self.access_pth_weight * self.access_pth_include)]
-
-        print "ACCESS WEIGHTS", accessibility_weights
-        accessibility_weights = ubmethods.normalize_weights(accessibility_weights, "SUM")   # 0 to 1 normalize
-
-        accessibility_attributes = ["ACC_ROAD", "ACC_RAIL", "ACC_WWAY", "ACC_LAKE", "ACC_POSS", "ACC_POIS", "ACC_PTHS"]
-        print "ACCESS WEIGHTS", accessibility_weights
-
-        # Loop across blocks, get the five attributes and calculate total accessibility
-        for i in range(len(cellslist)):
-            final_acc_res, final_acc_com, final_acc_ind, final_acc_orc = 0, 0, 0, 0
-            for acc in range(len(accessibility_attributes)):
-                val_res = cellslist[i].get_attribute(accessibility_attributes[acc]+"_RES")
-                if val_res is None: val_res = 0
-                final_acc_res += accessibility_weights[acc] * val_res
-
-                val_com = cellslist[i].get_attribute(accessibility_attributes[acc] + "_COM")
-                if val_com is None: val_com = 0
-                final_acc_com += accessibility_weights[acc] * val_com
-
-                val_ind = cellslist[i].get_attribute(accessibility_attributes[acc] + "_IND")
-                if val_ind is None: val_ind = 0
-                final_acc_ind += accessibility_weights[acc] * val_ind
-
-                val_orc = cellslist[i].get_attribute(accessibility_attributes[acc] + "_ORC")
-                if val_orc is None: val_orc = 0
-                final_acc_orc += accessibility_weights[acc] * val_orc
-
-            cellslist[i].add_attribute("ACCESS_RES", final_acc_res)
-            cellslist[i].add_attribute("ACCESS_COM", final_acc_com)
-            cellslist[i].add_attribute("ACCESS_IND", final_acc_ind)
-            cellslist[i].add_attribute("ACCESS_ORC", final_acc_orc)
+        # self.notify("Entering Accessibility Calculations")
+        # print("Entering Accessibility Calculations")
+        #
+        # map_attr.add_attribute("ACCESS_ROAD", 0)
+        # if self.access_roads_include:
+        #     aj = [float(self.access_roads_res * self.access_roads_ares),
+        #           float(self.access_roads_com * self.access_roads_acom),
+        #           float(self.access_roads_ind * self.access_roads_aind),
+        #           float(self.access_roads_offices * self.access_roads_aoffices)]
+        #     self.calculate_accessibility_linearfeatures(self.access_roads_data, map_attr, aj, cellslist, "ROAD")
+        #
+        # map_attr.add_attribute("ACCESS_RAIL", 0)
+        # if self.access_rail_include:
+        #     aj = [float(self.access_rail_res * self.access_rail_ares),
+        #           float(self.access_rail_com * self.access_rail_acom),
+        #           float(self.access_rail_ind * self.access_rail_aind),
+        #           float(self.access_rail_offices * self.access_rail_aoffices)]
+        #     self.calculate_accessibility_linearfeatures(self.access_rail_data, map_attr, aj, cellslist, "RAIL")
+        #
+        # map_attr.add_attribute("ACCESS_WWAY", 0)
+        # if self.access_waterways_include:
+        #     aj = [float(self.access_waterways_res * self.access_waterways_ares),
+        #           float(self.access_waterways_com * self.access_waterways_acom),
+        #           float(self.access_waterways_ind * self.access_waterways_aind),
+        #           float(self.access_waterways_offices * self.access_waterways_aoffices)]
+        #     self.calculate_accessibility_linearfeatures(self.access_waterways_data, map_attr, aj, cellslist, "WWAY")
+        #
+        # map_attr.add_attribute("ACCESS_LAKE", 0)
+        # if self.access_lakes_include:
+        #     aj = [float(self.access_lakes_res * self.access_lakes_ares),
+        #           float(self.access_lakes_com * self.access_lakes_acom),
+        #           float(self.access_lakes_ind * self.access_lakes_aind),
+        #           float(self.access_lakes_offices * self.access_lakes_aoffices)]
+        #     self.calculate_accessibility_polygonfeatures(self.access_lakes_data, map_attr, aj, cellslist, "LAKE",
+        #                                                  Landuses=["Water"])
+        #
+        # map_attr.add_attribute("ACCESS_POSS", 0)
+        # if self.access_pos_include:
+        #     aj = [float(self.access_pos_res * self.access_pos_ares),
+        #           float(self.access_pos_com * self.access_pos_acom),
+        #           float(self.access_pos_ind * self.access_pos_aind),
+        #           float(self.access_pos_offices * self.access_pos_aoffices)]
+        #     self.calculate_accessibility_polygonfeatures(self.access_pos_data, map_attr, aj, cellslist, "POSS",
+        #                                                  Landuses=["Parks and Gardens", "Reserves and Floodway",
+        #                                                            "Forest"])
+        #
+        # map_attr.add_attribute("ACCESS_POIS", 0)
+        # if self.access_poi_include:
+        #     aj = [float(self.access_poi_res * self.access_poi_ares),
+        #           float(self.access_poi_com * self.access_poi_acom),
+        #           float(self.access_poi_ind * self.access_poi_aind),
+        #           float(self.access_poi_offices * self.access_poi_aoffices)]
+        #     self.calculate_accessibility_pointfeatures(self.access_poi_data, map_attr, aj, cellslist, "POIS")
+        #
+        # map_attr.add_attribute("ACCESS_PTHS", 0)
+        # if self.access_pth_include:
+        #     aj = [float(self.access_pth_res * self.access_pth_ares),
+        #           float(self.access_pth_com * self.access_pth_acom),
+        #           float(self.access_pth_ind * self.access_pth_aind),
+        #           float(self.access_pth_offices * self.access_pth_aoffices)]
+        #     self.calculate_accessibility_pointfeatures(self.access_pth_data, map_attr, aj, cellslist, "PTHS")
+        #
+        # # - 2.5.2 - Combine Accessibility criteria into full map
+        # accessibility_weights = [float(self.access_roads_weight * self.access_roads_include),
+        #                          float(self.access_rail_weight * self.access_rail_include),
+        #                          float(self.access_waterways_weight * self.access_waterways_include),
+        #                          float(self.access_lakes_weight * self.access_lakes_include),
+        #                          float(self.access_pos_weight * self.access_pos_include),
+        #                          float(self.access_poi_weight * self.access_poi_include),
+        #                          float(self.access_pth_weight * self.access_pth_include)]
+        #
+        # print "ACCESS WEIGHTS", accessibility_weights
+        # accessibility_weights = ubmethods.normalize_weights(accessibility_weights, "SUM")   # 0 to 1 normalize
+        #
+        # accessibility_attributes = ["ACC_ROAD", "ACC_RAIL", "ACC_WWAY", "ACC_LAKE", "ACC_POSS", "ACC_POIS", "ACC_PTHS"]
+        # print "ACCESS WEIGHTS", accessibility_weights
+        #
+        # # Loop across blocks, get the five attributes and calculate total accessibility
+        # for i in range(len(cellslist)):
+        #     final_acc_res, final_acc_com, final_acc_ind, final_acc_orc = 0, 0, 0, 0
+        #     for acc in range(len(accessibility_attributes)):
+        #         val_res = cellslist[i].get_attribute(accessibility_attributes[acc]+"_RES")
+        #         if val_res is None: val_res = 0
+        #         final_acc_res += accessibility_weights[acc] * val_res
+        #
+        #         val_com = cellslist[i].get_attribute(accessibility_attributes[acc] + "_COM")
+        #         if val_com is None: val_com = 0
+        #         final_acc_com += accessibility_weights[acc] * val_com
+        #
+        #         val_ind = cellslist[i].get_attribute(accessibility_attributes[acc] + "_IND")
+        #         if val_ind is None: val_ind = 0
+        #         final_acc_ind += accessibility_weights[acc] * val_ind
+        #
+        #         val_orc = cellslist[i].get_attribute(accessibility_attributes[acc] + "_ORC")
+        #         if val_orc is None: val_orc = 0
+        #         final_acc_orc += accessibility_weights[acc] * val_orc
+        #
+        #     cellslist[i].add_attribute("ACCESS_RES", final_acc_res)
+        #     cellslist[i].add_attribute("ACCESS_COM", final_acc_com)
+        #     cellslist[i].add_attribute("ACCESS_IND", final_acc_ind)
+        #     cellslist[i].add_attribute("ACCESS_ORC", final_acc_orc)
 
         # - 2.6 - SPATIAL RELATIONSHIPS - SUITABILITY
         self.notify("Beginning Suitability calculations...")
@@ -1181,318 +1181,391 @@ class UrbanDevelopment(UBModule):
         self.notify("Now calculating suitabilities...")
         print("Now calculating suitabilities...")
 
-        # Setup arrays - suitability_bools = booleans of 'include' x 'has data', all_weights = weights params
-        # suit_weights = relevant weights ONLY, map_suitability = 2D array, one for each Land use
-        suitability_bools = [self.suit_slope_include * bool(self.suit_elevation_data),
-                             self.suit_aspect_include * bool(self.suit_elevation_data),
-                             self.suit_soil_include * bool(self.suit_soil_data),
-                             self.suit_gw_include * bool(self.suit_gw_data),
-                             self.suit_custom_include * bool(self.suit_custom_data)]
-        all_weights = [self.suit_slope_weight, self.suit_aspect_weight, self.suit_soil_weight,
-                       self.suit_gw_weight, self.suit_custom_weight]
-        suit_weights = [all_weights[s] for s in range(len(suitability_bools)) if
-                        suitability_bools[s]]  # relevant ones
-        map_suitability_values = [[], [], [], []]  # Will hold all the final suitability values for normalization
+        # SET UP VALUE-SCALES FOR EACH CRITERIA
+        slope_value_scales = []         # CRITERIA 1 - SLOPE ---------------------------------------------
+        if self.suit_slope_include and self.suit_elevation_data:  # If slope is considered...
+            xmin_values = [0, 0, 0, 0]
+            xmax_values = [self.slope_res, self.slope_com, self.slope_ind, self.slope_orc]
+            if self.slope_midpoint:
+                mid_points = [self.slope_res_mid, self.slope_com_mid, self.slope_ind_mid, self.slope_orc_mid]
+            else:
+                mid_points = None
+            slope_value_scales = []
+            for i in range(len(xmin_values)):
+                if mid_points is None:
+                    vs = ubmcda.ValueScale([xmin_values[i], xmax_values[i]], [1.0, 0.0])    # Slope is reverse linear
+                else:
+                    vs = ubmcda.ValueScale([xmin_values[i], mid_points[i], xmax_values[i]],
+                                           [1.0, 0.5, 0.0])
+                slope_value_scales.append(vs)
 
-        # for i in range(len(cellslist)):
-        #     suit_values = [[], [], [], []]  # [ [RES], [COM], [IND], [ORC] ]
-        #
-        #     # - 2.7.4a - SUITABILITY CALCULATION FOR SLOPE
-        #     if self.suit_slope_include and self.suit_elevation_data:    # If slope is considered...
-        #         suitability = self.calculate_suitability_value()
-        #         current_cell.add_attribute("SU_SLOPE_R", suitability)
-        #         current_cell.add_attribute("SU_SLOPE_C", suitability)
-        #         current_cell.add_attribute("SU_SLOPE_I", suitability)
-        #         current_cell.add_attribute("SU_SLOPE_O", suitability)
-        #
-        #         suit_values[0].append(suitability)
-        #         suit_values[1].append(suitability)
-        #         suit_values[2].append(suitability)
-        #         suit_values[3].append(suitability)
-        #
-        #     # - 2.7.4b - SUITABILITY CALCULATION FOR ASPECT
-        #     if self.suit_aspect_include and self.suit_elevation_data:
-        #         pass
-        #         suitability = self.calculate_suitability_value()
-        #         current_cell.add_attribute("SU_ASPCT_R", suitability)
-        #         current_cell.add_attribute("SU_ASPCT_C", suitability)
-        #         current_cell.add_attribute("SU_ASPCT_I", suitability)
-        #         current_cell.add_attribute("SU_ASPCT_O", suitability)
-        #         suit_values.append(suitability)
-        #
-        #     # - 2.7.4c - SUITABILITY CALCULATION FOR SOIL TYPE
-        #     if self.suit_soil_include and self.suit_soil_data:
-        #         pass
-        #         suitability = self.calculate_suitability_value()
-        #         current_cell.add_attribute("SU_SOIL_R", suitability)
-        #         current_cell.add_attribute("SU_SOIL_C", suitability)
-        #         current_cell.add_attribute("SU_SOIL_I", suitability)
-        #         current_cell.add_attribute("SU_SOIL_O", suitability)
-        #         suit_values.append(suitability)
-        #
-        #     # - 2.7.4d - SUITABILITY CALCULATION FOR GROUNDWATER DEPTH
-        #     if self.suit_gw_include and self.suit_gw_data:
-        #         pass
-        #         suitability = self.calculate_suitability_value()
-        #         current_cell.add_attribute("SU_GWATD_R", suitability)
-        #         current_cell.add_attribute("SU_GWATD_C", suitability)
-        #         current_cell.add_attribute("SU_GWATD_I", suitability)
-        #         current_cell.add_attribute("SU_GWATD_O", suitability)
-        #         suit_values.append(suitability)
-        #
-        #     # - 2.7.4e - SUITABILITY CALCULATION FOR CUSTOM CRITERION
-        #     if self.suit_custom_include and self.suit_custom_data:
-        #         pass
-        #         suitability = self.calculate_suitability_value()
-        #         current_cell.add_attribute("SU_CUSTO_R", suitability)
-        #         current_cell.add_attribute("SU_CUSTO_C", suitability)
-        #         current_cell.add_attribute("SU_CUSTO_I", suitability)
-        #         current_cell.add_attribute("SU_CUSTO_O", suitability)
-        #         suit_values.append(suitability)
-        #
-        #     # COMBINED SUITABILITY
-        #     combined_suitability = [0, 0, 0, 0]     # ["RES", "COM", "IND", "ORC"]
-        #     for luc_cat in range(len(suit_values)):     # Loop across land uses
-        #         for j in range(len(suit_values[luc_cat])):      # Loop across criteria
-        #             combined_suitability[luc_cat] += suit_values[luc_cat][j] * suit_weights[j]
-        #         map_suitability_values[luc_cat].append(combined_suitability)
-        #     current_cell.add_attribute("SUIT_RES", combined_suitability[0])
-        #     current_cell.add_attribute("SUIT_COM", combined_suitability[1])
-        #     current_cell.add_attribute("SUIT_IND", combined_suitability[2])
-        #     current_cell.add_attribute("SUIT_ORC", combined_suitability[3])
-        #
-        # # - 2.7.5 - NORMALIZE SUITABILITY VALUES
-        # norm_values = [0, 0, 0, 0]      # The maximums of each land use suitability for normalization purposes
-        # for luc_cat in range(len(map_suitability_values)):
-        #     norm_values[luc_cat] = max(map_suitability_values[luc_cat])
-        #
-        # for i in range(len(cellslist)):
-        #     cellslist[i].change_attribute("SUIT_RES", float(cellslist[i].get_attribute("SUIT_RES") / norm_values[0]))
-        #     cellslist[i].change_attribute("SUIT_COM", float(cellslist[i].get_attribute("SUIT_COM") / norm_values[1]))
-        #     cellslist[i].change_attribute("SUIT_IND", float(cellslist[i].get_attribute("SUIT_IND") / norm_values[2]))
-        #     cellslist[i].change_attribute("SUIT_ORC", float(cellslist[i].get_attribute("SUIT_ORC") / norm_values[3]))
-        # # ----- END OF SUITABILITY CALCULATIONS -----
+        aspect_value_scales = []        # CRITERIA 2 - ASPECT ---------------------------------------------
+        if self.suit_aspect_include and self.suit_elevation_data:   # If aspect is considered...
+            y_res = [self.aspect_res_north/100.0, self.aspect_res_east/100.0, self.aspect_res_south/100.0,
+                     self.aspect_res_west/100.0, self.aspect_res_north/100.0]
+            y_com = [self.aspect_com_north/100.0, self.aspect_com_east/100.0, self.aspect_com_south/100.0,
+                     self.aspect_com_west/100.0, self.aspect_com_north/100.0]
+            y_ind = [self.aspect_ind_north/100.0, self.aspect_ind_east/100.0, self.aspect_ind_south/100.0,
+                     self.aspect_ind_west/100.0, self.aspect_ind_north/100.0]
+            y_orc = [self.aspect_orc_north/100.0, self.aspect_orc_east/100.0, self.aspect_orc_south/100.0,
+                     self.aspect_orc_west/100.0, self.aspect_orc_north/100.0]
+            y_values = [y_res, y_com, y_ind, y_orc]
+            aspect_value_scales = []
+            for i in range(len(y_values)):
+                aspect_value_scales.append(ubmcda.ValueScale([0, 90, 180, 270, 360], y_values[i]))
+
+        soil_value_scales = []          # CRITERIA 3 - SOIL ---------------------------------------------
+        if self.suit_soil_include and self.suit_soil_data:      # If soil is considered...
+            y_res = [self.soil_res_sand/100.0, self.soil_res_sandclay/100.0, self.soil_res_medclay/100.0,
+                     self.soil_res_heavyclay/100.0]
+            y_com = [self.soil_com_sand/100.0, self.soil_com_sandclay/100.0, self.soil_com_medclay/100.0,
+                     self.soil_com_heavyclay/100.0]
+            y_ind = [self.soil_ind_sand/100.0, self.soil_ind_sandclay/100.0, self.soil_ind_medclay/100.0,
+                     self.soil_ind_heavyclay/100.0]
+            y_orc = [self.soil_orc_sand/100.0, self.soil_orc_sandclay/100.0, self.soil_orc_medclay/100.0,
+                     self.soil_orc_heavyclay/100.0]
+            y_values = [y_res, y_com, y_ind, y_orc]
+            soil_value_scales = []
+            for i in range(len(y_values)):
+                soil_value_scales.append(ubmcda.ValueScale(ubglobals.SOILCLASSES, y_values[i]))
+
+        gw_value_scales = []            # CRITERIA 4 - DEPTH TO GROUNDWATER -----------------------------
+        if self.suit_gw_include and self.suit_gw_data:      # If groundwater is considered...
+            xmin_values = [0, 0, 0, 0]      # 0m depth for all land uses = 0% suitable
+            xmax_values = [self.gw_res, self.gw_com, self.gw_ind, self.gw_orc]
+            if self.gw_midpoint:
+                mid_points = [self.gw_res_mid, self.gw_com_mid, self.gw_ind_mid, self.gw_orc_mid]
+            else:
+                mid_points = None
+            gw_value_scales = []
+            for i in range(len(xmin_values)):
+                if mid_points is None:
+                    vs = ubmcda.ValueScale([xmin_values[i], xmax_values[i]], [0.0, 1.0])  # Slope is reverse linear
+                else:
+                    vs = ubmcda.ValueScale([xmin_values[i], mid_points[i], xmax_values[i]],
+                                           [0.0, 0.5, 1.0])
+                gw_value_scales.append(vs)
+
+        # if self.suit_custom   # [ TO DO ] # CRITERIA CUSTOM ---------------------------------------------
+
+        # ASSIGN SUITABILITIES TO CELLS
+        print "Assigning Suitabilities to Cells"
+        map_max_suit = [0, 0, 0, 0]     # Holds the maximum suitability value across the map, updated when necessary
+        for i in range(len(cellslist)):
+            if cellslist[i].get_attribute("Status") == 0:
+                continue
+            # Looping across each cell
+            suit_values = [[], [], [], []]  # [ [RES], [COM], [IND], [ORC] ]
+            current_cell = cellslist[i]
+            print current_cell.get_attribute("CellID")
+            # - 2.6.5a - SUITABILITY CALCULATION FOR SLOPE
+            if self.suit_slope_include and self.suit_elevation_data:    # If slope is considered...
+                cur_slope = float(current_cell.get_attribute("Slope_PCT")/100.0)
+                suitability = []
+                for j in range(len(slope_value_scales)):
+                    suitability.append(slope_value_scales[j].return_value_scale(cur_slope))
+
+                current_cell.add_attribute("SU_SLOPE_R", suitability[0])
+                current_cell.add_attribute("SU_SLOPE_C", suitability[1])
+                current_cell.add_attribute("SU_SLOPE_I", suitability[2])
+                current_cell.add_attribute("SU_SLOPE_O", suitability[3])
+
+                suit_values[0].append(suitability[0] * self.suit_slope_weight)
+                suit_values[1].append(suitability[1] * self.suit_slope_weight)
+                suit_values[2].append(suitability[2] * self.suit_slope_weight)
+                suit_values[3].append(suitability[3] * self.suit_slope_weight)
+
+            # - 2.6.5b - SUITABILITY CALCULATION FOR ASPECT
+            if self.suit_aspect_include and self.suit_elevation_data:
+                cur_aspect = float(current_cell.get_attribute("Aspect_DEG"))
+                suitability = []
+                for j in range(len(aspect_value_scales)):
+                    suitability.append(aspect_value_scales[j].return_value_scale(cur_aspect))
+                current_cell.add_attribute("SU_ASPCT_R", suitability[0])
+                current_cell.add_attribute("SU_ASPCT_C", suitability[1])
+                current_cell.add_attribute("SU_ASPCT_I", suitability[2])
+                current_cell.add_attribute("SU_ASPCT_O", suitability[3])
+
+                suit_values[0].append(suitability[0] * self.suit_aspect_weight)
+                suit_values[1].append(suitability[1] * self.suit_aspect_weight)
+                suit_values[2].append(suitability[2] * self.suit_aspect_weight)
+                suit_values[3].append(suitability[3] * self.suit_aspect_weight)
+
+            # - 2.6.5c - SUITABILITY CALCULATION FOR SOIL TYPE
+            if self.suit_soil_include and self.suit_soil_data:
+                cur_soil = current_cell.get_attribute("SoilClass")
+                suitability = []
+                for j in range(len(soil_value_scales)):
+                    suitability.append(soil_value_scales[j].return_value_scale(cur_soil, option="discrete"))
+                current_cell.add_attribute("SU_SOIL_R", suitability[0])
+                current_cell.add_attribute("SU_SOIL_C", suitability[1])
+                current_cell.add_attribute("SU_SOIL_I", suitability[2])
+                current_cell.add_attribute("SU_SOIL_O", suitability[3])
+
+                suit_values[0].append(suitability[0] * self.suit_soil_weight)
+                suit_values[1].append(suitability[1] * self.suit_soil_weight)
+                suit_values[2].append(suitability[2] * self.suit_soil_weight)
+                suit_values[3].append(suitability[3] * self.suit_soil_weight)
+
+            # - 2.6.5d - SUITABILITY CALCULATION FOR GROUNDWATER DEPTH
+            if self.suit_gw_include and self.suit_gw_data:
+                cur_gw = current_cell.get_attribute("DepthToGW")
+                suitability = []
+                for j in range(len(gw_value_scales)):
+                    suitability.append(gw_value_scales[j].return_value_scale(cur_gw))
+                current_cell.add_attribute("SU_GWATD_R", suitability[0])
+                current_cell.add_attribute("SU_GWATD_C", suitability[0])
+                current_cell.add_attribute("SU_GWATD_I", suitability[0])
+                current_cell.add_attribute("SU_GWATD_O", suitability[0])
+
+                suit_values[0].append(suitability[0] * self.suit_gw_weight)
+                suit_values[1].append(suitability[1] * self.suit_gw_weight)
+                suit_values[2].append(suitability[2] * self.suit_gw_weight)
+                suit_values[3].append(suitability[3] * self.suit_gw_weight)
+
+            # - 2.6.5e - SUITABILITY CALCULATION FOR CUSTOM CRITERION
+            if self.suit_custom_include and self.suit_custom_data:
+                pass    # [TO DO]
+
+            # COMBINED SUITABILITY
+            current_cell.add_attribute("SUIT_RES", sum(suit_values[0]))
+            current_cell.add_attribute("SUIT_COM", sum(suit_values[1]))
+            current_cell.add_attribute("SUIT_IND", sum(suit_values[2]))
+            current_cell.add_attribute("SUIT_ORC", sum(suit_values[3]))
+
+            for j in range(len(suit_values)):                                   # Take the larger suitability
+                map_max_suit[j] = max(map_max_suit[j], sum(suit_values[j]))     # value and replace in map_max_suit
+
+        # - 2.6.6 - NORMALIZE SUITABILITY VALUES
+        for i in range(len(cellslist)):
+            if cellslist[i].get_attribute("Status") == 0:
+                continue
+            cellslist[i].change_attribute("SUIT_RES", float(cellslist[i].get_attribute("SUIT_RES") / map_max_suit[0]))
+            cellslist[i].change_attribute("SUIT_COM", float(cellslist[i].get_attribute("SUIT_COM") / map_max_suit[1]))
+            cellslist[i].change_attribute("SUIT_IND", float(cellslist[i].get_attribute("SUIT_IND") / map_max_suit[2]))
+            cellslist[i].change_attribute("SUIT_ORC", float(cellslist[i].get_attribute("SUIT_ORC") / map_max_suit[3]))
+        # ----- END OF SUITABILITY CALCULATIONS -----
 
         # - 2.8 - SPATIAL RELATIONSHIPS - ZONING
         # Start by loading all relevant zoning maps. Preferably want to do this in one single loop
-        self.notify("Creating Zoning maps for active land uses...")
-        print("Creating Zoning maps for active land uses...")
-
-        # - 2.8.1 - LOAD ALL RELEVANT MAPS IF NECESSARY AND TRANSFER DATA ACROSS - MASK = TRUE
-        # If the map is not used or doesn't exist, then the polygon list will be empty [], there are four polygonal
-        # lists in total.
-        self.notify("Loading Zoning Maps...")
-        print("Loading Zoning Maps...")
-        respolygons, compolygons, indpolygons, officespolygons = [], [], [], []
-        if not self.zoning_rules_resauto:   # RESIDENTIAL MAP
-            respolygons = self.get_rings_maps_for_zoning(self.zoning_rules_resmap)
-        if not self.zoning_rules_comauto:  # COMMERCIAL MAP
-            compolygons = self.get_rings_maps_for_zoning(self.zoning_rules_commap)
-        if not self.zoning_rules_indauto:  # INDUSTRIAL MAP
-            indpolygons = self.get_rings_maps_for_zoning(self.zoning_rules_indmap)
-        if not self.zoning_rules_officesauto:  # MIXED DEVELOPMENT MAP
-            officespolygons = self.get_rings_maps_for_zoning(self.zoning_rules_resmap)
-
-        # - 2.8.2 - Scan through all Blocks, allocate zoning where applicable.
-        # Mark all land uses where a map is not used as having Zoning possibility of 1. This is changed later on.
-        # The land zoning maps represent the FIRST MASK
-        for i in range(len(cellslist)):     # - 2.8.3 - Fixed land use, automatically mask - SECOND MASK
-            if cellslist[i].get_attribute("LUC_Type") in ["Fixed", "UNDEFINED"]:
-                cellslist[i].change_attribute("ZONE_RES", 0)  # If fixed or undefined, immediately set to zero
-                cellslist[i].change_attribute("ZONE_COM", 0)  # no exceptions, if not fixed, move to passive
-                cellslist[i].change_attribute("ZONE_IND", 0)
-                cellslist[i].change_attribute("ZONE_ORC", 0)
-                continue    # Skip the 'Fixed Land Use Cells' to save time on the looping
-
-            coordinates = cellslist[i].get_points()
-            coordinates = [c[:2] for c in coordinates]
-            cellpoly = Polygon(coordinates)
-
-            if not self.zoning_rules_resauto:       # RESIDENTIAL LAND
-                if not self.determine_zoning_against_polygons(cellpoly, respolygons, 0):
-                    cellslist[i].change_attribute("ZONE_RES", 0)    # If an intersection was NOT detected, not zoned!
-            if not self.zoning_rules_comauto:       # COMMERCIAL LAND
-                if not self.determine_zoning_against_polygons(cellpoly, compolygons, 0):
-                    cellslist[i].change_attribute("ZONE_COM", 0)
-            if not self.zoning_rules_indauto:       # INDUSTRIAL LAND
-                if not self.determine_zoning_against_polygons(cellpoly, indpolygons, 0):
-                    cellslist[i].change_attribute("ZONE_IND", 0)
-            if not self.zoning_rules_officesauto:  # MIXED DEVELOPMENT LAND
-                if not self.determine_zoning_against_polygons(cellpoly, officespolygons, 0):
-                    cellslist[i].change_attribute("ZONE_ORC", 0)
-
-        # - 2.8.4 - Auto-assignment options - if the auto-assign function is on, then perform this NOW
-        # Only touch the land uses where the auto checkbox was ticked.
-        respassive, compassive, indpassive, orcpassive = 1, 1, 1, 1     # By default = 1 - generally passive always 1
-        if self.zoning_rules_resauto:
-            respassive = self.zoning_rules_resauto * int((not self.zoning_rules_reslimit or
-                                                          (self.zoning_rules_reslimit * self.zoning_rules_respassive)))
-
-        if self.zoning_rules_comauto:
-            compassive = self.zoning_rules_comauto * int((not self.zoning_rules_comlimit or
-                                                          (self.zoning_rules_comlimit * self.zoning_rules_compassive)))
-
-        if self.zoning_rules_indauto:
-            indpassive = self.zoning_rules_indauto * int((not self.zoning_rules_indlimit or
-                                                          (self.zoning_rules_indlimit * self.zoning_rules_indpassive)))
-
-        if self.zoning_rules_officesauto:
-            orcpassive = self.zoning_rules_officesauto * int((not self.zoning_rules_officeslimit or
-                                                              (self.zoning_rules_officeslimit *
-                                                               self.zoning_rules_officespassive)))
-
-        for i in range(len(cellslist)):
-            if cellslist[i].get_attribute("LUC_Type") in ["Fixed", "UNDEFINED"]:    # DONE - skip!
-                continue
-            elif cellslist[i].get_attribute("LUC_Type") == "Passive":  # If passive, set based on parameter
-                bool(self.zoning_rules_resauto) and cellslist[i].change_attribute("ZONE_RES", int(respassive))
-                bool(self.zoning_rules_comauto) and cellslist[i].change_attribute("ZONE_COM", int(compassive))
-                bool(self.zoning_rules_indauto) and cellslist[i].change_attribute("ZONE_IND", int(indpassive))
-                bool(self.zoning_rules_officesauto) and cellslist[i].change_attribute("ZONE_ORC", int(orcpassive))
-            elif cellslist[i].get_attribute("Base_LUC") == "Residential":
-                bool(self.zoning_rules_resauto) and cellslist[i].change_attribute("ZONE_RES", 1)  # Always, regardless
-                bool(self.zoning_rules_comauto) and \
-                    cellslist[i].change_attribute("ZONE_COM", int(not self.zoning_rules_comlimit))
-                bool(self.zoning_rules_indauto) and \
-                    cellslist[i].change_attribute("ZONE_IND", int(not self.zoning_rules_indlimit))
-                bool(self.zoning_rules_officesauto) and \
-                    cellslist[i].change_attribute("ZONE_ORC",int(not self.zoning_rules_officeslimit))
-            elif cellslist[i].get_attribute("Base_LUC") == "Commercial":
-                bool(self.zoning_rules_comauto) and cellslist[i].change_attribute("ZONE_COM", 1)  # Always, regardless
-                bool(self.zoning_rules_resauto) and \
-                cellslist[i].change_attribute("ZONE_RES", int(not self.zoning_rules_comlimit))
-                bool(self.zoning_rules_indauto) and \
-                cellslist[i].change_attribute("ZONE_IND", int(not self.zoning_rules_indlimit))
-                bool(self.zoning_rules_officesauto) and \
-                cellslist[i].change_attribute("ZONE_ORC", int(not self.zoning_rules_officeslimit))
-            elif cellslist[i].get_attribute("Base_LUC") in ["Light Industry", "Heavy Industry"]:
-                bool(self.zoning_rules_indauto) and cellslist[i].change_attribute("ZONE_IND", 1)
-                bool(self.zoning_rules_resauto) and \
-                cellslist[i].change_attribute("ZONE_RES", int(not self.zoning_rules_comlimit))
-                bool(self.zoning_rules_comauto) and \
-                cellslist[i].change_attribute("ZONE_COM", int(not self.zoning_rules_comlimit))
-                bool(self.zoning_rules_officesauto) and \
-                cellslist[i].change_attribute("ZONE_ORC", int(not self.zoning_rules_officeslimit))
-            elif cellslist[i].get_attribute("Base_LUC") in ["Offices Res Mix"]:
-                bool(self.zoning_rules_officesauto) and cellslist[i].change_attribute("ZONE_ORC", 1)
-                bool(self.zoning_rules_resauto) and \
-                cellslist[i].change_attribute("ZONE_RES", int(not self.zoning_rules_comlimit))
-                bool(self.zoning_rules_comauto) and \
-                cellslist[i].change_attribute("ZONE_COM", int(not self.zoning_rules_comlimit))
-                bool(self.zoning_rules_indauto) and \
-                cellslist[i].change_attribute("ZONE_IND", int(not self.zoning_rules_indlimit))
-            else:
-                print "DEBUG: Should not be here..."
-
-        # - 2.8.5 - Overlay Maps - THIRD MASK
-        waterpoly = self.get_rings_maps_for_zoning(self.zoning_water)           # Water bodies
-        heritagepoly = self.get_rings_maps_for_zoning(self.zoning_heritage)     # Historical/Heritage areas
-        publicpoly = self.get_rings_maps_for_zoning(self.zoning_public)         # Public Acquisition
-        enviropoly = self.get_rings_maps_for_zoning(self.zoning_enviro)         # Environmental Significance
-        floodpoly = self.get_rings_maps_for_zoning(self.zoning_flood)           # Flood Inundation
-        custompoly = self.get_rings_maps_for_zoning(self.zoning_custom)         # Custom Overlay
-
-        totfeatures = len(waterpoly) + len(heritagepoly) + len(publicpoly) + len(enviropoly) + len(floodpoly) + len(custompoly)
-        print "Total Features of overlays to check against...", totfeatures
-
-        # Scan all remaining cells against overlay conditions
-        for i in range(len(cellslist)):
-            zstates = self.get_zoning_states(cellslist[i])      # If all four zones are 0, then skip
-            if sum(zstates) == 0:
-                continue
-
-            coordinates = cellslist[i].get_points()
-            coordinates = [c[:2] for c in coordinates]
-            cellpoly = Polygon(coordinates)
-
-            # CHECK WATER BODIES - 100% threshold - i.e. cells must be fully covered
-            if len(waterpoly) != 0:
-                restrict = self.determine_zoning_against_polygons(cellpoly, waterpoly, 1.0)
-                # One-liner If Statement: If the zoning state is already 0 i.e. False, then don't change the state
-                bool(zstates[0]) and cellslist[i].change_attribute("ZONE_RES", restrict)
-                bool(zstates[1]) and cellslist[i].change_attribute("ZONE_COM", restrict)
-                bool(zstates[2]) and cellslist[i].change_attribute("ZONE_IND", restrict)
-                bool(zstates[3]) and cellslist[i].change_attribute("ZONE_ORC", restrict)
-
-                zstates = self.get_zoning_states(cellslist[i])   # Update zstates
-                if sum(zstates) == 0:
-                    continue
-
-            # CHECK HERITAGE - 50% threshold - i.e. half of the cell must be designated heritage
-            if len(heritagepoly) != 0:
-                restrict = self.determine_zoning_against_polygons(cellpoly, heritagepoly, 0.5)
-                if zstates[0] and self.zoning_heritage_res:     # If zoning allowed AND heritage considered?
-                    cellslist[i].change_attribute("ZONE_RES", restrict)
-                if zstates[1] and self.zoning_heritage_com:
-                    cellslist[i].change_attribute("ZONE_COM", restrict)
-                if zstates[2] and self.zoning_heritage_ind:
-                    cellslist[i].change_attribute("ZONE_IND", restrict)
-                if zstates[3] and self.zoning_heritage_orc:
-                    cellslist[i].change_attribute("ZONE_ORC", restrict)
-
-                zstates = self.get_zoning_states(cellslist[i])   # Update zstates
-                if sum(zstates) == 0:
-                    continue
-
-            # CHECK PUBLIC ACQUISITION - 51% Threshold, absolute majority of the cell for land use dominance
-            if len(publicpoly) != 0:
-                restrict = self.determine_zoning_against_polygons(cellpoly, publicpoly, 0.51)
-                if zstates[0] and self.zoning_public_res:
-                    cellslist[i].change_attribute("ZONE_RES", restrict)
-                if zstates[1] and self.zoning_public_com:
-                    cellslist[i].change_attribute("ZONE_COM", restrict)
-                if zstates[2] and self.zoning_public_ind:
-                    cellslist[i].change_attribute("ZONE_IND", restrict)
-                if zstates[3] and self.zoning_public_orc:
-                    cellslist[i].change_attribute("ZONE_ORC", restrict)
-
-                zstates = self.get_zoning_states(cellslist[i])  # Update zstates
-                if sum(zstates) == 0:
-                    continue
-
-            # CHECK ENVIRONMENTAL SIGNIFICANCE - 50% threshold, enough environmental significance to disallow zone
-            if len(enviropoly) != 0:
-                restrict = self.determine_zoning_against_polygons(cellpoly, enviropoly, 0.50)
-                if zstates[0] and self.zoning_enviro_res:
-                    cellslist[i].change_attribute("ZONE_RES", restrict)
-                if zstates[1] and self.zoning_enviro_com:
-                    cellslist[i].change_attribute("ZONE_COM", restrict)
-                if zstates[2] and self.zoning_enviro_ind:
-                    cellslist[i].change_attribute("ZONE_IND", restrict)
-                if zstates[3] and self.zoning_enviro_orc:
-                    cellslist[i].change_attribute("ZONE_ORC", restrict)
-
-                zstates = self.get_zoning_states(cellslist[i])  # Update zstates
-                if sum(zstates) == 0:
-                    continue
-
-            # CHECK INUNDATION - using a 20% threshold. If land is subject to flooding, somewhat, then disallow zone!
-            if len(floodpoly) != 0:
-                restrict = self.determine_zoning_against_polygons(cellpoly, floodpoly, 0.20)
-                if zstates[0] and self.zoning_flood_res:
-                    cellslist[i].change_attribute("ZONE_RES", restrict)
-                if zstates[1] and self.zoning_flood_com:
-                    cellslist[i].change_attribute("ZONE_COM", restrict)
-                if zstates[2] and self.zoning_flood_ind:
-                    cellslist[i].change_attribute("ZONE_IND", restrict)
-                if zstates[3] and self.zoning_flood_orc:
-                    cellslist[i].change_attribute("ZONE_ORC", restrict)
-
-                zstates = self.get_zoning_states(cellslist[i])  # Update zstates
-                if sum(zstates) == 0:
-                    continue
-
-            # CHECK CUSTOM - using a 50% threshold by default
-            if len(custompoly) != 0:
-                restrict = self.determine_zoning_against_polygons(cellpoly, custompoly, 0.50)
-                if zstates[0] and self.zoning_custom_res:
-                    cellslist[i].change_attribute("ZONE_RES", restrict)
-                if zstates[1] and self.zoning_custom_com:
-                    cellslist[i].change_attribute("ZONE_COM", restrict)
-                if zstates[2] and self.zoning_custom_ind:
-                    cellslist[i].change_attribute("ZONE_IND", restrict)
-                if zstates[3] and self.zoning_custom_orc:
-                    cellslist[i].change_attribute("ZONE_ORC", restrict)
+        # self.notify("Creating Zoning maps for active land uses...")
+        # print("Creating Zoning maps for active land uses...")
+        #
+        # # - 2.8.1 - LOAD ALL RELEVANT MAPS IF NECESSARY AND TRANSFER DATA ACROSS - MASK = TRUE
+        # # If the map is not used or doesn't exist, then the polygon list will be empty [], there are four polygonal
+        # # lists in total.
+        # self.notify("Loading Zoning Maps...")
+        # print("Loading Zoning Maps...")
+        # respolygons, compolygons, indpolygons, officespolygons = [], [], [], []
+        # if not self.zoning_rules_resauto:   # RESIDENTIAL MAP
+        #     respolygons = self.get_rings_maps_for_zoning(self.zoning_rules_resmap)
+        # if not self.zoning_rules_comauto:  # COMMERCIAL MAP
+        #     compolygons = self.get_rings_maps_for_zoning(self.zoning_rules_commap)
+        # if not self.zoning_rules_indauto:  # INDUSTRIAL MAP
+        #     indpolygons = self.get_rings_maps_for_zoning(self.zoning_rules_indmap)
+        # if not self.zoning_rules_officesauto:  # MIXED DEVELOPMENT MAP
+        #     officespolygons = self.get_rings_maps_for_zoning(self.zoning_rules_resmap)
+        #
+        # # - 2.8.2 - Scan through all Blocks, allocate zoning where applicable.
+        # # Mark all land uses where a map is not used as having Zoning possibility of 1. This is changed later on.
+        # # The land zoning maps represent the FIRST MASK
+        # for i in range(len(cellslist)):     # - 2.8.3 - Fixed land use, automatically mask - SECOND MASK
+        #     if cellslist[i].get_attribute("LUC_Type") in ["Fixed", "UNDEFINED"]:
+        #         cellslist[i].change_attribute("ZONE_RES", 0)  # If fixed or undefined, immediately set to zero
+        #         cellslist[i].change_attribute("ZONE_COM", 0)  # no exceptions, if not fixed, move to passive
+        #         cellslist[i].change_attribute("ZONE_IND", 0)
+        #         cellslist[i].change_attribute("ZONE_ORC", 0)
+        #         continue    # Skip the 'Fixed Land Use Cells' to save time on the looping
+        #
+        #     coordinates = cellslist[i].get_points()
+        #     coordinates = [c[:2] for c in coordinates]
+        #     cellpoly = Polygon(coordinates)
+        #
+        #     if not self.zoning_rules_resauto:       # RESIDENTIAL LAND
+        #         if not self.determine_zoning_against_polygons(cellpoly, respolygons, 0):
+        #             cellslist[i].change_attribute("ZONE_RES", 0)    # If an intersection was NOT detected, not zoned!
+        #     if not self.zoning_rules_comauto:       # COMMERCIAL LAND
+        #         if not self.determine_zoning_against_polygons(cellpoly, compolygons, 0):
+        #             cellslist[i].change_attribute("ZONE_COM", 0)
+        #     if not self.zoning_rules_indauto:       # INDUSTRIAL LAND
+        #         if not self.determine_zoning_against_polygons(cellpoly, indpolygons, 0):
+        #             cellslist[i].change_attribute("ZONE_IND", 0)
+        #     if not self.zoning_rules_officesauto:  # MIXED DEVELOPMENT LAND
+        #         if not self.determine_zoning_against_polygons(cellpoly, officespolygons, 0):
+        #             cellslist[i].change_attribute("ZONE_ORC", 0)
+        #
+        # # - 2.8.4 - Auto-assignment options - if the auto-assign function is on, then perform this NOW
+        # # Only touch the land uses where the auto checkbox was ticked.
+        # respassive, compassive, indpassive, orcpassive = 1, 1, 1, 1     # By default = 1 - generally passive always 1
+        # if self.zoning_rules_resauto:
+        #     respassive = self.zoning_rules_resauto * int((not self.zoning_rules_reslimit or
+        #                                                   (self.zoning_rules_reslimit * self.zoning_rules_respassive)))
+        #
+        # if self.zoning_rules_comauto:
+        #     compassive = self.zoning_rules_comauto * int((not self.zoning_rules_comlimit or
+        #                                                   (self.zoning_rules_comlimit * self.zoning_rules_compassive)))
+        #
+        # if self.zoning_rules_indauto:
+        #     indpassive = self.zoning_rules_indauto * int((not self.zoning_rules_indlimit or
+        #                                                   (self.zoning_rules_indlimit * self.zoning_rules_indpassive)))
+        #
+        # if self.zoning_rules_officesauto:
+        #     orcpassive = self.zoning_rules_officesauto * int((not self.zoning_rules_officeslimit or
+        #                                                       (self.zoning_rules_officeslimit *
+        #                                                        self.zoning_rules_officespassive)))
+        #
+        # for i in range(len(cellslist)):
+        #     if cellslist[i].get_attribute("LUC_Type") in ["Fixed", "UNDEFINED"]:    # DONE - skip!
+        #         continue
+        #     elif cellslist[i].get_attribute("LUC_Type") == "Passive":  # If passive, set based on parameter
+        #         bool(self.zoning_rules_resauto) and cellslist[i].change_attribute("ZONE_RES", int(respassive))
+        #         bool(self.zoning_rules_comauto) and cellslist[i].change_attribute("ZONE_COM", int(compassive))
+        #         bool(self.zoning_rules_indauto) and cellslist[i].change_attribute("ZONE_IND", int(indpassive))
+        #         bool(self.zoning_rules_officesauto) and cellslist[i].change_attribute("ZONE_ORC", int(orcpassive))
+        #     elif cellslist[i].get_attribute("Base_LUC") == "Residential":
+        #         bool(self.zoning_rules_resauto) and cellslist[i].change_attribute("ZONE_RES", 1)  # Always, regardless
+        #         bool(self.zoning_rules_comauto) and \
+        #             cellslist[i].change_attribute("ZONE_COM", int(not self.zoning_rules_comlimit))
+        #         bool(self.zoning_rules_indauto) and \
+        #             cellslist[i].change_attribute("ZONE_IND", int(not self.zoning_rules_indlimit))
+        #         bool(self.zoning_rules_officesauto) and \
+        #             cellslist[i].change_attribute("ZONE_ORC",int(not self.zoning_rules_officeslimit))
+        #     elif cellslist[i].get_attribute("Base_LUC") == "Commercial":
+        #         bool(self.zoning_rules_comauto) and cellslist[i].change_attribute("ZONE_COM", 1)  # Always, regardless
+        #         bool(self.zoning_rules_resauto) and \
+        #         cellslist[i].change_attribute("ZONE_RES", int(not self.zoning_rules_comlimit))
+        #         bool(self.zoning_rules_indauto) and \
+        #         cellslist[i].change_attribute("ZONE_IND", int(not self.zoning_rules_indlimit))
+        #         bool(self.zoning_rules_officesauto) and \
+        #         cellslist[i].change_attribute("ZONE_ORC", int(not self.zoning_rules_officeslimit))
+        #     elif cellslist[i].get_attribute("Base_LUC") in ["Light Industry", "Heavy Industry"]:
+        #         bool(self.zoning_rules_indauto) and cellslist[i].change_attribute("ZONE_IND", 1)
+        #         bool(self.zoning_rules_resauto) and \
+        #         cellslist[i].change_attribute("ZONE_RES", int(not self.zoning_rules_comlimit))
+        #         bool(self.zoning_rules_comauto) and \
+        #         cellslist[i].change_attribute("ZONE_COM", int(not self.zoning_rules_comlimit))
+        #         bool(self.zoning_rules_officesauto) and \
+        #         cellslist[i].change_attribute("ZONE_ORC", int(not self.zoning_rules_officeslimit))
+        #     elif cellslist[i].get_attribute("Base_LUC") in ["Offices Res Mix"]:
+        #         bool(self.zoning_rules_officesauto) and cellslist[i].change_attribute("ZONE_ORC", 1)
+        #         bool(self.zoning_rules_resauto) and \
+        #         cellslist[i].change_attribute("ZONE_RES", int(not self.zoning_rules_comlimit))
+        #         bool(self.zoning_rules_comauto) and \
+        #         cellslist[i].change_attribute("ZONE_COM", int(not self.zoning_rules_comlimit))
+        #         bool(self.zoning_rules_indauto) and \
+        #         cellslist[i].change_attribute("ZONE_IND", int(not self.zoning_rules_indlimit))
+        #     else:
+        #         print "DEBUG: Should not be here..."
+        #
+        # # - 2.8.5 - Overlay Maps - THIRD MASK
+        # waterpoly = self.get_rings_maps_for_zoning(self.zoning_water)           # Water bodies
+        # heritagepoly = self.get_rings_maps_for_zoning(self.zoning_heritage)     # Historical/Heritage areas
+        # publicpoly = self.get_rings_maps_for_zoning(self.zoning_public)         # Public Acquisition
+        # enviropoly = self.get_rings_maps_for_zoning(self.zoning_enviro)         # Environmental Significance
+        # floodpoly = self.get_rings_maps_for_zoning(self.zoning_flood)           # Flood Inundation
+        # custompoly = self.get_rings_maps_for_zoning(self.zoning_custom)         # Custom Overlay
+        #
+        # totfeatures = len(waterpoly) + len(heritagepoly) + len(publicpoly) + len(enviropoly) + len(floodpoly) + len(custompoly)
+        # print "Total Features of overlays to check against...", totfeatures
+        #
+        # # Scan all remaining cells against overlay conditions
+        # for i in range(len(cellslist)):
+        #     zstates = self.get_zoning_states(cellslist[i])      # If all four zones are 0, then skip
+        #     if sum(zstates) == 0:
+        #         continue
+        #
+        #     coordinates = cellslist[i].get_points()
+        #     coordinates = [c[:2] for c in coordinates]
+        #     cellpoly = Polygon(coordinates)
+        #
+        #     # CHECK WATER BODIES - 100% threshold - i.e. cells must be fully covered
+        #     if len(waterpoly) != 0:
+        #         restrict = self.determine_zoning_against_polygons(cellpoly, waterpoly, 1.0)
+        #         # One-liner If Statement: If the zoning state is already 0 i.e. False, then don't change the state
+        #         bool(zstates[0]) and cellslist[i].change_attribute("ZONE_RES", restrict)
+        #         bool(zstates[1]) and cellslist[i].change_attribute("ZONE_COM", restrict)
+        #         bool(zstates[2]) and cellslist[i].change_attribute("ZONE_IND", restrict)
+        #         bool(zstates[3]) and cellslist[i].change_attribute("ZONE_ORC", restrict)
+        #
+        #         zstates = self.get_zoning_states(cellslist[i])   # Update zstates
+        #         if sum(zstates) == 0:
+        #             continue
+        #
+        #     # CHECK HERITAGE - 50% threshold - i.e. half of the cell must be designated heritage
+        #     if len(heritagepoly) != 0:
+        #         restrict = self.determine_zoning_against_polygons(cellpoly, heritagepoly, 0.5)
+        #         if zstates[0] and self.zoning_heritage_res:     # If zoning allowed AND heritage considered?
+        #             cellslist[i].change_attribute("ZONE_RES", restrict)
+        #         if zstates[1] and self.zoning_heritage_com:
+        #             cellslist[i].change_attribute("ZONE_COM", restrict)
+        #         if zstates[2] and self.zoning_heritage_ind:
+        #             cellslist[i].change_attribute("ZONE_IND", restrict)
+        #         if zstates[3] and self.zoning_heritage_orc:
+        #             cellslist[i].change_attribute("ZONE_ORC", restrict)
+        #
+        #         zstates = self.get_zoning_states(cellslist[i])   # Update zstates
+        #         if sum(zstates) == 0:
+        #             continue
+        #
+        #     # CHECK PUBLIC ACQUISITION - 51% Threshold, absolute majority of the cell for land use dominance
+        #     if len(publicpoly) != 0:
+        #         restrict = self.determine_zoning_against_polygons(cellpoly, publicpoly, 0.51)
+        #         if zstates[0] and self.zoning_public_res:
+        #             cellslist[i].change_attribute("ZONE_RES", restrict)
+        #         if zstates[1] and self.zoning_public_com:
+        #             cellslist[i].change_attribute("ZONE_COM", restrict)
+        #         if zstates[2] and self.zoning_public_ind:
+        #             cellslist[i].change_attribute("ZONE_IND", restrict)
+        #         if zstates[3] and self.zoning_public_orc:
+        #             cellslist[i].change_attribute("ZONE_ORC", restrict)
+        #
+        #         zstates = self.get_zoning_states(cellslist[i])  # Update zstates
+        #         if sum(zstates) == 0:
+        #             continue
+        #
+        #     # CHECK ENVIRONMENTAL SIGNIFICANCE - 50% threshold, enough environmental significance to disallow zone
+        #     if len(enviropoly) != 0:
+        #         restrict = self.determine_zoning_against_polygons(cellpoly, enviropoly, 0.50)
+        #         if zstates[0] and self.zoning_enviro_res:
+        #             cellslist[i].change_attribute("ZONE_RES", restrict)
+        #         if zstates[1] and self.zoning_enviro_com:
+        #             cellslist[i].change_attribute("ZONE_COM", restrict)
+        #         if zstates[2] and self.zoning_enviro_ind:
+        #             cellslist[i].change_attribute("ZONE_IND", restrict)
+        #         if zstates[3] and self.zoning_enviro_orc:
+        #             cellslist[i].change_attribute("ZONE_ORC", restrict)
+        #
+        #         zstates = self.get_zoning_states(cellslist[i])  # Update zstates
+        #         if sum(zstates) == 0:
+        #             continue
+        #
+        #     # CHECK INUNDATION - using a 20% threshold. If land is subject to flooding, somewhat, then disallow zone!
+        #     if len(floodpoly) != 0:
+        #         restrict = self.determine_zoning_against_polygons(cellpoly, floodpoly, 0.20)
+        #         if zstates[0] and self.zoning_flood_res:
+        #             cellslist[i].change_attribute("ZONE_RES", restrict)
+        #         if zstates[1] and self.zoning_flood_com:
+        #             cellslist[i].change_attribute("ZONE_COM", restrict)
+        #         if zstates[2] and self.zoning_flood_ind:
+        #             cellslist[i].change_attribute("ZONE_IND", restrict)
+        #         if zstates[3] and self.zoning_flood_orc:
+        #             cellslist[i].change_attribute("ZONE_ORC", restrict)
+        #
+        #         zstates = self.get_zoning_states(cellslist[i])  # Update zstates
+        #         if sum(zstates) == 0:
+        #             continue
+        #
+        #     # CHECK CUSTOM - using a 50% threshold by default
+        #     if len(custompoly) != 0:
+        #         restrict = self.determine_zoning_against_polygons(cellpoly, custompoly, 0.50)
+        #         if zstates[0] and self.zoning_custom_res:
+        #             cellslist[i].change_attribute("ZONE_RES", restrict)
+        #         if zstates[1] and self.zoning_custom_com:
+        #             cellslist[i].change_attribute("ZONE_COM", restrict)
+        #         if zstates[2] and self.zoning_custom_ind:
+        #             cellslist[i].change_attribute("ZONE_IND", restrict)
+        #         if zstates[3] and self.zoning_custom_orc:
+        #             cellslist[i].change_attribute("ZONE_ORC", restrict)
 
         # - 2.8 - DETERMINE LARGE NEIGHBOURHOODS ---
         self.notify("Establishing Neighbourhoods")
@@ -1593,9 +1666,11 @@ class UrbanDevelopment(UBModule):
             c.add_attribute("Aspect_DEG", round(aspect_deg, 0))
         return True
 
-
     def calculate_suitability_value(self):
-        suitability = 0
+
+
+
+
         pass    # [TO DO]
         return suitability
 
