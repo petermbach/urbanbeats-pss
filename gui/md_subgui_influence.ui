@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CustomPatternDialog</class>
- <widget class="QDialog" name="CustomPatternDialog">
+ <class>InfluenceFunctionDialog</class>
+ <widget class="QDialog" name="InfluenceFunctionDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -442,5 +442,38 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>createButton</sender>
+   <signal>clicked()</signal>
+   <receiver>InfluenceFunctionDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>513</x>
+     <y>506</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>324</x>
+     <y>267</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cancelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>InfluenceFunctionDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>594</x>
+     <y>506</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>324</x>
+     <y>267</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
