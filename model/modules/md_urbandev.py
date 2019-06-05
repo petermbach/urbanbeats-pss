@@ -359,18 +359,26 @@ class UrbanDevelopment(UBModule):
         # SUITABILITY - SLOPE
         # The concept for slope is based on a maximum allowable slope. Suitability decreases from 100% at 0% slope to
         # 0% at the maximum threshold. One parameter per land use + trend + mid-point.
+        self.create_parameter("slope_trend", STRING, "trend to use for in between values on slope scale")
+        self.create_parameter("slope_midpoint", BOOL, "include mid-point value for suitability calcs?")
         self.create_parameter("slope_res", DOUBLE, "threshold % at which slope no longer suitable for RES land use")
         self.create_parameter("slope_com", DOUBLE, "threshold % at which slope no longer suitable for COM land use")
         self.create_parameter("slope_ind", DOUBLE, "threshold % at which slope no longer suitable for IND land use")
         self.create_parameter("slope_orc", DOUBLE, "threshold % at which slope no longer suitable for ORC land use")
-        self.create_parameter("slope_trend", STRING, "trend to use for in between values on slope scale")
-        self.create_parameter("slope_midpoint", DOUBLE, "mid-point value to use if this is selected for suitability")
+        self.create_parameter("slope_res_mid", DOUBLE, "mid-point value of slope for RES land use")
+        self.create_parameter("slope_com_mid", DOUBLE, "mid-point value of slope for COM land use")
+        self.create_parameter("slope_ind_mid", DOUBLE, "mid-point value of slope for IND land use")
+        self.create_parameter("slope_orc_mid", DOUBLE, "mid-point value of slope for ORC land use")
+        self.slope_trend = "L"  # L (Linear), Q (Quadratic), C (Cubic), S (sigmoid), T (triangular), IT (inverse tri)
+        self.slope_midpoint = 1
         self.slope_res = 25.0
         self.slope_com = 25.0
         self.slope_ind = 25.0
         self.slope_orc = 25.0
-        self.slope_trend = "L"      # L (Linear), Q (Quadratic), C (Cubic), S (sigmoid), M (midpoint), IQ/IC (inverse)
-        self.slope_midpoint = 12.5
+        self.slope_res_mid = 12.5
+        self.slope_com_mid = 12.5
+        self.slope_ind_mid = 12.5
+        self.slope_orc_mid = 12.5
 
         # SUITABILITY - ASPECT
         # The concept for Aspect is based on the compass rose. Suitability is interpolated between the different
@@ -453,42 +461,58 @@ class UrbanDevelopment(UBModule):
         # SUITABILITY - DEPTH TO GROUNDWATER TABLE [m]
         # Like the slope, suitability for groundwater ranges from 0% suitable when groundwater table at surface 0m to
         # 100% beyond a certain threshold, parameters here indicate the threshold.
+        self.create_parameter("gw_trend", STRING, "trend to use for in-between values")
+        self.create_parameter("gw_midpoint", BOOL, "include mid-point value for suitability scale?")
         self.create_parameter("gw_res", DOUBLE, "threshold % at which groundwater no longer suitable for RES land use")
         self.create_parameter("gw_com", DOUBLE, "threshold % at which groundwater no longer suitable for COM land use")
         self.create_parameter("gw_ind", DOUBLE, "threshold % at which groundwater no longer suitable for IND land use")
         self.create_parameter("gw_orc", DOUBLE, "threshold % at which groundwater no longer suitable for ORC land use")
-        self.create_parameter("gw_trend", STRING, "trend to use for in-between values")
-        self.create_parameter("gw_midpoint", DOUBLE, "mid-point value for suitability scale")
+        self.create_parameter("gw_res_mid", DOUBLE, "mid-point suitability for RES land use")
+        self.create_parameter("gw_com_mid", DOUBLE, "mid-point suitability for COM land use")
+        self.create_parameter("gw_ind_mid", DOUBLE, "mid-point suitability for IND land use")
+        self.create_parameter("gw_orc_mid", DOUBLE, "mid-point suitability for ORC land use")
+        self.gw_trend = "L"  # L (Linear), Q (Quadratic), C (Cubic), S (sigmoid), T (triangular), IT (inverse tri)
+        self.gw_midpoint = 1
         self.gw_res = 10.0
         self.gw_com = 10.0
         self.gw_ind = 10.0
         self.gw_orc = 10.0
-        self.gw_trend = "L"  # L (Linear), Q (Quadratic), C (Cubic), S (sigmoid), M (midpoint), IQ/IC (inverse)
-        self.gw_midpoint = 5.0
+        self.gw_res_mid = 5.0
+        self.gw_com_mid = 5.0
+        self.gw_ind_mid = 5.0
+        self.gw_orc_mid = 5.0
 
         # SUITABILITY - CUSTOM CRITERION
         # Users can select a minimum/maximum threshold, a custom mid-point and then assign suitabilities in forward
         # or reverse order.
+        self.create_parameter("custom_trend", STRING, "trend to use for the suitability scaling")
+        self.create_parameter("custom_midpoint", BOOL, "mid-point value to use if this trend is selected")
         self.create_parameter("custom_res_min", DOUBLE, "minimum threshold at which suitability is 0%")
         self.create_parameter("custom_res_max", DOUBLE, "maximum threshold at which suitability is 0%")
+        self.create_parameter("custom_res_mid", DOUBLE, "maximum threshold at which suitability is 0%")
         self.create_parameter("custom_com_min", DOUBLE, "minimum threshold at which suitability is 0%")
         self.create_parameter("custom_com_max", DOUBLE, "maximum threshold at which suitability is 0%")
+        self.create_parameter("custom_com_mid", DOUBLE, "maximum threshold at which suitability is 0%")
         self.create_parameter("custom_ind_min", DOUBLE, "minimum threshold at which suitability is 0%")
         self.create_parameter("custom_ind_max", DOUBLE, "maximum threshold at which suitability is 0%")
+        self.create_parameter("custom_ind_mid", DOUBLE, "maximum threshold at which suitability is 0%")
         self.create_parameter("custom_orc_min", DOUBLE, "minimum threshold at which suitability is 0%")
         self.create_parameter("custom_orc_max", DOUBLE, "maximum threshold at which suitability is 0%")
-        self.create_parameter("custom_trend", STRING, "trend to use for the suitability scaling")
-        self.create_parameter("custom_midpoint", DOUBLE, "mid-point value to use if this trend is selected")
+        self.create_parameter("custom_orc_mid", DOUBLE, "maximum threshold at which suitability is 0%")
+        self.custom_trend = "L"  # L (Linear), Q (Quadratic), C (Cubic), S (sigmoid), M (midpoint), IQ/IC (inverse)
+        self.custom_midpoint = 0
         self.custom_res_min = 0.0
         self.custom_res_max = 0.0
+        self.custom_res_mid = 0.0
         self.custom_com_min = 0.0
         self.custom_com_max = 0.0
+        self.custom_com_mid = 0.0
         self.custom_ind_min = 0.0
         self.custom_ind_max = 0.0
+        self.custom_ind_mid = 0.0
         self.custom_orc_min = 0.0
         self.custom_orc_max = 0.0
-        self.custom_trend = "L"  # L (Linear), Q (Quadratic), C (Cubic), S (sigmoid), M (midpoint), IQ/IC (inverse)
-        self.custom_midpoint = 0.0
+        self.custom_orc_mid = 0.0
 
         # --- TAB 3 - SPATIAL RELATIONSHIPS: ZONING ---
         self.create_parameter("zoning_export", BOOL, "export aggregated zoning maps for each land use?")
