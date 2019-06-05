@@ -217,7 +217,7 @@ p, li { white-space: pre-wrap; }
       <item>
        <widget class="QTabWidget" name="parameters">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="inputs_tab">
          <attribute name="title">
@@ -1225,7 +1225,7 @@ p, li { white-space: pre-wrap; }
              <enum>QTabWidget::West</enum>
             </property>
             <property name="currentIndex">
-             <number>2</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="accessibility">
              <attribute name="icon">
@@ -3570,6 +3570,117 @@ p, li { white-space: pre-wrap; }
              </attribute>
              <layout class="QVBoxLayout" name="verticalLayout_7">
               <item>
+               <layout class="QVBoxLayout" name="verticalLayout_35">
+                <property name="leftMargin">
+                 <number>9</number>
+                </property>
+                <property name="topMargin">
+                 <number>9</number>
+                </property>
+                <property name="rightMargin">
+                 <number>9</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>9</number>
+                </property>
+                <item>
+                 <widget class="QWidget" name="nhd_title_box" native="true">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_8">
+                   <property name="spacing">
+                    <number>6</number>
+                   </property>
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="nhd_icon">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>13</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>30</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>30</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="pixmap">
+                      <pixmap resource="../graphics/ubeats.qrc">:/icons/Social-network-icon.png</pixmap>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="nhd_title">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>13</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>13</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;NEIGHBOURHOOD INTERACTION&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
                <widget class="QScrollArea" name="inputs_scrollArea_5">
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
@@ -3586,7 +3697,7 @@ p, li { white-space: pre-wrap; }
                    <x>0</x>
                    <y>0</y>
                    <width>541</width>
-                   <height>435</height>
+                   <height>428</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -3605,243 +3716,161 @@ p, li { white-space: pre-wrap; }
                      <number>9</number>
                     </property>
                     <item>
-                     <widget class="QLabel" name="descr1_5">
+                     <widget class="QLabel" name="nhd_lbl1">
                       <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;SPATIAL INTERACTION OF ACTIVE AND PASSIVE LAND USES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Spatial Interaction of Active and Passive Land Uses&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="Line" name="line_3">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="emp_lbl_18">
+                     <widget class="QLabel" name="nhd_lbl2">
                       <property name="text">
-                       <string>Define spatial interaction functions between active and passive land uses</string>
+                       <string>Define spatial interaction functions between different land uses. It is recommended to define at least one interaction function for each active land use.</string>
+                      </property>
+                      <property name="wordWrap">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QWidget" name="datasets_11" native="true">
+                     <widget class="QWidget" name="nhd_input_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_15">
-                       <item row="4" column="0">
-                        <widget class="QCheckBox" name="checkBox_69">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="nhd_input_lbl2">
                          <property name="text">
-                          <string>Industrial</string>
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(Click on a row to see available options)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
-                         <property name="checked">
+                         <property name="wordWrap">
                           <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="6" column="0">
-                        <widget class="QLabel" name="label_38">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;OTHER LAND USES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="8" column="0">
-                        <widget class="QCheckBox" name="checkBox_64">
-                         <property name="text">
-                          <string>Parks and Gardens</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="10" column="0">
-                        <widget class="QCheckBox" name="checkBox_66">
-                         <property name="text">
-                          <string>Road</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="0">
-                        <widget class="QCheckBox" name="checkBox_68">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="text">
-                          <string>Commercial</string>
-                         </property>
-                         <property name="checked">
-                          <bool>true</bool>
-                         </property>
+                        <widget class="QWidget" name="nhd_actions_widget" native="true">
+                         <layout class="QHBoxLayout" name="horizontalLayout_7">
+                          <item>
+                           <widget class="QPushButton" name="nhd_add_button">
+                            <property name="text">
+                             <string>Add New...</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QPushButton" name="nhd_edit_button">
+                            <property name="text">
+                             <string>Edit...</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QPushButton" name="nhd_delete_button">
+                            <property name="text">
+                             <string>Delete</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QPushButton" name="nhd_export_button">
+                            <property name="text">
+                             <string>Export to .ubif</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QPushButton" name="nhd_clear_button">
+                            <property name="text">
+                             <string>Clear</string>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
                         </widget>
                        </item>
-                       <item row="7" column="0">
-                        <widget class="QCheckBox" name="checkBox_53">
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="nhd_input_lbl1">
                          <property name="text">
-                          <string>Civic</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="0">
-                        <widget class="QLabel" name="label_32">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;ACTIVE LAND USES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="9" column="0">
-                        <widget class="QCheckBox" name="checkBox_65">
-                         <property name="text">
-                          <string>Reserves and Floodways</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="5" column="0">
-                        <widget class="QCheckBox" name="checkBox_70">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="text">
-                          <string>Mixed Use</string>
-                         </property>
-                         <property name="checked">
-                          <bool>true</bool>
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;CURRENTLY ACTIVE INFLUENCE FUNCTIONS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="2" column="0">
-                        <widget class="QCheckBox" name="checkBox_67">
-                         <property name="enabled">
+                        <widget class="QTableWidget" name="nhd_table">
+                         <property name="verticalScrollBarPolicy">
+                          <enum>Qt::ScrollBarAlwaysOn</enum>
+                         </property>
+                         <property name="horizontalScrollBarPolicy">
+                          <enum>Qt::ScrollBarAsNeeded</enum>
+                         </property>
+                         <property name="sizeAdjustPolicy">
+                          <enum>QAbstractScrollArea::AdjustIgnored</enum>
+                         </property>
+                         <property name="editTriggers">
+                          <set>QAbstractItemView::NoEditTriggers</set>
+                         </property>
+                         <property name="selectionBehavior">
+                          <enum>QAbstractItemView::SelectRows</enum>
+                         </property>
+                         <attribute name="horizontalHeaderStretchLastSection">
+                          <bool>true</bool>
+                         </attribute>
+                         <attribute name="verticalHeaderVisible">
                           <bool>false</bool>
-                         </property>
-                         <property name="text">
-                          <string>Residential</string>
-                         </property>
-                         <property name="checkable">
-                          <bool>true</bool>
-                         </property>
-                         <property name="checked">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="4">
-                        <widget class="QPushButton" name="pushButton_12">
-                         <property name="text">
-                          <string>RES-MIX</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="2">
-                        <widget class="QLabel" name="label_34">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;COMMERCIAL&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="4" column="4">
-                        <widget class="QPushButton" name="pushButton_17">
-                         <property name="text">
-                          <string>IND-MIX</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="13" column="0">
-                        <widget class="QCheckBox" name="checkBox_71">
-                         <property name="text">
-                          <string>Undeveloped</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="2">
-                        <widget class="QPushButton" name="pushButton_10">
-                         <property name="text">
-                          <string>RES-COM</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="3">
-                        <widget class="QLabel" name="label_35">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;INDUSTRIAL&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="4" column="3">
-                        <widget class="QPushButton" name="pushButton_16">
-                         <property name="text">
-                          <string>IND-IND</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="2">
-                        <widget class="QPushButton" name="pushButton_13">
-                         <property name="text">
-                          <string>COM-COM</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="3">
-                        <widget class="QPushButton" name="pushButton_14">
-                         <property name="text">
-                          <string>COM-IND</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="3">
-                        <widget class="QPushButton" name="pushButton_11">
-                         <property name="text">
-                          <string>RES-IND</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="5" column="4">
-                        <widget class="QPushButton" name="pushButton_18">
-                         <property name="text">
-                          <string>MIX-MIX</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="12" column="0">
-                        <widget class="QCheckBox" name="checkBox_73">
-                         <property name="text">
-                          <string>Unclassified</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="1">
-                        <widget class="QLabel" name="label_33">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;RESIDENTIAL&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="4">
-                        <widget class="QLabel" name="label_37">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;MIXED USE&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="11" column="0">
-                        <widget class="QCheckBox" name="checkBox_72">
-                         <property name="text">
-                          <string>Transport</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="1">
-                        <widget class="QPushButton" name="pushButton_9">
-                         <property name="text">
-                          <string>RES - RES</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="4">
-                        <widget class="QPushButton" name="pushButton_15">
-                         <property name="text">
-                          <string>COM-MIX</string>
-                         </property>
+                         </attribute>
+                         <row>
+                          <property name="text">
+                           <string>1</string>
+                          </property>
+                         </row>
+                         <column>
+                          <property name="text">
+                           <string>ID</string>
+                          </property>
+                         </column>
+                         <column>
+                          <property name="text">
+                           <string>Land Use</string>
+                          </property>
+                         </column>
+                         <column>
+                          <property name="text">
+                           <string>Influenced by</string>
+                          </property>
+                         </column>
+                         <column>
+                          <property name="text">
+                           <string>Min. Weight</string>
+                          </property>
+                         </column>
+                         <column>
+                          <property name="text">
+                           <string>Max. Weight</string>
+                          </property>
+                         </column>
+                         <item row="0" column="0">
+                          <property name="text">
+                           <string>1</string>
+                          </property>
+                         </item>
+                         <item row="0" column="1">
+                          <property name="text">
+                           <string>Residential</string>
+                          </property>
+                         </item>
+                         <item row="0" column="2">
+                          <property name="text">
+                           <string>Residential</string>
+                          </property>
+                         </item>
+                         <item row="0" column="3">
+                          <property name="text">
+                           <string>0</string>
+                          </property>
+                         </item>
+                         <item row="0" column="4">
+                          <property name="text">
+                           <string>50</string>
+                          </property>
+                         </item>
                         </widget>
                        </item>
                       </layout>
@@ -7094,7 +7123,7 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>484</width>
+                   <width>541</width>
                    <height>1008</height>
                   </rect>
                  </property>
