@@ -75,64 +75,64 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     # fielddefmatrix.append(ogr.FieldDefn("NHD_Num", ogr.OFTInteger))
 
     # ACCESSIBILIY INDICATORS
-    if map_attr.get_attribute("ACCESS_ROAD"):
-        fielddefmatrix.append(ogr.FieldDefn("DIST_ROAD", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_ROAD_R", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_ROAD_C", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_ROAD_I", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_ROAD_O", ogr.OFTReal))
-
-    if map_attr.get_attribute("ACCESS_RAIL"):
-        fielddefmatrix.append(ogr.FieldDefn("DIST_RAIL", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_RAIL_R", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_RAIL_C", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_RAIL_I", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_RAIL_O", ogr.OFTReal))
-
-    if map_attr.get_attribute("ACCESS_WWAY"):
-        fielddefmatrix.append(ogr.FieldDefn("DIST_WWAY", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_WWAY_R", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_WWAY_C", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_WWAY_I", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_WWAY_O", ogr.OFTReal))
-
-    if map_attr.get_attribute("ACCESS_LAKE"):
-        fielddefmatrix.append(ogr.FieldDefn("DIST_LAKE", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_LAKE_R", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_LAKE_C", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_LAKE_I", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_LAKE_O", ogr.OFTReal))
-
-    if map_attr.get_attribute("ACCESS_POSS"):
-        fielddefmatrix.append(ogr.FieldDefn("DIST_POSS", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_POSS_R", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_POSS_C", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_POSS_I", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_POSS_O", ogr.OFTReal))
-
-    if map_attr.get_attribute("ACCESS_POIS"):
-        fielddefmatrix.append(ogr.FieldDefn("DIST_POIS", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_POIS_R", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_POIS_C", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_POIS_I", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_POIS_O", ogr.OFTReal))
-
-    if map_attr.get_attribute("ACCESS_PTHS"):
-        fielddefmatrix.append(ogr.FieldDefn("DIST_PTHS", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_PTHS_R", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_PTHS_C", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_PTHS_I", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("ACC_PTHS_O", ogr.OFTReal))
-
-    fielddefmatrix.append(ogr.FieldDefn("ACCESS_RES", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("ACCESS_COM", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("ACCESS_IND", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("ACCESS_ORC", ogr.OFTReal))
-
-    fielddefmatrix.append(ogr.FieldDefn("ZONE_RES", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("ZONE_COM", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("ZONE_IND", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("ZONE_ORC", ogr.OFTInteger))
+    # if map_attr.get_attribute("ACCESS_ROAD"):
+    #     fielddefmatrix.append(ogr.FieldDefn("DIST_ROAD", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_ROAD_R", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_ROAD_C", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_ROAD_I", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_ROAD_O", ogr.OFTReal))
+    #
+    # if map_attr.get_attribute("ACCESS_RAIL"):
+    #     fielddefmatrix.append(ogr.FieldDefn("DIST_RAIL", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_RAIL_R", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_RAIL_C", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_RAIL_I", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_RAIL_O", ogr.OFTReal))
+    #
+    # if map_attr.get_attribute("ACCESS_WWAY"):
+    #     fielddefmatrix.append(ogr.FieldDefn("DIST_WWAY", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_WWAY_R", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_WWAY_C", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_WWAY_I", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_WWAY_O", ogr.OFTReal))
+    #
+    # if map_attr.get_attribute("ACCESS_LAKE"):
+    #     fielddefmatrix.append(ogr.FieldDefn("DIST_LAKE", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_LAKE_R", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_LAKE_C", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_LAKE_I", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_LAKE_O", ogr.OFTReal))
+    #
+    # if map_attr.get_attribute("ACCESS_POSS"):
+    #     fielddefmatrix.append(ogr.FieldDefn("DIST_POSS", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_POSS_R", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_POSS_C", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_POSS_I", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_POSS_O", ogr.OFTReal))
+    #
+    # if map_attr.get_attribute("ACCESS_POIS"):
+    #     fielddefmatrix.append(ogr.FieldDefn("DIST_POIS", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_POIS_R", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_POIS_C", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_POIS_I", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_POIS_O", ogr.OFTReal))
+    #
+    # if map_attr.get_attribute("ACCESS_PTHS"):
+    #     fielddefmatrix.append(ogr.FieldDefn("DIST_PTHS", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_PTHS_R", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_PTHS_C", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_PTHS_I", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("ACC_PTHS_O", ogr.OFTReal))
+    #
+    # fielddefmatrix.append(ogr.FieldDefn("ACCESS_RES", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("ACCESS_COM", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("ACCESS_IND", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("ACCESS_ORC", ogr.OFTReal))
+    #
+    # fielddefmatrix.append(ogr.FieldDefn("ZONE_RES", ogr.OFTInteger))
+    # fielddefmatrix.append(ogr.FieldDefn("ZONE_COM", ogr.OFTInteger))
+    # fielddefmatrix.append(ogr.FieldDefn("ZONE_IND", ogr.OFTInteger))
+    # fielddefmatrix.append(ogr.FieldDefn("ZONE_ORC", ogr.OFTInteger))
 
     fielddefmatrix.append(ogr.FieldDefn("NHD_N", ogr.OFTInteger))
     fielddefmatrix.append(ogr.FieldDefn("NHD_NE", ogr.OFTInteger))
@@ -157,36 +157,36 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         fielddefmatrix.append(ogr.FieldDefn("SoilClass", ogr.OFTString))
     if map_attr.get_attribute("SUIT_GW"):
         fielddefmatrix.append(ogr.FieldDefn("DepthToGW", ogr.OFTReal))
-    #
-    # fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_R", ogr.OFTReal))
-    # fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_C", ogr.OFTReal))
-    # fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_I", ogr.OFTReal))
-    # fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_O", ogr.OFTReal))
 
-    # fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_R", ogr.OFTReal))
-    # fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_C", ogr.OFTReal))
-    # fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_I", ogr.OFTReal))
-    # fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_O", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_R", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_C", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_I", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_O", ogr.OFTReal))
 
-    # fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_R", ogr.OFTReal))
-    # fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_C", ogr.OFTReal))
-    # fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_I", ogr.OFTReal))
-    # fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_O", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_R", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_C", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_I", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_O", ogr.OFTReal))
 
-    # fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_R", ogr.OFTReal))
-    # fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_C", ogr.OFTReal))
-    # fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_I", ogr.OFTReal))
-    # fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_O", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_R", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_C", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_I", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_O", ogr.OFTReal))
+
+    fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_R", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_C", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_I", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_O", ogr.OFTReal))
 
     # fielddefmatrix.append(ogr.FieldDefn("SU_CUSTO_R", ogr.OFTReal))
     # fielddefmatrix.append(ogr.FieldDefn("SU_CUSTO_C", ogr.OFTReal))
     # fielddefmatrix.append(ogr.FieldDefn("SU_CUSTO_I", ogr.OFTReal))
     # fielddefmatrix.append(ogr.FieldDefn("SU_CUSTO_O", ogr.OFTReal))
 
-    # fielddefmatrix.append(ogr.FieldDefn("SUIT_RES", ogr.OFTReal))
-    # fielddefmatrix.append(ogr.FieldDefn("SUIT_COM", ogr.OFTReal))
-    # fielddefmatrix.append(ogr.FieldDefn("SUIT_IND", ogr.OFTReal))
-    # fielddefmatrix.append(ogr.FieldDefn("SUIT_ORC", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SUIT_RES", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SUIT_COM", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SUIT_IND", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("SUIT_ORC", ogr.OFTReal))
 
     # Create the fields
     for field in fielddefmatrix:
@@ -223,64 +223,64 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("LUC_Type", str(currentAttList.get_attribute("LUC_Type")))
         # feature.SetField("NHD_Num", int(currentAttList.get_attribute("NHD_Num")))
 
-        if map_attr.get_attribute("ACCESS_ROAD"):
-            feature.SetField("DIST_ROAD", float(currentAttList.get_attribute("ACC_ROAD_DIST")))
-            feature.SetField("ACC_ROAD_R", float(currentAttList.get_attribute("ACC_ROAD_RES")))
-            feature.SetField("ACC_ROAD_C", float(currentAttList.get_attribute("ACC_ROAD_COM")))
-            feature.SetField("ACC_ROAD_I", float(currentAttList.get_attribute("ACC_ROAD_IND")))
-            feature.SetField("ACC_ROAD_O", float(currentAttList.get_attribute("ACC_ROAD_ORC")))
-
-        if map_attr.get_attribute("ACCESS_RAIL"):
-            feature.SetField("DIST_RAIL", float(currentAttList.get_attribute("ACC_RAIL_DIST")))
-            feature.SetField("ACC_RAIL_R", float(currentAttList.get_attribute("ACC_RAIL_RES")))
-            feature.SetField("ACC_RAIL_C", float(currentAttList.get_attribute("ACC_RAIL_COM")))
-            feature.SetField("ACC_RAIL_I", float(currentAttList.get_attribute("ACC_RAIL_IND")))
-            feature.SetField("ACC_RAIL_O", float(currentAttList.get_attribute("ACC_RAIL_ORC")))
-
-        if map_attr.get_attribute("ACCESS_WWAY"):
-            feature.SetField("DIST_WWAY", float(currentAttList.get_attribute("ACC_WWAY_DIST")))
-            feature.SetField("ACC_WWAY_R", float(currentAttList.get_attribute("ACC_WWAY_RES")))
-            feature.SetField("ACC_WWAY_C", float(currentAttList.get_attribute("ACC_WWAY_COM")))
-            feature.SetField("ACC_WWAY_I", float(currentAttList.get_attribute("ACC_WWAY_IND")))
-            feature.SetField("ACC_WWAY_O", float(currentAttList.get_attribute("ACC_WWAY_ORC")))
-
-        if map_attr.get_attribute("ACCESS_LAKE"):
-            feature.SetField("DIST_LAKE", float(currentAttList.get_attribute("ACC_LAKE_DIST")))
-            feature.SetField("ACC_LAKE_R", float(currentAttList.get_attribute("ACC_LAKE_RES")))
-            feature.SetField("ACC_LAKE_C", float(currentAttList.get_attribute("ACC_LAKE_COM")))
-            feature.SetField("ACC_LAKE_I", float(currentAttList.get_attribute("ACC_LAKE_IND")))
-            feature.SetField("ACC_LAKE_O", float(currentAttList.get_attribute("ACC_LAKE_ORC")))
-
-        if map_attr.get_attribute("ACCESS_POSS"):
-            feature.SetField("DIST_POSS", float(currentAttList.get_attribute("ACC_POSS_DIST")))
-            feature.SetField("ACC_POSS_R", float(currentAttList.get_attribute("ACC_POSS_RES")))
-            feature.SetField("ACC_POSS_C", float(currentAttList.get_attribute("ACC_POSS_COM")))
-            feature.SetField("ACC_POSS_I", float(currentAttList.get_attribute("ACC_POSS_IND")))
-            feature.SetField("ACC_POSS_O", float(currentAttList.get_attribute("ACC_POSS_ORC")))
-
-        if map_attr.get_attribute("ACCESS_POIS"):
-            feature.SetField("DIST_POIS", float(currentAttList.get_attribute("ACC_POIS_DIST")))
-            feature.SetField("ACC_POIS_R", float(currentAttList.get_attribute("ACC_POIS_RES")))
-            feature.SetField("ACC_POIS_C", float(currentAttList.get_attribute("ACC_POIS_COM")))
-            feature.SetField("ACC_POIS_I", float(currentAttList.get_attribute("ACC_POIS_IND")))
-            feature.SetField("ACC_POIS_O", float(currentAttList.get_attribute("ACC_POIS_ORC")))
-
-        if map_attr.get_attribute("ACCESS_PTHS"):
-            feature.SetField("DIST_PTHS", float(currentAttList.get_attribute("ACC_PTHS_DIST")))
-            feature.SetField("ACC_PTHS_R", float(currentAttList.get_attribute("ACC_PTHS_RES")))
-            feature.SetField("ACC_PTHS_C", float(currentAttList.get_attribute("ACC_PTHS_COM")))
-            feature.SetField("ACC_PTHS_I", float(currentAttList.get_attribute("ACC_PTHS_IND")))
-            feature.SetField("ACC_PTHS_O", float(currentAttList.get_attribute("ACC_PTHS_ORC")))
-
-        feature.SetField("ACCESS_RES", float(currentAttList.get_attribute("ACCESS_RES")))
-        feature.SetField("ACCESS_COM", float(currentAttList.get_attribute("ACCESS_COM")))
-        feature.SetField("ACCESS_IND", float(currentAttList.get_attribute("ACCESS_IND")))
-        feature.SetField("ACCESS_ORC", float(currentAttList.get_attribute("ACCESS_ORC")))
-
-        feature.SetField("ZONE_RES", int(currentAttList.get_attribute("ZONE_RES")))
-        feature.SetField("ZONE_COM", int(currentAttList.get_attribute("ZONE_COM")))
-        feature.SetField("ZONE_IND", int(currentAttList.get_attribute("ZONE_IND")))
-        feature.SetField("ZONE_ORC", int(currentAttList.get_attribute("ZONE_ORC")))
+        # if map_attr.get_attribute("ACCESS_ROAD"):
+        #     feature.SetField("DIST_ROAD", float(currentAttList.get_attribute("ACC_ROAD_DIST")))
+        #     feature.SetField("ACC_ROAD_R", float(currentAttList.get_attribute("ACC_ROAD_RES")))
+        #     feature.SetField("ACC_ROAD_C", float(currentAttList.get_attribute("ACC_ROAD_COM")))
+        #     feature.SetField("ACC_ROAD_I", float(currentAttList.get_attribute("ACC_ROAD_IND")))
+        #     feature.SetField("ACC_ROAD_O", float(currentAttList.get_attribute("ACC_ROAD_ORC")))
+        #
+        # if map_attr.get_attribute("ACCESS_RAIL"):
+        #     feature.SetField("DIST_RAIL", float(currentAttList.get_attribute("ACC_RAIL_DIST")))
+        #     feature.SetField("ACC_RAIL_R", float(currentAttList.get_attribute("ACC_RAIL_RES")))
+        #     feature.SetField("ACC_RAIL_C", float(currentAttList.get_attribute("ACC_RAIL_COM")))
+        #     feature.SetField("ACC_RAIL_I", float(currentAttList.get_attribute("ACC_RAIL_IND")))
+        #     feature.SetField("ACC_RAIL_O", float(currentAttList.get_attribute("ACC_RAIL_ORC")))
+        #
+        # if map_attr.get_attribute("ACCESS_WWAY"):
+        #     feature.SetField("DIST_WWAY", float(currentAttList.get_attribute("ACC_WWAY_DIST")))
+        #     feature.SetField("ACC_WWAY_R", float(currentAttList.get_attribute("ACC_WWAY_RES")))
+        #     feature.SetField("ACC_WWAY_C", float(currentAttList.get_attribute("ACC_WWAY_COM")))
+        #     feature.SetField("ACC_WWAY_I", float(currentAttList.get_attribute("ACC_WWAY_IND")))
+        #     feature.SetField("ACC_WWAY_O", float(currentAttList.get_attribute("ACC_WWAY_ORC")))
+        #
+        # if map_attr.get_attribute("ACCESS_LAKE"):
+        #     feature.SetField("DIST_LAKE", float(currentAttList.get_attribute("ACC_LAKE_DIST")))
+        #     feature.SetField("ACC_LAKE_R", float(currentAttList.get_attribute("ACC_LAKE_RES")))
+        #     feature.SetField("ACC_LAKE_C", float(currentAttList.get_attribute("ACC_LAKE_COM")))
+        #     feature.SetField("ACC_LAKE_I", float(currentAttList.get_attribute("ACC_LAKE_IND")))
+        #     feature.SetField("ACC_LAKE_O", float(currentAttList.get_attribute("ACC_LAKE_ORC")))
+        #
+        # if map_attr.get_attribute("ACCESS_POSS"):
+        #     feature.SetField("DIST_POSS", float(currentAttList.get_attribute("ACC_POSS_DIST")))
+        #     feature.SetField("ACC_POSS_R", float(currentAttList.get_attribute("ACC_POSS_RES")))
+        #     feature.SetField("ACC_POSS_C", float(currentAttList.get_attribute("ACC_POSS_COM")))
+        #     feature.SetField("ACC_POSS_I", float(currentAttList.get_attribute("ACC_POSS_IND")))
+        #     feature.SetField("ACC_POSS_O", float(currentAttList.get_attribute("ACC_POSS_ORC")))
+        #
+        # if map_attr.get_attribute("ACCESS_POIS"):
+        #     feature.SetField("DIST_POIS", float(currentAttList.get_attribute("ACC_POIS_DIST")))
+        #     feature.SetField("ACC_POIS_R", float(currentAttList.get_attribute("ACC_POIS_RES")))
+        #     feature.SetField("ACC_POIS_C", float(currentAttList.get_attribute("ACC_POIS_COM")))
+        #     feature.SetField("ACC_POIS_I", float(currentAttList.get_attribute("ACC_POIS_IND")))
+        #     feature.SetField("ACC_POIS_O", float(currentAttList.get_attribute("ACC_POIS_ORC")))
+        #
+        # if map_attr.get_attribute("ACCESS_PTHS"):
+        #     feature.SetField("DIST_PTHS", float(currentAttList.get_attribute("ACC_PTHS_DIST")))
+        #     feature.SetField("ACC_PTHS_R", float(currentAttList.get_attribute("ACC_PTHS_RES")))
+        #     feature.SetField("ACC_PTHS_C", float(currentAttList.get_attribute("ACC_PTHS_COM")))
+        #     feature.SetField("ACC_PTHS_I", float(currentAttList.get_attribute("ACC_PTHS_IND")))
+        #     feature.SetField("ACC_PTHS_O", float(currentAttList.get_attribute("ACC_PTHS_ORC")))
+        #
+        # feature.SetField("ACCESS_RES", float(currentAttList.get_attribute("ACCESS_RES")))
+        # feature.SetField("ACCESS_COM", float(currentAttList.get_attribute("ACCESS_COM")))
+        # feature.SetField("ACCESS_IND", float(currentAttList.get_attribute("ACCESS_IND")))
+        # feature.SetField("ACCESS_ORC", float(currentAttList.get_attribute("ACCESS_ORC")))
+        #
+        # feature.SetField("ZONE_RES", int(currentAttList.get_attribute("ZONE_RES")))
+        # feature.SetField("ZONE_COM", int(currentAttList.get_attribute("ZONE_COM")))
+        # feature.SetField("ZONE_IND", int(currentAttList.get_attribute("ZONE_IND")))
+        # feature.SetField("ZONE_ORC", int(currentAttList.get_attribute("ZONE_ORC")))
 
         feature.SetField("NHD_N", int(currentAttList.get_attribute("NHD_N")))
         feature.SetField("NHD_NE", int(currentAttList.get_attribute("NHD_NE")))
@@ -302,6 +302,31 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
             feature.SetField("SoilClass", str(currentAttList.get_attribute("SoilClass")))
         if map_attr.get_attribute("SUIT_GW"):
             feature.SetField("DepthToGW", float(currentAttList.get_attribute("DepthToGW")))
+
+        feature.SetField("SU_SLOPE_R", float(currentAttList.get_attribute("SU_SLOPE_R")))
+        feature.SetField("SU_SLOPE_C", float(currentAttList.get_attribute("SU_SLOPE_C")))
+        feature.SetField("SU_SLOPE_I", float(currentAttList.get_attribute("SU_SLOPE_I")))
+        feature.SetField("SU_SLOPE_O", float(currentAttList.get_attribute("SU_SLOPE_O")))
+
+        feature.SetField("SU_ASPCT_R", float(currentAttList.get_attribute("SU_ASPCT_R")))
+        feature.SetField("SU_ASPCT_C", float(currentAttList.get_attribute("SU_ASPCT_C")))
+        feature.SetField("SU_ASPCT_I", float(currentAttList.get_attribute("SU_ASPCT_I")))
+        feature.SetField("SU_ASPCT_O", float(currentAttList.get_attribute("SU_ASPCT_O")))
+
+        feature.SetField("SU_SOIL_R", float(currentAttList.get_attribute("SU_SOIL_R")))
+        feature.SetField("SU_SOIL_C", float(currentAttList.get_attribute("SU_SOIL_C")))
+        feature.SetField("SU_SOIL_I", float(currentAttList.get_attribute("SU_SOIL_I")))
+        feature.SetField("SU_SOIL_O", float(currentAttList.get_attribute("SU_SOIL_O")))
+
+        feature.SetField("SU_GWATD_R", float(currentAttList.get_attribute("SU_GWATD_R")))
+        feature.SetField("SU_GWATD_C", float(currentAttList.get_attribute("SU_GWATD_C")))
+        feature.SetField("SU_GWATD_I", float(currentAttList.get_attribute("SU_GWATD_I")))
+        feature.SetField("SU_GWATD_O", float(currentAttList.get_attribute("SU_GWATD_O")))
+
+        feature.SetField("SUIT_RES", float(currentAttList.get_attribute("SUIT_RES")))
+        feature.SetField("SUIT_COM", float(currentAttList.get_attribute("SUIT_COM")))
+        feature.SetField("SUIT_IND", float(currentAttList.get_attribute("SUIT_IND")))
+        feature.SetField("SUIT_ORC", float(currentAttList.get_attribute("SUIT_ORC")))
 
         layer.CreateFeature(feature)
     shapefile.Destroy()
