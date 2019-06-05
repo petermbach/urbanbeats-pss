@@ -43,6 +43,7 @@ from ubmodule import *
 import model.ublibs.ubspatial as ubspatial
 import model.ublibs.ubmethods as ubmethods
 import model.ublibs.ubdatatypes as ubdata
+import model.ublibs.ubmcda as ubmcda
 from ..progref import ubglobals
 
 
