@@ -188,6 +188,11 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     fielddefmatrix.append(ogr.FieldDefn("SUIT_IND", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("SUIT_ORC", ogr.OFTReal))
 
+    # fielddefmatrix.append(ogr.FieldDefn("INFLU_RES", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("INFLU_COM", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("INFLU_IND", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("INFLU_ORC", ogr.OFTReal))
+
     # Create the fields
     for field in fielddefmatrix:
         layer.CreateField(field)
@@ -327,6 +332,11 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("SUIT_COM", float(currentAttList.get_attribute("SUIT_COM")))
         feature.SetField("SUIT_IND", float(currentAttList.get_attribute("SUIT_IND")))
         feature.SetField("SUIT_ORC", float(currentAttList.get_attribute("SUIT_ORC")))
+
+        # feature.SetField("INFLU_RES", float(currentAttList.get_attribute("INFLU_RES")))
+        # feature.SetField("INFLU_COM", float(currentAttList.get_attribute("INFLU_COM")))
+        # feature.SetField("INFLU_IND", float(currentAttList.get_attribute("INFLU_IND")))
+        # feature.SetField("INFLU_ORC", float(currentAttList.get_attribute("INFLU_ORC")))
 
         layer.CreateFeature(feature)
     shapefile.Destroy()
