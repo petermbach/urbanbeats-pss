@@ -25,9 +25,11 @@ __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2018. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
+import os
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 import model.progref.ubglobals as ubglobals
+import model.ublibs.ubdatatypes as ubdatatypes
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -1454,36 +1456,270 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
 class InfluenceFunctionGUILaunch(QtWidgets.QDialog):
     """The class definition for the sub-GUI for defining influence functions. This sub-gui launches if the add button
     or edit button is clicked in the Urban Development Module - Neighbourhood Effect dialog window."""
-    def __init__(self, module, fid, parent=None):
+    def __init__(self, simulation, projectlog, parent=None):
         """Initialization of the subGUI for defining influence functions. This sub-gui is launched and filled with
         the current influence function selected from the table unless a new function is launched.
 
-        :param module: reference to the UBModule() Urban Development Module Instance
-        :param fid: the FID of the function to populate the GUI with. If FID is None --> create new
+        :param simulation: reference to the current UrbanBEATS Simulation active
+        :param projectlog: reference to the active project log in the UrbanBEATS Simulation
         :param parent: None
         """
         QtWidgets.QDialog.__init__(self, parent)
         self.ui = Ui_InfluenceFunctionDialog()
         self.ui.setupUi(self)
-        self.module = module
-        self.fid = fid
-        if fid is None:
-            pass
+        self.simulation = simulation
+        self.projectlog = projectlog
+        self.functionlist = []
+        self.datainputmethods = ["none", "temp", "manual", "pattern", "existing"]
+        self.update_function_combobox()
+        self.current_active_ifobject = None
+
+        self.ui.define_luc_combo.clear()
+        [self.ui.define_luc_combo.addItem(str(ubglobals.ACTIVELANDUSENAMES[i]))
+         for i in range(len(ubglobals.ACTIVELANDUSENAMES))]
+
+        self.ui.influence_luc_combo.clear()
+        [self.ui.influence_luc_combo.addItem(str(ubglobals.UM_LUCNAMES[i]))
+         for i in range(len(ubglobals.UM_LUCNAMES))]
+
+        # SIGNALS AND SLOTS
+        self.ui.select_combo.currentIndexChanged.connect(self.update_if_gui)
+        self.ui.datatable.itemChanged.connect(self.update_plot)
+        self.ui.datainputmethod_combo.currentIndexChanged.connect(self.update_inputmethod)
+        self.ui.datapoints_spin.valueChanged.connect(self.update_data_table_rows)
+        self.ui.savefunction_button.clicked.connect(self.save_current_function)
+
+    def update_function_combobox(self):
+        """Updates the combo box with selection options for functions."""
+        self.functionlist = self.simulation.get_all_function_objects_of_type("IF")
+        self.ui.select_combo.clear()
+        self.ui.select_combo.addItem("<no selection>")
+        for i in range(len(self.functionlist)):
+            self.ui.select_combo.addItem(str(self.functionlist[i].get_function_name()))
+        self.ui.select_combo.addItem("<create new function>")
+        self.ui.select_combo.setCurrentIndex(0)
+        self.set_if_gui_to_init_state()
+
+    def set_if_gui_to_init_state(self):
+        """Updates the current GUI."""
+        self.ui.functionname_box.clear()
+        self.ui.datainputmethod_combo.setCurrentIndex(0)
+        self.ui.define_luc_combo.setCurrentIndex(0)
+        self.ui.influence_luc_combo.setCurrentIndex(0)
+        self.ui.datatable.setRowCount(0)
+        self.ui.datapoints_spin.setValue(2)
+        self.ui.input_widget.setEnabled(0)
+        self.ui.webView.setHtml("")
+        self.ui.view_widget.setEnabled(0)
+
+    def update_if_gui(self):
+        """Updates the GUI based on the current index of the combo box."""
+        self.functionlist = self.simulation.get_all_function_objects_of_type("IF")
+        if self.ui.select_combo.currentIndex() in [-1, 0]:
+            # CASE 1 - NO SELECTION - DISABLE EVERYTHING
+            self.set_if_gui_to_init_state()
+        elif self.ui.select_combo.currentIndex() == len(self.functionlist) + 1:
+            # CASE 2 - CREATE A NEW FUNCTION
+            self.set_if_gui_to_init_state()
+            self.ui.input_widget.setEnabled(1)
+            self.ui.webView.setHtml("")
+            self.ui.view_widget.setEnabled(1)
+            self.ui.savefunction_button.setEnabled(1)
         else:
-            self.setup_gui_with_parameters()
+            # CASE 3 - A FUNCTION WAS SELECTED, VIEW THE FUNCTION
+            self.set_if_gui_to_init_state()
+            self.ui.input_widget.setEnabled(0)
+            self.ui.view_widget.setEnabled(1)
+            self.ui.savefunction_button.setEnabled(0)
+            self.update_ui_from_comboselect()
 
-        self.enable_disable_gui_widgets()
+    def update_ui_from_comboselect(self):
+        """Updates the UI based on the currently selected Influence Function."""
+        self.current_active_ifobject = self.functionlist[self.ui.select_combo.currentIndex() - 1]
+        self.update_gui_from_ifobject(self.current_active_ifobject)
+        self.ui.datainputmethod_combo.setCurrentIndex(0)
+        self.ui.standardlib_lbl.setText("Template")
+        self.ui.standardlib_combo.setCurrentIndex(0)
 
-    def enable_disable_gui_widgets(self):
-        pass
+    def update_inputmethod(self):
+        """Updates the GUI based on the data input method."""
+        datainputmethod = self.datainputmethods[self.ui.datainputmethod_combo.currentIndex()]
+        if datainputmethod == "none":
+            self.ui.standardlib_lbl.setText("Template")
+            self.ui.standardlib_combo.setEnabled(0)
+            pass    # Do nothing
+        elif datainputmethod == "temp":     # Open file dialog to browse for template
+            self.ui.standardlib_lbl.setText("Template")
+            self.ui.standardlib_combo.setEnabled(0)
+            datatype = "IF File (*.ubif)"
+            message = "Browse for Influence Function..."
+            datafile, _filter = QtWidgets.QFileDialog.getOpenFileName(self, message, os.curdir, datatype)
+            if datafile:
+                self.current_active_ifobject = ubdatatypes.NeighbourhoodInfluenceFunction(0)
+                self.current_active_ifobject.create_from_ubif(datafile)
+                self.update_gui_from_ifobject(self.current_active_ifobject)
+            else:
+                self.ui.datainputmethod_combo.setCurrentIndex(0)
+        elif datainputmethod == "manual":
+            self.ui.standardlib_lbl.setText("Template")
+            self.ui.standardlib_combo.setEnabled(0)
+            self.current_active_ifobject = ubdatatypes.NeighbourhoodInfluenceFunction()
+            self.update_gui_from_ifobject(self.current_active_ifobject)
+        elif datainputmethod == "pattern":
+            self.ui.standardlib_lbl.setText("Select Standard Pattern")
+            self.ui.standardlib_combo.setEnabled(1)
+            self.current_active_ifobject = ubdatatypes.NeighbourhoodInfluenceFunction()
+            self.update_gui_from_ifobject(self.current_active_ifobject)
+        elif datainputmethod == "existing":
+            self.ui.standardlib_lbl.setText("Select Function")
+            self.ui.standardlib_combo.setEnabled(1)
+            self.current_active_ifobject = ubdatatypes.NeighbourhoodInfluenceFunction()
+            self.update_gui_from_ifobject(self.current_active_ifobject)
 
-    def setup_gui_with_parameters(self):
-        pass
+    def update_gui_from_ifobject(self, ifo):
+        """Updates the GUI elements with the current data available in the active if_object passed to the function."""
+        self.ui.functionname_box.setText(str(ifo.get_function_name()))
+        self.ui.define_luc_combo.setCurrentIndex(ubglobals.ACTIVELANDUSEABBR.index(ifo.origin_landuse))
+        self.ui.influence_luc_combo.setCurrentIndex(ubglobals.UM_LUCABBRS.index(ifo.target_landuse))
+        self.ui.datapoints_spin.setValue(ifo.datapoints)
+        self.ui.datatable.setRowCount(0)
+        while self.ui.datatable.rowCount() < ifo.datapoints:
+            self.ui.datatable.insertRow(0)
+        xy = ifo.get_xy_data()
+        for i in range(ifo.datapoints):
+            twiX = QtWidgets.QTableWidgetItem()
+            twiX.setText(str(xy[0][i]))
+            self.ui.datatable.setItem(i, 0, twiX)
+            twiY = QtWidgets.QTableWidgetItem()
+            twiY.setText(str(xy[1][i]))
+            self.ui.datatable.setItem(i, 1, twiY)
+        self.update_plot()
+        return True
 
-    def plot_influence_function(self):
-        pass    # [TO DO]
+    def save_current_function(self):
+        """Saves the current GUI settings, defined by the current active IF object to the project's database."""
+        # Get Table Data first to determine whether to save the data or not, throw an error if not.
+        xdata = []
+        ydata = []
+        error = False
+        for i in range(self.ui.datatable.rowCount()):
+            if self.ui.datatable.item(i, 0) is None or self.ui.datatable.item(i, 1) is None:
+                error = True
+                continue
+            else:
+                xdata.append(float(self.ui.datatable.item(i,0).text()))
+                ydata.append(float(self.ui.datatable.item(i,1).text()))
+        if error:
+            prompt_msg = "Error: Cannot save influence function. Table data is incomplete!"
+            QtWidgets.QMessageBox.warning(self, 'Incomplete Function Data', prompt_msg, QtWidgets.QMessageBox.Ok)
+            return True
+
+        self.current_active_ifobject.set_function_name(self.ui.functionname_box.text())
+        self.current_active_ifobject.origin_landuse = \
+            ubglobals.ACTIVELANDUSEABBR[self.ui.define_luc_combo.currentIndex()]
+        self.current_active_ifobject.target_landuse = \
+            ubglobals.UM_LUCABBRS[self.ui.influence_luc_combo.currentIndex()]
+        self.current_active_ifobject.assign_xy_data(xdata, ydata)
+        if self.current_active_ifobject.get_id() == None:
+            functions = self.simulation.get_all_function_objects_of_type("IF")
+            self.current_active_ifobject.assign_id("fx_" + str(len(functions)))
+            self.simulation.add_new_function_to_library(self.current_active_ifobject)
+            self.ui.select_combo.setCurrentIndex(0)
+            self.update_function_combobox()
+
+    def update_data_table_rows(self):
+        """Updates the data table rows to reflect the number in the spin button."""
+        if int(self.ui.datapoints_spin.value()) > self.ui.datatable.rowCount():
+            while int(self.ui.datapoints_spin.value()) > self.ui.datatable.rowCount():
+                self.ui.datatable.insertRow(self.ui.datatable.rowCount())
+        elif int(self.ui.datapoints_spin.value()) < self.ui.datatable.rowCount():
+            while int(self.ui.datapoints_spin.value()) < self.ui.datatable.rowCount():
+                self.ui.datatable.removeRow(self.ui.datatable.rowCount()-1)
+        else:
+            pass    # Rows are equal, do nothing
+
+    def update_plot(self):
+        """Updates the plot in the viewer to reflect the changes in the data table. If the program cannot plot, it
+        quits updating and leaves the existing plot showing."""
+        # Get the X and Y data from the table
+        plotdata = []
+        for i in range(self.ui.datatable.rowCount()):
+            xy = [self.ui.datatable.item(i, 0), self.ui.datatable.item(i, 1)]
+            if None in xy or xy[0].text() == "" or xy[1].text() == "":
+                return True
+            else:
+                plotdata.append([float(xy[0].text()), float(xy[1].text())])
+        plotname = self.ui.functionname_box.text()
+
+        html = """
+        <!DOCTYPE HTML>
+        <html>
+	    <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>"""+plotname+"""</title>
+
+		    <style type="text/css">
+            #container {
+                min-width: 100%;
+                max-width: 100%;
+                height: 100%;
+                margin: 0 auto
+            }
+            </style>
+        </head>
+        <body>
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        
+        <div id="container"></div>
+        
+                <script type="text/javascript">
+        Highcharts.chart('container', {
+        
+            title: {
+                text: 'Influence Function'
+            },
+        
+            yAxis: {
+                title: {
+                    text: 'Weight'
+                }
+            },
+            
+            xAxis: {
+                title: {
+                text: 'Distance [km]'
+              }
+            },
+        
+            series: [{
+                name: '"""+str(plotname)+"""',
+                data: """+str(plotdata)+"""
+            }],
+        
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 500
+                    },
+                    
+                }]
+            }
+        
+        });
+                </script>
+            </body>
+        </html>
+        """
+        self.ui.webView.setHtml(html)
 
     def save_values(self):
         pass
+        # Update the IDs
 
+    def export_if_function(self):
+        pass
+
+    def delete_if_function(self):
+        pass
 

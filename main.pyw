@@ -59,7 +59,7 @@ import model.ublibs.ubconfigfiles as ubconfigfiles
 
 from gui.md_delinblocksguic import DelinBlocksGuiLaunch
 from gui.md_urbplanbbguic import UrbplanbbGuiLaunch
-from gui.md_urbdevelopguic import UrbdevelopGuiLaunch
+from gui.md_urbdevelopguic import UrbdevelopGuiLaunch, InfluenceFunctionGUILaunch
 from gui.md_spatialmappingguic import SpatialMappingGuiLaunch
 
 from gui.md_infrastructureguic import InfrastructureGuiLaunch
@@ -143,6 +143,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # SIMULATION MENU
         # Do this much later once GUIs for modules have been defined.
         self.ui.actionRun.triggered.connect(self.call_run_simulation)
+        self.ui.actionDefine_IF.triggered.connect(self.launch_influencefunction_gui)
         # Variant for calling only the performance assessment
 
         #
@@ -1050,6 +1051,12 @@ class MainWindow(QtWidgets.QMainWindow):
         return self.__current_project_name
 
     # MODULE BAR - LAUNCHING ALL MODULES
+    def launch_influencefunction_gui(self):
+        """Launches the influence function creator GUI, for creating and saving influence functions in the project."""
+        ifunctiongui = InfluenceFunctionGUILaunch(self.get_active_simulation_object(),
+                                                  self.get_active_project_log())
+        ifunctiongui.exec_()
+
     def launch_spatialsetup_modulegui(self):
         """Launches the spatial setup module's user interface and fills in relevant parameters."""
         delinblocksgui = DelinBlocksGuiLaunch(self, self.get_active_simulation_object(),

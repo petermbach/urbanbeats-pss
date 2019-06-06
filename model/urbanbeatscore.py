@@ -114,6 +114,7 @@ class UrbanBeatsSim(object):
         self.__datalibrary = None   # initialize the data library
         self.__projectlog = None    # initialize the project log
         self.__scenarios = {}       # initialize the scenarios
+        self.__functions = []       # initialize the list of functions
         self.__activescenario = None
 
     # INITIALIZATION METHODS
@@ -234,6 +235,19 @@ class UrbanBeatsSim(object):
         os.makedirs(projectpath+"/"+projectnewname+"/output")
         self.write_project_info_file()
         self.__projectpath = projectpath+"/"+projectnewname
+
+    def get_all_function_objects_of_type(self, typename):
+        """Returns all instances in the self.function list of the given typename."""
+        subset = []
+        for f in self.__functions:
+            if f.get_function_type() == typename:
+                subset.append(f)
+        return subset
+
+    def add_new_function_to_library(self, function_obj):
+        """Adds a new function to the library of functions."""
+        self.__functions.append(function_obj)
+        return True
 
     def write_project_info_file(self):
         """Writes the info.xml file, which contains the project's metadata to the project folder

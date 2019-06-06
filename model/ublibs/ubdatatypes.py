@@ -267,3 +267,123 @@ class UBCollection(object):
         """Scans all assets for the attribute and returns the ones with the correct attribute and value."""
         # TO DO
         return True
+
+
+class NeighbourhoodInfluenceFunction(object):
+    """The neighbourhood influence function. A function type used in urban modelling to determine the interaction
+    effects of one land use to another and to use its weight as a basis for determining the likelihood of a transition
+    to that land use."""
+    def __init__(self, nickname="unnamed", oluc="RES", tluc="RES"):
+        """Initialisation of class constructor, takes several basic parameters.
+
+        :param fid: Tracks the current ID of the
+        :param oluc: origin land use, the land use the function applies to
+        :param tluc: target land use, the land use the function searches for
+        """
+        self.__functiontype = "IF"    # default function type is 'influence function'
+        self.__functionID = None      # The function ID
+        self.__functionnickname = nickname
+        self.origin_landuse = oluc  # The land use the function applies to
+        self.target_landuse = tluc  # The land use the function checks for
+        self.__distance = []          # The distance list ()
+        self.__weight = []            # The function y-value, weight list()
+        self.datapoints = 0
+
+    def assign_id(self, idnum):
+        """Assigns the provided idnum to the __functionID property. idnum is based on the function library
+        current count with fx_ as prefix."""
+        self.__functionID = idnum
+
+    def assign_xy_data(self, xdata, ydata):
+        """Assigns the list of x points to the __distance property and the list of y-points to the
+        __weight property. Also updates data count."""
+        self.__distance = xdata
+        self.__weight = ydata
+        self.datapoints = len(self.__distance)
+
+    def get_xy_data(self):
+        """Returns a multi-dimensional array of x and y points."""
+        return [self.__distance, self.__weight]
+
+    def get_function_type(self):
+        """Returns the function type of 'IF', so that parts of the program know that this function belongs to the
+        urban models."""
+        return self.__functiontype
+
+    def get_id(self):
+        """Returns the unique ID of the function."""
+        return self.__functionID
+
+    def get_function_name(self):
+        """Returns the name of the function."""
+        return self.__functionnickname
+
+    def set_function_name(self, fname):
+        """Sets a new function name to fname."""
+        self.__functionnickname = str(fname)
+
+    def export_function_to_ubif(self, filepath, projectsave=False):
+        """Exports the current data to a ubif file. The file has origin and target land use saved.
+
+        :param filepath: the full filepath where the file should be saved to including filename.
+        """
+        f = open(filepath+".ubif", "w")
+        f.write("functionname,"+str(self.__functionnickname)+"\n")
+        f.write("originluc,"+str(self.origin_landuse)+"\n")
+        f.write("targetluc,"+str(self.target_landuse)+"\n")
+        f.write("dist, weight\n")
+        for i in range(len(self.__distance)):
+            f.write(str(self.__distance[i]) + "," + str(self.__weight[i]) + "\n")
+        f.close()
+        return True
+
+    def create_from_ubif(self, filepath):
+        """Infills the distance and weight variables from a .ubif file. These files are written by default
+        in the project directory when working with this data, but could also originate from a custom ubif.
+
+        :param filepath: Full filepath to the ubif file. Stored in project\datalib folder
+        :return:
+        """
+        f = open(filepath, 'r')
+        data = []
+        for lines in f:
+            data.append(lines.rstrip("\n").split(","))
+        f.close()
+        for i in range(len(data)):
+            if i == 0:
+                self.__functionnickname = data[i][1]
+            elif i == 1:
+                self.origin_landuse = data[i][1]
+            elif i == 2:
+                self.target_landuse = data[i][1]
+            elif i == 3:
+                continue
+            else:
+                self.__distance.append(float(data[i][0]))
+                self.__weight.append(float(data[i][1]))
+        self.datapoints = len(self.__distance)
+        return True
+
+    def return_weight_by_distance(self, dist):
+        """Scans the function and returns the weight value for a given distance. Interpolates if the value is
+        not within the distance list.
+
+        :param dist: the distance [m] from origin.
+        """
+        if dist < self.__distance[0]:
+            return self.__weight[0]
+        elif dist > self.__distance[len(self.__distance) - 1]:
+            return self.__weight[len(self.__weight) - 1]
+
+        for i in range(len(self.__distance) - 1):
+            if self.__distance[i] <= dist < self.__distance[i + 1]:
+                y1, y2 = self.__weight[i], self.__weight[i + 1]
+                x1, x2 = self.__distance[i], self.__distance[i + 1]
+                return float(y1+(dist - x1)*((y2-y1)/(x2-x1)))
+            else:
+                continue
+        return True
+
+
+
+

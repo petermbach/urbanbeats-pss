@@ -490,6 +490,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionGrowth_Model"/>
      <addaction name="actionSpatial_Attraction"/>
      <addaction name="actionSpatial_Allocation"/>
+     <addaction name="actionDefine_IF"/>
     </widget>
     <widget class="QMenu" name="menuUrban_Planning">
      <property name="title">
@@ -698,7 +699,16 @@ p, li { white-space: pre-wrap; }
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_12">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>9</number>
+       </property>
+       <property name="topMargin">
+        <number>9</number>
+       </property>
+       <property name="rightMargin">
+        <number>9</number>
+       </property>
+       <property name="bottomMargin">
         <number>9</number>
        </property>
        <item>
@@ -1008,7 +1018,16 @@ p, li { white-space: pre-wrap; }
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_13">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>9</number>
+       </property>
+       <property name="topMargin">
+        <number>9</number>
+       </property>
+       <property name="rightMargin">
+        <number>9</number>
+       </property>
+       <property name="bottomMargin">
         <number>9</number>
        </property>
        <item>
@@ -1338,7 +1357,16 @@ p, li { white-space: pre-wrap; }
      <item>
       <widget class="QWidget" name="widget" native="true">
        <layout class="QVBoxLayout" name="verticalLayout_11">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>5</number>
+        </property>
+        <property name="topMargin">
+         <number>5</number>
+        </property>
+        <property name="rightMargin">
+         <number>5</number>
+        </property>
+        <property name="bottomMargin">
          <number>5</number>
         </property>
         <item>
@@ -1790,7 +1818,16 @@ p, li { white-space: pre-wrap; }
     <layout class="QVBoxLayout" name="verticalLayout_14">
      <item>
       <layout class="QGridLayout" name="gridLayout">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>5</number>
+       </property>
+       <property name="topMargin">
+        <number>5</number>
+       </property>
+       <property name="rightMargin">
+        <number>5</number>
+       </property>
+       <property name="bottomMargin">
         <number>5</number>
        </property>
        <item row="1" column="1">
@@ -2283,17 +2320,17 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionGrowth_Model">
    <property name="text">
-    <string>Growth Model</string>
+    <string>General Model Settings</string>
    </property>
   </action>
   <action name="actionSpatial_Attraction">
    <property name="text">
-    <string>Attraction Model</string>
+    <string>Spatial Interactions</string>
    </property>
   </action>
   <action name="actionSpatial_Allocation">
    <property name="text">
-    <string>Spatial Allocation</string>
+    <string>Growth Model</string>
    </property>
   </action>
   <action name="actionResidential">
@@ -2518,12 +2555,22 @@ p, li { white-space: pre-wrap; }
     <string>Land Use Reclassifier</string>
    </property>
   </action>
+  <action name="actionDefine_Influence_Functions">
+   <property name="text">
+    <string>Define Influence Functions</string>
+   </property>
+  </action>
+  <action name="actionDefine_IF">
+   <property name="text">
+    <string>Define Influence Functions</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
    <class>QWebView</class>
    <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
+   <header>QtWebKitWidgets/QWebView</header>
   </customwidget>
  </customwidgets>
  <tabstops>
