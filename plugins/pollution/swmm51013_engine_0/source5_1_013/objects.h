@@ -931,7 +931,8 @@ typedef struct
     double       evap;
     double       infil;
     double       runoff;
-    double       maxFlow;         
+    double       maxFlow;
+	double       cumRunDepth;                                                  //(Martijn)
 	double       impervRunoff;                                                 //(5.1.013)
 	double       pervRunoff;                                                   //
 }  TSubcatchStats;

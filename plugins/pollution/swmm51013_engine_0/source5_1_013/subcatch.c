@@ -744,7 +744,7 @@ double subcatch_getRunoff(int j, double tStep)
     // --- update the cumulative stats for this subcatchment
     stats_updateSubcatchStats(j, vRain, vRunon, Vevap, Vinfil + VlidInfil,
         vImpervRunoff, vPervRunoff, vOutflow + VlidDrain,                      //(5.1.013)
-        Subcatch[j].newRunoff + VlidDrain/tStep);
+        Subcatch[j].newRunoff + VlidDrain/tStep, (runoff / area) / tStep);     //(Martijn)
 
     // --- include this subcatchment's contribution to overall flow balance
     //     only if its outlet is a drainage system node

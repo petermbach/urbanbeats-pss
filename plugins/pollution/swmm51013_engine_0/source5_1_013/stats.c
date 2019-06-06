@@ -340,7 +340,7 @@ void  stats_report()
 void   stats_updateSubcatchStats(int j, double rainVol, double runonVol,
                                  double evapVol, double infilVol,
 	                             double impervVol, double pervVol,
-                                 double runoffVol, double runoff)
+                                 double runoffVol, double runoff, double runDepth)//(Martijn)
 //
 //  Input:   j = subcatchment index
 //           rainVol   = rainfall + snowfall volume (ft3)
@@ -363,6 +363,7 @@ void   stats_updateSubcatchStats(int j, double rainVol, double runonVol,
     SubcatchStats[j].maxFlow = MAX(SubcatchStats[j].maxFlow, runoff);
 	SubcatchStats[j].impervRunoff += impervVol;                                //(5.1.013)
 	SubcatchStats[j].pervRunoff += pervVol;                                    //
+	SubcatchStats[j].cumRunDepth += runDepth;								   //(Martijn)
 }
 
 //=============================================================================

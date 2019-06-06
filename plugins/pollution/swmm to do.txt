@@ -5,3 +5,9 @@ This can be done by adding the variable as Subcatch[j].cumRunoff in the function
 
 -	Use NO_BUILDUP and Kefeng's functions? --> add adwp variable to subcachments
 -	Use buildup function? --> Change Kefeng's model to fit a buildup + washoff combination rather than adwp. 
+-	subcatch_getRunoff uses nonLidarea to calculate the area to calculate runoff from. How will this affect the model (also in the future, if we wanna use LID measures modelling).
+
+
+the runDepth that I am using now includes the runon. We can remove it later I guess.
+cumRunDepth is since the start of the simulation. We should make a function to calculate it from the start of a rain event, and also to calculate ADWP
+instead of in SubcatchStats, should we do the cumRunDepth variable in Subcatch? 

@@ -163,6 +163,7 @@ void runoff_execute()
     double   runoffStep;               // runoff time step (sec)
     double   oldRunoffStep;            // previous runoff time step (sec)
     double   runoff;                   // subcatchment runoff (ft/sec)
+	double	 cumRunDepth			   // cumulative runoff over subcatch since start of simulation (Martijn)
     DateTime currentDate;              // current date/time 
     char     canSweep;                 // TRUE if street sweeping can occur
 
@@ -267,8 +268,10 @@ void runoff_execute()
         if ( canSweep && Subcatch[j].rainfall <= MIN_RUNOFF)
             surfqual_sweepBuildup(j, currentDate);
 
-        // --- compute pollutant washoff 
-        surfqual_getWashoff(j, runoff, runoffStep);
+        // --- compute pollutant 
+		cumRunDepth = SubcatchStats[j].cumRunDepth
+		printf("Cumulative runoff from the subcatch is: %d", cumRunDepth)
+        surfqual_getWashoff(j, cumRunDepth, runoffStep);	//(Martijn)
     }
 
     // --- update tracking of system-wide max. runoff rate
