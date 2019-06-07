@@ -1360,8 +1360,8 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>541</width>
-                   <height>1664</height>
+                   <width>461</width>
+                   <height>1667</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -3697,7 +3697,7 @@ p, li { white-space: pre-wrap; }
                    <x>0</x>
                    <y>0</y>
                    <width>541</width>
-                   <height>428</height>
+                   <height>520</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -3735,65 +3735,7 @@ p, li { white-space: pre-wrap; }
                     <item>
                      <widget class="QWidget" name="nhd_input_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_15">
-                       <item row="1" column="0">
-                        <widget class="QLabel" name="nhd_input_lbl2">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(Click on a row to see available options)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                         <property name="wordWrap">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="0">
-                        <widget class="QWidget" name="nhd_actions_widget" native="true">
-                         <layout class="QHBoxLayout" name="horizontalLayout_7">
-                          <item>
-                           <widget class="QPushButton" name="nhd_add_button">
-                            <property name="text">
-                             <string>Add New...</string>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QPushButton" name="nhd_edit_button">
-                            <property name="text">
-                             <string>Edit...</string>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QPushButton" name="nhd_delete_button">
-                            <property name="text">
-                             <string>Delete</string>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QPushButton" name="nhd_export_button">
-                            <property name="text">
-                             <string>Export to .ubif</string>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QPushButton" name="nhd_clear_button">
-                            <property name="text">
-                             <string>Clear</string>
-                            </property>
-                           </widget>
-                          </item>
-                         </layout>
-                        </widget>
-                       </item>
-                       <item row="0" column="0">
-                        <widget class="QLabel" name="nhd_input_lbl1">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;CURRENTLY ACTIVE INFLUENCE FUNCTIONS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="0">
+                       <item row="4" column="0">
                         <widget class="QTableWidget" name="nhd_table">
                          <property name="verticalScrollBarPolicy">
                           <enum>Qt::ScrollBarAlwaysOn</enum>
@@ -3823,7 +3765,7 @@ p, li { white-space: pre-wrap; }
                          </row>
                          <column>
                           <property name="text">
-                           <string>ID</string>
+                           <string>Name</string>
                           </property>
                          </column>
                          <column>
@@ -3838,17 +3780,12 @@ p, li { white-space: pre-wrap; }
                          </column>
                          <column>
                           <property name="text">
-                           <string>Min. Weight</string>
-                          </property>
-                         </column>
-                         <column>
-                          <property name="text">
-                           <string>Max. Weight</string>
+                           <string>Range</string>
                           </property>
                          </column>
                          <item row="0" column="0">
                           <property name="text">
-                           <string>1</string>
+                           <string>White-Engelen Dublin RES-RES</string>
                           </property>
                          </item>
                          <item row="0" column="1">
@@ -3863,14 +3800,125 @@ p, li { white-space: pre-wrap; }
                          </item>
                          <item row="0" column="3">
                           <property name="text">
-                           <string>0</string>
+                           <string>0 - 42.0</string>
                           </property>
                          </item>
-                         <item row="0" column="4">
-                          <property name="text">
-                           <string>50</string>
-                          </property>
-                         </item>
+                        </widget>
+                       </item>
+                       <item row="5" column="0">
+                        <widget class="QWidget" name="nhd_actions_widget" native="true">
+                         <layout class="QHBoxLayout" name="horizontalLayout_7">
+                          <item>
+                           <spacer name="horizontalSpacer_20">
+                            <property name="orientation">
+                             <enum>Qt::Horizontal</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>40</width>
+                              <height>20</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                          <item>
+                           <widget class="QPushButton" name="nhd_create_button_3">
+                            <property name="text">
+                             <string>Create...</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QPushButton" name="nhd_view_button">
+                            <property name="text">
+                             <string>View...</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QPushButton" name="nhd_remove_button">
+                            <property name="text">
+                             <string>Remove</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QPushButton" name="nhd_clear_button">
+                            <property name="text">
+                             <string>Clear</string>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
+                        </widget>
+                       </item>
+                       <item row="3" column="0">
+                        <widget class="QLabel" name="nhd_input_lbl3">
+                         <property name="text">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;INFLUENCE FUNCTIONS IN CURRENT SIMULATION SCENARIO&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="nhd_input_lbl1">
+                         <property name="text">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Add Influence Functions to Simulation&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="0">
+                        <widget class="QWidget" name="nhd_function_widget" native="true">
+                         <layout class="QGridLayout" name="gridLayout_30">
+                          <item row="0" column="0">
+                           <widget class="QLabel" name="functionselect_lbl">
+                            <property name="text">
+                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select a function:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                            </property>
+                            <property name="wordWrap">
+                             <bool>true</bool>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="1" column="1">
+                           <widget class="QPushButton" name="functionselection_add">
+                            <property name="minimumSize">
+                             <size>
+                              <width>150</width>
+                              <height>0</height>
+                             </size>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>150</width>
+                              <height>16777215</height>
+                             </size>
+                            </property>
+                            <property name="text">
+                             <string>Add to Simulation</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="1" column="2">
+                           <widget class="QPushButton" name="functionselect_view">
+                            <property name="text">
+                             <string>View Function Details</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="0" column="1" colspan="2">
+                           <widget class="QComboBox" name="functionselect_combo"/>
+                          </item>
+                         </layout>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="nhd_input_lbl2">
+                         <property name="text">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Select from the list of available functions in the project.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                         <property name="wordWrap">
+                          <bool>true</bool>
+                         </property>
                         </widget>
                        </item>
                       </layout>
@@ -4030,7 +4078,7 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>541</width>
+                   <width>522</width>
                    <height>778</height>
                   </rect>
                  </property>
@@ -7123,7 +7171,7 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>541</width>
+                   <width>484</width>
                    <height>1008</height>
                   </rect>
                  </property>

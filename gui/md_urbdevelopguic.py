@@ -1488,6 +1488,9 @@ class InfluenceFunctionGUILaunch(QtWidgets.QDialog):
         self.ui.datainputmethod_combo.currentIndexChanged.connect(self.update_inputmethod)
         self.ui.datapoints_spin.valueChanged.connect(self.update_data_table_rows)
         self.ui.savefunction_button.clicked.connect(self.save_current_function)
+        self.ui.exportfunction_button.clicked.connect(self.export_current_function)
+        self.ui.deletefunction_button.clicked.connect(self.delete_current_function)
+        self.ui.standardlib_combo.currentIndexChanged.connect(self.pre_fill_gui)
 
     def update_function_combobox(self):
         """Updates the combo box with selection options for functions."""
@@ -1525,12 +1528,16 @@ class InfluenceFunctionGUILaunch(QtWidgets.QDialog):
             self.ui.webView.setHtml("")
             self.ui.view_widget.setEnabled(1)
             self.ui.savefunction_button.setEnabled(1)
+            self.ui.deletefunction_button.setEnabled(0)
+            self.ui.exportfunction_button.setEnabled(0)
         else:
             # CASE 3 - A FUNCTION WAS SELECTED, VIEW THE FUNCTION
             self.set_if_gui_to_init_state()
             self.ui.input_widget.setEnabled(0)
             self.ui.view_widget.setEnabled(1)
             self.ui.savefunction_button.setEnabled(0)
+            self.ui.deletefunction_button.setEnabled(1)
+            self.ui.exportfunction_button.setEnabled(1)
             self.update_ui_from_comboselect()
 
     def update_ui_from_comboselect(self):
@@ -1547,10 +1554,16 @@ class InfluenceFunctionGUILaunch(QtWidgets.QDialog):
         if datainputmethod == "none":
             self.ui.standardlib_lbl.setText("Template")
             self.ui.standardlib_combo.setEnabled(0)
+            self.ui.standardlib_combo.clear()
+            self.ui.standardlib_combo.addItem("<none>")
+            self.ui.standardlib_combo.setCurrentIndex(0)
             pass    # Do nothing
         elif datainputmethod == "temp":     # Open file dialog to browse for template
             self.ui.standardlib_lbl.setText("Template")
             self.ui.standardlib_combo.setEnabled(0)
+            self.ui.standardlib_combo.clear()
+            self.ui.standardlib_combo.addItem("<none>")
+            self.ui.standardlib_combo.setCurrentIndex(0)
             datatype = "IF File (*.ubif)"
             message = "Browse for Influence Function..."
             datafile, _filter = QtWidgets.QFileDialog.getOpenFileName(self, message, os.curdir, datatype)
@@ -1563,18 +1576,41 @@ class InfluenceFunctionGUILaunch(QtWidgets.QDialog):
         elif datainputmethod == "manual":
             self.ui.standardlib_lbl.setText("Template")
             self.ui.standardlib_combo.setEnabled(0)
+            self.ui.standardlib_combo.clear()
+            self.ui.standardlib_combo.addItem("<none>")
+            self.ui.standardlib_combo.setCurrentIndex(0)
             self.current_active_ifobject = ubdatatypes.NeighbourhoodInfluenceFunction()
             self.update_gui_from_ifobject(self.current_active_ifobject)
-        elif datainputmethod == "pattern":
+        elif datainputmethod == "pattern":      # [TO DO] NEED TO FIGURE OUT PATTERNS
             self.ui.standardlib_lbl.setText("Select Standard Pattern")
             self.ui.standardlib_combo.setEnabled(1)
+            self.ui.standardlib_combo.clear()
+            self.ui.standardlib_combo.addItem("<none>")
+            self.ui.standardlib_combo.setCurrentIndex(0)
             self.current_active_ifobject = ubdatatypes.NeighbourhoodInfluenceFunction()
             self.update_gui_from_ifobject(self.current_active_ifobject)
         elif datainputmethod == "existing":
             self.ui.standardlib_lbl.setText("Select Function")
             self.ui.standardlib_combo.setEnabled(1)
+            self.ui.standardlib_combo.clear()
+            self.ui.standardlib_combo.addItem("<none>")
+            self.ui.standardlib_combo.setCurrentIndex(0)
+            [self.ui.standardlib_combo.addItem(str(self.functionlist[i].get_function_name()))
+             for i in range(len(self.functionlist))]
             self.current_active_ifobject = ubdatatypes.NeighbourhoodInfluenceFunction()
             self.update_gui_from_ifobject(self.current_active_ifobject)
+
+    def pre_fill_gui(self):
+        """Prefills the GUI with data from the function selected in the existing functions list."""
+        datainputmethod = self.datainputmethods[self.ui.datainputmethod_combo.currentIndex()]
+        if self.ui.standardlib_combo.currentIndex() in [-1, 0]:
+            return True
+        if datainputmethod == "existing":
+            ifo = self.functionlist[self.ui.standardlib_combo.currentIndex() - 1]
+            self.update_gui_from_ifobject(ifo)
+            self.ui.functionname_box.setText("unnamed")
+        elif datainputmethod == "patern":
+            pass
 
     def update_gui_from_ifobject(self, ifo):
         """Updates the GUI elements with the current data available in the active if_object passed to the function."""
@@ -1638,6 +1674,30 @@ class InfluenceFunctionGUILaunch(QtWidgets.QDialog):
         else:
             pass    # Rows are equal, do nothing
 
+    def export_current_function(self):
+        """Exports the current function to a .ubif file to be saved in the directory selected by the user."""
+        if self.ui.select_combo.currentIndex() in [0, self.ui.select_combo.count()-1]:
+            return True
+
+        datatype = "IF File (*.ubif)"
+        message = "Export to .ubif file, choose location..."
+        datafile, _filter = QtWidgets.QFileDialog.getSaveFileName(self, message, os.curdir, datatype)
+        if datafile and not self.current_active_ifobject is None:
+            self.current_active_ifobject.export_function_to_ubif(datafile)
+            prompt_msg = "Function successfully exported!"
+            QtWidgets.QMessageBox.information(self, 'Export Complete', prompt_msg, QtWidgets.QMessageBox.Ok)
+
+    def delete_current_function(self):
+        """Deletes the current active selection, removes this selection from the project."""
+        if self.ui.select_combo.currentIndex() in [0, self.ui.select_combo.count() - 1]:
+            return True
+
+        if not self.current_active_ifobject is None:
+            fid = self.current_active_ifobject.get_id()
+            self.simulation.remove_function_object_with_id(fid)
+            self.ui.select_combo.setCurrentIndex(0)
+            self.update_function_combobox()
+
     def update_plot(self):
         """Updates the plot in the viewer to reflect the changes in the data table. If the program cannot plot, it
         quits updating and leaves the existing plot showing."""
@@ -1669,7 +1729,7 @@ class InfluenceFunctionGUILaunch(QtWidgets.QDialog):
             </style>
         </head>
         <body>
-        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="file:///C:\Users\peter\Documents\Coding Projects\UrbanBEATS-PSS\libs\highcharts\code\highcharts.js"></script>
         
         <div id="container"></div>
         
@@ -1712,14 +1772,4 @@ class InfluenceFunctionGUILaunch(QtWidgets.QDialog):
         </html>
         """
         self.ui.webView.setHtml(html)
-
-    def save_values(self):
-        pass
-        # Update the IDs
-
-    def export_if_function(self):
-        pass
-
-    def delete_if_function(self):
-        pass
 
