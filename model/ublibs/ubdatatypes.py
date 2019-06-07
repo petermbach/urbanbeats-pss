@@ -29,6 +29,7 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 # --- --- --- --- --- ---
 
 # --- PYTHON LIBRARY IMPORTS ---
+import ast
 import numpy as np
 import os
 import gc
@@ -273,21 +274,31 @@ class NeighbourhoodInfluenceFunction(object):
     """The neighbourhood influence function. A function type used in urban modelling to determine the interaction
     effects of one land use to another and to use its weight as a basis for determining the likelihood of a transition
     to that land use."""
-    def __init__(self, nickname="unnamed", oluc="RES", tluc="RES"):
+    def __init__(self, nickname="unnamed", oluc="RES", tluc="RES", functiondict=None):
         """Initialisation of class constructor, takes several basic parameters.
 
         :param fid: Tracks the current ID of the
         :param oluc: origin land use, the land use the function applies to
         :param tluc: target land use, the land use the function searches for
+        :param functiondict: a dictionary containing all parameters preset as str() type.
         """
         self.__functiontype = "IF"    # default function type is 'influence function'
-        self.__functionID = None      # The function ID
-        self.__functionnickname = nickname
-        self.origin_landuse = oluc  # The land use the function applies to
-        self.target_landuse = tluc  # The land use the function checks for
-        self.__distance = []          # The distance list ()
-        self.__weight = []            # The function y-value, weight list()
-        self.datapoints = 0
+        if functiondict is None:
+            self.__functionID = None      # The function ID
+            self.__functionnickname = nickname
+            self.origin_landuse = oluc  # The land use the function applies to
+            self.target_landuse = tluc  # The land use the function checks for
+            self.__distance = []          # The distance list ()
+            self.__weight = []            # The function y-value, weight list()
+            self.datapoints = 0
+        else:       # Define the function from the dictionary, which is full of strings.
+            self.__functionID = functiondict["fid"]
+            self.__functionnickname = functiondict["name"]
+            self.origin_landuse = functiondict["oluc"]
+            self.target_landuse = functiondict["tluc"]
+            self.__distance = ast.literal_eval(functiondict["xdata"])
+            self.__weight = ast.literal_eval(functiondict["ydata"])
+            self.datapoints = len(self.__distance)
 
     def assign_id(self, idnum):
         """Assigns the provided idnum to the __functionID property. idnum is based on the function library
@@ -322,12 +333,15 @@ class NeighbourhoodInfluenceFunction(object):
         """Sets a new function name to fname."""
         self.__functionnickname = str(fname)
 
-    def export_function_to_ubif(self, filepath, projectsave=False):
+    def export_function_to_ubif(self, filepath):
         """Exports the current data to a ubif file. The file has origin and target land use saved.
 
         :param filepath: the full filepath where the file should be saved to including filename.
         """
-        f = open(filepath+".ubif", "w")
+        if ".ubif" not in filepath:
+            f = open(filepath+".ubif", "w")
+        else:
+            f = open(filepath, "w")
         f.write("functionname,"+str(self.__functionnickname)+"\n")
         f.write("originluc,"+str(self.origin_landuse)+"\n")
         f.write("targetluc,"+str(self.target_landuse)+"\n")
@@ -336,6 +350,20 @@ class NeighbourhoodInfluenceFunction(object):
             f.write(str(self.__distance[i]) + "," + str(self.__weight[i]) + "\n")
         f.close()
         return True
+
+    def get_function_data_as_xml(self):
+        """Serialises the function's data as an xml text that is used when saving the data to file."""
+        xmltext = []
+        xmltext.append('\t\t<function>\n')
+        xmltext.append('\t\t\t<functiontype>IF</functiontype>\n')
+        xmltext.append('\t\t\t<fid>'+str(self.__functionID)+'</fid>\n')
+        xmltext.append('\t\t\t<name>'+str(self.__functionnickname)+'</name>\n')
+        xmltext.append('\t\t\t<oluc>'+str(self.origin_landuse)+'</oluc>\n')
+        xmltext.append('\t\t\t<tluc>'+str(self.target_landuse)+'</tluc>\n')
+        xmltext.append('\t\t\t<xdata>'+str(self.__distance)+'</xdata>\n')
+        xmltext.append('\t\t\t<ydata>'+str(self.__weight)+'</ydata>\n')
+        xmltext.append('\t\t</function>\n')
+        return xmltext
 
     def create_from_ubif(self, filepath):
         """Infills the distance and weight variables from a .ubif file. These files are written by default
