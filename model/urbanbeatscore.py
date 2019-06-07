@@ -41,6 +41,7 @@ import gc
 import ubdatalibrary
 import ubscenarios
 import ublibs.ubspatial as ubspatial
+import ublibs.ubdatatypes as ubdata
 import modules.md_decisionanalysis
 import modules.md_climatesetup
 import modules.md_delinblocks
@@ -145,6 +146,9 @@ class UrbanBeatsSim(object):
             datalib.setup_library_from_xml()
             self.set_data_library(datalib)
 
+            # Restore the list of functions saved in the project
+            self.restore_functions_from_xml(self.__projectpath)
+
             # Create a new project log
             projectlog = UrbanBeatsLog(self.__projectpath)
             self.set_project_log(projectlog)    # Go through existing project logs and update or add log info [TO DO]
@@ -244,9 +248,50 @@ class UrbanBeatsSim(object):
                 subset.append(f)
         return subset
 
+    def remove_function_object_with_id(self, fid):
+        """Removes a function object from the library with the ID fid."""
+        for i in range(len(self.__functions)):
+            if self.__functions[i].get_id() == fid:
+                self.__functions.pop(i)
+        return True
+
     def add_new_function_to_library(self, function_obj):
         """Adds a new function to the library of functions."""
         self.__functions.append(function_obj)
+        return True
+
+    def consolidate_functions_list(self):
+        """Saves functions in the active list to an xml file."""
+        projectpath = self.get_project_parameter("projectpath")
+        projectname = self.get_project_parameter("name")
+        f = open(projectpath+"/"+projectname+"/functions.xml", 'w')
+        f.write('<URBANBEATSPROJECTFUNCTIONS creator="Peter M. Bach" version="1.0">\n')
+        f.write('\t<functionlist>\n')
+        for i in range(len(self.__functions)):
+            # Get the text for each function, write the text to the file.
+            for line in self.__functions[i].get_function_data_as_xml():
+                f.write(line)
+        f.write('\t</functionlist>\n')
+        f.write('</URBANBEATSPROJECTFUNCTIONS>\n')
+        f.close()
+
+    def restore_functions_from_xml(self, projectpath):
+        """Restores functions from the project xml file."""
+        try:
+            projinfo = ET.parse(projectpath+"/functions.xml")
+        except IOError:
+            return False
+
+        root = projinfo.getroot()
+        flist = root.find('functionlist')
+        for child in flist:     # Loop across functions
+            fdict = {}
+            for atts in child:  # Get all the attributes of the current function
+                fdict[atts.tag] = atts.text
+            # Now figure out how to set the function
+            if fdict["functiontype"] == "IF":       # INFLUENCE FUNCTION
+                print fdict
+                self.__functions.append(ubdata.NeighbourhoodInfluenceFunction(functiondict=fdict))
         return True
 
     def write_project_info_file(self):
