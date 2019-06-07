@@ -439,6 +439,7 @@ void  subcatch_initState(int j)
     Subcatch[j].rainfall = 0.0;
     Subcatch[j].oldRunoff = 0.0;
     Subcatch[j].newRunoff = 0.0;
+	Subcatch[j].cumRunDepth = 0.0;											   //(Martijn)
     Subcatch[j].oldSnowDepth = 0.0;
     Subcatch[j].newSnowDepth = 0.0;
     Subcatch[j].runon = 0.0;
@@ -742,9 +743,13 @@ double subcatch_getRunoff(int j, double tStep)
     vRain = Subcatch[j].rainfall * tStep * area;
 
     // --- update the cumulative stats for this subcatchment
-    stats_updateSubcatchStats(j, vRain, vRunon, Vevap, Vinfil + VlidInfil,
-        vImpervRunoff, vPervRunoff, vOutflow + VlidDrain,                      //(5.1.013)
-        Subcatch[j].newRunoff + VlidDrain/tStep, (runoff / area) / tStep);     //(Martijn)
+	stats_updateSubcatchStats(j, vRain, vRunon, Vevap, Vinfil + VlidInfil,
+		vImpervRunoff, vPervRunoff, vOutflow + VlidDrain,                      //(5.1.013)
+		Subcatch[j].newRunoff + VlidDrain / tStep);
+
+	// --- update the cumulative runoff generated on the subcatchment for
+	//	   pollution modelling puposes										   //(Martijn)
+	Subcatch[j].cumRunDepth += (runoff / area) / tStep;
 
     // --- include this subcatchment's contribution to overall flow balance
     //     only if its outlet is a drainage system node

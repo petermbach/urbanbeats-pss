@@ -390,6 +390,7 @@ typedef struct
    double        runon;           // runon from other subcatchments (cfs)
    double        oldRunoff;       // previous runoff (cfs)
    double        newRunoff;       // current runoff (cfs)
+   double        cumRunDepth;     // cumulative runoff before internal routing  //(Martijn)
    double        oldSnowDepth;    // previous snow depth (ft)
    double        newSnowDepth;    // current snow depth (ft)
    double*       oldQual;         // previous runoff quality (mass/L)
@@ -932,7 +933,6 @@ typedef struct
     double       infil;
     double       runoff;
     double       maxFlow;
-	double       cumRunDepth;                                                  //(Martijn)
 	double       impervRunoff;                                                 //(5.1.013)
 	double       pervRunoff;                                                   //
 }  TSubcatchStats;
