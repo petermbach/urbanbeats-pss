@@ -3695,9 +3695,9 @@ p, li { white-space: pre-wrap; }
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-109</y>
+                   <y>-248</y>
                    <width>541</width>
-                   <height>520</height>
+                   <height>631</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -3818,7 +3818,7 @@ p, li { white-space: pre-wrap; }
                          </item>
                         </widget>
                        </item>
-                       <item row="5" column="0">
+                       <item row="6" column="0">
                         <widget class="QWidget" name="nhd_actions_widget" native="true">
                          <layout class="QHBoxLayout" name="horizontalLayout_7">
                           <item>
@@ -3879,6 +3879,16 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="nhd_input_lbl2">
+                         <property name="text">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Select from the list of available functions in the project.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                         <property name="wordWrap">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
                        <item row="2" column="0">
                         <widget class="QWidget" name="nhd_function_widget" native="true">
                          <layout class="QGridLayout" name="gridLayout_30">
@@ -3924,13 +3934,38 @@ p, li { white-space: pre-wrap; }
                          </layout>
                         </widget>
                        </item>
-                       <item row="1" column="0">
-                        <widget class="QLabel" name="nhd_input_lbl2">
+                       <item row="7" column="0">
+                        <widget class="QLabel" name="ee_lbl">
                          <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Select from the list of available functions in the project.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Accounting for Edge Effects&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
-                         <property name="wordWrap">
-                          <bool>true</bool>
+                        </widget>
+                       </item>
+                       <item row="10" column="0">
+                        <widget class="QRadioButton" name="ee_proportioning">
+                         <property name="text">
+                          <string>Add proportioned amount of interaction to edge cells</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="9" column="0">
+                        <widget class="QRadioButton" name="ee_averaging">
+                         <property name="text">
+                          <string>Average magnitude of interaction over cells considered</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="8" column="0">
+                        <widget class="QRadioButton" name="ee_noaccount">
+                         <property name="text">
+                          <string>Do not account for Edge Effects</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="11" column="0">
+                        <widget class="QRadioButton" name="ee_ppavg">
+                         <property name="text">
+                          <string>Proportion the amount of interaction at edge cells and average magnitudes</string>
                          </property>
                         </widget>
                        </item>

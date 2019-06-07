@@ -1206,6 +1206,15 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         # TAB 4 - Neighbourhood Effect
         self.ifo_selection = self.module.get_parameter("function_ids")
         self.populate_if_table_from_module()
+        if self.module.get_parameter("edge_effects_method") == "NA":
+            self.ui.ee_noaccount.setChecked(1)
+        elif self.module.get_parameter("edge_effects_method") == "AVG":
+            self.ui.ee_averaging.setChecked(1)
+        elif self.module.get_parameter("edge_effects_method") == "PP":
+            self.ui.ee_proportioning.setChecked(1)
+        else:
+            self.ui.ee_ppavg.setChecked(1)
+
         # END OF FILING IN GUI VALUES
         return True
 
@@ -1524,6 +1533,15 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
 
         # NEIGHBOURHOOD EFFECT
         self.module.set_parameter("function_ids", self.ifo_selection)
+        if self.ui.ee_noaccount.isChecked():
+            self.module.set_parameter("edge_effects_method", "NA")
+        elif self.ui.ee_averaging.isChecked():
+            self.module.set_parameter("edge_effects_method", "AVG")
+        elif self.ui.ee_proportioning.isChecked():
+            self.module.set_parameter("edge_effects_method", "PP")
+        else:
+            self.module.set_parameter("edge_effects_method", "PPAVG")
+
         return True
 
 

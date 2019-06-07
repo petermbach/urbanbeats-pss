@@ -134,64 +134,64 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     # fielddefmatrix.append(ogr.FieldDefn("ZONE_IND", ogr.OFTInteger))
     # fielddefmatrix.append(ogr.FieldDefn("ZONE_ORC", ogr.OFTInteger))
 
-    fielddefmatrix.append(ogr.FieldDefn("NHD_N", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("NHD_NE", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("NHD_E", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("NHD_SE", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("NHD_S", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("NHD_SW", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("NHD_W", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("NHD_NW", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("NHAdjacent", ogr.OFTString))
+    # fielddefmatrix.append(ogr.FieldDefn("NHD_N", ogr.OFTInteger))
+    # fielddefmatrix.append(ogr.FieldDefn("NHD_NE", ogr.OFTInteger))
+    # fielddefmatrix.append(ogr.FieldDefn("NHD_E", ogr.OFTInteger))
+    # fielddefmatrix.append(ogr.FieldDefn("NHD_SE", ogr.OFTInteger))
+    # fielddefmatrix.append(ogr.FieldDefn("NHD_S", ogr.OFTInteger))
+    # fielddefmatrix.append(ogr.FieldDefn("NHD_SW", ogr.OFTInteger))
+    # fielddefmatrix.append(ogr.FieldDefn("NHD_W", ogr.OFTInteger))
+    # fielddefmatrix.append(ogr.FieldDefn("NHD_NW", ogr.OFTInteger))
+    # fielddefmatrix.append(ogr.FieldDefn("NHAdjacent", ogr.OFTString))
 
-    if map_attr.get_attribute("SUIT_ELEV"):
-        fielddefmatrix.append(ogr.FieldDefn("Elevation", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("Slope_PCT", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("Slope_DEG", ogr.OFTReal))
-        fielddefmatrix.append(ogr.FieldDefn("Aspect_DEG", ogr.OFTReal))
-    if map_attr.get_attribute("SUIT_SLOPE"):
-        fielddefmatrix.append(ogr.FieldDefn("Slope", ogr.OFTReal))
-    if map_attr.get_attribute("SUIT_ASPECT"):
-        fielddefmatrix.append(ogr.FieldDefn("Aspect", ogr.OFTReal))
-    if map_attr.get_attribute("SUIT_SOIL"):
-        fielddefmatrix.append(ogr.FieldDefn("SoilClass", ogr.OFTString))
-    if map_attr.get_attribute("SUIT_GW"):
-        fielddefmatrix.append(ogr.FieldDefn("DepthToGW", ogr.OFTReal))
-
-    fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_R", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_C", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_I", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_O", ogr.OFTReal))
-
-    fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_R", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_C", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_I", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_O", ogr.OFTReal))
-
-    fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_R", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_C", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_I", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_O", ogr.OFTReal))
-
-    fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_R", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_C", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_I", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_O", ogr.OFTReal))
+    # if map_attr.get_attribute("SUIT_ELEV"):
+    #     fielddefmatrix.append(ogr.FieldDefn("Elevation", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("Slope_PCT", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("Slope_DEG", ogr.OFTReal))
+    #     fielddefmatrix.append(ogr.FieldDefn("Aspect_DEG", ogr.OFTReal))
+    # if map_attr.get_attribute("SUIT_SLOPE"):
+    #     fielddefmatrix.append(ogr.FieldDefn("Slope", ogr.OFTReal))
+    # if map_attr.get_attribute("SUIT_ASPECT"):
+    #     fielddefmatrix.append(ogr.FieldDefn("Aspect", ogr.OFTReal))
+    # if map_attr.get_attribute("SUIT_SOIL"):
+    #     fielddefmatrix.append(ogr.FieldDefn("SoilClass", ogr.OFTString))
+    # if map_attr.get_attribute("SUIT_GW"):
+    #     fielddefmatrix.append(ogr.FieldDefn("DepthToGW", ogr.OFTReal))
+    #
+    # fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_R", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_C", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_I", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_O", ogr.OFTReal))
+    #
+    # fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_R", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_C", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_I", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_O", ogr.OFTReal))
+    #
+    # fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_R", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_C", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_I", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_O", ogr.OFTReal))
+    #
+    # fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_R", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_C", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_I", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_O", ogr.OFTReal))
 
     # fielddefmatrix.append(ogr.FieldDefn("SU_CUSTO_R", ogr.OFTReal))
     # fielddefmatrix.append(ogr.FieldDefn("SU_CUSTO_C", ogr.OFTReal))
     # fielddefmatrix.append(ogr.FieldDefn("SU_CUSTO_I", ogr.OFTReal))
     # fielddefmatrix.append(ogr.FieldDefn("SU_CUSTO_O", ogr.OFTReal))
 
-    fielddefmatrix.append(ogr.FieldDefn("SUIT_RES", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SUIT_COM", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SUIT_IND", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SUIT_ORC", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("SUIT_RES", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("SUIT_COM", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("SUIT_IND", ogr.OFTReal))
+    # fielddefmatrix.append(ogr.FieldDefn("SUIT_ORC", ogr.OFTReal))
 
-    # fielddefmatrix.append(ogr.FieldDefn("INFLU_RES", ogr.OFTReal))
-    # fielddefmatrix.append(ogr.FieldDefn("INFLU_COM", ogr.OFTReal))
-    # fielddefmatrix.append(ogr.FieldDefn("INFLU_IND", ogr.OFTReal))
-    # fielddefmatrix.append(ogr.FieldDefn("INFLU_ORC", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("INFLU_RES", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("INFLU_COM", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("INFLU_IND", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("INFLU_ORC", ogr.OFTReal))
 
     # Create the fields
     for field in fielddefmatrix:
@@ -287,56 +287,56 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         # feature.SetField("ZONE_IND", int(currentAttList.get_attribute("ZONE_IND")))
         # feature.SetField("ZONE_ORC", int(currentAttList.get_attribute("ZONE_ORC")))
 
-        feature.SetField("NHD_N", int(currentAttList.get_attribute("NHD_N")))
-        feature.SetField("NHD_NE", int(currentAttList.get_attribute("NHD_NE")))
-        feature.SetField("NHD_E", int(currentAttList.get_attribute("NHD_E")))
-        feature.SetField("NHD_SE", int(currentAttList.get_attribute("NHD_SE")))
-        feature.SetField("NHD_S", int(currentAttList.get_attribute("NHD_S")))
-        feature.SetField("NHD_SW", int(currentAttList.get_attribute("NHD_SW")))
-        feature.SetField("NHD_W", int(currentAttList.get_attribute("NHD_W")))
-        feature.SetField("NHD_NW", int(currentAttList.get_attribute("NHD_NW")))
+        # feature.SetField("NHD_N", int(currentAttList.get_attribute("NHD_N")))
+        # feature.SetField("NHD_NE", int(currentAttList.get_attribute("NHD_NE")))
+        # feature.SetField("NHD_E", int(currentAttList.get_attribute("NHD_E")))
+        # feature.SetField("NHD_SE", int(currentAttList.get_attribute("NHD_SE")))
+        # feature.SetField("NHD_S", int(currentAttList.get_attribute("NHD_S")))
+        # feature.SetField("NHD_SW", int(currentAttList.get_attribute("NHD_SW")))
+        # feature.SetField("NHD_W", int(currentAttList.get_attribute("NHD_W")))
+        # feature.SetField("NHD_NW", int(currentAttList.get_attribute("NHD_NW")))
         # feature.SetField("NHAdjacent", str(",".join(map(str, currentAttList.get_attribute("NHAdjacent")))))
         # Neighbourhood attribute converts the [ ] array of BlockIDs to a comma-separated list "#,#,#,#"
 
-        if map_attr.get_attribute("SUIT_ELEV"):
-            feature.SetField("Elevation", float(currentAttList.get_attribute("Elevation")))
-            feature.SetField("Slope_PCT", float(currentAttList.get_attribute("Slope_PCT")))
-            feature.SetField("Slope_DEG", float(currentAttList.get_attribute("Slope_DEG")))
-            feature.SetField("Aspect_DEG", float(currentAttList.get_attribute("Aspect_DEG")))
-        if map_attr.get_attribute("SUIT_SOIL"):
-            feature.SetField("SoilClass", str(currentAttList.get_attribute("SoilClass")))
-        if map_attr.get_attribute("SUIT_GW"):
-            feature.SetField("DepthToGW", float(currentAttList.get_attribute("DepthToGW")))
+        # if map_attr.get_attribute("SUIT_ELEV"):
+        #     feature.SetField("Elevation", float(currentAttList.get_attribute("Elevation")))
+        #     feature.SetField("Slope_PCT", float(currentAttList.get_attribute("Slope_PCT")))
+        #     feature.SetField("Slope_DEG", float(currentAttList.get_attribute("Slope_DEG")))
+        #     feature.SetField("Aspect_DEG", float(currentAttList.get_attribute("Aspect_DEG")))
+        # if map_attr.get_attribute("SUIT_SOIL"):
+        #     feature.SetField("SoilClass", str(currentAttList.get_attribute("SoilClass")))
+        # if map_attr.get_attribute("SUIT_GW"):
+        #     feature.SetField("DepthToGW", float(currentAttList.get_attribute("DepthToGW")))
+        #
+        # feature.SetField("SU_SLOPE_R", float(currentAttList.get_attribute("SU_SLOPE_R")))
+        # feature.SetField("SU_SLOPE_C", float(currentAttList.get_attribute("SU_SLOPE_C")))
+        # feature.SetField("SU_SLOPE_I", float(currentAttList.get_attribute("SU_SLOPE_I")))
+        # feature.SetField("SU_SLOPE_O", float(currentAttList.get_attribute("SU_SLOPE_O")))
+        #
+        # feature.SetField("SU_ASPCT_R", float(currentAttList.get_attribute("SU_ASPCT_R")))
+        # feature.SetField("SU_ASPCT_C", float(currentAttList.get_attribute("SU_ASPCT_C")))
+        # feature.SetField("SU_ASPCT_I", float(currentAttList.get_attribute("SU_ASPCT_I")))
+        # feature.SetField("SU_ASPCT_O", float(currentAttList.get_attribute("SU_ASPCT_O")))
+        #
+        # feature.SetField("SU_SOIL_R", float(currentAttList.get_attribute("SU_SOIL_R")))
+        # feature.SetField("SU_SOIL_C", float(currentAttList.get_attribute("SU_SOIL_C")))
+        # feature.SetField("SU_SOIL_I", float(currentAttList.get_attribute("SU_SOIL_I")))
+        # feature.SetField("SU_SOIL_O", float(currentAttList.get_attribute("SU_SOIL_O")))
+        #
+        # feature.SetField("SU_GWATD_R", float(currentAttList.get_attribute("SU_GWATD_R")))
+        # feature.SetField("SU_GWATD_C", float(currentAttList.get_attribute("SU_GWATD_C")))
+        # feature.SetField("SU_GWATD_I", float(currentAttList.get_attribute("SU_GWATD_I")))
+        # feature.SetField("SU_GWATD_O", float(currentAttList.get_attribute("SU_GWATD_O")))
+        #
+        # feature.SetField("SUIT_RES", float(currentAttList.get_attribute("SUIT_RES")))
+        # feature.SetField("SUIT_COM", float(currentAttList.get_attribute("SUIT_COM")))
+        # feature.SetField("SUIT_IND", float(currentAttList.get_attribute("SUIT_IND")))
+        # feature.SetField("SUIT_ORC", float(currentAttList.get_attribute("SUIT_ORC")))
 
-        feature.SetField("SU_SLOPE_R", float(currentAttList.get_attribute("SU_SLOPE_R")))
-        feature.SetField("SU_SLOPE_C", float(currentAttList.get_attribute("SU_SLOPE_C")))
-        feature.SetField("SU_SLOPE_I", float(currentAttList.get_attribute("SU_SLOPE_I")))
-        feature.SetField("SU_SLOPE_O", float(currentAttList.get_attribute("SU_SLOPE_O")))
-
-        feature.SetField("SU_ASPCT_R", float(currentAttList.get_attribute("SU_ASPCT_R")))
-        feature.SetField("SU_ASPCT_C", float(currentAttList.get_attribute("SU_ASPCT_C")))
-        feature.SetField("SU_ASPCT_I", float(currentAttList.get_attribute("SU_ASPCT_I")))
-        feature.SetField("SU_ASPCT_O", float(currentAttList.get_attribute("SU_ASPCT_O")))
-
-        feature.SetField("SU_SOIL_R", float(currentAttList.get_attribute("SU_SOIL_R")))
-        feature.SetField("SU_SOIL_C", float(currentAttList.get_attribute("SU_SOIL_C")))
-        feature.SetField("SU_SOIL_I", float(currentAttList.get_attribute("SU_SOIL_I")))
-        feature.SetField("SU_SOIL_O", float(currentAttList.get_attribute("SU_SOIL_O")))
-
-        feature.SetField("SU_GWATD_R", float(currentAttList.get_attribute("SU_GWATD_R")))
-        feature.SetField("SU_GWATD_C", float(currentAttList.get_attribute("SU_GWATD_C")))
-        feature.SetField("SU_GWATD_I", float(currentAttList.get_attribute("SU_GWATD_I")))
-        feature.SetField("SU_GWATD_O", float(currentAttList.get_attribute("SU_GWATD_O")))
-
-        feature.SetField("SUIT_RES", float(currentAttList.get_attribute("SUIT_RES")))
-        feature.SetField("SUIT_COM", float(currentAttList.get_attribute("SUIT_COM")))
-        feature.SetField("SUIT_IND", float(currentAttList.get_attribute("SUIT_IND")))
-        feature.SetField("SUIT_ORC", float(currentAttList.get_attribute("SUIT_ORC")))
-
-        # feature.SetField("INFLU_RES", float(currentAttList.get_attribute("INFLU_RES")))
-        # feature.SetField("INFLU_COM", float(currentAttList.get_attribute("INFLU_COM")))
-        # feature.SetField("INFLU_IND", float(currentAttList.get_attribute("INFLU_IND")))
-        # feature.SetField("INFLU_ORC", float(currentAttList.get_attribute("INFLU_ORC")))
+        feature.SetField("INFLU_RES", float(currentAttList.get_attribute("INFLU_RES")))
+        feature.SetField("INFLU_COM", float(currentAttList.get_attribute("INFLU_COM")))
+        feature.SetField("INFLU_IND", float(currentAttList.get_attribute("INFLU_IND")))
+        feature.SetField("INFLU_ORC", float(currentAttList.get_attribute("INFLU_ORC")))
 
         layer.CreateFeature(feature)
     shapefile.Destroy()
