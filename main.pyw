@@ -738,6 +738,11 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.__activeScenario is not None:
             self.__activeScenario.consolidate_scenario()
 
+        # Consolidate the functions list
+        self.printc("Consolidating Project Functions List")
+        if self.__activeSimulationObject is not None:
+            self.__activeSimulationObject.consolidate_functions_list()
+
         # Add project to the recent.cfg file
         self.update_recent_cfg(self.__activeSimulationObject.get_project_parameter("name"),
                                self.__activeSimulationObject.get_project_parameter("modeller"),
