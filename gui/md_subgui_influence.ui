@@ -44,16 +44,6 @@ p, li { white-space: pre-wrap; }
     <widget class="QWidget" name="input_widget" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QLabel" name="functionname_lbl">
-        <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Define Function Nickname&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="functionname_box"/>
-      </item>
-      <item>
        <widget class="QLabel" name="datainputmethod_lbl">
         <property name="text">
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Select Method of Data Input:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -122,6 +112,16 @@ p, li { white-space: pre-wrap; }
          </property>
         </item>
        </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="functionname_lbl">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Define Function Nickname&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="functionname_box"/>
       </item>
       <item>
        <widget class="QLabel" name="landuse_title">
