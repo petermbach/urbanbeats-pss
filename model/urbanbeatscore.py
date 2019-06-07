@@ -248,6 +248,13 @@ class UrbanBeatsSim(object):
                 subset.append(f)
         return subset
 
+    def get_function_with_id(self, fid):
+        """Returns a function object with a specific ID indicated by fid."""
+        for i in range(len(self.__functions)):
+            if self.__functions[i].get_id() == fid:
+                return self.__functions[i]
+        return None
+
     def remove_function_object_with_id(self, fid):
         """Removes a function object from the library with the ID fid."""
         for i in range(len(self.__functions)):

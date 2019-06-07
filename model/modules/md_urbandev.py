@@ -615,18 +615,11 @@ class UrbanDevelopment(UBModule):
         self.zoning_custom_orc = 0
 
         # --- TAB 4 - NEIGHBOURHOOD INTERACTION
-        # self.create_parameter("function_ids", LISTDOUBLE, "list of function ids containing interaction data")
-        # self.create_parameter("landuse_cats", LISTSTRING, "list of land use categories that functions correspond to")
-        # self.create_parameter("landuse_influence", LISTSTRING, "list of land use categories targeted by functions.")
-        # self.create_parameter("data_files", LISTSTRING, "list of filepaths to the function data")
-        # self.function_ids = []
-        # self.landuse_cats = []
-        # self.landuse_influence = []
-        # self.data_files = []
+        self.create_parameter("function_ids", LISTDOUBLE, "list of function ids containing interaction data")
+        self.function_ids = []
 
         # ADVANCED PARAMETERS
         self.global_offsets = None
-        self.influence_functions = {}
 
     def run_module(self):
         """Runs the urban development module's simulation. Processes all inputs to simulate changes in land use and

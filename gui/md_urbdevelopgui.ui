@@ -3695,7 +3695,7 @@ p, li { white-space: pre-wrap; }
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>0</y>
+                   <y>-109</y>
                    <width>541</width>
                    <height>520</height>
                   </rect>
@@ -3752,6 +3752,9 @@ p, li { white-space: pre-wrap; }
                          <property name="selectionBehavior">
                           <enum>QAbstractItemView::SelectRows</enum>
                          </property>
+                         <property name="sortingEnabled">
+                          <bool>true</bool>
+                         </property>
                          <attribute name="horizontalHeaderStretchLastSection">
                           <bool>true</bool>
                          </attribute>
@@ -3765,40 +3768,50 @@ p, li { white-space: pre-wrap; }
                          </row>
                          <column>
                           <property name="text">
+                           <string>FID</string>
+                          </property>
+                         </column>
+                         <column>
+                          <property name="text">
                            <string>Name</string>
                           </property>
                          </column>
                          <column>
                           <property name="text">
-                           <string>Land Use</string>
+                           <string>Land Use Classes</string>
                           </property>
                          </column>
                          <column>
                           <property name="text">
-                           <string>Influenced by</string>
+                           <string>Distance</string>
                           </property>
                          </column>
                          <column>
                           <property name="text">
-                           <string>Range</string>
+                           <string>Weight</string>
                           </property>
                          </column>
                          <item row="0" column="0">
                           <property name="text">
-                           <string>White-Engelen Dublin RES-RES</string>
+                           <string>fx_1</string>
                           </property>
                          </item>
                          <item row="0" column="1">
                           <property name="text">
-                           <string>Residential</string>
+                           <string>White-Engelen Dublin RES-RES</string>
                           </property>
                          </item>
                          <item row="0" column="2">
                           <property name="text">
-                           <string>Residential</string>
+                           <string>RES-&gt;RES</string>
                           </property>
                          </item>
                          <item row="0" column="3">
+                          <property name="text">
+                           <string>0.1-0.8</string>
+                          </property>
+                         </item>
+                         <item row="0" column="4">
                           <property name="text">
                            <string>0 - 42.0</string>
                           </property>
@@ -3822,7 +3835,7 @@ p, li { white-space: pre-wrap; }
                            </spacer>
                           </item>
                           <item>
-                           <widget class="QPushButton" name="nhd_create_button_3">
+                           <widget class="QPushButton" name="nhd_create_button">
                             <property name="text">
                              <string>Create...</string>
                             </property>

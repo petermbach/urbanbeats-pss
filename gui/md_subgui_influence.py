@@ -203,7 +203,7 @@ class Ui_InfluenceFunctionDialog(object):
 
     def retranslateUi(self, InfluenceFunctionDialog):
         _translate = QtCore.QCoreApplication.translate
-        InfluenceFunctionDialog.setWindowTitle(_translate("InfluenceFunctionDialog", "Define Custom Pattern"))
+        InfluenceFunctionDialog.setWindowTitle(_translate("InfluenceFunctionDialog", "Define Influence Functions"))
         self.title.setText(_translate("InfluenceFunctionDialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"

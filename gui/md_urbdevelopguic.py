@@ -202,7 +202,8 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
          for i in range(len(self.overlaymaps[0]))]
 
         # TAB 4 - NEIGHBOURHOOD INTERACTION
-        # --- None ---
+        self.setup_if_function_select_combo()
+        self.ifo_selection = []
 
         self.gui_state = "initial"
         self.change_active_module()
@@ -279,12 +280,12 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.zoning_constraints_custom_combo.currentIndexChanged.connect(self.enable_disable_zoning_widgets)
 
         # NEIGHBOURHOOD EFFECT
-        self.ui.nhd_add_button.clicked.connect(lambda: self.launch_define_influence_function_gui(0))
-        self.ui.nhd_edit_button.clicked.connect(lambda: self.launch_define_influence_function_gui(-1))
-        self.ui.nhd_delete_button.clicked.connect(self.delete_selected_influence_function)
-        self.ui.nhd_export_button.clicked.connect(self.export_selected_influence_function)
-        self.ui.nhd_clear_button.clicked.connect(self.clear_influence_functions)
-        self.ui.nhd_table.resizeColumnToContents(0)
+        self.ui.functionselection_add.clicked.connect(self.add_if_function_to_table)
+        self.ui.functionselect_view.clicked.connect(lambda: self.view_selectedfunction("combo"))
+        self.ui.nhd_create_button.clicked.connect(self.open_if_function_dialog)
+        self.ui.nhd_view_button.clicked.connect(lambda: self.view_selectedfunction("table"))
+        self.ui.nhd_remove_button.clicked.connect(self.remove_table_selection)
+        self.ui.nhd_clear_button.clicked.connect(self.clear_if_table)
 
         # FOOTER
         self.ui.buttonBox.accepted.connect(self.save_values)
@@ -309,30 +310,106 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
                 dataref_array[1].append(dref.get_data_id())
         return dataref_array
 
-    def launch_define_influence_function_gui(self, fid):
-        """Calls the influence function's GUI based on the FID value. If a new function is being create, the FID value
-        is 0.
+    def clear_if_table(self):
+        """Clears the entire Influence Function Table. Does not update the module parameter yet."""
+        self.ifo_selection = []
+        self.ui.nhd_table.setRowCount(0)
 
-        :param fid: value of the influence function to display in the GUI. If value is 0, default GUI state is used.
+    def setup_if_function_select_combo(self):
+        """Sets up the if_functions combo box. Called also when the influence function creation dialog is closed, while
+        editing module parameters."""
+        self.if_functions = self.simulation.get_all_function_objects_of_type("IF")
+        self.ui.functionselect_combo.clear()
+        self.ui.functionselect_combo.addItem("(no function selected)")
+        [self.ui.functionselect_combo.addItem(str(self.if_functions[i].get_function_name()))
+         for i in range(len(self.if_functions))]
+        self.ui.functionselect_combo.setCurrentIndex(0)
+
+    def remove_table_selection(self):
+        """Removes the current row in the table."""
+        ifo_id = self.ui.nhd_table.item(self.ui.nhd_table.currentRow(), 0).text()
+        self.ifo_selection.pop(self.ifo_selection.index(ifo_id))
+        self.ui.nhd_table.removeRow(self.ui.nhd_table.currentRow())
+
+    def add_if_function_to_table(self):
+        """Adds the current IF function in the combo box to the table, writes the relevant details as well to table
+        columns."""
+        if self.ui.functionselect_combo.currentIndex() in [0, -1]:      # Check that we are actually adding a function
+            return True # DO Nothing
+        ifo = self.if_functions[self.ui.functionselect_combo.currentIndex()-1]
+        if ifo.get_id() in self.ifo_selection:      # Check if the function already exists in the scenario.
+            prompt_msg = "Influence Function already added!"
+            QtWidgets.QMessageBox.warning(self, 'Error', prompt_msg, QtWidgets.QMessageBox.Ok)
+            return True
+
+        luabbr = str(ifo.origin_landuse)+" -> "+str(ifo.target_landuse)
+        metadata = [ifo.get_id(), ifo.get_function_name(), luabbr, str(ifo.get_x_range()), str(ifo.get_y_range())]
+        print metadata
+        self.ifo_selection.append(ifo.get_id())
+        self.ui.nhd_table.insertRow(self.ui.nhd_table.rowCount())
+        for m in range(len(metadata)):
+            twi = QtWidgets.QTableWidgetItem()
+            twi.setText(str(metadata[m]))
+            self.ui.nhd_table.setItem(self.ui.nhd_table.rowCount()-1, m, twi)
+        self.ui.nhd_table.resizeColumnsToContents()
+        return True
+
+    def open_if_function_dialog(self):
+        """Opens the influence function dialog window so that the user can modify and add new functions. The difference
+        with the version in the main GUI is that this function catches the 'accepted' and 'rejected' signals and
+        updates the GUI accordingly."""
+        print "Opening Dialog"
+        if_dialog = InfluenceFunctionGUILaunch(self.simulation, self.log)
+        if_dialog.accepted.connect(self.populate_if_table_from_module)
+        if_dialog.accepted.connect(self.setup_if_function_select_combo)
+        if_dialog.rejected.connect(self.populate_if_table_from_module)
+        if_dialog.rejected.connect(self.setup_if_function_select_combo)
+        if_dialog.exec_()
+
+    def view_selectedfunction(self, source):
+        """Opens the influence function dialog window for viewing of the selected function.
+
+        :param source: either "combo" or "table" depending on which button was clicked. Allows the program to find
+                        which function to actually show.
         """
-        if fid == -1:
-            current_fid = self.get_function_id_from_table()
-            current_fid = 0
-        ifunction_gui = InfluenceFunctionGUILaunch(self.module, fid)
-        ifunction_gui.exec_()
+        viewindex = None
+        if self.ui.nhd_table.rowCount() == 0:
+            return True     # If table is empty, do nothing.
 
-    def delete_selected_influence_function(self):
-        pass
+        if source == "combo":       # Determine combo box index
+            viewindex = self.ui.functionselect_combo.currentIndex()
+        elif source == "table":
+            fid = self.ui.nhd_table.item(self.ui.nhd_table.currentRow(), 0).text()
+            print fid
+            ifos = self.simulation.get_all_function_objects_of_type("IF")
+            for i in range(len(ifos)):
+                if ifos[i].get_id() == fid:
+                    viewindex = i + 1
+                    break
+        if viewindex is None:
+            return True
+        if_dialog = InfluenceFunctionGUILaunch(self.simulation, self.log, viewmode=viewindex)
+        if_dialog.exec_()
 
-    def export_selected_influence_function(self):
-        pass
+    def populate_if_table_from_module(self):
+        """Populates the IF table from module parameters based on the available functions."""
+        self.ui.nhd_table.setRowCount(0)
+        if_ids = self.module.get_parameter("function_ids")
+        for fid in if_ids:
+            ifo = self.simulation.get_function_with_id(fid)
+            if ifo is None:
+                continue
 
-    def clear_influence_functions(self):
-        pass
-
-    def get_function_id_from_table(self):
-        """Queries the current ID of the selected influence function in the table"""
-        pass
+            luabbr = str(ifo.origin_landuse) + " -> " + str(ifo.target_landuse)
+            metadata = [ifo.get_id(), ifo.get_function_name(), luabbr, str(ifo.get_x_range()), str(ifo.get_y_range())]
+            print "Loading", metadata
+            self.ui.nhd_table.insertRow(self.ui.nhd_table.rowCount())
+            for m in range(len(metadata)):
+                twi = QtWidgets.QTableWidgetItem()
+                twi.setText(str(metadata[m]))
+                self.ui.nhd_table.setItem(self.ui.nhd_table.rowCount() - 1, m, twi)
+        self.ui.nhd_table.resizeColumnsToContents()
+        return True
 
     def pre_fill_parameters(self):
         """Pre-filling method, will set up the module with all values contained in the pre-loaded parameter file or
@@ -1127,14 +1204,8 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.enable_disable_zoning_widgets()
 
         # TAB 4 - Neighbourhood Effect
-        function_ids = self.module.get_parameter("function_ids")
-        nhd_landuses = self.module.get_parameter("landuse_cats")
-        nhd_influences = self.module.get_parameter("landuse_influence")
-        nhd_filelist = self.module.get_parameter("data_files")
-        for i in range(len(function_ids)):
-            new_row = QtWidgets.QTableWidgetItem()
-
-
+        self.ifo_selection = self.module.get_parameter("function_ids")
+        self.populate_if_table_from_module()
         # END OF FILING IN GUI VALUES
         return True
 
@@ -1450,13 +1521,16 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("zoning_rules_officesauto", int(self.ui.zoning_rules_officesauto.isChecked()))
         self.module.set_parameter("zoning_rules_officeslimit", int(self.ui.zoning_rules_officeslimit.isChecked()))
         self.module.set_parameter("zoning_rules_officespassive", int(self.ui.zoning_rules_officespassive.isChecked()))
+
+        # NEIGHBOURHOOD EFFECT
+        self.module.set_parameter("function_ids", self.ifo_selection)
         return True
 
 
 class InfluenceFunctionGUILaunch(QtWidgets.QDialog):
     """The class definition for the sub-GUI for defining influence functions. This sub-gui launches if the add button
     or edit button is clicked in the Urban Development Module - Neighbourhood Effect dialog window."""
-    def __init__(self, simulation, projectlog, parent=None):
+    def __init__(self, simulation, projectlog, viewmode=0, parent=None):
         """Initialization of the subGUI for defining influence functions. This sub-gui is launched and filled with
         the current influence function selected from the table unless a new function is launched.
 
@@ -1491,6 +1565,13 @@ class InfluenceFunctionGUILaunch(QtWidgets.QDialog):
         self.ui.exportfunction_button.clicked.connect(self.export_current_function)
         self.ui.deletefunction_button.clicked.connect(self.delete_current_function)
         self.ui.standardlib_combo.currentIndexChanged.connect(self.pre_fill_gui)
+
+        # ACTIVATE THE CURRENT FUNCTION TO VIEW. THIS IS CALLED WHEN THE GUI IS BEING OPENED FOR VIEWING PURPOSES.
+        if viewmode != 0:
+            self.ui.select_combo.setCurrentIndex((viewmode))
+            self.ui.select_combo.setEnabled(0)      # Disable the combo box!
+            self.ui.deletefunction_button.setEnabled(0)     # Disable controls!
+            self.ui.exportfunction_button.setEnabled(0)     # Disable controls!
 
     def update_function_combobox(self):
         """Updates the combo box with selection options for functions."""

@@ -305,6 +305,12 @@ class NeighbourhoodInfluenceFunction(object):
         current count with fx_ as prefix."""
         self.__functionID = idnum
 
+    def get_y_range(self):
+        return [min(self.__weight), max(self.__weight)]
+
+    def get_x_range(self):
+        return [min(self.__distance), max(self.__distance)]
+
     def assign_xy_data(self, xdata, ydata):
         """Assigns the list of x points to the __distance property and the list of y-points to the
         __weight property. Also updates data count."""
