@@ -217,7 +217,7 @@ p, li { white-space: pre-wrap; }
       <item>
        <widget class="QTabWidget" name="parameters">
         <property name="currentIndex">
-         <number>1</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="inputs_tab">
          <attribute name="title">
@@ -1225,7 +1225,7 @@ p, li { white-space: pre-wrap; }
              <enum>QTabWidget::West</enum>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="accessibility">
              <attribute name="icon">
@@ -1360,8 +1360,8 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>461</width>
-                   <height>1667</height>
+                   <width>541</width>
+                   <height>1664</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -3695,7 +3695,7 @@ p, li { white-space: pre-wrap; }
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-248</y>
+                   <y>0</y>
                    <width>541</width>
                    <height>631</height>
                   </rect>
