@@ -208,6 +208,8 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     fielddefmatrix.append(ogr.FieldDefn("VPOT_COM", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("VPOT_IND", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("VPOT_ORC", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("VPOT_LUC", ogr.OFTString))
+    fielddefmatrix.append(ogr.FieldDefn("VPOT_MAX", ogr.OFTReal))
 
     # Create the fields
     for field in fielddefmatrix:
@@ -363,6 +365,8 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("VPOT_COM", float(currentAttList.get_attribute("VPOT_COM")))
         feature.SetField("VPOT_IND", float(currentAttList.get_attribute("VPOT_IND")))
         feature.SetField("VPOT_ORC", float(currentAttList.get_attribute("VPOT_ORC")))
+        feature.SetField("VPOT_LUC", str(currentAttList.get_attribute("VPOT_LUC")))
+        feature.SetField("VPOT_MAX", float(currentAttList.get_attribute("VPOT_MAX")))
 
         layer.CreateFeature(feature)
     shapefile.Destroy()

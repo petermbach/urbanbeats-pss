@@ -1261,7 +1261,7 @@ class UrbanDevelopment(UBModule):
             # Looping across each cell
             suit_values = [[], [], [], []]  # [ [RES], [COM], [IND], [ORC] ]
             current_cell = cellslist[i]
-            print current_cell.get_attribute("CellID")
+
             # - 2.6.5a - SUITABILITY CALCULATION FOR SLOPE
             if self.suit_slope_include and self.suit_elevation_data:    # If slope is considered...
                 cur_slope = float(current_cell.get_attribute("Slope_PCT")/100.0)
@@ -1681,20 +1681,26 @@ class UrbanDevelopment(UBModule):
             if cellslist[i].get_attribute("Status") == 0:
                 continue
             curcell = cellslist[i]
-            curcell.add_attribute("Stoch_RES", 1 + (-1*math.log(rand.random()))**self.alpha)  # Stochastic perturbation
-            curcell.add_attribute("Stoch_COM", 1 + (-1 * math.log(rand.random())) ** self.alpha)
-            curcell.add_attribute("Stoch_IND", 1 + (-1 * math.log(rand.random())) ** self.alpha)
-            curcell.add_attribute("Stoch_ORC", 1 + (-1 * math.log(rand.random())) ** self.alpha)
+            curcell.add_attribute("STOCH_RES", 1 + (-1*math.log(rand.random()))**self.alpha)  # Stochastic perturbation
+            curcell.add_attribute("STOCH_COM", 1 + (-1 * math.log(rand.random())) ** self.alpha)
+            curcell.add_attribute("STOCH_IND", 1 + (-1 * math.log(rand.random())) ** self.alpha)
+            curcell.add_attribute("STOCH_ORC", 1 + (-1 * math.log(rand.random())) ** self.alpha)
 
             # CALCULATE Transition potential V for the four land uses = r S A Z N
             activeLUC = ubglobals.ACTIVELANDUSEABBR
             for j in activeLUC:
-                v = self.calculate_transition_potential(curcell.get_attribute("Stoch_"+activeLUC[j]),
-                                                        curcell.get_attribute("SUIT_"+activeLUC[j]),
-                                                        curcell.get_attribute("ACCESS_"+activeLUC[j]),
-                                                        curcell.get_attribute("INFLU_" + activeLUC[j]),
-                                                        curcell.get_attribute("ZONE_"+activeLUC[j]))
-                curcell.add_attribute("VPOT_"+activeLUC[j])
+                v = self.calculate_transition_potential(curcell.get_attribute("STOCH_"+j),
+                                                        curcell.get_attribute("SUIT_"+j),
+                                                        curcell.get_attribute("ACCESS_"+j),
+                                                        curcell.get_attribute("INFLU_"+j),
+                                                        curcell.get_attribute("ZONE_"+j))
+                curcell.add_attribute("VPOT_"+j, v)
+
+            # GET THE HIGHEST RANKED POTENTIAL LAND USE
+            potentials = [curcell.get_attribute("VPOT_RES"), curcell.get_attribute("VPOT_COM"),
+                          curcell.get_attribute("VPOT_IND"), curcell.get_attribute("VPOT_ORC")]
+            curcell.add_attribute("VPOT_LUC", activeLUC[potentials.index(max(potentials))])
+            curcell.add_attribute("VPOT_MAX", max(potentials))
 
         # - 2.11 - PERFORM THE LAND USE ASSIGNMENT
         # [ CALCULATE RES DEMAND ]
