@@ -69,10 +69,8 @@ class UrbanDevelopment(UBModule):
         # --- TAB 1 - GENERAL: GENERAL PARAMETERS ---
         self.create_parameter("cellsize", DOUBLE, "cell size of the simulation area, 100m or 50m")
         self.create_parameter("nhd_radius", DOUBLE, "radius of the cell neighbourhood in [km]")
-        self.create_parameter("alpha", DOUBLE, "stochastic perturbation factor alpha")
         self.cellsize = 100
         self.nhd_radius = 0.8
-        self.alpha = 0.0
 
         self.create_parameter("baseyear", DOUBLE, "the base year of the simulation")
         self.create_parameter("dt", DOUBLE, "simulation time step in [years]")
@@ -97,52 +95,30 @@ class UrbanDevelopment(UBModule):
         self.zoning_constrained_luc = []                        # refer to ubglobals.py for key
 
         self.create_parameter("pop_inputmap", STRING, "population input map used in the simulation")
-        self.create_parameter("pop_birthrate", DOUBLE, "birth rate")
-        self.create_parameter("pop_birthtrend", STRING, "the growth trend to apply")
-        self.create_parameter("pop_deathrate", DOUBLE, "death rate")
-        self.create_parameter("pop_deathtrend", STRING, "the death trend to apply")
-        self.create_parameter("pop_migration", DOUBLE, "migration rate")
-        self.create_parameter("pop_migrationtrend", STRING, "migration trend to be applied")
         self.pop_inputmap = ""
-        self.pop_birthrate = 6.0
-        self.pop_birthtrend = "L"   # L = linear, E = exponential, S = sigmoid, P = stochastic, C = custom
-        self.pop_deathrate = 6.0
-        self.pop_deathtrend = "L"
-        self.pop_migration = 6.0
-        self.pop_migrationtrend = "L"
 
         self.create_parameter("employ_datasource", STRING, "data source for employment information")
         self.employ_datasource = "I"    # I = input map, P = from population, L = from land use
 
         # Employment parameters when using the input map
         self.create_parameter("employ_inputmap", STRING, "input map for mployment")
-        self.create_parameter("employ_inputmaprate", DOUBLE, "annual rate of change for employment")
         self.employ_inputmap = ""
-        self.employ_inputmaprate = 6.0
 
         # Employment parameters when using estimates from population
         self.create_parameter("employ_pop_comfactor", DOUBLE, "factor for estimating commercial employment")
         self.create_parameter("employ_pop_indfactor", DOUBLE, "factor for estimating industrial employment")
         self.create_parameter("employ_pop_officefactor", DOUBLE, "factor for estimating offices employment")
-        self.create_parameter("employ_pop_rocbool", BOOL, "use separate rate of change or keep estimating?")
-        self.create_parameter("employ_pop_roc", DOUBLE, "rate of change in employment")
         self.employ_pop_comfactor = 0.7
         self.employ_pop_indfactor = 0.9
         self.employ_pop_officefactor = 0.3
-        self.employ_pop_rocbool = 0
-        self.employ_pop_roc = 6.0
 
         # Employment parameters when using estimates from land use
         self.create_parameter("employ_land_comfactor", DOUBLE, "factor for estimating commercial employment from land")
         self.create_parameter("employ_land_indfactor", DOUBLE, "factor for estimating industrial employment from land")
         self.create_parameter("employ_land_officefactor", DOUBLE, "factor for estimating office employment from land")
-        self.create_parameter("employ_land_rocbool", BOOL, "use separate rate of change?")
-        self.create_parameter("employ_land_roc", DOUBLE, "rate of change in employment")
         self.employ_land_comfactor = 70.0
         self.employ_land_indfactor = 50.0
         self.employ_land_officefactor = 100.0
-        self.employ_land_rocbool = 0
-        self.employ_land_roc = 6.0
 
         # --- TAB 1 - SPATIAL RELATIONSHIPS: ACCESSIBILITY ---
         self.create_parameter("access_export_combined", BOOL, "export combined accessibility map?")
@@ -614,11 +590,73 @@ class UrbanDevelopment(UBModule):
         self.zoning_custom_ind = 1
         self.zoning_custom_orc = 0
 
-        # --- TAB 4 - NEIGHBOURHOOD INTERACTION
+        # --- TAB 2.4 - NEIGHBOURHOOD INTERACTION
         self.create_parameter("function_ids", LISTDOUBLE, "list of function ids containing interaction data")
         self.create_parameter("edge_effects_method", STRING, "method for accounting for edge effects")
         self.function_ids = []
         self.edge_effects_method = "NA"     # NA = no accounting, AVG = average, PP = proportioning, PPAVG=both
+
+        # --- TAB 3 - URBAN DYNAMICS ---
+        # Stochastic Perturbation
+        self.create_parameter("alpha", DOUBLE, "stochastic perturbation factor alpha")
+        self.alpha = 0.8        # Should generally vary between 0 and 2
+
+        # Population Growth
+        self.create_parameter("pop_growthmethod", STRING, "method of population change calculation")
+        self.create_parameter("pop_birthrate", DOUBLE, "birth rate")
+        self.create_parameter("pop_birthfunction", STRING, "the growth function to be used")
+        self.create_parameter("pop_deathrate", DOUBLE, "death rate")
+        self.create_parameter("pop_deathfunction", STRING, "the death function to be used")
+        self.create_parameter("pop_migration", DOUBLE, "migration rate")
+        self.create_parameter("pop_migrationfunction", STRING, "migration function id to be used")
+        self.pop_growthmethod = "C"     # C = CONSTANT, F = FUNCTION
+        self.pop_birthrate = 1.0        # units [%]
+        self.pop_birthfunction = ""     # Select from function browser
+        self.pop_deathrate = 1.0
+        self.pop_deathfunction = "L"
+        self.pop_migration = 1.0
+        self.pop_migrationfunction = "L"
+
+        # Employment Growth
+        self.create_parameter("employ_com_roc", DOUBLE, "annual rate of change for com or general employment")
+        self.create_parameter("employ_ind_rocbool", BOOL, "use separate rate of change for industrial?")
+        self.create_parameter("employ_ind_roc", DOUBLE, "rate of change in industrial employment")
+        self.create_parameter("employ_orc_rocbool", BOOL, "use separate rate of change for mixed development?")
+        self.create_parameter("employ_orc_roc", DOUBLE, "rate of change in mixed development employment")
+        self.employ_com_roc = 0.5       # units [%]
+        self.employ_ind_rocbool = 0
+        self.employ_ind_roc = 0.5
+        self.employ_orc_rocbool = 0
+        self.employ_orc_roc = 0.5
+
+        # INERTIA AND SENSITIVITIES OF ACTIVE LUC CLASSES
+        self.create_parameter("res_inertia", DOUBLE, "inertia to change for residential land use")
+        self.create_parameter("res_delta", DOUBLE, "inertia to change for residential land use")
+        self.create_parameter("res_lambda", DOUBLE, "inertia to change for residential land use")
+        self.res_inertia = 20.0
+        self.res_delta = 0.8
+        self.res_lambda = 0.8
+
+        self.create_parameter("com_inertia", DOUBLE, "inertia to change for residential land use")
+        self.create_parameter("com_delta", DOUBLE, "inertia to change for residential land use")
+        self.create_parameter("com_lambda", DOUBLE, "inertia to change for residential land use")
+        self.com_inertia = 20.0
+        self.com_delta = 0.8
+        self.com_lambda = 0.8
+
+        self.create_parameter("ind_inertia", DOUBLE, "inertia to change for residential land use")
+        self.create_parameter("ind_delta", DOUBLE, "inertia to change for residential land use")
+        self.create_parameter("ind_lambda", DOUBLE, "inertia to change for residential land use")
+        self.ind_inertia = 20.0
+        self.ind_delta = 0.8
+        self.ind_lambda = 0.8
+
+        self.create_parameter("orc_inertia", DOUBLE, "inertia to change for residential land use")
+        self.create_parameter("orc_delta", DOUBLE, "inertia to change for residential land use")
+        self.create_parameter("orc_lambda", DOUBLE, "inertia to change for residential land use")
+        self.orc_inertia = 20.0
+        self.orc_delta = 0.8
+        self.orc_lambda = 0.8
 
         # ADVANCED PARAMETERS
         self.global_offsets = None

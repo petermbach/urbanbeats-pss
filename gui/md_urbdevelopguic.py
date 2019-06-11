@@ -221,17 +221,9 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.input_pop_combo.currentIndexChanged.connect(self.enable_disable_general_tab_widgets)
         self.ui.zoning_move_to_constrained.clicked.connect(self.move_zone_to_constrained)
         self.ui.zoning_move_to_passive.clicked.connect(self.move_zone_to_passive)
-        self.ui.input_birthrate_custom.clicked.connect(self.call_birthrate_custom)
-        self.ui.input_deathrate_custom.clicked.connect(self.call_deathrate_custom)
-        self.ui.input_migration_custom.clicked.connect(self.call_migration_custom)
-        self.ui.input_birthrate_trend.currentIndexChanged.connect(self.enable_disable_general_tab_widgets)
-        self.ui.input_deathrate_trend.currentIndexChanged.connect(self.enable_disable_general_tab_widgets)
-        self.ui.input_migration_trend.currentIndexChanged.connect(self.enable_disable_general_tab_widgets)
         self.ui.employ_inputmap.clicked.connect(self.update_employment_stack)
         self.ui.employ_pop.clicked.connect(self.update_employment_stack)
         self.ui.employ_land.clicked.connect(self.update_employment_stack)
-        self.ui.employ_pop_roc.clicked.connect(self.enable_disable_general_tab_widgets)
-        self.ui.employ_land_roc.clicked.connect(self.enable_disable_general_tab_widgets)
 
         # ACCESSIBILITY
         self.ui.access_general_summary.clicked.connect(self.display_accessibility_summary)
@@ -286,6 +278,12 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.nhd_view_button.clicked.connect(lambda: self.view_selectedfunction("table"))
         self.ui.nhd_remove_button.clicked.connect(self.remove_table_selection)
         self.ui.nhd_clear_button.clicked.connect(self.clear_if_table)
+
+        # URBAN DYNAMICS
+        self.ui.pop_method_function.clicked.connect(self.enable_disable_dynamics_tab_widgets)
+        self.ui.pop_method_rate.clicked.connect(self.enable_disable_dynamics_tab_widgets)
+        self.ui.employ_rate_ind_check.clicked.connect(self.enable_disable_dynamics_tab_widgets)
+        self.ui.employ_rate_orc_check.clicked.connect(self.enable_disable_dynamics_tab_widgets)
 
         # FOOTER
         self.ui.buttonBox.accepted.connect(self.save_values)
@@ -490,6 +488,18 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         """Synchronizes the current index of the slope combo box to that of the aspect. They both rely on the same
         data set."""
         self.ui.suit_slope_data.setCurrentIndex(self.ui.suit_aspect_data.currentIndex())
+
+    def enable_disable_dynamics_tab_widgets(self):
+        """Scans the Urban Dynamics tab widgets and enables and disables accordingly."""
+        self.ui.input_birthrate_spin.setEnabled(self.ui.pop_method_rate.isChecked())
+        self.ui.input_deathrate_spin.setEnabled(self.ui.pop_method_rate.isChecked())
+        self.ui.input_migration_spin.setEnabled(self.ui.pop_method_rate.isChecked())
+        self.ui.input_birthrate_function.setEnabled(self.ui.pop_method_function.isChecked())
+        self.ui.input_deathrate_function.setEnabled(self.ui.pop_method_function.isChecked())
+        self.ui.input_migration_function.setEnabled(self.ui.pop_method_function.isChecked())
+        self.ui.employ_rate_ind_spin.setEnabled(self.ui.employ_rate_ind_check.isChecked())
+        self.ui.employ_rate_orc_spin.setEnabled(self.ui.employ_rate_orc_check.isChecked())
+        return True
 
     def enable_disable_zoning_widgets(self):
         """Scans the zoning list and enables and disables the criteria list accordingly."""
@@ -764,7 +774,6 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.basic_baseyear.setText(str(self.active_scenario.get_metadata("startyear")))
         self.ui.basic_dt.setText(str(self.active_scenario.get_metadata("dt"))+" year(s)")
         self.ui.basic_nhd.setValue(float(self.module.get_parameter("nhd_radius")))
-        self.ui.basic_stochastic.setText(str(self.module.get_parameter("alpha")))
 
         try:    # MUNICIPALITY COMBO - retrieve the dataID from module
             self.ui.input_lga_combo.setCurrentIndex(
@@ -801,17 +810,6 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         except ValueError:
             self.ui.input_pop_combo.setCurrentIndex(0)     # else the map must've been removed, set combo to zero index
 
-        self.ui.input_birthrate_spin.setValue(float(self.module.get_parameter("pop_birthrate")))
-        self.ui.input_deathrate_spin.setValue(float(self.module.get_parameter("pop_deathrate")))
-        self.ui.input_migration_spin.setValue(float(self.module.get_parameter("pop_migration")))
-
-        self.ui.input_birthrate_trend.setCurrentIndex(self.poptrends.index(
-            self.module.get_parameter("pop_birthtrend")))
-        self.ui.input_deathrate_trend.setCurrentIndex(self.poptrends.index(
-            self.module.get_parameter("pop_deathtrend")))
-        self.ui.input_migration_trend.setCurrentIndex(self.poptrends.index(
-            self.module.get_parameter("pop_migrationtrend")))
-
         if self.module.get_parameter("employ_datasource") == "I":
             self.ui.employ_inputmap.setChecked(1)
         elif self.module.get_parameter("employ_datasource") == "P":
@@ -825,21 +823,16 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
                 self.module.get_parameter("employ_inputmap")))
         except ValueError:
             self.ui.employ_inputmap_combo.setCurrentIndex(0)
-        self.ui.employ_inputmap_spin.setValue(float(self.module.get_parameter("employ_inputmaprate")))
 
         # --- employment STACK 2
         self.ui.employ_pop_com.setValue(float(self.module.get_parameter("employ_pop_comfactor")))
         self.ui.employ_pop_ind.setValue(float(self.module.get_parameter("employ_pop_indfactor")))
         self.ui.employ_pop_office.setValue(float(self.module.get_parameter("employ_pop_officefactor")))
-        self.ui.employ_pop_roc.setChecked(int(self.module.get_parameter("employ_pop_rocbool")))
-        self.ui.employ_pop_roc_spin.setValue(float(self.module.get_parameter("employ_pop_roc")))
 
         # --- employment STACK 3
         self.ui.employ_land_com.setValue(float(self.module.get_parameter("employ_land_comfactor")))
         self.ui.employ_land_ind.setValue(float(self.module.get_parameter("employ_land_indfactor")))
         self.ui.employ_land_office.setValue(float(self.module.get_parameter("employ_land_officefactor")))
-        self.ui.employ_land_roc.setChecked(int(self.module.get_parameter("employ_land_rocbool")))
-        self.ui.employ_land_roc_spin.setValue(float(self.module.get_parameter("employ_land_roc")))
 
         self.enable_disable_general_tab_widgets()
         self.update_employment_stack()
@@ -1203,7 +1196,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
 
         self.enable_disable_zoning_widgets()
 
-        # TAB 4 - Neighbourhood Effect
+        # TAB 2.4 - Neighbourhood Effect
         self.ifo_selection = self.module.get_parameter("function_ids")
         self.populate_if_table_from_module()
         if self.module.get_parameter("edge_effects_method") == "NA":
@@ -1215,6 +1208,49 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         else:
             self.ui.ee_ppavg.setChecked(1)
 
+        # TAB 3 - URBAN DYNAMICS
+        # Stochastic Perturbation
+        self.ui.stoch_box.setValue(str(self.module.get_parameter("alpha")))
+
+        # Population and Employment Rates fo Change
+        if self.module.get_parameter("pop_growthmethod") == "C":
+            self.ui.pop_method_rate.setChecked(1)
+        else:
+            self.ui.pop_method_function.setChecked(1)
+
+        self.ui.input_birthrate_spin.setValue(float(self.module.get_parameter("pop_birthrate")))
+        self.ui.input_deathrate_spin.setValue(float(self.module.get_parameter("pop_deathrate")))
+        self.ui.input_migration_spin.setValue(float(self.module.get_parameter("pop_migration")))
+
+        # self.ui.input_birthrate_function.setCurrentIndex(self.poptrends.index(
+        #     self.module.get_parameter("pop_birthfunction")))
+        # self.ui.input_deathrate_function.setCurrentIndex(self.poptrends.index(
+        #     self.module.get_parameter("pop_deathfunction")))
+        # self.ui.input_migration_function.setCurrentIndex(self.poptrends.index(
+        #     self.module.get_parameter("pop_migrationfunction")))
+
+        self.ui.employ_rate_spin.setValue(float(self.module.get_parameter("employ_com_roc")))
+        self.ui.employ_rate_ind_check.setChecked(int(self.module.get_parameter("employ_ind_rocbool")))
+        self.ui.employ_rate_ind_spin.setValue(float(self.module.get_parameter("employ_ind_roc")))
+        self.ui.employ_rate_orc_check.setChecked(int(self.module.get_parameter("employ_orc_rocbool")))
+        self.ui.employ_rate_orc_spin.setValue(float(self.module.get_parameter("employ_orc_roc")))
+
+        # Inertia and Sensitivities
+        self.ui.res_inertia_spin.setValue(self.module.get_parameter("res_inertia"))
+        self.ui.res_sensitivity_delta_spin.setValue(self.module.get_parameter("res_delta"))
+        self.ui.res_sensitivity_lambda_spin.setValue(self.module.get_parameter("res_lambda"))
+
+        self.ui.com_inertia_spin.setValue(self.module.get_parameter("com_inertia"))
+        self.ui.com_sensitivity_delta_spin.setValue(self.module.get_parameter("com_delta"))
+        self.ui.com_sensitivity_lambda_spin.setValue(self.module.get_parameter("com_lambda"))
+
+        self.ui.ind_inertia_spin.setValue(self.module.get_parameter("ind_inertia"))
+        self.ui.ind_sensitivity_delta_spin.setValue(self.module.get_parameter("ind_delta"))
+        self.ui.ind_sensitivity_lambda_spin.setValue(self.module.get_parameter("ind_lambda"))
+
+        self.ui.orc_inertia_spin.setValue(self.module.get_parameter("orc_inertia"))
+        self.ui.orc_sensitivity_delta_spin.setValue(self.module.get_parameter("orc_delta"))
+        self.ui.orc_sensitivity_lambda_spin.setValue(self.module.get_parameter("orc_lambda"))
         # END OF FILING IN GUI VALUES
         return True
 
@@ -1223,7 +1259,6 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         # TAB 1 - GENERAL
         self.module.set_parameter("cellsize", int(self.ui.basic_cellsize.value()))
         self.module.set_parameter("nhd_radius", float(self.ui.basic_nhd.value()))
-        self.module.set_parameter("alpha", float(self.ui.basic_stochastic.text()))
 
         self.module.set_parameter("lga_inputmap", self.municipalmaps[1][self.ui.input_lga_combo.currentIndex()])
         self.module.set_parameter("lga_attribute", str(self.ui.input_lga_name.text()))
@@ -1248,12 +1283,6 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("zoning_constrained_luc", zoning_constrained_luc)
 
         self.module.set_parameter("pop_inputmap", self.popmaps[1][self.ui.input_pop_combo.currentIndex()])
-        self.module.set_parameter("pop_birthrate", float(self.ui.input_birthrate_spin.value()))
-        self.module.set_parameter("pop_birthtrend", self.poptrends[self.ui.input_birthrate_trend.currentIndex()])
-        self.module.set_parameter("pop_deathrate", float(self.ui.input_deathrate_spin.value()))
-        self.module.set_parameter("pop_deathtrend", self.poptrends[self.ui.input_deathrate_trend.currentIndex()])
-        self.module.set_parameter("pop_migration", float(self.ui.input_migration_spin.value()))
-        self.module.set_parameter("pop_migrationtrend", self.poptrends[self.ui.input_migration_trend.currentIndex()])
 
         if self.ui.employ_inputmap.isChecked():
             self.module.set_parameter("employ_datasource", "I")
@@ -1263,19 +1292,14 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
             self.module.set_parameter("employ_datasource", "L")
 
         self.module.set_parameter("employ_inputmap", self.employmaps[1][self.ui.employ_inputmap_combo.currentIndex()])
-        self.module.set_parameter("employ_inputmaprate", float(self.ui.employ_inputmap_spin.value()))
 
         self.module.set_parameter("employ_pop_comfactor", float(self.ui.employ_pop_com.value()))
         self.module.set_parameter("employ_pop_indfactor", float(self.ui.employ_pop_ind.value()))
         self.module.set_parameter("employ_pop_officefactor", float(self.ui.employ_pop_office.value()))
-        self.module.set_parameter("employ_pop_rocbool", int(self.ui.employ_pop_roc.isChecked()))
-        self.module.set_parameter("employ_pop_roc", float(self.ui.employ_pop_roc_spin.value()))
 
         self.module.set_parameter("employ_land_comfactor", float(self.ui.employ_land_com.value()))
         self.module.set_parameter("employ_land_indfactor", float(self.ui.employ_land_ind.value()))
         self.module.set_parameter("employ_land_officefactor", float(self.ui.employ_land_office.value()))
-        self.module.set_parameter("employ_land_rocbool", int(self.ui.employ_land_roc.isChecked()))
-        self.module.set_parameter("employ_land_roc", float(self.ui.employ_land_roc_spin.value()))
 
         # TAB 2 - 2.1 - ACCESSIBILITY
         self.module.set_parameter("access_export_combined", int(self.ui.access_export_combined.isChecked()))
@@ -1542,6 +1566,42 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         else:
             self.module.set_parameter("edge_effects_method", "PPAVG")
 
+        # TAB 3 - URBAN DYNAMICS
+        self.module.set_parameter("alpha", float(self.ui.stoch_box.value()))
+
+        if self.ui.pop_method_rate.isChecked():
+            self.module.set_parameter("pop_growthmethod", "C")
+        else:
+            self.module.set_parameter("pop_growthmethod", "F")
+
+        self.module.set_parameter("pop_birthrate", float(self.ui.input_birthrate_spin.value()))
+        # self.module.set_parameter("pop_birthfunction", self.poptrends[self.ui.input_birthrate_function.currentIndex()])
+        self.module.set_parameter("pop_deathrate", float(self.ui.input_deathrate_spin.value()))
+        # self.module.set_parameter("pop_deathfunction", self.poptrends[self.ui.input_deathrate_function.currentIndex()])
+        self.module.set_parameter("pop_migration", float(self.ui.input_migration_spin.value()))
+        # self.module.set_parameter("pop_migrationfunction", self.poptrends[self.ui.input_migration_function.currentIndex()])
+
+        self.module.set_parameter("employ_com_roc", float(self.ui.employ_rate_spin.value()))
+        self.module.set_parameter("employ_ind_rocbool", int(self.ui.employ_rate_ind_check.isChecked()))
+        self.module.set_parameter("employ_ind_roc", float(self.ui.employ_rate_ind_spin.value()))
+        self.module.set_parameter("employ_orc_rocbool", int(self.ui.employ_rate_orc_check.isChecked()))
+        self.module.set_parameter("employ_orc_roc", float(self.ui.employ_rate_orc_spin.value()))
+
+        self.module.set_parameter("res_inertia", float(self.ui.res_inertia_spin.value()))
+        self.module.set_parameter("res_delta", float(self.ui.res_sensitivity_delta_spin.value()))
+        self.module.set_parameter("res_lambda", float(self.ui.res_sensitivity_lambda_spin.value()))
+
+        self.module.set_parameter("com_inertia", float(self.ui.com_inertia_spin.value()))
+        self.module.set_parameter("com_delta", float(self.ui.com_sensitivity_delta_spin.value()))
+        self.module.set_parameter("com_lambda", float(self.ui.com_sensitivity_lambda_spin.value()))
+
+        self.module.set_parameter("ind_inertia", float(self.ui.ind_inertia_spin.value()))
+        self.module.set_parameter("ind_delta", float(self.ui.ind_sensitivity_delta_spin.value()))
+        self.module.set_parameter("ind_lambda", float(self.ui.ind_sensitivity_lambda_spin.value()))
+
+        self.module.set_parameter("orc_inertia", float(self.ui.orc_inertia_spin.value()))
+        self.module.set_parameter("orc_delta", float(self.ui.orc_sensitivity_delta_spin.value()))
+        self.module.set_parameter("orc_lambda", float(self.ui.orc_sensitivity_lambda_spin.value()))
         return True
 
 
