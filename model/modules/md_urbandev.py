@@ -1719,6 +1719,19 @@ class UrbanDevelopment(UBModule):
             if cellslist[i].get_attribute("Status") == 0:
                 continue
             curcell = cellslist[i]
+            if curcell.get_attribute("LUC_TYPE") == "Fixed":
+                curcell.add_attribute("STOCH_RES", 0)
+                curcell.add_attribute("STOCH_COM", 0)
+                curcell.add_attribute("STOCH_IND", 0)
+                curcell.add_attribute("STOCH_ORC", 0)
+                curcell.add_attribute("VPOT_RES", 0)
+                curcell.add_attribute("VPOT_COM", 0)
+                curcell.add_attribute("VPOT_IND", 0)
+                curcell.add_attribute("VPOT_ORC", 0)
+                curcell.add_attribute("VPOT_LUC", "Other")
+                curcell.add_attribute("VPOT_MAX", 0)
+                continue
+
             curcell.add_attribute("STOCH_RES", 1 + (-1*math.log(rand.random()))**self.alpha)  # Stochastic perturbation
             curcell.add_attribute("STOCH_COM", 1 + (-1 * math.log(rand.random())) ** self.alpha)
             curcell.add_attribute("STOCH_IND", 1 + (-1 * math.log(rand.random())) ** self.alpha)

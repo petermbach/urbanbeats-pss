@@ -724,27 +724,9 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
             self.ui.input_aggreg_combo.setEnabled(1)
 
         if self.ui.input_pop_combo.currentIndex() == 0:
-            self.ui.input_pop_widget.setEnabled(0)
+            self.ui.dynamics_pop_widget.setEnabled(0)
         else:
-            self.ui.input_pop_widget.setEnabled(1)
-
-        if self.ui.input_birthrate_trend.currentIndex() == 4:
-            self.ui.input_birthrate_custom.setEnabled(1)
-        else:
-            self.ui.input_birthrate_custom.setEnabled(0)
-
-        if self.ui.input_deathrate_trend.currentIndex() == 4:
-            self.ui.input_deathrate_custom.setEnabled(1)
-        else:
-            self.ui.input_deathrate_custom.setEnabled(0)
-
-        if self.ui.input_migration_trend.currentIndex() == 4:
-            self.ui.input_migration_custom.setEnabled(1)
-        else:
-            self.ui.input_migration_custom.setEnabled(0)
-
-        self.ui.employ_pop_roc_spin.setEnabled(int(self.ui.employ_pop_roc.isChecked()))
-        self.ui.employ_land_roc_spin.setEnabled(int(self.ui.employ_land_roc.isChecked()))
+            self.ui.dynamics_pop_widget.setEnabled(1)
         return True
 
     def change_active_module(self):
@@ -1210,7 +1192,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
 
         # TAB 3 - URBAN DYNAMICS
         # Stochastic Perturbation
-        self.ui.stoch_box.setValue(str(self.module.get_parameter("alpha")))
+        self.ui.stoch_box.setValue(float(self.module.get_parameter("alpha")))
 
         # Population and Employment Rates fo Change
         if self.module.get_parameter("pop_growthmethod") == "C":
@@ -1251,6 +1233,8 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.orc_inertia_spin.setValue(self.module.get_parameter("orc_inertia"))
         self.ui.orc_sensitivity_delta_spin.setValue(self.module.get_parameter("orc_delta"))
         self.ui.orc_sensitivity_lambda_spin.setValue(self.module.get_parameter("orc_lambda"))
+
+        self.enable_disable_dynamics_tab_widgets()
         # END OF FILING IN GUI VALUES
         return True
 
