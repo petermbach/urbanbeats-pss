@@ -633,33 +633,49 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("res_inertia", DOUBLE, "inertia to change for residential land use")
         self.create_parameter("res_delta", DOUBLE, "inertia to change for residential land use")
         self.create_parameter("res_lambda", DOUBLE, "inertia to change for residential land use")
+        self.create_parameter("res_maxdensity", DOUBLE, "maximum allowable population density per hectare")
         self.res_inertia = 20.0
         self.res_delta = 0.8
         self.res_lambda = 0.8
+        self.res_maxdensity = 16.0
 
         self.create_parameter("com_inertia", DOUBLE, "inertia to change for residential land use")
         self.create_parameter("com_delta", DOUBLE, "inertia to change for residential land use")
         self.create_parameter("com_lambda", DOUBLE, "inertia to change for residential land use")
+        self.create_parameter("com_maxdensity", DOUBLE, "maximum allowable employment density for commercial")
         self.com_inertia = 20.0
         self.com_delta = 0.8
         self.com_lambda = 0.8
+        self.com_maxdensity = 30.0
 
         self.create_parameter("ind_inertia", DOUBLE, "inertia to change for residential land use")
         self.create_parameter("ind_delta", DOUBLE, "inertia to change for residential land use")
         self.create_parameter("ind_lambda", DOUBLE, "inertia to change for residential land use")
+        self.create_parameter("ind_maxdensity", DOUBLE, "maximum allowable employment density for industrial")
         self.ind_inertia = 20.0
         self.ind_delta = 0.8
         self.ind_lambda = 0.8
+        self.ind_maxdensity = 30.0
 
         self.create_parameter("orc_inertia", DOUBLE, "inertia to change for residential land use")
         self.create_parameter("orc_delta", DOUBLE, "inertia to change for residential land use")
         self.create_parameter("orc_lambda", DOUBLE, "inertia to change for residential land use")
+        self.create_parameter("orc_maxdensity", DOUBLE, "maximum allowable employment density for offices")
         self.orc_inertia = 20.0
         self.orc_delta = 0.8
         self.orc_lambda = 0.8
+        self.orc_maxdensity = 30.0
 
         # ADVANCED PARAMETERS
         self.global_offsets = None
+        self.map_attr = None
+
+        # DYNAMIC REFERENCE PARAMETERS
+        self.dt_years = self.scenario.get_simulation_years()        # All the simulation years to work out dT
+        self.timestep = self.dt_years.index(self.simulationyear)    # The current time step of the module
+        self.dyears = 0     # The current number of years passed since previous time step 0 if timestep is 0
+        if self.timestep != 0:
+            self.dyears = self.dt_years[self.timestep] - self.dt_years[self.timestep-1]
 
     def run_module(self):
         """Runs the urban development module's simulation. Processes all inputs to simulate changes in land use and
@@ -702,16 +718,16 @@ class UrbanDevelopment(UBModule):
         print("Total Cells in map: " + str(numcells))
 
         # CREATE MAP ATTRIBUTES UBCOMPONENT() to track
-        map_attr = ubdata.UBComponent()
-        map_attr.add_attribute("xllcorner", xmin)  # The geographic coordinate x-pos of the actual map
-        map_attr.add_attribute("yllcorner", ymin)  # The geographic coordinate y-pos of the actual map
-        map_attr.add_attribute("NumCells", numcells)
-        map_attr.add_attribute("HasURBANDEV", 1)
-        map_attr.add_attribute("CellsWide", cells_wide)
-        map_attr.add_attribute("CellsTall", cells_tall)
-        map_attr.add_attribute("CellSize", self.cellsize)
+        self.map_attr = ubdata.UBComponent()
+        self.map_attr.add_attribute("xllcorner", xmin)  # The geographic coordinate x-pos of the actual map
+        self.map_attr.add_attribute("yllcorner", ymin)  # The geographic coordinate y-pos of the actual map
+        self.map_attr.add_attribute("NumCells", numcells)
+        self.map_attr.add_attribute("HasURBANDEV", 1)
+        self.map_attr.add_attribute("CellsWide", cells_wide)
+        self.map_attr.add_attribute("CellsTall", cells_tall)
+        self.map_attr.add_attribute("CellSize", self.cellsize)
         self.global_offsets = (xmin, ymin)
-        self.scenario.add_asset("MapAttributes", map_attr)
+        self.scenario.add_asset("MapAttributes", self.map_attr)
 
         # --- SECTION 2 - Create the simulation grid ---
         boundarygeom = self.activesim.get_project_boundary_info("coordinates")
@@ -762,11 +778,11 @@ class UrbanDevelopment(UBModule):
         if self.lga_inputmap == "":
             self.notify("Region is treated as a single municipality")
             print ("Region is treated as a single municipality")
-            map_attr.add_attribute("HasGEOPOLITICAL", 0)
+            self.map_attr.add_attribute("HasGEOPOLITICAL", 0)
         else:
             self.notify("Loading and Assigning Municipalities")
             print("Loading and Assigning Municipalities")
-            map_attr.add_attribute("HasGEOPOLITICAL", 1)
+            self.map_attr.add_attribute("HasGEOPOLITICAL", 1)
             geopol_map = self.datalibrary.get_data_with_id(self.lga_inputmap)
             fullfilepath = geopol_map.get_data_file_path() + geopol_map.get_metadata("filename")
             municipalities = ubspatial.import_polygonal_map(fullfilepath, "native", "Municipality", self.global_offsets)
@@ -813,7 +829,7 @@ class UrbanDevelopment(UBModule):
             landuseraster = ubspatial.import_ascii_raster(fullfilepath, self.luc_inputmap)
             self.notify("Load Complete!")
             print("Load Complete!")
-            landuse_offset = ubspatial.calculate_offsets(landuseraster, map_attr)
+            landuse_offset = ubspatial.calculate_offsets(landuseraster, self.map_attr)
             luc_res = landuseraster.get_cellsize()
             csc = int(self.cellsize / luc_res)  # csc = cell selection count - knowing how many cells wide and tall
 
@@ -852,9 +868,9 @@ class UrbanDevelopment(UBModule):
                 current_cell.add_attribute("ZONE_IND", 1)
                 current_cell.add_attribute("ZONE_ORC", 1)
 
-            map_attr.set_attribute("HasLUC", 1)
+            self.map_attr.set_attribute("HasLUC", 1)
         else:
-            map_attr.set_attribute("HasLUC", 1)
+            self.map_attr.set_attribute("HasLUC", 1)
 
         # - 2.3 - POPULATION ---
         # STEP 2.3.1 :: Load Population Map
@@ -866,7 +882,7 @@ class UrbanDevelopment(UBModule):
             populationraster = ubspatial.import_ascii_raster(fullfilepath, self.pop_inputmap)
             self.notify("Load Complete!")
             print("Load Complete!")
-            population_offset = ubspatial.calculate_offsets(populationraster, map_attr)
+            population_offset = ubspatial.calculate_offsets(populationraster, self.map_attr)
             pop_res = populationraster.get_cellsize()
             csc = int(self.cellsize / pop_res)  # csc = cell selection count - knowing how many cells wide and tall
             map_population = 0
@@ -906,16 +922,16 @@ class UrbanDevelopment(UBModule):
                     current_cell.add_attribute("Base_POP", 0)
                     continue
 
-            map_attr.add_attribute("HasPOP", 1)
-            map_attr.add_attribute("POP_Map", map_population)
-            map_attr.add_attribute("POP_Discrepancy", discrepancy_pop)
+            self.map_attr.add_attribute("HasPOP", 1)
+            self.map_attr.add_attribute("POP_Map", map_population)
+            self.map_attr.add_attribute("POP_Discrepancy", discrepancy_pop)
             self.notify("The Total Population across the case study: "+str(int(map_population)))
             self.notify("The removed population is: "+str(int(discrepancy_pop)))
             self.notify("The discrepancy is: "+str(int(float(discrepancy_pop / map_population) * 100.0)))
         else:
-            map_attr.add_attribute("HasPOP", 0)
-            map_attr.add_attribute("POP_Map", 0)
-            map_attr.add_attribute("POP_Discrepancy", 0)
+            self.map_attr.add_attribute("HasPOP", 0)
+            self.map_attr.add_attribute("POP_Map", 0)
+            self.map_attr.add_attribute("POP_Discrepancy", 0)
 
         # - 2.4 - EMPLOYMENT Calculate/Load Employment ---
         if self.employ_datasource == "I":   # Input Map
@@ -931,69 +947,77 @@ class UrbanDevelopment(UBModule):
                     continue
                 self.calculate_employment_from_land_use(current_cell, self.cellsize)
 
+        # BEFORE MOVING ON - FILTER OUT THE CELLS LIST TO MAKE IT LEANER AND EASIER TO WORK WITH
+        urbancells = []
+        for i in range(len(cellslist)):
+            if cellslist[i].get_attribute("Status") == 0:
+                continue
+            else:
+                urbancells.append(cellslist[i])
+
         # - 2.5 - SPATIAL RELATIONSHIPS - ACCESSIBILITY
         # - 2.5.1 - Determine individual accessibility maps
         self.notify("Entering Accessibility Calculations")
         print("Entering Accessibility Calculations")
 
-        map_attr.add_attribute("ACCESS_ROAD", 0)
+        self.map_attr.add_attribute("ACCESS_ROAD", 0)
         if self.access_roads_include:
             aj = [float(self.access_roads_res * self.access_roads_ares),
                   float(self.access_roads_com * self.access_roads_acom),
                   float(self.access_roads_ind * self.access_roads_aind),
                   float(self.access_roads_offices * self.access_roads_aoffices)]
-            self.calculate_accessibility_linearfeatures(self.access_roads_data, map_attr, aj, cellslist, "ROAD")
+            self.calculate_accessibility_linearfeatures(self.access_roads_data, aj, urbancells, "ROAD")
 
-        map_attr.add_attribute("ACCESS_RAIL", 0)
+        self.map_attr.add_attribute("ACCESS_RAIL", 0)
         if self.access_rail_include:
             aj = [float(self.access_rail_res * self.access_rail_ares),
                   float(self.access_rail_com * self.access_rail_acom),
                   float(self.access_rail_ind * self.access_rail_aind),
                   float(self.access_rail_offices * self.access_rail_aoffices)]
-            self.calculate_accessibility_linearfeatures(self.access_rail_data, map_attr, aj, cellslist, "RAIL")
+            self.calculate_accessibility_linearfeatures(self.access_rail_data, aj, urbancells, "RAIL")
 
-        map_attr.add_attribute("ACCESS_WWAY", 0)
+        self.map_attr.add_attribute("ACCESS_WWAY", 0)
         if self.access_waterways_include:
             aj = [float(self.access_waterways_res * self.access_waterways_ares),
                   float(self.access_waterways_com * self.access_waterways_acom),
                   float(self.access_waterways_ind * self.access_waterways_aind),
                   float(self.access_waterways_offices * self.access_waterways_aoffices)]
-            self.calculate_accessibility_linearfeatures(self.access_waterways_data, map_attr, aj, cellslist, "WWAY")
+            self.calculate_accessibility_linearfeatures(self.access_waterways_data, aj, urbancells, "WWAY")
 
-        map_attr.add_attribute("ACCESS_LAKE", 0)
+        self.map_attr.add_attribute("ACCESS_LAKE", 0)
         if self.access_lakes_include:
             aj = [float(self.access_lakes_res * self.access_lakes_ares),
                   float(self.access_lakes_com * self.access_lakes_acom),
                   float(self.access_lakes_ind * self.access_lakes_aind),
                   float(self.access_lakes_offices * self.access_lakes_aoffices)]
-            self.calculate_accessibility_polygonfeatures(self.access_lakes_data, map_attr, aj, cellslist, "LAKE",
+            self.calculate_accessibility_polygonfeatures(self.access_lakes_data, aj, urbancells, "LAKE",
                                                          Landuses=["Water"])
 
-        map_attr.add_attribute("ACCESS_POSS", 0)
+        self.map_attr.add_attribute("ACCESS_POSS", 0)
         if self.access_pos_include:
             aj = [float(self.access_pos_res * self.access_pos_ares),
                   float(self.access_pos_com * self.access_pos_acom),
                   float(self.access_pos_ind * self.access_pos_aind),
                   float(self.access_pos_offices * self.access_pos_aoffices)]
-            self.calculate_accessibility_polygonfeatures(self.access_pos_data, map_attr, aj, cellslist, "POSS",
+            self.calculate_accessibility_polygonfeatures(self.access_pos_data, aj, urbancells, "POSS",
                                                          Landuses=["Parks and Gardens", "Reserves and Floodway",
                                                                    "Forest"])
 
-        map_attr.add_attribute("ACCESS_POIS", 0)
+        self.map_attr.add_attribute("ACCESS_POIS", 0)
         if self.access_poi_include:
             aj = [float(self.access_poi_res * self.access_poi_ares),
                   float(self.access_poi_com * self.access_poi_acom),
                   float(self.access_poi_ind * self.access_poi_aind),
                   float(self.access_poi_offices * self.access_poi_aoffices)]
-            self.calculate_accessibility_pointfeatures(self.access_poi_data, map_attr, aj, cellslist, "POIS")
+            self.calculate_accessibility_pointfeatures(self.access_poi_data, aj, urbancells, "POIS")
 
-        map_attr.add_attribute("ACCESS_PTHS", 0)
+        self.map_attr.add_attribute("ACCESS_PTHS", 0)
         if self.access_pth_include:
             aj = [float(self.access_pth_res * self.access_pth_ares),
                   float(self.access_pth_com * self.access_pth_acom),
                   float(self.access_pth_ind * self.access_pth_aind),
                   float(self.access_pth_offices * self.access_pth_aoffices)]
-            self.calculate_accessibility_pointfeatures(self.access_pth_data, map_attr, aj, cellslist, "PTHS")
+            self.calculate_accessibility_pointfeatures(self.access_pth_data, aj, urbancells, "PTHS")
 
         # - 2.5.2 - Combine Accessibility criteria into full map
         accessibility_weights = [float(self.access_roads_weight * self.access_roads_include),
@@ -1011,29 +1035,29 @@ class UrbanDevelopment(UBModule):
         print "ACCESS WEIGHTS", accessibility_weights
 
         # Loop across blocks, get the five attributes and calculate total accessibility
-        for i in range(len(cellslist)):
+        for i in range(len(urbancells)):
             final_acc_res, final_acc_com, final_acc_ind, final_acc_orc = 0, 0, 0, 0
             for acc in range(len(accessibility_attributes)):
-                val_res = cellslist[i].get_attribute(accessibility_attributes[acc]+"_RES")
+                val_res = urbancells[i].get_attribute(accessibility_attributes[acc]+"_RES")
                 if val_res is None: val_res = 0
                 final_acc_res += accessibility_weights[acc] * val_res
 
-                val_com = cellslist[i].get_attribute(accessibility_attributes[acc] + "_COM")
+                val_com = urbancells[i].get_attribute(accessibility_attributes[acc] + "_COM")
                 if val_com is None: val_com = 0
                 final_acc_com += accessibility_weights[acc] * val_com
 
-                val_ind = cellslist[i].get_attribute(accessibility_attributes[acc] + "_IND")
+                val_ind = urbancells[i].get_attribute(accessibility_attributes[acc] + "_IND")
                 if val_ind is None: val_ind = 0
                 final_acc_ind += accessibility_weights[acc] * val_ind
 
-                val_orc = cellslist[i].get_attribute(accessibility_attributes[acc] + "_ORC")
+                val_orc = urbancells[i].get_attribute(accessibility_attributes[acc] + "_ORC")
                 if val_orc is None: val_orc = 0
                 final_acc_orc += accessibility_weights[acc] * val_orc
 
-            cellslist[i].add_attribute("ACCESS_RES", final_acc_res)
-            cellslist[i].add_attribute("ACCESS_COM", final_acc_com)
-            cellslist[i].add_attribute("ACCESS_IND", final_acc_ind)
-            cellslist[i].add_attribute("ACCESS_ORC", final_acc_orc)
+            urbancells[i].add_attribute("ACCESS_RES", final_acc_res)
+            urbancells[i].add_attribute("ACCESS_COM", final_acc_com)
+            urbancells[i].add_attribute("ACCESS_IND", final_acc_ind)
+            urbancells[i].add_attribute("ACCESS_ORC", final_acc_orc)
 
         # - 2.6 - SPATIAL RELATIONSHIPS - SUITABILITY
         self.notify("Beginning Suitability calculations...")
@@ -1042,21 +1066,21 @@ class UrbanDevelopment(UBModule):
         # - 2.6.1 - Neighbourhood - Determine Immediate Cardinal and Ordinal direction neighbours (use Moore)
         self.notify("Determining adjacent neighbours")
         print("Determining adjacent neighbours")
-        for i in range(len(cellslist)):
-            cellslist[i].add_attribute("NHD_N", 0)
-            cellslist[i].add_attribute("NHD_NE", 0)
-            cellslist[i].add_attribute("NHD_E", 0)
-            cellslist[i].add_attribute("NHD_SE", 0)
-            cellslist[i].add_attribute("NHD_S", 0)
-            cellslist[i].add_attribute("NHD_SW", 0)
-            cellslist[i].add_attribute("NHD_W", 0)
-            cellslist[i].add_attribute("NHD_NW", 0)
+        for i in range(len(urbancells)):
+            urbancells[i].add_attribute("NHD_N", 0)
+            urbancells[i].add_attribute("NHD_NE", 0)
+            urbancells[i].add_attribute("NHD_E", 0)
+            urbancells[i].add_attribute("NHD_SE", 0)
+            urbancells[i].add_attribute("NHD_S", 0)
+            urbancells[i].add_attribute("NHD_SW", 0)
+            urbancells[i].add_attribute("NHD_W", 0)
+            urbancells[i].add_attribute("NHD_NW", 0)
             neighbours = []
-            ixy = ubmethods.get_central_coordinates(cellslist[i])
-            for j in range(len(cellslist)):     # Oh how I hate to use double for loops....
-                if cellslist[j] == cellslist[i]:
+            ixy = ubmethods.get_central_coordinates(urbancells[i])
+            for j in range(len(urbancells)):     # Oh how I hate to use double for loops....
+                if urbancells[j] == urbancells[i]:
                     continue
-                jxy = ubmethods.get_central_coordinates(cellslist[j])
+                jxy = ubmethods.get_central_coordinates(urbancells[j])
                 if abs(ixy[0] - jxy[0]) <= self.cellsize and abs(ixy[1] - jxy[1]) <= self.cellsize:
                     # ASSIGN THE CARDINAL/ORDINAL DIRECTION
                     d = ""  # Piece together the direction from dx, dy rules.
@@ -1073,44 +1097,44 @@ class UrbanDevelopment(UBModule):
                     if d == "":     # DEBUG
                         print "Something went wrong!!!"
 
-                    cellslist[i].add_attribute("NHD_"+d, cellslist[j].get_attribute("CellID"))
-                    neighbours.append(cellslist[j].get_attribute("CellID"))
-            cellslist[i].add_attribute("AdjacentNH", neighbours)
+                    urbancells[i].add_attribute("NHD_"+d, urbancells[j].get_attribute("CellID"))
+                    neighbours.append(urbancells[j].get_attribute("CellID"))
+            urbancells[i].add_attribute("AdjacentNH", neighbours)
 
         # - 2.6.2 - Load all relevant data sets
         self.notify("Loading maps for suitability assessment...")
         print("Loading map for suitability assessment...")
 
-        map_attr.add_attribute("SUIT_ELEV", 0)
+        self.map_attr.add_attribute("SUIT_ELEV", 0)
         if (self.suit_slope_include or self.suit_aspect_include) and self.suit_elevation_data:
             # If either criteria has been included, map elevation to cells
             elev_dref = self.datalibrary.get_data_with_id(self.suit_elevation_data)
             fullfilepath = elev_dref.get_data_file_path() + elev_dref.get_metadata("filename")
             elevraster = ubspatial.import_ascii_raster(fullfilepath, self.suit_elevation_data)
-            elev_offset = ubspatial.calculate_offsets(elevraster, map_attr)
+            elev_offset = ubspatial.calculate_offsets(elevraster, self.map_attr)
             elev_res = elevraster.get_cellsize()
             elev_csc = int(self.cellsize / elev_res)     # knowing how many cells wide and tall
-            map_attr.change_attribute("SUIT_ELEV", 1)
+            self.map_attr.change_attribute("SUIT_ELEV", 1)
 
-        map_attr.add_attribute("SUIT_SOIL", 0)
+        self.map_attr.add_attribute("SUIT_SOIL", 0)
         if self.suit_soil_include and self.suit_soil_data:
             soil_dref = self.datalibrary.get_data_with_id(self.suit_soil_data)
             fullfilepath = soil_dref.get_data_file_path() + soil_dref.get_metadata("filename")
             soilraster = ubspatial.import_ascii_raster(fullfilepath, self.suit_soil_data)
-            soil_offset = ubspatial.calculate_offsets(soilraster, map_attr)
+            soil_offset = ubspatial.calculate_offsets(soilraster, self.map_attr)
             soil_res = soilraster.get_cellsize()
             soil_csc = int(self.cellsize / soil_res)
-            map_attr.change_attribute("SUIT_SOIL", 1)
+            self.map_attr.change_attribute("SUIT_SOIL", 1)
 
-        map_attr.add_attribute("SUIT_GW", 0)
+        self.map_attr.add_attribute("SUIT_GW", 0)
         if self.suit_gw_include and self.suit_gw_data:
             gw_dref = self.datalibrary.get_data_with_id(self.suit_gw_data)
             fullfilepath = gw_dref.get_data_file_path() + gw_dref.get_metadata("filename")
             gwraster = ubspatial.import_ascii_raster(fullfilepath, self.suit_gw_data)
-            gw_offset = ubspatial.calculate_offsets(gwraster, map_attr)
+            gw_offset = ubspatial.calculate_offsets(gwraster, self.map_attr)
             gw_res = gwraster.get_cellsize()
             gw_csc = int(self.cellsize / gw_res)
-            map_attr.change_attribute("SUIT_GW", 1)
+            self.map_attr.change_attribute("SUIT_GW", 1)
 
         if self.suit_custom_include and self.suit_custom_data:
             pass
@@ -1123,8 +1147,8 @@ class UrbanDevelopment(UBModule):
 
         nodata_cells_elev, nodata_cells_gw, nodata_cells_soil = [], [], []  # Lists to hold no-data cells
 
-        for i in range(len(cellslist)):
-            current_cell = cellslist[i]
+        for i in range(len(urbancells)):
+            current_cell = urbancells[i]
 
             # SLOPE AND ASPECT - MAP ELEVATION DATA TO THE CELLS
             if (self.suit_slope_include or self.suit_aspect_include) and self.suit_elevation_data:
@@ -1209,7 +1233,7 @@ class UrbanDevelopment(UBModule):
         print("Infilling missing values...")
         if (self.suit_slope_include or self.suit_aspect_include) and self.suit_elevation_data:
             self.infill_nodata_values(nodata_cells_elev, "Elevation", "Average", elevraster.get_nodatavalue())
-            self.calculate_cell_slope_and_aspect(cellslist)
+            self.calculate_cell_slope_and_aspect(urbancells)
         if self.suit_soil_data:
             self.infill_nodata_values(nodata_cells_soil, "SoilClass", "Categorical", "Undefined")
         if self.suit_gw_data:
@@ -1293,12 +1317,12 @@ class UrbanDevelopment(UBModule):
         # ASSIGN SUITABILITIES TO CELLS
         print "Assigning Suitabilities to Cells"
         map_max_suit = [0, 0, 0, 0]     # Holds the maximum suitability value across the map, updated when necessary
-        for i in range(len(cellslist)):
-            if cellslist[i].get_attribute("Status") == 0:
+        for i in range(len(urbancells)):
+            if urbancells[i].get_attribute("Status") == 0:
                 continue
             # Looping across each cell
             suit_values = [[], [], [], []]  # [ [RES], [COM], [IND], [ORC] ]
-            current_cell = cellslist[i]
+            current_cell = urbancells[i]
 
             # - 2.6.5a - SUITABILITY CALCULATION FOR SLOPE
             if self.suit_slope_include and self.suit_elevation_data:    # If slope is considered...
@@ -1379,13 +1403,13 @@ class UrbanDevelopment(UBModule):
                 map_max_suit[j] = max(map_max_suit[j], sum(suit_values[j]))     # value and replace in map_max_suit
 
         # - 2.6.6 - NORMALIZE SUITABILITY VALUES
-        for i in range(len(cellslist)):
-            if cellslist[i].get_attribute("Status") == 0:
+        for i in range(len(urbancells)):
+            if urbancells[i].get_attribute("Status") == 0:
                 continue
-            cellslist[i].change_attribute("SUIT_RES", float(cellslist[i].get_attribute("SUIT_RES") / map_max_suit[0]))
-            cellslist[i].change_attribute("SUIT_COM", float(cellslist[i].get_attribute("SUIT_COM") / map_max_suit[1]))
-            cellslist[i].change_attribute("SUIT_IND", float(cellslist[i].get_attribute("SUIT_IND") / map_max_suit[2]))
-            cellslist[i].change_attribute("SUIT_ORC", float(cellslist[i].get_attribute("SUIT_ORC") / map_max_suit[3]))
+            urbancells[i].change_attribute("SUIT_RES", float(urbancells[i].get_attribute("SUIT_RES") / map_max_suit[0]))
+            urbancells[i].change_attribute("SUIT_COM", float(urbancells[i].get_attribute("SUIT_COM") / map_max_suit[1]))
+            urbancells[i].change_attribute("SUIT_IND", float(urbancells[i].get_attribute("SUIT_IND") / map_max_suit[2]))
+            urbancells[i].change_attribute("SUIT_ORC", float(urbancells[i].get_attribute("SUIT_ORC") / map_max_suit[3]))
         # ----- END OF SUITABILITY CALCULATIONS -----
 
         # - 2.8 - SPATIAL RELATIONSHIPS - ZONING
@@ -1411,30 +1435,30 @@ class UrbanDevelopment(UBModule):
         # - 2.8.2 - Scan through all Blocks, allocate zoning where applicable.
         # Mark all land uses where a map is not used as having Zoning possibility of 1. This is changed later on.
         # The land zoning maps represent the FIRST MASK
-        for i in range(len(cellslist)):     # - 2.8.3 - Fixed land use, automatically mask - SECOND MASK
-            if cellslist[i].get_attribute("LUC_Type") in ["Fixed", "UNDEFINED"]:
-                cellslist[i].change_attribute("ZONE_RES", 0)  # If fixed or undefined, immediately set to zero
-                cellslist[i].change_attribute("ZONE_COM", 0)  # no exceptions, if not fixed, move to passive
-                cellslist[i].change_attribute("ZONE_IND", 0)
-                cellslist[i].change_attribute("ZONE_ORC", 0)
+        for i in range(len(urbancells)):     # - 2.8.3 - Fixed land use, automatically mask - SECOND MASK
+            if urbancells[i].get_attribute("LUC_Type") in ["Fixed", "UNDEFINED"]:
+                urbancells[i].change_attribute("ZONE_RES", 0)  # If fixed or undefined, immediately set to zero
+                urbancells[i].change_attribute("ZONE_COM", 0)  # no exceptions, if not fixed, move to passive
+                urbancells[i].change_attribute("ZONE_IND", 0)
+                urbancells[i].change_attribute("ZONE_ORC", 0)
                 continue    # Skip the 'Fixed Land Use Cells' to save time on the looping
 
-            coordinates = cellslist[i].get_points()
+            coordinates = urbancells[i].get_points()
             coordinates = [c[:2] for c in coordinates]
             cellpoly = Polygon(coordinates)
 
             if not self.zoning_rules_resauto:       # RESIDENTIAL LAND
                 if not self.determine_zoning_against_polygons(cellpoly, respolygons, 0):
-                    cellslist[i].change_attribute("ZONE_RES", 0)    # If an intersection was NOT detected, not zoned!
+                    urbancells[i].change_attribute("ZONE_RES", 0)    # If an intersection was NOT detected, not zoned!
             if not self.zoning_rules_comauto:       # COMMERCIAL LAND
                 if not self.determine_zoning_against_polygons(cellpoly, compolygons, 0):
-                    cellslist[i].change_attribute("ZONE_COM", 0)
+                    urbancells[i].change_attribute("ZONE_COM", 0)
             if not self.zoning_rules_indauto:       # INDUSTRIAL LAND
                 if not self.determine_zoning_against_polygons(cellpoly, indpolygons, 0):
-                    cellslist[i].change_attribute("ZONE_IND", 0)
+                    urbancells[i].change_attribute("ZONE_IND", 0)
             if not self.zoning_rules_officesauto:  # MIXED DEVELOPMENT LAND
                 if not self.determine_zoning_against_polygons(cellpoly, officespolygons, 0):
-                    cellslist[i].change_attribute("ZONE_ORC", 0)
+                    urbancells[i].change_attribute("ZONE_ORC", 0)
 
         # - 2.8.4 - Auto-assignment options - if the auto-assign function is on, then perform this NOW
         # Only touch the land uses where the auto checkbox was ticked.
@@ -1456,46 +1480,46 @@ class UrbanDevelopment(UBModule):
                                                               (self.zoning_rules_officeslimit *
                                                                self.zoning_rules_officespassive)))
 
-        for i in range(len(cellslist)):
-            if cellslist[i].get_attribute("LUC_Type") in ["Fixed", "UNDEFINED"]:    # DONE - skip!
+        for i in range(len(urbancells)):
+            if urbancells[i].get_attribute("LUC_Type") in ["Fixed", "UNDEFINED"]:    # DONE - skip!
                 continue
-            elif cellslist[i].get_attribute("LUC_Type") == "Passive":  # If passive, set based on parameter
-                bool(self.zoning_rules_resauto) and cellslist[i].change_attribute("ZONE_RES", int(respassive))
-                bool(self.zoning_rules_comauto) and cellslist[i].change_attribute("ZONE_COM", int(compassive))
-                bool(self.zoning_rules_indauto) and cellslist[i].change_attribute("ZONE_IND", int(indpassive))
-                bool(self.zoning_rules_officesauto) and cellslist[i].change_attribute("ZONE_ORC", int(orcpassive))
-            elif cellslist[i].get_attribute("Base_LUC") == "Residential":
-                bool(self.zoning_rules_resauto) and cellslist[i].change_attribute("ZONE_RES", 1)  # Always, regardless
+            elif urbancells[i].get_attribute("LUC_Type") == "Passive":  # If passive, set based on parameter
+                bool(self.zoning_rules_resauto) and urbancells[i].change_attribute("ZONE_RES", int(respassive))
+                bool(self.zoning_rules_comauto) and urbancells[i].change_attribute("ZONE_COM", int(compassive))
+                bool(self.zoning_rules_indauto) and urbancells[i].change_attribute("ZONE_IND", int(indpassive))
+                bool(self.zoning_rules_officesauto) and urbancells[i].change_attribute("ZONE_ORC", int(orcpassive))
+            elif urbancells[i].get_attribute("Base_LUC") == "Residential":
+                bool(self.zoning_rules_resauto) and urbancells[i].change_attribute("ZONE_RES", 1)  # Always, regardless
                 bool(self.zoning_rules_comauto) and \
-                    cellslist[i].change_attribute("ZONE_COM", int(not self.zoning_rules_comlimit))
+                    urbancells[i].change_attribute("ZONE_COM", int(not self.zoning_rules_comlimit))
                 bool(self.zoning_rules_indauto) and \
-                    cellslist[i].change_attribute("ZONE_IND", int(not self.zoning_rules_indlimit))
+                    urbancells[i].change_attribute("ZONE_IND", int(not self.zoning_rules_indlimit))
                 bool(self.zoning_rules_officesauto) and \
-                    cellslist[i].change_attribute("ZONE_ORC",int(not self.zoning_rules_officeslimit))
-            elif cellslist[i].get_attribute("Base_LUC") == "Commercial":
-                bool(self.zoning_rules_comauto) and cellslist[i].change_attribute("ZONE_COM", 1)  # Always, regardless
+                    urbancells[i].change_attribute("ZONE_ORC",int(not self.zoning_rules_officeslimit))
+            elif urbancells[i].get_attribute("Base_LUC") == "Commercial":
+                bool(self.zoning_rules_comauto) and urbancells[i].change_attribute("ZONE_COM", 1)  # Always, regardless
                 bool(self.zoning_rules_resauto) and \
-                cellslist[i].change_attribute("ZONE_RES", int(not self.zoning_rules_comlimit))
+                urbancells[i].change_attribute("ZONE_RES", int(not self.zoning_rules_comlimit))
                 bool(self.zoning_rules_indauto) and \
-                cellslist[i].change_attribute("ZONE_IND", int(not self.zoning_rules_indlimit))
+                urbancells[i].change_attribute("ZONE_IND", int(not self.zoning_rules_indlimit))
                 bool(self.zoning_rules_officesauto) and \
-                cellslist[i].change_attribute("ZONE_ORC", int(not self.zoning_rules_officeslimit))
-            elif cellslist[i].get_attribute("Base_LUC") in ["Light Industry", "Heavy Industry"]:
-                bool(self.zoning_rules_indauto) and cellslist[i].change_attribute("ZONE_IND", 1)
+                urbancells[i].change_attribute("ZONE_ORC", int(not self.zoning_rules_officeslimit))
+            elif urbancells[i].get_attribute("Base_LUC") in ["Light Industry", "Heavy Industry"]:
+                bool(self.zoning_rules_indauto) and urbancells[i].change_attribute("ZONE_IND", 1)
                 bool(self.zoning_rules_resauto) and \
-                cellslist[i].change_attribute("ZONE_RES", int(not self.zoning_rules_comlimit))
+                urbancells[i].change_attribute("ZONE_RES", int(not self.zoning_rules_comlimit))
                 bool(self.zoning_rules_comauto) and \
-                cellslist[i].change_attribute("ZONE_COM", int(not self.zoning_rules_comlimit))
+                urbancells[i].change_attribute("ZONE_COM", int(not self.zoning_rules_comlimit))
                 bool(self.zoning_rules_officesauto) and \
-                cellslist[i].change_attribute("ZONE_ORC", int(not self.zoning_rules_officeslimit))
-            elif cellslist[i].get_attribute("Base_LUC") in ["Offices Res Mix"]:
-                bool(self.zoning_rules_officesauto) and cellslist[i].change_attribute("ZONE_ORC", 1)
+                urbancells[i].change_attribute("ZONE_ORC", int(not self.zoning_rules_officeslimit))
+            elif urbancells[i].get_attribute("Base_LUC") in ["Offices Res Mix"]:
+                bool(self.zoning_rules_officesauto) and urbancells[i].change_attribute("ZONE_ORC", 1)
                 bool(self.zoning_rules_resauto) and \
-                cellslist[i].change_attribute("ZONE_RES", int(not self.zoning_rules_comlimit))
+                urbancells[i].change_attribute("ZONE_RES", int(not self.zoning_rules_comlimit))
                 bool(self.zoning_rules_comauto) and \
-                cellslist[i].change_attribute("ZONE_COM", int(not self.zoning_rules_comlimit))
+                urbancells[i].change_attribute("ZONE_COM", int(not self.zoning_rules_comlimit))
                 bool(self.zoning_rules_indauto) and \
-                cellslist[i].change_attribute("ZONE_IND", int(not self.zoning_rules_indlimit))
+                urbancells[i].change_attribute("ZONE_IND", int(not self.zoning_rules_indlimit))
             else:
                 print "DEBUG: Should not be here..."
 
@@ -1511,12 +1535,12 @@ class UrbanDevelopment(UBModule):
         print "Total Features of overlays to check against...", totfeatures
 
         # Scan all remaining cells against overlay conditions
-        for i in range(len(cellslist)):
-            zstates = self.get_zoning_states(cellslist[i])      # If all four zones are 0, then skip
+        for i in range(len(urbancells)):
+            zstates = self.get_zoning_states(urbancells[i])      # If all four zones are 0, then skip
             if sum(zstates) == 0:
                 continue
 
-            coordinates = cellslist[i].get_points()
+            coordinates = urbancells[i].get_points()
             coordinates = [c[:2] for c in coordinates]
             cellpoly = Polygon(coordinates)
 
@@ -1524,12 +1548,12 @@ class UrbanDevelopment(UBModule):
             if len(waterpoly) != 0:
                 restrict = self.determine_zoning_against_polygons(cellpoly, waterpoly, 1.0)
                 # One-liner If Statement: If the zoning state is already 0 i.e. False, then don't change the state
-                bool(zstates[0]) and cellslist[i].change_attribute("ZONE_RES", restrict)
-                bool(zstates[1]) and cellslist[i].change_attribute("ZONE_COM", restrict)
-                bool(zstates[2]) and cellslist[i].change_attribute("ZONE_IND", restrict)
-                bool(zstates[3]) and cellslist[i].change_attribute("ZONE_ORC", restrict)
+                bool(zstates[0]) and urbancells[i].change_attribute("ZONE_RES", restrict)
+                bool(zstates[1]) and urbancells[i].change_attribute("ZONE_COM", restrict)
+                bool(zstates[2]) and urbancells[i].change_attribute("ZONE_IND", restrict)
+                bool(zstates[3]) and urbancells[i].change_attribute("ZONE_ORC", restrict)
 
-                zstates = self.get_zoning_states(cellslist[i])   # Update zstates
+                zstates = self.get_zoning_states(urbancells[i])   # Update zstates
                 if sum(zstates) == 0:
                     continue
 
@@ -1537,15 +1561,15 @@ class UrbanDevelopment(UBModule):
             if len(heritagepoly) != 0:
                 restrict = self.determine_zoning_against_polygons(cellpoly, heritagepoly, 0.5)
                 if zstates[0] and self.zoning_heritage_res:     # If zoning allowed AND heritage considered?
-                    cellslist[i].change_attribute("ZONE_RES", restrict)
+                    urbancells[i].change_attribute("ZONE_RES", restrict)
                 if zstates[1] and self.zoning_heritage_com:
-                    cellslist[i].change_attribute("ZONE_COM", restrict)
+                    urbancells[i].change_attribute("ZONE_COM", restrict)
                 if zstates[2] and self.zoning_heritage_ind:
-                    cellslist[i].change_attribute("ZONE_IND", restrict)
+                    urbancells[i].change_attribute("ZONE_IND", restrict)
                 if zstates[3] and self.zoning_heritage_orc:
-                    cellslist[i].change_attribute("ZONE_ORC", restrict)
+                    urbancells[i].change_attribute("ZONE_ORC", restrict)
 
-                zstates = self.get_zoning_states(cellslist[i])   # Update zstates
+                zstates = self.get_zoning_states(urbancells[i])   # Update zstates
                 if sum(zstates) == 0:
                     continue
 
@@ -1553,15 +1577,15 @@ class UrbanDevelopment(UBModule):
             if len(publicpoly) != 0:
                 restrict = self.determine_zoning_against_polygons(cellpoly, publicpoly, 0.51)
                 if zstates[0] and self.zoning_public_res:
-                    cellslist[i].change_attribute("ZONE_RES", restrict)
+                    urbancells[i].change_attribute("ZONE_RES", restrict)
                 if zstates[1] and self.zoning_public_com:
-                    cellslist[i].change_attribute("ZONE_COM", restrict)
+                    urbancells[i].change_attribute("ZONE_COM", restrict)
                 if zstates[2] and self.zoning_public_ind:
-                    cellslist[i].change_attribute("ZONE_IND", restrict)
+                    urbancells[i].change_attribute("ZONE_IND", restrict)
                 if zstates[3] and self.zoning_public_orc:
-                    cellslist[i].change_attribute("ZONE_ORC", restrict)
+                    urbancells[i].change_attribute("ZONE_ORC", restrict)
 
-                zstates = self.get_zoning_states(cellslist[i])  # Update zstates
+                zstates = self.get_zoning_states(urbancells[i])  # Update zstates
                 if sum(zstates) == 0:
                     continue
 
@@ -1569,15 +1593,15 @@ class UrbanDevelopment(UBModule):
             if len(enviropoly) != 0:
                 restrict = self.determine_zoning_against_polygons(cellpoly, enviropoly, 0.50)
                 if zstates[0] and self.zoning_enviro_res:
-                    cellslist[i].change_attribute("ZONE_RES", restrict)
+                    urbancells[i].change_attribute("ZONE_RES", restrict)
                 if zstates[1] and self.zoning_enviro_com:
-                    cellslist[i].change_attribute("ZONE_COM", restrict)
+                    urbancells[i].change_attribute("ZONE_COM", restrict)
                 if zstates[2] and self.zoning_enviro_ind:
-                    cellslist[i].change_attribute("ZONE_IND", restrict)
+                    urbancells[i].change_attribute("ZONE_IND", restrict)
                 if zstates[3] and self.zoning_enviro_orc:
-                    cellslist[i].change_attribute("ZONE_ORC", restrict)
+                    urbancells[i].change_attribute("ZONE_ORC", restrict)
 
-                zstates = self.get_zoning_states(cellslist[i])  # Update zstates
+                zstates = self.get_zoning_states(urbancells[i])  # Update zstates
                 if sum(zstates) == 0:
                     continue
 
@@ -1585,15 +1609,15 @@ class UrbanDevelopment(UBModule):
             if len(floodpoly) != 0:
                 restrict = self.determine_zoning_against_polygons(cellpoly, floodpoly, 0.20)
                 if zstates[0] and self.zoning_flood_res:
-                    cellslist[i].change_attribute("ZONE_RES", restrict)
+                    urbancells[i].change_attribute("ZONE_RES", restrict)
                 if zstates[1] and self.zoning_flood_com:
-                    cellslist[i].change_attribute("ZONE_COM", restrict)
+                    urbancells[i].change_attribute("ZONE_COM", restrict)
                 if zstates[2] and self.zoning_flood_ind:
-                    cellslist[i].change_attribute("ZONE_IND", restrict)
+                    urbancells[i].change_attribute("ZONE_IND", restrict)
                 if zstates[3] and self.zoning_flood_orc:
-                    cellslist[i].change_attribute("ZONE_ORC", restrict)
+                    urbancells[i].change_attribute("ZONE_ORC", restrict)
 
-                zstates = self.get_zoning_states(cellslist[i])  # Update zstates
+                zstates = self.get_zoning_states(urbancells[i])  # Update zstates
                 if sum(zstates) == 0:
                     continue
 
@@ -1601,13 +1625,13 @@ class UrbanDevelopment(UBModule):
             if len(custompoly) != 0:
                 restrict = self.determine_zoning_against_polygons(cellpoly, custompoly, 0.50)
                 if zstates[0] and self.zoning_custom_res:
-                    cellslist[i].change_attribute("ZONE_RES", restrict)
+                    urbancells[i].change_attribute("ZONE_RES", restrict)
                 if zstates[1] and self.zoning_custom_com:
-                    cellslist[i].change_attribute("ZONE_COM", restrict)
+                    urbancells[i].change_attribute("ZONE_COM", restrict)
                 if zstates[2] and self.zoning_custom_ind:
-                    cellslist[i].change_attribute("ZONE_IND", restrict)
+                    urbancells[i].change_attribute("ZONE_IND", restrict)
                 if zstates[3] and self.zoning_custom_orc:
-                    cellslist[i].change_attribute("ZONE_ORC", restrict)
+                    urbancells[i].change_attribute("ZONE_ORC", restrict)
 
         # - 2.8 - DETERMINE LARGE NEIGHBOURHOODS ---
         self.notify("Establishing Neighbourhoods")
@@ -1617,19 +1641,19 @@ class UrbanDevelopment(UBModule):
         sqdist = nhd_rad * nhd_rad
         maxnhd = 0
 
-        for i in range(len(cellslist)):
-            cur_cell = cellslist[i]
+        for i in range(len(urbancells)):
+            cur_cell = urbancells[i]
             hashtable[0].append(cur_cell)   # Add the current cell object to the hash_table
             neighbours = []
             neighbour_IDs = []
             coords = (cur_cell.get_attribute("CentreX"), cur_cell.get_attribute("CentreY"))
-            for j in range(len(cellslist)):
-                dx = (cellslist[j].get_attribute("CentreX") - coords[0])
-                dy = (cellslist[j].get_attribute("CentreY") - coords[1])
+            for j in range(len(urbancells)):
+                dx = (urbancells[j].get_attribute("CentreX") - coords[0])
+                dy = (urbancells[j].get_attribute("CentreY") - coords[1])
                 if (dx * dx + dy * dy) <= sqdist:
                     # The Cell is part of the neighbourhood
-                    neighbours.append(cellslist[j])
-                    neighbour_IDs.append(cellslist[j].get_attribute("CellID"))
+                    neighbours.append(urbancells[j])
+                    neighbour_IDs.append(urbancells[j].get_attribute("CellID"))
             cur_cell.add_attribute("NHD_IDs", neighbour_IDs)
             cur_cell.add_attribute("NHD_Num", len(neighbour_IDs))
             hashtable[1].append(neighbours)
@@ -1715,10 +1739,10 @@ class UrbanDevelopment(UBModule):
             curcell.add_attribute("INFLU_ORC", final_Nij[3])
 
         # - 2.10 - STOCHASTIC PERTURBATION AND TRANSITIONS POTENTIAL ACROSS MAP
-        for i in range(len(cellslist)):     # Add one value of R to each cell
-            if cellslist[i].get_attribute("Status") == 0:
+        for i in range(len(urbancells)):     # Add one value of R to each cell
+            if urbancells[i].get_attribute("Status") == 0:
                 continue
-            curcell = cellslist[i]
+            curcell = urbancells[i]
             if curcell.get_attribute("LUC_TYPE") == "Fixed":
                 curcell.add_attribute("STOCH_RES", 0)
                 curcell.add_attribute("STOCH_COM", 0)
@@ -1739,12 +1763,19 @@ class UrbanDevelopment(UBModule):
 
             # CALCULATE Transition potential V for the four land uses = r S A Z N
             activeLUC = ubglobals.ACTIVELANDUSEABBR
+            luc_key = {"RES": ["Residential"], "COM": ["Commercial"], "IND": ["Light Industry", "Heavy Industry"],
+                       "ORC": ["Offices Res Mix"]}
             for j in activeLUC:
+                if curcell.get_attribute("Base_LUC") in luc_key[j]:
+                    h = eval("self."+j.lower()+"_inertia")      # Only apply inertia if the LUC matches the current cell
+                else:
+                    h = 0.0 # Else use zero
+
                 v = self.calculate_transition_potential(curcell.get_attribute("STOCH_"+j),
                                                         curcell.get_attribute("SUIT_"+j),
                                                         curcell.get_attribute("ACCESS_"+j),
                                                         curcell.get_attribute("INFLU_"+j),
-                                                        curcell.get_attribute("ZONE_"+j))
+                                                        curcell.get_attribute("ZONE_"+j), h)
                 curcell.add_attribute("VPOT_"+j, v)
 
             # GET THE HIGHEST RANKED POTENTIAL LAND USE
@@ -1754,19 +1785,107 @@ class UrbanDevelopment(UBModule):
             curcell.add_attribute("VPOT_MAX", max(potentials))
 
         # - 2.11 - PERFORM THE LAND USE ASSIGNMENT
-        # [ CALCULATE RES DEMAND ]
+        # -- 2.11.1 - Calculate the future cells required for each land use
+        ji = {"RES":0, "COM":0, "LI":0, "HI":0, "ORC":0}       # Sectoral population/employment
+        nci = {"RES":0, "COM":0, "LI":0, "HI":0, "ORC":0}      # Number of cells occupied by sector
+        Sit = {"RES":0, "COM":0, "LI":0, "HI":0, "ORC":0}      # Sum of suitability of sector in its own cells
+        SAit = {"RES":0, "COM":0, "LI":0, "HI":0, "ORC":0}     # Sum of suitability of sector in passive LUC cells
+
+        for i in range(len(urbancells)):     # Add one value of R to each cell
+            if urbancells[i].get_attribute("Status") == 0 or urbancells[i].get_attribute("LUC_Type") == "Fixed":
+                continue        # Skip if Fixed or Status 0
+            # Check the Base LUC
+            if urbancells[i].get_attribute("Base_LUC") == "Residential":
+                ji["RES"] += urbancells[i].get_attribute("Base_POP")
+                nci["RES"] += 1
+                Sit["RES"] += urbancells[i].get_attribute("SUIT_RES")
+            elif urbancells[i].get_attribute("Base_LUC") == "Commercial":
+                ji["COM"] += urbancells[i].get_attribute("Base_EMP")
+                nci["COM"] += 1
+                Sit["COM"] += urbancells[i].get_attribute("SUIT_COM")
+            elif urbancells[i].get_attribute("Base_LUC") == "Light Industry":
+                ji["LI"] += urbancells[i].get_attribute("Base_EMP")
+                nci["LI"] += 1
+                Sit["LI"] += urbancells[i].get_attribute("SUIT_IND")
+            elif urbancells[i].get_attribute("Base_LUC") == "Heavy Industry":
+                ji["HI"] += urbancells[i].get_attribute("Base_EMP")
+                nci["HI"] += 1
+                Sit["HI"] += urbancells[i].get_attribute("SUIT_IND")
+            elif urbancells[i].get_attribute("Base_LUC") == "Offices Res Mix":
+                ji["ORC"] += urbancells[i].get_attribute("Base_EMP")
+                nci["ORC"] += 1
+                Sit["ORC"] += urbancells[i].get_attribute("SUIT_ORC")
+            else:   # Cell has passive land use
+                SAit["RES"] += urbancells[i].get_attribute("SUIT_RES")
+                SAit["COM"] += urbancells[i].get_attribute("SUIT_COM")
+                SAit["LI"] += urbancells[i].get_attribute("SUIT_IND")
+                SAit["HI"] += urbancells[i].get_attribute("SUIT_IND")
+                SAit["ORC"] += urbancells[i].get_attribute("SUIT_ORC")
+
+        print "Transition Details"
+        print ji
+        print nci
+        print Sit
+        print SAit
+
+        for i in ji.keys():
+            self.map_attr.add_attribute("J_it0_"+i, ji[i])
+            if nci[i] == 0:
+                self.map_attr.add_attribute("W_"+i+"_t0", 0)
+            else:
+                self.map_attr.add_attribute("W_"+i+"_t0", float(ji[i]/nci[i]))
+            self.map_attr.add_attribute("NC_"+i+"_TOTALt0", nci[i])
+            self.map_attr.add_attribute("SUIT_" + i + "_TOTALt0", Sit[i])
+            self.map_attr.add_attribute("SUITA_"+i+"_TOTALt0", SAit[i])
+
+        
+
+        # -- 2.11.2 - Do the sorting algorithm
 
         self.notify("Current End of Module")
         print ("Current end of module")
         return True
 
-    def calculate_transition_potential(self, r, s, a, n, z):
+    def calculate_new_cells(self, j_it, nc_it, s_it, s_ait, luc_name):
+        """Calculates the new number of cells required for the given land use based on the starting density, suitability
+        and cell-suitability relationship.
+
+        :param j_it: current time step population / employment value
+        :param nc_it: number of cells occupied by the land use currently
+        :param s_it: total suitability of the land use type in its own cells
+        :param s_ait: total suitability for land use type in all passive cells across the map
+        :param luc_name: name abbreviation of the land use
+        :param map_attr: global map attributes
+        :return: NCi+1, the number of cells required in this time step.
+        """
+        s_it0 = self.map_attr.get_attribute("SUIT_"+luc_name+"_TOTALt0")
+        w_it0 = self.map_attr.get_attribute("W_"+luc_name+"_t0")
+        nc_it0 = self.map_attr.get_attribute("NC_"+luc_name+"_TOTALt0")
+        s_ait0 = self.map_attr.get_attribute("SUITA_"+luc_name+"_TOTALt0")
+        luc_delta = eval("self."+luc_name.lower()+"delta")
+        luc_lambda = eval("self."+luc_name.lower()+"lambda")
+
+        landpressure = ((s_it * s_ait0)/(s_it0 * s_ait))**luc_delta
+        landquality = ((s_it * nc_it0) / (s_it0 * nc_it))**luc_lambda
+        w_it = w_it0 * landpressure * landquality
+        nc_it1 = int(j_it / w_it)
+        return nc_it1
+
+    def get_totals_from_cells(self, cellslist, target_attribute, **kwargs):
+        """Retrieve the total value from the map of cells
+
+        :param target_attribute:
+        :param kwargs:
+        :return:
+        """
+
+    def calculate_transition_potential(self, r, s, a, n, z, h):
         """Calculates the transition potential based on the five input parameters Zoning (z), Neighbourhood effect (N),
         Suitability (s), Accessibility (a) and the stochastic perturbation (r)."""
         if n > 0:
-            return r * s * a * n * z
+            return r * s * a * n * z + h
         else:
-            return r * (2 - s * a * z) * n
+            return r * (2 - s * a * z) * n + h
 
     def calculate_distance_between_cells(self, cellA, cellB):
         """Calculates the Euclidean Distance between two cells, for the sake of neighbourhood effect. Returns
@@ -1890,12 +2009,11 @@ class UrbanDevelopment(UBModule):
             polylist = ubspatial.import_polygonal_map(fullfilepath, "RINGS", None, self.global_offsets)
         return polylist
 
-    def calculate_accessibility_pointfeatures(self, map_input, map_attr, aj, cellslist, att_name):
+    def calculate_accessibility_pointfeatures(self, map_input, aj, cellslist, att_name):
         """Calculates the accessibility from a Point Features Map and adds the individual accessibility values
         to the map.
 
         :param map_input: the input map to calculate the accessibility from
-        :param map_attr: the global map attributes list
         :param aj: the list of parameters for accessibility calculations - the importance factors
         :param cellslist: the list of cells in the simulation
         :param att_name: the prefix attribute name to use (e.g. ROADS --> "ACC_ROAD_"
@@ -1932,15 +2050,14 @@ class UrbanDevelopment(UBModule):
             cur_cell.add_attribute("ACC_" + att_name + "_IND", ubmethods.calculate_accessibility_factor(dist, aj[2]))
             cur_cell.add_attribute("ACC_" + att_name + "_ORC", ubmethods.calculate_accessibility_factor(dist, aj[3]))
 
-        map_attr.add_attribute("ACCESS_" + att_name, 1)
+        self.map_attr.add_attribute("ACCESS_" + att_name, 1)
         return True
 
-    def calculate_accessibility_linearfeatures(self, map_input, map_attr, aj, cellslist, att_name):
+    def calculate_accessibility_linearfeatures(self, map_input, aj, cellslist, att_name):
         """Calculates the accessibility from a Point Features Map and adds the individual accessibility values
         to the map.
 
         :param map_input: the input map to calculate the accessibility from
-        :param map_attr: the global map attributes list
         :param aj: the list of parameters for accessibility calculations - the importance factors
         :param cellslist: the list of cells in the simulation
         :param att_name: the prefix attribute name to use (e.g. ROADS --> "ROAD"
@@ -1977,15 +2094,14 @@ class UrbanDevelopment(UBModule):
             cur_cell.add_attribute("ACC_"+att_name+"_IND", ubmethods.calculate_accessibility_factor(dist, aj[2]))
             cur_cell.add_attribute("ACC_"+att_name+"_ORC", ubmethods.calculate_accessibility_factor(dist, aj[3]))
 
-        map_attr.add_attribute("ACCESS_"+att_name, 1)
+        self.map_attr.add_attribute("ACCESS_"+att_name, 1)
         return True
 
-    def calculate_accessibility_polygonfeatures(self, map_input, map_attr, aj, cellslist, att_name, **kwargs):
+    def calculate_accessibility_polygonfeatures(self, map_input, aj, cellslist, att_name, **kwargs):
         """Calculates the accessibility from a Point Features Map and adds the individual accessibility values
         to the map.
 
         :param map_input: the input map to calculate the accessibility from
-        :param map_attr: the global map attributes list
         :param aj: the list of parameters for accessibility calculations - the importance factors
         :param cellslist: the list of cells in the simulation
         :param att_name: the prefix attribute name to use (e.g. ROADS --> "ACC_ROAD_"
@@ -2027,7 +2143,7 @@ class UrbanDevelopment(UBModule):
             cur_cell.add_attribute("ACC_" + att_name + "_IND", ubmethods.calculate_accessibility_factor(dist, aj[2]))
             cur_cell.add_attribute("ACC_" + att_name + "_ORC", ubmethods.calculate_accessibility_factor(dist, aj[3]))
 
-        map_attr.add_attribute("ACCESS_" + att_name, 1)
+        self.map_attr.add_attribute("ACCESS_" + att_name, 1)
         return True
 
     def determine_land_use_types(self):
