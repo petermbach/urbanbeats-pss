@@ -947,13 +947,24 @@ class UrbanDevelopment(UBModule):
                     continue
                 self.calculate_employment_from_land_use(current_cell, self.cellsize)
 
-        # BEFORE MOVING ON - FILTER OUT THE CELLS LIST TO MAKE IT LEANER AND EASIER TO WORK WITH
+        # BEFORE MOVING ON - FILTER OUT THE CELLS LIST TO MAKE IT LEANER AND EASIER TO WORK WITH AND ALSO
+        # DEFINE THE ATTRIBUTE LUC_simyear and POP_simyear if the timestep is 0
         urbancells = []
         for i in range(len(cellslist)):
             if cellslist[i].get_attribute("Status") == 0:
                 continue
-            else:
-                urbancells.append(cellslist[i])
+
+            if self.timestep == 0:  # Transfer the base year values to LUC attributes
+                cellslist[i].add_attribute("LUC_" + str(self.simulationyear),
+                                           cellslist[i].get_attribute("Base_LUC"))
+                cellslist[i].add_attribute("POP_" + str(self.simulationyear),
+                                           sum([cellslist[i].get_attribute("Base_POP"),
+                                               cellslist[i].get_attribute("Base_EMP")]))
+
+            urbancells.append(cellslist[i])
+
+        # FROM THIS POINT FORTH, ALL SPATIAL CALCULATIONS ARE DONE USING THE LAND USE VALUE STORED IN LUC_simyear AND
+        # POPULATION/EMPLOYMENT DATA STORED IN POP_simyear
 
         # - 2.5 - SPATIAL RELATIONSHIPS - ACCESSIBILITY
         # - 2.5.1 - Determine individual accessibility maps
@@ -1701,11 +1712,11 @@ class UrbanDevelopment(UBModule):
                     elif ifo.origin_landuse == "ORC":
                         influence_Nij[3].append(w)
 
-            final_Nij = [0,0,0,0]
+            final_Nij = [0, 0, 0, 0]
             if self.edge_effects_method == "NA":        # NO ACCOUNTING - JUST CREATE THE FOUR ATTRIBUTES
                 final_Nij = [sum(influence_Nij[0]), sum(influence_Nij[1]), sum(influence_Nij[2]), sum(influence_Nij[3])]
             elif self.edge_effects_method == "AVG":     # AVERAGING - DIVIDE BY THE LENGTH OF VALID CELLS IF THE
-                final_Nij = [0,0,0,0]                   # LIST IS NON-ZERO
+                final_Nij = [0, 0, 0, 0]                   # LIST IS NON-ZERO
                 for i in range(len(final_Nij)):
                     if len(influence_Nij[i]) == 0:
                         final_Nij[i] = 0
@@ -1713,7 +1724,7 @@ class UrbanDevelopment(UBModule):
                         final_Nij[i] = sum(influence_Nij[i])/len(influence_Nij[i])
             elif self.edge_effects_method == "PP" or self.edge_effects_method == "PPAVG":      # PROPORTION METHODS
                 if len(nhdcells) != maxnhd:     # The Block is near the edge, correct for this
-                    final_Nij = [0,0,0,0]
+                    final_Nij = [0, 0, 0, 0]
                     scaling_factor = maxnhd / len(nhdcells)     # Calculate scaling factor
                     for i in range(len(final_Nij)):             # Modify the data
                         if self.edge_effects_method == "PP":
@@ -1742,9 +1753,10 @@ class UrbanDevelopment(UBModule):
         for i in range(len(urbancells)):     # Add one value of R to each cell
             if urbancells[i].get_attribute("Status") == 0:
                 continue
+
             curcell = urbancells[i]
-            if curcell.get_attribute("LUC_TYPE") == "Fixed":
-                curcell.add_attribute("STOCH_RES", 0)
+            if curcell.get_attribute("LUC_TYPE") == "Fixed":        # If the land use is fixed, skip but assign
+                curcell.add_attribute("STOCH_RES", 0)               # basic values to the key attributes
                 curcell.add_attribute("STOCH_COM", 0)
                 curcell.add_attribute("STOCH_IND", 0)
                 curcell.add_attribute("STOCH_ORC", 0)
@@ -1752,11 +1764,12 @@ class UrbanDevelopment(UBModule):
                 curcell.add_attribute("VPOT_COM", 0)
                 curcell.add_attribute("VPOT_IND", 0)
                 curcell.add_attribute("VPOT_ORC", 0)
-                curcell.add_attribute("VPOT_LUC", "Other")
+                curcell.add_attribute("VPOT_LUC", "OTHER")
                 curcell.add_attribute("VPOT_MAX", 0)
+                print "I got here because it's a fixed use"
                 continue
 
-            curcell.add_attribute("STOCH_RES", 1 + (-1*math.log(rand.random()))**self.alpha)  # Stochastic perturbation
+            curcell.add_attribute("STOCH_RES", 1 + (-1 * math.log(rand.random()))**self.alpha)  # Perturbation
             curcell.add_attribute("STOCH_COM", 1 + (-1 * math.log(rand.random())) ** self.alpha)
             curcell.add_attribute("STOCH_IND", 1 + (-1 * math.log(rand.random())) ** self.alpha)
             curcell.add_attribute("STOCH_ORC", 1 + (-1 * math.log(rand.random())) ** self.alpha)
@@ -1766,16 +1779,17 @@ class UrbanDevelopment(UBModule):
             luc_key = {"RES": ["Residential"], "COM": ["Commercial"], "IND": ["Light Industry", "Heavy Industry"],
                        "ORC": ["Offices Res Mix"]}
             for j in activeLUC:
-                if curcell.get_attribute("Base_LUC") in luc_key[j]:
+                if curcell.get_attribute("LUC_"+str(self.simulationyear)) in luc_key[j]:
                     h = eval("self."+j.lower()+"_inertia")      # Only apply inertia if the LUC matches the current cell
                 else:
                     h = 0.0 # Else use zero
-
+                curcell.add_attribute("INRTIA_" + j, h)
                 v = self.calculate_transition_potential(curcell.get_attribute("STOCH_"+j),
                                                         curcell.get_attribute("SUIT_"+j),
                                                         curcell.get_attribute("ACCESS_"+j),
                                                         curcell.get_attribute("INFLU_"+j),
-                                                        curcell.get_attribute("ZONE_"+j), h)
+                                                        curcell.get_attribute("ZONE_"+j),
+                                                        curcell.get_attribute("INRTIA_"+j))
                 curcell.add_attribute("VPOT_"+j, v)
 
             # GET THE HIGHEST RANKED POTENTIAL LAND USE
@@ -1785,34 +1799,34 @@ class UrbanDevelopment(UBModule):
             curcell.add_attribute("VPOT_MAX", max(potentials))
 
         # - 2.11 - PERFORM THE LAND USE ASSIGNMENT
-        # -- 2.11.1 - Calculate the future cells required for each land use
-        ji = {"RES":0, "COM":0, "LI":0, "HI":0, "ORC":0}       # Sectoral population/employment
-        nci = {"RES":0, "COM":0, "LI":0, "HI":0, "ORC":0}      # Number of cells occupied by sector
-        Sit = {"RES":0, "COM":0, "LI":0, "HI":0, "ORC":0}      # Sum of suitability of sector in its own cells
-        SAit = {"RES":0, "COM":0, "LI":0, "HI":0, "ORC":0}     # Sum of suitability of sector in passive LUC cells
+        # -- 2.11.1 - Preprae information and calculate the future cells required for each land use
+        ji = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}       # Sectoral population/employment
+        nci = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}      # Number of cells occupied by sector
+        Sit = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}      # Sum of suitability of sector in its own cells
+        SAit = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}     # Sum of suitability of sector in passive LUC cells
 
         for i in range(len(urbancells)):     # Add one value of R to each cell
-            if urbancells[i].get_attribute("Status") == 0 or urbancells[i].get_attribute("LUC_Type") == "Fixed":
-                continue        # Skip if Fixed or Status 0
-            # Check the Base LUC
-            if urbancells[i].get_attribute("Base_LUC") == "Residential":
-                ji["RES"] += urbancells[i].get_attribute("Base_POP")
+            if urbancells[i].get_attribute("LUC_Type") == "Fixed":      # Status = 0 should no longer exist
+                continue        # Skip if Fixed Land Use
+            # Check the LUC
+            if urbancells[i].get_attribute("LUC_"+str(self.simulationyear)) == "Residential":
+                ji["RES"] += urbancells[i].get_attribute("POP_"+str(self.simulationyear))
                 nci["RES"] += 1
                 Sit["RES"] += urbancells[i].get_attribute("SUIT_RES")
-            elif urbancells[i].get_attribute("Base_LUC") == "Commercial":
-                ji["COM"] += urbancells[i].get_attribute("Base_EMP")
+            elif urbancells[i].get_attribute("LUC_"+str(self.simulationyear)) == "Commercial":
+                ji["COM"] += urbancells[i].get_attribute("POP_"+str(self.simulationyear))
                 nci["COM"] += 1
                 Sit["COM"] += urbancells[i].get_attribute("SUIT_COM")
-            elif urbancells[i].get_attribute("Base_LUC") == "Light Industry":
-                ji["LI"] += urbancells[i].get_attribute("Base_EMP")
+            elif urbancells[i].get_attribute("LUC_"+str(self.simulationyear)) == "Light Industry":
+                ji["LI"] += urbancells[i].get_attribute("POP_"+str(self.simulationyear))
                 nci["LI"] += 1
                 Sit["LI"] += urbancells[i].get_attribute("SUIT_IND")
-            elif urbancells[i].get_attribute("Base_LUC") == "Heavy Industry":
-                ji["HI"] += urbancells[i].get_attribute("Base_EMP")
+            elif urbancells[i].get_attribute("LUC_"+str(self.simulationyear)) == "Heavy Industry":
+                ji["HI"] += urbancells[i].get_attribute("POP_"+str(self.simulationyear))
                 nci["HI"] += 1
                 Sit["HI"] += urbancells[i].get_attribute("SUIT_IND")
-            elif urbancells[i].get_attribute("Base_LUC") == "Offices Res Mix":
-                ji["ORC"] += urbancells[i].get_attribute("Base_EMP")
+            elif urbancells[i].get_attribute("LUC_"+str(self.simulationyear)) == "Offices Res Mix":
+                ji["ORC"] += urbancells[i].get_attribute("POP_"+str(self.simulationyear))
                 nci["ORC"] += 1
                 Sit["ORC"] += urbancells[i].get_attribute("SUIT_ORC")
             else:   # Cell has passive land use
@@ -1838,7 +1852,6 @@ class UrbanDevelopment(UBModule):
             self.map_attr.add_attribute("SUIT_" + i + "_TOTALt0", Sit[i])
             self.map_attr.add_attribute("SUITA_"+i+"_TOTALt0", SAit[i])
 
-        
 
         # -- 2.11.2 - Do the sorting algorithm
 

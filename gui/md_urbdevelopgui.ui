@@ -9541,7 +9541,7 @@ p, li { white-space: pre-wrap; }
   <include location="../graphics/ubeats.qrc"/>
   <include location="../graphics/ubeats.qrc"/>
   <include location="../graphics/ubeats.qrc"/>
-  <include location="../../../../.designer/graphics/ubeats.qrc"/>
+  <include location="../graphics/ubeats.qrc"/>
  </resources>
  <connections>
   <connection>
