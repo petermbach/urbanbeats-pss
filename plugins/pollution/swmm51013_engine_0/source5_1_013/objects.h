@@ -391,6 +391,7 @@ typedef struct
    double        oldRunoff;       // previous runoff (cfs)
    double        newRunoff;       // current runoff (cfs)
    double        cumRunDepth;     // cumulative runoff before internal routing  //(Martijn)
+   double        dryPeriod;       // time without precip or runoff DECIDE       //(Martijn)
    double        oldSnowDepth;    // previous snow depth (ft)
    double        newSnowDepth;    // current snow depth (ft)
    double*       oldQual;         // previous runoff quality (mass/L)

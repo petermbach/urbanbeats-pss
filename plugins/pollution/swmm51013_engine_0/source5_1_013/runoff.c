@@ -163,6 +163,7 @@ void runoff_execute()
     double   runoffStep;               // runoff time step (sec)
     double   oldRunoffStep;            // previous runoff time step (sec)
     double   runoff;                   // subcatchment runoff (ft/sec)
+	double   cumRunDepth;			   // cumulative subcatchment runoff depth (ft) //(Martijn)
     DateTime currentDate;              // current date/time 
     char     canSweep;                 // TRUE if street sweeping can occur
 
@@ -267,9 +268,26 @@ void runoff_execute()
         if ( canSweep && Subcatch[j].rainfall <= MIN_RUNOFF)
             surfqual_sweepBuildup(j, currentDate);
 
+		// --- update cumulative runoff rate for Kefeng's pollution model //(Martijn)
+		subcatch_getCumRunDepth(j, runoffStep, runoff);
+		//printf("catch: %d runoff: %lf, cumRunoffDepth: %lf\n", j, runoff, Subcatch[j].cumRunDepth);
+
         // --- compute pollutant 
-		printf("CumRunDepth: %lf\n", Subcatch[1].cumRunDepth);
-        surfqual_getWashoff(j, Subcatch[j].cumRunDepth, runoffStep);	//(Martijn)
+		if (j == 0)
+		{
+			//printf("timeStep: %p\n", runoffStep);
+			printf("catch: %d, runoff: %lf\n", j, runoff * 10000);
+			printf("runoffStep: %lf\n", runoffStep);
+			printf("cumRunDepth: %lf\n", Subcatch[j].cumRunDepth*10000);           //(Martijn)
+		}
+			
+		
+
+        surfqual_getWashoff(j, runoff, runoffStep);	// runoff will be replaced 
+													// inside this function by
+													// Subcatch[j].cumRunDepth if 
+													// Kefeng's model is used (Martijn)
+
     }
 
     // --- update tracking of system-wide max. runoff rate

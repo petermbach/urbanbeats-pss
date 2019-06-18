@@ -440,6 +440,7 @@ void  subcatch_initState(int j)
     Subcatch[j].oldRunoff = 0.0;
     Subcatch[j].newRunoff = 0.0;
 	Subcatch[j].cumRunDepth = 0.0;											   //(Martijn)
+	Subcatch[j].dryPeriod = 0.0;                                               //(Martijn)
     Subcatch[j].oldSnowDepth = 0.0;
     Subcatch[j].newSnowDepth = 0.0;
     Subcatch[j].runon = 0.0;
@@ -747,10 +748,6 @@ double subcatch_getRunoff(int j, double tStep)
 		vImpervRunoff, vPervRunoff, vOutflow + VlidDrain,                      //(5.1.013)
 		Subcatch[j].newRunoff + VlidDrain / tStep);
 
-	// --- update the cumulative runoff generated on the subcatchment for
-	//	   pollution modelling puposes										   //(Martijn)
-	Subcatch[j].cumRunDepth += (runoff / area) / tStep;
-
     // --- include this subcatchment's contribution to overall flow balance
     //     only if its outlet is a drainage system node
     if ( Subcatch[j].outNode == -1 && Subcatch[j].outSubcatch != j )
@@ -766,6 +763,54 @@ double subcatch_getRunoff(int j, double tStep)
 
     // --- return area-averaged runoff (ft/s)
     return runoff / area;
+}
+
+//=============================================================================//(Martijn)
+
+void subcatch_getCumRunDepth(int j, double tStep, double runoff)
+{
+// 
+//  Purpose: Calculates cumulative runoff during a rainevent the length of 
+//           a dry weather period when it is not raining
+//	Input:	 j = subcatchment index
+//			 tStep = time step (sec)
+//			 runoff = runoff over the subcatchment before internal routing (ft/s)
+//	Output:	 updates Subcatch[j].cumRunDepth (ft) and Subcatch[j].dryPeriod (sec) 
+//
+
+// --- increase the number of dry steps during dry weather and add runoff to cumRun
+
+// --- add remaining runoff after rainfall event to cumRunoff
+	if (Subcatch[j].rainfall == 0.0)
+	{
+		Subcatch[j].cumRunDepth += runoff * tStep;
+
+// --- when runoff has stopped, reset cumRunoff for a new rain event and count dry period
+		if (runoff < 0.000000023) // around about the number SWMM seems to set runoff to 0 in output
+		{
+			Subcatch[j].dryPeriod += tStep;
+			Subcatch[j].cumRunDepth = 0.0;
+		}
+
+// --- set the cumulative runoff back to 0 if the dry weather period exceeds 1 hour
+
+		//Subcatch[j].dryPeriod += tStep;
+
+		//if (Subcatch[j].dryPeriod > 3600.0)
+		//{
+			//Subcatch[j].cumRunDepth = 0.0;
+		//}
+		//printf("dryperiod: %lf\n", Subcatch[j].dryPeriod);
+
+	}
+
+// --- set the dry period to 0 and add any runoff to the cumulative runoff during a 
+//     rain event
+	else
+	{
+		Subcatch[j].dryPeriod = 0.0;
+		Subcatch[j].cumRunDepth += runoff * tStep;
+	}
 }
 
 //=============================================================================
