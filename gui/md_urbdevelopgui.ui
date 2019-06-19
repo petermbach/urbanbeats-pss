@@ -217,7 +217,7 @@ p, li { white-space: pre-wrap; }
       <item>
        <widget class="QTabWidget" name="parameters">
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="inputs_tab">
          <attribute name="title">
@@ -237,7 +237,7 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>588</width>
+               <width>529</width>
                <height>926</height>
               </rect>
              </property>
@@ -1360,7 +1360,7 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>541</width>
+                   <width>522</width>
                    <height>778</height>
                   </rect>
                  </property>
@@ -9537,6 +9537,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>help_button</tabstop>
  </tabstops>
  <resources>
+  <include location="../graphics/ubeats.qrc"/>
   <include location="../graphics/ubeats.qrc"/>
   <include location="../graphics/ubeats.qrc"/>
   <include location="../graphics/ubeats.qrc"/>

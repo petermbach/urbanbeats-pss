@@ -673,9 +673,19 @@ class UrbanDevelopment(UBModule):
         # DYNAMIC REFERENCE PARAMETERS
         self.dt_years = self.scenario.get_simulation_years()        # All the simulation years to work out dT
         self.timestep = self.dt_years.index(self.simulationyear)    # The current time step of the module
-        self.dyears = 0     # The current number of years passed since previous time step 0 if timestep is 0
+
+        if self.timestep == len(self.dt_years) - 1:
+            self.sim_length = 0         # [TO DO] - the urban model DOES NOT RUN IN THE FINAL YEAR!
+        else:       # The length of the current module's simulation [years]
+            self.sim_length = self.dt_years[self.timestep+1] - self.dt_years[self.timestep]
+
+        self.years_passed = 0  # The current number of years passed since previous time step 0 if timestep is 0
         if self.timestep != 0:
-            self.dyears = self.dt_years[self.timestep] - self.dt_years[self.timestep-1]
+            self.years_passed = self.dt_years[self.timestep] - self.dt_years[self.timestep-1]
+
+        self.currentyear = self.simulationyear      # Begin the 'current year' at the module's simulation year
+        self.luc_key = {"RES": ["Residential"], "COM": ["Commercial"], "IND": ["Light Industry", "Heavy Industry"],
+                       "ORC": ["Offices Res Mix"]}
 
     def run_module(self):
         """Runs the urban development module's simulation. Processes all inputs to simulate changes in land use and
@@ -1776,10 +1786,10 @@ class UrbanDevelopment(UBModule):
 
             # CALCULATE Transition potential V for the four land uses = r S A Z N
             activeLUC = ubglobals.ACTIVELANDUSEABBR
-            luc_key = {"RES": ["Residential"], "COM": ["Commercial"], "IND": ["Light Industry", "Heavy Industry"],
+            self.luc_key = {"RES": ["Residential"], "COM": ["Commercial"], "IND": ["Light Industry", "Heavy Industry"],
                        "ORC": ["Offices Res Mix"]}
             for j in activeLUC:
-                if curcell.get_attribute("LUC_"+str(self.simulationyear)) in luc_key[j]:
+                if curcell.get_attribute("LUC_"+str(self.simulationyear)) in self.luc_key[j]:
                     h = eval("self."+j.lower()+"_inertia")      # Only apply inertia if the LUC matches the current cell
                 else:
                     h = 0.0 # Else use zero
@@ -1799,98 +1809,296 @@ class UrbanDevelopment(UBModule):
             curcell.add_attribute("VPOT_MAX", max(potentials))
 
         # - 2.11 - PERFORM THE LAND USE ASSIGNMENT
-        # -- 2.11.1 - Preprae information and calculate the future cells required for each land use
-        ji = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}       # Sectoral population/employment
-        nci = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}      # Number of cells occupied by sector
-        Sit = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}      # Sum of suitability of sector in its own cells
-        SAit = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}     # Sum of suitability of sector in passive LUC cells
+        # -- 2.11.1 - Prepare information and calculate the future cells required for each land use
+        if self.timestep == 0:      # If this is the first time step, get the map attributes
+            self.map_attr.add_attribute("URBMODELSTART", self.simulationyear)
+            ji, nci, Sit, SAit = self.determine_pop_cells_suit_at_suit_passive(urbancells)
+            self.map_attr.add_attribute("Ji_initial", ji)           # Add these four to the map attributes, otherwise
+            self.map_attr.add_attribute("NCI_initial", nci)         # should already exist.
+            self.map_attr.add_attribute("Sit_initial", Sit)
+            self.map_attr.add_attribute("SAit_initial", SAit)
 
-        for i in range(len(urbancells)):     # Add one value of R to each cell
-            if urbancells[i].get_attribute("LUC_Type") == "Fixed":      # Status = 0 should no longer exist
-                continue        # Skip if Fixed Land Use
-            # Check the LUC
-            if urbancells[i].get_attribute("LUC_"+str(self.simulationyear)) == "Residential":
-                ji["RES"] += urbancells[i].get_attribute("POP_"+str(self.simulationyear))
-                nci["RES"] += 1
-                Sit["RES"] += urbancells[i].get_attribute("SUIT_RES")
-            elif urbancells[i].get_attribute("LUC_"+str(self.simulationyear)) == "Commercial":
-                ji["COM"] += urbancells[i].get_attribute("POP_"+str(self.simulationyear))
-                nci["COM"] += 1
-                Sit["COM"] += urbancells[i].get_attribute("SUIT_COM")
-            elif urbancells[i].get_attribute("LUC_"+str(self.simulationyear)) == "Light Industry":
-                ji["LI"] += urbancells[i].get_attribute("POP_"+str(self.simulationyear))
-                nci["LI"] += 1
-                Sit["LI"] += urbancells[i].get_attribute("SUIT_IND")
-            elif urbancells[i].get_attribute("LUC_"+str(self.simulationyear)) == "Heavy Industry":
-                ji["HI"] += urbancells[i].get_attribute("POP_"+str(self.simulationyear))
-                nci["HI"] += 1
-                Sit["HI"] += urbancells[i].get_attribute("SUIT_IND")
-            elif urbancells[i].get_attribute("LUC_"+str(self.simulationyear)) == "Offices Res Mix":
-                ji["ORC"] += urbancells[i].get_attribute("POP_"+str(self.simulationyear))
-                nci["ORC"] += 1
-                Sit["ORC"] += urbancells[i].get_attribute("SUIT_ORC")
-            else:   # Cell has passive land use
-                SAit["RES"] += urbancells[i].get_attribute("SUIT_RES")
-                SAit["COM"] += urbancells[i].get_attribute("SUIT_COM")
-                SAit["LI"] += urbancells[i].get_attribute("SUIT_IND")
-                SAit["HI"] += urbancells[i].get_attribute("SUIT_IND")
-                SAit["ORC"] += urbancells[i].get_attribute("SUIT_ORC")
-
-        print "Transition Details"
-        print ji
-        print nci
-        print Sit
-        print SAit
-
-        for i in ji.keys():
-            self.map_attr.add_attribute("J_it0_"+i, ji[i])
-            if nci[i] == 0:
-                self.map_attr.add_attribute("W_"+i+"_t0", 0)
-            else:
-                self.map_attr.add_attribute("W_"+i+"_t0", float(ji[i]/nci[i]))
-            self.map_attr.add_attribute("NC_"+i+"_TOTALt0", nci[i])
-            self.map_attr.add_attribute("SUIT_" + i + "_TOTALt0", Sit[i])
-            self.map_attr.add_attribute("SUITA_"+i+"_TOTALt0", SAit[i])
+            wi0 = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}
+            for i in ji.keys():
+                if nci[i] == 0:
+                    wi0[i] = 0
+                else:
+                    wi0[i] = float(ji[i] / nci[i])
+            self.map_attr.add_attribute("wi_initial", wi0)
 
 
-        # -- 2.11.2 - Do the sorting algorithm
+        # -- 2.11.2 - Conduct the dynamic simulation from current simulation year to the next simulation year
+        for year in range(self.sim_length):     # Loop begins in the current year
+            self.currentyear = self.simulationyear + year  # In the current, creating current state for transition
+            print "In", self.currentyear, "creating the transition to...", str(self.currentyear + 1)
 
+            # Create the smaller list of transition cells
+            transitioncells = []        # Transfer LUC information to fixed cells, create separate list
+            for c in range(len(urbancells)):
+                if urbancells[c].get_attribute("LUC_Type") == "Fixed":
+                    urbancells[c].add_attribute("LUC_"+str(self.currentyear+1), urbancells[c].get_attribute("Base_LUC"))
+                else:
+                    transitioncells.append(urbancells[c])       # If not fixed, add to the transition cells
+
+            # STEP 1 - Calculate population and employment growth for RES/COM/LI/HI/ORC
+            ji, nci, Sit, SAit = self.determine_pop_cells_suit_at_suit_passive(transitioncells)
+
+            # 1.1 Get the growth rates compiled
+            ji_next = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}
+            res_rate = float((self.pop_birthrate - self.pop_deathrate - self.pop_migration)/100.0) + 1.0
+            ji_next["RES"] = int(ji["RES"] * res_rate)
+            ji_next["COM"] = int(ji["COM"] * (1.0 + self.employ_com_roc/100.0))
+            ind_rate = (self.employ_com_roc * int(not self.employ_ind_rocbool) + self.employ_ind_roc *
+                        self.employ_ind_rocbool) / 100.0 + 1.0
+            ji_next["LI"] = int(ji["LI"] * ind_rate)
+            ji_next["HI"] = int(ji["HI"] * ind_rate)
+            orc_rate = (self.employ_com_roc * int(not self.employ_orc_rocbool) + self.employ_orc_roc *
+                        self.employ_orc_rocbool) / 100.0 + 1.0
+            ji_next["ORC"] = int(ji["ORC"] * orc_rate)
+
+            print "Next Time Step Populations", ji_next
+
+            # STEP 2 - Determine the number of cells for each active land use
+            nci_next = self.calculate_new_cells(ji_next, nci, Sit, SAit)
+            print "Current number of cells: ", nci
+            print "New number of cells: ", nci_next
+
+            # STEP 3 - Assign the land use to each cell based on the map's highest potential
+            # This step creates the attribute LUC_YEAR
+            filter = []     # Tracks land uses as they have been completely assigned
+            cell_tracker = [nci_next["RES"], nci_next["COM"], nci_next["LI"], nci_next["HI"], nci_next["ORC"]]
+            cell_lucnames = ["RES", "COM", "LI", "HI", "ORC"]
+            cells_hashtable = self.create_cell_potential_hashtable(transitioncells, option="new", filter=filter)
+            print "Number of Cells in Hashtable", len(cells_hashtable)
+
+            while sum(cell_tracker) != 0:
+                for row_index in range(len(cells_hashtable)):
+                    # Assign the land use
+                    curcell = cells_hashtable[0][3]       # The cell
+                    if cells_hashtable[row_index][1] == "IND":
+                        # SIMPLE SOLUTION - ASSIGN HI first, then LI    # HI is high-risk, should go into highest pot.
+                        if cell_tracker[3] != 0:
+                            lucname = "HI"
+                        else:
+                            lucname = "LI"
+                    else:
+                        lucname = cells_hashtable[row_index][1]
+                    curcell.add_attribute("LUC_"+str(self.currentyear+1), lucname)  # Assign land use
+                    cell_tracker[cell_lucnames.index(lucname)] -= 1
+                    if cell_tracker[cell_lucnames.index(lucname)] == 0:
+                        # If tally reaches zero, break and reformat table
+                        filter.append(cells_hashtable[row_index][1])
+                        cells_hashtable = cells_hashtable[row_index+1:]
+                        # Remove all rows covered so far from the hashtable
+                        break
+
+                # REFORMAT THE HASH TABLE AND CONTINUE THE LOOP
+                if sum(cell_tracker) == 0:
+                    continue
+                cells_hashtable = self.create_cell_potential_hashtable(cells_hashtable, option="revise", filter=filter)
+                print "New Table Rows", len(cells_hashtable)
+                print "Current remaining cells to assign", sum(cell_tracker)
+
+            # STEP 4 - Assign the population to the map based on the existing and suitabilities
+            # This step creates the attribute POP_YEAR - do for one land use at a time
+            for luc in ji_next.keys():
+                cells_hashtable, existing_pop = self.create_cell_assignment_hashtable(transitioncells, luc)
+                pop_to_assign = ji_next[luc] - existing_pop
+                if pop_to_assign > 0:       # if it's positive, i.e. need to allocate more
+                    cells_hashtable.sort(reverse=True)      # Sort from highest to lowest
+                    factor = +1
+                    # Add to table from highest to lowest suitability
+                elif pop_to_assign < 0:
+                    cells_hashtable.sort()      # Sort from lowest suitability to highest
+                    factor = -1
+                    # Add to table from lowest to highest suitability
+                while pop_to_assign != 0:       # Just keep assigning in order ot highest to lowest
+                    for i in range(len(cells_hashtable)):
+                        if cells_hashtable[i][1] + factor < 0:      # If the population would drop below zero, skip
+                            continue
+                        else:
+                            cells_hashtable[i][1] += factor     # Otherwise increment by +1 or -1
+                            pop_to_assign -= factor             # Decrement population by +1 or -1
+                        if pop_to_assign == 0:                  # if the population is zero, break loop
+                            break
+
+                # Assign the final population to the cell
+                for i in range(len(cells_hashtable)):
+                    cells_hashtable[i][3].add_attribute("POP_"+str(self.currentyear+1), cells_hashtable[i][1])
+
+        self.map_attr.add_attribute("URBMODELEND", self.currentyear)
         self.notify("Current End of Module")
         print ("Current end of module")
         return True
 
-    def calculate_new_cells(self, j_it, nc_it, s_it, s_ait, luc_name):
+    def create_cell_assignment_hashtable(self, cellslist, luc):
+        """Reformats the cellslist and returns a hashtable of cells with the matching land use luc and suitability
+        ranking.
+
+        :param cellslist:
+        :param luc:
+        :return:
+        """
+        hashtable = []
+        total_suit = 0
+        existing_pop = 0
+        for i in range(len(cellslist)):
+            c = cellslist[i]
+            if c.get_attribute("LUC_"+str(self.currentyear+1)) == luc:      # If the cell matches the land use...
+                if c.get_attribute("LUC_"+str(self.currentyear)) == luc:    # If the cell had the same LUC previously...
+                    pop = c.get_attribute("POP_"+str(self.currentyear))
+                else:
+                    pop = 0
+            else:
+                continue
+            existing_pop += pop
+            hashtable.append([c.get_attribute("SUIT_"+luc), pop, c.get_attribute("CellID"), c])
+            total_suit += c.get_attribute("SUIT_"+luc)
+            # Hashtable structure:  [Suitability, Population, CellID, Object]
+
+        # normalize the suitability scores
+        for i in range(len(hashtable)):
+            hashtable[i][0] = float(hashtable[i][0] / total_suit)
+
+        print hashtable
+        print "Existign Population", existing_pop
+        return hashtable, existing_pop
+
+
+
+    def create_cell_potential_hashtable(self, cellslist, option="new", filter=[]):
+        """Reformats the cells under 'urban cells' and returns a hash table with cell potential and reference to the
+        cell object.
+
+        :param cellslist: the list of cells to use, either already in hashtable format or as a list of objects
+        :param option: "new" - make the table from scratch, "reformat" - take the existing table and recreate
+        :param filter: a list() of land use categories NOT to include in evaluation.
+        :return: a hash table as a multi-dim array containing VPOT_MAX, the corresponding LUC, CellID and cell object.
+        """
+        hashtable = []      # will hold sub-arrays: [VPOT_MAX, LUC_MAX, Cell_ID, Cell_Object]
+
+        if option == "new":         # cellslist is a list() of UBVector Objects
+            cells = cellslist
+        elif option == "revise":    # cellslist is the hashtable previously created, so recreate a list()
+            cells = []
+            for i in range(len(cellslist)):
+                cells.append(cellslist[i][3])
+
+        for i in range(len(cells)):
+            c = cells[i]
+            vpot = [c.get_attribute("VPOT_RES"), c.get_attribute("VPOT_COM"),
+                    c.get_attribute("VPOT_IND"), c.get_attribute("VPOT_ORC")]
+            vpot_lucs = ["RES", "COM", "IND", "ORC"]
+
+            print vpot, vpot_lucs
+
+            if "LI" in filter and "HI" in filter:       # ACCOUNT FOR INDUSTRIAL LAND USES
+                filter.append("IND")
+                filter.pop(filter.index("LI"))
+                filter.pop(filter.index("HI"))
+            elif "LI" in filter:
+                filter.pop(filter.index("LI"))
+            elif "HI" in filter:
+                filter.pop(filter.index("HI"))
+            else:
+                pass            # URGH, THIS WAS NOT A GOOD IDEA..... I should merge industrial uses or separate them!
+
+            for luc in filter:
+                print luc, vpot, vpot_lucs
+                vpot.pop(vpot_lucs.index(luc))      # pop the index with the land use
+                vpot_lucs.pop(vpot_lucs.index(luc))  # filter out the max
+            # hash table has: [max potential, maxP LUC class, Cell_ID, cell Object
+            hashtable.append([max(vpot), vpot_lucs[vpot.index(max(vpot))], c.get_attribute("CellID"), c])
+
+        hashtable.sort(reverse=True)        # Sort from highest VPOT to lowest VPOT
+        return hashtable
+
+    def determine_pop_cells_suit_at_suit_passive(self, cellslist):
+        """Determines the global population, number of cells, suitability of occupied active and suitability of passive
+        cells for each of the active land uses and returns this as dictionaries.
+
+        :param cellslist: the list() of UBVector urban model cells to scan for the data.
+        :return: Sectoral population ji, number of cells nci, Suitability of use i in cells occupied by i, suitability
+        of use i in all passive cells.
+        """
+        ji = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}  # Sectoral population/employment
+        nci = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}  # Number of cells occupied by sector
+        Sit = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}  # Sum of suitability of sector in its own cells
+        SAit = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}  # Sum of suitability of sector in passive LUC cells
+
+        for i in range(len(cellslist)):  # Add one value of R to each cell
+            if cellslist[i].get_attribute("LUC_Type") == "Fixed":  # Status = 0 should no longer exist
+                continue  # Skip if Fixed Land Use
+            # Check the LUC
+            if cellslist[i].get_attribute("LUC_" + str(self.currentyear)) == "Residential":
+                ji["RES"] += cellslist[i].get_attribute("POP_" + str(self.currentyear))
+                nci["RES"] += 1
+                Sit["RES"] += cellslist[i].get_attribute("SUIT_RES")
+            elif cellslist[i].get_attribute("LUC_" + str(self.currentyear)) == "Commercial":
+                ji["COM"] += cellslist[i].get_attribute("POP_" + str(self.currentyear))
+                nci["COM"] += 1
+                Sit["COM"] += cellslist[i].get_attribute("SUIT_COM")
+            elif cellslist[i].get_attribute("LUC_" + str(self.currentyear)) == "Light Industry":
+                ji["LI"] += cellslist[i].get_attribute("POP_" + str(self.currentyear))
+                nci["LI"] += 1
+                Sit["LI"] += cellslist[i].get_attribute("SUIT_IND")
+            elif cellslist[i].get_attribute("LUC_" + str(self.currentyear)) == "Heavy Industry":
+                ji["HI"] += cellslist[i].get_attribute("POP_" + str(self.currentyear))
+                nci["HI"] += 1
+                Sit["HI"] += cellslist[i].get_attribute("SUIT_IND")
+            elif cellslist[i].get_attribute("LUC_" + str(self.currentyear)) == "Offices Res Mix":
+                ji["ORC"] += cellslist[i].get_attribute("POP_" + str(self.currentyear))
+                nci["ORC"] += 1
+                Sit["ORC"] += cellslist[i].get_attribute("SUIT_ORC")
+            else:  # Cell has passive land use
+                SAit["RES"] += cellslist[i].get_attribute("SUIT_RES")
+                SAit["COM"] += cellslist[i].get_attribute("SUIT_COM")
+                SAit["LI"] += cellslist[i].get_attribute("SUIT_IND")
+                SAit["HI"] += cellslist[i].get_attribute("SUIT_IND")
+                SAit["ORC"] += cellslist[i].get_attribute("SUIT_ORC")
+
+        print "Transition Details"
+        print "Ji", ji, "NCI", nci
+        print "Suit At", Sit, "SuitPassive", SAit
+        return ji, nci, Sit, SAit
+
+    def calculate_new_cells(self, ji_next, nci, sit, sait):
         """Calculates the new number of cells required for the given land use based on the starting density, suitability
         and cell-suitability relationship.
 
-        :param j_it: current time step population / employment value
-        :param nc_it: number of cells occupied by the land use currently
-        :param s_it: total suitability of the land use type in its own cells
-        :param s_ait: total suitability for land use type in all passive cells across the map
-        :param luc_name: name abbreviation of the land use
-        :param map_attr: global map attributes
-        :return: NCi+1, the number of cells required in this time step.
+        :param ji: current time step population / employment value
+        :param nci: number of cells occupied by the land use currently
+        :param sit: total suitability of the land use type in its own cells
+        :param sait: total suitability for land use type in all passive cells across the map
+        :return: NCi+1, the number of cells required in this time step as a dictionary for each land use class
         """
-        s_it0 = self.map_attr.get_attribute("SUIT_"+luc_name+"_TOTALt0")
-        w_it0 = self.map_attr.get_attribute("W_"+luc_name+"_t0")
-        nc_it0 = self.map_attr.get_attribute("NC_"+luc_name+"_TOTALt0")
-        s_ait0 = self.map_attr.get_attribute("SUITA_"+luc_name+"_TOTALt0")
-        luc_delta = eval("self."+luc_name.lower()+"delta")
-        luc_lambda = eval("self."+luc_name.lower()+"lambda")
+        nci0 = self.map_attr.get_attribute("NCI_initial")
+        sit0 = self.map_attr.get_attribute("Sit_initial")
+        sait0 = self.map_attr.get_attribute("SAit_initial")
+        wi0 = self.map_attr.get_attribute("wi_initial")
 
-        landpressure = ((s_it * s_ait0)/(s_it0 * s_ait))**luc_delta
-        landquality = ((s_it * nc_it0) / (s_it0 * nc_it))**luc_lambda
-        w_it = w_it0 * landpressure * landquality
-        nc_it1 = int(j_it / w_it)
-        return nc_it1
+        luc_delta = {"RES": self.res_delta, "COM": self.com_delta, "LI": self.ind_delta,
+                     "HI": self.ind_delta, "ORC": self.orc_delta}
+        luc_lambda = {"RES": self.res_lambda, "COM": self.com_lambda, "LI": self.ind_lambda,
+                     "HI": self.ind_lambda, "ORC": self.orc_lambda}
 
-    def get_totals_from_cells(self, cellslist, target_attribute, **kwargs):
-        """Retrieve the total value from the map of cells
+        landpressure = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}
+        landquality = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}
+        wi_next = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}
+        nci_next = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}
 
-        :param target_attribute:
-        :param kwargs:
-        :return:
-        """
+        for i in nci_next.keys():
+            if sit0[i] == 0:        # if the existing suitability for that land use is zero, no cells can emerge
+                landpressure[i] = 0
+                landquality[i] = 0
+                wi_next[i] = 0
+                nci_next[i] = 0
+                continue
+            landpressure[i] = ((sit[i] * sait0[i])/(sit0[i] * sait[i]))**luc_delta[i]
+            landquality[i] = ((sit[i] * nci0[i]) / (sit0[i] * nci[i]))**luc_lambda[i]
+            wi_next[i] = wi0[i] * landpressure[i] * landquality[i]
+            nci_next[i] = int(ji_next[i] / wi_next[i])
+        return nci_next
 
     def calculate_transition_potential(self, r, s, a, n, z, h):
         """Calculates the transition potential based on the five input parameters Zoning (z), Neighbourhood effect (N),

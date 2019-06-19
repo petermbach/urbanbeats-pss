@@ -211,6 +211,13 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     fielddefmatrix.append(ogr.FieldDefn("VPOT_LUC", ogr.OFTString))
     fielddefmatrix.append(ogr.FieldDefn("VPOT_MAX", ogr.OFTReal))
 
+    # DYNAMIC DATA
+    start = map_attr.get_attribute("URBMODELSTART")
+    end = map_attr.get_attribute("URBMODELEND")
+    for i in range(len(end - start)):
+        fielddefmatrix.append(ogr.FieldDefn("LUC_" + str(start + i), ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("POP_" + str(start + i), ogr.OFTReal))
+
     # Create the fields
     for field in fielddefmatrix:
         layer.CreateField(field)
@@ -367,6 +374,10 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("VPOT_ORC", float(currentAttList.get_attribute("VPOT_ORC")))
         feature.SetField("VPOT_LUC", str(currentAttList.get_attribute("VPOT_LUC")))
         feature.SetField("VPOT_MAX", float(currentAttList.get_attribute("VPOT_MAX")))
+
+        for j in range(len(end - start)):
+            feature.SetField("LUC_" + str(start + i), str(currentAttList.get_attribute("LUC_" + str(start + i))))
+            feature.SetField("POP_" + str(start + i), int(currentAttList.get_attribute("POP_" + str(start + i))))
 
         layer.CreateFeature(feature)
     shapefile.Destroy()
