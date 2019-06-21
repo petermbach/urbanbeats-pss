@@ -2151,6 +2151,11 @@ class UrbanDevelopment(UBModule):
             landquality[i] = ((sit[i] * nci0[i]) / (sit0[i] * nci[i]))**luc_lambda[i]
             wi_next[i] = wi0[i] * landpressure[i] * landquality[i]
             nci_next[i] = int(ji_next[i] / wi_next[i])
+
+        print "Land Pressure", landpressure
+        print "Land Quality", landquality
+        print "Next Density", wi_next
+
         return nci_next
 
     def calculate_transition_potential(self, r, s, a, n, z, h):

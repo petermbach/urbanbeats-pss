@@ -214,7 +214,7 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     # DYNAMIC DATA
     start = map_attr.get_attribute("URBMODELSTART")
     end = map_attr.get_attribute("URBMODELEND")
-    for i in range(end - start):
+    for i in range(end - start + 1):
         fielddefmatrix.append(ogr.FieldDefn("LUC_" + str(int(start + i)), ogr.OFTString))
         fielddefmatrix.append(ogr.FieldDefn("POP_" + str(int(start + i)), ogr.OFTReal))
 
@@ -375,7 +375,7 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("VPOT_LUC", str(currentAttList.get_attribute("VPOT_LUC")))
         feature.SetField("VPOT_MAX", float(currentAttList.get_attribute("VPOT_MAX")))
 
-        for j in range(end - start):
+        for j in range(end - start + 1):
             feature.SetField("LUC_" + str(int(start + j)),
                              str(currentAttList.get_attribute("LUC_" + str(int(start + j)))))
             feature.SetField("POP_" + str(int(start + j)),
