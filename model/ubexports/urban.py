@@ -214,12 +214,9 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     # DYNAMIC DATA
     start = map_attr.get_attribute("URBMODELSTART")
     end = map_attr.get_attribute("URBMODELEND")
-    # for i in range(end - start):
-    print len(fielddefmatrix)
-    print "Appending data for i"
-    fielddefmatrix.append(ogr.FieldDefn("LUC_" + str(start + 1), ogr.OFTString))
-    fielddefmatrix.append(ogr.FieldDefn("POP_" + str(start + 1), ogr.OFTReal))
-    print len(fielddefmatrix)
+    for i in range(end - start):
+        fielddefmatrix.append(ogr.FieldDefn("LUC_" + str(int(start + i)), ogr.OFTString))
+        fielddefmatrix.append(ogr.FieldDefn("POP_" + str(int(start + i)), ogr.OFTReal))
 
     # Create the fields
     for field in fielddefmatrix:
@@ -378,9 +375,11 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("VPOT_LUC", str(currentAttList.get_attribute("VPOT_LUC")))
         feature.SetField("VPOT_MAX", float(currentAttList.get_attribute("VPOT_MAX")))
 
-        # for j in range(end - start):
-        feature.SetField("LUC_" + str(start + 1), str(currentAttList.get_attribute("LUC_" + str(start + 1))))
-        feature.SetField("POP_" + str(start + 1), int(currentAttList.get_attribute("POP_" + str(start + 1))))
+        for j in range(end - start):
+            feature.SetField("LUC_" + str(int(start + j)),
+                             str(currentAttList.get_attribute("LUC_" + str(int(start + j)))))
+            feature.SetField("POP_" + str(int(start + j)),
+                             int(currentAttList.get_attribute("POP_" + str(int(start + j)))))
 
         layer.CreateFeature(feature)
     shapefile.Destroy()
