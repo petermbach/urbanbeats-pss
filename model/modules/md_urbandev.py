@@ -678,7 +678,7 @@ class UrbanDevelopment(UBModule):
             self.sim_length = 0         # [TO DO] - the urban model DOES NOT RUN IN THE FINAL YEAR!
         else:       # The length of the current module's simulation [years]
             self.sim_length = self.dt_years[self.timestep+1] - self.dt_years[self.timestep]
-
+        print "DTYEARS", self.dt_years
         self.years_passed = 0  # The current number of years passed since previous time step 0 if timestep is 0
         if self.timestep != 0:
             self.years_passed = self.dt_years[self.timestep] - self.dt_years[self.timestep-1]
@@ -697,7 +697,7 @@ class UrbanDevelopment(UBModule):
         # if not self.lga_inputmap and not self.pop_inputmap and not self.luc_inputmap:
         #     self.notify("Error, data missing, cannot run the Urban Development Module")
         #   [TO DO IN FUTURE]
-
+        print "Sim length", self.sim_length
         self.notify("Begin Urban Development Simulation")
         print "Begin Urban Development Simulation"
         rand.seed()
