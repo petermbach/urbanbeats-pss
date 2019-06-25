@@ -1256,11 +1256,11 @@ class UrbanDevelopment(UBModule):
         if (self.suit_slope_include or self.suit_aspect_include) and self.suit_elevation_data:
             self.infill_nodata_values(nodata_cells_elev, "Elevation", "Average", elevraster.get_nodatavalue())
             self.calculate_cell_slope_and_aspect(urbancells)
-        if self.suit_soil_data:
+        if self.suit_soil_include and self.suit_soil_data:
             self.infill_nodata_values(nodata_cells_soil, "SoilClass", "Categorical", "Undefined")
-        if self.suit_gw_data:
+        if self.suit_gw_include and self.suit_gw_data:
             self.infill_nodata_values(nodata_cells_gw, "DepthToGW", "Average", gwraster.get_nodatavalue())
-        if self.suit_custom_data:
+        if self.suit_custom_include and self.suit_custom_data:
             pass
             # Infill no data values
 
@@ -1357,11 +1357,14 @@ class UrbanDevelopment(UBModule):
                 current_cell.add_attribute("SU_SLOPE_C", suitability[1])
                 current_cell.add_attribute("SU_SLOPE_I", suitability[2])
                 current_cell.add_attribute("SU_SLOPE_O", suitability[3])
+                self.map_attr.add_attribute("SUIT_SLOPE", 1)
 
                 suit_values[0].append(suitability[0] * self.suit_slope_weight)
                 suit_values[1].append(suitability[1] * self.suit_slope_weight)
                 suit_values[2].append(suitability[2] * self.suit_slope_weight)
                 suit_values[3].append(suitability[3] * self.suit_slope_weight)
+            else:
+                self.map_attr.add_attribute("SUIT_SLOPE", 0)
 
             # - 2.6.5b - SUITABILITY CALCULATION FOR ASPECT
             if self.suit_aspect_include and self.suit_elevation_data:
@@ -1373,11 +1376,14 @@ class UrbanDevelopment(UBModule):
                 current_cell.add_attribute("SU_ASPCT_C", suitability[1])
                 current_cell.add_attribute("SU_ASPCT_I", suitability[2])
                 current_cell.add_attribute("SU_ASPCT_O", suitability[3])
+                self.map_attr.add_attribute("SUIT_ASPECT", 1)
 
                 suit_values[0].append(suitability[0] * self.suit_aspect_weight)
                 suit_values[1].append(suitability[1] * self.suit_aspect_weight)
                 suit_values[2].append(suitability[2] * self.suit_aspect_weight)
                 suit_values[3].append(suitability[3] * self.suit_aspect_weight)
+            else:
+                self.map_attr.add_attribute("SUIT_ASPECT", 1)
 
             # - 2.6.5c - SUITABILITY CALCULATION FOR SOIL TYPE
             if self.suit_soil_include and self.suit_soil_data:
@@ -1389,11 +1395,14 @@ class UrbanDevelopment(UBModule):
                 current_cell.add_attribute("SU_SOIL_C", suitability[1])
                 current_cell.add_attribute("SU_SOIL_I", suitability[2])
                 current_cell.add_attribute("SU_SOIL_O", suitability[3])
+                self.map_attr.add_attribute("SUIT_SOIL", 1)
 
                 suit_values[0].append(suitability[0] * self.suit_soil_weight)
                 suit_values[1].append(suitability[1] * self.suit_soil_weight)
                 suit_values[2].append(suitability[2] * self.suit_soil_weight)
                 suit_values[3].append(suitability[3] * self.suit_soil_weight)
+            else:
+                self.map_attr.add_attribute("SUIT_SOIL", 0)
 
             # - 2.6.5d - SUITABILITY CALCULATION FOR GROUNDWATER DEPTH
             if self.suit_gw_include and self.suit_gw_data:
@@ -1405,15 +1414,21 @@ class UrbanDevelopment(UBModule):
                 current_cell.add_attribute("SU_GWATD_C", suitability[0])
                 current_cell.add_attribute("SU_GWATD_I", suitability[0])
                 current_cell.add_attribute("SU_GWATD_O", suitability[0])
+                self.map_attr.add_attribute("SUIT_GW", 1)
 
                 suit_values[0].append(suitability[0] * self.suit_gw_weight)
                 suit_values[1].append(suitability[1] * self.suit_gw_weight)
                 suit_values[2].append(suitability[2] * self.suit_gw_weight)
                 suit_values[3].append(suitability[3] * self.suit_gw_weight)
+            else:
+                self.map_attr.add_attribute("SUIT_GW", 0)
 
             # - 2.6.5e - SUITABILITY CALCULATION FOR CUSTOM CRITERION
             if self.suit_custom_include and self.suit_custom_data:
                 pass    # [TO DO]
+                self.map_attr.add_attribute("SUIT_CUST", 1)
+            else:
+                self.map_attr.add_attribute("SUIT_CUST", 0)
 
             # COMBINED SUITABILITY
             current_cell.add_attribute("SUIT_RES", sum(suit_values[0]))
@@ -1807,178 +1822,178 @@ class UrbanDevelopment(UBModule):
             curcell.add_attribute("VPOT_LUC", activeLUC[potentials.index(max(potentials))])
             curcell.add_attribute("VPOT_MAX", max(potentials))
 
-        # - 2.11 - PERFORM THE LAND USE ASSIGNMENT
-        # -- 2.11.1 - Prepare information and calculate the future cells required for each land use
-        if self.timestep == 0:      # If this is the first time step, get the map attributes
-            self.map_attr.add_attribute("URBMODELSTART", self.simulationyear)
-            ji, nci, Sit, SAit = self.determine_pop_cells_suit_at_suit_passive(urbancells)
-            self.map_attr.add_attribute("Ji_initial", ji)           # Add these four to the map attributes, otherwise
-            self.map_attr.add_attribute("NCI_initial", nci)         # should already exist.
-            self.map_attr.add_attribute("Sit_initial", Sit)
-            self.map_attr.add_attribute("SAit_initial", SAit)
-
-            wi0 = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}
-            for i in ji.keys():
-                if nci[i] == 0:
-                    wi0[i] = 0
-                else:
-                    wi0[i] = float(ji[i] / nci[i])
-            self.map_attr.add_attribute("wi_initial", wi0)
-
-        # -- 2.11.2 - Conduct the dynamic simulation from current simulation year to the next simulation year
-        for year in range(self.sim_length):     # Loop begins in the current year
-            self.currentyear = self.simulationyear + year  # In the current, creating current state for transition
-            print "In", self.currentyear, "creating the transition to...", str(self.currentyear + 1)
-
-            # Create the smaller list of transition cells
-            transitioncells = []        # Transfer LUC information to fixed cells, create separate list
-            for c in range(len(urbancells)):
-                if urbancells[c].get_attribute("LUC_Type") == "Fixed":
-                    urbancells[c].add_attribute("LUC_"+str(self.currentyear + 1),
-                                                urbancells[c].get_attribute("LUC_"+str(self.currentyear)))
-                    urbancells[c].add_attribute("POP_" + str(self.currentyear + 1),
-                                                urbancells[c].get_attribute("POP_" + str(self.currentyear)))
-                else:
-                    transitioncells.append(urbancells[c])       # If not fixed, add to the transition cells
-
-            # STEP 1 - Calculate population and employment growth for RES/COM/LI/HI/ORC
-            ji, nci, Sit, SAit = self.determine_pop_cells_suit_at_suit_passive(transitioncells)
-
-            # 1.1 Get the growth rates compiled
-            ji_next = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}
-            res_rate = float((self.pop_birthrate - self.pop_deathrate - self.pop_migration)/100.0) + 1.0
-            ji_next["RES"] = int(ji["RES"] * res_rate)
-            ji_next["COM"] = int(ji["COM"] * (1.0 + self.employ_com_roc/100.0))
-            ind_rate = (self.employ_com_roc * int(not self.employ_ind_rocbool) + self.employ_ind_roc *
-                        self.employ_ind_rocbool) / 100.0 + 1.0
-            ji_next["LI"] = int(ji["LI"] * ind_rate)
-            ji_next["HI"] = int(ji["HI"] * ind_rate)
-            orc_rate = (self.employ_com_roc * int(not self.employ_orc_rocbool) + self.employ_orc_roc *
-                        self.employ_orc_rocbool) / 100.0 + 1.0
-            ji_next["ORC"] = int(ji["ORC"] * orc_rate)
-
-            print "Next Time Step Populations", ji_next
-
-            # STEP 2 - Determine the number of cells for each active land use
-            nci_next = self.calculate_new_cells(ji_next, nci, Sit, SAit)
-            print "Current number of cells: ", nci
-            print "New number of cells: ", nci_next
-
-            # STEP 3 - Assign the land use to each cell based on the map's highest potential
-            # This step creates the attribute LUC_YEAR
-            filter = []     # Tracks land uses as they have been completely assigned
-            cell_tracker = [nci_next["RES"], nci_next["COM"], nci_next["LI"], nci_next["HI"], nci_next["ORC"]]
-            cell_lucnames = ["RES", "COM", "LI", "HI", "ORC"]
-            cells_hashtable = self.create_cell_potential_hashtable(transitioncells, option="new", filter=filter)
-            print "Number of Cells in Hashtable", len(cells_hashtable)
-            rescount = 0
-            print "Cell Tracker ", cell_tracker, "total cells to assign", sum(cell_tracker)
-
-            while sum(cell_tracker) != 0:       # ["RES", "COM", "LI", "HI", "ORC"]
-                for row_index in range(len(cells_hashtable)):   # [MaxPotential, LUC, CellID, Cell object]
-                    # Assign the land use
-                    curcell = cells_hashtable[row_index][3]       # The cell
-                    if cells_hashtable[row_index][1] == "IND":
-                        # SIMPLE SOLUTION - ASSIGN HI first, then LI    # HI is high-risk, should go into highest pot.
-                        if cell_tracker[3] != 0:        # If there is still HI left
-                            lucname = "HI"
-                        else:
-                            lucname = "LI"
-                    else:
-                        lucname = cells_hashtable[row_index][1]
-                    # print "Adding attribute", lucname, "to", curcell, "under name", "LUC_"+str(int(self.currentyear+1))
-                    curcell.add_attribute("LUC_"+str(int(self.currentyear+1)), lucname)  # Assign land use
-                    curcell.change_attribute("LUC_Type", "Active")      # Swap to active land use!
-                    cell_tracker[cell_lucnames.index(lucname)] -= 1
-                    if lucname == "RES":
-                        rescount += 1
-                    if cell_tracker[cell_lucnames.index(lucname)] == 0:
-                        # If tally reaches zero, break and reformat table
-                        filter.append(cells_hashtable[row_index][1])    # NOTE, must do it this way because of "IND"
-                        cells_hashtable = cells_hashtable[row_index+1:]
-                        # Remove all rows covered so far from the hashtable
-                        break
-
-                # REFORMAT THE HASH TABLE AND CONTINUE THE LOOP
-                print "Cell Tracker After", cell_tracker
-                print "Current Res Count", rescount
-                if sum(cell_tracker) == 0:      # If that was the last land use to assign, break out of the loop
-                    continue
-                cells_hashtable = self.create_cell_potential_hashtable(cells_hashtable, option="revise", filter=filter)
-                print "New Table Rows", len(cells_hashtable)
-                print "Current remaining cells to assign", sum(cell_tracker)
-
-            #DEBUG
-            rescount = 0
-            for i in range(len(transitioncells)):
-                if transitioncells[i].get_attribute("LUC_"+str(int(self.currentyear+1))) =="RES":
-                    rescount += 1
-            print "RESIDENTIAL COUNT 2", rescount
-            print "Number of transitioning cells", len(transitioncells)
-
-            nonecounter = 0
-            for i in range(len(transitioncells)):
-                if transitioncells[i].get_attribute("LUC_"+str(int(self.currentyear+1))) is None:
-                    nonecounter += 1
-                    if transitioncells[i].get_attribute("LUC_Type") == "Active":
-                        transitioncells[i].add_attribute("LUC_"+str(int(self.currentyear+1)), "UND")
-                        transitioncells[i].change_attribute("LUC_Type", "Passive")  # Active use changed to passive!
-                    else:       # Otherwise it's a passive land use
-                        prev_luc = transitioncells[i].get_attribute("LUC_"+str(int(self.currentyear)))
-                        transitioncells[i].add_attribute("LUC_"+str(int(self.currentyear+1)), prev_luc)
-                else:
-                    continue
-            print "None counter", nonecounter
-
-            # DEBUG
-            rescount = 0
-            for i in range(len(transitioncells)):
-                if transitioncells[i].get_attribute("LUC_" + str(int(self.currentyear + 1))) == "RES":
-                    rescount += 1
-            print "RESIDENTIAL COUNT 3", rescount
-
-            # STEP 4 - Assign the population to the map based on the existing and suitabilities
-            # This step creates the attribute POP_YEAR - do for one land use at a time
-            for luc in ji_next.keys():
-                # print "Current LUC", luc, "associated with: ", ji_next[luc]
-                cells_hashtable, existing_pop = self.create_cell_assignment_hashtable(transitioncells, luc)
-                pop_to_assign = ji_next[luc] - existing_pop
-                if pop_to_assign > 0:       # if it's positive, i.e. need to allocate more
-                    cells_hashtable.sort(reverse=True)      # Sort from highest to lowest
-                    factor = +1
-                    # Add to table from highest to lowest suitability
-                elif pop_to_assign < 0:
-                    cells_hashtable.sort()      # Sort from lowest suitability to highest
-                    factor = -1
-                else:
-                    factor = 0      # If population to assign is zero, no factor.
-                    # Add to table from lowest to highest suitability
-                while pop_to_assign != 0:       # Just keep assigning in order ot highest to lowest
-                    for i in range(len(cells_hashtable)):
-                        if cells_hashtable[i][1] + factor < 0:      # If the population would drop below zero, skip
-                            continue
-                        else:
-                            cells_hashtable[i][1] += factor     # Otherwise increment by +1 or -1
-                            pop_to_assign -= factor             # Decrement population by +1 or -1
-                        if pop_to_assign == 0:                  # if the population is zero, break loop
-                            break
-
-                # Assign the final population to the cell
-                for i in range(len(cells_hashtable)):
-                    cells_hashtable[i][3].add_attribute("POP_"+str(self.currentyear+1), cells_hashtable[i][1])
-
-            for i in range(len(transitioncells)):
-                if transitioncells[i].get_attribute("POP_"+str(int(self.currentyear+1))) is None:
-                    transitioncells[i].add_attribute("POP_"+str(int(self.currentyear+1)), 0)    # Add zero Pop to remainder
-
-            # DEBUG
-            rescount = 0
-            for i in range(len(transitioncells)):
-                if transitioncells[i].get_attribute("LUC_" + str(int(self.currentyear + 1))) == "RES":
-                    rescount += 1
-            print "RESIDENTIAL COUNT 4", rescount
-
-        self.map_attr.add_attribute("URBMODELEND", self.currentyear)
+        # # - 2.11 - PERFORM THE LAND USE ASSIGNMENT
+        # # -- 2.11.1 - Prepare information and calculate the future cells required for each land use
+        # if self.timestep == 0:      # If this is the first time step, get the map attributes
+        #     self.map_attr.add_attribute("URBMODELSTART", self.simulationyear)
+        #     ji, nci, Sit, SAit = self.determine_pop_cells_suit_at_suit_passive(urbancells)
+        #     self.map_attr.add_attribute("Ji_initial", ji)           # Add these four to the map attributes, otherwise
+        #     self.map_attr.add_attribute("NCI_initial", nci)         # should already exist.
+        #     self.map_attr.add_attribute("Sit_initial", Sit)
+        #     self.map_attr.add_attribute("SAit_initial", SAit)
+        #
+        #     wi0 = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}
+        #     for i in ji.keys():
+        #         if nci[i] == 0:
+        #             wi0[i] = 0
+        #         else:
+        #             wi0[i] = float(ji[i] / nci[i])
+        #     self.map_attr.add_attribute("wi_initial", wi0)
+        #
+        # # -- 2.11.2 - Conduct the dynamic simulation from current simulation year to the next simulation year
+        # for year in range(self.sim_length):     # Loop begins in the current year
+        #     self.currentyear = self.simulationyear + year  # In the current, creating current state for transition
+        #     print "In", self.currentyear, "creating the transition to...", str(self.currentyear + 1)
+        #
+        #     # Create the smaller list of transition cells
+        #     transitioncells = []        # Transfer LUC information to fixed cells, create separate list
+        #     for c in range(len(urbancells)):
+        #         if urbancells[c].get_attribute("LUC_Type") == "Fixed":
+        #             urbancells[c].add_attribute("LUC_"+str(self.currentyear + 1),
+        #                                         urbancells[c].get_attribute("LUC_"+str(self.currentyear)))
+        #             urbancells[c].add_attribute("POP_" + str(self.currentyear + 1),
+        #                                         urbancells[c].get_attribute("POP_" + str(self.currentyear)))
+        #         else:
+        #             transitioncells.append(urbancells[c])       # If not fixed, add to the transition cells
+        #
+        #     # STEP 1 - Calculate population and employment growth for RES/COM/LI/HI/ORC
+        #     ji, nci, Sit, SAit = self.determine_pop_cells_suit_at_suit_passive(transitioncells)
+        #
+        #     # 1.1 Get the growth rates compiled
+        #     ji_next = {"RES": 0, "COM": 0, "LI": 0, "HI": 0, "ORC": 0}
+        #     res_rate = float((self.pop_birthrate - self.pop_deathrate - self.pop_migration)/100.0) + 1.0
+        #     ji_next["RES"] = int(ji["RES"] * res_rate)
+        #     ji_next["COM"] = int(ji["COM"] * (1.0 + self.employ_com_roc/100.0))
+        #     ind_rate = (self.employ_com_roc * int(not self.employ_ind_rocbool) + self.employ_ind_roc *
+        #                 self.employ_ind_rocbool) / 100.0 + 1.0
+        #     ji_next["LI"] = int(ji["LI"] * ind_rate)
+        #     ji_next["HI"] = int(ji["HI"] * ind_rate)
+        #     orc_rate = (self.employ_com_roc * int(not self.employ_orc_rocbool) + self.employ_orc_roc *
+        #                 self.employ_orc_rocbool) / 100.0 + 1.0
+        #     ji_next["ORC"] = int(ji["ORC"] * orc_rate)
+        #
+        #     print "Next Time Step Populations", ji_next
+        #
+        #     # STEP 2 - Determine the number of cells for each active land use
+        #     nci_next = self.calculate_new_cells(ji_next, nci, Sit, SAit)
+        #     print "Current number of cells: ", nci
+        #     print "New number of cells: ", nci_next
+        #
+        #     # STEP 3 - Assign the land use to each cell based on the map's highest potential
+        #     # This step creates the attribute LUC_YEAR
+        #     filter = []     # Tracks land uses as they have been completely assigned
+        #     cell_tracker = [nci_next["RES"], nci_next["COM"], nci_next["LI"], nci_next["HI"], nci_next["ORC"]]
+        #     cell_lucnames = ["RES", "COM", "LI", "HI", "ORC"]
+        #     cells_hashtable = self.create_cell_potential_hashtable(transitioncells, option="new", filter=filter)
+        #     print "Number of Cells in Hashtable", len(cells_hashtable)
+        #     rescount = 0
+        #     print "Cell Tracker ", cell_tracker, "total cells to assign", sum(cell_tracker)
+        #
+        #     while sum(cell_tracker) != 0:       # ["RES", "COM", "LI", "HI", "ORC"]
+        #         for row_index in range(len(cells_hashtable)):   # [MaxPotential, LUC, CellID, Cell object]
+        #             # Assign the land use
+        #             curcell = cells_hashtable[row_index][3]       # The cell
+        #             if cells_hashtable[row_index][1] == "IND":
+        #                 # SIMPLE SOLUTION - ASSIGN HI first, then LI    # HI is high-risk, should go into highest pot.
+        #                 if cell_tracker[3] != 0:        # If there is still HI left
+        #                     lucname = "HI"
+        #                 else:
+        #                     lucname = "LI"
+        #             else:
+        #                 lucname = cells_hashtable[row_index][1]
+        #             # print "Adding attribute", lucname, "to", curcell, "under name", "LUC_"+str(int(self.currentyear+1))
+        #             curcell.add_attribute("LUC_"+str(int(self.currentyear+1)), lucname)  # Assign land use
+        #             curcell.change_attribute("LUC_Type", "Active")      # Swap to active land use!
+        #             cell_tracker[cell_lucnames.index(lucname)] -= 1
+        #             if lucname == "RES":
+        #                 rescount += 1
+        #             if cell_tracker[cell_lucnames.index(lucname)] == 0:
+        #                 # If tally reaches zero, break and reformat table
+        #                 filter.append(cells_hashtable[row_index][1])    # NOTE, must do it this way because of "IND"
+        #                 cells_hashtable = cells_hashtable[row_index+1:]
+        #                 # Remove all rows covered so far from the hashtable
+        #                 break
+        #
+        #         # REFORMAT THE HASH TABLE AND CONTINUE THE LOOP
+        #         print "Cell Tracker After", cell_tracker
+        #         print "Current Res Count", rescount
+        #         if sum(cell_tracker) == 0:      # If that was the last land use to assign, break out of the loop
+        #             continue
+        #         cells_hashtable = self.create_cell_potential_hashtable(cells_hashtable, option="revise", filter=filter)
+        #         print "New Table Rows", len(cells_hashtable)
+        #         print "Current remaining cells to assign", sum(cell_tracker)
+        #
+        #     #DEBUG
+        #     rescount = 0
+        #     for i in range(len(transitioncells)):
+        #         if transitioncells[i].get_attribute("LUC_"+str(int(self.currentyear+1))) =="RES":
+        #             rescount += 1
+        #     print "RESIDENTIAL COUNT 2", rescount
+        #     print "Number of transitioning cells", len(transitioncells)
+        #
+        #     nonecounter = 0
+        #     for i in range(len(transitioncells)):
+        #         if transitioncells[i].get_attribute("LUC_"+str(int(self.currentyear+1))) is None:
+        #             nonecounter += 1
+        #             if transitioncells[i].get_attribute("LUC_Type") == "Active":
+        #                 transitioncells[i].add_attribute("LUC_"+str(int(self.currentyear+1)), "UND")
+        #                 transitioncells[i].change_attribute("LUC_Type", "Passive")  # Active use changed to passive!
+        #             else:       # Otherwise it's a passive land use
+        #                 prev_luc = transitioncells[i].get_attribute("LUC_"+str(int(self.currentyear)))
+        #                 transitioncells[i].add_attribute("LUC_"+str(int(self.currentyear+1)), prev_luc)
+        #         else:
+        #             continue
+        #     print "None counter", nonecounter
+        #
+        #     # DEBUG
+        #     rescount = 0
+        #     for i in range(len(transitioncells)):
+        #         if transitioncells[i].get_attribute("LUC_" + str(int(self.currentyear + 1))) == "RES":
+        #             rescount += 1
+        #     print "RESIDENTIAL COUNT 3", rescount
+        #
+        #     # STEP 4 - Assign the population to the map based on the existing and suitabilities
+        #     # This step creates the attribute POP_YEAR - do for one land use at a time
+        #     for luc in ji_next.keys():
+        #         # print "Current LUC", luc, "associated with: ", ji_next[luc]
+        #         cells_hashtable, existing_pop = self.create_cell_assignment_hashtable(transitioncells, luc)
+        #         pop_to_assign = ji_next[luc] - existing_pop
+        #         if pop_to_assign > 0:       # if it's positive, i.e. need to allocate more
+        #             cells_hashtable.sort(reverse=True)      # Sort from highest to lowest
+        #             factor = +1
+        #             # Add to table from highest to lowest suitability
+        #         elif pop_to_assign < 0:
+        #             cells_hashtable.sort()      # Sort from lowest suitability to highest
+        #             factor = -1
+        #         else:
+        #             factor = 0      # If population to assign is zero, no factor.
+        #             # Add to table from lowest to highest suitability
+        #         while pop_to_assign != 0:       # Just keep assigning in order ot highest to lowest
+        #             for i in range(len(cells_hashtable)):
+        #                 if cells_hashtable[i][1] + factor < 0:      # If the population would drop below zero, skip
+        #                     continue
+        #                 else:
+        #                     cells_hashtable[i][1] += factor     # Otherwise increment by +1 or -1
+        #                     pop_to_assign -= factor             # Decrement population by +1 or -1
+        #                 if pop_to_assign == 0:                  # if the population is zero, break loop
+        #                     break
+        #
+        #         # Assign the final population to the cell
+        #         for i in range(len(cells_hashtable)):
+        #             cells_hashtable[i][3].add_attribute("POP_"+str(self.currentyear+1), cells_hashtable[i][1])
+        #
+        #     for i in range(len(transitioncells)):
+        #         if transitioncells[i].get_attribute("POP_"+str(int(self.currentyear+1))) is None:
+        #             transitioncells[i].add_attribute("POP_"+str(int(self.currentyear+1)), 0)    # Add zero Pop to remainder
+        #
+        #     # DEBUG
+        #     rescount = 0
+        #     for i in range(len(transitioncells)):
+        #         if transitioncells[i].get_attribute("LUC_" + str(int(self.currentyear + 1))) == "RES":
+        #             rescount += 1
+        #     print "RESIDENTIAL COUNT 4", rescount
+        #
+        # self.map_attr.add_attribute("URBMODELEND", self.currentyear)
         self.notify("Current End of Module")
         print ("Current end of module")
         return True

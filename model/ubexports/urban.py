@@ -211,12 +211,12 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     fielddefmatrix.append(ogr.FieldDefn("VPOT_LUC", ogr.OFTString))
     fielddefmatrix.append(ogr.FieldDefn("VPOT_MAX", ogr.OFTReal))
 
-    # DYNAMIC DATA
-    start = map_attr.get_attribute("URBMODELSTART")
-    end = map_attr.get_attribute("URBMODELEND")
-    for i in range(end - start + 1):
-        fielddefmatrix.append(ogr.FieldDefn("LUC_" + str(int(start + i)), ogr.OFTString))
-        fielddefmatrix.append(ogr.FieldDefn("POP_" + str(int(start + i)), ogr.OFTReal))
+    # # DYNAMIC DATA
+    # start = map_attr.get_attribute("URBMODELSTART")
+    # end = map_attr.get_attribute("URBMODELEND")
+    # for i in range(end - start + 1):
+    #     fielddefmatrix.append(ogr.FieldDefn("LUC_" + str(int(start + i)), ogr.OFTString))
+    #     fielddefmatrix.append(ogr.FieldDefn("POP_" + str(int(start + i)), ogr.OFTReal))
 
     # Create the fields
     for field in fielddefmatrix:
@@ -333,25 +333,26 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         if map_attr.get_attribute("SUIT_GW"):
             feature.SetField("DepthToGW", float(currentAttList.get_attribute("DepthToGW")))
 
-        feature.SetField("SU_SLOPE_R", float(currentAttList.get_attribute("SU_SLOPE_R")))
-        feature.SetField("SU_SLOPE_C", float(currentAttList.get_attribute("SU_SLOPE_C")))
-        feature.SetField("SU_SLOPE_I", float(currentAttList.get_attribute("SU_SLOPE_I")))
-        feature.SetField("SU_SLOPE_O", float(currentAttList.get_attribute("SU_SLOPE_O")))
-
-        feature.SetField("SU_ASPCT_R", float(currentAttList.get_attribute("SU_ASPCT_R")))
-        feature.SetField("SU_ASPCT_C", float(currentAttList.get_attribute("SU_ASPCT_C")))
-        feature.SetField("SU_ASPCT_I", float(currentAttList.get_attribute("SU_ASPCT_I")))
-        feature.SetField("SU_ASPCT_O", float(currentAttList.get_attribute("SU_ASPCT_O")))
-
-        feature.SetField("SU_SOIL_R", float(currentAttList.get_attribute("SU_SOIL_R")))
-        feature.SetField("SU_SOIL_C", float(currentAttList.get_attribute("SU_SOIL_C")))
-        feature.SetField("SU_SOIL_I", float(currentAttList.get_attribute("SU_SOIL_I")))
-        feature.SetField("SU_SOIL_O", float(currentAttList.get_attribute("SU_SOIL_O")))
-
-        feature.SetField("SU_GWATD_R", float(currentAttList.get_attribute("SU_GWATD_R")))
-        feature.SetField("SU_GWATD_C", float(currentAttList.get_attribute("SU_GWATD_C")))
-        feature.SetField("SU_GWATD_I", float(currentAttList.get_attribute("SU_GWATD_I")))
-        feature.SetField("SU_GWATD_O", float(currentAttList.get_attribute("SU_GWATD_O")))
+        if map_attr.get_attribute("SUIT_SLOPE"):
+            feature.SetField("SU_SLOPE_R", float(currentAttList.get_attribute("SU_SLOPE_R")))
+            feature.SetField("SU_SLOPE_C", float(currentAttList.get_attribute("SU_SLOPE_C")))
+            feature.SetField("SU_SLOPE_I", float(currentAttList.get_attribute("SU_SLOPE_I")))
+            feature.SetField("SU_SLOPE_O", float(currentAttList.get_attribute("SU_SLOPE_O")))
+        if map_attr.get_attribute("SUIT_ASPECT"):
+            feature.SetField("SU_ASPCT_R", float(currentAttList.get_attribute("SU_ASPCT_R")))
+            feature.SetField("SU_ASPCT_C", float(currentAttList.get_attribute("SU_ASPCT_C")))
+            feature.SetField("SU_ASPCT_I", float(currentAttList.get_attribute("SU_ASPCT_I")))
+            feature.SetField("SU_ASPCT_O", float(currentAttList.get_attribute("SU_ASPCT_O")))
+        if map_attr.get_attribute("SUIT_SOIL"):
+            feature.SetField("SU_SOIL_R", float(currentAttList.get_attribute("SU_SOIL_R")))
+            feature.SetField("SU_SOIL_C", float(currentAttList.get_attribute("SU_SOIL_C")))
+            feature.SetField("SU_SOIL_I", float(currentAttList.get_attribute("SU_SOIL_I")))
+            feature.SetField("SU_SOIL_O", float(currentAttList.get_attribute("SU_SOIL_O")))
+        if map_attr.get_attribute("SUIT_GW"):
+            feature.SetField("SU_GWATD_R", float(currentAttList.get_attribute("SU_GWATD_R")))
+            feature.SetField("SU_GWATD_C", float(currentAttList.get_attribute("SU_GWATD_C")))
+            feature.SetField("SU_GWATD_I", float(currentAttList.get_attribute("SU_GWATD_I")))
+            feature.SetField("SU_GWATD_O", float(currentAttList.get_attribute("SU_GWATD_O")))
 
         feature.SetField("SUIT_RES", float(currentAttList.get_attribute("SUIT_RES")))
         feature.SetField("SUIT_COM", float(currentAttList.get_attribute("SUIT_COM")))
@@ -375,11 +376,11 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("VPOT_LUC", str(currentAttList.get_attribute("VPOT_LUC")))
         feature.SetField("VPOT_MAX", float(currentAttList.get_attribute("VPOT_MAX")))
 
-        for j in range(end - start + 1):
-            feature.SetField("LUC_" + str(int(start + j)),
-                             str(currentAttList.get_attribute("LUC_" + str(int(start + j)))))
-            feature.SetField("POP_" + str(int(start + j)),
-                             int(currentAttList.get_attribute("POP_" + str(int(start + j)))))
+        # for j in range(end - start + 1):
+        #     feature.SetField("LUC_" + str(int(start + j)),
+        #                      str(currentAttList.get_attribute("LUC_" + str(int(start + j)))))
+        #     feature.SetField("POP_" + str(int(start + j)),
+        #                      int(currentAttList.get_attribute("POP_" + str(int(start + j)))))
 
         layer.CreateFeature(feature)
     shapefile.Destroy()
