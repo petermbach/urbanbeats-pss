@@ -25,14 +25,16 @@ __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2018. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
+import os
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 import model.progref.ubglobals as ubglobals
+import model.ublibs.ubdatatypes as ubdatatypes
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
 from md_urbdevelopgui import Ui_Urbandev_Dialog
-
+from md_subgui_influence import Ui_InfluenceFunctionDialog
 
 # --- MAIN GUI FUNCTION ---
 class UrbdevelopGuiLaunch(QtWidgets.QDialog):
@@ -199,8 +201,9 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         [self.ui.zoning_constraints_custom_combo.addItem(str(self.overlaymaps[0][i]))
          for i in range(len(self.overlaymaps[0]))]
 
-        # TAB 4 - NEIGHBOURHOOD INTERACTION (COMING SOON)
-        # ---
+        # TAB 4 - NEIGHBOURHOOD INTERACTION
+        self.setup_if_function_select_combo()
+        self.ifo_selection = []
 
         self.gui_state = "initial"
         self.change_active_module()
@@ -218,17 +221,9 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.input_pop_combo.currentIndexChanged.connect(self.enable_disable_general_tab_widgets)
         self.ui.zoning_move_to_constrained.clicked.connect(self.move_zone_to_constrained)
         self.ui.zoning_move_to_passive.clicked.connect(self.move_zone_to_passive)
-        self.ui.input_birthrate_custom.clicked.connect(self.call_birthrate_custom)
-        self.ui.input_deathrate_custom.clicked.connect(self.call_deathrate_custom)
-        self.ui.input_migration_custom.clicked.connect(self.call_migration_custom)
-        self.ui.input_birthrate_trend.currentIndexChanged.connect(self.enable_disable_general_tab_widgets)
-        self.ui.input_deathrate_trend.currentIndexChanged.connect(self.enable_disable_general_tab_widgets)
-        self.ui.input_migration_trend.currentIndexChanged.connect(self.enable_disable_general_tab_widgets)
         self.ui.employ_inputmap.clicked.connect(self.update_employment_stack)
         self.ui.employ_pop.clicked.connect(self.update_employment_stack)
         self.ui.employ_land.clicked.connect(self.update_employment_stack)
-        self.ui.employ_pop_roc.clicked.connect(self.enable_disable_general_tab_widgets)
-        self.ui.employ_land_roc.clicked.connect(self.enable_disable_general_tab_widgets)
 
         # ACCESSIBILITY
         self.ui.access_general_summary.clicked.connect(self.display_accessibility_summary)
@@ -249,19 +244,17 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.suit_gw_check.clicked.connect(self.enable_disable_suitability_widgets)
         self.ui.suit_soil_check.clicked.connect(self.enable_disable_suitability_widgets)
         self.ui.suit_custom_check.clicked.connect(self.enable_disable_suitability_widgets)
-        self.ui.slope_trend_combo.currentIndexChanged.connect(self.enable_disable_suitability_midpoint_widgets)
-        self.ui.gw_trend_combo.currentIndexChanged.connect(self.enable_disable_suitability_midpoint_widgets)
-        self.ui.custom_trend_combo.currentIndexChanged.connect(self.enable_disable_suitability_midpoint_widgets)
         self.ui.slope_res_slider.valueChanged.connect(self.update_suitability_sliders_slope)
         self.ui.slope_com_slider.valueChanged.connect(self.update_suitability_sliders_slope)
         self.ui.slope_ind_slider.valueChanged.connect(self.update_suitability_sliders_slope)
         self.ui.slope_orc_slider.valueChanged.connect(self.update_suitability_sliders_slope)
-        self.ui.slope_midpoint_slider.valueChanged.connect(self.update_suitability_sliders_slope)
         self.ui.gw_res_slider.valueChanged.connect(self.update_suitability_sliders_gw)
         self.ui.gw_com_slider.valueChanged.connect(self.update_suitability_sliders_gw)
         self.ui.gw_ind_slider.valueChanged.connect(self.update_suitability_sliders_gw)
         self.ui.gw_orc_slider.valueChanged.connect(self.update_suitability_sliders_gw)
-        self.ui.gw_midpoint_slider.valueChanged.connect(self.update_suitability_sliders_gw)
+        self.ui.slope_include_midpoints.clicked.connect(self.enable_disable_suitability_widgets)
+        self.ui.gw_include_midpoints.clicked.connect(self.enable_disable_suitability_widgets)
+        self.ui.custom_include_midpoints.clicked.connect(self.enable_disable_suitability_widgets)
 
         # ZONING
         self.ui.zoning_rules_resauto.clicked.connect(self.enable_disable_zoning_widgets)
@@ -277,6 +270,20 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.zoning_constraints_enviro_combo.currentIndexChanged.connect(self.enable_disable_zoning_widgets)
         self.ui.zoning_constraints_flood_combo.currentIndexChanged.connect(self.enable_disable_zoning_widgets)
         self.ui.zoning_constraints_custom_combo.currentIndexChanged.connect(self.enable_disable_zoning_widgets)
+
+        # NEIGHBOURHOOD EFFECT
+        self.ui.functionselection_add.clicked.connect(self.add_if_function_to_table)
+        self.ui.functionselect_view.clicked.connect(lambda: self.view_selectedfunction("combo"))
+        self.ui.nhd_create_button.clicked.connect(self.open_if_function_dialog)
+        self.ui.nhd_view_button.clicked.connect(lambda: self.view_selectedfunction("table"))
+        self.ui.nhd_remove_button.clicked.connect(self.remove_table_selection)
+        self.ui.nhd_clear_button.clicked.connect(self.clear_if_table)
+
+        # URBAN DYNAMICS
+        self.ui.pop_method_function.clicked.connect(self.enable_disable_dynamics_tab_widgets)
+        self.ui.pop_method_rate.clicked.connect(self.enable_disable_dynamics_tab_widgets)
+        self.ui.employ_rate_ind_check.clicked.connect(self.enable_disable_dynamics_tab_widgets)
+        self.ui.employ_rate_orc_check.clicked.connect(self.enable_disable_dynamics_tab_widgets)
 
         # FOOTER
         self.ui.buttonBox.accepted.connect(self.save_values)
@@ -300,6 +307,107 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
                 dataref_array[0].append(dref.get_metadata("filename"))
                 dataref_array[1].append(dref.get_data_id())
         return dataref_array
+
+    def clear_if_table(self):
+        """Clears the entire Influence Function Table. Does not update the module parameter yet."""
+        self.ifo_selection = []
+        self.ui.nhd_table.setRowCount(0)
+
+    def setup_if_function_select_combo(self):
+        """Sets up the if_functions combo box. Called also when the influence function creation dialog is closed, while
+        editing module parameters."""
+        self.if_functions = self.simulation.get_all_function_objects_of_type("IF")
+        self.ui.functionselect_combo.clear()
+        self.ui.functionselect_combo.addItem("(no function selected)")
+        [self.ui.functionselect_combo.addItem(str(self.if_functions[i].get_function_name()))
+         for i in range(len(self.if_functions))]
+        self.ui.functionselect_combo.setCurrentIndex(0)
+
+    def remove_table_selection(self):
+        """Removes the current row in the table."""
+        ifo_id = self.ui.nhd_table.item(self.ui.nhd_table.currentRow(), 0).text()
+        self.ifo_selection.pop(self.ifo_selection.index(ifo_id))
+        self.ui.nhd_table.removeRow(self.ui.nhd_table.currentRow())
+
+    def add_if_function_to_table(self):
+        """Adds the current IF function in the combo box to the table, writes the relevant details as well to table
+        columns."""
+        if self.ui.functionselect_combo.currentIndex() in [0, -1]:      # Check that we are actually adding a function
+            return True # DO Nothing
+        ifo = self.if_functions[self.ui.functionselect_combo.currentIndex()-1]
+        if ifo.get_id() in self.ifo_selection:      # Check if the function already exists in the scenario.
+            prompt_msg = "Influence Function already added!"
+            QtWidgets.QMessageBox.warning(self, 'Error', prompt_msg, QtWidgets.QMessageBox.Ok)
+            return True
+
+        luabbr = str(ifo.origin_landuse)+" -> "+str(ifo.target_landuse)
+        metadata = [ifo.get_id(), ifo.get_function_name(), luabbr, str(ifo.get_x_range()), str(ifo.get_y_range())]
+        print metadata
+        self.ifo_selection.append(ifo.get_id())
+        self.ui.nhd_table.insertRow(self.ui.nhd_table.rowCount())
+        for m in range(len(metadata)):
+            twi = QtWidgets.QTableWidgetItem()
+            twi.setText(str(metadata[m]))
+            self.ui.nhd_table.setItem(self.ui.nhd_table.rowCount()-1, m, twi)
+        self.ui.nhd_table.resizeColumnsToContents()
+        return True
+
+    def open_if_function_dialog(self):
+        """Opens the influence function dialog window so that the user can modify and add new functions. The difference
+        with the version in the main GUI is that this function catches the 'accepted' and 'rejected' signals and
+        updates the GUI accordingly."""
+        print "Opening Dialog"
+        if_dialog = InfluenceFunctionGUILaunch(self.simulation, self.log)
+        if_dialog.accepted.connect(self.populate_if_table_from_module)
+        if_dialog.accepted.connect(self.setup_if_function_select_combo)
+        if_dialog.rejected.connect(self.populate_if_table_from_module)
+        if_dialog.rejected.connect(self.setup_if_function_select_combo)
+        if_dialog.exec_()
+
+    def view_selectedfunction(self, source):
+        """Opens the influence function dialog window for viewing of the selected function.
+
+        :param source: either "combo" or "table" depending on which button was clicked. Allows the program to find
+                        which function to actually show.
+        """
+        viewindex = None
+        if self.ui.nhd_table.rowCount() == 0:
+            return True     # If table is empty, do nothing.
+
+        if source == "combo":       # Determine combo box index
+            viewindex = self.ui.functionselect_combo.currentIndex()
+        elif source == "table":
+            fid = self.ui.nhd_table.item(self.ui.nhd_table.currentRow(), 0).text()
+            print fid
+            ifos = self.simulation.get_all_function_objects_of_type("IF")
+            for i in range(len(ifos)):
+                if ifos[i].get_id() == fid:
+                    viewindex = i + 1
+                    break
+        if viewindex is None:
+            return True
+        if_dialog = InfluenceFunctionGUILaunch(self.simulation, self.log, viewmode=viewindex)
+        if_dialog.exec_()
+
+    def populate_if_table_from_module(self):
+        """Populates the IF table from module parameters based on the available functions."""
+        self.ui.nhd_table.setRowCount(0)
+        if_ids = self.module.get_parameter("function_ids")
+        for fid in if_ids:
+            ifo = self.simulation.get_function_with_id(fid)
+            if ifo is None:
+                continue
+
+            luabbr = str(ifo.origin_landuse) + " -> " + str(ifo.target_landuse)
+            metadata = [ifo.get_id(), ifo.get_function_name(), luabbr, str(ifo.get_x_range()), str(ifo.get_y_range())]
+            print "Loading", metadata
+            self.ui.nhd_table.insertRow(self.ui.nhd_table.rowCount())
+            for m in range(len(metadata)):
+                twi = QtWidgets.QTableWidgetItem()
+                twi.setText(str(metadata[m]))
+                self.ui.nhd_table.setItem(self.ui.nhd_table.rowCount() - 1, m, twi)
+        self.ui.nhd_table.resizeColumnsToContents()
+        return True
 
     def pre_fill_parameters(self):
         """Pre-filling method, will set up the module with all values contained in the pre-loaded parameter file or
@@ -380,6 +488,18 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         """Synchronizes the current index of the slope combo box to that of the aspect. They both rely on the same
         data set."""
         self.ui.suit_slope_data.setCurrentIndex(self.ui.suit_aspect_data.currentIndex())
+
+    def enable_disable_dynamics_tab_widgets(self):
+        """Scans the Urban Dynamics tab widgets and enables and disables accordingly."""
+        self.ui.input_birthrate_spin.setEnabled(self.ui.pop_method_rate.isChecked())
+        self.ui.input_deathrate_spin.setEnabled(self.ui.pop_method_rate.isChecked())
+        self.ui.input_migration_spin.setEnabled(self.ui.pop_method_rate.isChecked())
+        self.ui.input_birthrate_function.setEnabled(self.ui.pop_method_function.isChecked())
+        self.ui.input_deathrate_function.setEnabled(self.ui.pop_method_function.isChecked())
+        self.ui.input_migration_function.setEnabled(self.ui.pop_method_function.isChecked())
+        self.ui.employ_rate_ind_spin.setEnabled(self.ui.employ_rate_ind_check.isChecked())
+        self.ui.employ_rate_orc_spin.setEnabled(self.ui.employ_rate_orc_check.isChecked())
+        return True
 
     def enable_disable_zoning_widgets(self):
         """Scans the zoning list and enables and disables the criteria list accordingly."""
@@ -480,44 +600,36 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.suit_custom_data.setEnabled(self.ui.suit_custom_check.isChecked())    # Custom
         self.ui.suit_custom_weight.setEnabled(self.ui.suit_custom_check.isChecked())
         self.ui.custom_widget.setEnabled(self.ui.suit_custom_check.isChecked())
+
+        self.ui.slope_res_midpoint.setEnabled(self.ui.slope_include_midpoints.isChecked())
+        self.ui.slope_com_midpoint.setEnabled(self.ui.slope_include_midpoints.isChecked())
+        self.ui.slope_ind_midpoint.setEnabled(self.ui.slope_include_midpoints.isChecked())
+        self.ui.slope_orc_midpoint.setEnabled(self.ui.slope_include_midpoints.isChecked())
+
+        self.ui.gw_res_midpoint.setEnabled(self.ui.gw_include_midpoints.isChecked())
+        self.ui.gw_com_midpoint.setEnabled(self.ui.gw_include_midpoints.isChecked())
+        self.ui.gw_ind_midpoint.setEnabled(self.ui.gw_include_midpoints.isChecked())
+        self.ui.gw_orc_midpoint.setEnabled(self.ui.gw_include_midpoints.isChecked())
+
+        self.ui.custom_res_midpoint.setEnabled(self.ui.custom_include_midpoints.isChecked())
+        self.ui.custom_com_midpoint.setEnabled(self.ui.custom_include_midpoints.isChecked())
+        self.ui.custom_ind_midpoint.setEnabled(self.ui.custom_include_midpoints.isChecked())
+        self.ui.custom_orc_midpoint.setEnabled(self.ui.custom_include_midpoints.isChecked())
         return True
 
     def update_suitability_sliders_slope(self):
         """Updates the value of the slider boxes for the slope sliders."""
-        self.ui.slope_res_box.setText(str(round(float(self.ui.slope_res_slider.value() / 10), 1))+"%")
-        self.ui.slope_com_box.setText(str(round(float(self.ui.slope_com_slider.value() / 10), 1))+"%")
-        self.ui.slope_ind_box.setText(str(round(float(self.ui.slope_ind_slider.value() / 10), 1))+"%")
-        self.ui.slope_orc_box.setText(str(round(float(self.ui.slope_orc_slider.value() / 10), 1))+"%")
-        self.ui.slope_midpoint_box.setText(str(round(float(self.ui.slope_midpoint_slider.value() / 10), 1))+"%")
+        self.ui.slope_res_box.setText(str(round(float(self.ui.slope_res_slider.value() / 10), 1))+" %")
+        self.ui.slope_com_box.setText(str(round(float(self.ui.slope_com_slider.value() / 10), 1))+" %")
+        self.ui.slope_ind_box.setText(str(round(float(self.ui.slope_ind_slider.value() / 10), 1))+" %")
+        self.ui.slope_orc_box.setText(str(round(float(self.ui.slope_orc_slider.value() / 10), 1))+" %")
 
     def update_suitability_sliders_gw(self):
         """Updates the value of the slider boxes for the groundwater sliders."""
-        self.ui.gw_res_box.setText(str(round(float(self.ui.gw_res_slider.value() / 10), 1))+"%")
-        self.ui.gw_com_box.setText(str(round(float(self.ui.gw_com_slider.value() / 10), 1))+"%")
-        self.ui.gw_ind_box.setText(str(round(float(self.ui.gw_ind_slider.value() / 10), 1))+"%")
-        self.ui.gw_orc_box.setText(str(round(float(self.ui.gw_orc_slider.value() / 10), 1))+"%")
-        self.ui.gw_midpoint_box.setText(str(round(float(self.ui.gw_midpoint_slider.value() / 10), 1))+"%")
-
-    def enable_disable_suitability_midpoint_widgets(self):
-        """Enables and disables the 'mid-point' widgets in the slope, groundwater and custom criteria."""
-        if self.ui.slope_trend_combo.currentIndex() == 6:   # SLOPE
-            self.ui.slope_midpoint_box.setEnabled(0)
-            self.ui.slope_midpoint_slider.setEnabled(0)
-        else:
-            self.ui.slope_midpoint_box.setEnabled(1)
-            self.ui.slope_midpoint_slider.setEnabled(1)
-        if self.ui.gw_trend_combo.currentIndex() == 6:      # GROUNDWATER
-            self.ui.gw_midpoint_box.setEnabled(0)
-            self.ui.gw_midpoint_slider.setEnabled(0)
-        else:
-            self.ui.gw_midpoint_box.setEnabled(1)
-            self.ui.gw_midpoint_slider.setEnabled(1)
-        if self.ui.custom_trend_combo.currentIndex() == 6:  # CUSTOM
-            self.ui.custom_midpoint_box.setEnabled(0)
-            self.ui.custom_midpoint_slider.setEnabled(0)
-        else:
-            self.ui.custom_midpoint_box.setEnabled(1)
-            self.ui.custom_midpoint_slider.setEnabled(1)
+        self.ui.gw_res_box.setText(str(round(float(self.ui.gw_res_slider.value()), 1))+" m")
+        self.ui.gw_com_box.setText(str(round(float(self.ui.gw_com_slider.value()), 1))+" m")
+        self.ui.gw_ind_box.setText(str(round(float(self.ui.gw_ind_slider.value()), 1))+" m")
+        self.ui.gw_orc_box.setText(str(round(float(self.ui.gw_orc_slider.value()), 1))+" m")
 
     def enable_disable_accessibility_widgets(self):
         """Scans the entire accessibility list and enables and disables all respective widgets accordingly."""
@@ -612,27 +724,9 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
             self.ui.input_aggreg_combo.setEnabled(1)
 
         if self.ui.input_pop_combo.currentIndex() == 0:
-            self.ui.input_pop_widget.setEnabled(0)
+            self.ui.dynamics_pop_widget.setEnabled(0)
         else:
-            self.ui.input_pop_widget.setEnabled(1)
-
-        if self.ui.input_birthrate_trend.currentIndex() == 4:
-            self.ui.input_birthrate_custom.setEnabled(1)
-        else:
-            self.ui.input_birthrate_custom.setEnabled(0)
-
-        if self.ui.input_deathrate_trend.currentIndex() == 4:
-            self.ui.input_deathrate_custom.setEnabled(1)
-        else:
-            self.ui.input_deathrate_custom.setEnabled(0)
-
-        if self.ui.input_migration_trend.currentIndex() == 4:
-            self.ui.input_migration_custom.setEnabled(1)
-        else:
-            self.ui.input_migration_custom.setEnabled(0)
-
-        self.ui.employ_pop_roc_spin.setEnabled(int(self.ui.employ_pop_roc.isChecked()))
-        self.ui.employ_land_roc_spin.setEnabled(int(self.ui.employ_land_roc.isChecked()))
+            self.ui.dynamics_pop_widget.setEnabled(1)
         return True
 
     def change_active_module(self):
@@ -662,7 +756,6 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.basic_baseyear.setText(str(self.active_scenario.get_metadata("startyear")))
         self.ui.basic_dt.setText(str(self.active_scenario.get_metadata("dt"))+" year(s)")
         self.ui.basic_nhd.setValue(float(self.module.get_parameter("nhd_radius")))
-        self.ui.basic_stochastic.setText(str(self.module.get_parameter("alpha")))
 
         try:    # MUNICIPALITY COMBO - retrieve the dataID from module
             self.ui.input_lga_combo.setCurrentIndex(
@@ -699,17 +792,6 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         except ValueError:
             self.ui.input_pop_combo.setCurrentIndex(0)     # else the map must've been removed, set combo to zero index
 
-        self.ui.input_birthrate_spin.setValue(float(self.module.get_parameter("pop_birthrate")))
-        self.ui.input_deathrate_spin.setValue(float(self.module.get_parameter("pop_deathrate")))
-        self.ui.input_migration_spin.setValue(float(self.module.get_parameter("pop_migration")))
-
-        self.ui.input_birthrate_trend.setCurrentIndex(self.poptrends.index(
-            self.module.get_parameter("pop_birthtrend")))
-        self.ui.input_deathrate_trend.setCurrentIndex(self.poptrends.index(
-            self.module.get_parameter("pop_deathtrend")))
-        self.ui.input_migration_trend.setCurrentIndex(self.poptrends.index(
-            self.module.get_parameter("pop_migrationtrend")))
-
         if self.module.get_parameter("employ_datasource") == "I":
             self.ui.employ_inputmap.setChecked(1)
         elif self.module.get_parameter("employ_datasource") == "P":
@@ -723,21 +805,16 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
                 self.module.get_parameter("employ_inputmap")))
         except ValueError:
             self.ui.employ_inputmap_combo.setCurrentIndex(0)
-        self.ui.employ_inputmap_spin.setValue(float(self.module.get_parameter("employ_inputmaprate")))
 
         # --- employment STACK 2
         self.ui.employ_pop_com.setValue(float(self.module.get_parameter("employ_pop_comfactor")))
         self.ui.employ_pop_ind.setValue(float(self.module.get_parameter("employ_pop_indfactor")))
         self.ui.employ_pop_office.setValue(float(self.module.get_parameter("employ_pop_officefactor")))
-        self.ui.employ_pop_roc.setChecked(int(self.module.get_parameter("employ_pop_rocbool")))
-        self.ui.employ_pop_roc_spin.setValue(float(self.module.get_parameter("employ_pop_roc")))
 
         # --- employment STACK 3
         self.ui.employ_land_com.setValue(float(self.module.get_parameter("employ_land_comfactor")))
         self.ui.employ_land_ind.setValue(float(self.module.get_parameter("employ_land_indfactor")))
         self.ui.employ_land_office.setValue(float(self.module.get_parameter("employ_land_officefactor")))
-        self.ui.employ_land_roc.setChecked(int(self.module.get_parameter("employ_land_rocbool")))
-        self.ui.employ_land_roc_spin.setValue(float(self.module.get_parameter("employ_land_roc")))
 
         self.enable_disable_general_tab_widgets()
         self.update_employment_stack()
@@ -886,7 +963,11 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.slope_orc_slider.setValue(int(float(self.module.get_parameter("slope_orc"))*10.0))
         self.ui.slope_trend_combo.setCurrentIndex(int(ubglobals.VALUE_SCALE_METHODS.index(
             self.module.get_parameter("slope_trend"))))
-        self.ui.slope_midpoint_slider.setValue(int(float(self.module.get_parameter("slope_midpoint"))*10.0))
+        self.ui.slope_include_midpoints.setChecked(int(self.module.get_parameter("slope_midpoint")))
+        self.ui.slope_res_midpoint.setValue(float(self.module.get_parameter("slope_res_mid")))
+        self.ui.slope_com_midpoint.setValue(float(self.module.get_parameter("slope_com_mid")))
+        self.ui.slope_ind_midpoint.setValue(float(self.module.get_parameter("slope_ind_mid")))
+        self.ui.slope_orc_midpoint.setValue(float(self.module.get_parameter("slope_orc_mid")))
 
         # CRITERION - ASPECT
         self.ui.suit_aspect_check.setChecked(int(self.module.get_parameter("suit_aspect_include")))
@@ -958,7 +1039,11 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.gw_orc_slider.setValue(int(self.module.get_parameter("gw_orc")))
         self.ui.gw_trend_combo.setCurrentIndex(int(ubglobals.VALUE_SCALE_METHODS.index(
             self.module.get_parameter("gw_trend"))))
-        self.ui.gw_midpoint_slider.setValue(int(self.module.get_parameter("gw_midpoint")))
+        self.ui.gw_include_midpoints.setChecked(int(self.module.get_parameter("gw_midpoint")))
+        self.ui.gw_res_midpoint.setValue(float(self.module.get_parameter("gw_res_mid")))
+        self.ui.gw_com_midpoint.setValue(float(self.module.get_parameter("gw_com_mid")))
+        self.ui.gw_ind_midpoint.setValue(float(self.module.get_parameter("gw_ind_mid")))
+        self.ui.gw_orc_midpoint.setValue(float(self.module.get_parameter("gw_orc_mid")))
 
         # CRITERION - CUSTOM
         self.ui.suit_custom_check.setChecked(int(self.module.get_parameter("suit_custom_include")))
@@ -978,7 +1063,11 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.custom_orc_max.setText(str(self.module.get_parameter("custom_orc_max")))
         self.ui.custom_trend_combo.setCurrentIndex(int(ubglobals.VALUE_SCALE_METHODS.index(
             self.module.get_parameter("custom_trend"))))
-        self.ui.custom_midpoint_box.setText(str(self.module.get_parameter("custom_midpoint")))
+        self.ui.custom_include_midpoints.setChecked(int(self.module.get_parameter("custom_midpoint")))
+        self.ui.custom_res_midpoint.setText(str(float(self.module.get_parameter("custom_res_mid"))))
+        self.ui.custom_com_midpoint.setText(str(float(self.module.get_parameter("custom_com_mid"))))
+        self.ui.custom_ind_midpoint.setText(str(float(self.module.get_parameter("custom_ind_mid"))))
+        self.ui.custom_orc_midpoint.setText(str(float(self.module.get_parameter("custom_orc_mid"))))
 
         self.enable_disable_suitability_widgets()
         self.update_suitability_sliders_slope()
@@ -1089,8 +1178,63 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
 
         self.enable_disable_zoning_widgets()
 
-        # TAB 4 - Neighbourhood Effect
+        # TAB 2.4 - Neighbourhood Effect
+        self.ifo_selection = self.module.get_parameter("function_ids")
+        self.populate_if_table_from_module()
+        if self.module.get_parameter("edge_effects_method") == "NA":
+            self.ui.ee_noaccount.setChecked(1)
+        elif self.module.get_parameter("edge_effects_method") == "AVG":
+            self.ui.ee_averaging.setChecked(1)
+        elif self.module.get_parameter("edge_effects_method") == "PP":
+            self.ui.ee_proportioning.setChecked(1)
+        else:
+            self.ui.ee_ppavg.setChecked(1)
 
+        # TAB 3 - URBAN DYNAMICS
+        # Stochastic Perturbation
+        self.ui.stoch_box.setValue(float(self.module.get_parameter("alpha")))
+
+        # Population and Employment Rates fo Change
+        if self.module.get_parameter("pop_growthmethod") == "C":
+            self.ui.pop_method_rate.setChecked(1)
+        else:
+            self.ui.pop_method_function.setChecked(1)
+
+        self.ui.input_birthrate_spin.setValue(float(self.module.get_parameter("pop_birthrate")))
+        self.ui.input_deathrate_spin.setValue(float(self.module.get_parameter("pop_deathrate")))
+        self.ui.input_migration_spin.setValue(float(self.module.get_parameter("pop_migration")))
+
+        # self.ui.input_birthrate_function.setCurrentIndex(self.poptrends.index(
+        #     self.module.get_parameter("pop_birthfunction")))
+        # self.ui.input_deathrate_function.setCurrentIndex(self.poptrends.index(
+        #     self.module.get_parameter("pop_deathfunction")))
+        # self.ui.input_migration_function.setCurrentIndex(self.poptrends.index(
+        #     self.module.get_parameter("pop_migrationfunction")))
+
+        self.ui.employ_rate_spin.setValue(float(self.module.get_parameter("employ_com_roc")))
+        self.ui.employ_rate_ind_check.setChecked(int(self.module.get_parameter("employ_ind_rocbool")))
+        self.ui.employ_rate_ind_spin.setValue(float(self.module.get_parameter("employ_ind_roc")))
+        self.ui.employ_rate_orc_check.setChecked(int(self.module.get_parameter("employ_orc_rocbool")))
+        self.ui.employ_rate_orc_spin.setValue(float(self.module.get_parameter("employ_orc_roc")))
+
+        # Inertia and Sensitivities
+        self.ui.res_inertia_spin.setValue(self.module.get_parameter("res_inertia"))
+        self.ui.res_sensitivity_delta_spin.setValue(self.module.get_parameter("res_delta"))
+        self.ui.res_sensitivity_lambda_spin.setValue(self.module.get_parameter("res_lambda"))
+
+        self.ui.com_inertia_spin.setValue(self.module.get_parameter("com_inertia"))
+        self.ui.com_sensitivity_delta_spin.setValue(self.module.get_parameter("com_delta"))
+        self.ui.com_sensitivity_lambda_spin.setValue(self.module.get_parameter("com_lambda"))
+
+        self.ui.ind_inertia_spin.setValue(self.module.get_parameter("ind_inertia"))
+        self.ui.ind_sensitivity_delta_spin.setValue(self.module.get_parameter("ind_delta"))
+        self.ui.ind_sensitivity_lambda_spin.setValue(self.module.get_parameter("ind_lambda"))
+
+        self.ui.orc_inertia_spin.setValue(self.module.get_parameter("orc_inertia"))
+        self.ui.orc_sensitivity_delta_spin.setValue(self.module.get_parameter("orc_delta"))
+        self.ui.orc_sensitivity_lambda_spin.setValue(self.module.get_parameter("orc_lambda"))
+
+        self.enable_disable_dynamics_tab_widgets()
         # END OF FILING IN GUI VALUES
         return True
 
@@ -1099,7 +1243,6 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         # TAB 1 - GENERAL
         self.module.set_parameter("cellsize", int(self.ui.basic_cellsize.value()))
         self.module.set_parameter("nhd_radius", float(self.ui.basic_nhd.value()))
-        self.module.set_parameter("alpha", float(self.ui.basic_stochastic.text()))
 
         self.module.set_parameter("lga_inputmap", self.municipalmaps[1][self.ui.input_lga_combo.currentIndex()])
         self.module.set_parameter("lga_attribute", str(self.ui.input_lga_name.text()))
@@ -1124,12 +1267,6 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("zoning_constrained_luc", zoning_constrained_luc)
 
         self.module.set_parameter("pop_inputmap", self.popmaps[1][self.ui.input_pop_combo.currentIndex()])
-        self.module.set_parameter("pop_birthrate", float(self.ui.input_birthrate_spin.value()))
-        self.module.set_parameter("pop_birthtrend", self.poptrends[self.ui.input_birthrate_trend.currentIndex()])
-        self.module.set_parameter("pop_deathrate", float(self.ui.input_deathrate_spin.value()))
-        self.module.set_parameter("pop_deathtrend", self.poptrends[self.ui.input_deathrate_trend.currentIndex()])
-        self.module.set_parameter("pop_migration", float(self.ui.input_migration_spin.value()))
-        self.module.set_parameter("pop_migrationtrend", self.poptrends[self.ui.input_migration_trend.currentIndex()])
 
         if self.ui.employ_inputmap.isChecked():
             self.module.set_parameter("employ_datasource", "I")
@@ -1139,19 +1276,14 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
             self.module.set_parameter("employ_datasource", "L")
 
         self.module.set_parameter("employ_inputmap", self.employmaps[1][self.ui.employ_inputmap_combo.currentIndex()])
-        self.module.set_parameter("employ_inputmaprate", float(self.ui.employ_inputmap_spin.value()))
 
         self.module.set_parameter("employ_pop_comfactor", float(self.ui.employ_pop_com.value()))
         self.module.set_parameter("employ_pop_indfactor", float(self.ui.employ_pop_ind.value()))
         self.module.set_parameter("employ_pop_officefactor", float(self.ui.employ_pop_office.value()))
-        self.module.set_parameter("employ_pop_rocbool", int(self.ui.employ_pop_roc.isChecked()))
-        self.module.set_parameter("employ_pop_roc", float(self.ui.employ_pop_roc_spin.value()))
 
         self.module.set_parameter("employ_land_comfactor", float(self.ui.employ_land_com.value()))
         self.module.set_parameter("employ_land_indfactor", float(self.ui.employ_land_ind.value()))
         self.module.set_parameter("employ_land_officefactor", float(self.ui.employ_land_office.value()))
-        self.module.set_parameter("employ_land_rocbool", int(self.ui.employ_land_roc.isChecked()))
-        self.module.set_parameter("employ_land_roc", float(self.ui.employ_land_roc_spin.value()))
 
         # TAB 2 - 2.1 - ACCESSIBILITY
         self.module.set_parameter("access_export_combined", int(self.ui.access_export_combined.isChecked()))
@@ -1257,13 +1389,17 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         # SLOPE
         self.module.set_parameter("suit_slope_include", int(self.ui.suit_slope_check.isChecked()))
         self.module.set_parameter("suit_slope_weight", int(self.ui.suit_slope_weight.value()))
+        self.module.set_parameter("slope_trend",
+                                  ubglobals.VALUE_SCALE_METHODS[self.ui.slope_trend_combo.currentIndex()])
+        self.module.set_parameter("slope_midpoint", int(self.ui.slope_include_midpoints.isChecked()))
         self.module.set_parameter("slope_res", float(self.ui.slope_res_slider.value() / 10.0))
         self.module.set_parameter("slope_com", float(self.ui.slope_com_slider.value() / 10.0))
         self.module.set_parameter("slope_ind", float(self.ui.slope_ind_slider.value() / 10.0))
         self.module.set_parameter("slope_orc", float(self.ui.slope_orc_slider.value() / 10.0))
-        self.module.set_parameter("slope_midpoint", float(self.ui.slope_midpoint_slider.value() / 10.0))
-        self.module.set_parameter("slope_trend",
-                                  ubglobals.VALUE_SCALE_METHODS[self.ui.slope_trend_combo.currentIndex()])
+        self.module.set_parameter("slope_res_mid", float(self.ui.slope_res_midpoint.value()))
+        self.module.set_parameter("slope_com_mid", float(self.ui.slope_com_midpoint.value()))
+        self.module.set_parameter("slope_ind_mid", float(self.ui.slope_ind_midpoint.value()))
+        self.module.set_parameter("slope_orc_mid", float(self.ui.slope_orc_midpoint.value()))
 
         # ASPECT
         self.module.set_parameter("suit_aspect_include", int(self.ui.suit_aspect_check.isChecked()))
@@ -1289,13 +1425,17 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("suit_gw_include", int(self.ui.suit_gw_check.isChecked()))
         self.module.set_parameter("suit_gw_data", self.gwmaps[1][self.ui.suit_gw_data.currentIndex()])
         self.module.set_parameter("suit_gw_weight", int(self.ui.suit_gw_weight.value()))
+        self.module.set_parameter("gw_trend",
+                                  ubglobals.VALUE_SCALE_METHODS[self.ui.gw_trend_combo.currentIndex()])
+        self.module.set_parameter("gw_midpoint", int(self.ui.gw_include_midpoints.isChecked()))
         self.module.set_parameter("gw_res", float(self.ui.gw_res_slider.value()))
         self.module.set_parameter("gw_com", float(self.ui.gw_com_slider.value()))
         self.module.set_parameter("gw_ind", float(self.ui.gw_ind_slider.value()))
         self.module.set_parameter("gw_orc", float(self.ui.gw_orc_slider.value()))
-        self.module.set_parameter("gw_midpoint", float(self.ui.gw_midpoint_slider.value()))
-        self.module.set_parameter("gw_trend",
-                                  ubglobals.VALUE_SCALE_METHODS[self.ui.gw_trend_combo.currentIndex()])
+        self.module.set_parameter("gw_res_mid", float(self.ui.gw_res_midpoint.value()))
+        self.module.set_parameter("gw_com_mid", float(self.ui.gw_com_midpoint.value()))
+        self.module.set_parameter("gw_ind_mid", float(self.ui.gw_ind_midpoint.value()))
+        self.module.set_parameter("gw_orc_mid", float(self.ui.gw_orc_midpoint.value()))
 
         # SOIL
         self.module.set_parameter("suit_soil_include", int(self.ui.suit_soil_check.isChecked()))
@@ -1322,17 +1462,21 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("suit_custom_include", int(self.ui.suit_custom_check.isChecked()))
         self.module.set_parameter("suit_custom_data", self.ui.suit_custom_data.currentText())
         self.module.set_parameter("suit_custom_weight", int(self.ui.suit_custom_weight.value()))
-        self.module.set_parameter("custom_res_min", float(self.ui.custom_res_min.text()))
-        self.module.set_parameter("custom_res_max", float(self.ui.custom_res_max.text()))
-        self.module.set_parameter("custom_com_min", float(self.ui.custom_com_min.text()))
-        self.module.set_parameter("custom_com_max", float(self.ui.custom_com_max.text()))
-        self.module.set_parameter("custom_ind_min", float(self.ui.custom_ind_min.text()))
-        self.module.set_parameter("custom_ind_max", float(self.ui.custom_ind_max.text()))
-        self.module.set_parameter("custom_orc_min", float(self.ui.custom_orc_min.text()))
-        self.module.set_parameter("custom_orc_max", float(self.ui.custom_orc_max.text()))
-        self.module.set_parameter("custom_midpoint", float(self.ui.custom_midpoint_box.text()))
         self.module.set_parameter("custom_trend",
                                   ubglobals.VALUE_SCALE_METHODS[self.ui.custom_trend_combo.currentIndex()])
+        self.module.set_parameter("custom_midpoint", int(self.ui.custom_include_midpoints.isChecked()))
+        self.module.set_parameter("custom_res_min", float(self.ui.custom_res_min.text()))
+        self.module.set_parameter("custom_res_max", float(self.ui.custom_res_max.text()))
+        self.module.set_parameter("custom_res_mid", float(self.ui.custom_res_midpoint.text()))
+        self.module.set_parameter("custom_com_min", float(self.ui.custom_com_min.text()))
+        self.module.set_parameter("custom_com_max", float(self.ui.custom_com_max.text()))
+        self.module.set_parameter("custom_com_mid", float(self.ui.custom_com_midpoint.text()))
+        self.module.set_parameter("custom_ind_min", float(self.ui.custom_ind_min.text()))
+        self.module.set_parameter("custom_ind_max", float(self.ui.custom_ind_max.text()))
+        self.module.set_parameter("custom_ind_mid", float(self.ui.custom_ind_midpoint.text()))
+        self.module.set_parameter("custom_orc_min", float(self.ui.custom_orc_min.text()))
+        self.module.set_parameter("custom_orc_max", float(self.ui.custom_orc_max.text()))
+        self.module.set_parameter("custom_orc_mid", float(self.ui.custom_orc_midpoint.text()))
 
         # TAB 2 - 2.3 Zoning
         self.module.set_parameter("zoning_export", int(self.ui.zoning_export.isChecked()))
@@ -1394,4 +1538,381 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("zoning_rules_officesauto", int(self.ui.zoning_rules_officesauto.isChecked()))
         self.module.set_parameter("zoning_rules_officeslimit", int(self.ui.zoning_rules_officeslimit.isChecked()))
         self.module.set_parameter("zoning_rules_officespassive", int(self.ui.zoning_rules_officespassive.isChecked()))
+
+        # NEIGHBOURHOOD EFFECT
+        self.module.set_parameter("function_ids", self.ifo_selection)
+        if self.ui.ee_noaccount.isChecked():
+            self.module.set_parameter("edge_effects_method", "NA")
+        elif self.ui.ee_averaging.isChecked():
+            self.module.set_parameter("edge_effects_method", "AVG")
+        elif self.ui.ee_proportioning.isChecked():
+            self.module.set_parameter("edge_effects_method", "PP")
+        else:
+            self.module.set_parameter("edge_effects_method", "PPAVG")
+
+        # TAB 3 - URBAN DYNAMICS
+        self.module.set_parameter("alpha", float(self.ui.stoch_box.value()))
+
+        if self.ui.pop_method_rate.isChecked():
+            self.module.set_parameter("pop_growthmethod", "C")
+        else:
+            self.module.set_parameter("pop_growthmethod", "F")
+
+        self.module.set_parameter("pop_birthrate", float(self.ui.input_birthrate_spin.value()))
+        # self.module.set_parameter("pop_birthfunction", self.poptrends[self.ui.input_birthrate_function.currentIndex()])
+        self.module.set_parameter("pop_deathrate", float(self.ui.input_deathrate_spin.value()))
+        # self.module.set_parameter("pop_deathfunction", self.poptrends[self.ui.input_deathrate_function.currentIndex()])
+        self.module.set_parameter("pop_migration", float(self.ui.input_migration_spin.value()))
+        # self.module.set_parameter("pop_migrationfunction", self.poptrends[self.ui.input_migration_function.currentIndex()])
+
+        self.module.set_parameter("employ_com_roc", float(self.ui.employ_rate_spin.value()))
+        self.module.set_parameter("employ_ind_rocbool", int(self.ui.employ_rate_ind_check.isChecked()))
+        self.module.set_parameter("employ_ind_roc", float(self.ui.employ_rate_ind_spin.value()))
+        self.module.set_parameter("employ_orc_rocbool", int(self.ui.employ_rate_orc_check.isChecked()))
+        self.module.set_parameter("employ_orc_roc", float(self.ui.employ_rate_orc_spin.value()))
+
+        self.module.set_parameter("res_inertia", float(self.ui.res_inertia_spin.value()))
+        self.module.set_parameter("res_delta", float(self.ui.res_sensitivity_delta_spin.value()))
+        self.module.set_parameter("res_lambda", float(self.ui.res_sensitivity_lambda_spin.value()))
+
+        self.module.set_parameter("com_inertia", float(self.ui.com_inertia_spin.value()))
+        self.module.set_parameter("com_delta", float(self.ui.com_sensitivity_delta_spin.value()))
+        self.module.set_parameter("com_lambda", float(self.ui.com_sensitivity_lambda_spin.value()))
+
+        self.module.set_parameter("ind_inertia", float(self.ui.ind_inertia_spin.value()))
+        self.module.set_parameter("ind_delta", float(self.ui.ind_sensitivity_delta_spin.value()))
+        self.module.set_parameter("ind_lambda", float(self.ui.ind_sensitivity_lambda_spin.value()))
+
+        self.module.set_parameter("orc_inertia", float(self.ui.orc_inertia_spin.value()))
+        self.module.set_parameter("orc_delta", float(self.ui.orc_sensitivity_delta_spin.value()))
+        self.module.set_parameter("orc_lambda", float(self.ui.orc_sensitivity_lambda_spin.value()))
         return True
+
+
+class InfluenceFunctionGUILaunch(QtWidgets.QDialog):
+    """The class definition for the sub-GUI for defining influence functions. This sub-gui launches if the add button
+    or edit button is clicked in the Urban Development Module - Neighbourhood Effect dialog window."""
+    def __init__(self, simulation, projectlog, viewmode=0, parent=None):
+        """Initialization of the subGUI for defining influence functions. This sub-gui is launched and filled with
+        the current influence function selected from the table unless a new function is launched.
+
+        :param simulation: reference to the current UrbanBEATS Simulation active
+        :param projectlog: reference to the active project log in the UrbanBEATS Simulation
+        :param parent: None
+        """
+        QtWidgets.QDialog.__init__(self, parent)
+        self.ui = Ui_InfluenceFunctionDialog()
+        self.ui.setupUi(self)
+        self.simulation = simulation
+        self.projectlog = projectlog
+        self.functionlist = []
+        self.datainputmethods = ["none", "temp", "manual", "pattern", "existing"]
+        self.update_function_combobox()
+        self.current_active_ifobject = None
+
+        self.ui.define_luc_combo.clear()
+        [self.ui.define_luc_combo.addItem(str(ubglobals.ACTIVELANDUSENAMES[i]))
+         for i in range(len(ubglobals.ACTIVELANDUSENAMES))]
+
+        self.ui.influence_luc_combo.clear()
+        [self.ui.influence_luc_combo.addItem(str(ubglobals.UM_LUCNAMES[i]))
+         for i in range(len(ubglobals.UM_LUCNAMES))]
+
+        # SIGNALS AND SLOTS
+        self.ui.select_combo.currentIndexChanged.connect(self.update_if_gui)
+        self.ui.datatable.itemChanged.connect(self.update_plot)
+        self.ui.datainputmethod_combo.currentIndexChanged.connect(self.update_inputmethod)
+        self.ui.datapoints_spin.valueChanged.connect(self.update_data_table_rows)
+        self.ui.savefunction_button.clicked.connect(self.save_current_function)
+        self.ui.exportfunction_button.clicked.connect(self.export_current_function)
+        self.ui.deletefunction_button.clicked.connect(self.delete_current_function)
+        self.ui.standardlib_combo.currentIndexChanged.connect(self.pre_fill_gui)
+
+        # ACTIVATE THE CURRENT FUNCTION TO VIEW. THIS IS CALLED WHEN THE GUI IS BEING OPENED FOR VIEWING PURPOSES.
+        if viewmode != 0:
+            self.ui.select_combo.setCurrentIndex((viewmode))
+            self.ui.select_combo.setEnabled(0)      # Disable the combo box!
+            self.ui.deletefunction_button.setEnabled(0)     # Disable controls!
+            self.ui.exportfunction_button.setEnabled(0)     # Disable controls!
+
+    def update_function_combobox(self):
+        """Updates the combo box with selection options for functions."""
+        self.functionlist = self.simulation.get_all_function_objects_of_type("IF")
+        self.ui.select_combo.clear()
+        self.ui.select_combo.addItem("<no selection>")
+        for i in range(len(self.functionlist)):
+            self.ui.select_combo.addItem(str(self.functionlist[i].get_function_name()))
+        self.ui.select_combo.addItem("<create new function>")
+        self.ui.select_combo.setCurrentIndex(0)
+        self.set_if_gui_to_init_state()
+
+    def set_if_gui_to_init_state(self):
+        """Updates the current GUI."""
+        self.ui.functionname_box.clear()
+        self.ui.datainputmethod_combo.setCurrentIndex(0)
+        self.ui.define_luc_combo.setCurrentIndex(0)
+        self.ui.influence_luc_combo.setCurrentIndex(0)
+        self.ui.datatable.setRowCount(0)
+        self.ui.datapoints_spin.setValue(2)
+        self.ui.input_widget.setEnabled(0)
+        self.ui.webView.setHtml("")
+        self.ui.view_widget.setEnabled(0)
+
+    def update_if_gui(self):
+        """Updates the GUI based on the current index of the combo box."""
+        self.functionlist = self.simulation.get_all_function_objects_of_type("IF")
+        if self.ui.select_combo.currentIndex() in [-1, 0]:
+            # CASE 1 - NO SELECTION - DISABLE EVERYTHING
+            self.set_if_gui_to_init_state()
+        elif self.ui.select_combo.currentIndex() == len(self.functionlist) + 1:
+            # CASE 2 - CREATE A NEW FUNCTION
+            self.set_if_gui_to_init_state()
+            self.ui.input_widget.setEnabled(1)
+            self.ui.webView.setHtml("")
+            self.ui.view_widget.setEnabled(1)
+            self.ui.savefunction_button.setEnabled(1)
+            self.ui.deletefunction_button.setEnabled(0)
+            self.ui.exportfunction_button.setEnabled(0)
+        else:
+            # CASE 3 - A FUNCTION WAS SELECTED, VIEW THE FUNCTION
+            self.set_if_gui_to_init_state()
+            self.ui.input_widget.setEnabled(0)
+            self.ui.view_widget.setEnabled(1)
+            self.ui.savefunction_button.setEnabled(0)
+            self.ui.deletefunction_button.setEnabled(1)
+            self.ui.exportfunction_button.setEnabled(1)
+            self.update_ui_from_comboselect()
+
+    def update_ui_from_comboselect(self):
+        """Updates the UI based on the currently selected Influence Function."""
+        self.current_active_ifobject = self.functionlist[self.ui.select_combo.currentIndex() - 1]
+        self.update_gui_from_ifobject(self.current_active_ifobject)
+        self.ui.datainputmethod_combo.setCurrentIndex(0)
+        self.ui.standardlib_lbl.setText("Template")
+        self.ui.standardlib_combo.setCurrentIndex(0)
+
+    def update_inputmethod(self):
+        """Updates the GUI based on the data input method."""
+        datainputmethod = self.datainputmethods[self.ui.datainputmethod_combo.currentIndex()]
+        if datainputmethod == "none":
+            self.ui.standardlib_lbl.setText("Template")
+            self.ui.standardlib_combo.setEnabled(0)
+            self.ui.standardlib_combo.clear()
+            self.ui.standardlib_combo.addItem("<none>")
+            self.ui.standardlib_combo.setCurrentIndex(0)
+            pass    # Do nothing
+        elif datainputmethod == "temp":     # Open file dialog to browse for template
+            self.ui.standardlib_lbl.setText("Template")
+            self.ui.standardlib_combo.setEnabled(0)
+            self.ui.standardlib_combo.clear()
+            self.ui.standardlib_combo.addItem("<none>")
+            self.ui.standardlib_combo.setCurrentIndex(0)
+            datatype = "IF File (*.ubif)"
+            message = "Browse for Influence Function..."
+            datafile, _filter = QtWidgets.QFileDialog.getOpenFileName(self, message, os.curdir, datatype)
+            if datafile:
+                self.current_active_ifobject = ubdatatypes.NeighbourhoodInfluenceFunction(0)
+                self.current_active_ifobject.create_from_ubif(datafile)
+                self.update_gui_from_ifobject(self.current_active_ifobject)
+            else:
+                self.ui.datainputmethod_combo.setCurrentIndex(0)
+        elif datainputmethod == "manual":
+            self.ui.standardlib_lbl.setText("Template")
+            self.ui.standardlib_combo.setEnabled(0)
+            self.ui.standardlib_combo.clear()
+            self.ui.standardlib_combo.addItem("<none>")
+            self.ui.standardlib_combo.setCurrentIndex(0)
+            self.current_active_ifobject = ubdatatypes.NeighbourhoodInfluenceFunction()
+            self.update_gui_from_ifobject(self.current_active_ifobject)
+        elif datainputmethod == "pattern":      # [TO DO] NEED TO FIGURE OUT PATTERNS
+            self.ui.standardlib_lbl.setText("Select Standard Pattern")
+            self.ui.standardlib_combo.setEnabled(1)
+            self.ui.standardlib_combo.clear()
+            self.ui.standardlib_combo.addItem("<none>")
+            self.ui.standardlib_combo.setCurrentIndex(0)
+            self.current_active_ifobject = ubdatatypes.NeighbourhoodInfluenceFunction()
+            self.update_gui_from_ifobject(self.current_active_ifobject)
+        elif datainputmethod == "existing":
+            self.ui.standardlib_lbl.setText("Select Function")
+            self.ui.standardlib_combo.setEnabled(1)
+            self.ui.standardlib_combo.clear()
+            self.ui.standardlib_combo.addItem("<none>")
+            self.ui.standardlib_combo.setCurrentIndex(0)
+            [self.ui.standardlib_combo.addItem(str(self.functionlist[i].get_function_name()))
+             for i in range(len(self.functionlist))]
+            self.current_active_ifobject = ubdatatypes.NeighbourhoodInfluenceFunction()
+            self.update_gui_from_ifobject(self.current_active_ifobject)
+
+    def pre_fill_gui(self):
+        """Prefills the GUI with data from the function selected in the existing functions list."""
+        datainputmethod = self.datainputmethods[self.ui.datainputmethod_combo.currentIndex()]
+        if self.ui.standardlib_combo.currentIndex() in [-1, 0]:
+            return True
+        if datainputmethod == "existing":
+            ifo = self.functionlist[self.ui.standardlib_combo.currentIndex() - 1]
+            self.update_gui_from_ifobject(ifo)
+            self.ui.functionname_box.setText("unnamed")
+        elif datainputmethod == "patern":
+            pass
+
+    def update_gui_from_ifobject(self, ifo):
+        """Updates the GUI elements with the current data available in the active if_object passed to the function."""
+        self.ui.functionname_box.setText(str(ifo.get_function_name()))
+        self.ui.define_luc_combo.setCurrentIndex(ubglobals.ACTIVELANDUSEABBR.index(ifo.origin_landuse))
+        self.ui.influence_luc_combo.setCurrentIndex(ubglobals.UM_LUCABBRS.index(ifo.target_landuse))
+        self.ui.datapoints_spin.setValue(ifo.datapoints)
+        self.ui.datatable.setRowCount(0)
+        while self.ui.datatable.rowCount() < ifo.datapoints:
+            self.ui.datatable.insertRow(0)
+        xy = ifo.get_xy_data()
+        for i in range(ifo.datapoints):
+            twiX = QtWidgets.QTableWidgetItem()
+            twiX.setText(str(xy[0][i]))
+            self.ui.datatable.setItem(i, 0, twiX)
+            twiY = QtWidgets.QTableWidgetItem()
+            twiY.setText(str(xy[1][i]))
+            self.ui.datatable.setItem(i, 1, twiY)
+        self.update_plot()
+        return True
+
+    def save_current_function(self):
+        """Saves the current GUI settings, defined by the current active IF object to the project's database."""
+        # Get Table Data first to determine whether to save the data or not, throw an error if not.
+        xdata = []
+        ydata = []
+        error = False
+        for i in range(self.ui.datatable.rowCount()):
+            if self.ui.datatable.item(i, 0) is None or self.ui.datatable.item(i, 1) is None:
+                error = True
+                continue
+            else:
+                xdata.append(float(self.ui.datatable.item(i,0).text()))
+                ydata.append(float(self.ui.datatable.item(i,1).text()))
+        if error:
+            prompt_msg = "Error: Cannot save influence function. Table data is incomplete!"
+            QtWidgets.QMessageBox.warning(self, 'Incomplete Function Data', prompt_msg, QtWidgets.QMessageBox.Ok)
+            return True
+
+        self.current_active_ifobject.set_function_name(self.ui.functionname_box.text())
+        self.current_active_ifobject.origin_landuse = \
+            ubglobals.ACTIVELANDUSEABBR[self.ui.define_luc_combo.currentIndex()]
+        self.current_active_ifobject.target_landuse = \
+            ubglobals.UM_LUCABBRS[self.ui.influence_luc_combo.currentIndex()]
+        self.current_active_ifobject.assign_xy_data(xdata, ydata)
+        if self.current_active_ifobject.get_id() == None:
+            functions = self.simulation.get_all_function_objects_of_type("IF")
+            self.current_active_ifobject.assign_id("fx_" + str(len(functions)))
+            self.simulation.add_new_function_to_library(self.current_active_ifobject)
+            self.ui.select_combo.setCurrentIndex(0)
+            self.update_function_combobox()
+
+    def update_data_table_rows(self):
+        """Updates the data table rows to reflect the number in the spin button."""
+        if int(self.ui.datapoints_spin.value()) > self.ui.datatable.rowCount():
+            while int(self.ui.datapoints_spin.value()) > self.ui.datatable.rowCount():
+                self.ui.datatable.insertRow(self.ui.datatable.rowCount())
+        elif int(self.ui.datapoints_spin.value()) < self.ui.datatable.rowCount():
+            while int(self.ui.datapoints_spin.value()) < self.ui.datatable.rowCount():
+                self.ui.datatable.removeRow(self.ui.datatable.rowCount()-1)
+        else:
+            pass    # Rows are equal, do nothing
+
+    def export_current_function(self):
+        """Exports the current function to a .ubif file to be saved in the directory selected by the user."""
+        if self.ui.select_combo.currentIndex() in [0, self.ui.select_combo.count()-1]:
+            return True
+
+        datatype = "IF File (*.ubif)"
+        message = "Export to .ubif file, choose location..."
+        datafile, _filter = QtWidgets.QFileDialog.getSaveFileName(self, message, os.curdir, datatype)
+        if datafile and not self.current_active_ifobject is None:
+            self.current_active_ifobject.export_function_to_ubif(datafile)
+            prompt_msg = "Function successfully exported!"
+            QtWidgets.QMessageBox.information(self, 'Export Complete', prompt_msg, QtWidgets.QMessageBox.Ok)
+
+    def delete_current_function(self):
+        """Deletes the current active selection, removes this selection from the project."""
+        if self.ui.select_combo.currentIndex() in [0, self.ui.select_combo.count() - 1]:
+            return True
+
+        if not self.current_active_ifobject is None:
+            fid = self.current_active_ifobject.get_id()
+            self.simulation.remove_function_object_with_id(fid)
+            self.ui.select_combo.setCurrentIndex(0)
+            self.update_function_combobox()
+
+    def update_plot(self):
+        """Updates the plot in the viewer to reflect the changes in the data table. If the program cannot plot, it
+        quits updating and leaves the existing plot showing."""
+        # Get the X and Y data from the table
+        plotdata = []
+        for i in range(self.ui.datatable.rowCount()):
+            xy = [self.ui.datatable.item(i, 0), self.ui.datatable.item(i, 1)]
+            if None in xy or xy[0].text() == "" or xy[1].text() == "":
+                return True
+            else:
+                plotdata.append([float(xy[0].text()), float(xy[1].text())])
+        plotname = self.ui.functionname_box.text()
+
+        html = """
+        <!DOCTYPE HTML>
+        <html>
+	    <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>"""+plotname+"""</title>
+
+		    <style type="text/css">
+            #container {
+                min-width: 100%;
+                max-width: 100%;
+                height: 100%;
+                margin: 0 auto
+            }
+            </style>
+        </head>
+        <body>
+        <script src="file:///C:\Users\peter\Documents\Coding Projects\UrbanBEATS-PSS\libs\highcharts\code\highcharts.js"></script>
+        
+        <div id="container"></div>
+        
+                <script type="text/javascript">
+        Highcharts.chart('container', {
+        
+            title: {
+                text: 'Influence Function'
+            },
+        
+            yAxis: {
+                title: {
+                    text: 'Weight'
+                }
+            },
+            
+            xAxis: {
+                title: {
+                text: 'Distance [km]'
+              }
+            },
+        
+            series: [{
+                name: '"""+str(plotname)+"""',
+                data: """+str(plotdata)+"""
+            }],
+        
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 500
+                    },
+                    
+                }]
+            }
+        
+        });
+                </script>
+            </body>
+        </html>
+        """
+        self.ui.webView.setHtml(html)
+

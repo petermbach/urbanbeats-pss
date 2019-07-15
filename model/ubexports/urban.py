@@ -72,7 +72,7 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     fielddefmatrix.append(ogr.FieldDefn("Base_POP", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("Base_EMP", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("LUC_Type", ogr.OFTString))
-    fielddefmatrix.append(ogr.FieldDefn("NHD_Num", ogr.OFTInteger))
+    # fielddefmatrix.append(ogr.FieldDefn("NHD_Num", ogr.OFTInteger))
 
     # ACCESSIBILIY INDICATORS
     if map_attr.get_attribute("ACCESS_ROAD"):
@@ -161,25 +161,26 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     if map_attr.get_attribute("SUIT_GW"):
         fielddefmatrix.append(ogr.FieldDefn("DepthToGW", ogr.OFTReal))
 
-    fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_R", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_C", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_I", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_O", ogr.OFTReal))
-
-    fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_R", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_C", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_I", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_O", ogr.OFTReal))
-
-    fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_R", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_C", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_I", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_O", ogr.OFTReal))
-
-    fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_R", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_C", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_I", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_O", ogr.OFTReal))
+    if map_attr.get_attribute("SUIT_SLOPE"):
+        fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_R", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_C", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_I", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("SU_SLOPE_O", ogr.OFTReal))
+    if map_attr.get_attribute("SUIT_ASPECT"):
+        fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_R", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_C", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_I", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("SU_ASPCT_O", ogr.OFTReal))
+    if map_attr.get_attribute("SUIT_SOIL"):
+        fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_R", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_C", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_I", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("SU_SOIL_O", ogr.OFTReal))
+    if map_attr.get_attribute("SUIT_GW"):
+        fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_R", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_C", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_I", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("SU_GWATD_O", ogr.OFTReal))
 
     fielddefmatrix.append(ogr.FieldDefn("SU_CUSTO_R", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("SU_CUSTO_C", ogr.OFTReal))
@@ -210,6 +211,13 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     fielddefmatrix.append(ogr.FieldDefn("VPOT_ORC", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("VPOT_LUC", ogr.OFTString))
     fielddefmatrix.append(ogr.FieldDefn("VPOT_MAX", ogr.OFTReal))
+
+    # # DYNAMIC DATA
+    start = map_attr.get_attribute("URBMODELSTART")
+    end = map_attr.get_attribute("URBMODELEND")
+    for i in range(end - start + 1):
+        fielddefmatrix.append(ogr.FieldDefn("LUC_" + str(int(start + i)), ogr.OFTString))
+        fielddefmatrix.append(ogr.FieldDefn("POP_" + str(int(start + i)), ogr.OFTReal))
 
     # Create the fields
     for field in fielddefmatrix:
@@ -244,7 +252,7 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("Base_POP", int(currentAttList.get_attribute("Base_POP")))
         feature.SetField("Base_EMP", int(currentAttList.get_attribute("Base_EMP")))
         feature.SetField("LUC_Type", str(currentAttList.get_attribute("LUC_Type")))
-        feature.SetField("NHD_Num", int(currentAttList.get_attribute("NHD_Num")))
+        # feature.SetField("NHD_Num", int(currentAttList.get_attribute("NHD_Num")))
 
         if map_attr.get_attribute("ACCESS_ROAD"):
             feature.SetField("DIST_ROAD", float(currentAttList.get_attribute("ACC_ROAD_DIST")))
@@ -326,25 +334,26 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         if map_attr.get_attribute("SUIT_GW"):
             feature.SetField("DepthToGW", float(currentAttList.get_attribute("DepthToGW")))
 
-        feature.SetField("SU_SLOPE_R", float(currentAttList.get_attribute("SU_SLOPE_R")))
-        feature.SetField("SU_SLOPE_C", float(currentAttList.get_attribute("SU_SLOPE_C")))
-        feature.SetField("SU_SLOPE_I", float(currentAttList.get_attribute("SU_SLOPE_I")))
-        feature.SetField("SU_SLOPE_O", float(currentAttList.get_attribute("SU_SLOPE_O")))
-
-        feature.SetField("SU_ASPCT_R", float(currentAttList.get_attribute("SU_ASPCT_R")))
-        feature.SetField("SU_ASPCT_C", float(currentAttList.get_attribute("SU_ASPCT_C")))
-        feature.SetField("SU_ASPCT_I", float(currentAttList.get_attribute("SU_ASPCT_I")))
-        feature.SetField("SU_ASPCT_O", float(currentAttList.get_attribute("SU_ASPCT_O")))
-
-        feature.SetField("SU_SOIL_R", float(currentAttList.get_attribute("SU_SOIL_R")))
-        feature.SetField("SU_SOIL_C", float(currentAttList.get_attribute("SU_SOIL_C")))
-        feature.SetField("SU_SOIL_I", float(currentAttList.get_attribute("SU_SOIL_I")))
-        feature.SetField("SU_SOIL_O", float(currentAttList.get_attribute("SU_SOIL_O")))
-
-        feature.SetField("SU_GWATD_R", float(currentAttList.get_attribute("SU_GWATD_R")))
-        feature.SetField("SU_GWATD_C", float(currentAttList.get_attribute("SU_GWATD_C")))
-        feature.SetField("SU_GWATD_I", float(currentAttList.get_attribute("SU_GWATD_I")))
-        feature.SetField("SU_GWATD_O", float(currentAttList.get_attribute("SU_GWATD_O")))
+        if map_attr.get_attribute("SUIT_SLOPE"):
+            feature.SetField("SU_SLOPE_R", float(currentAttList.get_attribute("SU_SLOPE_R")))
+            feature.SetField("SU_SLOPE_C", float(currentAttList.get_attribute("SU_SLOPE_C")))
+            feature.SetField("SU_SLOPE_I", float(currentAttList.get_attribute("SU_SLOPE_I")))
+            feature.SetField("SU_SLOPE_O", float(currentAttList.get_attribute("SU_SLOPE_O")))
+        if map_attr.get_attribute("SUIT_ASPECT"):
+            feature.SetField("SU_ASPCT_R", float(currentAttList.get_attribute("SU_ASPCT_R")))
+            feature.SetField("SU_ASPCT_C", float(currentAttList.get_attribute("SU_ASPCT_C")))
+            feature.SetField("SU_ASPCT_I", float(currentAttList.get_attribute("SU_ASPCT_I")))
+            feature.SetField("SU_ASPCT_O", float(currentAttList.get_attribute("SU_ASPCT_O")))
+        if map_attr.get_attribute("SUIT_SOIL"):
+            feature.SetField("SU_SOIL_R", float(currentAttList.get_attribute("SU_SOIL_R")))
+            feature.SetField("SU_SOIL_C", float(currentAttList.get_attribute("SU_SOIL_C")))
+            feature.SetField("SU_SOIL_I", float(currentAttList.get_attribute("SU_SOIL_I")))
+            feature.SetField("SU_SOIL_O", float(currentAttList.get_attribute("SU_SOIL_O")))
+        if map_attr.get_attribute("SUIT_GW"):
+            feature.SetField("SU_GWATD_R", float(currentAttList.get_attribute("SU_GWATD_R")))
+            feature.SetField("SU_GWATD_C", float(currentAttList.get_attribute("SU_GWATD_C")))
+            feature.SetField("SU_GWATD_I", float(currentAttList.get_attribute("SU_GWATD_I")))
+            feature.SetField("SU_GWATD_O", float(currentAttList.get_attribute("SU_GWATD_O")))
 
         feature.SetField("SUIT_RES", float(currentAttList.get_attribute("SUIT_RES")))
         feature.SetField("SUIT_COM", float(currentAttList.get_attribute("SUIT_COM")))
@@ -367,6 +376,12 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("VPOT_ORC", float(currentAttList.get_attribute("VPOT_ORC")))
         feature.SetField("VPOT_LUC", str(currentAttList.get_attribute("VPOT_LUC")))
         feature.SetField("VPOT_MAX", float(currentAttList.get_attribute("VPOT_MAX")))
+        
+        for j in range(end - start + 1):
+            feature.SetField("LUC_" + str(int(start + j)),
+                             str(currentAttList.get_attribute("LUC_" + str(int(start + j)))))
+            feature.SetField("POP_" + str(int(start + j)),
+                             int(currentAttList.get_attribute("POP_" + str(int(start + j)))))
 
         layer.CreateFeature(feature)
     shapefile.Destroy()
