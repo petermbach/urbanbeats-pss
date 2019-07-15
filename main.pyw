@@ -59,7 +59,7 @@ import model.ublibs.ubconfigfiles as ubconfigfiles
 
 from gui.md_delinblocksguic import DelinBlocksGuiLaunch
 from gui.md_urbplanbbguic import UrbplanbbGuiLaunch
-from gui.md_urbdevelopguic import UrbdevelopGuiLaunch
+from gui.md_urbdevelopguic import UrbdevelopGuiLaunch, InfluenceFunctionGUILaunch
 from gui.md_spatialmappingguic import SpatialMappingGuiLaunch
 
 from gui.md_infrastructureguic import InfrastructureGuiLaunch
@@ -143,6 +143,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # SIMULATION MENU
         # Do this much later once GUIs for modules have been defined.
         self.ui.actionRun.triggered.connect(self.call_run_simulation)
+        self.ui.actionDefine_IF.triggered.connect(self.launch_influencefunction_gui)
         # Variant for calling only the performance assessment
 
         #
@@ -462,7 +463,7 @@ class MainWindow(QtWidgets.QMainWindow):
         :return: None
         """
         if not os.path.isfile(UBEATSROOT+"/config.cfg"):
-            print "Creating Default Config File"
+            print("Creating Default Config File")
             ubconfigfiles.create_default_config_cfg(UBEATSROOT)     # if config.cfg does not exist, will create default
 
         options = ET.parse(UBEATSROOT+"/config.cfg")
@@ -736,6 +737,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if self.__activeScenario is not None:
             self.__activeScenario.consolidate_scenario()
+
+        # Consolidate the functions list
+        self.printc("Consolidating Project Functions List")
+        if self.__activeSimulationObject is not None:
+            self.__activeSimulationObject.consolidate_functions_list()
 
         # Add project to the recent.cfg file
         self.update_recent_cfg(self.__activeSimulationObject.get_project_parameter("name"),
@@ -1050,6 +1056,12 @@ class MainWindow(QtWidgets.QMainWindow):
         return self.__current_project_name
 
     # MODULE BAR - LAUNCHING ALL MODULES
+    def launch_influencefunction_gui(self):
+        """Launches the influence function creator GUI, for creating and saving influence functions in the project."""
+        ifunctiongui = InfluenceFunctionGUILaunch(self.get_active_simulation_object(),
+                                                  self.get_active_project_log())
+        ifunctiongui.exec_()
+
     def launch_spatialsetup_modulegui(self):
         """Launches the spatial setup module's user interface and fills in relevant parameters."""
         delinblocksgui = DelinBlocksGuiLaunch(self, self.get_active_simulation_object(),

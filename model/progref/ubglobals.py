@@ -116,6 +116,12 @@ LANDUSEABBR = ['RES', 'COM', 'ORC', 'LI', 'HI', 'CIV', 'SVU', 'RD', 'TR', 'PG', 
 LANDUSENAMES = ['Residential', 'Commercial', 'Offices Res Mix', 'Light Industry', 'Heavy Industry',
                 'Civic', 'Service and Utility', 'Road', 'Transport', 'Parks and Gardens', 'Reserves and Floodway',
                 'Undeveloped', 'Unclassified', 'Water', 'Forest', 'Agriculture']
+ACTIVELANDUSEABBR = ['RES', 'COM', 'IND', 'ORC']
+ACTIVELANDUSENAMES = ["Residential", "Commercial", "Industrial", "Mixed Development"]
+UM_LUCABBRS = ['RES', 'COM', 'ORC', 'IND', 'CIV', 'SVU', 'RD', 'TR', 'PG', 'REF', 'UND', 'NA', 'WAT', 'FOR', 'AGR']
+UM_LUCNAMES = ['Residential', 'Commercial', 'Offices Res Mix', 'Industrial', 'Civic', 'Service and Utility',
+               'Road', 'Transport', 'Parks and Gardens', 'Reserves and Floodway', 'Undeveloped', 'Unclassified',
+               'Water', 'Forest', 'Agriculture']
 
 PLANTYPES = ["Suburbia", "European", "Megacity"]
 PLANPARAMSET = ["Custom", "Melbourne"]

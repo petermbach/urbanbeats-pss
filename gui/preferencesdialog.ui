@@ -1,0 +1,1411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PreferencesDialog</class>
+ <widget class="QDialog" name="PreferencesDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>534</width>
+    <height>640</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Preferences</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QWidget" name="header" native="true">
+     <layout class="QGridLayout" name="gridLayout_12">
+      <item row="0" column="0">
+       <widget class="QLabel" name="title_logo">
+        <property name="minimumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="../graphics/ubeats.qrc">:/icons/Settings-icon (1).png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="title">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Preferences</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="subtitle">
+        <property name="text">
+         <string>Program configuration, simulation and display options...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTabWidget" name="options_tabs">
+     <property name="tabPosition">
+      <enum>QTabWidget::North</enum>
+     </property>
+     <property name="tabShape">
+      <enum>QTabWidget::Rounded</enum>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="general_tab">
+      <attribute name="icon">
+       <iconset resource="../graphics/ubeats.qrc">
+        <normaloff>:/icons/Info-icon.png</normaloff>:/icons/Info-icon.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>General</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QScrollArea" name="general_scrollArea">
+         <property name="verticalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOn</enum>
+         </property>
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="general_scrollAreaContents">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>473</width>
+            <height>474</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_14">
+             <property name="margin">
+              <number>9</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="user_details">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;User Details&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="user_details_widget" native="true">
+               <layout class="QGridLayout" name="gridLayout">
+                <item row="1" column="1">
+                 <widget class="QLineEdit" name="modelleraffil_line"/>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="modellername_lbl">
+                  <property name="text">
+                   <string>Default Modeller Name: </string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLineEdit" name="modellername_line"/>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="modelleraffil_lbl">
+                  <property name="text">
+                   <string>Default Affiliation:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="projectlog_lbl">
+                  <property name="text">
+                   <string>Project Log Style:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QWidget" name="projectlog_widget" native="true">
+                  <layout class="QHBoxLayout" name="horizontalLayout">
+                   <item>
+                    <widget class="QRadioButton" name="projectlog_simple">
+                     <property name="text">
+                      <string>Simplified Log</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QRadioButton" name="projectlog_compreh">
+                     <property name="text">
+                      <string>Comprehensive</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="language">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Language Settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="language_sub">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(changes will be applied upon restart)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="language_widget" native="true">
+               <layout class="QGridLayout" name="gridLayout_7">
+                <item row="1" column="0">
+                 <widget class="QLabel" name="lang_lbl">
+                  <property name="text">
+                   <string>Interface Language:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QComboBox" name="lang_combo">
+                  <property name="currentIndex">
+                   <number>1</number>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>Deutsch</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>English</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Español</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Français</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Português</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>中文</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>日本語</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="location">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Location Settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="location_widget" native="true">
+               <layout class="QGridLayout" name="gridLayout_2">
+                <item row="2" column="2">
+                 <widget class="QLineEdit" name="coords_line">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>lattitude longitude [decimal degrees]</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="location_lbl">
+                  <property name="text">
+                   <string>Default City:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="coords_lbl">
+                  <property name="text">
+                   <string>Other (enter coordinates):</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <widget class="QComboBox" name="location_combo">
+                  <property name="currentIndex">
+                   <number>3</number>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>Adelaide, Australia</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Brisbane, Australia</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Innsbruck, Austria</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Melbourne, Australia</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Nanjing, China</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Perth, Australia</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>San Francisco, USA</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Sydney, Australia</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Zurich, Switzerland</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Other...</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="location_lbl2">
+                  <property name="text">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(select closest city)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="path">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Path Settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="path_widget" native="true">
+               <layout class="QGridLayout" name="gridLayout_3">
+                <item row="0" column="1">
+                 <widget class="QLineEdit" name="projpath_line">
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="temppath_lbl">
+                  <property name="text">
+                   <string>Temp Directory:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="projpath_lbl">
+                  <property name="text">
+                   <string>Default Project Path:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <widget class="QPushButton" name="projpath_button">
+                  <property name="text">
+                   <string>Change...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLineEdit" name="temppath_line">
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <widget class="QPushButton" name="temppath_button">
+                  <property name="text">
+                   <string>Change...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QCheckBox" name="temppath_check">
+                  <property name="text">
+                   <string>Use Windows Default Temp Directory</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="appearance">
+      <attribute name="icon">
+       <iconset resource="../graphics/ubeats.qrc">
+        <normaloff>:/icons/palette-icon.png</normaloff>:/icons/palette-icon.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Appearance</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_13">
+       <item>
+        <widget class="QScrollArea" name="general_scrollArea_2">
+         <property name="verticalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOn</enum>
+         </property>
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="general_scrollAreaContents_2">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>473</width>
+            <height>456</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_12">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_15">
+             <property name="margin">
+              <number>9</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="appearance_2">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Text Appearance&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="appearance_widget_2" native="true">
+               <layout class="QGridLayout" name="gridLayout_17">
+                <item row="3" column="1">
+                 <widget class="QComboBox" name="consolets_combo_2">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>Black</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../graphics/ubeats.qrc">
+                     <normaloff>:/colors/colours/black_hex000000.png</normaloff>:/colors/colours/black_hex000000.png</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Teal</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../graphics/ubeats.qrc">
+                     <normaloff>:/colors/colours/teal_hex255255.png</normaloff>:/colors/colours/teal_hex255255.png</iconset>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QComboBox" name="error_combo_2">
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>Black</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../graphics/ubeats.qrc">
+                     <normaloff>:/colors/colours/black_hex000000.png</normaloff>:/colors/colours/black_hex000000.png</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Teal</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../graphics/ubeats.qrc">
+                     <normaloff>:/colors/colours/teal_hex255255.png</normaloff>:/colors/colours/teal_hex255255.png</iconset>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="bodytext_lbl_2">
+                  <property name="text">
+                   <string>Body Text Colour:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QComboBox" name="bodytext_combo_2">
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>Black</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../graphics/ubeats.qrc">
+                     <normaloff>:/colors/colours/black_hex000000.png</normaloff>:/colors/colours/black_hex000000.png</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Teal</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../graphics/ubeats.qrc">
+                     <normaloff>:/colors/colours/teal_hex255255.png</normaloff>:/colors/colours/teal_hex255255.png</iconset>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="consolets_lbl_2">
+                  <property name="text">
+                   <string>Console Timestamp Text:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="error_lbl_2">
+                  <property name="text">
+                   <string>Errors and Warnings Text:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <spacer name="horizontalSpacer_3">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_6">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="simulation_tab">
+      <attribute name="icon">
+       <iconset resource="../graphics/ubeats.qrc">
+        <normaloff>:/icons/Play-icon.png</normaloff>:/icons/Play-icon.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Simulation</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QScrollArea" name="simulation_scrollArea">
+         <property name="verticalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOn</enum>
+         </property>
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="simulation_scrollAreaContents">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>473</width>
+            <height>456</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_6">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_16">
+             <property name="margin">
+              <number>9</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="caching">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Asset Caching&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="caching_widget" native="true">
+               <layout class="QGridLayout" name="gridLayout_13">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="caching_limit_lbl">
+                  <property name="text">
+                   <string>Temporary Cache Limit [number of simulations]:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <spacer name="horizontalSpacer_4">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QSpinBox" name="caching_limit_spin">
+                  <property name="suffix">
+                   <string/>
+                  </property>
+                  <property name="minimum">
+                   <number>1</number>
+                  </property>
+                  <property name="maximum">
+                   <number>10</number>
+                  </property>
+                  <property name="singleStep">
+                   <number>1</number>
+                  </property>
+                  <property name="value">
+                   <number>5</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="activity">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Block Data Handling&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="activity_widget" native="true">
+               <layout class="QGridLayout" name="gridLayout_14">
+                <item row="0" column="2">
+                 <spacer name="horizontalSpacer_5">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QDoubleSpinBox" name="activity_thresh_spin">
+                  <property name="suffix">
+                   <string>%</string>
+                  </property>
+                  <property name="maximum">
+                   <double>5.000000000000000</double>
+                  </property>
+                  <property name="singleStep">
+                   <double>0.010000000000000</double>
+                  </property>
+                  <property name="value">
+                   <double>0.100000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="activity_thresh_lbl">
+                  <property name="text">
+                   <string>Global Threshold for minimum Block Activity:</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="iterations">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Iterative Calculations&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="iterations_widget" native="true">
+               <layout class="QGridLayout" name="gridLayout_5">
+                <item row="1" column="0">
+                 <widget class="QLabel" name="tolerance_lbl">
+                  <property name="text">
+                   <string>Global Tolerance Level for Convergence:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="numiter_lbl">
+                  <property name="text">
+                   <string>Maximum number of Technology Iterations:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QSpinBox" name="numiter_spin">
+                  <property name="suffix">
+                   <string/>
+                  </property>
+                  <property name="minimum">
+                   <number>1000</number>
+                  </property>
+                  <property name="maximum">
+                   <number>100000</number>
+                  </property>
+                  <property name="singleStep">
+                   <number>1000</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QDoubleSpinBox" name="tolerance_spin">
+                  <property name="prefix">
+                   <string/>
+                  </property>
+                  <property name="suffix">
+                   <string>%</string>
+                  </property>
+                  <property name="decimals">
+                   <number>2</number>
+                  </property>
+                  <property name="minimum">
+                   <double>0.010000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>5.000000000000000</double>
+                  </property>
+                  <property name="singleStep">
+                   <double>0.010000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <spacer name="horizontalSpacer_2">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="modeldecisions">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Model Selection Heuristics&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="modeldecisions_sub">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Define default choices that the model should make when...&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="modeldecisions_widget" native="true">
+               <layout class="QGridLayout" name="gridLayout_6">
+                <item row="1" column="0">
+                 <widget class="QLabel" name="decision_lbl">
+                  <property name="text">
+                   <string>No suitable options are found:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QComboBox" name="decision_combo">
+                  <item>
+                   <property name="text">
+                    <string>Pick the closest options</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Pick random options</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Do not pick options</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mapsettings_tab">
+      <attribute name="icon">
+       <iconset resource="../graphics/ubeats.qrc">
+        <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Maps</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_9">
+       <item>
+        <widget class="QScrollArea" name="mapsettings_scrollArea">
+         <property name="verticalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOn</enum>
+         </property>
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="mapsettings_scrollAreaContents">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>473</width>
+            <height>456</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_7">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_17">
+             <property name="margin">
+              <number>9</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="mapstyle">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Select Map Style&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="mapstyle_widget" native="true">
+               <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <item>
+                 <widget class="QWidget" name="mapstyle_subwidget" native="true">
+                  <layout class="QGridLayout" name="gridLayout_8">
+                   <item row="2" column="2">
+                    <widget class="QCheckBox" name="cache_check">
+                     <property name="text">
+                      <string>Cache project tiles</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="2">
+                    <widget class="QComboBox" name="mapstyle_combo">
+                     <property name="currentIndex">
+                      <number>2</number>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>CartoDB</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>ESRI World</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Open Street Map</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Stamen (Toner)</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Stamen (Terrain)</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="1" column="0" colspan="2">
+                    <widget class="QLabel" name="tileserver_lbl">
+                     <property name="text">
+                      <string>Enter custom tileserver:</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="mapstyle_lbl">
+                     <property name="text">
+                      <string>Map Style:</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="2">
+                    <widget class="QLineEdit" name="tileserver_line"/>
+                   </item>
+                   <item row="3" column="2">
+                    <widget class="QCheckBox" name="offline_check">
+                     <property name="text">
+                      <string>Offline Mode</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="mapstyle_pic">
+                  <property name="minimumSize">
+                   <size>
+                    <width>91</width>
+                    <height>110</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="pixmap">
+                   <pixmap resource="../graphics/ubeats.qrc">:/media/map templates/mt_osm.png</pixmap>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="datadisplay">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Spatial Data Handling&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="datadisplay_widget" native="true">
+               <layout class="QGridLayout" name="gridLayout_9">
+                <item row="2" column="0">
+                 <widget class="QLabel" name="epsg_lbl">
+                  <property name="text">
+                   <string>EPSG Code:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QComboBox" name="coords_combo">
+                  <property name="editable">
+                   <bool>true</bool>
+                  </property>
+                  <property name="currentIndex">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>(select coordinate system)</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QLineEdit" name="epsg_line"/>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="coords_lbl_2">
+                  <property name="minimumSize">
+                   <size>
+                    <width>150</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>Default Coordinate System:</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="external_tab">
+      <attribute name="icon">
+       <iconset resource="../graphics/ubeats.qrc">
+        <normaloff>:/icons/export-icon.png</normaloff>:/icons/export-icon.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>External</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QScrollArea" name="external_scrollArea">
+         <property name="verticalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOn</enum>
+         </property>
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="external_scrollAreaContents">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>473</width>
+            <height>456</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_8">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_18">
+             <property name="margin">
+              <number>9</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="externalprograms">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;External Programs&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="externalprograms_2" native="true">
+               <layout class="QGridLayout" name="gridLayout_10">
+                <item row="2" column="2">
+                 <widget class="QPushButton" name="musicpath_button">
+                  <property name="text">
+                   <string>Set...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLineEdit" name="epanetpath_line">
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <widget class="QPushButton" name="epanetpath_button">
+                  <property name="text">
+                   <string>Set...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="musicpath_lbl">
+                  <property name="text">
+                   <string>eWater MUSIC path:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="epanetpath_lbl">
+                  <property name="text">
+                   <string>EPANET2 path:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QLineEdit" name="musicpath_line">
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="swmmpath_lbl">
+                  <property name="text">
+                   <string>SWMM path:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLineEdit" name="swmmpath_line">
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <widget class="QPushButton" name="swmmpath_button">
+                  <property name="text">
+                   <string>Set...</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>314</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="online_tab">
+      <attribute name="icon">
+       <iconset resource="../graphics/ubeats.qrc">
+        <normaloff>:/icons/Network-Globe-Connected-icon.png</normaloff>:/icons/Network-Globe-Connected-icon.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Online</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_11">
+       <item>
+        <widget class="QScrollArea" name="online_scrollArea">
+         <property name="verticalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOn</enum>
+         </property>
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="online_scrollAreaContents">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>473</width>
+            <height>456</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_10">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_19">
+             <property name="margin">
+              <number>9</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="comingsoon">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Coming Soon...&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="comingsoon_widget" native="true">
+               <layout class="QGridLayout" name="gridLayout_11">
+                <item row="0" column="1">
+                 <widget class="QLabel" name="comingsoon_lbl">
+                  <property name="text">
+                   <string>Features coming soon</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>343</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="footer" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>38</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>38</height>
+      </size>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QDialogButtonBox" name="buttonBox">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="standardButtons">
+         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="reset_button">
+        <property name="text">
+         <string>Reset All</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>options_tabs</tabstop>
+  <tabstop>general_scrollArea</tabstop>
+  <tabstop>modellername_line</tabstop>
+  <tabstop>modelleraffil_line</tabstop>
+  <tabstop>projectlog_simple</tabstop>
+  <tabstop>projectlog_compreh</tabstop>
+  <tabstop>lang_combo</tabstop>
+  <tabstop>location_combo</tabstop>
+  <tabstop>coords_line</tabstop>
+  <tabstop>projpath_line</tabstop>
+  <tabstop>projpath_button</tabstop>
+  <tabstop>temppath_line</tabstop>
+  <tabstop>temppath_button</tabstop>
+  <tabstop>temppath_check</tabstop>
+  <tabstop>numiter_spin</tabstop>
+  <tabstop>tolerance_spin</tabstop>
+  <tabstop>decision_combo</tabstop>
+  <tabstop>mapstyle_combo</tabstop>
+  <tabstop>tileserver_line</tabstop>
+  <tabstop>cache_check</tabstop>
+  <tabstop>offline_check</tabstop>
+  <tabstop>coords_combo</tabstop>
+  <tabstop>epsg_line</tabstop>
+  <tabstop>epanetpath_line</tabstop>
+  <tabstop>epanetpath_button</tabstop>
+  <tabstop>swmmpath_line</tabstop>
+  <tabstop>swmmpath_button</tabstop>
+  <tabstop>musicpath_line</tabstop>
+  <tabstop>musicpath_button</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>reset_button</tabstop>
+  <tabstop>simulation_scrollArea</tabstop>
+  <tabstop>mapsettings_scrollArea</tabstop>
+  <tabstop>external_scrollArea</tabstop>
+  <tabstop>online_scrollArea</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../graphics/ubeats.qrc"/>
+  <include location="../graphics/ubeats.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>PreferencesDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>PreferencesDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -43,6 +43,7 @@ from ubmodule import *
 import model.ublibs.ubspatial as ubspatial
 import model.ublibs.ubmethods as ubmethods
 import model.ublibs.ubdatatypes as ubdata
+import model.ublibs.ubmcda as ubmcda
 from ..progref import ubglobals
 
 
@@ -323,10 +324,9 @@ class UrbanDevelopment(UBModule):
 
         # Suitability Criteria
         self.create_parameter("suit_elevation_data", STRING, "dataset to use for slope")
-        self.suit_elevation_data = ""
-
         self.create_parameter("suit_slope_include", BOOL, "include slope assessment in suitability?")
         self.create_parameter("suit_slope_weight", DOUBLE, "weight assigned to slope in suitability assessment")
+        self.suit_elevation_data = ""
         self.suit_slope_include = 1
         self.suit_slope_weight = 5.0
 
@@ -357,20 +357,32 @@ class UrbanDevelopment(UBModule):
         self.suit_custom_weight = 5.0
 
         # SUITABILITY - SLOPE
+        # The concept for slope is based on a maximum allowable slope. Suitability decreases from 100% at 0% slope to
+        # 0% at the maximum threshold. One parameter per land use + trend + mid-point.
+        self.create_parameter("slope_trend", STRING, "trend to use for in between values on slope scale")
+        self.create_parameter("slope_midpoint", BOOL, "include mid-point value for suitability calcs?")
         self.create_parameter("slope_res", DOUBLE, "threshold % at which slope no longer suitable for RES land use")
         self.create_parameter("slope_com", DOUBLE, "threshold % at which slope no longer suitable for COM land use")
         self.create_parameter("slope_ind", DOUBLE, "threshold % at which slope no longer suitable for IND land use")
         self.create_parameter("slope_orc", DOUBLE, "threshold % at which slope no longer suitable for ORC land use")
-        self.create_parameter("slope_trend", STRING, "trend to use for in between values on slope scale")
-        self.create_parameter("slope_midpoint", DOUBLE, "mid-point value to use if this is selected for suitability")
+        self.create_parameter("slope_res_mid", DOUBLE, "mid-point value of slope for RES land use")
+        self.create_parameter("slope_com_mid", DOUBLE, "mid-point value of slope for COM land use")
+        self.create_parameter("slope_ind_mid", DOUBLE, "mid-point value of slope for IND land use")
+        self.create_parameter("slope_orc_mid", DOUBLE, "mid-point value of slope for ORC land use")
+        self.slope_trend = "L"  # L (Linear), Q (Quadratic), C (Cubic), S (sigmoid), T (triangular), IT (inverse tri)
+        self.slope_midpoint = 1
         self.slope_res = 25.0
         self.slope_com = 25.0
         self.slope_ind = 25.0
         self.slope_orc = 25.0
-        self.slope_trend = "L"      # L (Linear), Q (Quadratic), C (Cubic), S (sigmoid), M (midpoint), IQ/IC (inverse)
-        self.slope_midpoint = 12.5
+        self.slope_res_mid = 12.5
+        self.slope_com_mid = 12.5
+        self.slope_ind_mid = 12.5
+        self.slope_orc_mid = 12.5
 
         # SUITABILITY - ASPECT
+        # The concept for Aspect is based on the compass rose. Suitability is interpolated between the different
+        # cardinal directions as specified by the user, e.g. N-W, N-E, S-W, S-E.
         self.create_parameter("aspect_res_north", DOUBLE, "suitability value for north-facing aspects in RES land use")
         self.create_parameter("aspect_res_east", DOUBLE, "suitability value for north-facing aspects in RES land use")
         self.create_parameter("aspect_res_south", DOUBLE, "suitability value for north-facing aspects in RES land use")
@@ -408,6 +420,8 @@ class UrbanDevelopment(UBModule):
         self.aspect_orc_west = 40.0
 
         # SUITABILITY - SOIL CLASSIFICATION
+        # A histogram representation, discrete suitabilities based on the type of soil, suitability is simply assigned
+        # according to soil type registered.
         self.create_parameter("soil_res_sand", DOUBLE, "suitability value for sand soils in RES land use")
         self.create_parameter("soil_res_sandclay", DOUBLE, "suitability value for sandy clay soils in RES land use")
         self.create_parameter("soil_res_medclay", DOUBLE, "suitability value for med. clay soils in RES land use")
@@ -445,40 +459,60 @@ class UrbanDevelopment(UBModule):
         self.soil_orc_heavyclay = 60.0
 
         # SUITABILITY - DEPTH TO GROUNDWATER TABLE [m]
+        # Like the slope, suitability for groundwater ranges from 0% suitable when groundwater table at surface 0m to
+        # 100% beyond a certain threshold, parameters here indicate the threshold.
+        self.create_parameter("gw_trend", STRING, "trend to use for in-between values")
+        self.create_parameter("gw_midpoint", BOOL, "include mid-point value for suitability scale?")
         self.create_parameter("gw_res", DOUBLE, "threshold % at which groundwater no longer suitable for RES land use")
         self.create_parameter("gw_com", DOUBLE, "threshold % at which groundwater no longer suitable for COM land use")
         self.create_parameter("gw_ind", DOUBLE, "threshold % at which groundwater no longer suitable for IND land use")
         self.create_parameter("gw_orc", DOUBLE, "threshold % at which groundwater no longer suitable for ORC land use")
-        self.create_parameter("gw_trend", STRING, "trend to use for in-between values")
-        self.create_parameter("gw_midpoint", DOUBLE, "mid-point value for suitability scale")
+        self.create_parameter("gw_res_mid", DOUBLE, "mid-point suitability for RES land use")
+        self.create_parameter("gw_com_mid", DOUBLE, "mid-point suitability for COM land use")
+        self.create_parameter("gw_ind_mid", DOUBLE, "mid-point suitability for IND land use")
+        self.create_parameter("gw_orc_mid", DOUBLE, "mid-point suitability for ORC land use")
+        self.gw_trend = "L"  # L (Linear), Q (Quadratic), C (Cubic), S (sigmoid), T (triangular), IT (inverse tri)
+        self.gw_midpoint = 1
         self.gw_res = 10.0
         self.gw_com = 10.0
         self.gw_ind = 10.0
         self.gw_orc = 10.0
-        self.gw_trend = "L"  # L (Linear), Q (Quadratic), C (Cubic), S (sigmoid), M (midpoint), IQ/IC (inverse)
-        self.gw_midpoint = 5.0
+        self.gw_res_mid = 5.0
+        self.gw_com_mid = 5.0
+        self.gw_ind_mid = 5.0
+        self.gw_orc_mid = 5.0
 
         # SUITABILITY - CUSTOM CRITERION
+        # Users can select a minimum/maximum threshold, a custom mid-point and then assign suitabilities in forward
+        # or reverse order.
+        self.create_parameter("custom_trend", STRING, "trend to use for the suitability scaling")
+        self.create_parameter("custom_midpoint", BOOL, "mid-point value to use if this trend is selected")
         self.create_parameter("custom_res_min", DOUBLE, "minimum threshold at which suitability is 0%")
         self.create_parameter("custom_res_max", DOUBLE, "maximum threshold at which suitability is 0%")
+        self.create_parameter("custom_res_mid", DOUBLE, "maximum threshold at which suitability is 0%")
         self.create_parameter("custom_com_min", DOUBLE, "minimum threshold at which suitability is 0%")
         self.create_parameter("custom_com_max", DOUBLE, "maximum threshold at which suitability is 0%")
+        self.create_parameter("custom_com_mid", DOUBLE, "maximum threshold at which suitability is 0%")
         self.create_parameter("custom_ind_min", DOUBLE, "minimum threshold at which suitability is 0%")
         self.create_parameter("custom_ind_max", DOUBLE, "maximum threshold at which suitability is 0%")
+        self.create_parameter("custom_ind_mid", DOUBLE, "maximum threshold at which suitability is 0%")
         self.create_parameter("custom_orc_min", DOUBLE, "minimum threshold at which suitability is 0%")
         self.create_parameter("custom_orc_max", DOUBLE, "maximum threshold at which suitability is 0%")
-        self.create_parameter("custom_trend", STRING, "trend to use for the suitability scaling")
-        self.create_parameter("custom_midpoint", DOUBLE, "mid-point value to use if this trend is selected")
+        self.create_parameter("custom_orc_mid", DOUBLE, "maximum threshold at which suitability is 0%")
+        self.custom_trend = "L"  # L (Linear), Q (Quadratic), C (Cubic), S (sigmoid), M (midpoint), IQ/IC (inverse)
+        self.custom_midpoint = 0
         self.custom_res_min = 0.0
         self.custom_res_max = 0.0
+        self.custom_res_mid = 0.0
         self.custom_com_min = 0.0
         self.custom_com_max = 0.0
+        self.custom_com_mid = 0.0
         self.custom_ind_min = 0.0
         self.custom_ind_max = 0.0
+        self.custom_ind_mid = 0.0
         self.custom_orc_min = 0.0
         self.custom_orc_max = 0.0
-        self.custom_trend = "L"  # L (Linear), Q (Quadratic), C (Cubic), S (sigmoid), M (midpoint), IQ/IC (inverse)
-        self.custom_midpoint = 0.0
+        self.custom_orc_mid = 0.0
 
         # --- TAB 3 - SPATIAL RELATIONSHIPS: ZONING ---
         self.create_parameter("zoning_export", BOOL, "export aggregated zoning maps for each land use?")
@@ -581,6 +615,10 @@ class UrbanDevelopment(UBModule):
         self.zoning_custom_orc = 0
 
         # --- TAB 4 - NEIGHBOURHOOD INTERACTION
+        self.create_parameter("function_ids", LISTDOUBLE, "list of function ids containing interaction data")
+        self.create_parameter("edge_effects_method", STRING, "method for accounting for edge effects")
+        self.function_ids = []
+        self.edge_effects_method = "NA"     # NA = no accounting, AVG = average, PP = proportioning, PPAVG=both
 
         # ADVANCED PARAMETERS
         self.global_offsets = None
@@ -1129,108 +1167,188 @@ class UrbanDevelopment(UBModule):
             if self.suit_custom_include:
                 pass    # [TO DO]
 
-        # - 2.6.4 - INFILL MISSING VALUES
+        # - 2.6.4 - INFILL MISSING VALUES AND CALCULATE ADDITIONAL INDICATORS (e.g. SLOPE, ASPECT
         print("Infilling missing values...")
-        self.infill_nodata_values(nodata_cells_elev, "Elevation", "Average", elevraster.get_nodatavalue())
-        self.infill_nodata_values(nodata_cells_soil, "SoilClass", "Categorical", "Undefined")
-        self.infill_nodata_values(nodata_cells_gw, "DepthToGW", "Average", gwraster.get_nodatavalue())
+        if (self.suit_slope_include or self.suit_aspect_include) and self.suit_elevation_data:
+            self.infill_nodata_values(nodata_cells_elev, "Elevation", "Average", elevraster.get_nodatavalue())
+            self.calculate_cell_slope_and_aspect(cellslist)
+        if self.suit_soil_data:
+            self.infill_nodata_values(nodata_cells_soil, "SoilClass", "Categorical", "Undefined")
+        if self.suit_gw_data:
+            self.infill_nodata_values(nodata_cells_gw, "DepthToGW", "Average", gwraster.get_nodatavalue())
+        if self.suit_custom_data:
+            pass
+            # Infill no data values
 
         # - 2.6.5 - CALCULATE SUITABILITIES
         # PREPARE ARRAYS FOR COMBINING SUITABILITY VALUES
         self.notify("Now calculating suitabilities...")
         print("Now calculating suitabilities...")
 
-        # Setup arrays - suitability_bools = booleans of 'include' x 'has data', all_weights = weights params
-        # suit_weights = relevant weights ONLY, map_suitability = 2D array, one for each Land use
-        suitability_bools = [self.suit_slope_include * bool(self.suit_elevation_data),
-                             self.suit_aspect_include * bool(self.suit_elevation_data),
-                             self.suit_soil_include * bool(self.suit_soil_data),
-                             self.suit_gw_include * bool(self.suit_gw_data),
-                             self.suit_custom_include * bool(self.suit_custom_data)]
-        all_weights = [self.suit_slope_weight, self.suit_aspect_weight, self.suit_soil_weight,
-                       self.suit_gw_weight, self.suit_custom_weight]
-        suit_weights = [all_weights[s] for s in range(len(suitability_bools)) if
-                        suitability_bools[s]]  # relevant ones
-        map_suitability_values = [[], [], [], []]  # Will hold all the final suitability values for normalization
+        # SET UP VALUE-SCALES FOR EACH CRITERIA
+        slope_value_scales = []         # CRITERIA 1 - SLOPE ---------------------------------------------
+        if self.suit_slope_include and self.suit_elevation_data:  # If slope is considered...
+            xmin_values = [0, 0, 0, 0]
+            xmax_values = [self.slope_res, self.slope_com, self.slope_ind, self.slope_orc]
+            if self.slope_midpoint:
+                mid_points = [self.slope_res_mid, self.slope_com_mid, self.slope_ind_mid, self.slope_orc_mid]
+            else:
+                mid_points = None
+            slope_value_scales = []
+            for i in range(len(xmin_values)):
+                if mid_points is None:
+                    vs = ubmcda.ValueScale([xmin_values[i], xmax_values[i]], [1.0, 0.0])    # Slope is reverse linear
+                else:
+                    vs = ubmcda.ValueScale([xmin_values[i], mid_points[i], xmax_values[i]],
+                                           [1.0, 0.5, 0.0])
+                slope_value_scales.append(vs)
 
-        # for i in range(len(cellslist)):
-        #     suit_values = [[], [], [], []]  # [ [RES], [COM], [IND], [ORC] ]
-        #
-        #     # - 2.7.4a - SUITABILITY CALCULATION FOR SLOPE
-        #     if self.suit_slope_include and self.suit_elevation_data:    # If slope is considered...
-        #         suitability = self.calculate_suitability_value()
-        #         current_cell.add_attribute("SU_SLOPE_R", suitability)
-        #         current_cell.add_attribute("SU_SLOPE_C", suitability)
-        #         current_cell.add_attribute("SU_SLOPE_I", suitability)
-        #         current_cell.add_attribute("SU_SLOPE_O", suitability)
-        #
-        #         suit_values[0].append(suitability)
-        #         suit_values[1].append(suitability)
-        #         suit_values[2].append(suitability)
-        #         suit_values[3].append(suitability)
-        #
-        #     # - 2.7.4b - SUITABILITY CALCULATION FOR ASPECT
-        #     if self.suit_aspect_include and self.suit_elevation_data:
-        #         pass
-        #         suitability = self.calculate_suitability_value()
-        #         current_cell.add_attribute("SU_ASPCT_R", suitability)
-        #         current_cell.add_attribute("SU_ASPCT_C", suitability)
-        #         current_cell.add_attribute("SU_ASPCT_I", suitability)
-        #         current_cell.add_attribute("SU_ASPCT_O", suitability)
-        #         suit_values.append(suitability)
-        #
-        #     # - 2.7.4c - SUITABILITY CALCULATION FOR SOIL TYPE
-        #     if self.suit_soil_include and self.suit_soil_data:
-        #         pass
-        #         suitability = self.calculate_suitability_value()
-        #         current_cell.add_attribute("SU_SOIL_R", suitability)
-        #         current_cell.add_attribute("SU_SOIL_C", suitability)
-        #         current_cell.add_attribute("SU_SOIL_I", suitability)
-        #         current_cell.add_attribute("SU_SOIL_O", suitability)
-        #         suit_values.append(suitability)
-        #
-        #     # - 2.7.4d - SUITABILITY CALCULATION FOR GROUNDWATER DEPTH
-        #     if self.suit_gw_include and self.suit_gw_data:
-        #         pass
-        #         suitability = self.calculate_suitability_value()
-        #         current_cell.add_attribute("SU_GWATD_R", suitability)
-        #         current_cell.add_attribute("SU_GWATD_C", suitability)
-        #         current_cell.add_attribute("SU_GWATD_I", suitability)
-        #         current_cell.add_attribute("SU_GWATD_O", suitability)
-        #         suit_values.append(suitability)
-        #
-        #     # - 2.7.4e - SUITABILITY CALCULATION FOR CUSTOM CRITERION
-        #     if self.suit_custom_include and self.suit_custom_data:
-        #         pass
-        #         suitability = self.calculate_suitability_value()
-        #         current_cell.add_attribute("SU_CUSTO_R", suitability)
-        #         current_cell.add_attribute("SU_CUSTO_C", suitability)
-        #         current_cell.add_attribute("SU_CUSTO_I", suitability)
-        #         current_cell.add_attribute("SU_CUSTO_O", suitability)
-        #         suit_values.append(suitability)
-        #
-        #     # COMBINED SUITABILITY
-        #     combined_suitability = [0, 0, 0, 0]     # ["RES", "COM", "IND", "ORC"]
-        #     for luc_cat in range(len(suit_values)):     # Loop across land uses
-        #         for j in range(len(suit_values[luc_cat])):      # Loop across criteria
-        #             combined_suitability[luc_cat] += suit_values[luc_cat][j] * suit_weights[j]
-        #         map_suitability_values[luc_cat].append(combined_suitability)
-        #     current_cell.add_attribute("SUIT_RES", combined_suitability[0])
-        #     current_cell.add_attribute("SUIT_COM", combined_suitability[1])
-        #     current_cell.add_attribute("SUIT_IND", combined_suitability[2])
-        #     current_cell.add_attribute("SUIT_ORC", combined_suitability[3])
-        #
-        # # - 2.7.5 - NORMALIZE SUITABILITY VALUES
-        # norm_values = [0, 0, 0, 0]      # The maximums of each land use suitability for normalization purposes
-        # for luc_cat in range(len(map_suitability_values)):
-        #     norm_values[luc_cat] = max(map_suitability_values[luc_cat])
-        #
-        # for i in range(len(cellslist)):
-        #     cellslist[i].change_attribute("SUIT_RES", float(cellslist[i].get_attribute("SUIT_RES") / norm_values[0]))
-        #     cellslist[i].change_attribute("SUIT_COM", float(cellslist[i].get_attribute("SUIT_COM") / norm_values[1]))
-        #     cellslist[i].change_attribute("SUIT_IND", float(cellslist[i].get_attribute("SUIT_IND") / norm_values[2]))
-        #     cellslist[i].change_attribute("SUIT_ORC", float(cellslist[i].get_attribute("SUIT_ORC") / norm_values[3]))
-        # # ----- END OF SUITABILITY CALCULATIONS -----
+        aspect_value_scales = []        # CRITERIA 2 - ASPECT ---------------------------------------------
+        if self.suit_aspect_include and self.suit_elevation_data:   # If aspect is considered...
+            y_res = [self.aspect_res_north/100.0, self.aspect_res_east/100.0, self.aspect_res_south/100.0,
+                     self.aspect_res_west/100.0, self.aspect_res_north/100.0]
+            y_com = [self.aspect_com_north/100.0, self.aspect_com_east/100.0, self.aspect_com_south/100.0,
+                     self.aspect_com_west/100.0, self.aspect_com_north/100.0]
+            y_ind = [self.aspect_ind_north/100.0, self.aspect_ind_east/100.0, self.aspect_ind_south/100.0,
+                     self.aspect_ind_west/100.0, self.aspect_ind_north/100.0]
+            y_orc = [self.aspect_orc_north/100.0, self.aspect_orc_east/100.0, self.aspect_orc_south/100.0,
+                     self.aspect_orc_west/100.0, self.aspect_orc_north/100.0]
+            y_values = [y_res, y_com, y_ind, y_orc]
+            aspect_value_scales = []
+            for i in range(len(y_values)):
+                aspect_value_scales.append(ubmcda.ValueScale([0, 90, 180, 270, 360], y_values[i]))
+
+        soil_value_scales = []          # CRITERIA 3 - SOIL ---------------------------------------------
+        if self.suit_soil_include and self.suit_soil_data:      # If soil is considered...
+            y_res = [self.soil_res_sand/100.0, self.soil_res_sandclay/100.0, self.soil_res_medclay/100.0,
+                     self.soil_res_heavyclay/100.0]
+            y_com = [self.soil_com_sand/100.0, self.soil_com_sandclay/100.0, self.soil_com_medclay/100.0,
+                     self.soil_com_heavyclay/100.0]
+            y_ind = [self.soil_ind_sand/100.0, self.soil_ind_sandclay/100.0, self.soil_ind_medclay/100.0,
+                     self.soil_ind_heavyclay/100.0]
+            y_orc = [self.soil_orc_sand/100.0, self.soil_orc_sandclay/100.0, self.soil_orc_medclay/100.0,
+                     self.soil_orc_heavyclay/100.0]
+            y_values = [y_res, y_com, y_ind, y_orc]
+            soil_value_scales = []
+            for i in range(len(y_values)):
+                soil_value_scales.append(ubmcda.ValueScale(ubglobals.SOILCLASSES, y_values[i]))
+
+        gw_value_scales = []            # CRITERIA 4 - DEPTH TO GROUNDWATER -----------------------------
+        if self.suit_gw_include and self.suit_gw_data:      # If groundwater is considered...
+            xmin_values = [0, 0, 0, 0]      # 0m depth for all land uses = 0% suitable
+            xmax_values = [self.gw_res, self.gw_com, self.gw_ind, self.gw_orc]
+            if self.gw_midpoint:
+                mid_points = [self.gw_res_mid, self.gw_com_mid, self.gw_ind_mid, self.gw_orc_mid]
+            else:
+                mid_points = None
+            gw_value_scales = []
+            for i in range(len(xmin_values)):
+                if mid_points is None:
+                    vs = ubmcda.ValueScale([xmin_values[i], xmax_values[i]], [0.0, 1.0])  # Slope is reverse linear
+                else:
+                    vs = ubmcda.ValueScale([xmin_values[i], mid_points[i], xmax_values[i]],
+                                           [0.0, 0.5, 1.0])
+                gw_value_scales.append(vs)
+
+        # if self.suit_custom   # [ TO DO ] # CRITERIA CUSTOM ---------------------------------------------
+
+        # ASSIGN SUITABILITIES TO CELLS
+        print "Assigning Suitabilities to Cells"
+        map_max_suit = [0, 0, 0, 0]     # Holds the maximum suitability value across the map, updated when necessary
+        for i in range(len(cellslist)):
+            if cellslist[i].get_attribute("Status") == 0:
+                continue
+            # Looping across each cell
+            suit_values = [[], [], [], []]  # [ [RES], [COM], [IND], [ORC] ]
+            current_cell = cellslist[i]
+
+            # - 2.6.5a - SUITABILITY CALCULATION FOR SLOPE
+            if self.suit_slope_include and self.suit_elevation_data:    # If slope is considered...
+                cur_slope = float(current_cell.get_attribute("Slope_PCT")/100.0)
+                suitability = []
+                for j in range(len(slope_value_scales)):
+                    suitability.append(slope_value_scales[j].return_value_scale(cur_slope))
+
+                current_cell.add_attribute("SU_SLOPE_R", suitability[0])
+                current_cell.add_attribute("SU_SLOPE_C", suitability[1])
+                current_cell.add_attribute("SU_SLOPE_I", suitability[2])
+                current_cell.add_attribute("SU_SLOPE_O", suitability[3])
+
+                suit_values[0].append(suitability[0] * self.suit_slope_weight)
+                suit_values[1].append(suitability[1] * self.suit_slope_weight)
+                suit_values[2].append(suitability[2] * self.suit_slope_weight)
+                suit_values[3].append(suitability[3] * self.suit_slope_weight)
+
+            # - 2.6.5b - SUITABILITY CALCULATION FOR ASPECT
+            if self.suit_aspect_include and self.suit_elevation_data:
+                cur_aspect = float(current_cell.get_attribute("Aspect_DEG"))
+                suitability = []
+                for j in range(len(aspect_value_scales)):
+                    suitability.append(aspect_value_scales[j].return_value_scale(cur_aspect))
+                current_cell.add_attribute("SU_ASPCT_R", suitability[0])
+                current_cell.add_attribute("SU_ASPCT_C", suitability[1])
+                current_cell.add_attribute("SU_ASPCT_I", suitability[2])
+                current_cell.add_attribute("SU_ASPCT_O", suitability[3])
+
+                suit_values[0].append(suitability[0] * self.suit_aspect_weight)
+                suit_values[1].append(suitability[1] * self.suit_aspect_weight)
+                suit_values[2].append(suitability[2] * self.suit_aspect_weight)
+                suit_values[3].append(suitability[3] * self.suit_aspect_weight)
+
+            # - 2.6.5c - SUITABILITY CALCULATION FOR SOIL TYPE
+            if self.suit_soil_include and self.suit_soil_data:
+                cur_soil = current_cell.get_attribute("SoilClass")
+                suitability = []
+                for j in range(len(soil_value_scales)):
+                    suitability.append(soil_value_scales[j].return_value_scale(cur_soil, option="discrete"))
+                current_cell.add_attribute("SU_SOIL_R", suitability[0])
+                current_cell.add_attribute("SU_SOIL_C", suitability[1])
+                current_cell.add_attribute("SU_SOIL_I", suitability[2])
+                current_cell.add_attribute("SU_SOIL_O", suitability[3])
+
+                suit_values[0].append(suitability[0] * self.suit_soil_weight)
+                suit_values[1].append(suitability[1] * self.suit_soil_weight)
+                suit_values[2].append(suitability[2] * self.suit_soil_weight)
+                suit_values[3].append(suitability[3] * self.suit_soil_weight)
+
+            # - 2.6.5d - SUITABILITY CALCULATION FOR GROUNDWATER DEPTH
+            if self.suit_gw_include and self.suit_gw_data:
+                cur_gw = current_cell.get_attribute("DepthToGW")
+                suitability = []
+                for j in range(len(gw_value_scales)):
+                    suitability.append(gw_value_scales[j].return_value_scale(cur_gw))
+                current_cell.add_attribute("SU_GWATD_R", suitability[0])
+                current_cell.add_attribute("SU_GWATD_C", suitability[0])
+                current_cell.add_attribute("SU_GWATD_I", suitability[0])
+                current_cell.add_attribute("SU_GWATD_O", suitability[0])
+
+                suit_values[0].append(suitability[0] * self.suit_gw_weight)
+                suit_values[1].append(suitability[1] * self.suit_gw_weight)
+                suit_values[2].append(suitability[2] * self.suit_gw_weight)
+                suit_values[3].append(suitability[3] * self.suit_gw_weight)
+
+            # - 2.6.5e - SUITABILITY CALCULATION FOR CUSTOM CRITERION
+            if self.suit_custom_include and self.suit_custom_data:
+                pass    # [TO DO]
+
+            # COMBINED SUITABILITY
+            current_cell.add_attribute("SUIT_RES", sum(suit_values[0]))
+            current_cell.add_attribute("SUIT_COM", sum(suit_values[1]))
+            current_cell.add_attribute("SUIT_IND", sum(suit_values[2]))
+            current_cell.add_attribute("SUIT_ORC", sum(suit_values[3]))
+
+            for j in range(len(suit_values)):                                   # Take the larger suitability
+                map_max_suit[j] = max(map_max_suit[j], sum(suit_values[j]))     # value and replace in map_max_suit
+
+        # - 2.6.6 - NORMALIZE SUITABILITY VALUES
+        for i in range(len(cellslist)):
+            if cellslist[i].get_attribute("Status") == 0:
+                continue
+            cellslist[i].change_attribute("SUIT_RES", float(cellslist[i].get_attribute("SUIT_RES") / map_max_suit[0]))
+            cellslist[i].change_attribute("SUIT_COM", float(cellslist[i].get_attribute("SUIT_COM") / map_max_suit[1]))
+            cellslist[i].change_attribute("SUIT_IND", float(cellslist[i].get_attribute("SUIT_IND") / map_max_suit[2]))
+            cellslist[i].change_attribute("SUIT_ORC", float(cellslist[i].get_attribute("SUIT_ORC") / map_max_suit[3]))
+        # ----- END OF SUITABILITY CALCULATIONS -----
 
         # - 2.8 - SPATIAL RELATIONSHIPS - ZONING
         # Start by loading all relevant zoning maps. Preferably want to do this in one single loop
@@ -1456,33 +1574,155 @@ class UrbanDevelopment(UBModule):
         # - 2.8 - DETERMINE LARGE NEIGHBOURHOODS ---
         self.notify("Establishing Neighbourhoods")
         print ("Establishing Neighbourhoods")
-        # hashtable = [[], []]    # [Cell_Obj, NhD_Objs]
-        # nhd_rad = self.nhd_radius * 1000    # Convert to [m]
-        # sqdist = nhd_rad * nhd_rad
-        #
-        # for i in range(len(cellslist)):
-        #     cur_cell = cellslist[i]
-        #     hashtable[0].append(cur_cell)   # Add the current cell object to the hash_table
-        #     neighbours = []
-        #     neighbour_IDs = []
-        #     coords = (cur_cell.get_attribute("CentreX"), cur_cell.get_attribute("CentreY"))
-        #     for j in range(len(cellslist)):
-        #         dx = (cellslist[j].get_attribute("CentreX") - coords[0])
-        #         dy = (cellslist[j].get_attribute("CentreY") - coords[1])
-        #         if (dx * dx + dy * dy) <= sqdist:
-        #             # The Cell is part of the neighbourhood
-        #             neighbours.append(cellslist[j])
-        #             neighbour_IDs.append(cellslist[j].get_attribute("CellID"))
-        #     cur_cell.add_attribute("NHD_IDs", neighbour_IDs)
-        #     cur_cell.add_attribute("NHD_Num", len(neighbour_IDs))
-        #     hashtable[1].append(neighbours)
+        hashtable = [[], []]    # [Cell_Obj, NhD_Objs]
+        nhd_rad = self.nhd_radius * 1000    # Convert to [m]
+        sqdist = nhd_rad * nhd_rad
+        maxnhd = 0
+
+        for i in range(len(cellslist)):
+            cur_cell = cellslist[i]
+            hashtable[0].append(cur_cell)   # Add the current cell object to the hash_table
+            neighbours = []
+            neighbour_IDs = []
+            coords = (cur_cell.get_attribute("CentreX"), cur_cell.get_attribute("CentreY"))
+            for j in range(len(cellslist)):
+                dx = (cellslist[j].get_attribute("CentreX") - coords[0])
+                dy = (cellslist[j].get_attribute("CentreY") - coords[1])
+                if (dx * dx + dy * dy) <= sqdist:
+                    # The Cell is part of the neighbourhood
+                    neighbours.append(cellslist[j])
+                    neighbour_IDs.append(cellslist[j].get_attribute("CellID"))
+            cur_cell.add_attribute("NHD_IDs", neighbour_IDs)
+            cur_cell.add_attribute("NHD_Num", len(neighbour_IDs))
+            hashtable[1].append(neighbours)
+            if len(neighbours) > maxnhd:
+                maxnhd = len(neighbours)
 
         # - 2.9 - SPATIAL RELATIONSHIPS - NEIGHBOURHOOD EFFECT
         # We have the land use types defined, now we need to define the maps for the individual four active land uses
+        ifos = []       # Get the IF objects for the simulation
+        for i in range(len(self.function_ids)):
+            ifos.append(self.activesim.get_function_with_id(self.function_ids[i]))
+
+        for i in range(len(hashtable[0])):          # LOOP 1 - ACROSS CELLS
+            curcell = hashtable[0][i]               # Establish list of cells and list of neighbours
+            if curcell.get_attribute("Status") == 0:
+                continue
+            nhdcells = hashtable[1][i]
+            influence_Nij = [[], [], [], []]            # INFLU Attributes
+
+            for j in range(len(ifos)):              # LOOP 2 - ACROSS INFLUENCE FUNCTIONS
+                ifo = ifos[j]
+                tluc = ubglobals.UM_LUCNAMES[ubglobals.UM_LUCABBRS.index(ifo.target_landuse)]  # Target LUC for function
+                # Need to convert the land use to the full name, for comparison with neighbourhoood cells.
+
+                for k in range(len(nhdcells)):      # LOOP 3 - ACROSS CELL NEIGHBOURHOOD
+                    nc = nhdcells[k]
+                    ncluc = nc.get_attribute("Base_LUC")        # Base LUC  # NOTE LUC - MUST CHANGE THIS LATER TO GENERIC
+                    if ncluc in ['Light Industry', 'Heavy Industry'] and tluc == 'Industrial':
+                        dist = self.calculate_distance_between_cells(curcell, nc) / 1000.0  # [km]
+                        w = ifo.return_weight_by_distance(dist)  # Interpolate the weight based on distance
+                        influence_Nij[2].append(w)
+                        continue
+                    if ncluc != tluc:       # If the land uses are not equal and they're not industrial either...
+                        continue
+
+                    # Function Applies to the Neighbouring Cell, so calculate contribution to Nij
+                    dist = self.calculate_distance_between_cells(curcell, nc) / 1000.0    # [km]
+                    w = ifo.return_weight_by_distance(dist)     # Interpolate the weight based on distance
+                    if ifo.origin_landuse == "RES":     # Assign to correct land use based on origin of function
+                        influence_Nij[0].append(w)
+                    elif ifo.origin_landuse == "COM":
+                        influence_Nij[1].append(w)
+                    elif ifo.origin_landuse == "IND":
+                        influence_Nij[2].append(w)
+                    elif ifo.origin_landuse == "ORC":
+                        influence_Nij[3].append(w)
+
+            final_Nij = [0,0,0,0]
+            if self.edge_effects_method == "NA":        # NO ACCOUNTING - JUST CREATE THE FOUR ATTRIBUTES
+                final_Nij = [sum(influence_Nij[0]), sum(influence_Nij[1]), sum(influence_Nij[2]), sum(influence_Nij[3])]
+            elif self.edge_effects_method == "AVG":     # AVERAGING - DIVIDE BY THE LENGTH OF VALID CELLS IF THE
+                final_Nij = [0,0,0,0]                   # LIST IS NON-ZERO
+                for i in range(len(final_Nij)):
+                    if len(influence_Nij[i]) == 0:
+                        final_Nij[i] = 0
+                    else:
+                        final_Nij[i] = sum(influence_Nij[i])/len(influence_Nij[i])
+            elif self.edge_effects_method == "PP" or self.edge_effects_method == "PPAVG":      # PROPORTION METHODS
+                if len(nhdcells) != maxnhd:     # The Block is near the edge, correct for this
+                    final_Nij = [0,0,0,0]
+                    scaling_factor = maxnhd / len(nhdcells)     # Calculate scaling factor
+                    for i in range(len(final_Nij)):             # Modify the data
+                        if self.edge_effects_method == "PP":
+                            final_Nij[i] = sum(influence_Nij[i]) * scaling_factor
+                        elif len(influence_Nij[i]) == 0:
+                            final_Nij[i] = 0
+                        else:
+                            final_Nij[i] = sum(influence_Nij[i]) / len(influence_Nij[i]) * scaling_factor
+                elif self.edge_effects_method == "PPAVG":       # If not an edge block, average anyway
+                    final_Nij = [0, 0, 0, 0]
+                    for i in range(len(final_Nij)):
+                        if len(influence_Nij[i]) == 0:
+                            final_Nij[i] = 0
+                        else:
+                            final_Nij[i] = sum(influence_Nij[i])/len(influence_Nij[i])
+                else:       # IF not an edge cell and no averaging required, just create the straightforward Nij.
+                    final_Nij = [sum(influence_Nij[0]), sum(influence_Nij[1]), sum(influence_Nij[2]),
+                                 sum(influence_Nij[3])]
+
+            curcell.add_attribute("INFLU_RES", final_Nij[0])      # Add the four attributes
+            curcell.add_attribute("INFLU_COM", final_Nij[1])
+            curcell.add_attribute("INFLU_IND", final_Nij[2])
+            curcell.add_attribute("INFLU_ORC", final_Nij[3])
+
+        # - 2.10 - STOCHASTIC PERTURBATION AND TRANSITIONS POTENTIAL ACROSS MAP
+        for i in range(len(cellslist)):     # Add one value of R to each cell
+            if cellslist[i].get_attribute("Status") == 0:
+                continue
+            curcell = cellslist[i]
+            curcell.add_attribute("STOCH_RES", 1 + (-1*math.log(rand.random()))**self.alpha)  # Stochastic perturbation
+            curcell.add_attribute("STOCH_COM", 1 + (-1 * math.log(rand.random())) ** self.alpha)
+            curcell.add_attribute("STOCH_IND", 1 + (-1 * math.log(rand.random())) ** self.alpha)
+            curcell.add_attribute("STOCH_ORC", 1 + (-1 * math.log(rand.random())) ** self.alpha)
+
+            # CALCULATE Transition potential V for the four land uses = r S A Z N
+            activeLUC = ubglobals.ACTIVELANDUSEABBR
+            for j in activeLUC:
+                v = self.calculate_transition_potential(curcell.get_attribute("STOCH_"+j),
+                                                        curcell.get_attribute("SUIT_"+j),
+                                                        curcell.get_attribute("ACCESS_"+j),
+                                                        curcell.get_attribute("INFLU_"+j),
+                                                        curcell.get_attribute("ZONE_"+j))
+                curcell.add_attribute("VPOT_"+j, v)
+
+            # GET THE HIGHEST RANKED POTENTIAL LAND USE
+            potentials = [curcell.get_attribute("VPOT_RES"), curcell.get_attribute("VPOT_COM"),
+                          curcell.get_attribute("VPOT_IND"), curcell.get_attribute("VPOT_ORC")]
+            curcell.add_attribute("VPOT_LUC", activeLUC[potentials.index(max(potentials))])
+            curcell.add_attribute("VPOT_MAX", max(potentials))
+
+        # - 2.11 - PERFORM THE LAND USE ASSIGNMENT
+        # [ CALCULATE RES DEMAND ]
 
         self.notify("Current End of Module")
         print ("Current end of module")
         return True
+
+    def calculate_transition_potential(self, r, s, a, n, z):
+        """Calculates the transition potential based on the five input parameters Zoning (z), Neighbourhood effect (N),
+        Suitability (s), Accessibility (a) and the stochastic perturbation (r)."""
+        if n > 0:
+            return r * s * a * n * z
+        else:
+            return r * (2 - s * a * z) * n
+
+    def calculate_distance_between_cells(self, cellA, cellB):
+        """Calculates the Euclidean Distance between two cells, for the sake of neighbourhood effect. Returns
+        distance in [m]."""
+        dx2 = pow((cellA.get_attribute("CentreX") - cellB.get_attribute("CentreX")), 2)
+        dy2 = pow((cellA.get_attribute("CentreY") - cellB.get_attribute("CentreY")), 2)
+        return math.sqrt(dx2 + dy2)
 
     def infill_nodata_values(self, nodata_cells, att_name, infill_method, nodatavalue):
         """Attempts to infill cells with no-data values of a given attribute based on the attributes of its
@@ -1526,10 +1766,31 @@ class UrbanDevelopment(UBModule):
                 pass    # Should never get here...
         return True
 
-    def calculate_suitability_value(self):
-        suitability = 0
-        pass    # [TO DO]
-        return suitability
+    def calculate_cell_slope_and_aspect(self, cellslist):
+        """Evaluates the slope and aspect of each cell based on the available elevation data. The calculation writes
+        attributes "Slope" and "Aspect" to the cell."""
+        cs = self.cellsize
+        for i in range(len(cellslist)):
+            if cellslist[i].get_attribute("Status") == 0:
+                continue
+            c = cellslist[i]    # Current cell
+            c_elev = c.get_attribute("Elevation")
+            c_nhd = [c.get_attribute("NHD_N"), c.get_attribute("NHD_NE"), c.get_attribute("NHD_E"),
+                     c.get_attribute("NHD_SE"), c.get_attribute("NHD_S"), c.get_attribute("NHD_SW"),
+                     c.get_attribute("NHD_W"), c.get_attribute("NHD_NW")]
+            c_nhdZ = [-9999, -9999, -9999, -9999, -9999, -9999, -9999, -9999]
+            for j in range(len(c_nhd)):
+                if c_nhd[j] == 0:
+                    c_nhdZ[j] = c_elev
+                else:
+                    c_nhdZ[j] = self.scenario.get_asset_with_name("CellID"+str(c_nhd[j])).get_attribute("Elevation")
+            slope_rad, slope_deg = ubmethods.calculate_slope(c_elev, c_nhdZ, cs, cs, -9999)
+            c.add_attribute("Slope_PCT", round(slope_rad * 100, 2))
+            c.add_attribute("Slope_DEG", round(slope_deg * 2))
+
+            aspect_deg = ubmethods.calculate_aspect(c_elev, c_nhdZ, -9999)
+            c.add_attribute("Aspect_DEG", round(aspect_deg, 0))
+        return True
 
     def get_zoning_states(self, cell):
         """Gets a 4-element list of booleans denoting the zoning states of the four active land uses RES, COM, IND, ORC
@@ -1838,4 +2099,3 @@ class UrbanDevelopment(UBModule):
         else:
             # Block not within boundary, do not return anything
             return None
-

@@ -98,6 +98,62 @@ def autosize_blocks(width, height):
     return blocksize        # because of data resolution, etc.
 
 
+def calculate_slope(z_central, z_neighbours, L_x, L_y, nodatavalue):
+    """Calculates the slope based on the ESRI ArcMap Methodology using inputs of the central cell
+    and the elevation of its neighbours. Returns the slope in radians and degrees
+
+    :param z_central: elevation of the central cell (in units consistent with the other inputs [e.g. m]
+    :param z_neighbours: elevation of neighbours, list() in cardinal directions [N, NE, E, SE, S, SW, W, NW]
+    :param L_x: unit length in the x-direction
+    :param L_y: unit length in the y-direction
+    :param nodatavalue: the nodatavalue if data is not present.
+    :return: slope_radians, slope_deg
+    """
+    # Check if neighbour values are
+    if z_central == nodatavalue:
+        return nodatavalue, nodatavalue      # No data, so simply return no-datavalue
+
+    # Replace all no-data values in the z_neighbours with the z_central cell
+    z = [z_central if z_neighbours[i] == nodatavalue else z_neighbours[i] for i in range(len(z_neighbours))]
+
+    # Calculate slope z is mapped as [N, NE, E, SE, S, SW, W, NW]
+    dz_dx = ((z[1] + 2*z[2] + z[3]) - (z[5] + 2*z[6] + z[7]))/(8 * L_x)     #[NE, 2E, SE] - [SW, W, NW]
+    dz_dy = ((z[7] + 2 * z[0] + z[1]) - (z[3] + 2 * z[4] + z[5])) / (8 * L_y)   #[NW, 2N, NE] - [SW, 2S, SE]
+    slope_rad = math.sqrt(math.pow(dz_dx, 2) + math.pow(dz_dy, 2))
+    slope_deg = slope_rad * 57.29578        # 57.29578 = 180 / pi()
+    return slope_rad, slope_deg
+
+
+def calculate_aspect(z_central, z_neighbours, nodatavalue):
+    """Calculates the aspect according to ESRI ArcMap algorithm of a neighbourhood of nine cells. Returns the aspect
+    as a degree on the compass rose with North being 0/360 deg and moving clockwise.
+
+    :param z_central: elevation of the central cell (in units consistent with the other inputs [e.g. m]
+    :param z_neighbours: elevation of neighbours, list() in cardinal directions [N, NE, E, SE, S, SW, W, NW]
+    :param nodatavalue: the nodatavalue if data is not present.
+    :return: aspect_deg - the aspect in degrees measured from North Being 0 degrees clockwise
+    """
+    # Check if neighbour values are
+    if z_central == nodatavalue:
+        return nodatavalue, nodatavalue  # No data, so simply return no-datavalue
+
+    # Replace all no-data values in the z_neighbours with the z_central cell
+    z = [z_central if z_neighbours[i] == nodatavalue else z_neighbours[i] for i in range(len(z_neighbours))]
+
+    # Calculate aspect z is mapped as [N, NE, E, SE, S, SW, W, NW]
+    dz_dx = ((z[1] + 2 * z[2] + z[3]) - (z[5] + 2 * z[6] + z[7])) / 8  # [NE, 2E, SE] - [SW, W, NW]
+    dz_dy = ((z[7] + 2 * z[0] + z[1]) - (z[3] + 2 * z[4] + z[5])) / 8  # [NW, 2N, NE] - [SW, 2S, SE]
+    aspect = 57.29578 * math.atan2(dz_dy, -dz_dx)
+
+    if aspect < 0:      # CONVERT TO COMPASS ROSE
+        aspect_deg = 90.0 - aspect
+    elif aspect > 90:
+        aspect_deg = 360.0 - aspect + 90.0
+    else:
+        aspect_deg = 90.0 - aspect
+    return aspect_deg
+
+
 def calculate_frequency_of_lu_classes(lucdatamatrix):
     """ Tallies the frequency of land use classes within the given Block/Hex. Returns the 'Activity'
     attribute and a list of LUC frequencies.

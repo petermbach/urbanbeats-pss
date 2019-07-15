@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CalibrationGUI_Dialog</class>
+ <widget class="QDialog" name="CalibrationGUI_Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1095</width>
+    <height>686</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1024</width>
+    <height>680</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>UrbanBEATS Calibration Viewer</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QWidget" name="title_widget" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>50</height>
+      </size>
+     </property>
+     <widget class="Line" name="line">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>40</y>
+        <width>1031</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>573</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="windowtitle">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>5</y>
+        <width>241</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Model Calibration Viewer</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="windowLogo">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>50</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap resource="../graphics/ubeats.qrc">:/icons/Actions-office-chart-area-icon.png</pixmap>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="windowsubtitle">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>25</y>
+        <width>561</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Load or generate a real and/or hypothetical data set to calibrate UrbanBEATS' outputs against.</string>
+      </property>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="main_widget" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QWidget" name="calibrationSettings" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>250</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <widget class="QComboBox" name="set_param_combo">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>50</y>
+           <width>231</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <item>
+          <property name="text">
+           <string>&lt;select parameter to calibrate&gt;</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Impervious Area</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Residential Allotment Count</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Residential House Count</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Total Residential Roof Area</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Water Demand</string>
+          </property>
+         </item>
+        </widget>
+        <widget class="QLabel" name="set_param_lbl">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>191</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Select Parameter to Calibrate:</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="set_totvalue_box">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>165</y>
+           <width>121</width>
+           <height>20</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QTableWidget" name="set_data_table">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>220</y>
+           <width>231</width>
+           <height>141</height>
+          </rect>
+         </property>
+         <property name="gridStyle">
+          <enum>Qt::SolidLine</enum>
+         </property>
+         <property name="sortingEnabled">
+          <bool>false</bool>
+         </property>
+         <attribute name="horizontalHeaderVisible">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>BlockID</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Observed</string>
+          </property>
+         </column>
+        </widget>
+        <widget class="QLabel" name="set_type_lbl">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>85</y>
+           <width>191</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Type of Calibration:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="set_totvalue_units">
+         <property name="geometry">
+          <rect>
+           <x>150</x>
+           <y>165</y>
+           <width>91</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>units: [%]</string>
+         </property>
+        </widget>
+        <widget class="QRadioButton" name="set_typetotal_radio">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>110</y>
+           <width>91</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Total Value</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="set_totvalue_lbl">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>140</y>
+           <width>191</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Enter Total Value:</string>
+         </property>
+        </widget>
+        <widget class="QRadioButton" name="set_typeblock_radio">
+         <property name="geometry">
+          <rect>
+           <x>130</x>
+           <y>110</y>
+           <width>91</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Block-by-block</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="set_data_lbl">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>195</y>
+           <width>191</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>...or Enter Calibration Data:</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="set_data_reset">
+         <property name="geometry">
+          <rect>
+           <x>129</x>
+           <y>370</y>
+           <width>111</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Reset</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="set_data_load">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>370</y>
+           <width>111</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Load...</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="set_eval_lbl">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>460</y>
+           <width>191</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Select Evaluation Criteria:</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="set_eval_nash">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>485</y>
+           <width>161</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Nash-Sutcliffe Coefficient</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="set_eval_rmse">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>505</y>
+           <width>161</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Root Mean Squared Error</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="set_eval_error">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>525</y>
+           <width>161</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Relative Errors</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="set_gen_button">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>425</y>
+           <width>71</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Generate</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="set_gen_lbl">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>400</y>
+           <width>191</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>...or Generate a Calibration Data Set:</string>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="set_gen_combo">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>425</y>
+           <width>151</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <item>
+          <property name="text">
+           <string>MW MUSIC Guide</string>
+          </property>
+         </item>
+        </widget>
+        <widget class="QLabel" name="calibset_title">
+         <property name="geometry">
+          <rect>
+           <x>9</x>
+           <y>9</y>
+           <width>191</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Calibration Settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="calibrationResults" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>250</width>
+          <height>0</height>
+         </size>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QLabel" name="caliboutput_title">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Calibration Outputs&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPlainTextEdit" name="out_box">
+           <property name="plainText">
+            <string>Results:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="plottype_lbl">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Select Plot Type:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="plottype_combo">
+           <item>
+            <property name="text">
+             <string>Modelled vs. Observed</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Residual Plot</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Error Distribution</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="report_lbl">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Export Calibration Results&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="report_includeparams_check">
+           <property name="text">
+            <string>Include Model Parameters in Report</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="out_export">
+           <property name="text">
+            <string>Export Report...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWebView" name="calibrationView">
+        <property name="minimumSize">
+         <size>
+          <width>550</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>500</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="url">
+         <url>
+          <string>about:blank</string>
+         </url>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="footer" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>38</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>38</height>
+      </size>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="remarks">
+        <property name="minimumSize">
+         <size>
+          <width>900</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;UrbanBEATS Planning Support System v1.0 - (C) 2018 Peter M. Bach&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="closeButton">
+        <property name="minimumSize">
+         <size>
+          <width>82</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>82</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="whatsThis">
+         <string/>
+        </property>
+        <property name="text">
+         <string>Close</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+  <zorder>footer</zorder>
+  <zorder>main_widget</zorder>
+  <zorder>title_widget</zorder>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QWebView</class>
+   <extends>QWidget</extends>
+   <header>QtWebKit/QWebView</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../graphics/ubeats.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>closeButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CalibrationGUI_Dialog</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>964</x>
+     <y>571</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
