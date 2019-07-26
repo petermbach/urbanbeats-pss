@@ -347,6 +347,18 @@ def calculate_offsets(map_input, global_extents):
     offset = [int(offset[0]/cellsize), int(offset[1]/cellsize)]
     return offset
 
+def adjust_position_by_offset(origin_position, offset, csc):
+    """Adjusts the starting position index based on a given offset. For example, a population input map offset by
+    an x or y value will not align correctly with a boundary map. This function, determines where in the raster to
+    look for."""
+    if (origin_position - offset) < 0:
+        csc_adj = csc + origin_position
+        start_position = 0
+    else:
+        csc_adj = csc
+        start_position = origin_position - offset
+    return start_position, csc_adj
+
 
 def get_epsg(projcs, rootpath):
     """Uses ancillary/epsg.cfg to retrieve the EPSG code for a given spatial reference, if the coordinate
