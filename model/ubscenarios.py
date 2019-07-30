@@ -68,9 +68,9 @@ class UrbanBeatsScenario(threading.Thread):
     def __init__(self, simulation, datalibrary, projectlog):
         threading.Thread.__init__(self)
         self.__observers = []
-        self.simulation = simulation
-        self.datalibrary = datalibrary
-        self.projectlog = projectlog
+        self.simulation = simulation        # The CORE (UrbanBEATSSim)
+        self.datalibrary = datalibrary      # The active data library instance
+        self.projectlog = projectlog        # The active log
         self.projectpath = simulation.get_project_path()
         self.runstate = False
 
@@ -102,7 +102,7 @@ class UrbanBeatsScenario(threading.Thread):
 
         self.__dt_array = []
 
-        self.__assets = {}      # The collection of model assets that are stored for later retrieval, these
+        self.__assets = {}      # The collection of model assets that are stored for later retrieval
         self.__global_edge_list = []
         self.__global_point_list = []
         # can include: UBComponents(), Input Data, etc.

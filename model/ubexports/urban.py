@@ -72,7 +72,7 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     fielddefmatrix.append(ogr.FieldDefn("Base_POP", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("Base_EMP", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("LUC_Type", ogr.OFTString))
-    # fielddefmatrix.append(ogr.FieldDefn("NHD_Num", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("NHD_Num", ogr.OFTInteger))
 
     # ACCESSIBILIY INDICATORS
     if map_attr.get_attribute("ACCESS_ROAD"):
@@ -145,7 +145,7 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     fielddefmatrix.append(ogr.FieldDefn("NHD_W", ogr.OFTInteger))
     fielddefmatrix.append(ogr.FieldDefn("NHD_NW", ogr.OFTInteger))
     # fielddefmatrix.append(ogr.FieldDefn("NHAdjacent", ogr.OFTString))
-
+    #
     # SUIITABILITY INDICATORS
     if map_attr.get_attribute("SUIT_ELEV"):
         fielddefmatrix.append(ogr.FieldDefn("Elevation", ogr.OFTReal))
@@ -252,7 +252,7 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("Base_POP", int(currentAttList.get_attribute("Base_POP")))
         feature.SetField("Base_EMP", int(currentAttList.get_attribute("Base_EMP")))
         feature.SetField("LUC_Type", str(currentAttList.get_attribute("LUC_Type")))
-        # feature.SetField("NHD_Num", int(currentAttList.get_attribute("NHD_Num")))
+        feature.SetField("NHD_Num", int(currentAttList.get_attribute("NHD_Num")))
 
         if map_attr.get_attribute("ACCESS_ROAD"):
             feature.SetField("DIST_ROAD", float(currentAttList.get_attribute("ACC_ROAD_DIST")))
@@ -326,9 +326,9 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
 
         if map_attr.get_attribute("SUIT_ELEV"):
             feature.SetField("Elevation", float(currentAttList.get_attribute("Elevation")))
-            feature.SetField("Slope_PCT", float(currentAttList.get_attribute("Slope_PCT")))
-            feature.SetField("Slope_DEG", float(currentAttList.get_attribute("Slope_DEG")))
-            feature.SetField("Aspect_DEG", float(currentAttList.get_attribute("Aspect_DEG")))
+            # feature.SetField("Slope_PCT", float(currentAttList.get_attribute("Slope_PCT")))
+            # feature.SetField("Slope_DEG", float(currentAttList.get_attribute("Slope_DEG")))
+            # feature.SetField("Aspect_DEG", float(currentAttList.get_attribute("Aspect_DEG")))
         if map_attr.get_attribute("SUIT_SOIL"):
             feature.SetField("SoilClass", str(currentAttList.get_attribute("SoilClass")))
         if map_attr.get_attribute("SUIT_GW"):
@@ -376,7 +376,7 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("VPOT_ORC", float(currentAttList.get_attribute("VPOT_ORC")))
         feature.SetField("VPOT_LUC", str(currentAttList.get_attribute("VPOT_LUC")))
         feature.SetField("VPOT_MAX", float(currentAttList.get_attribute("VPOT_MAX")))
-        
+
         for j in range(end - start + 1):
             feature.SetField("LUC_" + str(int(start + j)),
                              str(currentAttList.get_attribute("LUC_" + str(int(start + j)))))

@@ -847,8 +847,10 @@ class UrbanDevelopment(UBModule):
             for i in range(len(cellslist)):
                 current_cell = cellslist[i]
                 col_start = int(current_cell.get_attribute("OriginX") / luc_res)
+                col_start_adj, cscx = ubspatial.adjust_position_by_offset(col_start, landuse_offset[0], csc)
                 row_start = int(current_cell.get_attribute("OriginY") / luc_res)
-                landusedatamatrix = landuseraster.get_data_square(col_start, row_start, csc, csc)
+                row_start_adj, cscy = ubspatial.adjust_position_by_offset(row_start, landuse_offset[1], csc)
+                landusedatamatrix = landuseraster.get_data_square(col_start_adj, row_start_adj, cscx, cscy)
 
                 if csc > 1.0:       # Then the cell size greater than the input raster resolution
                     landuse_cat, activity = self.determine_dominant_landusecat(landusedatamatrix)
@@ -902,8 +904,10 @@ class UrbanDevelopment(UBModule):
             for i in range(len(cellslist)):
                 current_cell = cellslist[i]
                 col_start = int(current_cell.get_attribute("OriginX") / pop_res)
+                col_start_adj, cscx = ubspatial.adjust_position_by_offset(col_start, population_offset[0], csc)
                 row_start = int(current_cell.get_attribute("OriginY") / pop_res)
-                popdatamatrix = populationraster.get_data_square(col_start, row_start, csc, csc)
+                row_start_adj, cscy = ubspatial.adjust_position_by_offset(row_start, population_offset[1], csc)
+                popdatamatrix = populationraster.get_data_square(col_start_adj, row_start_adj, cscx, cscy)
 
                 popfactor = 1.0
                 if pop_dref.get_metadata("sub") == "Density":
@@ -916,7 +920,7 @@ class UrbanDevelopment(UBModule):
                     pop_values[pop_values == populationraster.get_nodatavalue()] = 0
                     total_population = float(sum(pop_values) * popfactor)
                     map_population += total_population
-                    current_cell.add_attribute("Base_POP", int(total_population))
+                    current_cell.add_attribute("Base_POP", int(round(total_population, 0)))
                 else:
                     # The cell is either the same size of bigger that of the current cell
                     if pop_dref.get_metadata("sub") == "Density":
@@ -1178,8 +1182,10 @@ class UrbanDevelopment(UBModule):
             # SLOPE AND ASPECT - MAP ELEVATION DATA TO THE CELLS
             if (self.suit_slope_include or self.suit_aspect_include) and self.suit_elevation_data:
                 col_start = int(current_cell.get_attribute("OriginX") / elev_res)
+                col_start_adj, cscx = ubspatial.adjust_position_by_offset(col_start, elev_offset[0], elev_csc)
                 row_start = int(current_cell.get_attribute("OriginY") / elev_res)
-                elevdatamatrix = elevraster.get_data_square(col_start, row_start, elev_csc, elev_csc)
+                row_start_adj, cscy = ubspatial.adjust_position_by_offset(row_start, elev_offset[1], elev_csc)
+                elevdatamatrix = elevraster.get_data_square(col_start_adj, row_start_adj, cscx, cscy)
 
                 # TRANSFER ELEVATION TO CELLS
                 if elev_csc > 1.0:   # Then the cell size greater than the input raster resolution
@@ -1205,8 +1211,10 @@ class UrbanDevelopment(UBModule):
             # SOIL CLASSIFICATION - MAP SOIL CLASSES TO THE CELLS
             if self.suit_soil_include:      # SOIL CLASSES: 1=sand, 2=sandy clay, 3=medium clay, 4=heavy clay
                 col_start = int(current_cell.get_attribute("OriginX") / soil_res)
+                col_start_adj, cscx = ubspatial.adjust_position_by_offset(col_start, soil_offset[0], soil_csc)
                 row_start = int(current_cell.get_attribute("OriginY") / soil_res)
-                soildatamatrix = soilraster.get_data_square(col_start, row_start, soil_csc, soil_csc)
+                row_start_adj, cscy = ubspatial.adjust_position_by_offset(row_start, soil_offset[1], soil_csc)
+                soildatamatrix = soilraster.get_data_square(col_start_adj, row_start_adj, cscx, cscy)
 
                 # TRANSFER ELEVATION TO CELLS
                 if soil_csc > 1.0:      # Cell > raster - need to find dominant class
@@ -1226,8 +1234,10 @@ class UrbanDevelopment(UBModule):
             # GROUNDWATER DEPTH - MAP GROUNDWATER DEPTHS TO THE CELLS
             if self.suit_gw_include:
                 col_start = int(current_cell.get_attribute("OriginX") / gw_res)
+                col_start_adj, cscx = ubspatial.adjust_position_by_offset(col_start, gw_offset[0], gw_csc)
                 row_start = int(current_cell.get_attribute("OriginY") / gw_res)
-                gwdatamatrix = gwraster.get_data_square(col_start, row_start, gw_csc, gw_csc)
+                row_start_adj, cscy = ubspatial.adjust_position_by_offset(row_start, gw_offset[1], gw_csc)
+                gwdatamatrix = gwraster.get_data_square(col_start_adj, row_start_adj, cscx, cscy)
 
                 # TRANSFER GROUNDWATER TO CELLS
                 if gw_csc > 1.0:
@@ -1258,7 +1268,7 @@ class UrbanDevelopment(UBModule):
         print("Infilling missing values...")
         if (self.suit_slope_include or self.suit_aspect_include) and self.suit_elevation_data:
             self.infill_nodata_values(nodata_cells_elev, "Elevation", "Average", elevraster.get_nodatavalue())
-            # self.calculate_cell_slope_and_aspect(urbancells)
+            self.calculate_cell_slope_and_aspect(urbancells)
         if self.suit_soil_include and self.suit_soil_data:
             self.infill_nodata_values(nodata_cells_soil, "SoilClass", "Categorical", "Undefined")
         if self.suit_gw_include and self.suit_gw_data:
@@ -2270,7 +2280,6 @@ class UrbanDevelopment(UBModule):
             c.add_attribute("Slope_DEG", round(slope_deg * 2))
 
             aspect_deg = ubmethods.calculate_aspect(c_elev, c_nhdZ, -9999)
-            print aspect_deg
             c.add_attribute("Aspect_DEG", round(float(aspect_deg), 0))
         return True
 
