@@ -597,10 +597,7 @@ class UrbanDevelopment(UBModule):
         self.edge_effects_method = "NA"     # NA = no accounting, AVG = average, PP = proportioning, PPAVG=both
 
         # --- TAB 3 - URBAN DYNAMICS ---
-        # Stochastic Perturbation
-        self.create_parameter("alpha", DOUBLE, "stochastic perturbation factor alpha")
-        self.alpha = 0.8        # Should generally vary between 0 and 2
-
+        # --- TAB 3.1 - External Drivers ---
         # Population Growth
         self.create_parameter("pop_growthmethod", STRING, "method of population change calculation")
         self.create_parameter("pop_birthrate", DOUBLE, "birth rate")
@@ -609,9 +606,9 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("pop_deathfunction", STRING, "the death function to be used")
         self.create_parameter("pop_migration", DOUBLE, "migration rate")
         self.create_parameter("pop_migrationfunction", STRING, "migration function id to be used")
-        self.pop_growthmethod = "C"     # C = CONSTANT, F = FUNCTION
-        self.pop_birthrate = 1.0        # units [%]
-        self.pop_birthfunction = ""     # Select from function browser
+        self.pop_growthmethod = "C"  # C = CONSTANT, F = FUNCTION
+        self.pop_birthrate = 1.0  # units [%]
+        self.pop_birthfunction = ""  # Select from function browser
         self.pop_deathrate = 1.0
         self.pop_deathfunction = "L"
         self.pop_migration = 1.0
@@ -623,11 +620,30 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("employ_ind_roc", DOUBLE, "rate of change in industrial employment")
         self.create_parameter("employ_orc_rocbool", BOOL, "use separate rate of change for mixed development?")
         self.create_parameter("employ_orc_roc", DOUBLE, "rate of change in mixed development employment")
-        self.employ_com_roc = 0.5       # units [%]
+        self.employ_com_roc = 0.5  # units [%]
         self.employ_ind_rocbool = 0
         self.employ_ind_roc = 0.5
         self.employ_orc_rocbool = 0
         self.employ_orc_roc = 0.5
+
+        # --- TAB 3.2 - Internal Drivers ---
+        # STOCHASTIC PERTURBATION
+        self.create_parameter("alpha", DOUBLE, "stochastic perturbation factor alpha")
+        self.alpha = 0.8        # Should generally vary between 0 and 2
+
+        # RECALCULATION RULES
+        self.create_parameter("recalc_nhd", BOOL, "Recalculate the neighbourhood effect every time step?")
+        self.create_parameter("recalc_stoch", BOOL, "Regenerate the stochastic perturbation every time step?")
+        self.recalc_nhd = 0
+        self.recalc_stoch = 0
+
+        # LAND USE POTENTIAL AND ALLOCATION RULES
+        self.create_parameter("vpot_eqn", STRING, "Form of the land use potential equation to use in the model")
+        self.create_parameter("vpot_zeropot", BOOL, "True: Do not allocate on zero potential land")
+        self.create_parameter("vpot_negpot", BOOL, "True: Do not allocate on negative potential land")
+        self.vpot_eqn = "S"     # S = Standard, M = Modified
+        self.vpot_zeropot = 1
+        self.vpot_negpot = 1
 
         # INERTIA AND SENSITIVITIES OF ACTIVE LUC CLASSES
         self.create_parameter("res_inertia", DOUBLE, "inertia to change for residential land use")
@@ -665,6 +681,28 @@ class UrbanDevelopment(UBModule):
         self.orc_delta = 0.8
         self.orc_lambda = 0.8
         self.orc_maxdensity = 30.0
+
+        self.create_parameter("pg_penalise", BOOL, "Penalise redevelopment of parks?")
+        self.create_parameter("pg_inertia", DOUBLE, "Negative inertia for redevelopment of parks")
+        self.create_parameter("pg_provision", BOOL, "Minimum required provision of parkland per residential")
+        self.create_parameter("pg_proportion", DOUBLE, "Proportion of parkland required per residential")
+        self.create_parameter("pg_current", BOOL, "Use the current proportions of park space provision")
+        self.pg_penalise = 1
+        self.pg_inertia = -500
+        self.pg_provision = 1
+        self.pg_proportion = 0.2
+        self.pg_current = 1
+
+        self.create_parameter("ref_penalise", BOOL, "Penalise redevelopment of reserves?")
+        self.create_parameter("ref_inertia", DOUBLE, "Negative inertia for redevelopment of reserves")
+        self.create_parameter("ref_provision", BOOL, "Minimum required provision of reserves per built-up area")
+        self.create_parameter("ref_proportion", DOUBLE, "Proportion of reserves required per built-up area")
+        self.create_parameter("ref_current", BOOL, "Use the current proportions of reserve space provision")
+        self.ref_penalise = 1
+        self.ref_inertia = -500
+        self.ref_provision = 1
+        self.ref_proportion = 0.2
+        self.ref_current = 1
 
         # ADVANCED PARAMETERS
         self.global_offsets = None
