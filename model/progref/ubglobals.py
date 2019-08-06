@@ -126,6 +126,7 @@ UM_LUCNAMES = ['Residential', 'Commercial', 'Offices Res Mix', 'Industrial', 'Ci
 PLANTYPES = ["Suburbia", "European", "Megacity"]
 PLANPARAMSET = ["Custom", "Melbourne"]
 UNDEVSTATES = ['GF', 'BF', 'AG']
+VPOT = ["S", "M"]       # Forms of the land use potential equation S = standard, M = modified
 
 COMPASS = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]      # Compass directions, also neighbourhoods
 

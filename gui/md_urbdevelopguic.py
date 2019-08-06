@@ -284,6 +284,12 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.pop_method_rate.clicked.connect(self.enable_disable_dynamics_tab_widgets)
         self.ui.employ_rate_ind_check.clicked.connect(self.enable_disable_dynamics_tab_widgets)
         self.ui.employ_rate_orc_check.clicked.connect(self.enable_disable_dynamics_tab_widgets)
+        self.ui.pg_penalty_check.clicked.connect(self.enable_disable_dynamics_tab_widgets)
+        self.ui.pg_provision_check.clicked.connect(self.enable_disable_dynamics_tab_widgets)
+        self.ui.pg_provision_current_check.clicked.connect(self.enable_disable_dynamics_tab_widgets)
+        self.ui.ref_penalty_check.clicked.connect(self.enable_disable_dynamics_tab_widgets)
+        self.ui.ref_provision_check.clicked.connect(self.enable_disable_dynamics_tab_widgets)
+        self.ui.ref_provision_current_check.clicked.connect(self.enable_disable_dynamics_tab_widgets)
 
         # FOOTER
         self.ui.buttonBox.accepted.connect(self.save_values)
@@ -499,6 +505,16 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.input_migration_function.setEnabled(self.ui.pop_method_function.isChecked())
         self.ui.employ_rate_ind_spin.setEnabled(self.ui.employ_rate_ind_check.isChecked())
         self.ui.employ_rate_orc_spin.setEnabled(self.ui.employ_rate_orc_check.isChecked())
+
+        self.ui.pg_penalty_inertia.setEnabled(self.ui.pg_penalty_check.isChecked())
+        self.ui.pg_provision_spin.setEnabled(self.ui.pg_provision_current_check.isChecked())
+        self.ui.pg_provision_spin.setEnabled(self.ui.pg_provision_check.isChecked())
+        self.ui.pg_provision_current_check.setEnabled(self.ui.pg_provision_check.isChecked())
+        self.ui.pg_provision_current_check.setEnabled(self.ui.pg_provision_check.isChecked())
+        self.ui.ref_penalty_inertia.setEnabled(self.ui.ref_penalty_check.isChecked())
+        self.ui.ref_provision_spin.setEnabled(self.ui.ref_provision_current_check.isChecked())
+        self.ui.ref_provision_spin.setEnabled(self.ui.ref_provision_check.isChecked())
+        self.ui.ref_provision_current_check.setEnabled(self.ui.ref_provision_check.isChecked())
         return True
 
     def enable_disable_zoning_widgets(self):
@@ -1191,9 +1207,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
             self.ui.ee_ppavg.setChecked(1)
 
         # TAB 3 - URBAN DYNAMICS
-        # Stochastic Perturbation
-        self.ui.stoch_box.setValue(float(self.module.get_parameter("alpha")))
-
+        # TAB 3.1 - External Drivers
         # Population and Employment Rates fo Change
         if self.module.get_parameter("pop_growthmethod") == "C":
             self.ui.pop_method_rate.setChecked(1)
@@ -1217,6 +1231,20 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.employ_rate_orc_check.setChecked(int(self.module.get_parameter("employ_orc_rocbool")))
         self.ui.employ_rate_orc_spin.setValue(float(self.module.get_parameter("employ_orc_roc")))
 
+        # TAB 3.2 - Internal Drivers
+        # Stochastic Perturbation
+        self.ui.stoch_box.setValue(float(self.module.get_parameter("alpha")))
+
+        # Recalculation Rules
+        self.ui.dynamics_recalculate_nhd.setChecked(int(self.module.get_parameter("recalc_nhd")))
+        self.ui.dynamics_recalculate_stoch.setChecked(int(self.module.get_parameter("recalc_stoch")))
+
+        # Land use Potential and Allocation
+        self.ui.dynamics_lpot_eqn_combo.setCurrentIndex(ubglobals.VPOT.index(self.module.get_parameter("vpot_eqn")))
+        self.ui.dynamics_lpot_zeropot_check.setChecked(int(self.module.get_parameter("vpot_zeropot")))
+        self.ui.dynamics_lpot_negativepot_check.setChecked(int(self.module.get_parameter("vpot_negpot")))
+
+        # TAB 3.3 - Transition Rules
         # Inertia and Sensitivities
         self.ui.res_inertia_spin.setValue(self.module.get_parameter("res_inertia"))
         self.ui.res_sensitivity_delta_spin.setValue(self.module.get_parameter("res_delta"))
@@ -1233,6 +1261,19 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.orc_inertia_spin.setValue(self.module.get_parameter("orc_inertia"))
         self.ui.orc_sensitivity_delta_spin.setValue(self.module.get_parameter("orc_delta"))
         self.ui.orc_sensitivity_lambda_spin.setValue(self.module.get_parameter("orc_lambda"))
+
+        # Open Space Transitions
+        self.ui.pg_penalty_check.setChecked(int(self.module.get_parameter("pg_penalise")))
+        self.ui.pg_penalty_inertia.setValue(float(self.module.get_parameter("pg_inertia")))
+        self.ui.pg_provision_check.setChecked(int(self.module.get_parameter("pg_provision")))
+        self.ui.pg_provision_spin.setValue(float(self.module.get_parameter("pg_proportion")))
+        self.ui.pg_provision_current_check.setChecked(int(self.module.get_parameter("pg_current")))
+
+        self.ui.ref_penalty_check.setChecked(int(self.module.get_parameter("ref_penalise")))
+        self.ui.ref_penalty_inertia.setValue(float(self.module.get_parameter("ref_inertia")))
+        self.ui.ref_provision_check.setChecked(int(self.module.get_parameter("ref_provision")))
+        self.ui.ref_provision_spin.setValue(float(self.module.get_parameter("ref_proportion")))
+        self.ui.ref_provision_current_check.setChecked(int(self.module.get_parameter("ref_current")))
 
         self.enable_disable_dynamics_tab_widgets()
         # END OF FILING IN GUI VALUES
@@ -1551,8 +1592,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
             self.module.set_parameter("edge_effects_method", "PPAVG")
 
         # TAB 3 - URBAN DYNAMICS
-        self.module.set_parameter("alpha", float(self.ui.stoch_box.value()))
-
+        # TAB 3.1 - External Drivers
         if self.ui.pop_method_rate.isChecked():
             self.module.set_parameter("pop_growthmethod", "C")
         else:
@@ -1571,6 +1611,17 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("employ_orc_rocbool", int(self.ui.employ_rate_orc_check.isChecked()))
         self.module.set_parameter("employ_orc_roc", float(self.ui.employ_rate_orc_spin.value()))
 
+        # TAB 3.2 - Internal Drivers
+        self.module.set_parameter("alpha", float(self.ui.stoch_box.value()))
+
+        self.module.set_parameter("recalc_nhd", int(self.ui.dynamics_recalculate_nhd.isChecked()))
+        self.module.set_parameter("recalc_stoch", int(self.ui.dynamics_recalculate_stoch.isChecked()))
+
+        self.module.set_parameter("vpot_eqn", ubglobals.VPOT[int(self.ui.dynamics_lpot_eqn_combo.currentIndex())])
+        self.module.set_parameter("vpot_zeropot", int(self.ui.dynamics_lpot_zeropot_check.isChecked()))
+        self.module.set_parameter("vpot_negpot", int(self.ui.dynamics_lpot_negativepot_check.isChecked()))
+
+        # TAB 3.3 - Transition Rules
         self.module.set_parameter("res_inertia", float(self.ui.res_inertia_spin.value()))
         self.module.set_parameter("res_delta", float(self.ui.res_sensitivity_delta_spin.value()))
         self.module.set_parameter("res_lambda", float(self.ui.res_sensitivity_lambda_spin.value()))
@@ -1586,6 +1637,18 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("orc_inertia", float(self.ui.orc_inertia_spin.value()))
         self.module.set_parameter("orc_delta", float(self.ui.orc_sensitivity_delta_spin.value()))
         self.module.set_parameter("orc_lambda", float(self.ui.orc_sensitivity_lambda_spin.value()))
+
+        self.module.set_parameter("pg_penalise", int(self.ui.pg_penalty_check.isChecked()))
+        self.module.set_parameter("pg_inertia", float(self.ui.pg_penalty_inertia.value()))
+        self.module.set_parameter("pg_provision", int(self.ui.pg_provision_check.isChecked()))
+        self.module.set_parameter("pg_proportion", float(self.ui.pg_provision_spin.value()))
+        self.module.set_parameter("pg_current", int(self.ui.pg_provision_current_check.isChecked()))
+
+        self.module.set_parameter("ref_penalise", int(self.ui.ref_penalty_check.isChecked()))
+        self.module.set_parameter("ref_inertia", float(self.ui.ref_penalty_inertia.value()))
+        self.module.set_parameter("ref_provision", int(self.ui.ref_provision_check.isChecked()))
+        self.module.set_parameter("ref_proportion", float(self.ui.ref_provision_spin.value()))
+        self.module.set_parameter("ref_current", int(self.ui.ref_provision_current_check.isChecked()))
         return True
 
 

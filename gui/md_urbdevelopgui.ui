@@ -7887,7 +7887,7 @@ p, li { white-space: pre-wrap; }
              <enum>QTabWidget::West</enum>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="suitability_2">
              <attribute name="icon">
@@ -8876,7 +8876,7 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <widget class="QCheckBox" name="dynamics_recalculate_nhd_2">
+                     <widget class="QCheckBox" name="dynamics_recalculate_stoch">
                       <property name="text">
                        <string>Regenerate a stochastic perturbation every simulation time step</string>
                       </property>
@@ -10336,7 +10336,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="8" column="1">
-                        <widget class="QDoubleSpinBox" name="pg_provision_spin_2">
+                        <widget class="QDoubleSpinBox" name="ref_provision_spin">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
