@@ -1017,7 +1017,7 @@ class UrbanDevelopment(UBModule):
 
         # BEFORE MOVING ON - FILTER OUT THE CELLS LIST TO MAKE IT LEANER AND EASIER TO WORK WITH AND ALSO
         # DEFINE THE ATTRIBUTE LUC_simyear and POP_simyear if the timestep is 0
-        urbancells = []
+        urbancells = []         # DEFINITION: urbancells[] = holds only active cells of the simulation i.e. Status != 0
         for i in range(len(cellslist)):
             if cellslist[i].get_attribute("Status") == 0:
                 continue
@@ -1147,38 +1147,35 @@ class UrbanDevelopment(UBModule):
         self.notify("Determining adjacent neighbours")
         print("Determining adjacent neighbours")
         for i in range(len(urbancells)):
-            urbancells[i].add_attribute("NHD_N", 0)
-            urbancells[i].add_attribute("NHD_NE", 0)
-            urbancells[i].add_attribute("NHD_E", 0)
-            urbancells[i].add_attribute("NHD_SE", 0)
-            urbancells[i].add_attribute("NHD_S", 0)
-            urbancells[i].add_attribute("NHD_SW", 0)
-            urbancells[i].add_attribute("NHD_W", 0)
-            urbancells[i].add_attribute("NHD_NW", 0)
+            currentID = urbancells[i].get_attribute("CellID")
+            if currentID % cells_wide == 0:     # Right edge
+                exceptions = ["NHD_NE", "NHD_E", "NHD_SE"]
+                urbancells[i].add_attribute("NHD_NE", 0)
+                urbancells[i].add_attribute("NHD_E", 0)
+                urbancells[i].add_attribute("NHD_SE", 0)
+            elif currentID % cells_wide == 1:   # Left edge
+                exceptions = ["NHD_NW", "NHD_W", "NHD_SW"]
+                urbancells[i].add_attribute("NHD_NW", 0)
+                urbancells[i].add_attribute("NHD_W", 0)
+                urbancells[i].add_attribute("NHD_SW", 0)
+            else:
+                exceptions = []
+
+            directionfactors = [cells_wide, cells_wide + 1, 1, -cells_wide + 1,
+                                -cells_wide, -cells_wide - 1, -1, cells_wide - 1]
+            directionnames = ["NHD_N", "NHD_NE", "NHD_E", "NHD_SE", "NHD_S", "NHD_SW", "NHD_W", "NHD_NW"]
             neighbours = []
-            ixy = ubmethods.get_central_coordinates(urbancells[i])
-            for j in range(len(urbancells)):     # Oh how I hate to use double for loops....
-                if urbancells[j] == urbancells[i]:
+
+            for d in range(len(directionnames)):
+                if directionnames[d] in exceptions:
                     continue
-                jxy = ubmethods.get_central_coordinates(urbancells[j])
-                if abs(ixy[0] - jxy[0]) <= self.cellsize and abs(ixy[1] - jxy[1]) <= self.cellsize:
-                    # ASSIGN THE CARDINAL/ORDINAL DIRECTION
-                    d = ""  # Piece together the direction from dx, dy rules.
-                    if (ixy[1] - jxy[1]) < 0:   # If dy < 0, then jxy is greater i.e NORTH
-                        d += "N"
-                    elif (ixy[1] - jxy [1]) >0: # if dy > 0, then jxy is less i.e. SOUTH
-                        d += "S"
-
-                    if (ixy[0] - jxy[0]) < 0:   # If dx < 0, then jxy is greater i.e. EAST
-                        d += "E"
-                    elif (ixy[0] - jxy[0]) > 0: # if dx > 0, then jxy is less i.e. WEST
-                        d += "W"
-
-                    if d == "":     # DEBUG
-                        print "Something went wrong!!!"
-
-                    urbancells[i].add_attribute("NHD_"+d, urbancells[j].get_attribute("CellID"))
-                    neighbours.append(urbancells[j].get_attribute("CellID"))
+                nhdID = currentID + directionfactors[d]
+                if self.scenario.get_asset_with_name("CellID"+str(nhdID)) is None \
+                        or self.scenario.get_asset_with_name("CellID"+str(nhdID)).get_attribute("Status") == 0:
+                    urbancells[i].add_attribute(directionnames[d], 0)
+                else:
+                    urbancells[i].add_attribute(directionnames[d], nhdID)
+                    neighbours.append(nhdID)
             urbancells[i].add_attribute("AdjacentNH", neighbours)
 
         # - 2.6.2 - Load all relevant data sets
@@ -1955,11 +1952,10 @@ class UrbanDevelopment(UBModule):
             cell_lucnames = ["RES", "COM", "LI", "HI", "ORC"]
             cells_hashtable = self.create_cell_potential_hashtable(transitioncells, option="new", filter=filter)
             print "Number of Cells in Hashtable", len(cells_hashtable)
-            rescount = 0
             print "Cell Tracker ", cell_tracker, "total cells to assign", sum(cell_tracker)
 
-            while sum(cell_tracker) != 0:       # ["RES", "COM", "LI", "HI", "ORC"]
-                rescount = 0    # Debug
+            finished = False
+            while not finished:       # ["RES", "COM", "LI", "HI", "ORC"]
                 for row_index in range(len(cells_hashtable)):   # [MaxPotential, LUC, CellID, Cell object]
                     # Assign the land use
                     curcell = cells_hashtable[row_index][3]       # The cell object
@@ -1976,8 +1972,6 @@ class UrbanDevelopment(UBModule):
                     curcell.change_attribute("LUC_Type", "Active")                          # Swap to active land use!
                     cell_tracker[cell_lucnames.index(lucname)] -= 1                         # since an active use was
                                                                                             # assigned
-                    if lucname == "RES":        # DEBUG - if RES was assigned, tally
-                        rescount += 1
 
                     if cell_tracker[cell_lucnames.index(lucname)] == 0:     # # If tally zero, break and reformat table
                         if cells_hashtable[row_index][1] == "IND":      # Need to make sure that LI and HI are both zero
@@ -1992,23 +1986,20 @@ class UrbanDevelopment(UBModule):
 
                 # REFORMAT THE HASH TABLE AND CONTINUE THE LOOP
                 print "Cell Tracker After", cell_tracker
-                print "Current Res Count", rescount
 
                 if sum(cell_tracker) == 0:      # If that was the last land use to assign, break out of the loop
                     print "Finished the assignment"
+                    finished = True
+                    continue
+
+                if len(cells_hashtable) == 0:
+                    print "Finished the assignment because no more cells available"
+                    finished = True
                     continue
 
                 cells_hashtable = self.create_cell_potential_hashtable(cells_hashtable, option="revise", filter=filter)
                 print "New Table Rows", len(cells_hashtable)
                 print "Current remaining cells to assign", sum(cell_tracker)
-
-            #DEBUG
-            rescount = 0
-            for i in range(len(transitioncells)):
-                if transitioncells[i].get_attribute("LUC_"+str(int(self.currentyear+1))) =="RES":
-                    rescount += 1
-            print "RESIDENTIAL COUNT 2", rescount
-            print "Number of transitioning cells", len(transitioncells)
 
             nonecounter = 0
             for i in range(len(transitioncells)):
@@ -2024,36 +2015,41 @@ class UrbanDevelopment(UBModule):
                     continue
             print "None counter", nonecounter
 
-            # DEBUG
-            rescount = 0
-            for i in range(len(transitioncells)):
-                if transitioncells[i].get_attribute("LUC_" + str(int(self.currentyear + 1))) == "RES":
-                    rescount += 1
-            print "RESIDENTIAL COUNT 3", rescount
-
             # STEP 4 - Assign the population to the map based on the existing and suitabilities
             # This step creates the attribute POP_YEAR - do for one land use at a time
+            mindensity = {"RES": self.res_mindensity, "COM": self.com_mindensity, "LI": self.ind_mindensity,
+                          "HI": self.ind_mindensity, "ORC": self.orc_mindensity}
+            maxdensity = {"RES": self.res_maxdensity, "COM": self.com_maxdensity, "LI": self.ind_maxdensity,
+                          "HI": self.ind_maxdensity, "ORC": self.orc_maxdensity}
             for luc in ji_next.keys():
                 # print "Current LUC", luc, "associated with: ", ji_next[luc]
                 cells_hashtable, existing_pop = self.create_cell_assignment_hashtable(transitioncells, luc)
+                print "Cells Hashtable", cells_hashtable
                 pop_to_assign = ji_next[luc] - existing_pop
                 if pop_to_assign > 0:       # if it's positive, i.e. need to allocate more
                     cells_hashtable.sort(reverse=True)      # Sort from highest to lowest
-                    factor = +1
                     # Add to table from highest to lowest suitability
-                elif pop_to_assign < 0:
+                else:   # pop_to_assign < 0 or it doesn't matter...
                     cells_hashtable.sort()      # Sort from lowest suitability to highest
-                    factor = -1
-                else:
-                    factor = 0      # If population to assign is zero, no factor.
                     # Add to table from lowest to highest suitability
                 while pop_to_assign != 0:       # Just keep assigning in order ot highest to lowest
                     for i in range(len(cells_hashtable)):
-                        if cells_hashtable[i][1] + factor < 0:      # If the population would drop below zero, skip
-                            continue
+                        # print "Current Cell population: ", cells_hashtable[i][1]
+                        if pop_to_assign > 0:
+                            factor = +1 * mindensity[luc]   # if we add population, then in increments of min-density
+                        else:
+                            factor = -1
+
+                        if cells_hashtable[i][1] + factor < mindensity[luc]:    # If the population would drop below
+                            # print "Min Density Issue", rand.random()
+                            continue                                            # minimum density, skip
+                        # elif cells_hashtable[i][1] + factor > maxdensity[luc]:  # Likewise if pop would increase above
+                        #     print "Max Density Issue", rand.random()            # maximum density, skip
+                        #     continue
                         else:
                             cells_hashtable[i][1] += factor     # Otherwise increment by +1 or -1
-                            pop_to_assign -= factor             # Decrement population by +1 or -1
+                            pop_to_assign -= factor  # Decrement population by +1 or -1
+                        # print pop_to_assign
                         if pop_to_assign == 0:                  # if the population is zero, break loop
                             break
 
@@ -2061,16 +2057,25 @@ class UrbanDevelopment(UBModule):
                 for i in range(len(cells_hashtable)):
                     cells_hashtable[i][3].add_attribute("POP_"+str(self.currentyear+1), cells_hashtable[i][1])
 
+            # STEP 5 - Go back through the land use and remove 0 population/employed cells, revert them back to the
+            # previous time step's land use
+            for i in range(len(transitioncells)):
+                cell = transitioncells[i]
+                newluc = cell.get_attribute("LUC_"+str(int(self.currentyear+1)))
+                if newluc in ["RES", "COM", "LI", "HI", "ORC"] \
+                        and cell.get_attribute("POP_"+str(int(self.currentyear+1))) <= 0:
+                    # If the land use is one of the active uses and the population is currently zero, then revert to
+                    # previous time step land use if it wasn't an active type previously, otherwise set ot UND
+                    if cell.get_attribute("LUC_"+str(int(self.currentyear))) in ["RES", "COM", "LI", "HI", "ORC"]:
+                        cell.change_attribute("LUC_"+str(int(self.currentyear+1)), "UND")
+                    else:
+                        cell.change_attribute("LUC_"+str(int(self.currentyear+1)),
+                                              cell.get_attribute("LUC_"+str(int(self.currentyear))))
+                    cell.change_attribute("LUC_Type", "Passive")
+
             for i in range(len(transitioncells)):
                 if transitioncells[i].get_attribute("POP_"+str(int(self.currentyear+1))) is None:
-                    transitioncells[i].add_attribute("POP_"+str(int(self.currentyear+1)), 0)    # Add zero Pop to remainder
-
-            # DEBUG
-            rescount = 0
-            for i in range(len(transitioncells)):
-                if transitioncells[i].get_attribute("LUC_" + str(int(self.currentyear + 1))) == "RES":
-                    rescount += 1
-            print "RESIDENTIAL COUNT 4", rescount
+                    transitioncells[i].add_attribute("POP_"+str(int(self.currentyear+1)), 0) # Add zero Pop to remainder
 
         self.map_attr.add_attribute("URBMODELEND", self.currentyear)
         self.notify("Current End of Module")
@@ -2157,6 +2162,11 @@ class UrbanDevelopment(UBModule):
                 vpot.pop(vpot_lucs.index(luc))      # pop the index with the land use
                 vpot_lucs.pop(vpot_lucs.index(luc))  # filter out the max
             # hash table has: [max potential, maxP LUC class, Cell_ID, cell Object
+            if max(vpot) == 0 and self.vpot_zeropot:
+                continue        # If the maximum potential is zero and the user chooses to skip zero potential
+            if max(vpot) < 0 and self.vpot_negpot:
+                continue        # If the maximum potential is negative and the user chooses to skip negative potential
+
             hashtable.append([max(vpot), vpot_lucs[vpot.index(max(vpot))], c.get_attribute("CellID"), c])
 
         hashtable.sort(reverse=True)        # Sort from highest VPOT to lowest VPOT
@@ -2183,23 +2193,43 @@ class UrbanDevelopment(UBModule):
                 ji["RES"] += cellslist[i].get_attribute("POP_" + str(self.currentyear))
                 nci["RES"] += 1
                 Sit["RES"] += cellslist[i].get_attribute("SUIT_RES")
+                # SAit["COM"] += cellslist[i].get_attribute("SUIT_COM")       # Add to every other active land use
+                # SAit["LI"] += cellslist[i].get_attribute("SUIT_IND")
+                # SAit["HI"] += cellslist[i].get_attribute("SUIT_IND")
+                # SAit["ORC"] += cellslist[i].get_attribute("SUIT_ORC")
             elif cellslist[i].get_attribute("LUC_" + str(self.currentyear)) == "COM":
                 ji["COM"] += cellslist[i].get_attribute("POP_" + str(self.currentyear))
                 nci["COM"] += 1
                 Sit["COM"] += cellslist[i].get_attribute("SUIT_COM")
+                # SAit["RES"] += cellslist[i].get_attribute("SUIT_RES")       # Add to every other active land use
+                # SAit["LI"] += cellslist[i].get_attribute("SUIT_IND")
+                # SAit["HI"] += cellslist[i].get_attribute("SUIT_IND")
+                # SAit["ORC"] += cellslist[i].get_attribute("SUIT_ORC")
             elif cellslist[i].get_attribute("LUC_" + str(self.currentyear)) == "LI":
                 ji["LI"] += cellslist[i].get_attribute("POP_" + str(self.currentyear))
                 nci["LI"] += 1
                 Sit["LI"] += cellslist[i].get_attribute("SUIT_IND")
+                # SAit["RES"] += cellslist[i].get_attribute("SUIT_RES")       # Add to every other active land use
+                # SAit["COM"] += cellslist[i].get_attribute("SUIT_COM")
+                # SAit["HI"] += cellslist[i].get_attribute("SUIT_IND")
+                # SAit["ORC"] += cellslist[i].get_attribute("SUIT_ORC")
             elif cellslist[i].get_attribute("LUC_" + str(self.currentyear)) == "HI":
                 ji["HI"] += cellslist[i].get_attribute("POP_" + str(self.currentyear))
                 nci["HI"] += 1
                 Sit["HI"] += cellslist[i].get_attribute("SUIT_IND")
+                # SAit["RES"] += cellslist[i].get_attribute("SUIT_RES")       # Add to every other active land use
+                # SAit["COM"] += cellslist[i].get_attribute("SUIT_COM")
+                # SAit["LI"] += cellslist[i].get_attribute("SUIT_IND")
+                # SAit["ORC"] += cellslist[i].get_attribute("SUIT_ORC")
             elif cellslist[i].get_attribute("LUC_" + str(self.currentyear)) == "ORC":
                 ji["ORC"] += cellslist[i].get_attribute("POP_" + str(self.currentyear))
                 nci["ORC"] += 1
                 Sit["ORC"] += cellslist[i].get_attribute("SUIT_ORC")
-            else:  # Cell has passive land use
+                # SAit["RES"] += cellslist[i].get_attribute("SUIT_RES")       # Add to every other active land use
+                # SAit["COM"] += cellslist[i].get_attribute("SUIT_COM")
+                # SAit["LI"] += cellslist[i].get_attribute("SUIT_IND")
+                # SAit["HI"] += cellslist[i].get_attribute("SUIT_IND")
+            else:  # Cell has passive land use, so add to SAit for every active land use
                 SAit["RES"] += cellslist[i].get_attribute("SUIT_RES")
                 SAit["COM"] += cellslist[i].get_attribute("SUIT_COM")
                 SAit["LI"] += cellslist[i].get_attribute("SUIT_IND")
