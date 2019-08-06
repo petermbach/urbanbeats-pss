@@ -2041,11 +2041,9 @@ class UrbanDevelopment(UBModule):
                             factor = -1
 
                         if cells_hashtable[i][1] + factor < mindensity[luc]:    # If the population would drop below
-                            # print "Min Density Issue", rand.random()
                             continue                                            # minimum density, skip
-                        # elif cells_hashtable[i][1] + factor > maxdensity[luc]:  # Likewise if pop would increase above
-                        #     print "Max Density Issue", rand.random()            # maximum density, skip
-                        #     continue
+                        elif cells_hashtable[i][1] + factor > maxdensity[luc]:  # Likewise if pop would increase above
+                            continue
                         else:
                             cells_hashtable[i][1] += factor     # Otherwise increment by +1 or -1
                             pop_to_assign -= factor  # Decrement population by +1 or -1
