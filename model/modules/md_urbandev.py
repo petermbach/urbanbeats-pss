@@ -650,37 +650,53 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("res_delta", DOUBLE, "inertia to change for residential land use")
         self.create_parameter("res_lambda", DOUBLE, "inertia to change for residential land use")
         self.create_parameter("res_maxdensity", DOUBLE, "maximum allowable population density per hectare")
+        self.create_parameter("res_maxdens_auto", BOOL, "Auto-determine maximum density?")
+        self.create_parameter("res_mindensity", DOUBLE, "minimum allowable population density per hectare")
         self.res_inertia = 20.0
         self.res_delta = 0.8
         self.res_lambda = 0.8
         self.res_maxdensity = 16.0
+        self.res_maxdens_auto = 1
+        self.res_mindensity = 1.0
 
         self.create_parameter("com_inertia", DOUBLE, "inertia to change for residential land use")
         self.create_parameter("com_delta", DOUBLE, "inertia to change for residential land use")
         self.create_parameter("com_lambda", DOUBLE, "inertia to change for residential land use")
         self.create_parameter("com_maxdensity", DOUBLE, "maximum allowable employment density for commercial")
+        self.create_parameter("com_maxdens_auto", BOOL, "Auto-determine maximum density?")
+        self.create_parameter("com_mindensity", DOUBLE, "minimum allowable population density per hectare")
         self.com_inertia = 20.0
         self.com_delta = 0.8
         self.com_lambda = 0.8
         self.com_maxdensity = 30.0
+        self.com_maxdens_auto = 1
+        self.com_mindensity = 1.0
 
         self.create_parameter("ind_inertia", DOUBLE, "inertia to change for residential land use")
         self.create_parameter("ind_delta", DOUBLE, "inertia to change for residential land use")
         self.create_parameter("ind_lambda", DOUBLE, "inertia to change for residential land use")
         self.create_parameter("ind_maxdensity", DOUBLE, "maximum allowable employment density for industrial")
+        self.create_parameter("ind_maxdens_auto", BOOL, "Auto-determine maximum density?")
+        self.create_parameter("ind_mindensity", DOUBLE, "minimum allowable population density per hectare")
         self.ind_inertia = 20.0
         self.ind_delta = 0.8
         self.ind_lambda = 0.8
         self.ind_maxdensity = 30.0
+        self.ind_maxdens_auto = 1
+        self.ind_mindensity = 1.0
 
         self.create_parameter("orc_inertia", DOUBLE, "inertia to change for residential land use")
         self.create_parameter("orc_delta", DOUBLE, "inertia to change for residential land use")
         self.create_parameter("orc_lambda", DOUBLE, "inertia to change for residential land use")
         self.create_parameter("orc_maxdensity", DOUBLE, "maximum allowable employment density for offices")
+        self.create_parameter("orc_maxdens_auto", BOOL, "Auto-determine maximum density?")
+        self.create_parameter("orc_mindensity", DOUBLE, "minimum allowable population density per hectare")
         self.orc_inertia = 20.0
         self.orc_delta = 0.8
         self.orc_lambda = 0.8
         self.orc_maxdensity = 30.0
+        self.orc_maxdens_auto = 1
+        self.orc_mindensity = 1.0
 
         self.create_parameter("pg_penalise", BOOL, "Penalise redevelopment of parks?")
         self.create_parameter("pg_inertia", DOUBLE, "Negative inertia for redevelopment of parks")

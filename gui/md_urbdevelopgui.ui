@@ -4453,8 +4453,8 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>541</width>
-                   <height>1664</height>
+                   <width>461</width>
+                   <height>1667</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -6786,7 +6786,7 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>541</width>
+                   <width>484</width>
                    <height>1008</height>
                   </rect>
                  </property>
@@ -7547,7 +7547,7 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>541</width>
+                   <width>496</width>
                    <height>715</height>
                   </rect>
                  </property>
@@ -9115,7 +9115,7 @@ p, li { white-space: pre-wrap; }
                    <x>0</x>
                    <y>0</y>
                    <width>541</width>
-                   <height>811</height>
+                   <height>987</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_44">
@@ -9153,124 +9153,8 @@ p, li { white-space: pre-wrap; }
                     <item>
                      <widget class="QWidget" name="inertia_sensitivity_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_32">
-                       <item row="14" column="0">
-                        <widget class="QLabel" name="orc_inertia_lbl">
-                         <property name="text">
-                          <string>Weight of Inertia (resistance)</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="10" column="0">
-                        <widget class="QLabel" name="ind_inertia_lbl">
-                         <property name="text">
-                          <string>Weight of Inertia (resistance)</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="5" column="0" colspan="5">
-                        <widget class="QLabel" name="inertia_sensitivity_com">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Commercial Land Use&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="7" column="2">
-                        <widget class="QLabel" name="com_sensitivity_lambda_lbl">
-                         <property name="text">
-                          <string>Sensitivity to Land Quality</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="0" colspan="5">
-                        <widget class="QLabel" name="inertia_sensitivity_res">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Residential Land Use&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="1">
-                        <widget class="QDoubleSpinBox" name="res_maxdens_spin">
-                         <property name="minimumSize">
-                          <size>
-                           <width>60</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>80</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                         <property name="prefix">
-                          <string/>
-                         </property>
-                         <property name="suffix">
-                          <string/>
-                         </property>
-                         <property name="decimals">
-                          <number>1</number>
-                         </property>
-                         <property name="minimum">
-                          <double>0.000000000000000</double>
-                         </property>
-                         <property name="maximum">
-                          <double>200.000000000000000</double>
-                         </property>
-                         <property name="singleStep">
-                          <double>0.100000000000000</double>
-                         </property>
-                         <property name="value">
-                          <double>16.000000000000000</double>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="15" column="1">
-                        <widget class="QDoubleSpinBox" name="orc_sensitivity_delta_spin">
-                         <property name="minimumSize">
-                          <size>
-                           <width>60</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>80</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                         <property name="prefix">
-                          <string/>
-                         </property>
-                         <property name="suffix">
-                          <string/>
-                         </property>
-                         <property name="decimals">
-                          <number>2</number>
-                         </property>
-                         <property name="minimum">
-                          <double>0.000000000000000</double>
-                         </property>
-                         <property name="maximum">
-                          <double>1.000000000000000</double>
-                         </property>
-                         <property name="singleStep">
-                          <double>0.010000000000000</double>
-                         </property>
-                         <property name="value">
-                          <double>0.800000000000000</double>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="0">
-                        <widget class="QLabel" name="res_sensitivity_delta_lbl">
-                         <property name="text">
-                          <string>Sensitivity to Land Pressure</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="1">
-                        <widget class="QDoubleSpinBox" name="res_inertia_spin">
+                       <item row="14" column="1">
+                        <widget class="QDoubleSpinBox" name="orc_inertia_spin">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -9306,178 +9190,8 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
-                       <item row="2" column="3">
-                        <widget class="QDoubleSpinBox" name="res_sensitivity_lambda_spin">
-                         <property name="minimumSize">
-                          <size>
-                           <width>60</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>80</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                         <property name="prefix">
-                          <string/>
-                         </property>
-                         <property name="suffix">
-                          <string/>
-                         </property>
-                         <property name="decimals">
-                          <number>2</number>
-                         </property>
-                         <property name="minimum">
-                          <double>0.000000000000000</double>
-                         </property>
-                         <property name="maximum">
-                          <double>1.000000000000000</double>
-                         </property>
-                         <property name="singleStep">
-                          <double>0.010000000000000</double>
-                         </property>
-                         <property name="value">
-                          <double>0.800000000000000</double>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="4" column="0" colspan="5">
-                        <widget class="Line" name="line_3">
-                         <property name="frameShadow">
-                          <enum>QFrame::Raised</enum>
-                         </property>
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="13" column="0" colspan="5">
-                        <widget class="QLabel" name="inertia_sensitivity_orc">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Mixed Development Land Use&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="6" column="1">
-                        <widget class="QDoubleSpinBox" name="com_inertia_spin">
-                         <property name="minimumSize">
-                          <size>
-                           <width>60</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>80</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                         <property name="prefix">
-                          <string/>
-                         </property>
-                         <property name="suffix">
-                          <string/>
-                         </property>
-                         <property name="decimals">
-                          <number>0</number>
-                         </property>
-                         <property name="minimum">
-                          <double>0.000000000000000</double>
-                         </property>
-                         <property name="maximum">
-                          <double>500.000000000000000</double>
-                         </property>
-                         <property name="singleStep">
-                          <double>0.010000000000000</double>
-                         </property>
-                         <property name="value">
-                          <double>20.000000000000000</double>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="9" column="0" colspan="5">
-                        <widget class="QLabel" name="inertia_sensitivity_ind">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Industrial Land Use&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="6" column="0">
-                        <widget class="QLabel" name="com_inertia_lbl">
-                         <property name="text">
-                          <string>Weight of Inertia (resistance)</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="8" column="0">
-                        <widget class="QLabel" name="com_maxdens_lbl">
-                         <property name="text">
-                          <string>Maximum Allowable Density:</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="7" column="1">
-                        <widget class="QDoubleSpinBox" name="com_sensitivity_delta_spin">
-                         <property name="minimumSize">
-                          <size>
-                           <width>60</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>80</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                         <property name="prefix">
-                          <string/>
-                         </property>
-                         <property name="suffix">
-                          <string/>
-                         </property>
-                         <property name="decimals">
-                          <number>2</number>
-                         </property>
-                         <property name="minimum">
-                          <double>0.000000000000000</double>
-                         </property>
-                         <property name="maximum">
-                          <double>1.000000000000000</double>
-                         </property>
-                         <property name="singleStep">
-                          <double>0.010000000000000</double>
-                         </property>
-                         <property name="value">
-                          <double>0.800000000000000</double>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="0">
-                        <widget class="QLabel" name="res_maxdens_lbl">
-                         <property name="text">
-                          <string>Maximum Allowable Density:</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="7" column="0">
-                        <widget class="QLabel" name="com_sensitivity_delta_lbl">
-                         <property name="text">
-                          <string>Sensitivity to Land Pressure</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="15" column="2">
-                        <widget class="QLabel" name="orc_sensitivity_lambda_lbl">
-                         <property name="text">
-                          <string>Sensitivity to Land Quality</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="1">
-                        <widget class="QDoubleSpinBox" name="res_sensitivity_delta_spin">
+                       <item row="11" column="1">
+                        <widget class="QDoubleSpinBox" name="ind_sensitivity_delta_spin">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -9520,8 +9234,8 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
-                       <item row="14" column="1">
-                        <widget class="QDoubleSpinBox" name="orc_inertia_spin">
+                       <item row="1" column="1">
+                        <widget class="QDoubleSpinBox" name="res_inertia_spin">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -9557,15 +9271,130 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
-                       <item row="3" column="2">
-                        <widget class="QLabel" name="res_maxdens_lbl2">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;[persons/ha]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       <item row="11" column="4">
+                        <spacer name="horizontalSpacer_107">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item row="6" column="1">
+                        <widget class="QDoubleSpinBox" name="com_inertia_spin">
+                         <property name="minimumSize">
+                          <size>
+                           <width>60</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>80</width>
+                           <height>16777215</height>
+                          </size>
+                         </property>
+                         <property name="prefix">
+                          <string/>
+                         </property>
+                         <property name="suffix">
+                          <string/>
+                         </property>
+                         <property name="decimals">
+                          <number>0</number>
+                         </property>
+                         <property name="minimum">
+                          <double>0.000000000000000</double>
+                         </property>
+                         <property name="maximum">
+                          <double>500.000000000000000</double>
+                         </property>
+                         <property name="singleStep">
+                          <double>0.010000000000000</double>
+                         </property>
+                         <property name="value">
+                          <double>20.000000000000000</double>
                          </property>
                         </widget>
                        </item>
-                       <item row="11" column="1">
-                        <widget class="QDoubleSpinBox" name="ind_sensitivity_delta_spin">
+                       <item row="15" column="1">
+                        <widget class="QDoubleSpinBox" name="orc_sensitivity_delta_spin">
+                         <property name="minimumSize">
+                          <size>
+                           <width>60</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>80</width>
+                           <height>16777215</height>
+                          </size>
+                         </property>
+                         <property name="prefix">
+                          <string/>
+                         </property>
+                         <property name="suffix">
+                          <string/>
+                         </property>
+                         <property name="decimals">
+                          <number>2</number>
+                         </property>
+                         <property name="minimum">
+                          <double>0.000000000000000</double>
+                         </property>
+                         <property name="maximum">
+                          <double>1.000000000000000</double>
+                         </property>
+                         <property name="singleStep">
+                          <double>0.010000000000000</double>
+                         </property>
+                         <property name="value">
+                          <double>0.800000000000000</double>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="13" column="0" colspan="5">
+                        <widget class="QLabel" name="inertia_sensitivity_orc">
+                         <property name="text">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Mixed Development Land Use&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="5" column="0" colspan="5">
+                        <widget class="QLabel" name="inertia_sensitivity_com">
+                         <property name="text">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Commercial Land Use&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="7" column="2">
+                        <widget class="QLabel" name="com_sensitivity_lambda_lbl">
+                         <property name="text">
+                          <string>Sensitivity to Land Quality</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="9" column="0" colspan="5">
+                        <widget class="QLabel" name="inertia_sensitivity_ind">
+                         <property name="text">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Industrial Land Use&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="7" column="0">
+                        <widget class="QLabel" name="com_sensitivity_delta_lbl">
+                         <property name="text">
+                          <string>Sensitivity to Land Pressure</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="1">
+                        <widget class="QDoubleSpinBox" name="res_sensitivity_delta_spin">
                          <property name="minimumSize">
                           <size>
                            <width>60</width>
@@ -9645,8 +9474,224 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
-                       <item row="11" column="4">
-                        <spacer name="horizontalSpacer_107">
+                       <item row="14" column="0">
+                        <widget class="QLabel" name="orc_inertia_lbl">
+                         <property name="text">
+                          <string>Weight of Inertia (resistance)</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="10" column="0">
+                        <widget class="QLabel" name="ind_inertia_lbl">
+                         <property name="text">
+                          <string>Weight of Inertia (resistance)</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="3">
+                        <widget class="QDoubleSpinBox" name="res_sensitivity_lambda_spin">
+                         <property name="minimumSize">
+                          <size>
+                           <width>60</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>80</width>
+                           <height>16777215</height>
+                          </size>
+                         </property>
+                         <property name="prefix">
+                          <string/>
+                         </property>
+                         <property name="suffix">
+                          <string/>
+                         </property>
+                         <property name="decimals">
+                          <number>2</number>
+                         </property>
+                         <property name="minimum">
+                          <double>0.000000000000000</double>
+                         </property>
+                         <property name="maximum">
+                          <double>1.000000000000000</double>
+                         </property>
+                         <property name="singleStep">
+                          <double>0.010000000000000</double>
+                         </property>
+                         <property name="value">
+                          <double>0.800000000000000</double>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="0">
+                        <widget class="QLabel" name="res_sensitivity_delta_lbl">
+                         <property name="text">
+                          <string>Sensitivity to Land Pressure</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="15" column="2">
+                        <widget class="QLabel" name="orc_sensitivity_lambda_lbl">
+                         <property name="text">
+                          <string>Sensitivity to Land Quality</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="6" column="0">
+                        <widget class="QLabel" name="com_inertia_lbl">
+                         <property name="text">
+                          <string>Weight of Inertia (resistance)</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="7" column="1">
+                        <widget class="QDoubleSpinBox" name="com_sensitivity_delta_spin">
+                         <property name="minimumSize">
+                          <size>
+                           <width>60</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>80</width>
+                           <height>16777215</height>
+                          </size>
+                         </property>
+                         <property name="prefix">
+                          <string/>
+                         </property>
+                         <property name="suffix">
+                          <string/>
+                         </property>
+                         <property name="decimals">
+                          <number>2</number>
+                         </property>
+                         <property name="minimum">
+                          <double>0.000000000000000</double>
+                         </property>
+                         <property name="maximum">
+                          <double>1.000000000000000</double>
+                         </property>
+                         <property name="singleStep">
+                          <double>0.010000000000000</double>
+                         </property>
+                         <property name="value">
+                          <double>0.800000000000000</double>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="0" colspan="5">
+                        <widget class="QLabel" name="inertia_sensitivity_res">
+                         <property name="text">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Residential Land Use&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="4" column="0" colspan="5">
+                        <widget class="Line" name="line_3">
+                         <property name="frameShadow">
+                          <enum>QFrame::Raised</enum>
+                         </property>
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="14" column="4">
+                        <spacer name="horizontalSpacer_108">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item row="11" column="3">
+                        <widget class="QDoubleSpinBox" name="ind_sensitivity_lambda_spin">
+                         <property name="minimumSize">
+                          <size>
+                           <width>60</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>80</width>
+                           <height>16777215</height>
+                          </size>
+                         </property>
+                         <property name="prefix">
+                          <string/>
+                         </property>
+                         <property name="suffix">
+                          <string/>
+                         </property>
+                         <property name="decimals">
+                          <number>2</number>
+                         </property>
+                         <property name="minimum">
+                          <double>0.000000000000000</double>
+                         </property>
+                         <property name="maximum">
+                          <double>1.000000000000000</double>
+                         </property>
+                         <property name="singleStep">
+                          <double>0.010000000000000</double>
+                         </property>
+                         <property name="value">
+                          <double>0.800000000000000</double>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="15" column="0">
+                        <widget class="QLabel" name="orc_sensitivity_delta_lbl">
+                         <property name="text">
+                          <string>Sensitivity to Land Pressure</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="11" column="2">
+                        <widget class="QLabel" name="ind_sensitivity_lambda_lbl">
+                         <property name="text">
+                          <string>Sensitivity to Land Quality</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="4">
+                        <spacer name="horizontalSpacer_23">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item row="7" column="4">
+                        <spacer name="horizontalSpacer_105">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item row="10" column="4">
+                        <spacer name="horizontalSpacer_106">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
                          </property>
@@ -9671,90 +9716,6 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </spacer>
                        </item>
-                       <item row="8" column="2">
-                        <widget class="QLabel" name="com_maxdens_lbl2">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;[persons/ha]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="16" column="4">
-                        <spacer name="horizontalSpacer_110">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="15" column="4">
-                        <spacer name="horizontalSpacer_109">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="12" column="2">
-                        <widget class="QLabel" name="ind_maxdens_lbl2">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;[persons/ha]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="16" column="1">
-                        <widget class="QDoubleSpinBox" name="orc_maxdens_spin">
-                         <property name="minimumSize">
-                          <size>
-                           <width>60</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>80</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                         <property name="prefix">
-                          <string/>
-                         </property>
-                         <property name="suffix">
-                          <string/>
-                         </property>
-                         <property name="decimals">
-                          <number>1</number>
-                         </property>
-                         <property name="minimum">
-                          <double>0.000000000000000</double>
-                         </property>
-                         <property name="maximum">
-                          <double>200.000000000000000</double>
-                         </property>
-                         <property name="singleStep">
-                          <double>0.100000000000000</double>
-                         </property>
-                         <property name="value">
-                          <double>16.000000000000000</double>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="16" column="0">
-                        <widget class="QLabel" name="orc_maxdens_lbl">
-                         <property name="text">
-                          <string>Maximum Allowable Density:</string>
-                         </property>
-                        </widget>
-                       </item>
                        <item row="2" column="2">
                         <widget class="QLabel" name="res_sensitivity_lambda_lbl">
                          <property name="text">
@@ -9762,61 +9723,8 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
-                       <item row="16" column="2">
-                        <widget class="QLabel" name="orc_maxdens_lbl2">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;[persons/ha]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="7" column="4">
-                        <spacer name="horizontalSpacer_105">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="14" column="4">
-                        <spacer name="horizontalSpacer_108">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="3" column="4">
-                        <spacer name="horizontalSpacer_113">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="12" column="0">
-                        <widget class="QLabel" name="ind_maxdens_lbl">
-                         <property name="text">
-                          <string>Maximum Allowable Density:</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="12" column="4">
-                        <spacer name="horizontalSpacer_111">
+                       <item row="15" column="4">
+                        <spacer name="horizontalSpacer_109">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
                          </property>
@@ -9864,170 +9772,6 @@ p, li { white-space: pre-wrap; }
                           <double>20.000000000000000</double>
                          </property>
                         </widget>
-                       </item>
-                       <item row="11" column="3">
-                        <widget class="QDoubleSpinBox" name="ind_sensitivity_lambda_spin">
-                         <property name="minimumSize">
-                          <size>
-                           <width>60</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>80</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                         <property name="prefix">
-                          <string/>
-                         </property>
-                         <property name="suffix">
-                          <string/>
-                         </property>
-                         <property name="decimals">
-                          <number>2</number>
-                         </property>
-                         <property name="minimum">
-                          <double>0.000000000000000</double>
-                         </property>
-                         <property name="maximum">
-                          <double>1.000000000000000</double>
-                         </property>
-                         <property name="singleStep">
-                          <double>0.010000000000000</double>
-                         </property>
-                         <property name="value">
-                          <double>0.800000000000000</double>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="15" column="0">
-                        <widget class="QLabel" name="orc_sensitivity_delta_lbl">
-                         <property name="text">
-                          <string>Sensitivity to Land Pressure</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="8" column="1">
-                        <widget class="QDoubleSpinBox" name="com_maxdens_spin">
-                         <property name="minimumSize">
-                          <size>
-                           <width>60</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>80</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                         <property name="prefix">
-                          <string/>
-                         </property>
-                         <property name="suffix">
-                          <string/>
-                         </property>
-                         <property name="decimals">
-                          <number>1</number>
-                         </property>
-                         <property name="minimum">
-                          <double>0.000000000000000</double>
-                         </property>
-                         <property name="maximum">
-                          <double>200.000000000000000</double>
-                         </property>
-                         <property name="singleStep">
-                          <double>0.100000000000000</double>
-                         </property>
-                         <property name="value">
-                          <double>16.000000000000000</double>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="11" column="2">
-                        <widget class="QLabel" name="ind_sensitivity_lambda_lbl">
-                         <property name="text">
-                          <string>Sensitivity to Land Quality</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="8" column="4">
-                        <spacer name="horizontalSpacer_112">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="12" column="1">
-                        <widget class="QDoubleSpinBox" name="ind_maxdens_spin">
-                         <property name="minimumSize">
-                          <size>
-                           <width>60</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>80</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                         <property name="prefix">
-                          <string/>
-                         </property>
-                         <property name="suffix">
-                          <string/>
-                         </property>
-                         <property name="decimals">
-                          <number>1</number>
-                         </property>
-                         <property name="minimum">
-                          <double>0.000000000000000</double>
-                         </property>
-                         <property name="maximum">
-                          <double>200.000000000000000</double>
-                         </property>
-                         <property name="singleStep">
-                          <double>0.100000000000000</double>
-                         </property>
-                         <property name="value">
-                          <double>16.000000000000000</double>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="10" column="4">
-                        <spacer name="horizontalSpacer_106">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="1" column="4">
-                        <spacer name="horizontalSpacer_23">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
                        </item>
                        <item row="7" column="3">
                         <widget class="QDoubleSpinBox" name="com_sensitivity_lambda_spin">
@@ -10078,6 +9822,462 @@ p, li { white-space: pre-wrap; }
                           </size>
                          </property>
                         </spacer>
+                       </item>
+                       <item row="3" column="0" colspan="5">
+                        <widget class="QWidget" name="res_dens_widget" native="true">
+                         <layout class="QGridLayout" name="gridLayout_35">
+                          <item row="0" column="0">
+                           <widget class="QLabel" name="res_maxdens_lbl">
+                            <property name="text">
+                             <string>&gt; Maximum Allowable Density [persons/ha]:</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="0" column="1">
+                           <widget class="QDoubleSpinBox" name="res_maxdens_spin">
+                            <property name="minimumSize">
+                             <size>
+                              <width>60</width>
+                              <height>0</height>
+                             </size>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>80</width>
+                              <height>16777215</height>
+                             </size>
+                            </property>
+                            <property name="prefix">
+                             <string/>
+                            </property>
+                            <property name="suffix">
+                             <string/>
+                            </property>
+                            <property name="decimals">
+                             <number>1</number>
+                            </property>
+                            <property name="minimum">
+                             <double>0.000000000000000</double>
+                            </property>
+                            <property name="maximum">
+                             <double>200.000000000000000</double>
+                            </property>
+                            <property name="singleStep">
+                             <double>0.100000000000000</double>
+                            </property>
+                            <property name="value">
+                             <double>16.000000000000000</double>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="1" column="0">
+                           <widget class="QLabel" name="res_mindens_lbl">
+                            <property name="text">
+                             <string>&gt; Minimum Inhabitable Density [persons/ha]:</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="1" column="1">
+                           <widget class="QDoubleSpinBox" name="res_mindens_spin">
+                            <property name="minimumSize">
+                             <size>
+                              <width>60</width>
+                              <height>0</height>
+                             </size>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>80</width>
+                              <height>16777215</height>
+                             </size>
+                            </property>
+                            <property name="prefix">
+                             <string/>
+                            </property>
+                            <property name="suffix">
+                             <string/>
+                            </property>
+                            <property name="decimals">
+                             <number>1</number>
+                            </property>
+                            <property name="minimum">
+                             <double>0.000000000000000</double>
+                            </property>
+                            <property name="maximum">
+                             <double>10.000000000000000</double>
+                            </property>
+                            <property name="singleStep">
+                             <double>0.100000000000000</double>
+                            </property>
+                            <property name="value">
+                             <double>1.000000000000000</double>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="0" column="2">
+                           <widget class="QCheckBox" name="res_maxdens_auto">
+                            <property name="text">
+                             <string>Auto</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="0" column="3">
+                           <spacer name="horizontalSpacer_110">
+                            <property name="orientation">
+                             <enum>Qt::Horizontal</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>40</width>
+                              <height>20</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                         </layout>
+                        </widget>
+                       </item>
+                       <item row="8" column="0" colspan="5">
+                        <widget class="QWidget" name="com_dens_widget" native="true">
+                         <layout class="QGridLayout" name="gridLayout_36">
+                          <item row="0" column="2">
+                           <widget class="QCheckBox" name="com_maxdens_auto">
+                            <property name="text">
+                             <string>Auto</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="1" column="0">
+                           <widget class="QLabel" name="com_mindens_lbl">
+                            <property name="text">
+                             <string>&gt; Minimum Inhabitable Density [persons/ha]:</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="1" column="1">
+                           <widget class="QDoubleSpinBox" name="com_mindens_spin">
+                            <property name="minimumSize">
+                             <size>
+                              <width>60</width>
+                              <height>0</height>
+                             </size>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>80</width>
+                              <height>16777215</height>
+                             </size>
+                            </property>
+                            <property name="prefix">
+                             <string/>
+                            </property>
+                            <property name="suffix">
+                             <string/>
+                            </property>
+                            <property name="decimals">
+                             <number>1</number>
+                            </property>
+                            <property name="minimum">
+                             <double>0.000000000000000</double>
+                            </property>
+                            <property name="maximum">
+                             <double>10.000000000000000</double>
+                            </property>
+                            <property name="singleStep">
+                             <double>0.100000000000000</double>
+                            </property>
+                            <property name="value">
+                             <double>1.000000000000000</double>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="0" column="3">
+                           <spacer name="horizontalSpacer_111">
+                            <property name="orientation">
+                             <enum>Qt::Horizontal</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>40</width>
+                              <height>20</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                          <item row="0" column="0">
+                           <widget class="QLabel" name="com_maxdens_lbl">
+                            <property name="text">
+                             <string>&gt; Maximum Allowable Density [persons/ha]:</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="0" column="1">
+                           <widget class="QDoubleSpinBox" name="com_maxdens_spin">
+                            <property name="minimumSize">
+                             <size>
+                              <width>60</width>
+                              <height>0</height>
+                             </size>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>80</width>
+                              <height>16777215</height>
+                             </size>
+                            </property>
+                            <property name="prefix">
+                             <string/>
+                            </property>
+                            <property name="suffix">
+                             <string/>
+                            </property>
+                            <property name="decimals">
+                             <number>1</number>
+                            </property>
+                            <property name="minimum">
+                             <double>0.000000000000000</double>
+                            </property>
+                            <property name="maximum">
+                             <double>200.000000000000000</double>
+                            </property>
+                            <property name="singleStep">
+                             <double>0.100000000000000</double>
+                            </property>
+                            <property name="value">
+                             <double>16.000000000000000</double>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
+                        </widget>
+                       </item>
+                       <item row="12" column="0" colspan="5">
+                        <widget class="QWidget" name="widget_4" native="true">
+                         <layout class="QGridLayout" name="gridLayout_37">
+                          <item row="0" column="2">
+                           <widget class="QCheckBox" name="ind_maxdens_auto">
+                            <property name="text">
+                             <string>Auto</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="1" column="0">
+                           <widget class="QLabel" name="ind_mindens_lbl">
+                            <property name="text">
+                             <string>&gt; Minimum Inhabitable Density [persons/ha]:</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="1" column="1">
+                           <widget class="QDoubleSpinBox" name="ind_mindens_spin">
+                            <property name="minimumSize">
+                             <size>
+                              <width>60</width>
+                              <height>0</height>
+                             </size>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>80</width>
+                              <height>16777215</height>
+                             </size>
+                            </property>
+                            <property name="prefix">
+                             <string/>
+                            </property>
+                            <property name="suffix">
+                             <string/>
+                            </property>
+                            <property name="decimals">
+                             <number>1</number>
+                            </property>
+                            <property name="minimum">
+                             <double>0.000000000000000</double>
+                            </property>
+                            <property name="maximum">
+                             <double>10.000000000000000</double>
+                            </property>
+                            <property name="singleStep">
+                             <double>0.100000000000000</double>
+                            </property>
+                            <property name="value">
+                             <double>1.000000000000000</double>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="0" column="3">
+                           <spacer name="horizontalSpacer_112">
+                            <property name="orientation">
+                             <enum>Qt::Horizontal</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>40</width>
+                              <height>20</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                          <item row="0" column="0">
+                           <widget class="QLabel" name="ind_maxdens_lbl">
+                            <property name="text">
+                             <string>&gt; Maximum Allowable Density [persons/ha]:</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="0" column="1">
+                           <widget class="QDoubleSpinBox" name="ind_maxdens_spin">
+                            <property name="minimumSize">
+                             <size>
+                              <width>60</width>
+                              <height>0</height>
+                             </size>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>80</width>
+                              <height>16777215</height>
+                             </size>
+                            </property>
+                            <property name="prefix">
+                             <string/>
+                            </property>
+                            <property name="suffix">
+                             <string/>
+                            </property>
+                            <property name="decimals">
+                             <number>1</number>
+                            </property>
+                            <property name="minimum">
+                             <double>0.000000000000000</double>
+                            </property>
+                            <property name="maximum">
+                             <double>200.000000000000000</double>
+                            </property>
+                            <property name="singleStep">
+                             <double>0.100000000000000</double>
+                            </property>
+                            <property name="value">
+                             <double>16.000000000000000</double>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
+                        </widget>
+                       </item>
+                       <item row="16" column="0" colspan="5">
+                        <widget class="QWidget" name="widget_5" native="true">
+                         <layout class="QGridLayout" name="gridLayout_38">
+                          <item row="0" column="2">
+                           <widget class="QCheckBox" name="orc_maxdens_auto">
+                            <property name="text">
+                             <string>Auto</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="1" column="0">
+                           <widget class="QLabel" name="orc_mindens_lbl">
+                            <property name="text">
+                             <string>&gt; Minimum Inhabitable Density [persons/ha]:</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="1" column="1">
+                           <widget class="QDoubleSpinBox" name="orc_mindens_spin">
+                            <property name="minimumSize">
+                             <size>
+                              <width>60</width>
+                              <height>0</height>
+                             </size>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>80</width>
+                              <height>16777215</height>
+                             </size>
+                            </property>
+                            <property name="prefix">
+                             <string/>
+                            </property>
+                            <property name="suffix">
+                             <string/>
+                            </property>
+                            <property name="decimals">
+                             <number>1</number>
+                            </property>
+                            <property name="minimum">
+                             <double>0.000000000000000</double>
+                            </property>
+                            <property name="maximum">
+                             <double>10.000000000000000</double>
+                            </property>
+                            <property name="singleStep">
+                             <double>0.100000000000000</double>
+                            </property>
+                            <property name="value">
+                             <double>1.000000000000000</double>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="0" column="3">
+                           <spacer name="horizontalSpacer_113">
+                            <property name="orientation">
+                             <enum>Qt::Horizontal</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>40</width>
+                              <height>20</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                          <item row="0" column="0">
+                           <widget class="QLabel" name="orc_maxdens_lbl">
+                            <property name="text">
+                             <string>&gt; Maximum Allowable Density [persons/ha]:</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item row="0" column="1">
+                           <widget class="QDoubleSpinBox" name="orc_maxdens_spin">
+                            <property name="minimumSize">
+                             <size>
+                              <width>60</width>
+                              <height>0</height>
+                             </size>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>80</width>
+                              <height>16777215</height>
+                             </size>
+                            </property>
+                            <property name="prefix">
+                             <string/>
+                            </property>
+                            <property name="suffix">
+                             <string/>
+                            </property>
+                            <property name="decimals">
+                             <number>1</number>
+                            </property>
+                            <property name="minimum">
+                             <double>0.000000000000000</double>
+                            </property>
+                            <property name="maximum">
+                             <double>200.000000000000000</double>
+                            </property>
+                            <property name="singleStep">
+                             <double>0.100000000000000</double>
+                            </property>
+                            <property name="value">
+                             <double>16.000000000000000</double>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
+                        </widget>
                        </item>
                       </layout>
                      </widget>
