@@ -8021,9 +8021,9 @@ p, li { white-space: pre-wrap; }
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>0</y>
+                   <y>-15</y>
                    <width>541</width>
-                   <height>391</height>
+                   <height>380</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_41">
@@ -8057,19 +8057,6 @@ p, li { white-space: pre-wrap; }
                        <bool>true</bool>
                       </property>
                      </widget>
-                    </item>
-                    <item>
-                     <spacer name="verticalSpacer_15">
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>20</width>
-                        <height>5</height>
-                       </size>
-                      </property>
-                     </spacer>
                     </item>
                     <item>
                      <widget class="QLabel" name="dynamics_pop_lbl">
@@ -8726,7 +8713,7 @@ p, li { white-space: pre-wrap; }
                    <x>0</x>
                    <y>0</y>
                    <width>541</width>
-                   <height>431</height>
+                   <height>409</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -8839,19 +8826,6 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <spacer name="verticalSpacer_11">
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>20</width>
-                        <height>5</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item>
                      <widget class="QLabel" name="dynamics_recalc_title">
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;RECALCULATION RULES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -8881,19 +8855,6 @@ p, li { white-space: pre-wrap; }
                        <string>Regenerate a stochastic perturbation every simulation time step</string>
                       </property>
                      </widget>
-                    </item>
-                    <item>
-                     <spacer name="verticalSpacer_13">
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>20</width>
-                        <height>5</height>
-                       </size>
-                      </property>
-                     </spacer>
                     </item>
                     <item>
                      <widget class="QLabel" name="dynamics_lpot_title">

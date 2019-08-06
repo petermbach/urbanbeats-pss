@@ -704,7 +704,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("pg_proportion", DOUBLE, "Proportion of parkland required per residential")
         self.create_parameter("pg_current", BOOL, "Use the current proportions of park space provision")
         self.pg_penalise = 1
-        self.pg_inertia = -500
+        self.pg_inertia = -500.0
         self.pg_provision = 1
         self.pg_proportion = 0.2
         self.pg_current = 1
@@ -715,7 +715,7 @@ class UrbanDevelopment(UBModule):
         self.create_parameter("ref_proportion", DOUBLE, "Proportion of reserves required per built-up area")
         self.create_parameter("ref_current", BOOL, "Use the current proportions of reserve space provision")
         self.ref_penalise = 1
-        self.ref_inertia = -500
+        self.ref_inertia = -500.0
         self.ref_provision = 1
         self.ref_proportion = 0.2
         self.ref_current = 1

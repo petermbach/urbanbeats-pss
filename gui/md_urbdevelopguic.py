@@ -511,18 +511,18 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         self.ui.employ_rate_orc_spin.setEnabled(self.ui.employ_rate_orc_check.isChecked())
 
         self.ui.res_maxdens_spin.setEnabled(not(self.ui.res_maxdens_auto.isChecked()))
-        self.ui.com_maxdens_spin.setEnabled(not (self.ui.com_maxdens_auto.isChecked()))
-        self.ui.ind_maxdens_spin.setEnabled(not (self.ui.ind_maxdens_auto.isChecked()))
-        self.ui.orc_maxdens_spin.setEnabled(not (self.ui.orc_maxdens_auto.isChecked()))
+        self.ui.com_maxdens_spin.setEnabled(not(self.ui.com_maxdens_auto.isChecked()))
+        self.ui.ind_maxdens_spin.setEnabled(not(self.ui.ind_maxdens_auto.isChecked()))
+        self.ui.orc_maxdens_spin.setEnabled(not(self.ui.orc_maxdens_auto.isChecked()))
 
         self.ui.pg_penalty_inertia.setEnabled(self.ui.pg_penalty_check.isChecked())
-        self.ui.pg_provision_spin.setEnabled(self.ui.pg_provision_current_check.isChecked())
-        self.ui.pg_provision_spin.setEnabled(self.ui.pg_provision_check.isChecked())
+        self.ui.pg_provision_spin.setEnabled(self.ui.pg_provision_check.isChecked() and
+                                             not(self.ui.pg_provision_current_check.isChecked()))
         self.ui.pg_provision_current_check.setEnabled(self.ui.pg_provision_check.isChecked())
-        self.ui.pg_provision_current_check.setEnabled(self.ui.pg_provision_check.isChecked())
+
         self.ui.ref_penalty_inertia.setEnabled(self.ui.ref_penalty_check.isChecked())
-        self.ui.ref_provision_spin.setEnabled(self.ui.ref_provision_current_check.isChecked())
-        self.ui.ref_provision_spin.setEnabled(self.ui.ref_provision_check.isChecked())
+        self.ui.ref_provision_spin.setEnabled(self.ui.ref_provision_check.isChecked() and
+                                              not(self.ui.ref_provision_current_check.isChecked()))
         self.ui.ref_provision_current_check.setEnabled(self.ui.ref_provision_check.isChecked())
         return True
 
