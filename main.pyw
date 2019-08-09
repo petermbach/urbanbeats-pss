@@ -52,6 +52,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from gui.urbanbeatsmaingui import Ui_MainWindow
 from gui.startscreen import Ui_StartDialog
 from gui import urbanbeatsdialogs as ubdialogs
+from gui.urbanbeatsresultsguic import LaunchResultsExplorer
 import gui.ubgui_spatialhandling as gui_ubspatial
 import gui.ubgui_reporting as ubreport
 import model.ublibs.ubspatial as ubspatial
@@ -61,7 +62,6 @@ from gui.md_delinblocksguic import DelinBlocksGuiLaunch
 from gui.md_urbplanbbguic import UrbplanbbGuiLaunch
 from gui.md_urbdevelopguic import UrbdevelopGuiLaunch, InfluenceFunctionGUILaunch
 from gui.md_spatialmappingguic import SpatialMappingGuiLaunch
-
 from gui.md_infrastructureguic import InfrastructureGuiLaunch
 
 
@@ -153,7 +153,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # WINDOW MENU
         # actionMinimize has been implemented through QtDesigner
         self.ui.actionOpen_Project_Folder.triggered.connect(self.open_project_folder)
-        # self.ui.actionResults_Viewer.triggered.connect()
+        self.ui.actionResults_Viewer.triggered.connect(self.show_results_viewer)
 
         # HELP MENU
         self.ui.actionAbout.triggered.connect(self.show_about_dialog)
@@ -211,7 +211,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.SimDock_projectfolder.clicked.connect(self.open_project_folder)
         self.ui.SimDock_mapoptions.clicked.connect(self.show_map_export_settings)
         self.ui.SimDock_report.clicked.connect(self.show_reporting_settings)
-        # self.ui.SimDock_resultsview.connect(self.show_results_viewer)
+        self.ui.SimDock_resultsview.clicked.connect(self.show_results_viewer)
         self.ui.SimDock_run.clicked.connect(self.call_run_simulation)
 
     # SCENARIO CREATION AND MANAGEMENT FUNCTIONALITY
@@ -234,6 +234,12 @@ class MainWindow(QtWidgets.QMainWindow):
                                                                self.get_active_data_library(), viewmode)
             newscenariodialog.accepted.connect(self.update_scenario_gui)
             newscenariodialog.exec_()
+
+    def show_results_viewer(self):
+        """Launches the results viewer dialog, passes the active simulation information to the viewer."""
+        resultsexplorerdialog = LaunchResultsExplorer(self, self.get_active_simulation_object(),
+                                                      self.get_active_data_library())
+        resultsexplorerdialog.exec_()
 
     def change_narrative_gui_tab(self):
         """Changes the current tab in the Scenario Narrative based on what is clicked in the Scenario Description
