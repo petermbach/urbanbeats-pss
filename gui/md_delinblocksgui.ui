@@ -1184,7 +1184,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>538</width>
-               <height>571</height>
+               <height>623</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -1205,7 +1205,7 @@ p, li { white-space: pre-wrap; }
                 <item>
                  <widget class="QLabel" name="geography_title">
                   <property name="text">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;JURISDICTIONAL AND SUBURBAN BOUNDARIES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;JURISDICTIONAL, SUBURBAN AND PLANNING BOUNDARIES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                  </widget>
                 </item>
@@ -1269,21 +1269,13 @@ Correction proceeds as follows:
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="0">
-                    <widget class="QCheckBox" name="geopolitical_check">
-                     <property name="toolTip">
-                      <string>Checking this box will produce a CBD point on the &quot;block centres&quot; output map.</string>
-                     </property>
-                     <property name="whatsThis">
-                      <string>Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM's accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.
-
-Correction proceeds as follows:
-- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.
-- If tolerance limit is not met, cell's water is routed directly to catchment outlet.</string>
-                     </property>
-                     <property name="text">
-                      <string>Jurisdictional Boundaries</string>
-                     </property>
+                   <item row="1" column="1">
+                    <widget class="QComboBox" name="geopolitical_combo">
+                     <item>
+                      <property name="text">
+                       <string>(no map selected)</string>
+                      </property>
+                     </item>
                     </widget>
                    </item>
                    <item row="3" column="1">
@@ -1307,13 +1299,61 @@ Correction proceeds as follows:
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="1">
-                    <widget class="QComboBox" name="geopolitical_combo">
+                   <item row="1" column="0">
+                    <widget class="QCheckBox" name="geopolitical_check">
+                     <property name="toolTip">
+                      <string>Checking this box will produce a CBD point on the &quot;block centres&quot; output map.</string>
+                     </property>
+                     <property name="whatsThis">
+                      <string>Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM's accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.
+
+Correction proceeds as follows:
+- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.
+- If tolerance limit is not met, cell's water is routed directly to catchment outlet.</string>
+                     </property>
+                     <property name="text">
+                      <string>Jurisdictional Boundaries</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="8" column="1">
+                    <widget class="QComboBox" name="planzone_combo">
                      <item>
                       <property name="text">
                        <string>(no map selected)</string>
                       </property>
                      </item>
+                    </widget>
+                   </item>
+                   <item row="8" column="0">
+                    <widget class="QCheckBox" name="planzone_check">
+                     <property name="toolTip">
+                      <string>Checking this box will produce a CBD point on the &quot;block centres&quot; output map.</string>
+                     </property>
+                     <property name="whatsThis">
+                      <string>Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM's accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.
+
+Correction proceeds as follows:
+- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.
+- If tolerance limit is not met, cell's water is routed directly to catchment outlet.</string>
+                     </property>
+                     <property name="text">
+                      <string>Planning Zones</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="9" column="0">
+                    <widget class="QLabel" name="planzone_lbl">
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Map Attribute Label Name:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="9" column="1">
+                    <widget class="QLineEdit" name="planzone_line">
+                     <property name="toolTip">
+                      <string>Units of decimal degrees.</string>
+                     </property>
                     </widget>
                    </item>
                   </layout>

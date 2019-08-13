@@ -36,7 +36,7 @@ DATACATEGORIES = ["Spatial Data", "Time Series Data", "Qualitative Data"]       
 SPATIALDATA = ["Boundaries", "Built Infrastructure", "Elevation", "Employment", "Land Use",
                "Locality Maps", "Overlays", "Population", "Soil", "Water Bodies"]   # Naming conventions for Spatial
 
-SUBDATASETS = {"Boundaries": ["Geopolitical", "Suburban", "Catchment"],
+SUBDATASETS = {"Boundaries": ["Geopolitical", "Suburban", "Planning Zones"],
                "Population": ["Count", "Density"],
                "Soil": ["Classification", "Infiltration Rate"],
                "Employment": ["Count", "Density"],

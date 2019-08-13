@@ -98,6 +98,10 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.suburb_combo.clear()
         [self.ui.suburb_combo.addItem(str(self.suburbmaps[0][i])) for i in range(len(self.suburbmaps[0]))]
 
+        self.planzonemaps = self.get_dataref_array("spatial", "Boundaries", "Planning Zones")
+        self.ui.planzone_combo.clear()
+        [self.ui.planzone_combo.addItem(str(self.planzonemaps[0][i])) for i in range(len(self.planzonemaps[0]))]
+
         self.ui.city_combo.clear()
         self.citynames = ubglobals.COORDINATES.keys()
         self.citynames.sort()
@@ -137,6 +141,7 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.pop_fromurbandev.clicked.connect(self.enable_disable_guis)
         self.ui.geopolitical_check.clicked.connect(self.enable_disable_guis)
         self.ui.suburb_check.clicked.connect(self.enable_disable_guis)
+        self.ui.planzone_check.clicked.connect(self.enable_disable_guis)
         self.ui.resolution_auto.clicked.connect(self.enable_disable_guis)
         self.ui.considergeo_check.clicked.connect(self.enable_disable_guis)
         self.ui.cbdknown_radio.clicked.connect(self.enable_disable_guis)
@@ -236,10 +241,18 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         except ValueError:
             self.ui.suburb_combo.setCurrentIndex(0)
 
+        try:    # PLANNING ZONES BOUNDARY MAP COMBO
+            self.ui.planzone_combo.setCurrentIndex(self.planzonemaps[1].index(
+                self.module.get_parameter("planzone_map")))
+        except ValueError:
+            self.ui.planzone_combo.setCurrentIndex(0)
+
         self.ui.geopolitical_check.setChecked(self.module.get_parameter("include_geopolitical"))
         self.ui.geopolitical_line.setText(self.module.get_parameter("geopolitical_attref"))
         self.ui.suburb_check.setChecked(self.module.get_parameter("include_suburb"))
         self.ui.suburb_line.setText(self.module.get_parameter("suburban_attref"))
+        self.ui.planzone_check.setChecked(self.module.get_parameter("include_planzone"))
+        self.ui.planzone_line.setText(self.module.get_parameter("planzone_attref"))
 
         # --- CENTRAL BUSINESS DISTRICT ---
         self.ui.considergeo_check.setChecked(self.module.get_parameter("considerCBD"))
@@ -321,8 +334,10 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.pop_combo.setEnabled(not(self.ui.pop_fromurbandev.isChecked()))
         self.ui.geopolitical_combo.setEnabled(self.ui.geopolitical_check.isChecked())
         self.ui.suburb_combo.setEnabled(self.ui.suburb_check.isChecked())
+        self.ui.planzone_combo.setEnabled(self.ui.planzone_check.isChecked())
         self.ui.geopolitical_line.setEnabled(self.ui.geopolitical_check.isChecked())
         self.ui.suburb_line.setEnabled(self.ui.suburb_check.isChecked())
+        self.ui.planzone_line.setEnabled(self.ui.planzone_check.isChecked())
 
         self.ui.resolution_spin.setEnabled(not(self.ui.resolution_auto.isChecked()))
         self.ui.city_combo.setEnabled(self.ui.cbdknown_radio.isChecked())
@@ -396,6 +411,9 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("include_suburb", int(self.ui.suburb_check.isChecked()))
         self.module.set_parameter("suburban_map", self.suburbmaps[1][self.ui.suburb_combo.currentIndex()])
         self.module.set_parameter("suburban_attref", self.ui.suburb_line.text())
+        self.module.set_parameter("include_planzone", int(self.ui.planzone_check.isChecked()))
+        self.module.set_parameter("planzone_map", self.planzonemaps[1][self.ui.planzone_combo.currentIndex()])
+        self.module.set_parameter("planzone_attref", self.ui.planzone_line.text())
 
         # --- CENTRAL BUSINESS DISTRICT ---
         self.module.set_parameter("considerCBD", int(self.ui.considergeo_check.isChecked()))
