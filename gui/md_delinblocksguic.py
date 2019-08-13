@@ -346,7 +346,9 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.cbdmark_check.setEnabled(self.ui.cbdmanual_radio.isChecked())
         self.ui.region_widget.setEnabled(self.ui.considergeo_check.isChecked())
         self.ui.rivers_combo.setEnabled(self.ui.rivers_check.isChecked())
+        self.ui.rivers_attname.setEnabled(self.ui.rivers_check.isChecked())
         self.ui.lakes_combo.setEnabled(self.ui.lakes_check.isChecked())
+        self.ui.lakes_attname.setEnabled(self.ui.lakes_check.isChecked())
         self.ui.waterbody_distance_check.setEnabled((self.ui.rivers_check.isChecked() or
                                                      self.ui.lakes_check.isChecked()))
         self.ui.natfeature_check.setEnabled((self.ui.rivers_check.isChecked() or

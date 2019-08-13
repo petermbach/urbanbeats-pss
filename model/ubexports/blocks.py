@@ -123,6 +123,9 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
     if map_attr.get_attribute("HasSUBURBS"):        # IF SUBURBS WERE INCLUDED IN THE SIMULATION
         fielddefmatrix.append(ogr.FieldDefn("Suburb", ogr.OFTString))
 
+    if map_attr.get_attribute("HasPLANZONES"):      # IF PLANNING ZONES WERE INCLUDED IN THE SIMULATION
+        fielddefmatrix.append(ogr.FieldDefn("PlanZone", ogr.OFTString))
+
     if map_attr.get_attribute("HasRIVERS"):         # IF A RIVERS MAP WAS LOADED IN THE SIMULATION
         fielddefmatrix.append(ogr.FieldDefn("HasRiver", ogr.OFTInteger))
         fielddefmatrix.append(ogr.FieldDefn("RiverNames", ogr.OFTString))
@@ -438,6 +441,9 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
 
         if map_attr.get_attribute("HasSUBURBS"):
             feature.SetField("Suburb", str(currentAttList.get_attribute("Suburb")))
+
+        if map_attr.get_attribute("HasPLANZONES"):
+            feature.SetField("PlanZone", str(currentAttList.get_attribute("PlanZone")))
 
         if map_attr.get_attribute("HasRIVERS"):
             feature.SetField("HasRiver", int(currentAttList.get_attribute("HasRiver")))
