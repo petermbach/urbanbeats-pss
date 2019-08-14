@@ -61,7 +61,7 @@ def adjust_sample_range(parmin, parmax, parusemed):
     :return a list object containing two values representing the sampling range if median = True, returns same values
     """
     if parusemed:
-        med = (min + max) / 2.0
+        med = (parmin + parmax) / 2.0
         return [med, med]
     else:
         return [parmin, parmax]
