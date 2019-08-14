@@ -90,7 +90,7 @@
          <enum>QTabWidget::West</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="summary">
          <attribute name="icon">
@@ -214,6 +214,69 @@
             </item>
             <item>
              <widget class="QComboBox" name="map_scenario_combo"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="map_resulttype">
+              <property name="text">
+               <string>Output Data Set:</string>
+              </property>
+              <property name="wordWrap">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="map_resulttype_combo">
+              <item>
+               <property name="text">
+                <string>Block Data</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Temporal Water Demand</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Urban Heat Island</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Urban Model</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="map_viewmode">
+              <property name="text">
+               <string>Select View Mode:</string>
+              </property>
+              <property name="wordWrap">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="map_viewmode_combo">
+              <item>
+               <property name="text">
+                <string>Basemap</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Dashboard</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Data Only View</string>
+               </property>
+              </item>
+             </widget>
             </item>
             <item>
              <widget class="QLabel" name="map_results">
