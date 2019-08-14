@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-@file   urbanbeatsdialogs.py
+@file   urbanbeatsresultsguic.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 
