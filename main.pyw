@@ -53,6 +53,7 @@ from gui.urbanbeatsmaingui import Ui_MainWindow
 from gui.startscreen import Ui_StartDialog
 from gui import urbanbeatsdialogs as ubdialogs
 from gui.urbanbeatsresultsguic import LaunchResultsExplorer
+from gui.urbanbeatscalibrationguic import LaunchCalibrationViewer
 import gui.ubgui_spatialhandling as gui_ubspatial
 import gui.ubgui_reporting as ubreport
 import model.ublibs.ubspatial as ubspatial
@@ -148,7 +149,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         #
         # ADVANCED MENU
-        # self.ui.actionModel_Calibration_Viewer.triggered.connect()
+        self.ui.actionModel_Calibration_Viewer.triggered.connect(self.show_calibration_viewer)
         #
         # WINDOW MENU
         # actionMinimize has been implemented through QtDesigner
@@ -240,6 +241,14 @@ class MainWindow(QtWidgets.QMainWindow):
         resultsexplorerdialog = LaunchResultsExplorer(self, self.get_active_simulation_object(),
                                                       self.get_active_data_library())
         resultsexplorerdialog.exec_()
+
+    def show_calibration_viewer(self):
+        """Launches the calibration viewer, passes the active simulation information for the user to undertake
+        the calibration."""
+        activesim = self.get_active_simulation_object()
+        activescenario = activesim.get_active_scenario()
+        calibrationviewer = LaunchCalibrationViewer(self, activesim, activescenario)
+        calibrationviewer.exec_()
 
     def change_narrative_gui_tab(self):
         """Changes the current tab in the Scenario Narrative based on what is clicked in the Scenario Description
