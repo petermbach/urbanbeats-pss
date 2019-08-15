@@ -229,6 +229,42 @@ def calculate_metric_shannon(landclassprop, richness):
     return shandiv, shandom, shaneven
 
 
+def get_subregions_subset_from_blocks(regiontype, blockslist):
+    """Scans the list of Blocks and returns a list set of all names of sub-regions within the map.
+
+    :param regiontype: the attribute name representing the region type: "Region", "Suburb", "PlanZone"
+    :param blockslist: the list of UBVector() Block objects
+    """
+    regions = []
+    for b in blockslist:
+        if b.get_attribute(regiontype) is None:
+            continue
+        elif b.get_attribute(regiontype) in regions:
+            continue
+        else:
+            regions.append(b.get_attribute(regiontype))
+    return regions
+
+
+def get_block_attribute_for_region(regiontype, regionname, blockslist, att_name):
+    """Scans the list of Blocks and returns a list of attribute values with the given attribute name for all Blocks
+    within a defined region.
+
+    :param regiontype: "Region", "Suburb", "PlanZone"
+    :param regionname: The string name of the region
+    :param blockslist: the list of UBVector() objects representing the Blocks
+    :param att_name: the name of the attribute to scan for
+    :return: a list [] of the attribute values for that region
+    """
+    att_values = []
+    for b in blockslist:
+        if blockslist.get_attribute(regiontype) != regionname:
+            continue    # If the Block is not in the designated region, skip
+        else:
+            att_values.append(b.get_attribute(att_name))
+    return att_values
+
+
 def find_dominant_category(datamatrix, nodatavalue):
     """Finds the dominant category in a data matrix and returns the category name.
 
