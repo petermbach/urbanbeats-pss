@@ -109,6 +109,26 @@ class UrbanBeatsScenario(threading.Thread):
 
         self.__active_assets = None  # Will hold a reference to the active asset dictionary based on current dt
 
+        # Calibration history - stores user data on model calibration.
+        self.__calibration_history = {
+            "tia": { "Block": None, "Region": None, "Suburb": None, "PlanZone": None, "Total": None},
+            "tif": { "Block": None, "Region": None, "Suburb": None, "PlanZone": None, "Total": None},
+            "allot": { "Block": None, "Region": None, "Suburb": None, "PlanZone": None, "Total": None},
+            "houses": { "Block": None, "Region": None, "Suburb": None, "PlanZone": None, "Total": None},
+            "roofarea": { "Block": None, "Region": None, "Suburb": None, "PlanZone": None, "Total": None},
+            "demand": { "Block": None, "Region": None, "Suburb": None, "PlanZone": None, "Total": None},
+            "ww": { "Block": None, "Region": None, "Suburb": None, "PlanZone": None, "Total": None}
+            }   # Links to calibration files based on the type of parameter and the aggregation level
+
+    def get_calibration_data_file(self, param, aggreg):
+        return self.__calibration_history[param][aggreg]
+
+    def set_active_calibration_data_file(self, param, aggreg, fname):
+        try:
+            self.__calibration_history[param][aggreg] = fname
+        except KeyError:
+            return True
+
     def append_point(self, pt):
         """ Adds a point tuple (x, y) to the global point list."""
         if pt not in self.__global_point_list:
