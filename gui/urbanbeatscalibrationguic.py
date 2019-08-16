@@ -83,6 +83,8 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
         self.active_model_data = {}
         self.active_param = None
         self.active_agg_level = None
+        self.active_obs_mod = [[],[],[]]    # [ Key index, Observed, Modelled ]
+        self.active_metrics = []
 
         # --- SIGNALS AND SLOTS ---
         self.ui.set_param_combo.currentIndexChanged.connect(self.setup_calibration)
@@ -226,7 +228,8 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
                 if calibdata is not None:
                     twi = QtWidgets.QTableWidgetItem()
                     try:
-                        twi.setText(str(calibdata["BlockID"+str(self.blockslist[i].get_attribute("BlockID"))]))
+                        twi.setText(str(round(calibdata["BlockID" +
+                                                        str(self.blockslist[i].get_attribute("BlockID"))], 2)))
                     except KeyError:
                         continue
                     self.ui.set_data_table.setItem(0, 1, twi)
@@ -238,7 +241,7 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
             if calibdata is not None:
                 twi = QtWidgets.QTableWidgetItem()
                 try:
-                    twi.setText(str(calibdata["Case Study"]))
+                    twi.setText(str(round(calibdata["Case Study"], 2)))
                 except KeyError:
                     pass
                 self.ui.set_data_table.setItem(0, 1, twi)
@@ -252,7 +255,7 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
                 if calibdata is not None:
                     twi = QtWidgets.QTableWidgetItem()
                     try:
-                        twi.setText(str(calibdata[n]))
+                        twi.setText(str(round(calibdata[n], 2)))
                     except KeyError:
                         continue
                     self.ui.set_data_table.setItem(0, 1, twi)
@@ -266,7 +269,7 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
                 if calibdata is not None:
                     twi = QtWidgets.QTableWidgetItem()
                     try:
-                        twi.setText(str(calibdata[n]))
+                        twi.setText(str(round(calibdata[n], 2)))
                     except KeyError:
                         continue
                     self.ui.set_data_table.setItem(0, 1, twi)
@@ -280,7 +283,7 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
                 if calibdata is not None:
                     twi = QtWidgets.QTableWidgetItem()
                     try:
-                        twi.setText(str(calibdata[n]))
+                        twi.setText(str(round(calibdata[n], 2)))
                     except KeyError:
                         continue
                     self.ui.set_data_table.setItem(0, 1, twi)
@@ -292,7 +295,8 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
         :return: final array [ [BlockID], [Value] ]
         """
         message = "Browse for Calibration Data Set (comma-separated)..."
-        calibfile, _filter = QtWidgets.QFileDialog.getOpenFileName(self, message, os.curdir, "Comma-delimited (*.csv *.txt)")
+        calibfile, _filter = QtWidgets.QFileDialog.getOpenFileName(self, message, os.curdir,
+                                                                   "Comma-delimited (*.csv *.txt)")
         self.scenario.set_active_calibration_data_file(self.active_param, self.active_agg_level, calibfile)
         if calibfile:       # IF TRUE, READ THE DATA FILE
             rawdata = []
@@ -306,7 +310,6 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
                     calibdata[rawdata[i][0]] = float(rawdata[i][1])
                 except ValueError:
                     pass
-            print calibdata
             self.active_calib_data = calibdata
             self.setup_data_table(calibdata)
         else:
@@ -392,7 +395,7 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
             activetot = []
             for i in range(len(self.blockslist)):
                 imptot.append(calibdata["BlockID"+str(self.blockslist[i].get_attribute("BlockID"))])
-                activetot.append(calibdata["BlockID"+str(self.blockslist[i].get_attribute("Active"))])
+                activetot.append(self.blockslist[i].get_attribute("Active"))
             if metric == "Area":
                 return {"Case Study":sum(imptot)}
             elif metric == "Fraction":
@@ -435,13 +438,12 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
                 keyindex.append(i)
                 mod.append(self.active_model_data[i])
                 obs.append(self.active_calib_data[i])
+        self.active_obs_mod = [keyindex, obs, mod]
         pts_NC = max(mod_N - len(mod), obs_N - len(obs))
-        print "Observed", obs_N, "Modelled", mod_N, "Not-compared", pts_NC
         err = []
         for i in range(len(mod)):
             err.append(abs(mod[i] - obs[i]))
         discrepancy_maxID = keyindex[err.index(max(err))]
-        print "Largest discrepancy", discrepancy_maxID
 
         # Calculate evaluation statistics
         if self.ui.set_eval_nash.isChecked() and self.active_agg_level != "Total":
@@ -459,6 +461,8 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
 
         self.generate_results_box_text(mod_N, obs_N, pts_NC, discrepancy_maxID,
                                        nashE, rmse, avgerr, minerr, maxerr, e10, e30, e50)
+        self.active_metrics = [mod_N, obs_N, pts_NC, discrepancy_maxID, nashE, rmse, avgerr, minerr, maxerr,
+                               e10, e30, e50]
         return True
 
     def get_modelled_data(self):
@@ -488,7 +492,7 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
             regionnames = ubmethods.get_subregions_subset_from_blocks(self.active_agg_level, self.blockslist)
             for n in regionnames:
                 self.active_model_data[n] = 0.0
-                subsetblocks = ubmethods.get_subset_of_blocks_by_region(self.active_agg_level, n)
+                subsetblocks = ubmethods.get_subset_of_blocks_by_region(self.active_agg_level, n, self.blockslist)
                 adjustment = 0.0
                 for i in range(len(subsetblocks)):
                     for j in range(len(attnames)):
@@ -502,18 +506,33 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
                 self.active_model_data[n] = float(self.active_model_data[n] / adjustment)
         return True
 
+    def export_current_obs_mod_results(self):
+        """Exports the current observed and modelled results to a .csv file."""
+        if len(self.active_calib_data) == 0:
+            prompt_msg = "No calibration results to export yet!"
+            QtWidgets.QMessageBox.warning(self, 'No Calibration Results', prompt_msg, QtWidgets.QMessageBox.Ok)
+            return True
+
+        datatype = "CSV (*.csv)"
+        message = "Export to .csv file, choose location..."
+        datafile, _filter = QtWidgets.QFileDialog.getSaveFileName(self, message, os.curdir, datatype)
+        if datafile:
+            f = open(datafile, 'w')
+            f.write(self.ui.out_box.toPlainText())
+            f.write("\n\n")
+            f.write("Region_Name, Observed, Modelled\n")
+            for i in range(len(self.active_obs_mod[0])):
+                f.write(str(self.active_obs_mod[0][i]) + "," + str(self.active_obs_mod[1][i]) + "," +
+                        str(self.active_obs_mod[2][i])+"\n")
+            f.close()
+            QtWidgets.QMessageBox.warning(self, "Export Complete",
+                                          "Results for current calibration successfully exported!",
+                                          QtWidgets.QMessageBox.Ok)
+        return True
+
     def refresh_plot(self):
         """Plots the modelled vs. observed data on the plot. This function is called either when the combo boxes
         are updated or when the data table is updated or when the plot options are updated."""
-        pass
-
-    def generate_imparea_spongecitiesguide(self):
-        """Generates an impervious area estimate from the Sponge Cities Guidelines for the current Blocks List.
-        Summarises this to regional scale if necessary."""
-        pass
-
-    def export_current_obs_mod_results(self):
-        """Exports the current observed and modelled results to a .csv file."""
         pass
 
     def generate_results_box_text(self, mod_N, obs_N, pts_NC, maxDID, nashE, rmse, avgerr, minerr, maxerr,
@@ -541,8 +560,8 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
         summaryline += "---------------------------\n"
 
         # 1.1 General Reporting Stuff, data stats
-        summaryline += "Observed Data Points: " + str(len(obs_N)) + "\n"
-        summaryline += "Modelled Data Points: " + str(len(mod_N)) + "\n"
+        summaryline += "Observed Data Points: " + str(obs_N) + "\n"
+        summaryline += "Modelled Data Points: " + str(mod_N) + "\n"
         summaryline += "Data Points not compared: " + str(pts_NC) + "\n\n"
 
         # 1.2 Goodness of Fit Criterion
@@ -611,3 +630,10 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
             maxerr = relErrors[0]
             minerr = relErrors[0]
             return round(avgerr, 2), round(maxerr, 2), round(minerr, 2), "-", "-", "-"
+
+    # [COMING SOON]
+    def generate_imparea_spongecitiesguide(self):
+        """Generates an impervious area estimate from the Sponge Cities Guidelines for the current Blocks List.
+        Summarises this to regional scale if necessary."""
+        pass
+
