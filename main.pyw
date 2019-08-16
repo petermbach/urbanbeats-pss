@@ -84,6 +84,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.setWindowTitle("规划模型")       #Chinese Translation - automate!
         self.initialize_output_console()
         self.consoleobserver = ConsoleObserver()
+        self.rootfolder = UBEATSROOT
 
         # --- GLOBAL OPTIONS ---
         self.__global_options = {}

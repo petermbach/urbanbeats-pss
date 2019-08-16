@@ -180,10 +180,22 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
             self.setup_data_table()
         elif ds == "MUSIC":
             self.ui.set_data_load.setEnabled(0)
-            self.generate_hypothetical_dataset("MUSIC")
+            if self.active_param in ["allot", "houses", "roofarea", "demand", "ww"]:
+                prompt_msg = "There is no data for generating a hypothetical data set for the current metric. " \
+                             "Select another parameter"
+                QtWidgets.QMessageBox.warning(self, 'Non-compatible data', prompt_msg, QtWidgets.QMessageBox.Ok)
+                return True
+            elif self.active_param == "tia":
+                calibdata = self.generate_imp_musicmodellingguide("Area")
+            else:
+                calibdata = self.generate_imp_musicmodellingguide("Fraction")
+            self.setup_data_table(calibdata)
         elif ds == "Sponge":
             self.ui.set_data_load.setEnabled(0)
+            prompt_msg = "Guide currently does not exist. Select another option."
+            QtWidgets.QMessageBox.warning(self, 'Not yet available', prompt_msg, QtWidgets.QMessageBox.Ok)
             self.generate_hypothetical_dataset("Sponge")
+            return True
         else:
             pass
         self.ui.set_data_export.setEnabled(1)   # If we've made it this far, then we have the ability to export
@@ -215,6 +227,13 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
             twi.setText("Case Study")
             self.ui.set_data_table.insertRow(0)
             self.ui.set_data_table.setItem(0, 0, twi)
+            if calibdata is not None:
+                twi = QtWidgets.QTableWidgetItem()
+                try:
+                    twi.setText(str(calibdata["Case Study"]))
+                except KeyError:
+                    pass
+                self.ui.set_data_table.setItem(0, 1, twi)
         elif self.active_agg_level == "PlanZone":
             names = ubmethods.get_subregions_subset_from_blocks("PlanZone", self.blockslist)
             for n in names:
@@ -323,31 +342,105 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
         """
         pass
 
+    def generate_imp_musicmodellingguide(self, metric):
+        """Generates an impervious area estimate from the Melbourne Water MUSIC Modelling Guidelines for the current
+        Blocks List. Summarises this to regional scale if necessary.
+        """
+        block_size = self.map_attr.get_attribute("BlockSize")       # Needed for area vs. fraction calculation
+
+        nonreslucmatrix = ["COM", "LI", "HI", "ORC", "CIV", "SVU", "TR", "RD", "PG", "REF", "UND", "NA",
+                           "FOR", "AGR", "WAT"]     # Abbreviations for non-residential land uses
+
+        dataset = {}    # Will hold the MW MMG Data Set
+        rawdata = []
+        f = open(self.maingui.rootfolder + "/ancillary/mw_mmg.cfg", 'r')
+        for lines in f:
+            rawdata.append(lines.split(','))
+        f.close()
+        for lines in range(len(rawdata)):
+            dataset[str(rawdata[lines][0])] = rawdata[lines][1:]
+
+        # Calculate impervious area for non-residential land uses block by block
+        calibdata = {}      # Will hold the calibration data set
+        curindex = 0
+        for i in range(len(self.blockslist)):       # Scan all the Blocks
+            asset = self.blockslist[i]
+            blockID = "BlockID"+str(asset.get_attribute("BlockID"))
+            if asset.get_attribute("Status") == 0:
+                continue        # Check zero status
+
+            calibdata[blockID] = 0.0     # Initialize the value
+
+            # Non-Residential Land uses - add impervious area for current
+            for luc in nonreslucmatrix:
+                calibdata[blockID] += asset.get_attribute("pLU_"+luc) * float(dataset[luc][2])  # Grab the Median
+
+            # Residential - figure out lot size first, then work out impervious area
+            lotarea = asset.get_attribute("ResLotArea")
+            if lotarea == 0 or lotarea is None:
+                pass
+            if lotarea < 350.0:
+                calibdata[blockID] += asset.get_attribute("pLU_RES") * float(dataset["RES-350"][2])
+            elif lotarea < 500.0:
+                calibdata[blockID] += asset.get_attribute("pLU_RES") * float(dataset["RES-500"][2])
+            elif lotarea < 800.0:
+                calibdata[blockID] += asset.get_attribute("pLU_RES") * float(dataset["RES-800"][2])
+            else:
+                calibdata[blockID] += asset.get_attribute("pLU_RES") * float(dataset["RES-4000"][2])
+
+            # HDR
+            if asset.get_attribute("HDRFlats") not in [0, None]:
+                calibdata[blockID] += asset.get_attribute("pLU_RES") * float(dataset["HDR"][2])
+
+            if metric == "Area":    # Convert proportions to area
+                calibdata[blockID] = calibdata[blockID] * asset.get_attribute("Active") * float(block_size) * float(
+                    block_size)
+            else:
+                pass    # Fraction
+        if self.active_agg_level == "Block":
+            return calibdata
+        elif self.active_agg_level == "Total":
+            imptot = []
+            activetot = []
+            for i in range(len(self.blockslist)):
+                if not self.blockslist[i].get_attribute("Status"): continue
+                imptot.append(calibdata["BlockID"+str(self.blockslist[i].get_attribute("BlockID"))])
+                activetot.append(calibdata["BlockID"+str(self.blockslist[i].get_attribute("Active"))])
+            if metric == "Area":
+                return {"Case Study":sum(imptot)}
+            elif metric == "Fraction":
+                return {"Case Study": float(sum(imptot) / sum(activetot))}
+            else:
+                return None
+        else:   # There is a smaller aggregation level...
+            newcalibdata = {}
+            agg_levels = ubmethods.get_subregions_subset_from_blocks(self.active_agg_level, self.blockslist)
+            for i in agg_levels:    # Set up the dictionary
+                newcalibdata[i] = [[], []]      # [ [imp_total], [activity] ]
+            for i in range(len(self.blockslist)):   # Go through Blocks list and add data
+                if not self.blockslist[i].get_attribute("Status"): continue
+                region = self.blockslist[i].get_attribute(self.active_agg_level)
+                newcalibdata[region][0].append(calibdata["BlockID"+str(self.blockslist[i].get_attribute("BlockID"))])
+                newcalibdata[region][1].append(self.blockslist[i].get_attribute("Active"))
+            for i in newcalibdata.keys():       # Go region by region
+                # For every region, do the summation
+                if metric == "Area":
+                    newcalibdata[i] = sum(newcalibdata[i][0])
+                else:
+                    numerator = []
+                    for j in range(len(newcalibdata[i][0])):
+                        numerator.append(newcalibdata[i][0][j] * newcalibdata[i][1][j])
+                    newcalibdata[i] = float(sum(numerator) / sum(newcalibdata[i][1]))
+            return newcalibdata     # Returns a dictionary with "Region": value
+
+    def generate_imparea_spongecitiesguide(self):
+        """Generates an impervious area estimate from the Sponge Cities Guidelines for the current Blocks List.
+        Summarises this to regional scale if necessary."""
+        pass
+
     def export_current_obs_mod_results(self):
         """Exports the current observed and modelled results to a .csv file."""
         pass
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     def calculateNashE(real, mod):
         # 1 - sum(mod/obs diff squared) / sum(mod/modavg diff squared)
