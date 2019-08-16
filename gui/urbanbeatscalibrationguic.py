@@ -62,14 +62,21 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
             self.blockslist = None
         else:
             self.map_attr = scenario.get_asset_with_name("MapAttributes")
-            self.blockslist = self.scenario.get_assets_with_identifier("BlockID")
-
-        print self.map_attr
+            blocks = self.scenario.get_assets_with_identifier("BlockID")
+            self.blockslist = []
+            for i in range(len(blocks)):
+                if not blocks[i].get_attribute("Status"):
+                    continue
+                self.blockslist.append(blocks[i])   # This blocks list removes all status zero blocks
 
         self.ui.set_param_combo.setCurrentIndex(0)
         self.ui.set_aggregation_combo.setCurrentIndex(0)
         self.ui.set_datasource_combo.setCurrentIndex(0)
         self.ui.plottype_combo.setCurrentIndex(0)
+
+        self.attribute_keys = {"allots": ["ResAllots"], "houses": ["ResHouses", "HDRFlats"], "tia": ["Blk_TIA"],
+                               "roofarea": ["ResRoof", "HDRRoofA"], "tif": ["Blk_TIF"], "demand": ["Blk_WD"],
+                               "ww": ["Blk_WW"]}
 
         # --- STATE VARIABLES ---
         self.active_calib_data = {}     # Active calibration data, dictionary keys represent BlockIDs
@@ -189,6 +196,7 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
                 calibdata = self.generate_imp_musicmodellingguide("Area")
             else:
                 calibdata = self.generate_imp_musicmodellingguide("Fraction")
+            self.active_calib_data = calibdata
             self.setup_data_table(calibdata)
         elif ds == "Sponge":
             self.ui.set_data_load.setEnabled(0)
@@ -323,25 +331,6 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
             QtWidgets.QMessageBox.information(self, 'Export Complete', prompt_msg, QtWidgets.QMessageBox.Ok)
             self.scenario.set_active_calibration_data_file(self.active_param, self.active_agg_level, datafile)
 
-    def refresh_results(self):
-        """Undertakes the whole calibration procedure of comparing the observed and modelled data. This method also
-        writes the results to the results text box."""
-
-        pass
-
-    def refresh_plot(self):
-        """Plots the modelled vs. observed data on the plot. This function is called either when the combo boxes
-        are updated or when the data table is updated or when the plot options are updated."""
-        pass
-
-    def generate_hypothetical_dataset(self, reference):
-        """Generates a hypothetical calibration data set based on the given parameters and the convention to be used.
-
-        :param reference: "MUSIC" - Melbourne Water MUSIC modelling guidelines, "Sponge" - Sponge Cities guideline
-        :return: Refreshes the table with the data.
-        """
-        pass
-
     def generate_imp_musicmodellingguide(self, metric):
         """Generates an impervious area estimate from the Melbourne Water MUSIC Modelling Guidelines for the current
         Blocks List. Summarises this to regional scale if necessary.
@@ -362,7 +351,6 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
 
         # Calculate impervious area for non-residential land uses block by block
         calibdata = {}      # Will hold the calibration data set
-        curindex = 0
         for i in range(len(self.blockslist)):       # Scan all the Blocks
             asset = self.blockslist[i]
             blockID = "BlockID"+str(asset.get_attribute("BlockID"))
@@ -403,7 +391,6 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
             imptot = []
             activetot = []
             for i in range(len(self.blockslist)):
-                if not self.blockslist[i].get_attribute("Status"): continue
                 imptot.append(calibdata["BlockID"+str(self.blockslist[i].get_attribute("BlockID"))])
                 activetot.append(calibdata["BlockID"+str(self.blockslist[i].get_attribute("Active"))])
             if metric == "Area":
@@ -418,7 +405,6 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
             for i in agg_levels:    # Set up the dictionary
                 newcalibdata[i] = [[], []]      # [ [imp_total], [activity] ]
             for i in range(len(self.blockslist)):   # Go through Blocks list and add data
-                if not self.blockslist[i].get_attribute("Status"): continue
                 region = self.blockslist[i].get_attribute(self.active_agg_level)
                 newcalibdata[region][0].append(calibdata["BlockID"+str(self.blockslist[i].get_attribute("BlockID"))])
                 newcalibdata[region][1].append(self.blockslist[i].get_attribute("Active"))
@@ -433,6 +419,94 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
                     newcalibdata[i] = float(sum(numerator) / sum(newcalibdata[i][1]))
             return newcalibdata     # Returns a dictionary with "Region": value
 
+    def refresh_results(self):
+        """Undertakes the whole calibration procedure of comparing the observed and modelled data. This method also
+        writes the results to the results text box."""
+        self.get_modelled_data()
+        mod_N = len(self.active_model_data)
+        obs_N = len(self.active_calib_data)
+        keyindex = []
+        mod = []
+        obs = []
+        for i in self.active_model_data.keys():
+            if i not in self.active_calib_data.keys():
+                continue
+            else:
+                keyindex.append(i)
+                mod.append(self.active_model_data[i])
+                obs.append(self.active_calib_data[i])
+        pts_NC = max(mod_N - len(mod), obs_N - len(obs))
+        print "Observed", obs_N, "Modelled", mod_N, "Not-compared", pts_NC
+        err = []
+        for i in range(len(mod)):
+            err.append(abs(mod[i] - obs[i]))
+        discrepancy_maxID = keyindex[err.index(max(err))]
+        print "Largest discrepancy", discrepancy_maxID
+
+        # Calculate evaluation statistics
+        if self.ui.set_eval_nash.isChecked() and self.active_agg_level != "Total":
+            nashE = self.calculate_nash_sutcliffe(obs, mod)
+        else:
+            nashE = "Not Calculated"
+        if self.ui.set_eval_rmse.isChecked() and self.active_agg_level != "Total":
+            rmse = self.calculate_rmse(obs, mod)
+        else:
+            rmse = "Not Calculated"
+        if self.ui.set_eval_error.isChecked():
+            avgerr, minerr, maxerr, e10, e30, e50 = self.calculate_relative_errors(obs, mod)
+        else:
+            avgerr, minerr, maxerr, e10, e30, e50 = "-", "-", "-", "-", "-", "-"
+
+        self.generate_results_box_text(mod_N, obs_N, pts_NC, discrepancy_maxID,
+                                       nashE, rmse, avgerr, minerr, maxerr, e10, e30, e50)
+        return True
+
+    def get_modelled_data(self):
+        """Sets the self.active_model_data variable with the modelled data for comparison with calibration data."""
+        attnames = self.attribute_keys[self.active_param]   # The attributes to look up.
+        self.active_model_data = {}
+        if self.active_agg_level == "Total":    # I want the whole sum across the case study
+            self.active_model_data["Case Study"] = 0.0
+            adjustment = 0.0    # Holds the adjustment factor for 'tif'
+            for i in range(len(self.blockslist)):
+                for j in range(len(attnames)):
+                    if self.active_param != "tif":
+                        self.active_model_data["Case Study"] += self.blockslist[i].get_attribute(attnames[j])
+                        adjustment = 1.0
+                    else:
+                        self.active_model_data["Case Study"] += self.blockslist[i].get_attribute(attnames[j]) * \
+                                                                self.blockslist[i].get_attribute("Active")
+                        adjustment += self.blockslist[i].get_attribute("Active")
+            self.active_model_data["Case Study"] = float(self.active_model_data["Case Study"] / adjustment)
+        elif self.active_agg_level == "Block":
+            for i in range(len(self.blockslist)):
+                blockid = "BlockID" + str(self.blockslist[i].get_attribute("BlockID"))
+                self.active_model_data[blockid] = 0.0
+                for j in range(len(attnames)):
+                    self.active_model_data[blockid] += self.blockslist[i].get_attribute(attnames[j])
+        else:   # Region based
+            regionnames = ubmethods.get_subregions_subset_from_blocks(self.active_agg_level, self.blockslist)
+            for n in regionnames:
+                self.active_model_data[n] = 0.0
+                subsetblocks = ubmethods.get_subset_of_blocks_by_region(self.active_agg_level, n)
+                adjustment = 0.0
+                for i in range(len(subsetblocks)):
+                    for j in range(len(attnames)):
+                        if self.active_param != "tif":
+                            self.active_model_data[n] += subsetblocks[i].get_attribute(attnames[j])
+                            adjustment = 1.0
+                        else:
+                            self.active_model_data[n] += subsetblocks[i].get_attribute(attnames[j]) * \
+                                                         subsetblocks[i].get_attribute("Active")
+                            adjustment += subsetblocks[i].get_attribute("Active")
+                self.active_model_data[n] = float(self.active_model_data[n] / adjustment)
+        return True
+
+    def refresh_plot(self):
+        """Plots the modelled vs. observed data on the plot. This function is called either when the combo boxes
+        are updated or when the data table is updated or when the plot options are updated."""
+        pass
+
     def generate_imparea_spongecitiesguide(self):
         """Generates an impervious area estimate from the Sponge Cities Guidelines for the current Blocks List.
         Summarises this to regional scale if necessary."""
@@ -442,50 +516,98 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
         """Exports the current observed and modelled results to a .csv file."""
         pass
 
-    def calculateNashE(real, mod):
+    def generate_results_box_text(self, mod_N, obs_N, pts_NC, maxDID, nashE, rmse, avgerr, minerr, maxerr,
+                                  e10, e30, e50):
+        """Generates a plain text string for the results viewer box based on the user-input parameters. These are all
+        calculated based on the observed and calibrated data as well as the options selected.
+
+        :param mod_N: modelled number of points
+        :param obs_N: observed number of points
+        :param pts_NC: number of points not compared
+        :param maxDID: maximum discrepancy location
+        :param nashE: Nash-Sutcliffe Coefficient of Efficiency
+        :param rmse: Root-mean square error
+        :param avgerr: average relative error
+        :param minerr: minimum relative error
+        :param maxerr: maximum relative error
+        :param e10: number of points with errors less than 10%
+        :param e30: number of points with errors less than 30%
+        :param e50: number of points with errors less than 50%
+        :return: a str() text
+        """
+        self.ui.out_box.clear()
+        summaryline = ""
+        summaryline += "Summary of Calibration: \n"
+        summaryline += "---------------------------\n"
+
+        # 1.1 General Reporting Stuff, data stats
+        summaryline += "Observed Data Points: " + str(len(obs_N)) + "\n"
+        summaryline += "Modelled Data Points: " + str(len(mod_N)) + "\n"
+        summaryline += "Data Points not compared: " + str(pts_NC) + "\n\n"
+
+        # 1.2 Goodness of Fit Criterion
+        summaryline += "Largest Discrepancy: " + str(maxDID) + "\n\n"
+        summaryline += "Nash-Sutcliffe E = " + str(nashE) + "\n"
+        summaryline += "RMSE = " + str(rmse) + "\n"
+        summaryline += "Average Relative Error = " + str(avgerr) + "%\n"
+        summaryline += "Min. Relative Error = " + str(minerr) + "%\n"
+        summaryline += "Max Relative Error = " + str(maxerr) + "%\n\n"
+        summaryline += "Data Points with < 10% Error = " + str(e10) + "\n"
+        summaryline += "Data Points with < 30% Error = " + str(e30) + "\n"
+        summaryline += "Data Points with < 50% Error = " + str(e50) + "\n"
+        self.ui.out_box.setPlainText(summaryline)
+        return True
+
+    def calculate_nash_sutcliffe(self, observed, modelled):
+        """Calculates the Nash-Sutcliffe Coefficient of Efficiency, which indicates whether the average of a data
+        set is a better predictor than a range o modelled values."""
         # 1 - sum(mod/obs diff squared) / sum(mod/modavg diff squared)
-        modavg = np.average(mod)
+        modavg = np.average(modelled)
+        omsq, mmsq = 0.0, 0.0
+        for i in range(len(observed)):
+            omsq += pow((observed[i] - modelled[i]), 2)
+            mmsq += pow((modelled[i] - modavg), 2)
+        return round((1.0 - (omsq / mmsq)), 2)
 
-        omsq = 0
-        mmsq = 0
-
-        for i in range(len(real)):
-            omsq += pow((real[i] - mod[i]), 2)
-            mmsq += pow((mod[i] - modavg), 2)
-
-        return (1.0 - (omsq / mmsq))
-
-    def calculateRMSE(real, mod):
+    def calculate_rmse(self, observed, modelled):
+        """Calcualtes the root-mean-squared error between the observed and modelled data sets."""
         errordiff = 0
+        for i in range(len(observed)):
+            errordiff += pow((observed[i] - modelled[i]), 2)
+        return round(np.sqrt(errordiff / float(len(observed))), 2)
 
-        for i in range(len(real)):
-            errordiff += pow((real[i] - mod[i]), 2)
-
-        return np.sqrt(errordiff / float(len(real)))
-
-    def calculateRelativeError(real, mod):
+    def calculate_relative_errors(self, observed, modelled):
+        """Calcualtes the relative error between the observed and modelled data sets. Also returns a distribution of
+        errors."""
         relErrors = []
-        for i in range(len(real)):
-            if real[i] == 0:
+        for i in range(len(observed)):
+            if observed[i] == 0:
                 relErrors.append(100.0)
             else:
-                relErrors.append(abs(round((real[i] - mod[i]) / real[i], 1) * 100.0))
+                relErrors.append(abs(round((observed[i] - modelled[i]) / observed[i], 1) * 100.0))
 
-        avgerr = np.average(relErrors)
-        maxerr = np.max(relErrors)
-        minerr = np.min(relErrors)
+        if len(relErrors) > 1:
+            avgerr = np.average(relErrors)
+            maxerr = np.max(relErrors)
+            minerr = np.min(relErrors)
 
-        counterr50 = 0
-        counterr30 = 0
-        counterr10 = 0
-        for i in range(len(relErrors)):
-            if relErrors[i] < 10.0:
-                counterr50 += 1
-                counterr30 += 1
-                counterr10 += 1
-            elif relErrors[i] < 30.0:
-                counterr50 += 1
-                counterr30 += 1
-            elif relErrors[i] < 50.0:
-                counterr50 += 1
-        return avgerr, minerr, maxerr, counterr10, counterr30, counterr50
+            counterr50 = 0
+            counterr30 = 0
+            counterr10 = 0
+            for i in range(len(relErrors)):
+                if relErrors[i] < 10.0:
+                    counterr50 += 1
+                    counterr30 += 1
+                    counterr10 += 1
+                elif relErrors[i] < 30.0:
+                    counterr50 += 1
+                    counterr30 += 1
+                elif relErrors[i] < 50.0:
+                    counterr50 += 1
+            return round(avgerr, 2), round(minerr, 2), round(maxerr, 2), \
+                   round(counterr10, 2), round(counterr30, 2), round(counterr50, 2)
+        else:
+            avgerr = relErrors[0]
+            maxerr = relErrors[0]
+            minerr = relErrors[0]
+            return round(avgerr, 2), round(maxerr, 2), round(minerr, 2), "-", "-", "-"

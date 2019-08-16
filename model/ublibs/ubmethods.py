@@ -246,6 +246,18 @@ def get_subregions_subset_from_blocks(regiontype, blockslist):
     return regions
 
 
+def get_subset_of_blocks_by_region(regiontype, regionname, blockslist):
+    """Returns a list of blocks for a particular region type and region name as a list. This list can be scanned
+    for attributes."""
+    newblockslist = []
+    for i in range(len(blockslist)):
+        if not blockslist[i].get_attribute("Status") or blockslist[i].get_attribute(regiontype) != regionname:
+            continue
+        else:
+            newblockslist.append(blockslist[i])
+    return newblockslist
+
+
 def get_block_attribute_for_region(regiontype, regionname, blockslist, att_name):
     """Scans the list of Blocks and returns a list of attribute values with the given attribute name for all Blocks
     within a defined region.
@@ -258,7 +270,9 @@ def get_block_attribute_for_region(regiontype, regionname, blockslist, att_name)
     """
     att_values = []
     for b in blockslist:
-        if blockslist.get_attribute(regiontype) != regionname:
+        if not b.get_attribute("Status"):
+            continue
+        if b.get_attribute(regiontype) != regionname:
             continue    # If the Block is not in the designated region, skip
         else:
             att_values.append(b.get_attribute(att_name))
