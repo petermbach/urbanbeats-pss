@@ -1,4 +1,4 @@
-"""
+r"""
 @file   ubmodule.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE

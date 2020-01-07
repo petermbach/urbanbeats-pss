@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
+r"""
 @file   urbanbeatsdialogs.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE

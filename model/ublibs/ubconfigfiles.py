@@ -1,4 +1,4 @@
-"""
+r"""
 @file   ubconfigfiles.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE

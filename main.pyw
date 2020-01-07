@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
+r"""
 @file   main.pyw
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE

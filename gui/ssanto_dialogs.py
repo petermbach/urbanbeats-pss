@@ -1,4 +1,4 @@
-"""
+r"""
 @file   urbanbeatsdialogs.py
 @author Martijn Kuller <martijnkuller@gmail.com>, Peter M Bach <peterbach@gmail.com>
 @section LICENSE

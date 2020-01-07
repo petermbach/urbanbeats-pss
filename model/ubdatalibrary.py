@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
+r"""
 @file   ubdatalibrary.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE

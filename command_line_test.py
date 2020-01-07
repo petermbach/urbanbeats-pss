@@ -1,4 +1,4 @@
-"""
+r"""
 @file   command_line_test.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE

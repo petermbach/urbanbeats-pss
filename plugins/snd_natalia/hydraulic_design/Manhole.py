@@ -1,5 +1,4 @@
-# coding=utf-8
-"""
+r"""
 @file Manhole
 @author Natalia Duque
 @section LICENSE

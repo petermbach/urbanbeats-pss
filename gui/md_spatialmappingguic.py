@@ -1,4 +1,4 @@
-"""
+r"""
 @file   md_spatialmappingguic.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
