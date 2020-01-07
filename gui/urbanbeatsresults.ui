@@ -90,7 +90,7 @@
          <enum>QTabWidget::West</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="summary">
          <attribute name="icon">
@@ -782,13 +782,7 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_6">
           <item row="0" column="0">
-           <widget class="QWebView" name="summary_view">
-            <property name="url">
-             <url>
-              <string>about:blank</string>
-             </url>
-            </property>
-           </widget>
+           <widget class="QWebEngineView" name="summary_view" native="true"/>
           </item>
          </layout>
         </widget>
@@ -798,8 +792,8 @@
      <widget class="QWidget" name="page_2">
       <layout class="QVBoxLayout" name="verticalLayout_11">
        <item>
-        <widget class="QWebView" name="map_view">
-         <property name="url">
+        <widget class="QWebEngineView" name="map_view" native="true">
+         <property name="url" stdset="0">
           <url>
            <string>about:blank</string>
           </url>
@@ -837,8 +831,8 @@
      <widget class="QWidget" name="page_4">
       <layout class="QVBoxLayout" name="verticalLayout_16">
        <item>
-        <widget class="QWebView" name="stats_view">
-         <property name="url">
+        <widget class="QWebEngineView" name="stats_view" native="true">
+         <property name="url" stdset="0">
           <url>
            <string>about:blank</string>
           </url>
@@ -855,39 +849,10 @@
           <string>Correlation Analysis</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
-          <item row="1" column="0">
-           <widget class="QWebView" name="x_view">
-            <property name="url">
-             <url>
-              <string>about:blank</string>
-             </url>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QWebView" name="y_view">
-            <property name="url">
-             <url>
-              <string>about:blank</string>
-             </url>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QWebView" name="correl_view">
-            <property name="url">
-             <url>
-              <string>about:blank</string>
-             </url>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QWebView" name="correl_summary_view">
-            <property name="url">
-             <url>
-              <string>about:blank</string>
-             </url>
+          <item row="0" column="0">
+           <widget class="QLabel" name="x_label">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Block A (X-Axis Selection)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -898,10 +863,33 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="x_label">
-            <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Block A (X-Axis Selection)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <item row="1" column="0">
+           <widget class="QWebEngineView" name="x_view" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="url" stdset="0">
+             <url>
+              <string>about:blank</string>
+             </url>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QWebEngineView" name="y_view" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="url" stdset="0">
+             <url>
+              <string>about:blank</string>
+             </url>
             </property>
            </widget>
           </item>
@@ -919,6 +907,36 @@
             </property>
            </widget>
           </item>
+          <item row="3" column="0">
+           <widget class="QWebEngineView" name="correl_view" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="url" stdset="0">
+             <url>
+              <string>about:blank</string>
+             </url>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QWebEngineView" name="correl_summary_view" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="url" stdset="0">
+             <url>
+              <string>about:blank</string>
+             </url>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -932,6 +950,13 @@
           <string>Compare Scenario Results</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
+          <item row="0" column="0">
+           <widget class="QLabel" name="a_lbl">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;SCENARIO A&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="1">
            <widget class="QLabel" name="b_lbl">
             <property name="text">
@@ -939,46 +964,33 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QWebView" name="b_view">
-            <property name="url">
-             <url>
-              <string>about:blank</string>
-             </url>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QWebView" name="avb_view">
-            <property name="url">
-             <url>
-              <string>about:blank</string>
-             </url>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QWebView" name="avb_summary_view">
-            <property name="url">
-             <url>
-              <string>about:blank</string>
-             </url>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
-           <widget class="QWebView" name="a_view">
-            <property name="url">
+           <widget class="QWebEngineView" name="a_view" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="url" stdset="0">
              <url>
               <string>about:blank</string>
              </url>
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="a_lbl">
-            <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;SCENARIO A&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <item row="1" column="1">
+           <widget class="QWebEngineView" name="b_view" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="url" stdset="0">
+             <url>
+              <string>about:blank</string>
+             </url>
             </property>
            </widget>
           </item>
@@ -996,6 +1008,36 @@
             </property>
            </widget>
           </item>
+          <item row="3" column="0">
+           <widget class="QWebEngineView" name="avb_view" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="url" stdset="0">
+             <url>
+              <string>about:blank</string>
+             </url>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QWebEngineView" name="avb_summary_view" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="url" stdset="0">
+             <url>
+              <string>about:blank</string>
+             </url>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -1007,9 +1049,10 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QWebView</class>
+   <class>QWebEngineView</class>
    <extends>QWidget</extends>
-   <header>QtWebKitWidgets/QWebView</header>
+   <header>qwebengineview.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'urbanbeatscalibration.ui'
 #
-# Created by: PyQt5 UI code generator 5.13.0
+# Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -166,7 +166,12 @@ class Ui_CalibrationViewer(object):
         self.calibrationWebView.setObjectName("calibrationWebView")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.calibrationWebView)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
-        self.calibrationView = QtWebKitWidgets.QWebView(self.calibrationWebView)
+        self.calibrationView = QtWebEngineWidgets.QWebEngineView(self.calibrationWebView)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.calibrationView.sizePolicy().hasHeightForWidth())
+        self.calibrationView.setSizePolicy(sizePolicy)
         self.calibrationView.setMinimumSize(QtCore.QSize(550, 0))
         self.calibrationView.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.calibrationView.setProperty("url", QtCore.QUrl("about:blank"))
@@ -245,5 +250,5 @@ class Ui_CalibrationViewer(object):
         self.plottype_combo.setItemText(1, _translate("CalibrationViewer", "Residual Plot"))
         self.plottype_combo.setItemText(2, _translate("CalibrationViewer", "Error Distribution"))
         self.set_eval_11line.setText(_translate("CalibrationViewer", "Display 1:1 Line?"))
-from PyQt5 import QtWebKitWidgets
+from PyQt5 import QtWebEngineWidgets
 from . import ubeats_rc

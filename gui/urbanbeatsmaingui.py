@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'urbanbeatsmaingui.ui'
 #
-# Created by: PyQt5 UI code generator 5.13.0
+# Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -208,12 +208,6 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.addWidget(self.DataView_options)
         self.verticalLayout_5.addWidget(self.DataView_Controls)
         self.DataView_web = QtWebEngineWidgets.QWebEngineView(self.DataView_Widget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.DataView_web.sizePolicy().hasHeightForWidth())
-        self.DataView_web.setSizePolicy(sizePolicy)
-        self.DataView_web.setProperty("url", QtCore.QUrl("about:blank"))
         self.DataView_web.setObjectName("DataView_web")
         self.verticalLayout_5.addWidget(self.DataView_web)
         self.horizontalLayout_3.addWidget(self.DataView_Widget)
@@ -1083,8 +1077,7 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.OutputConsole, self.DataView_extent)
         MainWindow.setTabOrder(self.DataView_extent, self.DataView_meta)
         MainWindow.setTabOrder(self.DataView_meta, self.DataView_options)
-        MainWindow.setTabOrder(self.DataView_options, self.DataView_web)
-        MainWindow.setTabOrder(self.DataView_web, self.SimDock_resultsview)
+        MainWindow.setTabOrder(self.DataView_options, self.SimDock_resultsview)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

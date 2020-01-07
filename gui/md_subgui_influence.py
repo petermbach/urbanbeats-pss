@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'md_subgui_influence.ui'
 #
-# Created by: PyQt5 UI code generator 5.13.0
+# Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -138,10 +138,14 @@ class Ui_InfluenceFunctionDialog(object):
         self.view_widget.setObjectName("view_widget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.view_widget)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.webView = QtWebKitWidgets.QWebView(self.view_widget)
-        self.webView.setUrl(QtCore.QUrl("about:blank"))
-        self.webView.setObjectName("webView")
-        self.verticalLayout.addWidget(self.webView)
+        self.widget_3 = QtWebEngineWidgets.QWebEngineView(self.view_widget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.widget_3.sizePolicy().hasHeightForWidth())
+        self.widget_3.setSizePolicy(sizePolicy)
+        self.widget_3.setObjectName("widget_3")
+        self.verticalLayout.addWidget(self.widget_3)
         self.widget_2 = QtWidgets.QWidget(self.view_widget)
         self.widget_2.setObjectName("widget_2")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.widget_2)
@@ -254,4 +258,4 @@ class Ui_InfluenceFunctionDialog(object):
         self.select_lbl.setText(_translate("InfluenceFunctionDialog", "<html><head/><body><p><span style=\" font-weight:600;\">Select an Influence Function:</span></p></body></html>"))
         self.select_combo.setItemText(0, _translate("InfluenceFunctionDialog", "<no selection>"))
         self.select_combo.setItemText(1, _translate("InfluenceFunctionDialog", "<create new influence function>"))
-from PyQt5 import QtWebKitWidgets
+from PyQt5 import QtWebEngineWidgets
