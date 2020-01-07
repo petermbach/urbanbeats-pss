@@ -65,6 +65,7 @@ from gui.md_urbdevelopguic import UrbdevelopGuiLaunch, InfluenceFunctionGUILaunc
 from gui.md_spatialmappingguic import SpatialMappingGuiLaunch
 from gui.md_infrastructureguic import InfrastructureGuiLaunch
 
+from gui import ssanto_dialogs as ssanto_dialogs
 
 # --- MAIN GUI FUNCTION ---
 class MainWindow(QtWidgets.QMainWindow):
@@ -151,6 +152,10 @@ class MainWindow(QtWidgets.QMainWindow):
         #
         # ADVANCED MENU
         self.ui.actionModel_Calibration_Viewer.triggered.connect(self.show_calibration_viewer)
+
+        # PLUGINS
+        self.ui.actionSSANTO.triggered.connect(self.launch_SSANTO)
+
         #
         # WINDOW MENU
         # actionMinimize has been implemented through QtDesigner
@@ -215,6 +220,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.SimDock_report.clicked.connect(self.show_reporting_settings)
         self.ui.SimDock_resultsview.clicked.connect(self.show_results_viewer)
         self.ui.SimDock_run.clicked.connect(self.call_run_simulation)
+
+    # SSANTO
+    def launch_SSANTO(self):
+        """Launches the SSANTO Plugin using the current project's information."""
+        ssantomain = ssanto_dialogs.SSANTOMainLaunch(self.get_active_simulation_object())
+        ssantomain.exec_()
+
 
     # SCENARIO CREATION AND MANAGEMENT FUNCTIONALITY
     def show_scenario_dialog(self, viewmode):

@@ -362,7 +362,7 @@
        <widget class="QWidget" name="calibrationWebView" native="true">
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
-          <widget class="QWebView" name="calibrationView">
+          <widget class="QWebView" name="calibrationView" native="true">
            <property name="minimumSize">
             <size>
              <width>550</width>
@@ -375,7 +375,7 @@
              <height>16777215</height>
             </size>
            </property>
-           <property name="url">
+           <property name="url" stdset="0">
             <url>
              <string>about:blank</string>
             </url>
@@ -473,6 +473,8 @@
  </customwidgets>
  <resources>
   <include location="../graphics/ubeats.qrc"/>
+  <include location="../graphics/ubeats.qrc"/>
+  <include location="../../../../.designer/graphics/ubeats.qrc"/>
  </resources>
  <connections/>
 </ui>

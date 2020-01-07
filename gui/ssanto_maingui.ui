@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SSANTOMain</class>
+ <widget class="QDialog" name="SSANTOMain">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1349</width>
+    <height>667</height>
+   </rect>
+  </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::DefaultContextMenu</enum>
+  </property>
+  <property name="windowTitle">
+   <string>SSANTO</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QWidget" name="centralwidget" native="true">
+     <widget class="QPushButton" name="pushButton">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>270</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Slap Martijn</string>
+      </property>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QStatusBar" name="statusbar">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>20</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+  </layout>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>100</width>
+     <height>30</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>100</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <addaction name="actionNew_Scenario"/>
+   <addaction name="separator"/>
+  </widget>
+  <action name="actionNew_Scenario">
+   <property name="icon">
+    <iconset resource="../graphics/ubeats.qrc">
+     <normaloff>:/icons/new-file-icon.png</normaloff>:/icons/new-file-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Scenario</string>
+   </property>
+  </action>
+  <action name="actionNew_Scenario_2">
+   <property name="text">
+    <string>New Scenario</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../graphics/ubeats.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -1511,7 +1511,7 @@ class UrbanDevelopment(UBModule):
             urbancells[i].change_attribute("SUIT_COM", float(urbancells[i].get_attribute("SUIT_COM") / map_max_suit[1]))
             urbancells[i].change_attribute("SUIT_IND", float(urbancells[i].get_attribute("SUIT_IND") / map_max_suit[2]))
             urbancells[i].change_attribute("SUIT_ORC", float(urbancells[i].get_attribute("SUIT_ORC") / map_max_suit[3]))
-        # ----- END OF SUITABILITY CALCULATIONS -----
+        # # ----- END OF SUITABILITY CALCULATIONS -----
 
         # - 2.8 - SPATIAL RELATIONSHIPS - ZONING
         # Start by loading all relevant zoning maps. Preferably want to do this in one single loop
@@ -2032,7 +2032,7 @@ class UrbanDevelopment(UBModule):
                 else:   # pop_to_assign < 0 or it doesn't matter...
                     cells_hashtable.sort()      # Sort from lowest suitability to highest
                     # Add to table from lowest to highest suitability
-                while pop_to_assign != 0:       # Just keep assigning in order ot highest to lowest
+                while pop_to_assign != 0:       # Just keep assigning in order ot highest to lowest         # DEBUG REPORT! - PROBLEMATIC WHILE!
                     for i in range(len(cells_hashtable)):
                         # print "Current Cell population: ", cells_hashtable[i][1]
                         if pop_to_assign > 0:
@@ -2387,14 +2387,26 @@ class UrbanDevelopment(UBModule):
         """
         if threshold == 0:
             for p in polygonlist:
-                if Polygon(p).intersects(cellpoly):
+                polycheck = Polygon(p)
+                if not polycheck.is_valid:
+                    # Workaround for invalid polygons - the solution is to use buffer(0) to fix
+                    # self-intersecting polygons.
+                    # Source: https://stackoverflow.com/questions/13062334/polygon-intersection-error- ...
+                    # in-shapely-shapely-geos-topologicalerror-the-opera
+                    polycheck = polycheck.buffer(0)
+                if polycheck.intersects(cellpoly):
                     return 1
             return 0
         else:
             # calculate threshold area, if intersection area > x% of block area, then threshold exceeded, stop search.
             threshold_area = (self.cellsize * self.cellsize) * threshold
             for p in polygonlist:
-                if Polygon(p).intersection(cellpoly).area > threshold_area:
+                polycheck = Polygon(p)  # Assign to a polygon variable for checking
+                if not polycheck.is_valid:
+                    # Workaround for invalid polygons - the solution is to use buffer(0) to fix
+                    # self-intersecting polygons.
+                    polycheck = polycheck.buffer(0)
+                if polycheck.intersection(cellpoly).area > threshold_area:
                     return 0    # Intersection found, stop algorithm
             return 1    # No intersection found, cell is OK to be treated as potential zone for active LUC
 

@@ -534,6 +534,28 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
         """Plots the modelled vs. observed data on the plot. This function is called either when the combo boxes
         are updated or when the data table is updated or when the plot options are updated."""
         pass
+        
+
+
+        # def plotCalibrationScatter(self, obs, mod):
+        #     """Plots a scatter plot showing the correlation of two of the selected attributes at the Block Level
+        #     :return:
+        #     """
+        #     x_name = "Observed Data"
+        #     y_name = "Modelled Data"
+        #     title = str(self.ui.set_param_combo.currentText()) + " " + self.ui.set_totvalue_units.text()[7:]
+        #
+        #     x_values = obs
+        #     y_values = mod
+        #     datadict = {x_name + " vs. " + y_name: []}
+        #     for i in range(len(x_values)):
+        #         datadict[x_name + " vs. " + y_name].append([x_values[i], y_values[i]])
+        #
+        #     self.htmlscript = ubhighcharts.scatter_plot(self.ubeatsdir, title, x_name, y_name, 3, "", "", datadict)
+        #     self.ui.calibrationView.setHtml(self.htmlscript)
+        #
+
+
 
     def generate_results_box_text(self, mod_N, obs_N, pts_NC, maxDID, nashE, rmse, avgerr, minerr, maxerr,
                                   e10, e30, e50):
