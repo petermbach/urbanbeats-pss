@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @file   model\ubexports\blocks.py
 @author Peter M Bach <peterbach@gmail.com>
@@ -28,11 +27,6 @@ import osgeo.osr as osr
 import osgeo.ogr as ogr
 import os
 
-# URBANBEATS IMPORT
-from ..ublibs import ubdatatypes as ubdata
-from ..progref import ubglobals
-
-
 
 def export_sww_network_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg, fptype):
     """Exports all sewer networks in the asset_col list to a GIS Shapefile based on the current filepath.
@@ -45,7 +39,7 @@ def export_sww_network_to_gis_shapefile(asset_col, map_attr, filepath, filename,
     :param fptype: type of Flowpath ("Blocks", "Patches")
     :return:
     """
-    print fptype
+    print(fptype)
     if map_attr.get_attribute("HasSWW") != 1:
         return True
 
@@ -133,7 +127,7 @@ def export_sww_links_to_gis_shapefile(asset_col, map_attr, filepath, filename, e
     :param fptype: type of Flowpath ("Blocks", "Patches")
     :return:
     """
-    print fptype
+    print(fptype)
     if map_attr.get_attribute("HasSWW") != 1:
         return True
 
@@ -215,7 +209,7 @@ def export_sww_mst_to_gis_shapefile(asset_col, map_attr, filepath, filename, eps
     :param fptype: type of Flowpath ("Blocks", "Patches")
     :return:
     """
-    print fptype
+    print(fptype)
     if map_attr.get_attribute("HasSWW") != 1:
         return True
 

@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'newscenario.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_NewScenarioDialog(object):
     def setupUi(self, NewScenarioDialog):
@@ -20,7 +22,6 @@ class Ui_NewScenarioDialog(object):
         self.title_widget = QtWidgets.QWidget(NewScenarioDialog)
         self.title_widget.setObjectName("title_widget")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.title_widget)
-        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.title_logo = QtWidgets.QLabel(self.title_widget)
         self.title_logo.setMinimumSize(QtCore.QSize(30, 30))
@@ -45,7 +46,6 @@ class Ui_NewScenarioDialog(object):
         self.name_widget = QtWidgets.QWidget(NewScenarioDialog)
         self.name_widget.setObjectName("name_widget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.name_widget)
-        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.name_lbl = QtWidgets.QLabel(self.name_widget)
         self.name_lbl.setObjectName("name_lbl")
@@ -59,7 +59,6 @@ class Ui_NewScenarioDialog(object):
         self.simtype_widget = QtWidgets.QWidget(NewScenarioDialog)
         self.simtype_widget.setObjectName("simtype_widget")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.simtype_widget)
-        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.simtype_lbl = QtWidgets.QLabel(self.simtype_widget)
         self.simtype_lbl.setObjectName("simtype_lbl")
@@ -88,7 +87,6 @@ class Ui_NewScenarioDialog(object):
         self.narrative_tab = QtWidgets.QWidget()
         self.narrative_tab.setObjectName("narrative_tab")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.narrative_tab)
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.verticalLayout_6 = QtWidgets.QVBoxLayout()
         self.verticalLayout_6.setContentsMargins(9, 9, 9, 9)
@@ -108,7 +106,6 @@ class Ui_NewScenarioDialog(object):
         self.details_tab = QtWidgets.QWidget()
         self.details_tab.setObjectName("details_tab")
         self.verticalLayout_8 = QtWidgets.QVBoxLayout(self.details_tab)
-        self.verticalLayout_8.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_8.setObjectName("verticalLayout_8")
         self.timestep_widget = QtWidgets.QWidget(self.details_tab)
         self.timestep_widget.setObjectName("timestep_widget")
@@ -183,7 +180,6 @@ class Ui_NewScenarioDialog(object):
         self.module_tab = QtWidgets.QWidget()
         self.module_tab.setObjectName("module_tab")
         self.gridLayout = QtWidgets.QGridLayout(self.module_tab)
-        self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setObjectName("gridLayout")
         self.verticalLayout_7 = QtWidgets.QVBoxLayout()
         self.verticalLayout_7.setContentsMargins(9, 9, 9, 9)
@@ -198,7 +194,6 @@ class Ui_NewScenarioDialog(object):
         self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 439, 294))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.scrollAreaWidgetContents)
-        self.gridLayout_4.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_4.setObjectName("gridLayout_4")
         self.gridLayout_5 = QtWidgets.QGridLayout()
         self.gridLayout_5.setContentsMargins(9, 9, 9, 9)
@@ -300,7 +295,6 @@ class Ui_NewScenarioDialog(object):
         self.data_tab = QtWidgets.QWidget()
         self.data_tab.setObjectName("data_tab")
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.data_tab)
-        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.datalibrary = QtWidgets.QWidget(self.data_tab)
         self.datalibrary.setObjectName("datalibrary")
@@ -382,7 +376,6 @@ class Ui_NewScenarioDialog(object):
         self.output_tab = QtWidgets.QWidget()
         self.output_tab.setObjectName("output_tab")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.output_tab)
-        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.naming_convention = QtWidgets.QWidget(self.output_tab)
         self.naming_convention.setObjectName("naming_convention")
@@ -413,7 +406,6 @@ class Ui_NewScenarioDialog(object):
         self.footer.setMaximumSize(QtCore.QSize(16777215, 38))
         self.footer.setObjectName("footer")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.footer)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem5)
@@ -442,8 +434,7 @@ class Ui_NewScenarioDialog(object):
         NewScenarioDialog.setTabOrder(self.scenariodata_tree, self.add_to_button)
         NewScenarioDialog.setTabOrder(self.add_to_button, self.remove_from_button)
         NewScenarioDialog.setTabOrder(self.remove_from_button, self.naming_line)
-        NewScenarioDialog.setTabOrder(self.naming_line, self.naming_check)
-        NewScenarioDialog.setTabOrder(self.naming_check, self.create_button)
+        NewScenarioDialog.setTabOrder(self.naming_line, self.create_button)
         NewScenarioDialog.setTabOrder(self.create_button, self.clear_button)
         NewScenarioDialog.setTabOrder(self.clear_button, self.cancel_button)
 
@@ -549,5 +540,4 @@ class Ui_NewScenarioDialog(object):
         self.create_button.setText(_translate("NewScenarioDialog", "Create"))
         self.clear_button.setText(_translate("NewScenarioDialog", "Clear"))
         self.cancel_button.setText(_translate("NewScenarioDialog", "Cancel"))
-
 import ubeats_rc

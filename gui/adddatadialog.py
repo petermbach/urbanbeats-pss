@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'adddatadialog.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_AddDataDialog(object):
     def setupUi(self, AddDataDialog):
@@ -20,7 +22,6 @@ class Ui_AddDataDialog(object):
         self.title_widget = QtWidgets.QWidget(AddDataDialog)
         self.title_widget.setObjectName("title_widget")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.title_widget)
-        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.title_logo = QtWidgets.QLabel(self.title_widget)
         self.title_logo.setMinimumSize(QtCore.QSize(30, 30))
@@ -45,7 +46,6 @@ class Ui_AddDataDialog(object):
         self.datatype_widget = QtWidgets.QWidget(AddDataDialog)
         self.datatype_widget.setObjectName("datatype_widget")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.datatype_widget)
-        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.datatype_lbl = QtWidgets.QLabel(self.datatype_widget)
         self.datatype_lbl.setObjectName("datatype_lbl")
@@ -63,7 +63,6 @@ class Ui_AddDataDialog(object):
         self.adddatafile_widget = QtWidgets.QWidget(AddDataDialog)
         self.adddatafile_widget.setObjectName("adddatafile_widget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.adddatafile_widget)
-        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.datafile_lbl = QtWidgets.QLabel(self.adddatafile_widget)
         self.datafile_lbl.setObjectName("datafile_lbl")
@@ -83,7 +82,6 @@ class Ui_AddDataDialog(object):
         self.datacat_widget = QtWidgets.QWidget(AddDataDialog)
         self.datacat_widget.setObjectName("datacat_widget")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.datacat_widget)
-        self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.datacat_lbl = QtWidgets.QLabel(self.datacat_widget)
         self.datacat_lbl.setMinimumSize(QtCore.QSize(200, 0))
@@ -125,7 +123,6 @@ class Ui_AddDataDialog(object):
         self.footer.setMaximumSize(QtCore.QSize(16777215, 38))
         self.footer.setObjectName("footer")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.footer)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
@@ -189,5 +186,4 @@ class Ui_AddDataDialog(object):
         self.adddata_button.setText(_translate("AddDataDialog", "Add Data"))
         self.cleardata_button.setText(_translate("AddDataDialog", "Clear"))
         self.done_button.setText(_translate("AddDataDialog", "Done"))
-
 import ubeats_rc

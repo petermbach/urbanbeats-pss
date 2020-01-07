@@ -37,25 +37,25 @@ import xml.etree.ElementTree as ET  # XML parsing for loading scenario files
 import ast  # Used for converting a string of a list into a list e.g. "[1, 2, 3, 4]" --> [1, 2, 3, 4]
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-import modules.md_decisionanalysis as md_decisionanalysis
-import modules.md_climatesetup as md_climatesetup
-import modules.md_delinblocks as md_delinblocks
-import modules.md_impactassess as md_impactasess
-import modules.md_perfassess as md_perfassess
-import modules.md_regulation as md_regulation
-import modules.md_socioecon as md_socioecon
-import modules.md_spatialmapping as md_spatialmapping
-import modules.md_infrastructure as md_techplacement
-import modules.md_urbandev as md_urbandev
-import modules.md_urbplanbb as md_urbplanbb
-import ublibs.ubspatial as ubspatial
-import ubexports.blocks as xblocks
-import ubexports.flowpaths as xflowpaths
-import ubexports.openspace as xopenspace
-import ubexports.patches as xpatches
-import ubexports.regions as xregions
-import ubexports.urban as xurbanmodel
-import ubexports.infrastructure as xinfra
+from .modules import md_decisionanalysis
+from .modules import md_climatesetup
+from .modules import md_delinblocks
+from .modules import md_impactassess
+from .modules import md_perfassess
+from .modules import md_regulation
+from .modules import md_socioecon
+from .modules import md_spatialmapping
+from .modules import md_infrastructure
+from .modules import md_urbandev
+from .modules import md_urbplanbb
+from .ublibs import ubspatial
+from .ubexports import blocks as xblocks
+from .ubexports import flowpaths as xflowpaths
+from .ubexports import openspace as xopenspace
+from .ubexports import patches as xpatches
+from .ubexports import regions as xregions
+from .ubexports import urban as xurbanmodel
+from .ubexports import infrastructure as xinfra
 
 
 
@@ -238,10 +238,10 @@ class UrbanBeatsScenario(threading.Thread):
         try:
             return self.__modules[modulecat][dt_index]
         except KeyError:
-            print "Error, cannot find module instance!"
+            print("Error, cannot find module instance!")
             return None
         except IndexError:
-            print "No module instances of", modulecat, " found for current time step."
+            print(f"No module instances of {modulecat} found for current time step.")
             return None
 
     def setup_scenario(self):
@@ -381,7 +381,7 @@ class UrbanBeatsScenario(threading.Thread):
             for instance in mdata.find(modname).findall("parameters"):
                 m = self.get_module_object(modname, int(instance.attrib["index"]))
                 for child in instance:
-                    print child.tag, child.text  # DEBUG WITH THIS IN CASE PROGRAM CRASHES ON LOADING
+                    print(f"{child.tag}, {child.text}")  # DEBUG WITH THIS IN CASE PROGRAM CRASHES ON LOADING
                     if m.get_parameter_type(child.tag) == 'LISTDOUBLE':     # IF IT's a LISTDOUBLE
                         m.set_parameter(child.tag, ast.literal_eval(child.text))    # Use literal eval
                     else:
@@ -632,7 +632,7 @@ class UrbanBeatsScenario(threading.Thread):
         else:
             file_basename = self.get_metadata("filename")
 
-        print self.projectpath
+        print(self.projectpath)
         map_attributes = self.get_asset_with_name("MapAttributes")
         epsg = self.simulation.get_project_parameter("project_epsg")
 
@@ -710,7 +710,7 @@ class UrbanBeatsScenario(threading.Thread):
         else:
             file_basename = self.get_metadata("filename")
 
-        print self.projectpath
+        print(self.projectpath)
         map_attributes = self.get_asset_with_name("MapAttributes")
         epsg = self.simulation.get_project_parameter("project_epsg")
 

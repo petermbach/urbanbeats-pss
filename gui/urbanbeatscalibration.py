@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'urbanbeatscalibration.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_CalibrationViewer(object):
     def setupUi(self, CalibrationViewer):
@@ -17,7 +19,6 @@ class Ui_CalibrationViewer(object):
         self.navigation_widget = QtWidgets.QWidget(CalibrationViewer)
         self.navigation_widget.setObjectName("navigation_widget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.navigation_widget)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
         self.title_frame = QtWidgets.QFrame(self.navigation_widget)
         self.title_frame.setMaximumSize(QtCore.QSize(16777215, 65))
@@ -52,7 +53,6 @@ class Ui_CalibrationViewer(object):
         self.calibrationSettings.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.calibrationSettings.setObjectName("calibrationSettings")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.calibrationSettings)
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.calibset_title = QtWidgets.QLabel(self.calibrationSettings)
         self.calibset_title.setObjectName("calibset_title")
@@ -107,7 +107,6 @@ class Ui_CalibrationViewer(object):
         self.widget_4 = QtWidgets.QWidget(self.calibrationSettings)
         self.widget_4.setObjectName("widget_4")
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout(self.widget_4)
-        self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
         self.set_data_load = QtWidgets.QPushButton(self.widget_4)
         icon = QtGui.QIcon()
@@ -127,13 +126,11 @@ class Ui_CalibrationViewer(object):
         self.widget = QtWidgets.QWidget(CalibrationViewer)
         self.widget.setObjectName("widget")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.widget)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.calibrationResults = QtWidgets.QWidget(self.widget)
         self.calibrationResults.setMinimumSize(QtCore.QSize(300, 0))
         self.calibrationResults.setObjectName("calibrationResults")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.calibrationResults)
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.caliboutput_title = QtWidgets.QLabel(self.calibrationResults)
         self.caliboutput_title.setObjectName("caliboutput_title")
@@ -144,7 +141,6 @@ class Ui_CalibrationViewer(object):
         self.widget_7 = QtWidgets.QWidget(self.calibrationResults)
         self.widget_7.setObjectName("widget_7")
         self.horizontalLayout_8 = QtWidgets.QHBoxLayout(self.widget_7)
-        self.horizontalLayout_8.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_8.setObjectName("horizontalLayout_8")
         self.out_export = QtWidgets.QPushButton(self.widget_7)
         icon2 = QtGui.QIcon()
@@ -169,18 +165,16 @@ class Ui_CalibrationViewer(object):
         self.calibrationWebView = QtWidgets.QWidget(self.widget)
         self.calibrationWebView.setObjectName("calibrationWebView")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.calibrationWebView)
-        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.calibrationView = QtWebKitWidgets.QWebView(self.calibrationWebView)
         self.calibrationView.setMinimumSize(QtCore.QSize(550, 0))
         self.calibrationView.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.calibrationView.setUrl(QtCore.QUrl("about:blank"))
+        self.calibrationView.setProperty("url", QtCore.QUrl("about:blank"))
         self.calibrationView.setObjectName("calibrationView")
         self.verticalLayout_4.addWidget(self.calibrationView)
         self.plot_controls_widget = QtWidgets.QWidget(self.calibrationWebView)
         self.plot_controls_widget.setObjectName("plot_controls_widget")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.plot_controls_widget)
-        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.plottype_lbl = QtWidgets.QLabel(self.plot_controls_widget)
         self.plottype_lbl.setObjectName("plottype_lbl")
@@ -251,6 +245,5 @@ class Ui_CalibrationViewer(object):
         self.plottype_combo.setItemText(1, _translate("CalibrationViewer", "Residual Plot"))
         self.plottype_combo.setItemText(2, _translate("CalibrationViewer", "Error Distribution"))
         self.set_eval_11line.setText(_translate("CalibrationViewer", "Display 1:1 Line?"))
-
 from PyQt5 import QtWebKitWidgets
 import ubeats_rc

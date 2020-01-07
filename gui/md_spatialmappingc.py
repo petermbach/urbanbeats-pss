@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @file   md_spatialmappingc.py
 @author Peter M Bach <peterbach@gmail.com>
@@ -31,8 +30,9 @@ import model.progref.ubglobals as ubglobals
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
-from md_spatialmapping import Ui_Spatialmap_Dialog
-from md_subgui_dp import Ui_CustomPatternDialog
+from .md_spatialmapping import Ui_Spatialmap_Dialog
+from .md_subgui_dp import Ui_CustomPatternDialog
+
 
 # --- MAIN GUI FUNCTION ---
 class SpatialMappingGuiLaunch(QtWidgets.QDialog):

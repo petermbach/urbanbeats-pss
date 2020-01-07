@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @file   main.pyw
 @author Peter M Bach <peterbach@gmail.com>
@@ -39,7 +38,7 @@ import numpy as np
 from shapely.geometry import Polygon, Point
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-from ubmodule import *
+from .ubmodule import *
 import model.ublibs.ubspatial as ubspatial
 import model.ublibs.ubmethods as ubmethods
 import model.ublibs.ubdatatypes as ubdata
@@ -732,7 +731,7 @@ class UrbanDevelopment(UBModule):
             self.sim_length = 0         # [TO DO] - the urban model DOES NOT RUN IN THE FINAL YEAR!
         else:       # The length of the current module's simulation [years]
             self.sim_length = self.dt_years[self.timestep+1] - self.dt_years[self.timestep]
-        print "DTYEARS", self.dt_years
+        print(f"DTYEARS {self.dt_years}")
         self.years_passed = 0  # The current number of years passed since previous time step 0 if timestep is 0
         if self.timestep != 0:
             self.years_passed = self.dt_years[self.timestep] - self.dt_years[self.timestep-1]
@@ -751,9 +750,9 @@ class UrbanDevelopment(UBModule):
         # if not self.lga_inputmap and not self.pop_inputmap and not self.luc_inputmap:
         #     self.notify("Error, data missing, cannot run the Urban Development Module")
         #   [TO DO IN FUTURE]
-        print "Sim length", self.sim_length
+        print(f"Sim length {self.sim_length}")
         self.notify("Begin Urban Development Simulation")
-        print "Begin Urban Development Simulation"
+        print("Begin Urban Development Simulation")
         rand.seed()
 
         # --- SECTION 1 - Get Boundary, Setup Details for the Simulation Grid and MapAttributes Component
@@ -803,10 +802,10 @@ class UrbanDevelopment(UBModule):
 
         cellIDcount = 1     # Setup counter for cells
         cellslist = []
-        print ("Creating cell grid")
+        print("Creating cell grid")
         for y in range(cells_tall):
             for x in range(cells_wide):
-                print ("Current Cell_ID: "+str(cellIDcount))
+                print("Current Cell_ID: "+str(cellIDcount))
 
                 # - STEP 1 - GENERATE CELL GEOMETRIES
                 current_cell = self.create_cell_face(x, y, self.cellsize, cellIDcount, boundarypoly)
@@ -834,14 +833,14 @@ class UrbanDevelopment(UBModule):
         # - STEP 2 - TRANSFER RASTER DATA TO CELLS
         # Depending on availability, start with municipality
         self.notify("Loading input maps")
-        print ("Loading input maps")
+        print("Loading input maps")
 
         # - 2.1 - MUNICIPALITIES ---
         # STEP 2.1.1 :: Load Municipalities
         municipalities = []
         if self.lga_inputmap == "":
             self.notify("Region is treated as a single municipality")
-            print ("Region is treated as a single municipality")
+            print("Region is treated as a single municipality")
             self.map_attr.add_attribute("HasGEOPOLITICAL", 0)
         else:
             self.notify("Loading and Assigning Municipalities")
@@ -889,7 +888,7 @@ class UrbanDevelopment(UBModule):
             lu_dref = self.datalibrary.get_data_with_id(self.luc_inputmap)      # Retrieve the land use map
             fullfilepath = lu_dref.get_data_file_path() + lu_dref.get_metadata("filename")
             self.notify("Loading: "+str(fullfilepath))
-            print ("Loading: " + str(fullfilepath))
+            print("Loading: " + str(fullfilepath))
             landuseraster = ubspatial.import_ascii_raster(fullfilepath, self.luc_inputmap)
             self.notify("Load Complete!")
             print("Load Complete!")
@@ -1108,11 +1107,11 @@ class UrbanDevelopment(UBModule):
                                  float(self.access_poi_weight * self.access_poi_include),
                                  float(self.access_pth_weight * self.access_pth_include)]
 
-        print "ACCESS WEIGHTS", accessibility_weights
+        print(f"ACCESS WEIGHTS {accessibility_weights}")
         accessibility_weights = ubmethods.normalize_weights(accessibility_weights, "SUM")   # 0 to 1 normalize
 
         accessibility_attributes = ["ACC_ROAD", "ACC_RAIL", "ACC_WWAY", "ACC_LAKE", "ACC_POSS", "ACC_POIS", "ACC_PTHS"]
-        print "ACCESS WEIGHTS", accessibility_weights
+        print(f"ACCESS WEIGHTS {accessibility_weights}")
 
         # Loop across blocks, get the five attributes and calculate total accessibility
         for i in range(len(urbancells)):
@@ -1186,7 +1185,7 @@ class UrbanDevelopment(UBModule):
         if (self.suit_slope_include or self.suit_aspect_include) and self.suit_elevation_data:
             # If either criteria has been included, map elevation to cells
             elev_dref = self.datalibrary.get_data_with_id(self.suit_elevation_data)
-            print "Loading Elevation Data", elev_dref.get_data_file_path() + elev_dref.get_metadata("filename")
+            print(f"Loading Elevation Data {elev_dref.get_data_file_path() + elev_dref.get_metadata('filename')}")
             fullfilepath = elev_dref.get_data_file_path() + elev_dref.get_metadata("filename")
             elevraster = ubspatial.import_ascii_raster(fullfilepath, self.suit_elevation_data)
             elev_offset = ubspatial.calculate_offsets(elevraster, self.map_attr)
@@ -1197,7 +1196,7 @@ class UrbanDevelopment(UBModule):
         self.map_attr.add_attribute("SUIT_SOIL", 0)
         if self.suit_soil_include and self.suit_soil_data:
             soil_dref = self.datalibrary.get_data_with_id(self.suit_soil_data)
-            print "Loading Soil Data", soil_dref.get_data_file_path() + soil_dref.get_metadata("filename")
+            print(f"Loading Soil Data {soil_dref.get_data_file_path() + soil_dref.get_metadata('filename')}")
             fullfilepath = soil_dref.get_data_file_path() + soil_dref.get_metadata("filename")
             soilraster = ubspatial.import_ascii_raster(fullfilepath, self.suit_soil_data)
             soil_offset = ubspatial.calculate_offsets(soilraster, self.map_attr)
@@ -1208,7 +1207,7 @@ class UrbanDevelopment(UBModule):
         self.map_attr.add_attribute("SUIT_GW", 0)
         if self.suit_gw_include and self.suit_gw_data:
             gw_dref = self.datalibrary.get_data_with_id(self.suit_gw_data)
-            print "Loading Groundwater Map", gw_dref.get_data_file_path() + gw_dref.get_metadata("filename")
+            print(f"Loading Groundwater Map {gw_dref.get_data_file_path() + gw_dref.get_metadata('filename')}")
             fullfilepath = gw_dref.get_data_file_path() + gw_dref.get_metadata("filename")
             gwraster = ubspatial.import_ascii_raster(fullfilepath, self.suit_gw_data)
             gw_offset = ubspatial.calculate_offsets(gwraster, self.map_attr)
@@ -1401,7 +1400,7 @@ class UrbanDevelopment(UBModule):
         # if self.suit_custom   # [ TO DO ] # CRITERIA CUSTOM ---------------------------------------------
 
         # ASSIGN SUITABILITIES TO CELLS
-        print "Assigning Suitabilities to Cells"
+        print("Assigning Suitabilities to Cells")
         map_max_suit = [0, 0, 0, 0]     # Holds the maximum suitability value across the map, updated when necessary
         for i in range(len(urbancells)):
             if urbancells[i].get_attribute("Status") == 0:
@@ -1622,7 +1621,7 @@ class UrbanDevelopment(UBModule):
                 bool(self.zoning_rules_indauto) and \
                 urbancells[i].change_attribute("ZONE_IND", int(not self.zoning_rules_indlimit))
             else:
-                print "DEBUG: Should not be here..."
+                print("DEBUG: Should not be here...")
 
         # - 2.8.5 - Overlay Maps - THIRD MASK
         waterpoly = self.get_rings_maps_for_zoning(self.zoning_water)           # Water bodies
@@ -1633,7 +1632,7 @@ class UrbanDevelopment(UBModule):
         custompoly = self.get_rings_maps_for_zoning(self.zoning_custom)         # Custom Overlay
 
         totfeatures = len(waterpoly) + len(heritagepoly) + len(publicpoly) + len(enviropoly) + len(floodpoly) + len(custompoly)
-        print "Total Features of overlays to check against...", totfeatures
+        print(f"Total Features of overlays to check against... {totfeatures}")
 
         # Scan all remaining cells against overlay conditions
         for i in range(len(urbancells)):
@@ -1736,7 +1735,7 @@ class UrbanDevelopment(UBModule):
 
         # - 2.8 - DETERMINE LARGE NEIGHBOURHOODS ---
         self.notify("Establishing Neighbourhoods")
-        print ("Establishing Neighbourhoods")
+        print("Establishing Neighbourhoods")
         hashtable = [[], []]    # [Cell_Obj, NhD_Objs]
         nhd_rad = self.nhd_radius * 1000    # Convert to [m]
         sqdist = nhd_rad * nhd_rad
@@ -1903,12 +1902,12 @@ class UrbanDevelopment(UBModule):
                 else:
                     wi0[i] = float(ji[i] / nci[i])
             self.map_attr.add_attribute("wi_initial", wi0)
-            print "WI initial", wi0
+            print(f"WI initial {wi0}")
 
         # -- 2.11.2 - Conduct the dynamic simulation from current simulation year to the next simulation year
         for year in range(self.sim_length):     # Loop begins in the current year
             self.currentyear = self.simulationyear + year  # In the current, creating current state for transition
-            print "In", self.currentyear, "creating the transition to...", str(self.currentyear + 1)
+            print(f"In {self.currentyear} creating the transition to... {str(self.currentyear + 1)}")
 
             # Create the smaller list of transition cells
             transitioncells = []        # Transfer LUC information to fixed cells, create separate list
@@ -1937,13 +1936,13 @@ class UrbanDevelopment(UBModule):
                         self.employ_orc_rocbool) / 100.0 + 1.0
             ji_next["ORC"] = int(ji["ORC"] * orc_rate)
 
-            print "Heavy Industry", ji["HI"], ind_rate, ji_next["HI"]
-            print "Next Time Step Populations", ji_next
+            print(f"Heavy Industry {ji['HI']}, {ind_rate}, {ji_next['HI']}")
+            print(f"Next Time Step Populations {ji_next}")
 
             # STEP 2 - Determine the number of cells for each active land use
             nci_next = self.calculate_new_cells(ji_next, nci, Sit, SAit)
-            print "Current number of cells: ", nci
-            print "New number of cells: ", nci_next
+            print(f"Current number of cells: {nci}")
+            print(f"New number of cells: {nci_next}")
 
             # STEP 3 - Assign the land use to each cell based on the map's highest potential
             # This step creates the attribute LUC_YEAR
@@ -1951,8 +1950,8 @@ class UrbanDevelopment(UBModule):
             cell_tracker = [nci_next["RES"], nci_next["COM"], nci_next["LI"], nci_next["HI"], nci_next["ORC"]]
             cell_lucnames = ["RES", "COM", "LI", "HI", "ORC"]
             cells_hashtable = self.create_cell_potential_hashtable(transitioncells, option="new", filter=filter)
-            print "Number of Cells in Hashtable", len(cells_hashtable)
-            print "Cell Tracker ", cell_tracker, "total cells to assign", sum(cell_tracker)
+            print(f"Number of Cells in Hashtable {len(cells_hashtable)}")
+            print(f"Cell Tracker {cell_tracker}, total cells to assign {sum(cell_tracker)}")
 
             finished = False
             while not finished:       # ["RES", "COM", "LI", "HI", "ORC"]
@@ -1985,21 +1984,21 @@ class UrbanDevelopment(UBModule):
                         break
 
                 # REFORMAT THE HASH TABLE AND CONTINUE THE LOOP
-                print "Cell Tracker After", cell_tracker
+                print(f"Cell Tracker After {cell_tracker}")
 
                 if sum(cell_tracker) == 0:      # If that was the last land use to assign, break out of the loop
-                    print "Finished the assignment"
+                    print("Finished the assignment")
                     finished = True
                     continue
 
                 if len(cells_hashtable) == 0:
-                    print "Finished the assignment because no more cells available"
+                    print("Finished the assignment because no more cells available")
                     finished = True
                     continue
 
                 cells_hashtable = self.create_cell_potential_hashtable(cells_hashtable, option="revise", filter=filter)
-                print "New Table Rows", len(cells_hashtable)
-                print "Current remaining cells to assign", sum(cell_tracker)
+                print(f"New Table Rows {len(cells_hashtable)}")
+                print(f"Current remaining cells to assign {sum(cell_tracker)}")
 
             nonecounter = 0
             for i in range(len(transitioncells)):
@@ -2013,7 +2012,7 @@ class UrbanDevelopment(UBModule):
                         transitioncells[i].add_attribute("LUC_"+str(int(self.currentyear+1)), prev_luc)
                 else:
                     continue
-            print "None counter", nonecounter
+            print(f"None counter {nonecounter}")
 
             # STEP 4 - Assign the population to the map based on the existing and suitabilities
             # This step creates the attribute POP_YEAR - do for one land use at a time
@@ -2022,9 +2021,9 @@ class UrbanDevelopment(UBModule):
             maxdensity = {"RES": self.res_maxdensity, "COM": self.com_maxdensity, "LI": self.ind_maxdensity,
                           "HI": self.ind_maxdensity, "ORC": self.orc_maxdensity}
             for luc in ji_next.keys():
-                # print "Current LUC", luc, "associated with: ", ji_next[luc]
+                # print(f"Current LUC {luc} associated with: {ji_next[luc]}")
                 cells_hashtable, existing_pop = self.create_cell_assignment_hashtable(transitioncells, luc)
-                print "Cells Hashtable", cells_hashtable
+                print(f"Cells Hashtable {cells_hashtable}")
                 pop_to_assign = ji_next[luc] - existing_pop
                 if pop_to_assign > 0:       # if it's positive, i.e. need to allocate more
                     cells_hashtable.sort(reverse=True)      # Sort from highest to lowest
@@ -2034,7 +2033,7 @@ class UrbanDevelopment(UBModule):
                     # Add to table from lowest to highest suitability
                 while pop_to_assign != 0:       # Just keep assigning in order ot highest to lowest         # DEBUG REPORT! - PROBLEMATIC WHILE!
                     for i in range(len(cells_hashtable)):
-                        # print "Current Cell population: ", cells_hashtable[i][1]
+                        # print(f"Current Cell population: {cells_hashtable[i][1]}")
                         if pop_to_assign > 0:
                             factor = +1 * mindensity[luc]   # if we add population, then in increments of min-density
                         else:
@@ -2047,7 +2046,7 @@ class UrbanDevelopment(UBModule):
                         else:
                             cells_hashtable[i][1] += factor     # Otherwise increment by +1 or -1
                             pop_to_assign -= factor  # Decrement population by +1 or -1
-                        # print pop_to_assign
+                        # print(pop_to_assign)
                         if pop_to_assign == 0:                  # if the population is zero, break loop
                             break
 
@@ -2077,7 +2076,7 @@ class UrbanDevelopment(UBModule):
 
         self.map_attr.add_attribute("URBMODELEND", self.currentyear)
         self.notify("Current End of Module")
-        print ("Current end of module")
+        print("Current end of module")
         return True
 
     def create_cell_assignment_hashtable(self, cellslist, luc):
@@ -2093,11 +2092,11 @@ class UrbanDevelopment(UBModule):
         existing_pop = 0
         for i in range(len(cellslist)):
             c = cellslist[i]
-            # print luc, "at", str(int(self.currentyear+1)), "is", c.get_attribute("LUC_"+str(int(self.currentyear+1)))
+            # print(f"{luc} at {str(int(self.currentyear+1))} is {c.get_attribute('LUC_'+str(int(self.currentyear+1)))}")
             if c.get_attribute("LUC_"+str(int(self.currentyear+1))) == luc:      # If the cell matches the land use...
                 if c.get_attribute("LUC_"+str(int(self.currentyear))) == luc:    # If the cell had the same LUC previously...
                     pop = c.get_attribute("POP_"+str(int(self.currentyear)))
-                    # print "Current year Pop", pop
+                    # print(f"Current year Pop {pop}")
                 else:
                     pop = 0
             else:
@@ -2115,8 +2114,8 @@ class UrbanDevelopment(UBModule):
         for i in range(len(hashtable)):
             hashtable[i][0] = float(hashtable[i][0] / total_suit)
 
-        print "CurrentLUC", luc, "length of table: ", len(hashtable)
-        print "Existing Population", existing_pop
+        print(f"CurrentLUC {luc} length of table: {len(hashtable)}")
+        print(f"Existing Population: {existing_pop}")
         return hashtable, existing_pop
 
     def create_cell_potential_hashtable(self, cellslist, option="new", filter=[]):
@@ -2137,8 +2136,8 @@ class UrbanDevelopment(UBModule):
             for i in range(len(cellslist)):
                 cells.append(cellslist[i][3])
 
-        print "There are a total of", len(cells), "cells left to sort."
-        print "Current filter", filter
+        print(f"There are a total of {len(cells)} cells left to sort.")
+        print(f"Current filter {filter}")
         for i in range(len(cells)):
             c = cells[i]
             vpot = [c.get_attribute("VPOT_RES"), c.get_attribute("VPOT_COM"),
@@ -2234,16 +2233,16 @@ class UrbanDevelopment(UBModule):
                 SAit["HI"] += cellslist[i].get_attribute("SUIT_IND")
                 SAit["ORC"] += cellslist[i].get_attribute("SUIT_ORC")
 
-        print "Transition Details"
-        print "Ji", ji, "NCI", nci
-        print "Suit At", Sit, "SuitPassive", SAit
+        print("Transition Details")
+        print(f"Ji {ji}, NCI {nci}")
+        print(f"Suit At: {Sit}, SuitPassive: {SAit}")
         return ji, nci, Sit, SAit
 
     def calculate_new_cells(self, ji_next, nci, sit, sait):
         """Calculates the new number of cells required for the given land use based on the starting density, suitability
         and cell-suitability relationship.
 
-        :param ji: current time step population / employment value
+        :param ji_next: current time step population / employment value
         :param nci: number of cells occupied by the land use currently
         :param sit: total suitability of the land use type in its own cells
         :param sait: total suitability for land use type in all passive cells across the map
@@ -2276,9 +2275,9 @@ class UrbanDevelopment(UBModule):
             wi_next[i] = wi0[i] * landpressure[i] * landquality[i]
             nci_next[i] = int(ji_next[i] / wi_next[i])
 
-        print "Land Pressure", landpressure
-        print "Land Quality", landquality
-        print "Next Density", wi_next
+        print(f"Land Pressure {landpressure}")
+        print(f"Land Quality {landquality}")
+        print(f"Next Density {wi_next}")
 
         return nci_next
 
@@ -2444,7 +2443,7 @@ class UrbanDevelopment(UBModule):
         pointfeatures = ubspatial.import_point_features(fullfilepath, "POINTCOORDS", self.global_offsets)
 
         self.notify("Number of loaded features to compare for "+str(att_name)+": " + str(len(pointfeatures)))
-        print "Length of the featurepoints list for "+str(att_name)+": ", str(len(pointfeatures))
+        print(f"Length of the featurepoints list for {str(att_name)}: {str(len(pointfeatures))}")
 
         # CALCULATE CLOSEST DISTANCE TO EACH CELL
         for i in range(len(cellslist)):
@@ -2489,7 +2488,7 @@ class UrbanDevelopment(UBModule):
                                                          Segments=self.cellsize)  # Segmentation
 
         self.notify("Number of loaded features to compare for "+str(att_name)+": "+str(len(linearfeatures)))
-        print "Length of the featurepoints list for "+str(att_name)+": ", str(len(linearfeatures))
+        print(f"Length of the featurepoints list for {str(att_name)}: {str(len(linearfeatures))}")
 
         for i in range(len(cellslist)):
             cur_cell = cellslist[i]
@@ -2534,7 +2533,7 @@ class UrbanDevelopment(UBModule):
         polypoints = ubspatial.import_polygonal_map(fullfilepath, "RINGPOINTS", None, self.global_offsets)
 
         self.notify("Number of loaded features to compare for "+str(att_name)+": " + str(len(polypoints)))
-        print "Length of the featurepoints list for "+str(att_name)+": ", str(len(polypoints))
+        print(f"Length of the featurepoints list for {str(att_name)}: {str(len(polypoints))}")
 
         for i in range(len(cellslist)):
             cur_cell = cellslist[i]

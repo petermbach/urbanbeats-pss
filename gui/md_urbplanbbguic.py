@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @file   md_urbplanbbguic.py
 @author Peter M Bach <peterbach@gmail.com>
@@ -31,7 +30,7 @@ import model.progref.ubglobals as ubglobals
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
-from md_urbplanbbgui import Ui_Urbplanbb_Dialog
+from .md_urbplanbbgui import Ui_Urbplanbb_Dialog
 
 
 # --- MAIN GUI FUNCTION ---
@@ -760,7 +759,6 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
     def save_values(self):
         """Saves current values to the corresponding module's instance in the active scenario."""
         # TAB 1 - GENERAL PARAMETERS
-        # print "Debug String: GENERAL PARAMETERS"
         self.module.set_parameter("plan_type", ubglobals.PLANTYPES[self.ui.plan_typology_combo.currentIndex()])
         if self.ui.plan_params_predef.isChecked():
             self.module.set_parameter("plan_template", "PREDEF")
@@ -792,7 +790,6 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("popredev_thresh", int(self.ui.popredevelop_spin.value()))
 
         # TAB 2 - Residential
-        # print "Debug String: RESIDENTIAL PARAMETERS"
         self.module.set_parameter("occup_avg", float(self.ui.occup_avg_box.text()))
         self.module.set_parameter("occup_max", float(self.ui.occup_max_box.text()))
         self.module.set_parameter("person_space", float(self.ui.person_space_box.text()))
@@ -854,7 +851,6 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("imperv_prop_dced", int(self.ui.avg_imp_dced_spin.value()))
 
         # TAB 3 - Non-Residential
-        # print "Debug String: NON-RESIDENTIAL PARAMETERS"
         if self.ui.jobs_direct_radio.isChecked():
             self.module.set_parameter("employment_mode", "I")
         elif self.ui.jobs_dist_radio.isChecked():
@@ -920,7 +916,6 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("civ_cityhall", int(self.ui.civ_cityhall.isChecked()))
 
         # TAB 4 - Transport and Roads
-        # print "Debug String: TRANSPORT PARAMETERS"
         self.module.set_parameter("ma_buffer", int(self.ui.ma_buffer_check.isChecked()))
         self.module.set_parameter("ma_fpath", int(self.ui.ma_fpath_check.isChecked()))
         self.module.set_parameter("ma_nstrip", int(self.ui.ma_nstrip_check.isChecked()))
@@ -994,7 +989,6 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("trans_railterminal", int(self.ui.trans_railterminal.isChecked()))
 
         # TAB 5 - Open Spaces
-        # print "Debug String: OPEN SPACE PARAMETERS"
         self.module.set_parameter("pg_greengrey_ratio", int(self.ui.pg_ggratio_slide.value()))
         self.module.set_parameter("pg_nonrec_space", int(self.ui.pg_usable_spin.value()))
         self.module.set_parameter("pg_fac_restaurant", int(self.ui.pg_fac_restaurant.isChecked()))
@@ -1015,7 +1009,6 @@ class UrbplanbbGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("svu4storm_prop", int(self.ui.svu_storm_spin.value()))
 
         # TAB 6 - Other Uses
-        # print "Debug String: OTHER PARAMETERS"
         self.module.set_parameter("unc_merge", int(self.ui.unc_merge_check.isChecked()))
         self.module.set_parameter("unc_pgmerge", int(self.ui.unc_merge2pg_check.isChecked()))
         self.module.set_parameter("unc_refmerge", int(self.ui.unc_merge2ref_check.isChecked()))

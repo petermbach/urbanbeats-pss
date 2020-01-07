@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'startscreen.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_StartDialog(object):
     def setupUi(self, StartDialog):
@@ -24,12 +26,10 @@ class Ui_StartDialog(object):
         self.MainWidget.setMinimumSize(QtCore.QSize(550, 0))
         self.MainWidget.setObjectName("MainWidget")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.MainWidget)
-        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.title = QtWidgets.QWidget(self.MainWidget)
         self.title.setObjectName("title")
         self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.title)
-        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_6.setObjectName("verticalLayout_6")
         self.title_text = QtWidgets.QLabel(self.title)
         font = QtGui.QFont()
@@ -43,7 +43,6 @@ class Ui_StartDialog(object):
         self.subtitle = QtWidgets.QWidget(self.MainWidget)
         self.subtitle.setObjectName("subtitle")
         self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.subtitle)
-        self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_7.setObjectName("verticalLayout_7")
         self.subtitle_text = QtWidgets.QLabel(self.subtitle)
         self.subtitle_text.setObjectName("subtitle_text")
@@ -54,7 +53,6 @@ class Ui_StartDialog(object):
         self.NewProject_Widget = QtWidgets.QWidget(self.MainWidget)
         self.NewProject_Widget.setObjectName("NewProject_Widget")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.NewProject_Widget)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.NewProject_button = QtWidgets.QPushButton(self.NewProject_Widget)
         self.NewProject_button.setMinimumSize(QtCore.QSize(80, 80))
@@ -93,7 +91,6 @@ class Ui_StartDialog(object):
         self.OpenProject_Widget = QtWidgets.QWidget(self.MainWidget)
         self.OpenProject_Widget.setObjectName("OpenProject_Widget")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.OpenProject_Widget)
-        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.OpenProject_button = QtWidgets.QPushButton(self.OpenProject_Widget)
         self.OpenProject_button.setMinimumSize(QtCore.QSize(80, 80))
@@ -132,7 +129,6 @@ class Ui_StartDialog(object):
         self.ImportProject_Widget = QtWidgets.QWidget(self.MainWidget)
         self.ImportProject_Widget.setObjectName("ImportProject_Widget")
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.ImportProject_Widget)
-        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.ImportProject_button = QtWidgets.QPushButton(self.ImportProject_Widget)
         self.ImportProject_button.setMinimumSize(QtCore.QSize(80, 80))
@@ -171,7 +167,6 @@ class Ui_StartDialog(object):
         self.VisitWeb_Widget = QtWidgets.QWidget(self.MainWidget)
         self.VisitWeb_Widget.setObjectName("VisitWeb_Widget")
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout(self.VisitWeb_Widget)
-        self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
         self.VisitWeb_button = QtWidgets.QPushButton(self.VisitWeb_Widget)
         self.VisitWeb_button.setMinimumSize(QtCore.QSize(80, 80))
@@ -210,7 +205,6 @@ class Ui_StartDialog(object):
         self.Others_Widget = QtWidgets.QWidget(self.MainWidget)
         self.Others_Widget.setObjectName("Others_Widget")
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout(self.Others_Widget)
-        self.horizontalLayout_6.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_6.setObjectName("horizontalLayout_6")
         self.OptionsButton = QtWidgets.QPushButton(self.Others_Widget)
         self.OptionsButton.setMinimumSize(QtCore.QSize(0, 40))
@@ -293,5 +287,4 @@ class Ui_StartDialog(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">(C) 2012 - Peter M. Bach</span></p></body></html>"))
-
 import ubeats_rc

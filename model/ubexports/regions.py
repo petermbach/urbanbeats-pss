@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @file   model\ubexports\blocks.py
 @author Peter M Bach <peterbach@gmail.com>
@@ -27,10 +26,6 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 import osgeo.osr as osr
 import osgeo.ogr as ogr
 import os
-
-# URBANBEATS IMPORT
-from ..ublibs import ubdatatypes as ubdata
-from ..progref import ubglobals
 
 
 def export_municipalities_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg):

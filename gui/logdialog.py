@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'logdialog.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_LogDialog(object):
     def setupUi(self, LogDialog):
@@ -20,7 +22,6 @@ class Ui_LogDialog(object):
         self.header = QtWidgets.QWidget(LogDialog)
         self.header.setObjectName("header")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.header)
-        self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.title_logo = QtWidgets.QLabel(self.header)
         self.title_logo.setMinimumSize(QtCore.QSize(30, 30))
@@ -48,7 +49,6 @@ class Ui_LogDialog(object):
         self.session_tab = QtWidgets.QWidget()
         self.session_tab.setObjectName("session_tab")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.session_tab)
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.session_box = QtWidgets.QPlainTextEdit(self.session_tab)
         self.session_box.setMinimumSize(QtCore.QSize(0, 100))
@@ -60,7 +60,6 @@ class Ui_LogDialog(object):
         self.history_tab = QtWidgets.QWidget()
         self.history_tab.setObjectName("history_tab")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.history_tab)
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.history_box = QtWidgets.QPlainTextEdit(self.history_tab)
         self.history_box.setMinimumSize(QtCore.QSize(0, 100))
@@ -74,7 +73,6 @@ class Ui_LogDialog(object):
         self.footer.setMaximumSize(QtCore.QSize(16777215, 38))
         self.footer.setObjectName("footer")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.footer)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
@@ -112,5 +110,4 @@ class Ui_LogDialog(object):
         self.export_log.setText(_translate("LogDialog", "Export"))
         self.clear_log.setText(_translate("LogDialog", "Clear"))
         self.done_button.setText(_translate("LogDialog", "Done"))
-
 import ubeats_rc

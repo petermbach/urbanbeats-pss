@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'md_subgui_dp.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_CustomPatternDialog(object):
     def setupUi(self, CustomPatternDialog):
@@ -24,7 +26,6 @@ class Ui_CustomPatternDialog(object):
         self.widget.setMinimumSize(QtCore.QSize(0, 40))
         self.widget.setObjectName("widget")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.widget)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.enduselbl = QtWidgets.QLabel(self.widget)
         self.enduselbl.setObjectName("enduselbl")
@@ -176,7 +177,6 @@ class Ui_CustomPatternDialog(object):
         self.widget_2.setMinimumSize(QtCore.QSize(0, 40))
         self.widget_2.setObjectName("widget_2")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.widget_2)
-        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.avg_lbl = QtWidgets.QLabel(self.widget_2)
         self.avg_lbl.setObjectName("avg_lbl")
@@ -192,7 +192,6 @@ class Ui_CustomPatternDialog(object):
         self.footer_widget.setMaximumSize(QtCore.QSize(16777215, 38))
         self.footer_widget.setObjectName("footer_widget")
         self.horizontalLayout_7 = QtWidgets.QHBoxLayout(self.footer_widget)
-        self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_7.setObjectName("horizontalLayout_7")
         self.button_Box = QtWidgets.QDialogButtonBox(self.footer_widget)
         self.button_Box.setOrientation(QtCore.Qt.Horizontal)
@@ -271,4 +270,3 @@ class Ui_CustomPatternDialog(object):
         self.tableWidget.setSortingEnabled(__sortingEnabled)
         self.avg_lbl.setText(_translate("CustomPatternDialog", "<html><head/><body><p>Average Scaling:</p></body></html>"))
         self.avg_box.setText(_translate("CustomPatternDialog", "1.0"))
-

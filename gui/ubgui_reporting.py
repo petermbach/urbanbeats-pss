@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 """
 @file   main.pyw
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 
 Urban Biophysical Environments and Technologies Simulator (UrbanBEATS)
-Copyright (C) 2012  Peter M. Bach
+Copyright (C) 2020  Peter M. Bach
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

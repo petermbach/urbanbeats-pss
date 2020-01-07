@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @file   model\ubexports\openspace.py
 @author Peter M Bach <peterbach@gmail.com>
@@ -29,7 +28,6 @@ import osgeo.ogr as ogr
 import os
 
 # URBANBEATS IMPORT
-from ..ublibs import ubdatatypes as ubdata
 from ..progref import ubglobals
 
 

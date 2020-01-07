@@ -61,8 +61,8 @@ class Sww_Infrastructure(UBModule):
         # Get all the Blocks
         self.blocks = self.scenario.get_assets_with_identifier("BlockID")    # returns [ ] of UBVector() objects
         for b in self.blocks:
-            print "Current Block", b.get_attribute("BlockID")
-            print b.get_attribute("MinElev")
+            print("Current Block", b.get_attribute("BlockID"))
+            print(b.get_attribute("MinElev"))
         return True
 
     def find_upstream_d8(self, z, nhd_z):
@@ -139,7 +139,7 @@ class Sww_Infrastructure(UBModule):
             # else:
             neighbours_z = self.scenario.retrieve_attribute_value_list("Block", "MinElev",
                                                                        current_block.get_attribute("Neighbours"))
-            print "Neighbour Z: ", neighbours_z
+            print("Neighbour Z: ", neighbours_z)
 
             # Find the downstream block unless it's a sink
             flow_id, max_zdrop = self.find_upstream_d8(z, neighbours_z)

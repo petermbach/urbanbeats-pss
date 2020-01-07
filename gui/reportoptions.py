@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'reportoptions.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_ReportingDialog(object):
     def setupUi(self, ReportingDialog):
@@ -20,7 +22,6 @@ class Ui_ReportingDialog(object):
         self.title_widget = QtWidgets.QWidget(ReportingDialog)
         self.title_widget.setObjectName("title_widget")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.title_widget)
-        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.title_logo = QtWidgets.QLabel(self.title_widget)
         self.title_logo.setMinimumSize(QtCore.QSize(30, 30))
@@ -49,7 +50,6 @@ class Ui_ReportingDialog(object):
         self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 445, 439))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.gridLayout_2 = QtWidgets.QGridLayout()
         self.gridLayout_2.setContentsMargins(9, 9, 9, 9)
@@ -172,7 +172,6 @@ class Ui_ReportingDialog(object):
         self.footer.setMaximumSize(QtCore.QSize(16777215, 38))
         self.footer.setObjectName("footer")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.footer)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
@@ -247,5 +246,4 @@ class Ui_ReportingDialog(object):
         self.radioHTML.setText(_translate("ReportingDialog", "HTML Report"))
         self.create_button.setText(_translate("ReportingDialog", "Create"))
         self.done_button.setText(_translate("ReportingDialog", "Done"))
-
 import ubeats_rc

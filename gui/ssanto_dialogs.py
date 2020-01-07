@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @file   urbanbeatsdialogs.py
 @author Martijn Kuller <martijnkuller@gmail.com>, Peter M Bach <peterbach@gmail.com>
@@ -31,10 +30,10 @@ __copyright__ = "Copyright 2019. Martijn Kuller"
 # --- --- --- --- --- --- --- --- ---
 
 # --- PYTHON LIBRARY IMPORTS ---
-from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKit
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-from ssanto_maingui import Ui_SSANTOMain
+from .ssanto_maingui import Ui_SSANTOMain
 
 
 # --- MAIN WINDOW ---

@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'startnewprojectdialog.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_ProjectSetupDialog(object):
     def setupUi(self, ProjectSetupDialog):
@@ -17,7 +19,6 @@ class Ui_ProjectSetupDialog(object):
         self.header = QtWidgets.QWidget(ProjectSetupDialog)
         self.header.setObjectName("header")
         self.gridLayout_12 = QtWidgets.QGridLayout(self.header)
-        self.gridLayout_12.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_12.setObjectName("gridLayout_12")
         self.title_logo = QtWidgets.QLabel(self.header)
         self.title_logo.setMinimumSize(QtCore.QSize(30, 30))
@@ -44,7 +45,6 @@ class Ui_ProjectSetupDialog(object):
         self.projectinfo_tab = QtWidgets.QWidget()
         self.projectinfo_tab.setObjectName("projectinfo_tab")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.projectinfo_tab)
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.general_scrollArea = QtWidgets.QScrollArea(self.projectinfo_tab)
         self.general_scrollArea.setEnabled(True)
@@ -55,7 +55,6 @@ class Ui_ProjectSetupDialog(object):
         self.general_scrollAreaContents.setGeometry(QtCore.QRect(0, 0, 441, 901))
         self.general_scrollAreaContents.setObjectName("general_scrollAreaContents")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.general_scrollAreaContents)
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout()
         self.verticalLayout_5.setContentsMargins(9, 9, 9, 9)
@@ -67,7 +66,6 @@ class Ui_ProjectSetupDialog(object):
         self.aboutproject_widget1.setEnabled(True)
         self.aboutproject_widget1.setObjectName("aboutproject_widget1")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.aboutproject_widget1)
-        self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.projname_lbl = QtWidgets.QLabel(self.aboutproject_widget1)
         self.projname_lbl.setObjectName("projname_lbl")
@@ -79,7 +77,6 @@ class Ui_ProjectSetupDialog(object):
         self.aboutproject_widget2 = QtWidgets.QWidget(self.general_scrollAreaContents)
         self.aboutproject_widget2.setObjectName("aboutproject_widget2")
         self.gridLayout = QtWidgets.QGridLayout(self.aboutproject_widget2)
-        self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setObjectName("gridLayout")
         self.location_combo = QtWidgets.QComboBox(self.aboutproject_widget2)
         self.location_combo.setObjectName("location_combo")
@@ -124,7 +121,6 @@ class Ui_ProjectSetupDialog(object):
         self.aboutuser_widget = QtWidgets.QWidget(self.general_scrollAreaContents)
         self.aboutuser_widget.setObjectName("aboutuser_widget")
         self.gridLayout_7 = QtWidgets.QGridLayout(self.aboutuser_widget)
-        self.gridLayout_7.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_7.setObjectName("gridLayout_7")
         self.otherpersons_lbl = QtWidgets.QLabel(self.aboutuser_widget)
         self.otherpersons_lbl.setObjectName("otherpersons_lbl")
@@ -178,7 +174,6 @@ class Ui_ProjectSetupDialog(object):
         self.path_widget = QtWidgets.QWidget(self.general_scrollAreaContents)
         self.path_widget.setObjectName("path_widget")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.path_widget)
-        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.projpath_lbl = QtWidgets.QLabel(self.path_widget)
         self.projpath_lbl.setObjectName("projpath_lbl")
@@ -203,7 +198,6 @@ class Ui_ProjectSetupDialog(object):
         self.projectlog_widget = QtWidgets.QWidget(self.general_scrollAreaContents)
         self.projectlog_widget.setObjectName("projectlog_widget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.projectlog_widget)
-        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.projectlog_simple = QtWidgets.QRadioButton(self.projectlog_widget)
         self.projectlog_simple.setObjectName("projectlog_simple")
@@ -221,7 +215,6 @@ class Ui_ProjectSetupDialog(object):
         self.boundary_widget = QtWidgets.QWidget(self.general_scrollAreaContents)
         self.boundary_widget.setObjectName("boundary_widget")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.boundary_widget)
-        self.gridLayout_4.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_4.setObjectName("gridLayout_4")
         self.projectboundary_lbl2 = QtWidgets.QLabel(self.boundary_widget)
         self.projectboundary_lbl2.setObjectName("projectboundary_lbl2")
@@ -237,7 +230,6 @@ class Ui_ProjectSetupDialog(object):
         self.datadisplay_widget = QtWidgets.QWidget(self.general_scrollAreaContents)
         self.datadisplay_widget.setObjectName("datadisplay_widget")
         self.gridLayout_10 = QtWidgets.QGridLayout(self.datadisplay_widget)
-        self.gridLayout_10.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_10.setObjectName("gridLayout_10")
         self.epsg_lbl = QtWidgets.QLabel(self.datadisplay_widget)
         self.epsg_lbl.setObjectName("epsg_lbl")
@@ -269,7 +261,6 @@ class Ui_ProjectSetupDialog(object):
         self.footer.setMaximumSize(QtCore.QSize(16777215, 38))
         self.footer.setObjectName("footer")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.footer)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.buttonBox = QtWidgets.QDialogButtonBox(self.footer)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
@@ -400,5 +391,4 @@ class Ui_ProjectSetupDialog(object):
         self.coords_combo.setItemText(0, _translate("ProjectSetupDialog", "(select coordinate system)"))
         self.coords_lbl.setText(_translate("ProjectSetupDialog", "Default Coordinate System:"))
         self.setup_tabs.setTabText(self.setup_tabs.indexOf(self.projectinfo_tab), _translate("ProjectSetupDialog", "Project Information"))
-
 import ubeats_rc

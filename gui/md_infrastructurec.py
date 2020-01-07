@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @file   md_infrastructurec.py
 @author Peter M Bach <peterbach@gmail.com>, Natalia Duque <natalia.duquevillarreal@eawag.ch>
@@ -31,7 +30,7 @@ import model.progref.ubglobals as ubglobals
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
-from md_infrastructure import Ui_Infrastructure_Dialog
+from .md_infrastructure import Ui_Infrastructure_Dialog
 
 
 # --- MAIN GUI FUNCTION ---

@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'openprojectdialog.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_OpenProjectDialog(object):
     def setupUi(self, OpenProjectDialog):
@@ -17,7 +19,6 @@ class Ui_OpenProjectDialog(object):
         self.header = QtWidgets.QWidget(OpenProjectDialog)
         self.header.setObjectName("header")
         self.gridLayout_12 = QtWidgets.QGridLayout(self.header)
-        self.gridLayout_12.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_12.setObjectName("gridLayout_12")
         self.title_logo = QtWidgets.QLabel(self.header)
         self.title_logo.setMinimumSize(QtCore.QSize(30, 30))
@@ -45,7 +46,6 @@ class Ui_OpenProjectDialog(object):
         self.path_widget = QtWidgets.QWidget(OpenProjectDialog)
         self.path_widget.setObjectName("path_widget")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.path_widget)
-        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.projpath_button = QtWidgets.QPushButton(self.path_widget)
         self.projpath_button.setObjectName("projpath_button")
@@ -65,12 +65,10 @@ class Ui_OpenProjectDialog(object):
         self.path_widget_2 = QtWidgets.QWidget(OpenProjectDialog)
         self.path_widget_2.setObjectName("path_widget_2")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.path_widget_2)
-        self.gridLayout_4.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_4.setObjectName("gridLayout_4")
         self.path_widget_3 = QtWidgets.QWidget(self.path_widget_2)
         self.path_widget_3.setObjectName("path_widget_3")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.path_widget_3)
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.info_button = QtWidgets.QPushButton(self.path_widget_3)
         self.info_button.setMinimumSize(QtCore.QSize(0, 0))
@@ -169,5 +167,4 @@ class Ui_OpenProjectDialog(object):
         item.setText(_translate("OpenProjectDialog", "Modeller"))
         item = self.project_table.horizontalHeaderItem(2)
         item.setText(_translate("OpenProjectDialog", "Path"))
-
 import ubeats_rc

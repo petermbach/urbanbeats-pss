@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'urbanbeatsresults.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_ResultsExplorer(object):
     def setupUi(self, ResultsExplorer):
@@ -17,7 +19,6 @@ class Ui_ResultsExplorer(object):
         self.navigation_widget = QtWidgets.QWidget(ResultsExplorer)
         self.navigation_widget.setObjectName("navigation_widget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.navigation_widget)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
         self.title_frame = QtWidgets.QFrame(self.navigation_widget)
         self.title_frame.setMaximumSize(QtCore.QSize(16777215, 65))
@@ -53,7 +54,6 @@ class Ui_ResultsExplorer(object):
         self.summary = QtWidgets.QWidget()
         self.summary.setObjectName("summary")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.summary)
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setContentsMargins(9, 9, 9, 9)
@@ -76,7 +76,6 @@ class Ui_ResultsExplorer(object):
         self.widget_3 = QtWidgets.QWidget(self.summary)
         self.widget_3.setObjectName("widget_3")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.widget_3)
-        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.pushButton_5 = QtWidgets.QPushButton(self.widget_3)
         self.pushButton_5.setText("")
@@ -100,7 +99,6 @@ class Ui_ResultsExplorer(object):
         self.map = QtWidgets.QWidget()
         self.map.setObjectName("map")
         self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.map)
-        self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_7.setObjectName("verticalLayout_7")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout()
         self.verticalLayout_4.setContentsMargins(9, 9, 9, 9)
@@ -144,7 +142,6 @@ class Ui_ResultsExplorer(object):
         self.map_control = QtWidgets.QWidget(self.map)
         self.map_control.setObjectName("map_control")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.map_control)
-        self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.map_options_button = QtWidgets.QPushButton(self.map_control)
         self.map_options_button.setText("")
@@ -171,7 +168,6 @@ class Ui_ResultsExplorer(object):
         self.network = QtWidgets.QWidget()
         self.network.setObjectName("network")
         self.verticalLayout_13 = QtWidgets.QVBoxLayout(self.network)
-        self.verticalLayout_13.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_13.setObjectName("verticalLayout_13")
         self.verticalLayout_12 = QtWidgets.QVBoxLayout()
         self.verticalLayout_12.setContentsMargins(9, 9, 9, 9)
@@ -208,7 +204,6 @@ class Ui_ResultsExplorer(object):
         self.spatial = QtWidgets.QWidget()
         self.spatial.setObjectName("spatial")
         self.verticalLayout_8 = QtWidgets.QVBoxLayout(self.spatial)
-        self.verticalLayout_8.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_8.setObjectName("verticalLayout_8")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout()
         self.verticalLayout_5.setContentsMargins(9, 9, 9, 9)
@@ -247,7 +242,6 @@ class Ui_ResultsExplorer(object):
         self.stats_control = QtWidgets.QWidget(self.spatial)
         self.stats_control.setObjectName("stats_control")
         self.gridLayout_7 = QtWidgets.QGridLayout(self.stats_control)
-        self.gridLayout_7.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_7.setObjectName("gridLayout_7")
         self.pushButton_4 = QtWidgets.QPushButton(self.stats_control)
         self.pushButton_4.setText("")
@@ -272,7 +266,6 @@ class Ui_ResultsExplorer(object):
         self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab")
         self.verticalLayout_19 = QtWidgets.QVBoxLayout(self.tab)
-        self.verticalLayout_19.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_19.setObjectName("verticalLayout_19")
         self.verticalLayout_18 = QtWidgets.QVBoxLayout()
         self.verticalLayout_18.setContentsMargins(9, 9, 9, 9)
@@ -326,7 +319,6 @@ class Ui_ResultsExplorer(object):
         self.compare = QtWidgets.QWidget()
         self.compare.setObjectName("compare")
         self.verticalLayout_9 = QtWidgets.QVBoxLayout(self.compare)
-        self.verticalLayout_9.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_9.setObjectName("verticalLayout_9")
         self.verticalLayout_6 = QtWidgets.QVBoxLayout()
         self.verticalLayout_6.setContentsMargins(9, 9, 9, 9)
@@ -372,7 +364,6 @@ class Ui_ResultsExplorer(object):
         self.page = QtWidgets.QWidget()
         self.page.setObjectName("page")
         self.verticalLayout_10 = QtWidgets.QVBoxLayout(self.page)
-        self.verticalLayout_10.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_10.setObjectName("verticalLayout_10")
         self.summary_group = QtWidgets.QGroupBox(self.page)
         self.summary_group.setObjectName("summary_group")
@@ -387,7 +378,6 @@ class Ui_ResultsExplorer(object):
         self.page_2 = QtWidgets.QWidget()
         self.page_2.setObjectName("page_2")
         self.verticalLayout_11 = QtWidgets.QVBoxLayout(self.page_2)
-        self.verticalLayout_11.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_11.setObjectName("verticalLayout_11")
         self.map_view = QtWebKitWidgets.QWebView(self.page_2)
         self.map_view.setUrl(QtCore.QUrl("about:blank"))
@@ -397,7 +387,6 @@ class Ui_ResultsExplorer(object):
         self.page_3 = QtWidgets.QWidget()
         self.page_3.setObjectName("page_3")
         self.verticalLayout_14 = QtWidgets.QVBoxLayout(self.page_3)
-        self.verticalLayout_14.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_14.setObjectName("verticalLayout_14")
         self.network_view = QtWidgets.QGraphicsView(self.page_3)
         self.network_view.setObjectName("network_view")
@@ -406,7 +395,6 @@ class Ui_ResultsExplorer(object):
         self.widget_4.setMinimumSize(QtCore.QSize(0, 10))
         self.widget_4.setObjectName("widget_4")
         self.verticalLayout_15 = QtWidgets.QVBoxLayout(self.widget_4)
-        self.verticalLayout_15.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_15.setObjectName("verticalLayout_15")
         self.horizontalScrollBar = QtWidgets.QScrollBar(self.widget_4)
         self.horizontalScrollBar.setOrientation(QtCore.Qt.Horizontal)
@@ -417,7 +405,6 @@ class Ui_ResultsExplorer(object):
         self.page_4 = QtWidgets.QWidget()
         self.page_4.setObjectName("page_4")
         self.verticalLayout_16 = QtWidgets.QVBoxLayout(self.page_4)
-        self.verticalLayout_16.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_16.setObjectName("verticalLayout_16")
         self.stats_view = QtWebKitWidgets.QWebView(self.page_4)
         self.stats_view.setUrl(QtCore.QUrl("about:blank"))
@@ -427,7 +414,6 @@ class Ui_ResultsExplorer(object):
         self.page_6 = QtWidgets.QWidget()
         self.page_6.setObjectName("page_6")
         self.verticalLayout_20 = QtWidgets.QVBoxLayout(self.page_6)
-        self.verticalLayout_20.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_20.setObjectName("verticalLayout_20")
         self.correl_group = QtWidgets.QGroupBox(self.page_6)
         self.correl_group.setObjectName("correl_group")
@@ -466,7 +452,6 @@ class Ui_ResultsExplorer(object):
         self.page_5 = QtWidgets.QWidget()
         self.page_5.setObjectName("page_5")
         self.verticalLayout_17 = QtWidgets.QVBoxLayout(self.page_5)
-        self.verticalLayout_17.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_17.setObjectName("verticalLayout_17")
         self.compare_group = QtWidgets.QGroupBox(self.page_5)
         self.compare_group.setObjectName("compare_group")
@@ -565,6 +550,5 @@ class Ui_ResultsExplorer(object):
         self.a_lbl.setText(_translate("ResultsExplorer", "<html><head/><body><p><span style=\" font-weight:600;\">SCENARIO A</span></p></body></html>"))
         self.avb_lbl.setText(_translate("ResultsExplorer", "<html><head/><body><p><span style=\" font-weight:600;\">Scenario A vs. Scenario B</span></p></body></html>"))
         self.avb_summary_lbl.setText(_translate("ResultsExplorer", "<html><head/><body><p><span style=\" font-weight:600;\">Summary Statistics</span></p></body></html>"))
-
 from PyQt5 import QtWebKitWidgets
 import ubeats_rc

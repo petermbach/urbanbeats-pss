@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'aboutdialog.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_AboutDialog(object):
     def setupUi(self, AboutDialog):
@@ -20,7 +22,6 @@ class Ui_AboutDialog(object):
         self.title_box = QtWidgets.QWidget(AboutDialog)
         self.title_box.setObjectName("title_box")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.title_box)
-        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.title_logo = QtWidgets.QLabel(self.title_box)
         self.title_logo.setMinimumSize(QtCore.QSize(30, 30))
@@ -37,12 +38,10 @@ class Ui_AboutDialog(object):
         self.about_content = QtWidgets.QWidget(AboutDialog)
         self.about_content.setObjectName("about_content")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.about_content)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.devteam_content = QtWidgets.QWidget(self.about_content)
         self.devteam_content.setObjectName("devteam_content")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.devteam_content)
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.devteam_lbl = QtWidgets.QLabel(self.devteam_content)
         self.devteam_lbl.setObjectName("devteam_lbl")
@@ -57,7 +56,6 @@ class Ui_AboutDialog(object):
         self.logo_content.setMinimumSize(QtCore.QSize(0, 0))
         self.logo_content.setObjectName("logo_content")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.logo_content)
-        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.logo_lbl = QtWidgets.QLabel(self.logo_content)
         self.logo_lbl.setObjectName("logo_lbl")
@@ -75,12 +73,10 @@ class Ui_AboutDialog(object):
         self.footer = QtWidgets.QWidget(AboutDialog)
         self.footer.setObjectName("footer")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.footer)
-        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.footer_content = QtWidgets.QWidget(self.footer)
         self.footer_content.setObjectName("footer_content")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.footer_content)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
         self.version_number = QtWidgets.QLabel(self.footer_content)
         self.version_number.setObjectName("version_number")
@@ -150,5 +146,4 @@ class Ui_AboutDialog(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">(C) 2014 Peter M. Bach</p></body></html>"))
         self.okbutton.setText(_translate("AboutDialog", "OK"))
-
 import ubeats_rc

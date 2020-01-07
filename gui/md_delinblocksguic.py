@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @file   md_delinblocksguic.py
 @author Peter M Bach <peterbach@gmail.com>
@@ -31,7 +30,7 @@ import model.progref.ubglobals as ubglobals
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
-from md_delinblocksgui import Ui_Delinblocks_Dialog
+from .md_delinblocksgui import Ui_Delinblocks_Dialog
 
 
 # --- MAIN GUI FUNCTION ---
@@ -444,7 +443,7 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         # --- BUILT WATER INFRASTRUCTURE ---
         self.module.set_parameter("include_storm", int(self.ui.storm_check.isChecked()))
         self.module.set_parameter("storm_map", self.builtwaterfeatures[1][self.ui.storm_combo.currentIndex()])
-        print self.builtwaterfeatures, self.builtwaterfeatures[1][self.ui.storm_combo.currentIndex()]
+        print(f"{self.builtwaterfeatures}, {self.builtwaterfeatures[1][self.ui.storm_combo.currentIndex()]}")
         # self.module.set_parameter("include_sewer", int(self.ui.sewer_check.isChecked()))
         # self.module.set_parameter("sewer_map", self.builtwaterfeatures[1][self.ui.sewer_combo.currentIndex()])
         # self.module.set_parameter("include_supply", int(self.ui.supply_check.isChecked()))

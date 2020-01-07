@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @file   md_infrastructure.pyw
 @author Peter M Bach <peterbach@gmail.com>, Natalia Duque <natalia.duquevillarreal@eawag.ch>
@@ -42,8 +41,8 @@ from shapely.geometry import Polygon, LineString, Point
 from random import randint
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-from ubmodule import *
-from md_delinblocks import *
+from .ubmodule import *
+from .md_delinblocks import *
 import model.ublibs.ubspatial as ubspatial
 import model.ublibs.ubmethods as ubmethods
 import model.ublibs.ubdatatypes as ubdata
@@ -238,10 +237,10 @@ class Infrastructure(UBModule):
     #
     #             current_block = self.scenario.get_asset_with_name("BlockID" + str(b))
     #             current_blockid = current_block.get_attribute("BlockID")
-    #             # print ("current id " + str(current_blockid))
+    #             # print("current id " + str(current_blockid))
     #
     #             ndz = self.get_sww_neighbours(current_block, current_search)
-    #             # print ndz
+    #             # print(ndz)
     #             if ndz is None:
     #                 continue
     #
@@ -668,7 +667,7 @@ class Infrastructure(UBModule):
                         nhd_info[2].append(y2)
                         nhd_info[3].append(z2)
 
-        print current_block.get_attribute("BlockID"), nhd_info[0]
+        print(f"{current_block.get_attribute('BlockID')}, {nhd_info[0]}")
 
         if len(nhd_info[0]) == 0:
             return None
@@ -782,14 +781,15 @@ class Infrastructure(UBModule):
     #     z = curblock[3]
     #
     #     dz = []
-    #     # print nhd_z[1]
+    #     # print(nhd_z[1])
     #     for i in range(len(nhd[3])):
     #         dz.append(nhd[3][i] - z)  # Calculate the elevation difference
     #
     #     positives = [x for x in dz if x >= 0]
     #     negatives = [x for x in dz if x <= 0]
     #     if positives and min(positives) >= 0:  # If there is a drop in elevation or is flat!
-    #             up_id = nhd[0][dz.index(min(positives))]  # The ID corresponds to the block with minimum elevation difference
+    #             up_id = nhd[0][dz.index(min(positives))]
+    #             # The ID corresponds to the block with minimum elevation difference
     #             dElev = min(positives)
     #     elif max(negatives) > (-1):
     #         up_id = nhd[0][
@@ -844,7 +844,7 @@ class Infrastructure(UBModule):
         :return: block with closest treatment.
         """
         if treatments is None:
-            print ("No treatment detected")
+            print("No treatment detected")
             pass
 
         x_b = current_block.get_attribute("CentreX")
@@ -898,9 +898,8 @@ class Infrastructure(UBModule):
                 continue
             river_blocks.append(b)
 
-
         if river_blocks is None:
-            print ("No rivers detected")
+            print("No rivers detected")
             pass
 
         x_b = current_block.get_attribute("CentreX")
@@ -1116,7 +1115,7 @@ class Infrastructure(UBModule):
         for b in swwblocks:
             v1 = b.get_attribute("BlockID")
 
-            # print ("                      v1", str(b.get_attribute("BlockID")))
+            # print("                      v1", str(b.get_attribute("BlockID")))
             x1 = b.get_attribute("CentreX")
             y1 = b.get_attribute("CentreY")
             z1 = b.get_attribute("ModAvgElev")
@@ -1168,8 +1167,8 @@ class Infrastructure(UBModule):
 
         vertices.keys().sort()
 
-        print ("Printing undirected graph....", len(edges))
-        print ([str(e)+"/t" for e in edges])
+        print("Printing undirected graph....", len(edges))
+        print([str(e)+"/t" for e in edges])
         print("vertices " + str(vertices))
         return vertices, edges
 
@@ -1203,7 +1202,7 @@ class Infrastructure(UBModule):
                     if i[0] not in M and i[0] not in L:
                         M.append(i[0])
 
-            # print ("M: ", M)
+            # print("M: ", M)
 
 
             for j in M:
@@ -1368,7 +1367,7 @@ class Infrastructure(UBModule):
     #             # Add edges
     #             graph.add_edge(vertex1, vertex2, lenght)  # (A - B, weight)
     #             e = graph.get_edge(vertex1, vertex2)
-    #             # print ("-->" + str(e.__str__()))
+    #             # print("-->" + str(e.__str__()))
     #
     #             counter += 1
     #
@@ -1380,7 +1379,7 @@ class Infrastructure(UBModule):
     #             link.add_attribute("Length", lenght)
     #             self.scenario.add_asset("LinkID" + str(counter), link)
     #
-    #     print ("Printing undirected graph....", graph.get_number_of_vertices(), graph.get_number_of_edges())
+    #     print("Printing undirected graph....", graph.get_number_of_vertices(), graph.get_number_of_edges())
     #     return graph
     #
     # def m_spanning_tree(self, graph):
@@ -1388,7 +1387,7 @@ class Infrastructure(UBModule):
     #
     #     for i in range(len(MST.get_edges())):
     #         e = MST.edges.__dict__.items()
-    #         print e
+    #         print(e)
     #         vertex1 = e[0]
     #         vertex2 = e[1]
     #         weight = e[2]
@@ -1482,7 +1481,7 @@ class Infrastructure(UBModule):
 
             # Now assign Basin IDs, do this if the current Block has downstream ID -1
             if hash_table[1][hash_table[0].index(current_id)] == -1:    # If the block is an outlet
-                # print "Found a basin outlet at BlockID" + str(current_id)
+                # print("Found a basin outlet at BlockID" + str(current_id))
                 self.notify("Found a basin outlet at SwwID"+str(current_id))
                 basin_id += 1
                 current_block.add_attribute("SwwBasinID", basin_id)    # Set the current Basin ID

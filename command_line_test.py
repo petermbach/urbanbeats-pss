@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @file   command_line_test.py
 @author Peter M Bach <peterbach@gmail.com>
@@ -28,7 +27,8 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 # the GUI. Use this script when testing the core for errors where the GUI closes suddenly.
 
 # PYTHON IMPORTS
-import os, sys
+import os
+import sys
 import xml.etree.ElementTree as ET
 
 # URBANBEATS IMPORTS

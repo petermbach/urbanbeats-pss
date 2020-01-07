@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @file   main.pyw
 @author Peter M Bach <peterbach@gmail.com>

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @file   main.pyw
 @author Peter M Bach <peterbach@gmail.com>
@@ -35,7 +34,7 @@ import gc
 import tempfile
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-from ubmodule import *
+from .ubmodule import *
 
 
 # --- MODULE CLASS DEFINITION ---

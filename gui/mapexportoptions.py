@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'mapexportoptions.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_MapExportDialog(object):
     def setupUi(self, MapExportDialog):
@@ -20,7 +22,6 @@ class Ui_MapExportDialog(object):
         self.title_widget = QtWidgets.QWidget(MapExportDialog)
         self.title_widget.setObjectName("title_widget")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.title_widget)
-        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.title_logo = QtWidgets.QLabel(self.title_widget)
         self.title_logo.setMinimumSize(QtCore.QSize(30, 30))
@@ -47,7 +48,6 @@ class Ui_MapExportDialog(object):
         self.maps_tab = QtWidgets.QWidget()
         self.maps_tab.setObjectName("maps_tab")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.maps_tab)
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.scrollArea = QtWidgets.QScrollArea(self.maps_tab)
         self.scrollArea.setWidgetResizable(True)
@@ -56,7 +56,6 @@ class Ui_MapExportDialog(object):
         self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 457, 384))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout()
         self.verticalLayout_5.setContentsMargins(9, 9, 9, 9)
@@ -144,7 +143,6 @@ class Ui_MapExportDialog(object):
         self.formatting_tab = QtWidgets.QWidget()
         self.formatting_tab.setObjectName("formatting_tab")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.formatting_tab)
-        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.scrollArea_2 = QtWidgets.QScrollArea(self.formatting_tab)
         self.scrollArea_2.setWidgetResizable(True)
@@ -153,7 +151,6 @@ class Ui_MapExportDialog(object):
         self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 474, 302))
         self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
         self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_2)
-        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_6.setObjectName("verticalLayout_6")
         self.verticalLayout_7 = QtWidgets.QVBoxLayout()
         self.verticalLayout_7.setContentsMargins(9, 9, 9, 9)
@@ -225,7 +222,6 @@ class Ui_MapExportDialog(object):
         self.footer.setMaximumSize(QtCore.QSize(16777215, 38))
         self.footer.setObjectName("footer")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.footer)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem1)
@@ -347,5 +343,4 @@ class Ui_MapExportDialog(object):
         self.mapexport_widget.setTabText(self.mapexport_widget.indexOf(self.formatting_tab), _translate("MapExportDialog", "Formatting"))
         self.ok_button.setText(_translate("MapExportDialog", "OK"))
         self.cancel_button.setText(_translate("MapExportDialog", "Cancel"))
-
 import ubeats_rc

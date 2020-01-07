@@ -31,20 +31,13 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 # --- --- --- --- --- --- --- --- ---
 
 # --- PYTHON LIBRARY IMPORTS ---
-import sys
-import os
-import webbrowser
-import xml.etree.ElementTree as ET
-from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKit
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-import model.progref.ubglobals as ubglobals
-import model.ubdatalibrary as ubdatalibrary
-import model.ublibs.ubspatial as ubspatial
+from .urbanbeatsresults import Ui_ResultsExplorer
 
-from urbanbeatsresults import Ui_ResultsExplorer
 
-# --- ADD DATA DIALOG ---
+# --- RESULTS EXPLORER ---
 class LaunchResultsExplorer(QtWidgets.QDialog):
     """Class definition for the add data dialog window for importing and managing data."""
     def __init__(self, main, simulation, datalibrary, parent=None):

@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'md_subgui_influence.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_InfluenceFunctionDialog(object):
     def setupUi(self, InfluenceFunctionDialog):
@@ -23,7 +25,6 @@ class Ui_InfluenceFunctionDialog(object):
         self.input_widget = QtWidgets.QWidget(InfluenceFunctionDialog)
         self.input_widget.setObjectName("input_widget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.input_widget)
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.datainputmethod_lbl = QtWidgets.QLabel(self.input_widget)
         self.datainputmethod_lbl.setObjectName("datainputmethod_lbl")
@@ -93,7 +94,6 @@ class Ui_InfluenceFunctionDialog(object):
         self.datapoints_widget = QtWidgets.QWidget(self.input_widget)
         self.datapoints_widget.setObjectName("datapoints_widget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.datapoints_widget)
-        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.datapoints_lbl = QtWidgets.QLabel(self.datapoints_widget)
         self.datapoints_lbl.setObjectName("datapoints_lbl")
@@ -137,7 +137,6 @@ class Ui_InfluenceFunctionDialog(object):
         self.view_widget.setMinimumSize(QtCore.QSize(400, 0))
         self.view_widget.setObjectName("view_widget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.view_widget)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
         self.webView = QtWebKitWidgets.QWebView(self.view_widget)
         self.webView.setUrl(QtCore.QUrl("about:blank"))
@@ -146,7 +145,6 @@ class Ui_InfluenceFunctionDialog(object):
         self.widget_2 = QtWidgets.QWidget(self.view_widget)
         self.widget_2.setObjectName("widget_2")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.widget_2)
-        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.savefunction_button = QtWidgets.QPushButton(self.widget_2)
         self.savefunction_button.setObjectName("savefunction_button")
@@ -164,7 +162,6 @@ class Ui_InfluenceFunctionDialog(object):
         self.footer_widget.setMaximumSize(QtCore.QSize(16777215, 38))
         self.footer_widget.setObjectName("footer_widget")
         self.horizontalLayout_7 = QtWidgets.QHBoxLayout(self.footer_widget)
-        self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_7.setObjectName("horizontalLayout_7")
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_7.addItem(spacerItem1)
@@ -179,7 +176,6 @@ class Ui_InfluenceFunctionDialog(object):
         self.widget.setMinimumSize(QtCore.QSize(0, 0))
         self.widget.setObjectName("widget")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.widget)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.select_lbl = QtWidgets.QLabel(self.widget)
         self.select_lbl.setMaximumSize(QtCore.QSize(200, 16777215))
@@ -258,5 +254,4 @@ class Ui_InfluenceFunctionDialog(object):
         self.select_lbl.setText(_translate("InfluenceFunctionDialog", "<html><head/><body><p><span style=\" font-weight:600;\">Select an Influence Function:</span></p></body></html>"))
         self.select_combo.setItemText(0, _translate("InfluenceFunctionDialog", "<no selection>"))
         self.select_combo.setItemText(1, _translate("InfluenceFunctionDialog", "<create new influence function>"))
-
 from PyQt5 import QtWebKitWidgets

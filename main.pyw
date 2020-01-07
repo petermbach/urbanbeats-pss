@@ -266,7 +266,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def change_narrative_gui_tab(self):
         """Changes the current tab in the Scenario Narrative based on what is clicked in the Scenario Description
         tree view widget. Only updates if a top level item has been clicked."""
-        # print self.ui.ScenarioDock_View.selectedItems()[0].text(0)
+        # print(self.ui.ScenarioDock_View.selectedItems()[0].text(0))
         if self.ui.ScenarioDock_View.selectedItems()[0].text(0) == "Narrative":
             self.ui.ScenarioView_Widget.setCurrentIndex(1)
         elif self.ui.ScenarioDock_View.selectedItems()[0].text(0) == "Simulation Details":
@@ -491,7 +491,7 @@ class MainWindow(QtWidgets.QMainWindow):
         :return: None
         """
         if not os.path.isfile(UBEATSROOT+"/config.cfg"):
-            print "Creating Default Config File"
+            print("Creating Default Config File")
             ubconfigfiles.create_default_config_cfg(UBEATSROOT)     # if config.cfg does not exist, will create default
 
         options = ET.parse(UBEATSROOT+"/config.cfg")
@@ -514,7 +514,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def reset_default_options(self):
         """Completely restores the default options based on the .cfg's default attribute for each option type.
         Also closes the options window."""
-        print ("RESETTING")       #[TO DO]
+        print("RESETTING")       #[TO DO]
         ubconfigfiles.create_default_config_cfg(UBEATSROOT)
         self.set_options_from_config()      # Reset everything, update it
         self.update_gui_elements()
@@ -811,7 +811,7 @@ class MainWindow(QtWidgets.QMainWindow):
         with the following structure: [project_name, modeller, path]."""
         recent_projects = []
         if not os.path.isfile(UBEATSROOT+"/recent.cfg"):
-            print "Creating Blank Recent File"
+            print("Creating Blank Recent File")
             ubconfigfiles.create_default_recent_cfg(UBEATSROOT)
 
         recent_cfg = ET.parse(UBEATSROOT+"/recent.cfg")
@@ -1040,7 +1040,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.expcolData.setIcon(icon14)
             self.ui.expcolData.setIconSize(QtCore.QSize(20, 20))
         else:
-            print ("Something Wrong")
+            print("Something Wrong")
 
     # GETTERS and SETTERS
     def set_active_simulation_object(self, simobjectfromcore):

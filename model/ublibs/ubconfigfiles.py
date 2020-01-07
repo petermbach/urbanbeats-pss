@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @file   ubconfigfiles.py
 @author Peter M Bach <peterbach@gmail.com>

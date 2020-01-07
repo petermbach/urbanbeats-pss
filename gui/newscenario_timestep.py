@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'newscenario_timestep.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_TimeStep_Dialog(object):
     def setupUi(self, TimeStep_Dialog):
@@ -23,6 +25,7 @@ class Ui_TimeStep_Dialog(object):
         self.timestep_descr.setObjectName("timestep_descr")
         self.verticalLayout.addWidget(self.timestep_descr)
         self.years_list = QtWidgets.QListWidget(TimeStep_Dialog)
+        self.years_list.setEnabled(True)
         self.years_list.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.years_list.setObjectName("years_list")
         item = QtWidgets.QListWidgetItem()
@@ -122,4 +125,3 @@ class Ui_TimeStep_Dialog(object):
         item = self.years_list.item(14)
         item.setText(_translate("TimeStep_Dialog", "2032"))
         self.years_list.setSortingEnabled(__sortingEnabled)
-

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @file   md_urbdevelopguic.py
 @author Peter M Bach <peterbach@gmail.com>
@@ -33,8 +32,9 @@ import model.ublibs.ubdatatypes as ubdatatypes
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
-from md_urbdevelopgui import Ui_Urbandev_Dialog
-from md_subgui_influence import Ui_InfluenceFunctionDialog
+from .md_urbdevelopgui import Ui_Urbandev_Dialog
+from .md_subgui_influence import Ui_InfluenceFunctionDialog
+
 
 # --- MAIN GUI FUNCTION ---
 class UrbdevelopGuiLaunch(QtWidgets.QDialog):
@@ -352,7 +352,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
 
         luabbr = str(ifo.origin_landuse)+" -> "+str(ifo.target_landuse)
         metadata = [ifo.get_id(), ifo.get_function_name(), luabbr, str(ifo.get_x_range()), str(ifo.get_y_range())]
-        print metadata
+        print(metadata)
         self.ifo_selection.append(ifo.get_id())
         self.ui.nhd_table.insertRow(self.ui.nhd_table.rowCount())
         for m in range(len(metadata)):
@@ -366,7 +366,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
         """Opens the influence function dialog window so that the user can modify and add new functions. The difference
         with the version in the main GUI is that this function catches the 'accepted' and 'rejected' signals and
         updates the GUI accordingly."""
-        print "Opening Dialog"
+        print("Opening Dialog")
         if_dialog = InfluenceFunctionGUILaunch(self.simulation, self.log)
         if_dialog.accepted.connect(self.populate_if_table_from_module)
         if_dialog.accepted.connect(self.setup_if_function_select_combo)
@@ -388,7 +388,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
             viewindex = self.ui.functionselect_combo.currentIndex()
         elif source == "table":
             fid = self.ui.nhd_table.item(self.ui.nhd_table.currentRow(), 0).text()
-            print fid
+            print(fid)
             ifos = self.simulation.get_all_function_objects_of_type("IF")
             for i in range(len(ifos)):
                 if ifos[i].get_id() == fid:
@@ -410,7 +410,7 @@ class UrbdevelopGuiLaunch(QtWidgets.QDialog):
 
             luabbr = str(ifo.origin_landuse) + " -> " + str(ifo.target_landuse)
             metadata = [ifo.get_id(), ifo.get_function_name(), luabbr, str(ifo.get_x_range()), str(ifo.get_y_range())]
-            print "Loading", metadata
+            print(f"Loading {metadata}")
             self.ui.nhd_table.insertRow(self.ui.nhd_table.rowCount())
             for m in range(len(metadata)):
                 twi = QtWidgets.QTableWidgetItem()

@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'metadatadialog.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_MetadataDialog(object):
     def setupUi(self, MetadataDialog):
@@ -20,7 +22,6 @@ class Ui_MetadataDialog(object):
         self.header = QtWidgets.QWidget(MetadataDialog)
         self.header.setObjectName("header")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.header)
-        self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.title_logo = QtWidgets.QLabel(self.header)
         self.title_logo.setMinimumSize(QtCore.QSize(30, 30))
@@ -53,7 +54,6 @@ class Ui_MetadataDialog(object):
         self.footer.setMaximumSize(QtCore.QSize(16777215, 38))
         self.footer.setObjectName("footer")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.footer)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
@@ -77,5 +77,4 @@ class Ui_MetadataDialog(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">&lt;none&gt;</span></p></body></html>"))
         self.done_button.setText(_translate("MetadataDialog", "Done"))
-
 import ubeats_rc

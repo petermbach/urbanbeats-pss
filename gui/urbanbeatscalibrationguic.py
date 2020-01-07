@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @file   urbanbeatscalibrationguic.py
 @author Peter M Bach <peterbach@gmail.com>
@@ -29,12 +28,13 @@ import sys
 import os
 import webbrowser
 import numpy as np
-from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKit
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 import model.progref.ubglobals as ubglobals
 import model.ublibs.ubmethods as ubmethods
-from urbanbeatscalibration import Ui_CalibrationViewer
+from .urbanbeatscalibration import Ui_CalibrationViewer
+
 
 # --- ADD DATA DIALOG ---
 class LaunchCalibrationViewer(QtWidgets.QDialog):

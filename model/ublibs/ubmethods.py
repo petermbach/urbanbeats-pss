@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @file   ubmethods.py
 @author Peter M Bach <peterbach@gmail.com>
@@ -49,8 +48,10 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 # --- PYTHON LIBRARY IMPORTS ---
 import math
 import numpy as np
-from ..progref import ubglobals
+
 # --- URBANBEATS LIBRARY IMPORTS ---
+from ..progref import ubglobals
+
 
 def adjust_sample_range(parmin, parmax, parusemed):
     """Adjusts a stochastic sampling based on the input parameters of minimum, maximum and median.
@@ -83,7 +84,7 @@ def autosize_blocks(width, height):
     tot_area = width * height
     ideal_blocksize = math.sqrt(tot_area / float(block_limit))
 
-    print "IdBS:", ideal_blocksize
+    print(f"IdBS: {ideal_blocksize}")
 
     if ideal_blocksize <= 200:       # If less than 200m, size to 200m x 200m as minimum
         blocksize = 200
@@ -624,5 +625,5 @@ def calculate_accessibility_factor(dist, aj):
         else:
             return float(dist / (abs(aj) + dist))
     except ZeroDivisionError:
-        print "Zero division!"
+        print("Zero division!")
         return 0

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @file   ubdatatypes.py
 @author Peter M Bach <peterbach@gmail.com>
@@ -30,12 +29,9 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 import ast
-import numpy as np
-import os
-import gc
-import tempfile
 
 # --- URBANBEATS LIBRARY IMPORTS ---
+
 
 class UBRasterData(object):
     """The UrbanBEATS Raster Data Object, which holds raster information and allows querying of raster cell
@@ -138,6 +134,7 @@ class UBRasterData(object):
         """Erases the data matrix (to free up memory), use only if necessary!"""
         self.__data = None
         return True
+
 
 class UBComponent(object):
     """The most basic data container in UrbanBEATS, the UBComponent(), which can be used to store and manage
@@ -417,7 +414,4 @@ class NeighbourhoodInfluenceFunction(object):
             else:
                 continue
         return True
-
-
-
 

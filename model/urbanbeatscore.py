@@ -30,29 +30,14 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 import random
-import time
 import os
-import sys
 import xml.etree.ElementTree as ET
-import gc
-
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-import ubdatalibrary
-import ubscenarios
-import ublibs.ubspatial as ubspatial
-import ublibs.ubdatatypes as ubdata
-import modules.md_decisionanalysis
-import modules.md_climatesetup
-import modules.md_delinblocks
-import modules.md_impactassess
-import modules.md_perfassess
-import modules.md_regulation
-import modules.md_socioecon
-import modules.md_spatialmapping
-import modules.md_infrastructure
-import modules.md_urbandev
-import modules.md_urbplanbb
+from . import ubdatalibrary
+from . import ubscenarios
+from .ublibs import ubspatial as ubspatial
+from .ublibs import ubdatatypes as ubdata
 
 
 # --- URBANBEATS SIMULATION CLASS DEFINITION ---
@@ -297,7 +282,7 @@ class UrbanBeatsSim(object):
                 fdict[atts.tag] = atts.text
             # Now figure out how to set the function
             if fdict["functiontype"] == "IF":       # INFLUENCE FUNCTION
-                print fdict
+                print(fdict)
                 self.__functions.append(ubdata.NeighbourhoodInfluenceFunction(functiondict=fdict))
         return True
 
