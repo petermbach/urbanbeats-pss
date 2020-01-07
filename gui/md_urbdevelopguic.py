@@ -1950,13 +1950,13 @@ class InfluenceFunctionGUILaunch(QtWidgets.QDialog):
                 plotdata.append([float(xy[0].text()), float(xy[1].text())])
         plotname = self.ui.functionname_box.text()
 
-        html = """
+        html = r"""
         <!DOCTYPE HTML>
         <html>
 	    <head>
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>"""+plotname+"""</title>
+            <title>"""+plotname+r"""</title>
 
 		    <style type="text/css">
             #container {
@@ -1992,8 +1992,8 @@ class InfluenceFunctionGUILaunch(QtWidgets.QDialog):
             },
         
             series: [{
-                name: '"""+str(plotname)+"""',
-                data: """+str(plotdata)+"""
+                name: '"""+str(plotname)+r"""',
+                data: """+str(plotdata)+r"""
             }],
         
             responsive: {

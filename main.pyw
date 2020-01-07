@@ -1309,7 +1309,7 @@ if __name__ == "__main__":
 
     # --- OBTAIN AND STORE PATH DATA FOR PROGRAM ---
     UBEATSROOT = os.path.dirname(sys.argv[0])  # Obtains the program's root directory
-    UBEATSROOT = UBEATSROOT.encode('string-escape')  # To avoid weird bugs e.g. if someone's folder path
+    UBEATSROOT = UBEATSROOT.encode('unicode-escape').decode('utf-8')  # To avoid weird bugs e.g. if someone's folder path
 
     random.seed()
 

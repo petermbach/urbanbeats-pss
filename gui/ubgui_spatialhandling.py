@@ -41,11 +41,11 @@ def generate_initial_leaflet_map(coordinates, tileserver, rootpath):
     """
 
     leafletpath = rootpath + "/libs/leaflet/"
-    leaflethtml = """<!DOCTYPE html>
+    leaflethtml = r"""<!DOCTYPE html>
         <html>
         <head>
-        <link rel="stylesheet" href="file:///"""+leafletpath+"""leaflet.css" />
-        <script src="file:///"""+leafletpath+"""leaflet.js"></script>
+        <link rel="stylesheet" href="file:///"""+leafletpath+r"""leaflet.css" />
+        <script src="file:///"""+leafletpath+r"""leaflet.js"></script>
         <style>
         html, body, #map {
         height: 100%;
@@ -61,13 +61,14 @@ def generate_initial_leaflet_map(coordinates, tileserver, rootpath):
         <div id="map"></div>
         <script type="text/javascript">
         var map = L.map('map', {
-        center: ["""+str(coordinates[0])+", "+str(coordinates[1])+"""],
+        center: ["""+str(coordinates[0])+", "+str(coordinates[1])+r"""],
         zoom: 12
-        });"""+tileserver+"""
+        });"""+tileserver+r"""
         mapstyle.addTo(map);
         </script>
         </body>
         </html>"""
+    print(leaflethtml)
     return leaflethtml
 
 
