@@ -1,8 +1,10 @@
 *.pyc
 .idea/
-temp/
 graphics/
 splashscreens/
 scriptboard/
+temp/
+virtualenv/
+whl/
 config.cfg
 recent.cfg

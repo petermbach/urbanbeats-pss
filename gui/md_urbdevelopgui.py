@@ -4277,4 +4277,4 @@ class Ui_Urbandev_Dialog(object):
         self.parameters.setTabText(self.parameters.indexOf(self.tab_2), _translate("Urbandev_Dialog", "Allocation and Migration"))
         self.footer_lbl.setText(_translate("Urbandev_Dialog", "<html><head/><body><p><span style=\" font-style:italic;\">UrbanBEATS - md_urbplanbb module</span></p></body></html>"))
         self.help_button.setText(_translate("Urbandev_Dialog", "Help"))
-import ubeats_rc
+from . import ubeats_rc

@@ -110,4 +110,4 @@ class Ui_LogDialog(object):
         self.export_log.setText(_translate("LogDialog", "Export"))
         self.clear_log.setText(_translate("LogDialog", "Clear"))
         self.done_button.setText(_translate("LogDialog", "Done"))
-import ubeats_rc
+from . import ubeats_rc

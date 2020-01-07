@@ -391,4 +391,4 @@ class Ui_ProjectSetupDialog(object):
         self.coords_combo.setItemText(0, _translate("ProjectSetupDialog", "(select coordinate system)"))
         self.coords_lbl.setText(_translate("ProjectSetupDialog", "Default Coordinate System:"))
         self.setup_tabs.setTabText(self.setup_tabs.indexOf(self.projectinfo_tab), _translate("ProjectSetupDialog", "Project Information"))
-import ubeats_rc
+from . import ubeats_rc

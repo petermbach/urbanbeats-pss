@@ -1488,4 +1488,4 @@ class Ui_Infrastructure_Dialog(object):
         self.spatialmapping_widget.setTabText(self.spatialmapping_widget.indexOf(self.wateruse), _translate("Infrastructure_Dialog", "Nature-based Solutions"))
         self.footer_lbl.setText(_translate("Infrastructure_Dialog", "<html><head/><body><p><span style=\" font-style:italic;\">UrbanBEATS - md_infrastructure module</span></p></body></html>"))
         self.help_button.setText(_translate("Infrastructure_Dialog", "Help"))
-import ubeats_rc
+from . import ubeats_rc

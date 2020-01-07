@@ -1283,4 +1283,4 @@ class Ui_Delinblocks_Dialog(object):
         self.reset_button.setWhatsThis(_translate("Delinblocks_Dialog", "<html><head/><body><p>Resets all parameters of this module in the current \'scenario time step\' to the default values.</p></body></html>"))
         self.reset_button.setText(_translate("Delinblocks_Dialog", "Reset..."))
         self.help_button.setText(_translate("Delinblocks_Dialog", "Help"))
-import ubeats_rc
+from . import ubeats_rc

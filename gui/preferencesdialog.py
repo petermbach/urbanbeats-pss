@@ -716,4 +716,4 @@ class Ui_PreferencesDialog(object):
         self.comingsoon_lbl.setText(_translate("PreferencesDialog", "Features coming soon"))
         self.options_tabs.setTabText(self.options_tabs.indexOf(self.online_tab), _translate("PreferencesDialog", "Online"))
         self.reset_button.setText(_translate("PreferencesDialog", "Reset All"))
-import ubeats_rc
+from . import ubeats_rc

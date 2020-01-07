@@ -186,4 +186,4 @@ class Ui_AddDataDialog(object):
         self.adddata_button.setText(_translate("AddDataDialog", "Add Data"))
         self.cleardata_button.setText(_translate("AddDataDialog", "Clear"))
         self.done_button.setText(_translate("AddDataDialog", "Done"))
-import ubeats_rc
+from . import ubeats_rc

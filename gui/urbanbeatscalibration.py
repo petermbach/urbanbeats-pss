@@ -246,4 +246,4 @@ class Ui_CalibrationViewer(object):
         self.plottype_combo.setItemText(2, _translate("CalibrationViewer", "Error Distribution"))
         self.set_eval_11line.setText(_translate("CalibrationViewer", "Display 1:1 Line?"))
 from PyQt5 import QtWebKitWidgets
-import ubeats_rc
+from . import ubeats_rc

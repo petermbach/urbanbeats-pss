@@ -343,4 +343,4 @@ class Ui_MapExportDialog(object):
         self.mapexport_widget.setTabText(self.mapexport_widget.indexOf(self.formatting_tab), _translate("MapExportDialog", "Formatting"))
         self.ok_button.setText(_translate("MapExportDialog", "OK"))
         self.cancel_button.setText(_translate("MapExportDialog", "Cancel"))
-import ubeats_rc
+from . import ubeats_rc

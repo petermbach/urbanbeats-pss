@@ -551,4 +551,4 @@ class Ui_ResultsExplorer(object):
         self.avb_lbl.setText(_translate("ResultsExplorer", "<html><head/><body><p><span style=\" font-weight:600;\">Scenario A vs. Scenario B</span></p></body></html>"))
         self.avb_summary_lbl.setText(_translate("ResultsExplorer", "<html><head/><body><p><span style=\" font-weight:600;\">Summary Statistics</span></p></body></html>"))
 from PyQt5 import QtWebKitWidgets
-import ubeats_rc
+from . import ubeats_rc

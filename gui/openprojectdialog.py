@@ -167,4 +167,4 @@ class Ui_OpenProjectDialog(object):
         item.setText(_translate("OpenProjectDialog", "Modeller"))
         item = self.project_table.horizontalHeaderItem(2)
         item.setText(_translate("OpenProjectDialog", "Path"))
-import ubeats_rc
+from . import ubeats_rc

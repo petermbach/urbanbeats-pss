@@ -146,4 +146,4 @@ class Ui_AboutDialog(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">(C) 2014 Peter M. Bach</p></body></html>"))
         self.okbutton.setText(_translate("AboutDialog", "OK"))
-import ubeats_rc
+from . import ubeats_rc

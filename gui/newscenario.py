@@ -540,4 +540,4 @@ class Ui_NewScenarioDialog(object):
         self.create_button.setText(_translate("NewScenarioDialog", "Create"))
         self.clear_button.setText(_translate("NewScenarioDialog", "Clear"))
         self.cancel_button.setText(_translate("NewScenarioDialog", "Cancel"))
-import ubeats_rc
+from . import ubeats_rc

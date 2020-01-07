@@ -402,14 +402,14 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item>
-        <widget class="QWebView" name="DataView_web">
+        <widget class="QWebEngineView" name="DataView_web" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="url">
+         <property name="url" stdset="0">
           <url>
            <string>about:blank</string>
           </url>
@@ -2568,9 +2568,9 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QWebView</class>
+   <class>QWebEngineView</class>
    <extends>QWidget</extends>
-   <header>QtWebKitWidgets/QWebView</header>
+   <header>QWebEngine/QWebEngineView</header>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -3541,4 +3541,4 @@ class Ui_Spatialmap_Dialog(object):
         self.spatialmapping_widget.setTabText(self.spatialmapping_widget.indexOf(self.pollutionsemissions), _translate("Spatialmap_Dialog", "Water Pollution"))
         self.footer_lbl.setText(_translate("Spatialmap_Dialog", "<html><head/><body><p><span style=\" font-style:italic;\">UrbanBEATS - md_urbplanbb module</span></p></body></html>"))
         self.help_button.setText(_translate("Spatialmap_Dialog", "Help"))
-import ubeats_rc
+from . import ubeats_rc

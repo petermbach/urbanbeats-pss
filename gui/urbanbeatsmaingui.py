@@ -207,13 +207,13 @@ class Ui_MainWindow(object):
         self.DataView_options.setObjectName("DataView_options")
         self.horizontalLayout_4.addWidget(self.DataView_options)
         self.verticalLayout_5.addWidget(self.DataView_Controls)
-        self.DataView_web = QtWebKitWidgets.QWebView(self.DataView_Widget)
+        self.DataView_web = QtWebEngineWidgets.QWebEngineView(self.DataView_Widget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.DataView_web.sizePolicy().hasHeightForWidth())
         self.DataView_web.setSizePolicy(sizePolicy)
-        self.DataView_web.setUrl(QtCore.QUrl("about:blank"))
+        self.DataView_web.setProperty("url", QtCore.QUrl("about:blank"))
         self.DataView_web.setObjectName("DataView_web")
         self.verticalLayout_5.addWidget(self.DataView_web)
         self.horizontalLayout_3.addWidget(self.DataView_Widget)
@@ -1328,5 +1328,5 @@ class Ui_MainWindow(object):
         self.actionLand_Use_Reclassifier.setText(_translate("MainWindow", "Land Use Reclassifier"))
         self.actionDefine_Influence_Functions.setText(_translate("MainWindow", "Define Influence Functions"))
         self.actionDefine_IF.setText(_translate("MainWindow", "Define Influence Functions"))
-from PyQt5 import QtWebKitWidgets
-import ubeats_rc
+from PyQt5 import QtWebEngineWidgets
+from . import ubeats_rc

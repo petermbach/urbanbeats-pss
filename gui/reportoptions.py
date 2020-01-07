@@ -246,4 +246,4 @@ class Ui_ReportingDialog(object):
         self.radioHTML.setText(_translate("ReportingDialog", "HTML Report"))
         self.create_button.setText(_translate("ReportingDialog", "Create"))
         self.done_button.setText(_translate("ReportingDialog", "Done"))
-import ubeats_rc
+from . import ubeats_rc

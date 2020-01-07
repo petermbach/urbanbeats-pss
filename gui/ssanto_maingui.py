@@ -54,4 +54,4 @@ class Ui_SSANTOMain(object):
         self.toolBar.setWindowTitle(_translate("SSANTOMain", "toolBar"))
         self.actionNew_Scenario.setText(_translate("SSANTOMain", "New Scenario"))
         self.actionNew_Scenario_2.setText(_translate("SSANTOMain", "New Scenario"))
-import ubeats_rc
+from . import ubeats_rc

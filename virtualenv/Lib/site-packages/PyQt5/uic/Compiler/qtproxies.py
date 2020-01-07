@@ -456,6 +456,7 @@ class QtWidgets(ProxyNamespace):
 
     class QPushButton(QAbstractButton): pass
     class QCommandLinkButton(QPushButton): pass
+    class QKeySequenceEdit(QWidget): pass
 
     # Add all remaining classes.
     for _class in _qwidgets:

@@ -196,12 +196,22 @@ def loadUiType(uifile, from_imports=False, resource_suffix='_rc', import_from='.
         from .port_v2.string_io import StringIO
 
     code_string = StringIO()
-    winfo = compiler.UICompiler().compileUi(uifile, code_string, from_imports, resource_suffix, import_from)
+    winfo = compiler.UICompiler().compileUi(uifile, code_string, from_imports,
+            resource_suffix, import_from)
 
     ui_globals = {}
     exec(code_string.getvalue(), ui_globals)
 
-    return (ui_globals[winfo["uiclass"]], getattr(QtWidgets, winfo["baseclass"]))
+    uiclass = winfo["uiclass"]
+    baseclass = winfo["baseclass"]
+
+    # Assume that the base class is a custom class exposed in the globals.
+    ui_base = ui_globals.get(baseclass)
+    if ui_base is None:
+        # Otherwise assume it is in the QtWidgets module.
+        ui_base = getattr(QtWidgets, baseclass)
+
+    return (ui_globals[uiclass], ui_base)
 
 
 def loadUi(uifile, baseinstance=None, package='', resource_suffix='_rc'):
