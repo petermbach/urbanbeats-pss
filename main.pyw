@@ -41,6 +41,8 @@ import webbrowser
 import subprocess
 import random
 import xml.etree.ElementTree as ET
+import shutil
+import tempfile
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 import model.progref.ubglobals as ubglobals
@@ -85,6 +87,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.initialize_output_console()
         self.consoleobserver = ConsoleObserver()
         self.rootfolder = UBEATSROOT
+        self.app_tempdir = UBEATSTEMP       # The temp directory defined by tempfile
 
         # --- GLOBAL OPTIONS ---
         self.__global_options = {}
@@ -552,7 +555,10 @@ class MainWindow(QtWidgets.QMainWindow):
         tileserver = ubglobals.TILESERVERS[self.get_option("mapstyle")]
 
         leaflet_html = gui_ubspatial.generate_initial_leaflet_map(coordinates, tileserver, UBEATSROOT)
-        self.ui.DataView_web.setHtml(leaflet_html)
+        f = open(self.app_tempdir+"/default.html", 'w')
+        f.write(leaflet_html)
+        f.close()
+        self.ui.DataView_web.load(QtCore.QUrl.fromLocalFile(self.app_tempdir+"/default.html"))
         self.__dataview_displaystate = "default"
 
     def update_data_view(self, maptype):
@@ -568,7 +574,10 @@ class MainWindow(QtWidgets.QMainWindow):
             projboundarymap = self.get_active_simulation_object().get_project_parameter("boundaryshp")
             coordinates, mapstats = ubspatial.get_bounding_polygon(projboundarymap, "leaflet", UBEATSROOT)
             leaflet_html = gui_ubspatial.generate_leaflet_boundary_map(coordinates, mapstats, projectdata, tileserver, UBEATSROOT)
-            self.ui.DataView_web.setHtml(leaflet_html)
+            f = open(self.app_tempdir+"/boundary.html", 'w')
+            f.write(leaflet_html)
+            f.close()
+            self.ui.DataView_web.load(QtCore.QUrl.fromLocalFile(self.app_tempdir+"/boundary.html"))
             self.__dataview_displaystate = "boundary"
 
     def initialize_output_console(self):
@@ -842,6 +851,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 pass
             else:
                 event.ignore()
+
+        shutil.rmtree(UBEATSTEMP)       # Clean up the temporary directory
 
     # OUTPUT OPTION GUIS - MAP EXPORT AND REPORT CREATION DIALOGS
     def show_map_export_settings(self):
@@ -1310,6 +1321,8 @@ if __name__ == "__main__":
     # --- OBTAIN AND STORE PATH DATA FOR PROGRAM ---
     UBEATSROOT = os.path.dirname(sys.argv[0])  # Obtains the program's root directory
     UBEATSROOT = UBEATSROOT.encode('unicode-escape').decode('utf-8')  # To avoid weird bugs e.g. if someone's folder path
+
+    UBEATSTEMP = tempfile.mkdtemp()
 
     random.seed()
 

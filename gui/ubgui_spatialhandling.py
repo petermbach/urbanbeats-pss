@@ -25,7 +25,7 @@ __copyright__ = "Copyright 2012. Peter M. Bach"
 
 
 def generate_initial_leaflet_map(coordinates, tileserver, rootpath):
-    """Generates html text for the initial leafelet map to be displayed on the main interface.
+    """Generates html text for the initial leaflet map to be displayed on the main interface.
         At the time of development, the online paths were: https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
    integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==
     and
@@ -33,19 +33,21 @@ def generate_initial_leaflet_map(coordinates, tileserver, rootpath):
    integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
    crossorigin=""
 
-    This is called when the program resets the interface. It sets the display state to "default"
+    This is called when the program resets the interface. It sets the display state to "default". Function updates
+    the default.html file in the program's temporary directory so that it can be loaded.
 
     :param coordinates: list of two elements representing latitude and longitude, to be used as centre point of map
     :param resolution: the pixel resolution of the map, list of two elements W x H
     :return: html code for the initial leaflet map.
     """
 
-    leafletpath = rootpath + "/libs/leaflet/"
-    leaflethtml = r"""<!DOCTYPE html>
+    leafletpath = "file:///"+ rootpath + "/libs/leaflet/"
+    # leafletpath = "https://unpkg.com/leaflet@1.6.0/dist/"
+    leaflethtml = f"""<!DOCTYPE html>
         <html>
         <head>
-        <link rel="stylesheet" href="file:///"""+leafletpath+r"""leaflet.css" />
-        <script src="file:///"""+leafletpath+r"""leaflet.js"></script>
+        <link rel="stylesheet" href=\""""+leafletpath+"""leaflet.css" />
+        <script src=\""""+leafletpath+"""leaflet.js"></script>
         <style>
         html, body, #map {
         height: 100%;
@@ -61,14 +63,13 @@ def generate_initial_leaflet_map(coordinates, tileserver, rootpath):
         <div id="map"></div>
         <script type="text/javascript">
         var map = L.map('map', {
-        center: ["""+str(coordinates[0])+", "+str(coordinates[1])+r"""],
+        center: ["""+str(coordinates[0])+", "+str(coordinates[1])+"""],
         zoom: 12
-        });"""+tileserver+r"""
+        });"""+tileserver+"""
         mapstyle.addTo(map);
         </script>
         </body>
         </html>"""
-    print(leaflethtml)
     return leaflethtml
 
 
