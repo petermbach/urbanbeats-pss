@@ -23,6 +23,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2018. Peter M. Bach"
 
+# 8th JANUARY 2020 - URBANBEATS HAS BEEN CONVERTED TO PYTHON 3.7
+
 # --- CODE STRUCTURE --- --- --- --- --- ---
 #       1.) CORE LIBRARY IMPORTS
 #       2.) URBANBEATS LIBRARY IMPORTS
