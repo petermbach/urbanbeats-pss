@@ -423,9 +423,9 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
 
     # Get some Map Metadata - the extents of the map, this is displayed later on in the pop-up window.
     point1 = ogr.Geometry(ogr.wkbPoint)
-    point1.AddPoint(xmin, ymin)
+    point1.AddPoint(ymin, xmin)
     point2 = ogr.Geometry(ogr.wkbPoint)
-    point2.AddPoint(xmax, ymax)
+    point2.AddPoint(ymax, xmax)
 
     # Get the spatial reference of the map
     spatialref = layer.GetSpatialRef()
@@ -473,7 +473,7 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
     mapstats["ymin"] = ymin
     mapstats["ymax"] = ymax
     mapstats["area"] = area
-    mapstats["centroid"] = [(xmin + xmax)/2.0, (ymin + ymax)/2.0]
+    mapstats["centroid"] = [(ymin + ymax)/2.0, (xmin + xmax)/2.0]
     mapstats["inputEPSG"] = inputepsg
     mapstats["coordsysname"] = inputprojcs
     coordinates = []
@@ -490,7 +490,7 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
     points = ring.GetPointCount()
     # print(f"Ring Points: {points}")
     for i in range(points):
-        coordinates.append((ring.GetX(i), ring.GetY(i)))
+        coordinates.append((ring.GetY(i), ring.GetX(i)))
 
     if option == "leaflet":
         # Reverse the x, y to form lat, long because in ESRI's case, lat almost always Y and long almost always X
