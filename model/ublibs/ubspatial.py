@@ -418,14 +418,14 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
         return []
 
     layer = datasource.GetLayer(0)  # Get the first layer, which should be the only layer!
-    xmin, xmax, ymin, ymax = layer.GetExtent()
+    xmin, xmax, ymin, ymax = layer.GetExtent()      # CONVENTION: LATITUDE = Y, LONGITUDE = X
     print(f"{xmin}, {xmax}, {ymin}, {ymax}")
 
     # Get some Map Metadata - the extents of the map, this is displayed later on in the pop-up window.
     point1 = ogr.Geometry(ogr.wkbPoint)
-    point1.AddPoint(ymin, xmin)
+    point1.AddPoint(xmin, ymin)
     point2 = ogr.Geometry(ogr.wkbPoint)
-    point2.AddPoint(ymax, xmax)
+    point2.AddPoint(xmax, ymax)
 
     # Get the spatial reference of the map
     spatialref = layer.GetSpatialRef()
@@ -473,7 +473,7 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
     mapstats["ymin"] = ymin
     mapstats["ymax"] = ymax
     mapstats["area"] = area
-    mapstats["centroid"] = [(ymin + ymax)/2.0, (xmin + xmax)/2.0]
+    mapstats["centroid"] = [(xmin + xmax)/2.0, (ymin + ymax)/2.0]
     mapstats["inputEPSG"] = inputepsg
     mapstats["coordsysname"] = inputprojcs
     coordinates = []
@@ -490,18 +490,18 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
     points = ring.GetPointCount()
     # print(f"Ring Points: {points}")
     for i in range(points):
-        coordinates.append((ring.GetY(i), ring.GetX(i)))
+        coordinates.append((ring.GetX(i), ring.GetY(i)))
 
     if option == "leaflet":
         # Reverse the x, y to form lat, long because in ESRI's case, lat almost always Y and long almost always X
         for p in range(len(coordinates)):
-            coordinates[p] = [coordinates[p][1], coordinates[p][0]]
-        mapstats["centroid"] = [(ymin + ymax) / 2.0, (xmin + xmax)/2.0]
+            coordinates[p] = [coordinates[p][0], coordinates[p][1]]
+        mapstats["centroid"] = [(xmin + xmax) / 2.0, (ymin + ymax)/2.0]
     return coordinates, mapstats
 
-# TEST SCRIPT - get_bounding_polygon() function
-# MAPPATH = "C:/Users/peter/Documents/TempDocs/Files/Upperdandy/Boundary.shp"
+# # TEST SCRIPT - get_bounding_polygon() function
+# MAPPATH = r"C:\Users\peter\Dropbox\UrbanBEATS Benchmark Case Studies\AU VIC Upper Dandenong Ck\Input Files\Boundary_UTM.shp"
 # coordinates, mapstats = get_bounding_polygon(MAPPATH, "leaflet",
 #                                              "C:/Users/peter/Documents/Coding Projects/UrbanBEATS-PSS")
-# print(apstats)
+# print(mapstats)
 # print(coordinates)
