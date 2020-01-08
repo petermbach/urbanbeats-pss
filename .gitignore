@@ -6,3 +6,5 @@ splashscreens/
 scriptboard/
 config.cfg
 recent.cfg
+virtualenv/
+whl/
