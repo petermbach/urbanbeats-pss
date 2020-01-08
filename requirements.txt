@@ -1,0 +1,10 @@
+Click==7.0
+GDAL==3.0.2
+numpy==1.18.1
+PyQt5==5.14.1
+PyQt5-sip==12.7.0
+pyqt5-tools==5.13.0.1.5
+PyQtWebEngine==5.14.0
+python-dotenv==0.10.3
+scipy==1.4.1
+Shapely==1.6.4.post2

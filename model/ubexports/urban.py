@@ -67,7 +67,7 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     fielddefmatrix.append(ogr.FieldDefn("Base_POP", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("Base_EMP", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("LUC_Type", ogr.OFTString))
-    # fielddefmatrix.append(ogr.FieldDefn("NHD_Num", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("NHD_Num", ogr.OFTInteger))
 
     # ACCESSIBILIY INDICATORS
     if map_attr.get_attribute("ACCESS_ROAD"):
@@ -139,7 +139,6 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
     fielddefmatrix.append(ogr.FieldDefn("NHD_SW", ogr.OFTInteger))
     fielddefmatrix.append(ogr.FieldDefn("NHD_W", ogr.OFTInteger))
     fielddefmatrix.append(ogr.FieldDefn("NHD_NW", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("NHAdjacent", ogr.OFTString))
 
     # SUIITABILITY INDICATORS
     if map_attr.get_attribute("SUIT_ELEV"):
@@ -247,7 +246,7 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("Base_POP", int(currentAttList.get_attribute("Base_POP")))
         feature.SetField("Base_EMP", int(currentAttList.get_attribute("Base_EMP")))
         feature.SetField("LUC_Type", str(currentAttList.get_attribute("LUC_Type")))
-        # feature.SetField("NHD_Num", int(currentAttList.get_attribute("NHD_Num")))
+        feature.SetField("NHD_Num", int(currentAttList.get_attribute("NHD_Num")))
 
         if map_attr.get_attribute("ACCESS_ROAD"):
             feature.SetField("DIST_ROAD", float(currentAttList.get_attribute("ACC_ROAD_DIST")))
@@ -316,8 +315,6 @@ def export_urbandev_cells_to_gis_shapefile(asset_col, map_attr, filepath, filena
         feature.SetField("NHD_SW", int(currentAttList.get_attribute("NHD_SW")))
         feature.SetField("NHD_W", int(currentAttList.get_attribute("NHD_W")))
         feature.SetField("NHD_NW", int(currentAttList.get_attribute("NHD_NW")))
-        feature.SetField("NHAdjacent", str(",".join(map(str, currentAttList.get_attribute("NHAdjacent")))))
-        # Neighbourhood attribute converts the [ ] array of BlockIDs to a comma-separated list "#,#,#,#"
 
         if map_attr.get_attribute("SUIT_ELEV"):
             feature.SetField("Elevation", float(currentAttList.get_attribute("Elevation")))
