@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'logdialog.ui'
 #
-# Created by: PyQt5 UI code generator 5.13.0
+# Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -22,6 +22,7 @@ class Ui_LogDialog(object):
         self.header = QtWidgets.QWidget(LogDialog)
         self.header.setObjectName("header")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.header)
+        self.gridLayout_2.setContentsMargins(6, 6, 6, 6)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.title_logo = QtWidgets.QLabel(self.header)
         self.title_logo.setMinimumSize(QtCore.QSize(30, 30))
@@ -73,6 +74,7 @@ class Ui_LogDialog(object):
         self.footer.setMaximumSize(QtCore.QSize(16777215, 38))
         self.footer.setObjectName("footer")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.footer)
+        self.horizontalLayout_2.setContentsMargins(6, 6, 6, 6)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)

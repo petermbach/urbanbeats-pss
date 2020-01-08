@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'aboutdialog.ui'
 #
-# Created by: PyQt5 UI code generator 5.13.0
+# Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -22,6 +22,8 @@ class Ui_AboutDialog(object):
         self.title_box = QtWidgets.QWidget(AboutDialog)
         self.title_box.setObjectName("title_box")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.title_box)
+        self.horizontalLayout_3.setContentsMargins(6, 6, 6, 6)
+        self.horizontalLayout_3.setSpacing(6)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.title_logo = QtWidgets.QLabel(self.title_box)
         self.title_logo.setMinimumSize(QtCore.QSize(30, 30))
@@ -38,10 +40,13 @@ class Ui_AboutDialog(object):
         self.about_content = QtWidgets.QWidget(AboutDialog)
         self.about_content.setObjectName("about_content")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.about_content)
+        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_2.setSpacing(3)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.devteam_content = QtWidgets.QWidget(self.about_content)
         self.devteam_content.setObjectName("devteam_content")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.devteam_content)
+        self.verticalLayout_2.setContentsMargins(6, 6, 6, 6)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.devteam_lbl = QtWidgets.QLabel(self.devteam_content)
         self.devteam_lbl.setObjectName("devteam_lbl")
@@ -56,6 +61,7 @@ class Ui_AboutDialog(object):
         self.logo_content.setMinimumSize(QtCore.QSize(0, 0))
         self.logo_content.setObjectName("logo_content")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.logo_content)
+        self.verticalLayout_4.setContentsMargins(6, 6, 6, 6)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.logo_lbl = QtWidgets.QLabel(self.logo_content)
         self.logo_lbl.setObjectName("logo_lbl")
@@ -73,10 +79,13 @@ class Ui_AboutDialog(object):
         self.footer = QtWidgets.QWidget(AboutDialog)
         self.footer.setObjectName("footer")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.footer)
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout.setSpacing(3)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.footer_content = QtWidgets.QWidget(self.footer)
         self.footer_content.setObjectName("footer_content")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.footer_content)
+        self.verticalLayout.setContentsMargins(6, 6, 6, 6)
         self.verticalLayout.setObjectName("verticalLayout")
         self.version_number = QtWidgets.QLabel(self.footer_content)
         self.version_number.setObjectName("version_number")
@@ -116,13 +125,13 @@ class Ui_AboutDialog(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Peter M. Bach (Research &amp; Development Lead)</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">Peter M. Bach (Research &amp; Development Lead)</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">Research Support:</span><span style=\" font-size:8pt;\"> Ana Deletic, Max Maurer, </span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Kefeng Zhang, Veljko Prodanovic, Martijn Kuller, </span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Behzad Jamali, Adam Charette-Castonguay, </span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Natalia Duque Villareal, Robert Sitzenfrei, </span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">David McCarthy, Manfred Kleidorfer</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Behzad Jamali, Natalia Duque Villareal, </span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Robert Sitzenfrei, David McCarthy, </span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Manfred Kleidorfer, Joao Leitao</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">Technical Support: </span><span style=\" font-size:8pt;\">Nathan Yam</span></p></body></html>"))
         self.logo_lbl.setText(_translate("AboutDialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
@@ -134,7 +143,7 @@ class Ui_AboutDialog(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">version 2018-a</span></p></body></html>"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">version 2020-a</span></p></body></html>"))
         self.communication.setText(_translate("AboutDialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -144,6 +153,6 @@ class Ui_AboutDialog(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">(C) 2014 Peter M. Bach</p></body></html>"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">(C) 2010-2020 Peter M. Bach</p></body></html>"))
         self.okbutton.setText(_translate("AboutDialog", "OK"))
 from . import ubeats_rc

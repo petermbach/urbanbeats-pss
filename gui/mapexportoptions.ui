@@ -21,6 +21,18 @@
    <item>
     <widget class="QWidget" name="title_widget" native="true">
      <layout class="QGridLayout" name="gridLayout_3">
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>6</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="title_logo">
         <property name="minimumSize">
@@ -39,7 +51,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="graphics/ubeats.qrc">:/icons/maps-icon.png</pixmap>
+         <pixmap resource="../graphics/ubeats.qrc">:/icons/maps-icon.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -91,14 +103,23 @@
             <x>0</x>
             <y>0</y>
             <width>457</width>
-            <height>384</height>
+            <height>375</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_5">
-             <property name="margin">
-              <number>9</number>
+             <property name="leftMargin">
+              <number>6</number>
+             </property>
+             <property name="topMargin">
+              <number>6</number>
+             </property>
+             <property name="rightMargin">
+              <number>6</number>
+             </property>
+             <property name="bottomMargin">
+              <number>6</number>
              </property>
              <item>
               <widget class="QLabel" name="selectmaps_title">
@@ -112,16 +133,16 @@
            <item>
             <layout class="QGridLayout" name="gridLayout_2">
              <property name="leftMargin">
-              <number>9</number>
+              <number>6</number>
              </property>
              <property name="topMargin">
               <number>0</number>
              </property>
              <property name="rightMargin">
-              <number>9</number>
+              <number>6</number>
              </property>
              <property name="bottomMargin">
-              <number>9</number>
+              <number>6</number>
              </property>
              <item row="12" column="0">
               <widget class="QCheckBox" name="maps_suitability">
@@ -328,14 +349,23 @@ p, li { white-space: pre-wrap; }
             <x>0</x>
             <y>0</y>
             <width>474</width>
-            <height>302</height>
+            <height>308</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_6">
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_7">
-             <property name="margin">
-              <number>9</number>
+             <property name="leftMargin">
+              <number>6</number>
+             </property>
+             <property name="topMargin">
+              <number>6</number>
+             </property>
+             <property name="rightMargin">
+              <number>6</number>
+             </property>
+             <property name="bottomMargin">
+              <number>6</number>
              </property>
              <item>
               <widget class="QLabel" name="shp_title">
@@ -352,8 +382,17 @@ p, li { white-space: pre-wrap; }
            </item>
            <item>
             <layout class="QGridLayout" name="gridLayout_5">
-             <property name="margin">
-              <number>9</number>
+             <property name="leftMargin">
+              <number>6</number>
+             </property>
+             <property name="topMargin">
+              <number>6</number>
+             </property>
+             <property name="rightMargin">
+              <number>6</number>
+             </property>
+             <property name="bottomMargin">
+              <number>6</number>
              </property>
              <item row="1" column="0">
               <widget class="QLabel" name="projection_lbl">
@@ -406,8 +445,17 @@ p, li { white-space: pre-wrap; }
            </item>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_8">
-             <property name="margin">
-              <number>9</number>
+             <property name="leftMargin">
+              <number>6</number>
+             </property>
+             <property name="topMargin">
+              <number>6</number>
+             </property>
+             <property name="rightMargin">
+              <number>6</number>
+             </property>
+             <property name="bottomMargin">
+              <number>6</number>
              </property>
              <item>
               <widget class="QLabel" name="offset_title">
@@ -424,8 +472,17 @@ p, li { white-space: pre-wrap; }
            </item>
            <item>
             <layout class="QGridLayout" name="gridLayout_4">
-             <property name="margin">
-              <number>9</number>
+             <property name="leftMargin">
+              <number>6</number>
+             </property>
+             <property name="topMargin">
+              <number>6</number>
+             </property>
+             <property name="rightMargin">
+              <number>6</number>
+             </property>
+             <property name="bottomMargin">
+              <number>6</number>
              </property>
              <item row="4" column="0">
               <widget class="QLineEdit" name="offsetx_box"/>
@@ -503,6 +560,18 @@ p, li { white-space: pre-wrap; }
       </size>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>6</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
@@ -573,6 +642,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>cancel_button</tabstop>
  </tabstops>
  <resources>
+  <include location="../graphics/ubeats.qrc"/>
   <include location="graphics/ubeats.qrc"/>
  </resources>
  <connections/>

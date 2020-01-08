@@ -17,6 +17,18 @@
    <item>
     <widget class="QWidget" name="navigation_widget" native="true">
      <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>6</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
       <item>
        <widget class="QFrame" name="title_frame">
         <property name="maximumSize">
@@ -32,6 +44,18 @@
          <enum>QFrame::Raised</enum>
         </property>
         <layout class="QGridLayout" name="gridLayout">
+         <property name="leftMargin">
+          <number>6</number>
+         </property>
+         <property name="topMargin">
+          <number>6</number>
+         </property>
+         <property name="rightMargin">
+          <number>6</number>
+         </property>
+         <property name="bottomMargin">
+          <number>6</number>
+         </property>
          <item row="0" column="0" rowspan="3">
           <widget class="QLabel" name="module_logo">
            <property name="minimumSize">
@@ -104,16 +128,16 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <property name="leftMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <property name="topMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <property name="rightMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <property name="bottomMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <item>
              <widget class="QLabel" name="summary_scenario">
@@ -191,16 +215,16 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <property name="leftMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <property name="topMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <property name="rightMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <property name="bottomMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <item>
              <widget class="QLabel" name="map_scenario">
@@ -352,16 +376,16 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_12">
             <property name="leftMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <property name="topMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <property name="rightMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <property name="bottomMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <item>
              <widget class="QLabel" name="networks_scenario">
@@ -435,16 +459,16 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <property name="leftMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <property name="topMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <property name="rightMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <property name="bottomMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <item>
              <widget class="QLabel" name="stats_scenario">
@@ -572,16 +596,16 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_18">
             <property name="leftMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <property name="topMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <property name="rightMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <property name="bottomMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <item>
              <widget class="QLabel" name="correl_scenario">
@@ -684,16 +708,16 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_6">
             <property name="leftMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <property name="topMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <property name="rightMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <property name="bottomMargin">
-             <number>9</number>
+             <number>6</number>
             </property>
             <item>
              <widget class="QLabel" name="compare_scenarioA">
@@ -849,6 +873,18 @@
           <string>Correlation Analysis</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
+          <property name="leftMargin">
+           <number>6</number>
+          </property>
+          <property name="topMargin">
+           <number>6</number>
+          </property>
+          <property name="rightMargin">
+           <number>6</number>
+          </property>
+          <property name="bottomMargin">
+           <number>6</number>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="x_label">
             <property name="text">
@@ -950,6 +986,18 @@
           <string>Compare Scenario Results</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
+          <property name="leftMargin">
+           <number>6</number>
+          </property>
+          <property name="topMargin">
+           <number>6</number>
+          </property>
+          <property name="rightMargin">
+           <number>6</number>
+          </property>
+          <property name="bottomMargin">
+           <number>6</number>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="a_lbl">
             <property name="text">

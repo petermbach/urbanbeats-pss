@@ -21,6 +21,18 @@
    <item>
     <widget class="QWidget" name="title_widget" native="true">
      <layout class="QGridLayout" name="gridLayout_3">
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>6</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="title_logo">
         <property name="minimumSize">
@@ -39,7 +51,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="graphics/ubeats.qrc">:/icons/Reports-icon.png</pixmap>
+         <pixmap resource="../graphics/ubeats.qrc">:/icons/Reports-icon.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -81,14 +93,23 @@
         <x>0</x>
         <y>0</y>
         <width>445</width>
-        <height>439</height>
+        <height>433</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <layout class="QGridLayout" name="gridLayout_2">
-         <property name="margin">
-          <number>9</number>
+         <property name="leftMargin">
+          <number>6</number>
+         </property>
+         <property name="topMargin">
+          <number>6</number>
+         </property>
+         <property name="rightMargin">
+          <number>6</number>
+         </property>
+         <property name="bottomMargin">
+          <number>6</number>
          </property>
          <item row="14" column="0">
           <widget class="QCheckBox" name="results">
@@ -96,7 +117,7 @@
             <string>Results</string>
            </property>
            <property name="icon">
-            <iconset resource="graphics/ubeats.qrc">
+            <iconset resource="../graphics/ubeats.qrc">
              <normaloff>:/icons/chart-search-icon.png</normaloff>:/icons/chart-search-icon.png</iconset>
            </property>
           </widget>
@@ -156,7 +177,7 @@
             <string>Scenario Summary</string>
            </property>
            <property name="icon">
-            <iconset resource="graphics/ubeats.qrc">
+            <iconset resource="../graphics/ubeats.qrc">
              <normaloff>:/icons/pages-brown-icon.png</normaloff>:/icons/pages-brown-icon.png</iconset>
            </property>
           </widget>
@@ -185,7 +206,7 @@ p, li { white-space: pre-wrap; }
             <string>Additional Sections</string>
            </property>
            <property name="icon">
-            <iconset resource="graphics/ubeats.qrc">
+            <iconset resource="../graphics/ubeats.qrc">
              <normaloff>:/icons/add-icon.png</normaloff>:/icons/add-icon.png</iconset>
            </property>
           </widget>
@@ -238,7 +259,7 @@ p, li { white-space: pre-wrap; }
             <string>Data Library Summary</string>
            </property>
            <property name="icon">
-            <iconset resource="graphics/ubeats.qrc">
+            <iconset resource="../graphics/ubeats.qrc">
              <normaloff>:/icons/Misc-Database-3-icon.png</normaloff>:/icons/Misc-Database-3-icon.png</iconset>
            </property>
           </widget>
@@ -263,7 +284,7 @@ p, li { white-space: pre-wrap; }
             <string>Project Details</string>
            </property>
            <property name="icon">
-            <iconset resource="graphics/ubeats.qrc">
+            <iconset resource="../graphics/ubeats.qrc">
              <normaloff>:/icons/Info-icon.png</normaloff>:/icons/Info-icon.png</iconset>
            </property>
           </widget>
@@ -339,6 +360,18 @@ p, li { white-space: pre-wrap; }
       </size>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>6</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
@@ -399,6 +432,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>done_button</tabstop>
  </tabstops>
  <resources>
+  <include location="../graphics/ubeats.qrc"/>
   <include location="graphics/ubeats.qrc"/>
  </resources>
  <connections/>

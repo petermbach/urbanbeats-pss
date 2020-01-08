@@ -17,6 +17,18 @@
    <item>
     <widget class="QWidget" name="header" native="true">
      <layout class="QGridLayout" name="gridLayout_12">
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>6</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="title_logo">
         <property name="minimumSize">
@@ -82,6 +94,18 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
+          <property name="leftMargin">
+           <number>6</number>
+          </property>
+          <property name="topMargin">
+           <number>6</number>
+          </property>
+          <property name="rightMargin">
+           <number>6</number>
+          </property>
+          <property name="bottomMargin">
+           <number>6</number>
+          </property>
           <item row="0" column="1">
            <widget class="QLineEdit" name="projname_line"/>
           </item>
@@ -122,26 +146,26 @@
             <x>0</x>
             <y>0</y>
             <width>443</width>
-            <height>793</height>
+            <height>815</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <property name="spacing">
-              <number>3</number>
+              <number>6</number>
              </property>
              <property name="leftMargin">
-              <number>0</number>
+              <number>6</number>
              </property>
              <property name="topMargin">
-              <number>0</number>
+              <number>6</number>
              </property>
              <property name="rightMargin">
-              <number>0</number>
+              <number>6</number>
              </property>
              <property name="bottomMargin">
-              <number>0</number>
+              <number>6</number>
              </property>
              <item>
               <widget class="QLabel" name="aboutproject_lbl">
@@ -153,6 +177,18 @@
              <item>
               <widget class="QWidget" name="aboutproject_widget2" native="true">
                <layout class="QGridLayout" name="gridLayout">
+                <property name="leftMargin">
+                 <number>6</number>
+                </property>
+                <property name="topMargin">
+                 <number>6</number>
+                </property>
+                <property name="rightMargin">
+                 <number>6</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>6</number>
+                </property>
                 <item row="0" column="2">
                  <spacer name="horizontalSpacer_4">
                   <property name="orientation">
@@ -317,6 +353,18 @@ p, li { white-space: pre-wrap; }
              <item>
               <widget class="QWidget" name="aboutuser_widget" native="true">
                <layout class="QGridLayout" name="gridLayout_7">
+                <property name="leftMargin">
+                 <number>6</number>
+                </property>
+                <property name="topMargin">
+                 <number>6</number>
+                </property>
+                <property name="rightMargin">
+                 <number>6</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>6</number>
+                </property>
                 <item row="3" column="0">
                  <widget class="QLabel" name="otherpersons_lbl">
                   <property name="whatsThis">
@@ -488,6 +536,18 @@ p, li { white-space: pre-wrap; }
              <item>
               <widget class="QWidget" name="path_widget" native="true">
                <layout class="QGridLayout" name="gridLayout_3">
+                <property name="leftMargin">
+                 <number>6</number>
+                </property>
+                <property name="topMargin">
+                 <number>6</number>
+                </property>
+                <property name="rightMargin">
+                 <number>6</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>6</number>
+                </property>
                 <item row="1" column="0">
                  <widget class="QLabel" name="projpath_lbl">
                   <property name="text">
@@ -546,6 +606,18 @@ p, li { white-space: pre-wrap; }
              <item>
               <widget class="QWidget" name="projectlog_widget" native="true">
                <layout class="QHBoxLayout" name="horizontalLayout">
+                <property name="leftMargin">
+                 <number>6</number>
+                </property>
+                <property name="topMargin">
+                 <number>6</number>
+                </property>
+                <property name="rightMargin">
+                 <number>6</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>6</number>
+                </property>
                 <item>
                  <widget class="QRadioButton" name="projectlog_simple">
                   <property name="text">
@@ -587,6 +659,18 @@ p, li { white-space: pre-wrap; }
              <item>
               <widget class="QWidget" name="boundary_widget" native="true">
                <layout class="QGridLayout" name="gridLayout_4">
+                <property name="leftMargin">
+                 <number>6</number>
+                </property>
+                <property name="topMargin">
+                 <number>6</number>
+                </property>
+                <property name="rightMargin">
+                 <number>6</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>6</number>
+                </property>
                 <item row="1" column="0">
                  <widget class="QLabel" name="projectboundary_lbl2">
                   <property name="text">
@@ -617,6 +701,18 @@ p, li { white-space: pre-wrap; }
              <item>
               <widget class="QWidget" name="datadisplay_widget" native="true">
                <layout class="QGridLayout" name="gridLayout_10">
+                <property name="leftMargin">
+                 <number>6</number>
+                </property>
+                <property name="topMargin">
+                 <number>6</number>
+                </property>
+                <property name="rightMargin">
+                 <number>6</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>6</number>
+                </property>
                 <item row="2" column="0">
                  <widget class="QLabel" name="epsg_lbl">
                   <property name="text">
