@@ -25,19 +25,6 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <spacer name="leftSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
     <widget class="QWidget" name="MainWidget" native="true">
      <property name="minimumSize">
       <size>
@@ -113,7 +100,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="graphics/ubeats.qrc">
+            <iconset resource="../graphics/ubeats.qrc">
              <normaloff>:/icons/new-file-icon.png</normaloff>:/icons/new-file-icon.png</iconset>
            </property>
            <property name="iconSize">
@@ -205,7 +192,7 @@ p, li { white-space: pre-wrap; }
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="graphics/ubeats.qrc">
+            <iconset resource="../graphics/ubeats.qrc">
              <normaloff>:/icons/open-file-icon.png</normaloff>:/icons/open-file-icon.png</iconset>
            </property>
            <property name="iconSize">
@@ -297,7 +284,7 @@ p, li { white-space: pre-wrap; }
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="graphics/ubeats.qrc">
+            <iconset resource="../graphics/ubeats.qrc">
              <normaloff>:/icons/import-icon.png</normaloff>:/icons/import-icon.png</iconset>
            </property>
            <property name="iconSize">
@@ -389,7 +376,7 @@ p, li { white-space: pre-wrap; }
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="graphics/ubeats.qrc">
+            <iconset resource="../graphics/ubeats.qrc">
              <normaloff>:/icons/Categories-applications-internet-icon.png</normaloff>:/icons/Categories-applications-internet-icon.png</iconset>
            </property>
            <property name="iconSize">
@@ -481,7 +468,7 @@ p, li { white-space: pre-wrap; }
             <string>Options</string>
            </property>
            <property name="icon">
-            <iconset resource="graphics/ubeats.qrc">
+            <iconset resource="../graphics/ubeats.qrc">
              <normaloff>:/icons/Settings-icon (1).png</normaloff>:/icons/Settings-icon (1).png</iconset>
            </property>
            <property name="iconSize">
@@ -510,7 +497,7 @@ p, li { white-space: pre-wrap; }
             <string>Help</string>
            </property>
            <property name="icon">
-            <iconset resource="graphics/ubeats.qrc">
+            <iconset resource="../graphics/ubeats.qrc">
              <normaloff>:/icons/Info-icon.png</normaloff>:/icons/Info-icon.png</iconset>
            </property>
            <property name="iconSize">
@@ -539,7 +526,7 @@ p, li { white-space: pre-wrap; }
             <string>Quit</string>
            </property>
            <property name="icon">
-            <iconset resource="graphics/ubeats.qrc">
+            <iconset resource="../graphics/ubeats.qrc">
              <normaloff>:/icons/Sign-Shutdown-icon.png</normaloff>:/icons/Sign-Shutdown-icon.png</iconset>
            </property>
            <property name="iconSize">
@@ -580,23 +567,10 @@ p, li { white-space: pre-wrap; }
      </layout>
     </widget>
    </item>
-   <item>
-    <spacer name="rightSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
   </layout>
  </widget>
  <resources>
-  <include location="graphics/ubeats.qrc"/>
+  <include location="../graphics/ubeats.qrc"/>
  </resources>
  <connections/>
 </ui>
