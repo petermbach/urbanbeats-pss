@@ -445,8 +445,11 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
 
     inputepsg1 = spatialref.GetAttrValue("AUTHORITY", 1)
     inputepsg2 = get_epsg(inputprojcs, rootpath)
+
     if inputepsg1 is None:
         inputepsg = inputepsg2
+    elif inputepsg2 is None:
+        inputepsg = inputepsg1
     else:
         if int(inputepsg1) == int(inputepsg2):
             inputepsg = inputepsg1

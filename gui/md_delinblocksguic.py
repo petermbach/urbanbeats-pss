@@ -102,7 +102,7 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         [self.ui.planzone_combo.addItem(str(self.planzonemaps[0][i])) for i in range(len(self.planzonemaps[0]))]
 
         self.ui.city_combo.clear()
-        self.citynames = ubglobals.COORDINATES.keys()
+        self.citynames = list(ubglobals.COORDINATES.keys())
         self.citynames.sort()
         [self.ui.city_combo.addItem(str(n)) for n in self.citynames]
 

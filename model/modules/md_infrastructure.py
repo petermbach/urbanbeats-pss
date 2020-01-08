@@ -1165,7 +1165,7 @@ class Infrastructure(UBModule):
                 link.add_attribute("Z2", z2)
                 self.scenario.add_asset("LinkID" + str(counter), link)
 
-        vertices.keys().sort()
+        # vertices.keys().sort()
 
         print("Printing undirected graph....", len(edges))
         print([str(e)+"/t" for e in edges])
