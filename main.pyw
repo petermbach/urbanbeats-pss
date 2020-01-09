@@ -88,6 +88,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.setWindowTitle("规划模型")       #Chinese Translation - automate!
         self.initialize_output_console()
         self.consoleobserver = ConsoleObserver()
+        self.progressbarobserver = ProgressBarObserver()
         self.rootfolder = UBEATSROOT
         self.app_tempdir = UBEATSTEMP       # The temp directory defined by tempfile
 
@@ -178,6 +179,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # OBSERVER PATTERN - CONSOLE UPDATE
         self.consoleobserver.updateConsole[str].connect(self.printc)
+        self.progressbarobserver.updateProgressBar[int].connect(self.update_progress_bar_value)
 
         # --- MAIN INTERFACE BUTTONS ---
         # Project Data Library Interface
@@ -667,6 +669,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.reset_data_view_to_default()  # Restore the default Leaflet view
         newsimulation = ubcore.UrbanBeatsSim(UBEATSROOT, self.__global_options, self)  # instantiate new simulation objective
         newsimulation.register_observer(self.consoleobserver)   # Add the observer
+        newsimulation.register_progressbar(self.progressbarobserver)    # Add the progress bar
         self.set_active_simulation_object(newsimulation)
         self.reset_project_data_library_view()
 
@@ -1163,9 +1166,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def raise_ub_error_message(self, message):
         pass
 
-    def update_progress(self, value):
+    def update_progress_bar_value(self, value):
         """Updates the progress bar of the Main GUI when the simulation is started/stopped/reset."""
-        self.ui.ProgressBar.setValue(value)
+        self.ui.ProgressBar.setValue(int(value))
 
     def call_run_simulation(self):
         """Executes the run function for the current scenario that is active in the Scenario Browser."""
@@ -1233,7 +1236,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.ModuleDock_decisionanalysis.setEnabled(condition[10])
 
 
-# --- CONSOLE OBSERVER ---
+# --- OBSERVERS ---
 class ConsoleObserver(QtCore.QObject):
     """Defines the observer class that will work with the console window in
     UrbanBEATS' main window."""
@@ -1243,6 +1246,17 @@ class ConsoleObserver(QtCore.QObject):
     def update_observer(self, textmessage):
         """Emits <updateConsole> signal"""
         self.updateConsole.emit(textmessage)
+
+
+class ProgressBarObserver(QtCore.QObject):
+    """Defines the observer class that will work with the progress bar in the
+    UrbanBEATS Main Window."""
+
+    updateProgress = QtCore.pyqtSignal(int, name="updateProgressBar")
+
+    def update_progress(self, value):
+        """Emits <updateProgress> signal"""
+        self.updateProgress.emit(value)
 
 
 # --- START SCREEN LAUNCH ---

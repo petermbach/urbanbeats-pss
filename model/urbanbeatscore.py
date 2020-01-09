@@ -71,6 +71,7 @@ class UrbanBeatsSim(object):
 
         #Observer, Status and Filename
         self.__observers = []   # Observers of the current simulation
+        self.__progressbars = []     # Progressbar of the current simulation
 
         self.__project_saved = 0    # BOOL - has the project been saved?
         self.__simulation_completed = 0 # BOOL - has the simulation completed run?
@@ -158,6 +159,10 @@ class UrbanBeatsSim(object):
         """Adds an observer references by observerobj to the self.__observers array. This uses the Observer design
         pattern."""
         self.__observers.append(observerobj)
+
+    def register_progressbar(self, progressbarobj):
+        """Adds a progressbar observer."""
+        self.__progressbars.append(progressbarobj)
 
     def get_program_rootpath(self):
         """Returns the root path of the program."""
@@ -459,9 +464,9 @@ class UrbanBeatsSim(object):
             observer.update_observer(str(message))
 
     def update_runtime_progress(self, value):
-        """Can be called by the active_scenario to update the progress."""
-        self.__runtime_progress = value
-        self.__parent and self.__parent.update_progress(self.__runtime_progress)
+        """Sends the message to all progress trackers in the progressbar observer list."""
+        for progbar in self.__progressbars:
+            progbar.update_progress(int(value))
 
     def run(self):
         """Runs the UrbanBEATS Simulation based on the active scenario, data library, project
@@ -469,20 +474,29 @@ class UrbanBeatsSim(object):
         if self.get_active_scenario() is None:
             self.update_observers("No active scenario selected!")
             return
-        self.__parent and self.__parent.enable_disable_run_controls(0)
+        print("Running Active Scenario!")
+        if self.__parent is None:
+            pass
+        else:
+            self.__parent.enable_disable_run_controls(0)
+
         if self.__runtime_method == "SF":
+            print("Here we go!")
             active_scenario = self.get_active_scenario()        # Get the active scenario
             self.update_runtime_progress(0)                     # Reset progress bar
             if active_scenario.runstate:                        # If active scenario has been run, reinitialize it
-                self.__parent and self.__parent.initialize_output_console()
-                while active_scenario.reinitialize():
+                if self.__parent is None:
                     pass
+                else:
+                    self.__parent.initialize_output_console()
+                active_scenario.reinitialize()
             active_scenario.attach_observers(self.__observers)      # Attach the observers
+            active_scenario.attach_progressbars(self.__progressbars)  # Attach the progressbar observers
             scenario_name = active_scenario.get_metadata("name")    # Get the name and report
             self.update_observers("Running Scenario: " + str(scenario_name))
-            # active_scenario.start()     # Start the active scenario thread      # Start the thread
-            active_scenario.run_scenario()
-
+            print("Running Scenario")
+            print("Active Scenario Thread", active_scenario.ident)
+            active_scenario.start()     # Start the active scenario thread      # Start the thread
         elif self.__runtime_method == "AF":
             pass    # TO DO - ALL SCENARIOS FULL SIMULATION AT ONCE.
         elif self.__runtime_method == "SP":
@@ -492,6 +506,7 @@ class UrbanBeatsSim(object):
         """Called when the scenario has finished running. It updates the observes with the scenario finished message.
         and re-enables the run controls."""
         self.update_observers("Scenario Finished")
+        print ("Scenario Done")
         self.__parent and self.__parent.enable_disable_run_controls(1)
 
     def check_runtime_state(self):

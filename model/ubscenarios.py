@@ -67,6 +67,7 @@ class UrbanBeatsScenario(threading.Thread):
     def __init__(self, simulation, datalibrary, projectlog):
         threading.Thread.__init__(self)
         self.__observers = []
+        self.__progressbars = []
         self.simulation = simulation        # The CORE (UrbanBEATSSim)
         self.datalibrary = datalibrary      # The active data library instance
         self.projectlog = projectlog        # The active log
@@ -521,31 +522,39 @@ class UrbanBeatsScenario(threading.Thread):
         """Assigns an array of observers to the Scenario's self.__observers variable."""
         self.__observers = observers
 
+    def attach_progressbars(self, progbars):
+        """Assigns an array of progressbar observers to the Scenario's self.__progressbar variable."""
+        self.__progressbars = progbars
+
     def update_observers(self, message):
         """Sends the message to all observers contained in the core's observer list."""
         for observer in self.__observers:
             observer.update_observer(str(message))
 
+    def update_runtime_progress(self, value):
+        """Sends the value to the progress bar(s)."""
+        print("Updating Progress")
+        for progbar in self.__progressbars:
+            progbar.update_progress(int(value))
+
     def reinitialize(self):
         """Reinitializes the thread, resets the assets, edges and point lists and runs a garbage collection."""
-        # try:                                      # DEV-NOTE: need to figure out how to call simulation in a thread
-        #     threading.Thread.__init__(self)       # and then restart the thread without the program crashing
-        # except:
-        #     print sys.exc_info()[0]
+        if self.ident is not None:
+            threading.Thread.__init__(self)
+        else:
+            pass
         self.reset_assets()
         return False
 
-    def run_scenario(self):
+    def run(self):
         """Overrides the thread.run() function, called when thread.start() is used. Determines, which kind of
         simulation to run."""
         # BEGIN THE SCENARIO'S SIMULATION
         self.update_observers("Scenario Start!")
+        print("Starting Scenario !!")
         self.runstate = True
         if self.get_metadata("type") == "STATIC":
             self.run_static_simulation()
-            # while self.run_static_simulation():
-            #     pass
-            # return False
         elif self.get_metadata("type") == "DYNAMIC":
             self.run_dynamic_simulation()
         else:
@@ -558,20 +567,19 @@ class UrbanBeatsScenario(threading.Thread):
         self.update_observers("Scenario Type: STATIC")
         temp_directory = self.simulation.get_global_options("tempdir")
         self.update_observers("Current temp directory: "+str(temp_directory))
-        self.simulation.update_runtime_progress(5)
-
+        self.update_runtime_progress(5)
         # --- STATIC STEP 1: Block delineation ---
-        self.simulation.update_runtime_progress(10)
+        self.update_runtime_progress(10)
         delinblocks = self.get_module_object("SPATIAL", 0)
         delinblocks.attach(self.__observers)
         delinblocks.run_module()
 
         # --- STATIC STEP 2: Climate Setup ---
-        self.simulation.update_runtime_progress(20)
+        self.update_runtime_progress(20)
         # Skip this for now.
 
         # --- STATIC STEP 3: Urban Planning ---
-        self.simulation.update_runtime_progress(30)             # From this point forth, modules may be optional!
+        self.update_runtime_progress(30)             # From this point forth, modules may be optional!
         urbplanbb = self.get_module_object("URBPLAN", 0)
         map_attr = self.get_asset_with_name("MapAttributes")
         if urbplanbb is None:
@@ -582,11 +590,11 @@ class UrbanBeatsScenario(threading.Thread):
             urbplanbb.run_module()
 
         # --- STATIC STEP 4: Socio-Economic ---
-        self.simulation.update_runtime_progress(40)
+        self.update_runtime_progress(40)
         # Skip this for now...
 
         # --- STATIC STEP 5: Spatial Mapping ---
-        self.simulation.update_runtime_progress(50)
+        self.update_runtime_progress(50)
         spatialmap = self.get_module_object("MAP", 0)
         map_attr = self.get_asset_with_name("MapAttributes")
         if spatialmap is None:
@@ -597,11 +605,11 @@ class UrbanBeatsScenario(threading.Thread):
             spatialmap.run_module()
 
         # --- STATIC STEP 6: Regulation ---
-        self.simulation.update_runtime_progress(60)
+        self.update_runtime_progress(60)
         # Skip this for now...
 
         # --- STATIC STEP 7: Infrastructure ---
-        self.simulation.update_runtime_progress(65)
+        self.update_runtime_progress(65)
         infrastructure = self.get_module_object("INFRA", 0)
         if infrastructure is None:
             map_attr.add_attribute("HasINFRA", 0)
@@ -611,19 +619,19 @@ class UrbanBeatsScenario(threading.Thread):
             infrastructure.run_module()
 
         # --- STATIC STEP 8: Performance ---
-        self.simulation.update_runtime_progress(70)
+        self.update_runtime_progress(70)
         # Skip this for now...
 
         # --- STATIC STEP 9: Impact ---
-        self.simulation.update_runtime_progress(80)
+        self.update_runtime_progress(80)
         # Skip this for now...
 
         # --- STATIC STEP 10: Decision Analysis ---
-        self.simulation.update_runtime_progress(90)
+        self.update_runtime_progress(90)
         # Skip this for now...
 
         # --- DATA EXPORT AND CLEANUP STEPS ---
-        self.simulation.update_runtime_progress(95)
+        self.update_runtime_progress(95)
 
         # Export the data maps available - first check scenario name
         if int(self.get_metadata("usescenarioname")):
@@ -669,7 +677,7 @@ class UrbanBeatsScenario(threading.Thread):
         # [TO DO] Export options - WSUD Systems
         # [TO DO] Export options - centrepoints
 
-        self.simulation.update_runtime_progress(100)
+        self.update_runtime_progress(100)
         return True
 
     def run_dynamic_simulation(self):
@@ -677,10 +685,10 @@ class UrbanBeatsScenario(threading.Thread):
         self.update_observers("Scenario Type: DYNAMIC")
         temp_directory = self.simulation.get_global_options("tempdir")
         self.update_observers("Current temp directory: " + str(temp_directory))
-        self.simulation.update_runtime_progress(5)
+        self.update_runtime_progress(5)
 
         # --- DYNAMIC STEP 1: Urban Development Module ---
-        self.simulation.update_runtime_progress(10)
+        self.update_runtime_progress(10)
         urbdev = self.get_module_object("URBDEV", 0)
         if urbdev is None:
             pass
@@ -701,7 +709,7 @@ class UrbanBeatsScenario(threading.Thread):
         # --- DYNAMIC STEP 11: Decision Analysis ---
 
         # --- DATA EXPORT AND CLEANUP STEPS ---
-        self.simulation.update_runtime_progress(95)
+        self.update_runtime_progress(95)
 
         # Export the data maps available - first check scenario name
         if int(self.get_metadata("usescenarioname")):
@@ -718,12 +726,12 @@ class UrbanBeatsScenario(threading.Thread):
                                                            int(epsg))
         # xregions.export_municipalities_to_gis_shapefile()
 
-        self.simulation.update_runtime_progress(100)
+        self.update_runtime_progress(100)
 
     def run_benchmark_simulation(self):
         """This function presents the logical module flow for a BENCHMARK simulation."""
         pass
-        self.simulation.update_runtime_progress(100)
+        self.update_runtime_progress(100)
 
 
 
