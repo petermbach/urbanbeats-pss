@@ -68,37 +68,6 @@ def adjust_sample_range(parmin, parmax, parusemed):
         return [parmin, parmax]
 
 
-def autosize_blocks(width, height):
-    """Calculates the recommended Block Size dependent on the size of the case study determined by the input map
-    dimensions. Takes width and height and returns block size.
-
-    Rules:
-       - Based on experience from simulations, aims to reduce simulation times while providing enough accuracy.
-       - Aim to simulate under 500 Blocks.
-
-    :param width: the width of the input map in [m] - xmax - xmin
-    :param height: the height of the input map in [m] - ymax - ymin
-    :return auto-determined blocksize
-    """
-    block_limit = 2000   # maximum number of Blocks permissible in the case study - Make an option in future.
-    tot_area = width * height
-    ideal_blocksize = math.sqrt(tot_area / float(block_limit))
-
-    print(f"IdBS: {ideal_blocksize}")
-
-    if ideal_blocksize <= 200:       # If less than 200m, size to 200m x 200m as minimum
-        blocksize = 200
-    elif ideal_blocksize <= 500:
-        blocksize = 500
-    elif ideal_blocksize <= 1000:
-        blocksize = 1000
-    elif ideal_blocksize <= 2000:
-        blocksize = 2000
-    else:
-        blocksize = 5000    # Maximum Block Size will be 5000m x 5000m, we cannot simply afford to go higher
-    return blocksize        # because of data resolution, etc.
-
-
 def calculate_slope(z_central, z_neighbours, L_x, L_y, nodatavalue):
     """Calculates the slope based on the ESRI ArcMap Methodology using inputs of the central cell
     and the elevation of its neighbours. Returns the slope in radians and degrees
@@ -155,11 +124,13 @@ def calculate_aspect(z_central, z_neighbours, nodatavalue):
     return aspect_deg
 
 
-def calculate_frequency_of_lu_classes(lucdatamatrix):
+def calculate_frequency_of_lu_classes(lucdatamatrix, nodatavalue, mask_count):
     """ Tallies the frequency of land use classes within the given Block/Hex. Returns the 'Activity'
     attribute and a list of LUC frequencies.
 
     :param lucdatamatrix: the two-dimensional matrix extracted from the LU raster UBRaster() object
+    :param nodatavalue: the nodata value of the current lucdatamatrix (may differ between data sets)
+    :param mask_count: the number of cells not valid within the lucdatamatrix (e.g. corners in hexagonal representation)
     :return a list of all 13 classes and their relative proportion, activity, the total data coverage.
     """
     # Step 1 - Order all data entries into a lit of 13 elements
@@ -169,15 +140,17 @@ def calculate_frequency_of_lu_classes(lucdatamatrix):
     matrix_size = 0     # Counts total elements in the 2D array
     for i in range(len(lucdatamatrix)):
         for j in range(len(lucdatamatrix[0])):
-            matrix_size += 1
             landclass = lucdatamatrix[i, j]     # numpy array
-            if int(landclass) == -9999:
+            matrix_size += 1  # Count towards 'activity'
+            if int(landclass) == nodatavalue:
                 pass
             else:
+                matrix_size += 1  # Count towards 'activity'
                 lucprop[int(landclass) - 1] += 1
                 total_n_luc += 1
 
     # Step 2 - Convert frequency to proportion
+    matrix_size -= mask_count
     if total_n_luc == 0:
         return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 0
     for i in range(len(lucprop)):

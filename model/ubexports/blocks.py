@@ -380,8 +380,11 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
         # Add Attributes
         feature.SetField("BlockID", int(currentAttList.get_attribute("BlockID")))
 
-        if map_attr.get_attribute("HasELEV"):
-            feature.SetField("BasinID", int(currentAttList.get_attribute("BasinID")))
+        if map_attr.get_attribute("HasELEV") and map_attr.get_attribute("HasFLOWPATHS"):
+            if currentAttList.get_attribute("BasinID") is None:
+                feature.SetField("BasinID", 0)
+            else:
+                feature.SetField("BasinID", int(currentAttList.get_attribute("BasinID")))
 
         feature.SetField("CentreX", float(currentAttList.get_attribute("CentreX")))
         feature.SetField("CentreY", float(currentAttList.get_attribute("CentreY")))
@@ -421,15 +424,18 @@ def export_block_assets_to_gis_shapefile(asset_col, map_attr, filepath, filename
             feature.SetField("AvgElev", float(currentAttList.get_attribute("AvgElev")))
             feature.SetField("MaxElev", float(currentAttList.get_attribute("MaxElev")))
             feature.SetField("MinElev", float(currentAttList.get_attribute("MinElev")))
-            feature.SetField("Slope_PCT", float(currentAttList.get_attribute("Slope_PCT")))
-            feature.SetField("Slope_DEG", float(currentAttList.get_attribute("Slope_DEG")))
-            feature.SetField("Aspect_DEG", float(currentAttList.get_attribute("Aspect_DEG")))
+            # feature.SetField("Slope_PCT", float(currentAttList.get_attribute("Slope_PCT")))
+            # feature.SetField("Slope_DEG", float(currentAttList.get_attribute("Slope_DEG")))
+            # feature.SetField("Aspect_DEG", float(currentAttList.get_attribute("Aspect_DEG")))
 
         if map_attr.get_attribute("HasFLOWPATHS"):
             feature.SetField("downID", int(currentAttList.get_attribute("downID")))
             feature.SetField("max_dz", float(currentAttList.get_attribute("max_dz")))
             feature.SetField("h_pond", float(currentAttList.get_attribute("h_pond")))
-            feature.SetField("Outlet", int(currentAttList.get_attribute("Outlet")))
+            if currentAttList.get_attribute("Outlet") is None:
+                feature.SetField("Outlet", -1)
+            else:
+                feature.SetField("Outlet", int(currentAttList.get_attribute("Outlet")))
 
         if map_attr.get_attribute("HasGEOPOLITICAL"):
             feature.SetField("Region", str(currentAttList.get_attribute("Region")))

@@ -217,7 +217,7 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.lu_fromurbandev.setChecked(int(self.module.get_parameter("landuse_fud")))
 
         # --- SPATIAL GEOMETRY ---
-        spatial_ref = ["BLOCKS", "HEXAGONS"]
+        spatial_ref = ["SQUARES", "HEXAGONS", "VECTORPATCH"]
         self.ui.rep_combo.setCurrentIndex(spatial_ref.index(self.module.get_parameter("geometry_type")))
         self.ui.resolution_spin.setValue(self.module.get_parameter("blocksize"))
         self.ui.resolution_auto.setChecked(int(self.module.get_parameter("blocksize_auto")))
@@ -227,6 +227,21 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
             self.ui.radio_vonNeu.setChecked(1)
         self.ui.spatialindices_check.setChecked(self.module.get_parameter("spatialmetrics"))
         self.ui.patchdelin_check.setChecked(self.module.get_parameter("patchdelin"))
+
+        self.ui.hexsize_spin.setValue(self.module.get_parameter("hexsize"))
+        self.ui.hexsize_auto.setChecked(int(self.module.get_parameter("hexsize_auto")))
+        if self.module.get_parameter("hex_orientation") == "NS":
+            self.ui.radio_hexoNS.setChecked(1)
+        else:
+            self.ui.radio_hexoEW.setChecked(1)
+        if self.module.get_parameter("hex_neighbourhood") == "ISO":
+            self.ui.radio_hexnISO.setChecked(1)
+        elif self.module.get_parameter("hex_neighbourhood") == "YINV":
+            self.ui.radio_hexnYINV.setChecked(1)
+        elif self.module.get_parameter("hex_neighbourhood") == "YNOR":
+            self.ui.radio_hexnYNOR.setChecked(1)
+        else:
+            self.ui.radio_hexnNOR.setChecked(1)
 
         # --- JURISDICTIONAL AND SUBURBAN BOUNDARIES ---
         try:    # MUNICIPAL BOUNDARY MAP COMBO
@@ -311,6 +326,7 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         #     self.ui.supply_combo.setCurrentIndex(0)
 
         # --- FLOWPATH DELINEATION ---
+        self.ui.flowpath_check.setChecked(int(self.module.get_parameter("flowpaths")))
         self.ui.flowpath_combo.setCurrentIndex(self.delin_methods.index(self.module.get_parameter("flowpath_method")))
         self.ui.demsmooth_check.setChecked(self.module.get_parameter("dem_smooth"))
         self.ui.demsmooth_spin.setValue(self.module.get_parameter("dem_passes"))
@@ -392,8 +408,9 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("population_fud", int(self.ui.pop_fromurbandev.isChecked()))
 
         # --- SPATIAL GEOMETRY ---
+        # SQUARE GRIDS
         if self.ui.rep_combo.currentIndex() == 0:
-            self.module.set_parameter("geometry_type", "BLOCKS")
+            self.module.set_parameter("geometry_type", "SQUARES")
         elif self.ui.rep_combo.currentIndex() == 1:
             self.module.set_parameter("geometry_type", "HEXAGONS")
         self.module.set_parameter("blocksize", self.ui.resolution_spin.value())
@@ -404,6 +421,23 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
             self.module.set_parameter("neighbourhood", "V")
         self.module.set_parameter("patchdelin", int(self.ui.patchdelin_check.isChecked()))
         self.module.set_parameter("spatialmetrics", int(self.ui.spatialindices_check.isChecked()))
+
+        # HEX GRIDS
+        self.module.set_parameter("hexsize", self.ui.hexsize_spin.value())
+        self.module.set_parameter("hexsize_auto", int(self.ui.hexsize_auto.isChecked()))
+        if self.ui.radio_hexoNS.isChecked():
+            self.module.set_parameter("hex_orientation", "NS")
+        else:
+            self.module.set_parameter("hex_orientation", "EW")
+
+        if self.ui.radio_hexnISO.isChecked():
+            self.module.set_parameter("hex_neighbourhood", "ISO")
+        elif self.ui.radio_hexnYINV.isChecked():
+            self.module.set_parameter("hex_neighbourhood", "YINV")
+        elif self.ui.radio_hexnYNOR.isChecked():
+            self.module.set_parameter("hex_neighbourhood", "YNOR")
+        else:
+            self.module.set_parameter("hex_neighbourhood", "NOR")
 
         # --- JURISDICTIONAL AND SUBURBAN BOUNDARIES ---
         self.module.set_parameter("include_geopolitical", int(self.ui.geopolitical_check.isChecked()))
@@ -450,6 +484,7 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         # self.module.set_parameter("supply_map", self.builtwaterfeatures[1][self.ui.supply_combo.currentIndex()])
 
         # --- FLOW PATH DELINEATION ---
+        self.module.set_parameter("flowpaths", int(self.ui.flowpath_check.isChecked()))
         self.module.set_parameter("flowpath_method", self.delin_methods[self.ui.flowpath_combo.currentIndex()])
         self.module.set_parameter("dem_smooth", int(self.ui.demsmooth_check.isChecked()))
         self.module.set_parameter("dem_passes", int(self.ui.demsmooth_spin.value()))

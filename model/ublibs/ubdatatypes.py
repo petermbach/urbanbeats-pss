@@ -211,22 +211,33 @@ class UBVector(UBComponent):
         """Returns an array of edges (tuples), each having two pts with (x, y, z) sets of coordinates."""
         return self.__edges
 
-    def shares_geometry(self, geom_object, geom_type="points"):
+    def shares_geometry(self, geom_object, geom_type="points", select="all"):
         """Determines whether the current geometry shares similar geometry with another UBVector object
         based on either points or edges.
 
         :param geom_object: the input UBVector object
         :param geom_type: check whether they share "points" or "edges"
+        :param select: allows selection of specific points and/or edges to compare with (i.e. hexagonal edges),
+        specified as an index of points in the list based on drawing convention (e.g. squares bottom left)
+        :param precision: number of decimals to compare with, truncates the values to this value.
         :return: True if the geometries share at least one point/edge, false if they don't
         """
         if geom_type == "points":
             checkpoints = geom_object.get_points()
-            for pt in self.__points:
+            if select == "all":
+                thisgeom = self.__points
+            else:
+                thisgeom = [self.__points[i] for i in select]
+            for pt in thisgeom:
                 if pt in checkpoints:
                     return True
         elif geom_type == "edges":
             checkedges = geom_object.get_edges()
-            for ed in self.__edges:
+            if select == "all":
+                thisgeom = self.__edges
+            else:
+                thisgeom = [self.__edges[i] for i in select]
+            for ed in thisgeom:
                 if ed in checkedges:
                     return True
         else:
