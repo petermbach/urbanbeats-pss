@@ -38,7 +38,7 @@ from .ubmodule import *
 
 
 # --- MODULE CLASS DEFINITION ---
-class ImpactAssess(UBModule):
+class Microclimate(UBModule):
     """ IMPACT ASSESSMENT MODULE
     Undertakes an impact assessment of the current scenario based on the
     various impacts labelled. The model performs various assessments and outputs

@@ -1,5 +1,5 @@
 r"""
-@file   main.pyw
+@file   md_bgsplanning.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 
@@ -38,15 +38,15 @@ from .ubmodule import *
 
 
 # --- MODULE CLASS DEFINITION ---
-class DecisionAnalysis(UBModule):
-    """ DECISION ANALYSIS MODULE
-    Performs the filtering and narrowing of options within the technology
-    portfolio. The module also contains relevant information that other modules
-    may ask for.
+class BGSPlanning(UBModule):
+    """ BLUE-GREEN SYSTEMS MODULE
+    Undertakes an impact assessment of the current scenario based on the
+    various impacts labelled. The model performs various assessments and outputs
+    useful indicators showing the before-after situations of different scenarios
     """
     def __init__(self, activesim, scenario, datalibrary, projectlog, simulationyear):
         UBModule.__init__(self)
-        self.name = "Decision Analysis Module for UrbanBEATS"
+        self.name = "Impact Assessment Module"
         self.simulationyear = simulationyear
 
         # CONNECTIONS WITH CORE SIMULATION

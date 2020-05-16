@@ -67,7 +67,7 @@ from gui.md_urbplanbbguic import UrbplanbbGuiLaunch
 from gui.md_urbdevelopguic import UrbdevelopGuiLaunch, InfluenceFunctionGUILaunch
 from gui.md_spatialmappingguic import SpatialMappingGuiLaunch
 from gui.md_infrastructureguic import InfrastructureGuiLaunch
-from gui.md_nbsplanningguic import BlueGreenGuiLaunch
+from gui.md_bgsplanningguic import BlueGreenGuiLaunch
 from gui import ssanto_dialogs as ssanto_dialogs
 
 # --- MAIN GUI FUNCTION ---

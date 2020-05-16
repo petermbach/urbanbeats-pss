@@ -37,17 +37,17 @@ import ast  # Used for converting a string of a list into a list e.g. "[1, 2, 3,
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 from .progref import ubglobals
-from .modules import md_decisionanalysis
 from .modules import md_climatesetup
 from .modules import md_delinblocks
-from .modules import md_impactassess
-from .modules import md_perfassess
-from .modules import md_regulation
+from .modules import md_urbandev
+from .modules import md_urbplanbb
 from .modules import md_socioecon
 from .modules import md_spatialmapping
 from .modules import md_infrastructure
-from .modules import md_urbandev
-from .modules import md_urbplanbb
+from .modules import md_bgsplanning
+from .modules import md_watercycle
+from .modules import md_microclimate
+from .modules import md_floodassessment
 from .ublibs import ubspatial
 from .ubexports import blocks as xblocks
 from .ubexports import flowpaths as xflowpaths
@@ -280,21 +280,21 @@ class UrbanBeatsScenario(threading.Thread):
             if self.check_is_module_active("MAP"):
                 self.__modules["MAP"].append(
                     md_spatialmapping.SpatialMapping(inputs[0], inputs[1], inputs[2], inputs[3], i))
-            if self.check_is_module_active("BGS"):
-                self.__modules["BGS"].append(
-                    md_nbsplanning.NBSPlanningModule(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("INFRA"):
                 self.__modules["INFRA"].append(
-                    md_techplacement.Infrastructure(inputs[0], inputs[1], inputs[2], inputs[3], i))
+                    md_infrastructure.Infrastructure(inputs[0], inputs[1], inputs[2], inputs[3], i))
+            if self.check_is_module_active("BGS"):
+                self.__modules["BGS"].append(
+                    md_bgsplanning.BGSPlanning(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("CYCLE"):
-                self.__modules["PERF"].append(
-                    md_perfassess.PerformanceAssessment(inputs[0], inputs[1], inputs[2], inputs[3], i))
+                self.__modules["CYCLE"].append(
+                    md_watercycle.UrbanWaterCycle(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("MICRO"):
-                self.__modules["IMPACT"].append(
-                    md_impactasess.ImpactAssess(inputs[0], inputs[1], inputs[2], inputs[3], i))
+                self.__modules["MICRO"].append(
+                    md_microclimate.Microclimate(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("FLOOD"):
                 self.__modules["DECISION"].append(
-                    md_decisionanalysis.DecisionAnalysis(inputs[0], inputs[1], inputs[2], inputs[3], i))
+                    md_floodassessment.FloodAssessment(inputs[0], inputs[1], inputs[2], inputs[3], i))
 
             # CREATE ASSETS SUPERSTRUCTURE
             self.__assets[str(i)] = {}

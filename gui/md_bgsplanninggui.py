@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'md_nbsplanninggui.ui'
+# Form implementation generated from reading ui file 'md_bgsplanninggui.ui'
 #
 # Created by: PyQt5 UI code generator 5.14.1
 #

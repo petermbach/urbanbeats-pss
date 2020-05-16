@@ -30,7 +30,7 @@ import model.progref.ubglobals as ubglobals
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
-from .md_nbsplanninggui import Ui_BlueGreenDialog
+from .md_bgsplanninggui import Ui_BlueGreenDialog
 
 
 # --- MAIN GUI FUNCTION ---

@@ -38,15 +38,15 @@ from .ubmodule import *
 
 
 # --- MODULE CLASS DEFINITION ---
-class PerformanceAssessment(UBModule):
-    """ PERFORMANCE ASSESSMENT MODULE
-    Contains a mish-mash of performance assessment scripts. Its difference
-    to the impact module is that it conducts a straight up simulation of
-    performance of a particular.
+class FloodAssessment(UBModule):
+    """ DECISION ANALYSIS MODULE
+    Performs the filtering and narrowing of options within the technology
+    portfolio. The module also contains relevant information that other modules
+    may ask for.
     """
     def __init__(self, activesim, scenario, datalibrary, projectlog, simulationyear):
         UBModule.__init__(self)
-        self.name = "Performance Assessment Module for UrbanBEATS"
+        self.name = "Decision Analysis Module for UrbanBEATS"
         self.simulationyear = simulationyear
 
         # CONNECTIONS WITH CORE SIMULATION
