@@ -36,6 +36,7 @@ import xml.etree.ElementTree as ET  # XML parsing for loading scenario files
 import ast  # Used for converting a string of a list into a list e.g. "[1, 2, 3, 4]" --> [1, 2, 3, 4]
 
 # --- URBANBEATS LIBRARY IMPORTS ---
+from .progref import ubglobals
 from .modules import md_decisionanalysis
 from .modules import md_climatesetup
 from .modules import md_delinblocks
@@ -87,9 +88,9 @@ class UrbanBeatsScenario(threading.Thread):
                                    "filename": "(enter a naming convention for outputs)",
                                    "usescenarioname": 0}
 
-        self.__modulesbools = {"SPATIAL": 1, "CLIMATE": 1, "URBDEV": 0, "URBPLAN": 0,
-                          "SOCIO": 0, "MAP": 0, "REG": 0, "INFRA": 0, "PERF": 0,
-                          "IMPACT": 0, "DECISION": 0}
+        self.__modulesbools = {key:0 for key in ubglobals.MODULENAMES}      # Generate based on ubglobals module names
+        self.__modulesbools["SPATIAL"] = 1      # Set SPATIAL and CLIMATE modules to always equal 1
+        self.__modulesbools["CLIMATE"] = 1
 
         self.__spatial_data = [] # a list of map data to be used, holds the data references.
         self.__time_series_data = []   # a list of time series data to be used in the scenario or stored.
@@ -279,19 +280,19 @@ class UrbanBeatsScenario(threading.Thread):
             if self.check_is_module_active("MAP"):
                 self.__modules["MAP"].append(
                     md_spatialmapping.SpatialMapping(inputs[0], inputs[1], inputs[2], inputs[3], i))
-            if self.check_is_module_active("REG"):
-                self.__modules["REG"].append(
-                    md_regulation.RegulationModule(inputs[0], inputs[1], inputs[2], inputs[3], i))
+            if self.check_is_module_active("BGS"):
+                self.__modules["BGS"].append(
+                    md_nbsplanning.NBSPlanningModule(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("INFRA"):
                 self.__modules["INFRA"].append(
                     md_techplacement.Infrastructure(inputs[0], inputs[1], inputs[2], inputs[3], i))
-            if self.check_is_module_active("PERF"):
+            if self.check_is_module_active("CYCLE"):
                 self.__modules["PERF"].append(
                     md_perfassess.PerformanceAssessment(inputs[0], inputs[1], inputs[2], inputs[3], i))
-            if self.check_is_module_active("IMPACT"):
+            if self.check_is_module_active("MICRO"):
                 self.__modules["IMPACT"].append(
                     md_impactasess.ImpactAssess(inputs[0], inputs[1], inputs[2], inputs[3], i))
-            if self.check_is_module_active("DECISION"):
+            if self.check_is_module_active("FLOOD"):
                 self.__modules["DECISION"].append(
                     md_decisionanalysis.DecisionAnalysis(inputs[0], inputs[1], inputs[2], inputs[3], i))
 

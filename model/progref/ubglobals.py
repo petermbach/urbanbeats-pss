@@ -99,7 +99,7 @@ ext: 'png'
 
 # --- MODEL SETTING ---
 DECISIONS = ["best", "random", "none"]
-MODULENAMES = ["SPATIAL", "CLIMATE", "URBDEV", "URBPLAN", "SOCIO", "MAP", "REG", "INFRA", "PERF", "IMPACT", "DECISION"]
+MODULENAMES = ["SPATIAL", "CLIMATE", "URBDEV", "URBPLAN", "SOCIO", "MAP", "INFRA", "BGS", "CYCLE", "MICRO", "FLOOD"]
 
 # NATURAL ELEMENTS
 SOILDICTIONARY = [180, 36, 3.6, 0.36] #mm/hr - 1=sand, 2=sandy clay, 3=medium clay, 4=heavy clay

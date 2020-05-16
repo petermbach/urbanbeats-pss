@@ -268,11 +268,11 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.urbanplanning.setChecked(self.scenario.check_is_module_active("URBPLAN"))
         self.ui.socioeconomic.setChecked(self.scenario.check_is_module_active("SOCIO"))
         self.ui.spatialmapping.setChecked(self.scenario.check_is_module_active("MAP"))
-        self.ui.regulation.setChecked(self.scenario.check_is_module_active("REG"))
         self.ui.infrastructure.setChecked(self.scenario.check_is_module_active("INFRA"))
-        self.ui.performance.setChecked(self.scenario.check_is_module_active("PERF"))
-        self.ui.impact.setChecked(self.scenario.check_is_module_active("IMPACT"))
-        self.ui.decisionanalysis.setChecked(self.scenario.check_is_module_active("DECISION"))
+        self.ui.bluegreen.setChecked(self.scenario.check_is_module_active("BGS"))
+        self.ui.watercycle.setChecked(self.scenario.check_is_module_active("CYCLE"))
+        self.ui.microclimate.setChecked(self.scenario.check_is_module_active("MICRO"))
+        self.ui.flood.setChecked(self.scenario.check_is_module_active("FLOOD"))
 
         self.enable_disable_module_checkboxes()
         self.enable_disable_settings_tab()
@@ -291,10 +291,10 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
 
         self.ui.urbanplanning.clicked.connect(self.enable_disable_module_checkboxes)
         self.ui.spatialmapping.clicked.connect(self.enable_disable_module_checkboxes)
-        self.ui.regulation.clicked.connect(self.enable_disable_module_checkboxes)
         self.ui.infrastructure.clicked.connect(self.enable_disable_module_checkboxes)
-        self.ui.performance.clicked.connect(self.enable_disable_module_checkboxes)
-        self.ui.impact.clicked.connect(self.enable_disable_module_checkboxes)
+        self.ui.bluegreen.clicked.connect(self.enable_disable_module_checkboxes)
+        self.ui.watercycle.clicked.connect(self.enable_disable_module_checkboxes)
+        self.ui.microclimate.clicked.connect(self.enable_disable_module_checkboxes)
 
         self.ui.naming_check.clicked.connect(self.enable_disable_naming_line)
         self.ui.create_button.clicked.connect(self.create_scenario)
@@ -487,8 +487,8 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         """Enables and disables the module checkboxes based on various conditionals. This is a clusterfuck of
         if else statements! Good luck working out the logic!
         """
-        boxes = [self.ui.spatialmapping, self.ui.regulation, self.ui.infrastructure,
-                 self.ui.performance, self.ui.impact, self.ui.decisionanalysis]
+        boxes = [self.ui.spatialmapping, self.ui.infrastructure, self.ui.bluegreen,
+                 self.ui.watercycle, self.ui.microclimate, self.ui.flood]
         # LOGIC CHAIN 1 - URBAN DEVELOPMENT
         # Spatial setup and climate setup are ALWAYS active
         try:
@@ -521,20 +521,17 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
             mbool = [1, 1, 1, 1, 1, 1]
             [boxes[b].setEnabled(mbool[b]) for b in range(len(boxes))]
         else:
-            mbool = [1, 1, 0, 0, 0, 0]
+            mbool = [1, 1, 1, 0, 0, 0]
             [boxes[b].setEnabled(mbool[b]) for b in range(len(boxes))]
             return
 
         # Conditions to enable infrastructure planning
-        if self.ui.regulation.isChecked() and self.ui.spatialmapping.isChecked():
+        if self.ui.spatialmapping.isChecked():
             self.ui.infrastructure.setEnabled(1)
+            self.ui.bluegreen.setEnabled(1)
         else:
             self.ui.infrastructure.setEnabled(0)
-
-        if self.ui.spatialmapping.isChecked():
-            self.ui.decisionanalysis.setEnabled(1)
-        else:
-            self.ui.decisionanalysis.setEnabled(0)
+            self.ui.bluegreen.setEnabled(0)
 
     def enable_disable_naming_line(self):
         """Enables or disables the naming convention lineEdit if the checkbox is unchecked/checked."""
@@ -547,11 +544,11 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.citydevelopment.setChecked(0)
         self.ui.socioeconomic.setChecked(0)
         self.ui.spatialmapping.setChecked(0)
-        self.ui.regulation.setChecked(0)
+        self.ui.bluegreen.setChecked(0)
         self.ui.infrastructure.setChecked(0)
-        self.ui.performance.setChecked(0)
-        self.ui.impact.setChecked(0)
-        self.ui.decisionanalysis.setChecked(0)
+        self.ui.watercycle.setChecked(0)
+        self.ui.microclimate.setChecked(0)
+        self.ui.flood.setChecked(0)
         self.enable_disable_module_checkboxes()
 
     def reset_interface(self):
@@ -702,16 +699,16 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
             self.scenario.set_module_active("SOCIO")
         if self.ui.spatialmapping.isChecked():
             self.scenario.set_module_active("MAP")
-        if self.ui.regulation.isChecked():
-            self.scenario.set_module_active("REG")
         if self.ui.infrastructure.isChecked():
             self.scenario.set_module_active("INFRA")
-        if self.ui.performance.isChecked():
-            self.scenario.set_module_active("PERF")
-        if self.ui.impact.isChecked():
-            self.scenario.set_module_active("IMPACT")
-        if self.ui.decisionanalysis.isChecked():
-            self.scenario.set_module_active("DECISION")
+        if self.ui.bluegreen.isChecked():
+            self.scenario.set_module_active("BGS")
+        if self.ui.watercycle.isChecked():
+            self.scenario.set_module_active("CYCLE")
+        if self.ui.microclimate.isChecked():
+            self.scenario.set_module_active("MICRO")
+        if self.ui.flood.isChecked():
+            self.scenario.set_module_active("FLOOD")
 
         self.update_scenario_datasets()
 

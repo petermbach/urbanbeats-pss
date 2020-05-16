@@ -67,7 +67,7 @@ from gui.md_urbplanbbguic import UrbplanbbGuiLaunch
 from gui.md_urbdevelopguic import UrbdevelopGuiLaunch, InfluenceFunctionGUILaunch
 from gui.md_spatialmappingguic import SpatialMappingGuiLaunch
 from gui.md_infrastructureguic import InfrastructureGuiLaunch
-
+from gui.md_nbsplanningguic import BlueGreenGuiLaunch
 from gui import ssanto_dialogs as ssanto_dialogs
 
 # --- MAIN GUI FUNCTION ---
@@ -213,12 +213,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.ModuleDock_socioeconomic.clicked.connect(self.launch_socioeconomic_modulegui)
 
         self.ui.ModuleDock_spatialmap.clicked.connect(self.launch_spatialmap_modulegui)
-        self.ui.ModuleDock_regulation.clicked.connect(self.launch_regulation_modulegui)
         self.ui.ModuleDock_infrastructure.clicked.connect(self.launch_infrastructure_modulegui)
+        self.ui.ModuleDock_bluegreen.clicked.connect(self.launch_bluegreen_modulegui)
 
-        self.ui.ModuleDock_performance.clicked.connect(self.launch_performance_modulegui)
-        self.ui.ModuleDock_impact.clicked.connect(self.launch_impact_modulegui)
-        self.ui.ModuleDock_decisionanalysis.clicked.connect(self.launch_decisionanalysis_modulegui)
+        self.ui.ModuleDock_watercycle.clicked.connect(self.launch_watercycle_modulegui)
+        self.ui.ModuleDock_microclimate.clicked.connect(self.launch_microclimate_modulegui)
+        self.ui.ModuleDock_flood.clicked.connect(self.launch_flood_modulegui)
 
         # Control Panel Interface
         self.ui.SimDock_projectfolder.clicked.connect(self.open_project_folder)
@@ -1128,8 +1128,8 @@ class MainWindow(QtWidgets.QMainWindow):
         urbplanbbgui.exec_()
 
     def launch_socioeconomic_modulegui(self):
-        """Launches the socio-economic module's user interface and pre-fills all relevant parameters."""
-        pass
+        """Launches the socio-economic setup module's user interface and fills in relevant parameters."""
+        pass    # [TO DO]
 
     def launch_spatialmap_modulegui(self):
         """Launches the spatial mapping module's user interface and fills in relevant parameters."""
@@ -1137,25 +1137,28 @@ class MainWindow(QtWidgets.QMainWindow):
                                                     self.get_active_data_library(), self.get_active_project_log())
         spatialmappinggui.exec_()
 
-    def launch_regulation_modulegui(self):
-        """Launches the Regulation module's user interface and fills in relevant parameters."""
-        pass
-
     def launch_infrastructure_modulegui(self):
         """Launches the infrastructure module's user interface and fills in relevant parameters."""
         infrastructuregui = InfrastructureGuiLaunch(self, self.get_active_simulation_object(),
                                                     self.get_active_data_library(), self.get_active_project_log())
         infrastructuregui.exec_()
 
-    def launch_performance_modulegui(self):
+    def launch_bluegreen_modulegui(self):
+        """Launches the Regulation module's user interface and fills in relevant parameters."""
+        bluegreengui = BlueGreenGuiLaunch(self, self.get_active_simulation_object(),
+                                          self.get_active_data_library(), self.get_active_project_log())
+
+        bluegreengui.exec_()
+
+    def launch_watercycle_modulegui(self):
         """Launches the Performance Assessment's user interface and fills in relevant parameters."""
         pass
 
-    def launch_impact_modulegui(self):
+    def launch_microclimate_modulegui(self):
         """"""
         pass
 
-    def launch_decisionanalysis_modulegui(self):
+    def launch_flood_modulegui(self):
         """"""
         pass
 
@@ -1229,11 +1232,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.ModuleDock_urbanplan.setEnabled(condition[3])
         self.ui.ModuleDock_socioeconomic.setEnabled(condition[4])
         self.ui.ModuleDock_spatialmap.setEnabled(condition[5])
-        self.ui.ModuleDock_regulation.setEnabled(condition[6])
-        self.ui.ModuleDock_infrastructure.setEnabled(condition[7])
-        self.ui.ModuleDock_performance.setEnabled(condition[8])
-        self.ui.ModuleDock_impact.setEnabled(condition[9])
-        self.ui.ModuleDock_decisionanalysis.setEnabled(condition[10])
+        self.ui.ModuleDock_infrastructure.setEnabled(condition[6])
+        self.ui.ModuleDock_bluegreen.setEnabled(condition[7])
+        self.ui.ModuleDock_watercycle.setEnabled(condition[8])
+        self.ui.ModuleDock_microclimate.setEnabled(condition[9])
+        self.ui.ModuleDock_flood.setEnabled(condition[10])
 
 
 # --- OBSERVERS ---
