@@ -6480,8 +6480,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>45</width>
-               <height>16</height>
+               <width>83</width>
+               <height>30</height>
               </rect>
              </property>
              <widget class="QLabel" name="label_20">
@@ -6532,8 +6532,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>45</width>
-               <height>16</height>
+               <width>83</width>
+               <height>30</height>
               </rect>
              </property>
              <widget class="QLabel" name="label_22">
@@ -6584,8 +6584,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>45</width>
-               <height>16</height>
+               <width>83</width>
+               <height>30</height>
               </rect>
              </property>
              <widget class="QLabel" name="label_23">
@@ -7503,8 +7503,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>45</width>
-               <height>16</height>
+               <width>83</width>
+               <height>30</height>
               </rect>
              </property>
              <widget class="QLabel" name="label_19">
@@ -7555,8 +7555,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>723</width>
-               <height>447</height>
+               <width>83</width>
+               <height>30</height>
               </rect>
              </property>
              <widget class="QLabel" name="RT_maxdepth_lbl">
@@ -7881,8 +7881,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>723</width>
-               <height>447</height>
+               <width>83</width>
+               <height>30</height>
               </rect>
              </property>
              <widget class="QLabel" name="label_21">
@@ -7933,8 +7933,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>723</width>
-               <height>447</height>
+               <width>83</width>
+               <height>30</height>
               </rect>
              </property>
              <widget class="QLabel" name="label_24">
@@ -7985,8 +7985,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>723</width>
-               <height>447</height>
+               <width>83</width>
+               <height>30</height>
               </rect>
              </property>
              <widget class="QCheckBox" name="SWlot_check">
@@ -8394,8 +8394,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>723</width>
-               <height>447</height>
+               <width>83</width>
+               <height>30</height>
               </rect>
              </property>
              <widget class="QLabel" name="mca_scoringmat_lbl_2">
@@ -8764,8 +8764,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>723</width>
-               <height>447</height>
+               <width>83</width>
+               <height>30</height>
               </rect>
              </property>
              <widget class="QLabel" name="strat_scoring_lbl">
@@ -9270,8 +9270,8 @@ p, li { white-space: pre-wrap; }
  </tabstops>
  <resources>
   <include location="../graphics/ubeats.qrc"/>
-  <include location="../../../../../../graphics/ubeats.qrc"/>
-  <include location="../../../../.designer/graphics/ubeats.qrc"/>
+  <include location="../graphics/ubeats.qrc"/>
+  <include location="../graphics/ubeats.qrc"/>
  </resources>
  <connections>
   <connection>
