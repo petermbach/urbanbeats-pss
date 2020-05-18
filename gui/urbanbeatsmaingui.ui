@@ -1251,7 +1251,7 @@ p, li { white-space: pre-wrap; }
            </property>
            <property name="icon">
             <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/Industry-Water-icon.png</normaloff>:/icons/Industry-Water-icon.png</iconset>
+             <normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</iconset>
            </property>
           </item>
           <item>
@@ -1263,7 +1263,7 @@ p, li { white-space: pre-wrap; }
            </property>
            <property name="icon">
             <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/Bench-icon.png</normaloff>:/icons/Bench-icon.png</iconset>
+             <normaloff>:/icons/temperature-icon.png</normaloff>:/icons/temperature-icon.png</iconset>
            </property>
           </item>
           <item>
@@ -1275,7 +1275,19 @@ p, li { white-space: pre-wrap; }
            </property>
            <property name="icon">
             <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/Weather-Floods-icon.png</normaloff>:/icons/Weather-Floods-icon.png</iconset>
+             <normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Economic Valuation</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="../graphics/ubeats.qrc">
+             <normaloff>:/icons/dollar-icon.png</normaloff>:/icons/dollar-icon.png</iconset>
            </property>
           </item>
          </item>
@@ -1354,7 +1366,7 @@ p, li { white-space: pre-wrap; }
    <property name="minimumSize">
     <size>
      <width>165</width>
-     <height>433</height>
+     <height>461</height>
     </size>
    </property>
    <property name="floating">
@@ -1711,7 +1723,7 @@ p, li { white-space: pre-wrap; }
         <item>
          <widget class="QLabel" name="lbl_evaluation">
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Performance&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Performance Evaluation&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
         </item>
@@ -1730,11 +1742,11 @@ p, li { white-space: pre-wrap; }
            </size>
           </property>
           <property name="text">
-           <string>Water Cycle</string>
+           <string>Urban Water Cycle</string>
           </property>
           <property name="icon">
            <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/Industry-Water-icon.png</normaloff>:/icons/Industry-Water-icon.png</iconset>
+            <normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -1766,7 +1778,7 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="icon">
            <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/Bench-icon.png</normaloff>:/icons/Bench-icon.png</iconset>
+            <normaloff>:/icons/temperature-icon.png</normaloff>:/icons/temperature-icon.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -1798,7 +1810,39 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="icon">
            <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/Weather-Floods-icon.png</normaloff>:/icons/Weather-Floods-icon.png</iconset>
+            <normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="ModuleDock_economics">
+          <property name="minimumSize">
+           <size>
+            <width>138</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Economic Valuation</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../graphics/ubeats.qrc">
+            <normaloff>:/icons/dollar-icon.png</normaloff>:/icons/dollar-icon.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -2037,6 +2081,7 @@ p, li { white-space: pre-wrap; }
    <addaction name="actionOnline_Help"/>
    <addaction name="actionLike_on_Facebook"/>
    <addaction name="actionShare_on_Twiter"/>
+   <addaction name="actionaction_coffeebreak"/>
   </widget>
   <action name="actionNew_Project">
    <property name="icon">
@@ -2589,6 +2634,21 @@ p, li { white-space: pre-wrap; }
   <action name="actionDefine_IF">
    <property name="text">
     <string>Define Influence Functions</string>
+   </property>
+  </action>
+  <action name="actionaction_coffeebreak">
+   <property name="icon">
+    <iconset resource="../graphics/ubeats.qrc">
+     <normaloff>:/icons/iconfinder_addiction_Coffee_1_3122405.png</normaloff>:/icons/iconfinder_addiction_Coffee_1_3122405.png</iconset>
+   </property>
+   <property name="text">
+    <string>action_coffeebreak</string>
+   </property>
+   <property name="toolTip">
+    <string>Take a coffee break!</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+Shift+C</string>
    </property>
   </action>
  </widget>

@@ -48,6 +48,7 @@ from .modules import md_bgsplanning
 from .modules import md_watercycle
 from .modules import md_microclimate
 from .modules import md_floodassessment
+from .modules import md_economics
 from .ublibs import ubspatial
 from .ubexports import blocks as xblocks
 from .ubexports import flowpaths as xflowpaths
@@ -97,9 +98,8 @@ class UrbanBeatsScenario(threading.Thread):
         self.__qual_data = []   # a list of qualitative data to be used in the scenario
 
         # A dictionary of arrays, containing modules, depending on scenario type
-        self.__modules = {"SPATIAL" : [], "CLIMATE" : [], "URBDEV": [], "URBPLAN": [],
-                           "SOCIO" : [], "MAP": [], "REG": [], "INFRA": [], "PERF": [],
-                           "IMPACT": [], "DECISION": []}
+        self.__modules = {key:[] for key in ubglobals.MODULENAMES}
+        # self.__modules = {"SPATIAL" : [], "CLIMATE" : [], "URBDEV": [], "URBPLAN": [], ... }
 
         self.__dt_array = []
 
@@ -293,8 +293,11 @@ class UrbanBeatsScenario(threading.Thread):
                 self.__modules["MICRO"].append(
                     md_microclimate.Microclimate(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("FLOOD"):
-                self.__modules["DECISION"].append(
+                self.__modules["FLOOD"].append(
                     md_floodassessment.FloodAssessment(inputs[0], inputs[1], inputs[2], inputs[3], i))
+            if self.check_is_module_active("ECON"):
+                self.__modules["ECON"].append(
+                    md_economics.EconomicValuation(inputs[0], inputs[1], inputs[2], inputs[3], i))
 
             # CREATE ASSETS SUPERSTRUCTURE
             self.__assets[str(i)] = {}

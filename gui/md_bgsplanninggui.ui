@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1025</width>
-    <height>655</height>
+    <height>677</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -392,13 +392,6 @@
         </item>
        </widget>
       </item>
-      <item>
-       <widget class="Line" name="sidebar_line">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
@@ -454,7 +447,7 @@
       <bool>true</bool>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>9</number>
      </property>
      <widget class="QWidget" name="page">
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -498,8 +491,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>735</width>
-               <height>833</height>
+               <width>521</width>
+               <height>865</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5561,7 +5554,7 @@ p, li { white-space: pre-wrap; }
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_14">
           <item>
-           <widget class="QScrollArea" name="scrollArea_7">
+           <widget class="QScrollArea" name="bf_widget">
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
@@ -5579,15 +5572,60 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>534</width>
-               <height>437</height>
+               <width>723</width>
+               <height>769</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_53">
               <item>
-               <widget class="QLabel" name="label_2">
+               <widget class="QWidget" name="bf_info" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_14">
+                 <item>
+                  <widget class="QLabel" name="bf_img">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="pixmap">
+                    <pixmap resource="../graphics/ubeats.qrc">:/images/images/bgs_biofilters.jpg</pixmap>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QTextBrowser" name="bf_descr">
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>100</height>
+                    </size>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Plain</enum>
+                   </property>
+                   <property name="verticalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAlwaysOn</enum>
+                   </property>
+                   <property name="horizontalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAsNeeded</enum>
+                   </property>
+                   <property name="html">
+                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Also known as biofilter systems, this technology is highly versatile and capable being applied at multiple scales. With a small footprint, these systems are characterised as a trench containing filter media and plants, capable of removing key stormwater pollutants including nutrients and heavy metals among others.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="bf_scale_title">
                 <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Level(s) of Application&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Scale(s) and Types of Application&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
@@ -5607,31 +5645,37 @@ p, li { white-space: pre-wrap; }
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="QWidget" name="widget_19" native="true">
+                  <widget class="QWidget" name="bf_scales" native="true">
+                   <property name="minimumSize">
+                    <size>
+                     <width>150</width>
+                     <height>0</height>
+                    </size>
+                   </property>
                    <layout class="QGridLayout" name="gridLayout_16">
                     <item row="0" column="0">
-                     <widget class="QLabel" name="BFscales_lbl">
+                     <widget class="QLabel" name="bf_scales_lbl">
                       <property name="text">
                        <string>Available Scales</string>
                       </property>
                      </widget>
                     </item>
                     <item row="1" column="0">
-                     <widget class="QCheckBox" name="BFlot_check">
+                     <widget class="QCheckBox" name="bf_lot_check">
                       <property name="text">
                        <string>Lot</string>
                       </property>
                      </widget>
                     </item>
                     <item row="2" column="0">
-                     <widget class="QCheckBox" name="BFstreet_check">
+                     <widget class="QCheckBox" name="bf_street_check">
                       <property name="text">
                        <string>Street</string>
                       </property>
                      </widget>
                     </item>
                     <item row="3" column="0">
-                     <widget class="QCheckBox" name="BFprec_check">
+                     <widget class="QCheckBox" name="bf_catchment_check">
                       <property name="enabled">
                        <bool>true</bool>
                       </property>
@@ -5644,17 +5688,23 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item>
-                  <widget class="QWidget" name="widget_20" native="true">
+                  <widget class="QWidget" name="bf_objectives" native="true">
+                   <property name="minimumSize">
+                    <size>
+                     <width>150</width>
+                     <height>0</height>
+                    </size>
+                   </property>
                    <layout class="QGridLayout" name="gridLayout_17">
                     <item row="0" column="0">
-                     <widget class="QLabel" name="BFapps_lbl">
+                     <widget class="QLabel" name="bf_objectives_lbl">
                       <property name="text">
                        <string>Objectives</string>
                       </property>
                      </widget>
                     </item>
                     <item row="1" column="0">
-                     <widget class="QCheckBox" name="BFflow_check">
+                     <widget class="QCheckBox" name="bf_flow_check">
                       <property name="enabled">
                        <bool>true</bool>
                       </property>
@@ -5664,14 +5714,14 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item row="2" column="0">
-                     <widget class="QCheckBox" name="BFpollute_check">
+                     <widget class="QCheckBox" name="bf_pollute_check">
                       <property name="text">
                        <string>Pollution Control</string>
                       </property>
                      </widget>
                     </item>
                     <item row="3" column="0">
-                     <widget class="QCheckBox" name="BFrecycle_check">
+                     <widget class="QCheckBox" name="bf_recycle_check">
                       <property name="enabled">
                        <bool>true</bool>
                       </property>
@@ -5700,24 +5750,24 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="label_3">
+               <widget class="QLabel" name="bf_designspec">
                 <property name="text">
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;System Design Specifications&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="widget_22" native="true">
+               <widget class="QWidget" name="bf_design_widget" native="true">
                 <layout class="QGridLayout" name="gridLayout_18">
                  <item row="1" column="2">
-                  <widget class="QLabel" name="BFspecs_lbl_2">
+                  <widget class="QLabel" name="bf_specs_lbl2">
                    <property name="text">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;X&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QComboBox" name="BFspecs_EDD_combo">
+                  <widget class="QComboBox" name="bf_specs_EDD_combo">
                    <property name="minimumSize">
                     <size>
                      <width>150</width>
@@ -5768,7 +5818,7 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="1" column="3">
-                  <widget class="QComboBox" name="BFspecs_FD_combo">
+                  <widget class="QComboBox" name="bf_specs_FD">
                    <property name="minimumSize">
                     <size>
                      <width>150</width>
@@ -5814,7 +5864,7 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="0" column="0" colspan="4">
-                  <widget class="QLabel" name="BFspecs_lbl">
+                  <widget class="QLabel" name="bf_specs_lbl">
                    <property name="whatsThis">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Low Flow Bypass = &lt;/p&gt;&lt;p&gt;High Flow Bypass = &lt;/p&gt;&lt;p&gt;Saturated hydraulic conductivity = 180mm/hr&lt;/p&gt;&lt;p&gt;TN content of filter media = &lt;/p&gt;&lt;p&gt;Orthophosphate content of filter media =&lt;/p&gt;&lt;p&gt;Overflow Weir Width = &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Unlined Filter Media Perimeter adjusted to maintain aspect ratio&lt;/p&gt;&lt;p&gt;Unlined filter media base&lt;/p&gt;&lt;p&gt;Vegetated with effective nutrient removal plants&lt;/p&gt;&lt;p&gt;Underdrain Present&lt;/p&gt;&lt;p&gt;Submerged Zone with Carbon Present, depth = 0.45m&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
@@ -5827,34 +5877,34 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="widget_23" native="true">
+               <widget class="QWidget" name="bf_curves_widget" native="true">
                 <layout class="QGridLayout" name="gridLayout_19">
                  <item row="0" column="0">
-                  <widget class="QLabel" name="BFdesigncurve_lbl">
+                  <widget class="QLabel" name="bf_curves_lbl">
                    <property name="text">
                     <string>Conceptual Design:</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="2">
-                  <widget class="QLineEdit" name="BFdesigncurve_pathbox"/>
+                  <widget class="QLineEdit" name="bf_curves_pathbox"/>
                  </item>
                  <item row="0" column="1">
-                  <widget class="QRadioButton" name="radioButton">
+                  <widget class="QRadioButton" name="bf_ubcurvesdb_radio">
                    <property name="text">
                     <string>UrbanBEATS' Design Curve Database</string>
                    </property>
                   </widget>
                  </item>
                  <item row="0" column="2">
-                  <widget class="QRadioButton" name="radioButton_2">
+                  <widget class="QRadioButton" name="bf_curvescustom_radio">
                    <property name="text">
                     <string>Custom Design Curve</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="3">
-                  <widget class="QToolButton" name="BFdesigncurve_browse">
+                  <widget class="QToolButton" name="bf_curves_browse">
                    <property name="enabled">
                     <bool>true</bool>
                    </property>
@@ -5867,43 +5917,56 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="widget_24" native="true">
+               <widget class="QWidget" name="bf_design_widget2" native="true">
                 <layout class="QGridLayout" name="gridLayout_20">
+                 <item row="0" column="6">
+                  <spacer name="horizontalSpacer_50">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
                  <item row="0" column="0">
-                  <widget class="QLabel" name="BFminsize_lbl">
+                  <widget class="QLabel" name="bf_minsize_lbl">
                    <property name="text">
                     <string>Allowable Range of System Size [sqm]:</string>
                    </property>
                   </widget>
                  </item>
+                 <item row="0" column="5">
+                  <widget class="QLineEdit" name="bf_maxsize_box"/>
+                 </item>
+                 <item row="0" column="1">
+                  <spacer name="horizontalSpacer_51">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Fixed</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
                  <item row="1" column="0">
-                  <widget class="QLabel" name="BFexfil_lbl">
+                  <widget class="QLabel" name="bf_exfil_lbl">
                    <property name="text">
                     <string>Exfiltration Rate:</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="2" colspan="2">
-                  <widget class="QSpinBox" name="BFavglifespin">
-                   <property name="suffix">
-                    <string>yrs</string>
-                   </property>
-                   <property name="minimum">
-                    <number>5</number>
-                   </property>
-                   <property name="maximum">
-                    <number>100</number>
-                   </property>
-                   <property name="singleStep">
-                    <number>5</number>
-                   </property>
-                   <property name="value">
-                    <number>100</number>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="1" column="2" colspan="2">
-                  <widget class="QComboBox" name="BFexfil_combo">
+                  <widget class="QComboBox" name="bf_exfil_combo">
                    <property name="whatsThis">
                     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -5938,48 +6001,25 @@ p, li { white-space: pre-wrap; }
                    </item>
                   </widget>
                  </item>
-                 <item row="0" column="2">
-                  <widget class="QLabel" name="BFmaxsize_lbl_2">
-                   <property name="text">
-                    <string>min.</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="5">
-                  <widget class="QLineEdit" name="BFmaxsize_box"/>
-                 </item>
-                 <item row="0" column="6">
-                  <spacer name="horizontalSpacer_50">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="0" column="3">
-                  <widget class="QLineEdit" name="BFminsize_box"/>
-                 </item>
                  <item row="0" column="4">
-                  <widget class="QLabel" name="BFmaxsize_lbl">
+                  <widget class="QLabel" name="bf_maxsize_lbl">
                    <property name="text">
                     <string>max.</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="BFavglifelbl">
+                 <item row="0" column="2">
+                  <widget class="QLabel" name="bf_minsize_lbl_2">
                    <property name="text">
-                    <string>Average System Design Life Span</string>
+                    <string>min.</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="1">
-                  <spacer name="horizontalSpacer_51">
+                 <item row="0" column="3">
+                  <widget class="QLineEdit" name="bf_minsize_box"/>
+                 </item>
+                 <item row="1" column="1">
+                  <spacer name="horizontalSpacer_72">
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
                    </property>
@@ -5994,24 +6034,436 @@ p, li { white-space: pre-wrap; }
                    </property>
                   </spacer>
                  </item>
+                 <item row="1" column="4" colspan="3">
+                  <spacer name="horizontalSpacer_73">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
                 </layout>
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="label_4">
+               <widget class="QLabel" name="bf_lcc_title">
                 <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Costing Information&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Life Cycle &amp;amp; Costing Information&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="widget_25" native="true">
+               <widget class="QWidget" name="bf_lcc_widget" native="true">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>30</height>
+                  <height>0</height>
                  </size>
                 </property>
+                <layout class="QVBoxLayout" name="verticalLayout_58">
+                 <item>
+                  <widget class="QWidget" name="bf_lcc_time" native="true">
+                   <layout class="QGridLayout" name="gridLayout_36">
+                    <item row="1" column="0">
+                     <widget class="QLabel" name="bf_renewal_lbl">
+                      <property name="text">
+                       <string>Renewal Cycle:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="2">
+                     <spacer name="horizontalSpacer_22">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QSpinBox" name="bf_renewal_spin">
+                      <property name="suffix">
+                       <string> years</string>
+                      </property>
+                      <property name="minimum">
+                       <number>5</number>
+                      </property>
+                      <property name="maximum">
+                       <number>100</number>
+                      </property>
+                      <property name="singleStep">
+                       <number>5</number>
+                      </property>
+                      <property name="value">
+                       <number>100</number>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="2">
+                     <spacer name="horizontalSpacer_21">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QSpinBox" name="bf_avglife_spin">
+                      <property name="minimumSize">
+                       <size>
+                        <width>150</width>
+                        <height>0</height>
+                       </size>
+                      </property>
+                      <property name="suffix">
+                       <string> years</string>
+                      </property>
+                      <property name="minimum">
+                       <number>5</number>
+                      </property>
+                      <property name="maximum">
+                       <number>100</number>
+                      </property>
+                      <property name="singleStep">
+                       <number>5</number>
+                      </property>
+                      <property name="value">
+                       <number>100</number>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="bf_avglifelbl">
+                      <property name="text">
+                       <string>Average System Design Life Span:</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="widget_47" native="true">
+                   <layout class="QHBoxLayout" name="horizontalLayout_13">
+                    <item>
+                     <widget class="QLabel" name="bf_cost_lbl">
+                      <property name="text">
+                       <string>Cost Estimation Method:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QRadioButton" name="bf_cost_detailed_radio">
+                      <property name="text">
+                       <string>Detailed Breakdown</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QRadioButton" name="bf_cost_indicative_radio">
+                      <property name="text">
+                       <string>Indicative Cost</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="bf_unitcosts_title">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Unit Costs&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QStackedWidget" name="stackedWidget_2">
+                   <property name="currentIndex">
+                    <number>0</number>
+                   </property>
+                   <widget class="QWidget" name="page_22">
+                    <layout class="QGridLayout" name="gridLayout_7">
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="BFminsize_lbl_7">
+                       <property name="text">
+                        <string>Renewal Cost (RC) [$ per sqm]:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="1">
+                      <widget class="QLineEdit" name="lineEdit_4">
+                       <property name="maximumSize">
+                        <size>
+                         <width>100</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="bf_tac_lbl">
+                       <property name="text">
+                        <string>Total Acquisition Cost (TAC) [$ per sqm]:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="4" column="0">
+                      <widget class="QLabel" name="BFminsize_lbl_8">
+                       <property name="text">
+                        <string>Decommissioning Cost (DC) [$ per sqm]:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="2">
+                      <spacer name="horizontalSpacer_19">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item row="3" column="2">
+                      <spacer name="horizontalSpacer_20">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLineEdit" name="lineEdit_2">
+                       <property name="maximumSize">
+                        <size>
+                         <width>100</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLineEdit" name="bf_tac_line">
+                       <property name="maximumSize">
+                        <size>
+                         <width>100</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <spacer name="horizontalSpacer_17">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item row="4" column="2">
+                      <spacer name="horizontalSpacer_18">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="BFminsize_lbl_6">
+                       <property name="text">
+                        <string>Total Annual Maintenance Cost (TAM) [$ per sqm]:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QLineEdit" name="lineEdit_3">
+                       <property name="maximumSize">
+                        <size>
+                         <width>100</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                   <widget class="QWidget" name="page_23">
+                    <layout class="QGridLayout" name="gridLayout_37">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="BFminsize_lbl_11">
+                       <property name="text">
+                        <string>Total Acquisition Cost (TAC) [$ per sqm]:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="BFminsize_lbl_12">
+                       <property name="text">
+                        <string>Renewal Cost (RC) [% of TAC]:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="2">
+                      <spacer name="horizontalSpacer_69">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>311</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item row="1" column="2">
+                      <spacer name="horizontalSpacer_70">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>311</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+                       <property name="maximumSize">
+                        <size>
+                         <width>100</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="suffix">
+                        <string>%</string>
+                       </property>
+                       <property name="decimals">
+                        <number>1</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLineEdit" name="lineEdit_5">
+                       <property name="maximumSize">
+                        <size>
+                         <width>100</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="0">
+                      <widget class="QLabel" name="BFminsize_lbl_9">
+                       <property name="text">
+                        <string>Decommissioning Cost (DC) [% of TAC]:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="BFminsize_lbl_10">
+                       <property name="text">
+                        <string>Total Annual Maintenance Cost (TAM) [% of TAC]:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBox_3">
+                       <property name="maximumSize">
+                        <size>
+                         <width>100</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="suffix">
+                        <string>%</string>
+                       </property>
+                       <property name="decimals">
+                        <number>1</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="2">
+                      <spacer name="horizontalSpacer_67">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>311</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item row="3" column="2">
+                      <spacer name="horizontalSpacer_68">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>311</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QDoubleSpinBox" name="doubleSpinBox">
+                       <property name="maximumSize">
+                        <size>
+                         <width>100</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="suffix">
+                        <string>%</string>
+                       </property>
+                       <property name="decimals">
+                        <number>1</number>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
               </item>
              </layout>
@@ -6050,11 +6502,56 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>534</width>
-               <height>437</height>
+               <width>723</width>
+               <height>561</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_54">
+              <item>
+               <widget class="QWidget" name="bf_info_2" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_16">
+                 <item>
+                  <widget class="QLabel" name="bf_img_3">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="pixmap">
+                    <pixmap resource="../graphics/ubeats.qrc">:/images/images/bgs_wetlands.jpg</pixmap>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QTextBrowser" name="bf_descr_3">
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>100</height>
+                    </size>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Plain</enum>
+                   </property>
+                   <property name="verticalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAlwaysOn</enum>
+                   </property>
+                   <property name="horizontalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAsNeeded</enum>
+                   </property>
+                   <property name="html">
+                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Constructed wetlands&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
               <item>
                <widget class="QLabel" name="label_5">
                 <property name="text">
@@ -6480,23 +6977,10 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>83</width>
-               <height>30</height>
+               <width>723</width>
+               <height>469</height>
               </rect>
              </property>
-             <widget class="QLabel" name="label_20">
-              <property name="geometry">
-               <rect>
-                <x>40</x>
-                <y>30</y>
-                <width>281</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>Sorry, but technology is currently not selectable</string>
-              </property>
-             </widget>
             </widget>
            </widget>
           </item>
@@ -6532,8 +7016,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>83</width>
-               <height>30</height>
+               <width>723</width>
+               <height>469</height>
               </rect>
              </property>
              <widget class="QLabel" name="label_22">
@@ -6584,8 +7068,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>83</width>
-               <height>30</height>
+               <width>45</width>
+               <height>16</height>
               </rect>
              </property>
              <widget class="QLabel" name="label_23">
@@ -7503,8 +7987,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>83</width>
-               <height>30</height>
+               <width>45</width>
+               <height>16</height>
               </rect>
              </property>
              <widget class="QLabel" name="label_19">
@@ -7555,8 +8039,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>83</width>
-               <height>30</height>
+               <width>45</width>
+               <height>16</height>
               </rect>
              </property>
              <widget class="QLabel" name="RT_maxdepth_lbl">
@@ -7881,8 +8365,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>83</width>
-               <height>30</height>
+               <width>45</width>
+               <height>16</height>
               </rect>
              </property>
              <widget class="QLabel" name="label_21">
@@ -7933,8 +8417,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>83</width>
-               <height>30</height>
+               <width>45</width>
+               <height>16</height>
               </rect>
              </property>
              <widget class="QLabel" name="label_24">
@@ -7985,8 +8469,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>83</width>
-               <height>30</height>
+               <width>45</width>
+               <height>16</height>
               </rect>
              </property>
              <widget class="QCheckBox" name="SWlot_check">
@@ -8394,8 +8878,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>83</width>
-               <height>30</height>
+               <width>45</width>
+               <height>16</height>
               </rect>
              </property>
              <widget class="QLabel" name="mca_scoringmat_lbl_2">
@@ -8764,8 +9248,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>83</width>
-               <height>30</height>
+               <width>45</width>
+               <height>16</height>
               </rect>
              </property>
              <widget class="QLabel" name="strat_scoring_lbl">
@@ -9270,8 +9754,7 @@ p, li { white-space: pre-wrap; }
  </tabstops>
  <resources>
   <include location="../graphics/ubeats.qrc"/>
-  <include location="../graphics/ubeats.qrc"/>
-  <include location="../graphics/ubeats.qrc"/>
+  <include location="../../../../../../graphics/ubeats.qrc"/>
  </resources>
  <connections>
   <connection>

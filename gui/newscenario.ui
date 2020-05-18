@@ -700,7 +700,7 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/Industry-Water-icon.png</normaloff>:/icons/Industry-Water-icon.png</iconset>
+                   <normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</iconset>
                  </property>
                 </widget>
                </item>
@@ -711,7 +711,7 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/Weather-Floods-icon.png</normaloff>:/icons/Weather-Floods-icon.png</iconset>
+                   <normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</iconset>
                  </property>
                 </widget>
                </item>
@@ -722,7 +722,18 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/Bench-icon.png</normaloff>:/icons/Bench-icon.png</iconset>
+                   <normaloff>:/icons/temperature-icon.png</normaloff>:/icons/temperature-icon.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item row="10" column="1">
+                <widget class="QCheckBox" name="economics">
+                 <property name="text">
+                  <string>Economic Valuation</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../graphics/ubeats.qrc">
+                   <normaloff>:/icons/dollar-icon.png</normaloff>:/icons/dollar-icon.png</iconset>
                  </property>
                 </widget>
                </item>

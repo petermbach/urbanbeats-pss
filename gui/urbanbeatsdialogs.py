@@ -273,6 +273,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.watercycle.setChecked(self.scenario.check_is_module_active("CYCLE"))
         self.ui.microclimate.setChecked(self.scenario.check_is_module_active("MICRO"))
         self.ui.flood.setChecked(self.scenario.check_is_module_active("FLOOD"))
+        self.ui.economics.setChecked(self.scenario.check_is_module_active("ECON"))
 
         self.enable_disable_module_checkboxes()
         self.enable_disable_settings_tab()
@@ -488,7 +489,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         if else statements! Good luck working out the logic!
         """
         boxes = [self.ui.spatialmapping, self.ui.infrastructure, self.ui.bluegreen,
-                 self.ui.watercycle, self.ui.microclimate, self.ui.flood]
+                 self.ui.watercycle, self.ui.microclimate, self.ui.flood, self.ui.economics]
         # LOGIC CHAIN 1 - URBAN DEVELOPMENT
         # Spatial setup and climate setup are ALWAYS active
         try:
@@ -549,6 +550,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.watercycle.setChecked(0)
         self.ui.microclimate.setChecked(0)
         self.ui.flood.setChecked(0)
+        self.ui.economics.setChecked(0)
         self.enable_disable_module_checkboxes()
 
     def reset_interface(self):
@@ -709,6 +711,8 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
             self.scenario.set_module_active("MICRO")
         if self.ui.flood.isChecked():
             self.scenario.set_module_active("FLOOD")
+        if self.ui.economics.isChecked():
+            self.scenario.set_module_active("ECON")
 
         self.update_scenario_datasets()
 

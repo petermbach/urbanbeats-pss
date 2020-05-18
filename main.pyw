@@ -219,6 +219,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.ModuleDock_watercycle.clicked.connect(self.launch_watercycle_modulegui)
         self.ui.ModuleDock_microclimate.clicked.connect(self.launch_microclimate_modulegui)
         self.ui.ModuleDock_flood.clicked.connect(self.launch_flood_modulegui)
+        self.ui.ModuleDock_economics.clicked.connect(self.launch_economics_modulegui)
 
         # Control Panel Interface
         self.ui.SimDock_projectfolder.clicked.connect(self.open_project_folder)
@@ -417,7 +418,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.Narrative.clear()
         self.ui.DataSummary.setRowCount(0)
         self.ui.Simulation.clear()
-        self.enable_disable_module_icons([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        self.enable_disable_module_icons([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
     # MAIN INTERFACE FUNCTIONALITY
     def printc(self, textmessage):
@@ -1162,6 +1163,10 @@ class MainWindow(QtWidgets.QMainWindow):
         """"""
         pass
 
+    def launch_economics_modulegui(self):
+        """"""
+        pass
+
     # FUNCTIONS TO DO
     def checks_before_run(self):
         pass
@@ -1202,7 +1207,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.DataView_meta.setEnabled(0)
             self.ui.actionView_Full_Project_Log.setEnabled(0)
             self.ui.actionView_Project_Description.setEnabled(0)
-            self.enable_disable_module_icons([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+            self.enable_disable_module_icons([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
         elif condition == "new":
             self.ui.ModuleDock.setEnabled(1)
             self.ui.DataDock.setEnabled(1)
@@ -1213,7 +1218,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.DataView_meta.setEnabled(1)
             self.ui.actionView_Full_Project_Log.setEnabled(1)
             self.ui.actionView_Project_Description.setEnabled(1)
-            self.enable_disable_module_icons([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+            self.enable_disable_module_icons([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
         else:
             pass
 
@@ -1237,7 +1242,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.ModuleDock_watercycle.setEnabled(condition[8])
         self.ui.ModuleDock_microclimate.setEnabled(condition[9])
         self.ui.ModuleDock_flood.setEnabled(condition[10])
-
+        self.ui.ModuleDock_economics.setEnabled(condition[11])
 
 # --- OBSERVERS ---
 class ConsoleObserver(QtCore.QObject):
