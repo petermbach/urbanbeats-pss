@@ -285,7 +285,7 @@ class UrbanBeatsScenario(threading.Thread):
                     md_infrastructure.Infrastructure(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("BGS"):
                 self.__modules["BGS"].append(
-                    md_bgsplanning.BGSPlanning(inputs[0], inputs[1], inputs[2], inputs[3], i))
+                    md_bgsplanning.BlueGreenSystemsPlanning(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("CYCLE"):
                 self.__modules["CYCLE"].append(
                     md_watercycle.UrbanWaterCycle(inputs[0], inputs[1], inputs[2], inputs[3], i))

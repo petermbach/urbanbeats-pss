@@ -38,7 +38,7 @@ from .ubmodule import *
 
 
 # --- MODULE CLASS DEFINITION ---
-class BGSPlanning(UBModule):
+class BlueGreenSystemsPlanning(UBModule):
     """ BLUE-GREEN SYSTEMS MODULE
     Undertakes an impact assessment of the current scenario based on the
     various impacts labelled. The model performs various assessments and outputs
@@ -46,7 +46,7 @@ class BGSPlanning(UBModule):
     """
     def __init__(self, activesim, scenario, datalibrary, projectlog, simulationyear):
         UBModule.__init__(self)
-        self.name = "Impact Assessment Module"
+        self.name = "Blue-Green Systems Planning Module"
         self.simulationyear = simulationyear
 
         # CONNECTIONS WITH CORE SIMULATION

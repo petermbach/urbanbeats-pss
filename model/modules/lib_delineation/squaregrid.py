@@ -1,5 +1,5 @@
 r"""
-@file   md_delineation/squaregrid.py
+@file   lib_delineation/squaregrid.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 

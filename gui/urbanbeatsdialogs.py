@@ -494,7 +494,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         # Spatial setup and climate setup are ALWAYS active
         try:
             if kwargs["special"] == "ALL":
-                mbool = [0, 0, 0, 0, 0, 0]
+                mbool = [0, 0, 0, 0, 0, 0, 0]
                 [boxes[b].setEnabled(mbool[b]) for b in range(len(boxes))]
                 self.ui.urbanplanning.setEnabled(0)
                 self.ui.citydevelopment.setEnabled(0)
@@ -510,19 +510,19 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
 
         # Urban Planning Module Chain
         if self.ui.urbanplanning.isChecked():
-            mbool = [1, 1, 1, 1, 1, 1]
+            mbool = [1, 1, 1, 1, 1, 1, 1]
             [boxes[b].setEnabled(mbool[b]) for b in range(len(boxes))]  # list comprehension a.k.a. one-line for loop
         else:
-            mbool = [0, 0, 0, 0, 0, 0]
+            mbool = [0, 0, 0, 0, 0, 0, 0 ]
             [boxes[b].setEnabled(mbool[b]) for b in range(len(boxes))]
             return
 
         # Spatial Mapping Chain
         if self.ui.spatialmapping.isChecked():
-            mbool = [1, 1, 1, 1, 1, 1]
+            mbool = [1, 1, 1, 1, 1, 1, 1]
             [boxes[b].setEnabled(mbool[b]) for b in range(len(boxes))]
         else:
-            mbool = [1, 1, 1, 0, 0, 0]
+            mbool = [1, 1, 1, 0, 0, 0, 0]
             [boxes[b].setEnabled(mbool[b]) for b in range(len(boxes))]
             return
 

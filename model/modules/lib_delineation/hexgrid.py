@@ -1,5 +1,5 @@
 r"""
-@file   md_delineation/hexgrid.py
+@file   lib_delineation/hexgrid.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 
