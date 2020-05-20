@@ -162,6 +162,9 @@ VALUE_SCALE_METHODS = ["L", "Q", "C", "IQ", "IC", "S", "M"]
 
 PATCHFLOWMETHODS = ["MIN", "DIST", "MAX"]   # Patch flow path delineation methods
 
+WSUD_NAMES = ["BIOF", "WSUR", "EVAP", "INFS", "POND", "SWAL", "ROOF", "WALL", "PAVE", "TANK", "BASN", "FILT",
+              "DISC", "BANK"]       # Abbreviations for all BGS systems
+
 # --- ASSET IDENTIFIERS ---
 ASSET_IDENTIFIERS = {"Block": "The most basic building block of the city in UrbanBEATS, the square cell containing all"
                               "relevant geodata",

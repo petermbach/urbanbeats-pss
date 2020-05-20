@@ -1875,6 +1875,12 @@ p, li { white-space: pre-wrap; }
    </widget>
   </widget>
   <widget class="QDockWidget" name="SimDock">
+   <property name="minimumSize">
+    <size>
+     <width>146</width>
+     <height>120</height>
+    </size>
+   </property>
    <property name="windowTitle">
     <string>Control Panel</string>
    </property>
