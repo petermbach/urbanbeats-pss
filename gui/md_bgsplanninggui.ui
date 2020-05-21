@@ -109,14 +109,14 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="sidebar_title_2">
+       <widget class="QLabel" name="bgs_listwidget_title">
         <property name="text">
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;MODULE SETUP&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QListWidget" name="listWidget">
+       <widget class="QListWidget" name="bgs_listwidget">
         <property name="maximumSize">
          <size>
           <width>220</width>
@@ -242,7 +242,7 @@
         </item>
         <item>
          <property name="text">
-          <string>--- Preference Rules ---</string>
+          <string>--- Preferences &amp; Evaluation ---</string>
          </property>
          <property name="font">
           <font>
@@ -464,7 +464,7 @@
      <widget class="QWidget" name="page">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QGroupBox" name="groupBox">
+        <widget class="QGroupBox" name="objectives_box">
          <property name="title">
           <string/>
          </property>
@@ -485,14 +485,14 @@
            <number>9</number>
           </property>
           <item>
-           <widget class="QLabel" name="bf_scale_title_4">
+           <widget class="QLabel" name="objectives_title">
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Planning Objectives for Blue-Green Systems&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="Line" name="line_7">
+           <widget class="Line" name="objectives_line">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -538,7 +538,7 @@
                   <number>3</number>
                  </property>
                  <item>
-                  <widget class="QWidget" name="widget_25" native="true">
+                  <widget class="QWidget" name="runoff_titlewidget" native="true">
                    <layout class="QGridLayout" name="gridLayout_87">
                     <item row="0" column="4">
                      <spacer name="horizontalSpacer_166">
@@ -554,7 +554,7 @@
                      </spacer>
                     </item>
                     <item row="0" column="3">
-                     <widget class="QLabel" name="design_ration_lbl">
+                     <widget class="QLabel" name="runoff_title">
                       <property name="minimumSize">
                        <size>
                         <width>0</width>
@@ -580,7 +580,7 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item row="0" column="1">
-                     <widget class="QLabel" name="design_ration_lbl_23">
+                     <widget class="QLabel" name="runoff_img">
                       <property name="minimumSize">
                        <size>
                         <width>30</width>
@@ -608,7 +608,7 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item row="0" column="0">
-                     <widget class="QCheckBox" name="ration_runoff_check">
+                     <widget class="QCheckBox" name="runoff_check">
                       <property name="text">
                        <string/>
                       </property>
@@ -618,7 +618,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="design_ration_lbl_2">
+                  <widget class="QLabel" name="runoff_descr">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -647,22 +647,59 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item>
-                  <widget class="QWidget" name="widget_3" native="true">
+                  <widget class="QWidget" name="runoff_config" native="true">
                    <layout class="QGridLayout" name="gridLayout_6">
-                    <item row="1" column="4" colspan="2">
-                     <spacer name="horizontalSpacer_2">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
+                    <item row="3" column="1">
+                     <widget class="QLabel" name="runoff_target_img">
+                      <property name="minimumSize">
                        <size>
-                        <width>40</width>
+                        <width>20</width>
                         <height>20</height>
                        </size>
                       </property>
-                     </spacer>
+                      <property name="maximumSize">
+                       <size>
+                        <width>20</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="pixmap">
+                       <pixmap resource="../graphics/ubeats.qrc">:/icons/target-market-icon.png</pixmap>
+                      </property>
+                      <property name="scaledContents">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
                     </item>
-                    <item row="4" column="5">
+                    <item row="4" column="1">
+                     <widget class="QLabel" name="runoff_service_img">
+                      <property name="minimumSize">
+                       <size>
+                        <width>20</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>20</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="pixmap">
+                       <pixmap resource="../graphics/ubeats.qrc">:/icons/kisspng-computer-icons-royalty-free-service-icon-5b23ddccb7d7c8.767495101529077196753.png</pixmap>
+                      </property>
+                      <property name="scaledContents">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="4" column="6">
                      <spacer name="horizontalSpacer_15">
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
@@ -675,15 +712,40 @@ p, li { white-space: pre-wrap; }
                       </property>
                      </spacer>
                     </item>
+                    <item row="5" column="1">
+                     <widget class="QLabel" name="runoff_redundancy_img">
+                      <property name="minimumSize">
+                       <size>
+                        <width>20</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>20</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="pixmap">
+                       <pixmap resource="../graphics/ubeats.qrc">:/icons/triple-up-arrow.png</pixmap>
+                      </property>
+                      <property name="scaledContents">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
                     <item row="4" column="2">
-                     <widget class="QLabel" name="targets_runoff_lbl_4">
+                     <widget class="QLabel" name="runoff_service_lbl">
                       <property name="text">
                        <string>Service level</string>
                       </property>
                      </widget>
                     </item>
                     <item row="3" column="2">
-                     <widget class="QLabel" name="targets_runoff_lbl">
+                     <widget class="QLabel" name="runoff_target_lbl">
                       <property name="text">
                        <string>Runoff reduction target</string>
                       </property>
@@ -705,22 +767,15 @@ p, li { white-space: pre-wrap; }
                       </property>
                      </spacer>
                     </item>
-                    <item row="3" column="4">
-                     <widget class="QLabel" name="targets_runoff_lbl_6">
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(of total annual runoff volume)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="5" column="2">
-                     <widget class="QLabel" name="targets_runoff_lbl_11">
+                     <widget class="QLabel" name="runoff_redundancy_lbl">
                       <property name="text">
                        <string>Allowable Service Redundancy</string>
                       </property>
                      </widget>
                     </item>
                     <item row="1" column="3">
-                     <widget class="QComboBox" name="comboBox">
+                     <widget class="QComboBox" name="runoff_pri_combo">
                       <item>
                        <property name="text">
                         <string>High</string>
@@ -739,7 +794,7 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item row="3" column="3">
-                     <widget class="QDoubleSpinBox" name="targets_runoff_spin">
+                     <widget class="QDoubleSpinBox" name="runoff_target_spin">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -760,15 +815,8 @@ p, li { white-space: pre-wrap; }
                       </property>
                      </widget>
                     </item>
-                    <item row="4" column="4">
-                     <widget class="QLabel" name="targets_runoff_lbl_5">
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(% of catchment impervious area)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="4" column="3">
-                     <widget class="QDoubleSpinBox" name="service_swmQty">
+                     <widget class="QDoubleSpinBox" name="runoff_service_spin">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -805,7 +853,7 @@ p, li { white-space: pre-wrap; }
                       </property>
                      </spacer>
                     </item>
-                    <item row="3" column="5">
+                    <item row="3" column="6">
                      <spacer name="horizontalSpacer_6">
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
@@ -818,8 +866,33 @@ p, li { white-space: pre-wrap; }
                       </property>
                      </spacer>
                     </item>
+                    <item row="1" column="1">
+                     <widget class="QLabel" name="runoff_pri_img">
+                      <property name="minimumSize">
+                       <size>
+                        <width>20</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>20</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="pixmap">
+                       <pixmap resource="../graphics/ubeats.qrc">:/icons/Actions-view-pim-tasks-icon.png</pixmap>
+                      </property>
+                      <property name="scaledContents">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
                     <item row="5" column="3">
-                     <widget class="QDoubleSpinBox" name="service_swmQty_3">
+                     <widget class="QDoubleSpinBox" name="runoff_redundancy_spin">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -856,19 +929,6 @@ p, li { white-space: pre-wrap; }
                       </property>
                      </spacer>
                     </item>
-                    <item row="5" column="4" colspan="2">
-                     <spacer name="horizontalSpacer_25">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
                     <item row="1" column="2">
                      <widget class="QLabel" name="runoff_pri_lbl">
                       <property name="text">
@@ -877,7 +937,7 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item row="0" column="0" colspan="3">
-                     <widget class="QLabel" name="design_ration_lbl_7">
+                     <widget class="QLabel" name="runoff_config_title">
                       <property name="minimumSize">
                        <size>
                         <width>0</width>
@@ -918,103 +978,50 @@ p, li { white-space: pre-wrap; }
                       </property>
                      </spacer>
                     </item>
-                    <item row="1" column="1">
-                     <widget class="QLabel" name="runoff_pri_lbl_2">
-                      <property name="minimumSize">
-                       <size>
-                        <width>20</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>20</width>
-                        <height>20</height>
-                       </size>
-                      </property>
+                    <item row="4" column="4" colspan="2">
+                     <widget class="QLabel" name="runoff_service_descr">
                       <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="../graphics/ubeats.qrc">:/icons/Actions-view-pim-tasks-icon.png</pixmap>
-                      </property>
-                      <property name="scaledContents">
-                       <bool>true</bool>
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(% of catchment impervious area)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="3" column="1">
-                     <widget class="QLabel" name="runoff_pri_lbl_11">
-                      <property name="minimumSize">
-                       <size>
-                        <width>20</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>20</width>
-                        <height>20</height>
-                       </size>
-                      </property>
+                    <item row="3" column="4" colspan="2">
+                     <widget class="QLabel" name="runoff_target_descr">
                       <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="../graphics/ubeats.qrc">:/icons/target-market-icon.png</pixmap>
-                      </property>
-                      <property name="scaledContents">
-                       <bool>true</bool>
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(of total annual runoff volume)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="5" column="1">
-                     <widget class="QLabel" name="runoff_pri_lbl_22">
-                      <property name="minimumSize">
+                    <item row="1" column="4" colspan="3">
+                     <spacer name="horizontalSpacer_2">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
                        <size>
-                        <width>20</width>
+                        <width>40</width>
                         <height>20</height>
                        </size>
                       </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>20</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="../graphics/ubeats.qrc">:/icons/triple-up-arrow.png</pixmap>
-                      </property>
-                      <property name="scaledContents">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
+                     </spacer>
                     </item>
-                    <item row="4" column="1">
-                     <widget class="QLabel" name="runoff_pri_lbl_23">
-                      <property name="minimumSize">
+                    <item row="5" column="6">
+                     <spacer name="horizontalSpacer_25">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
                        <size>
-                        <width>20</width>
+                        <width>40</width>
                         <height>20</height>
                        </size>
                       </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>20</width>
-                        <height>20</height>
-                       </size>
-                      </property>
+                     </spacer>
+                    </item>
+                    <item row="5" column="4" colspan="2">
+                     <widget class="QCheckBox" name="runoff_redundancy_ignore">
                       <property name="text">
-                       <string/>
-                      </property>
-                      <property name="pixmap">
-                       <pixmap resource="../graphics/ubeats.qrc">:/icons/kisspng-computer-icons-royalty-free-service-icon-5b23ddccb7d7c8.767495101529077196753.png</pixmap>
-                      </property>
-                      <property name="scaledContents">
-                       <bool>true</bool>
+                       <string>Ignore overdesign</string>
                       </property>
                      </widget>
                     </item>
@@ -1025,24 +1032,24 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="Line" name="line">
+               <widget class="Line" name="objectives_line1">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="widget_26" native="true">
+               <widget class="QWidget" name="pollute_titlewidget" native="true">
                 <layout class="QGridLayout" name="gridLayout_124">
                  <item row="0" column="0">
-                  <widget class="QCheckBox" name="ration_runoff_check_2">
+                  <widget class="QCheckBox" name="pollute_check">
                    <property name="text">
                     <string/>
                    </property>
                   </widget>
                  </item>
                  <item row="0" column="1">
-                  <widget class="QLabel" name="design_ration_lbl_25">
+                  <widget class="QLabel" name="pollute_img">
                    <property name="minimumSize">
                     <size>
                      <width>30</width>
@@ -1070,7 +1077,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="0" column="2">
-                  <widget class="QLabel" name="design_ration_lbl_24">
+                  <widget class="QLabel" name="pollute_title">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -1127,7 +1134,7 @@ p, li { white-space: pre-wrap; }
                   <number>3</number>
                  </property>
                  <item>
-                  <widget class="QLabel" name="design_ration_lbl_4">
+                  <widget class="QLabel" name="pollute_descr">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -1159,10 +1166,10 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="widget_11" native="true">
+               <widget class="QWidget" name="pollute_config" native="true">
                 <layout class="QGridLayout" name="gridLayout_9">
                  <item row="5" column="3">
-                  <widget class="QDoubleSpinBox" name="targets_runoff_spin_9">
+                  <widget class="QDoubleSpinBox" name="pollute_tp_spin">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -1200,7 +1207,7 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="6" column="2">
-                  <widget class="QLabel" name="targets_runoff_lbl_17">
+                  <widget class="QLabel" name="pollute_service_lbl">
                    <property name="text">
                     <string>Service level</string>
                    </property>
@@ -1223,7 +1230,7 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="3" column="2">
-                  <widget class="QLabel" name="targets_runoff_lbl_15">
+                  <widget class="QLabel" name="pollute_tss_lbl">
                    <property name="text">
                     <string>TSS Load Reduction Target</string>
                    </property>
@@ -1246,14 +1253,14 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="3" column="4">
-                  <widget class="QLabel" name="targets_runoff_lbl_16">
+                  <widget class="QLabel" name="pollute_tss_descr">
                    <property name="text">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(of annual Total Suspended Solids load)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                   </widget>
                  </item>
                  <item row="5" column="2">
-                  <widget class="QLabel" name="targets_runoff_lbl_19">
+                  <widget class="QLabel" name="pollute_tp_lbl">
                    <property name="text">
                     <string>TP Load Reduction Target</string>
                    </property>
@@ -1273,14 +1280,14 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="4" column="2">
-                  <widget class="QLabel" name="targets_runoff_lbl_18">
+                  <widget class="QLabel" name="pollute_tn_lbl">
                    <property name="text">
                     <string>TN Load Reduction Target</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="3">
-                  <widget class="QComboBox" name="comboBox_5">
+                  <widget class="QComboBox" name="pollute_pri_combo">
                    <item>
                     <property name="text">
                      <string>High</string>
@@ -1299,7 +1306,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="7" column="2">
-                  <widget class="QLabel" name="targets_runoff_lbl_24">
+                  <widget class="QLabel" name="pollute_redundancy_lbl">
                    <property name="text">
                     <string>Allowable Service Redundancy</string>
                    </property>
@@ -1332,7 +1339,7 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="7" column="3">
-                  <widget class="QDoubleSpinBox" name="service_swmQty_6">
+                  <widget class="QDoubleSpinBox" name="pollute_redundancy_spin">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -1370,7 +1377,7 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="4" column="3">
-                  <widget class="QDoubleSpinBox" name="targets_runoff_spin_8">
+                  <widget class="QDoubleSpinBox" name="pollute_tn_spin">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -1392,14 +1399,14 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="6" column="4">
-                  <widget class="QLabel" name="targets_runoff_lbl_14">
+                  <widget class="QLabel" name="pollute_service_descr">
                    <property name="text">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(% of catchment impervious area)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                   </widget>
                  </item>
                  <item row="6" column="3">
-                  <widget class="QDoubleSpinBox" name="service_swmQty_4">
+                  <widget class="QDoubleSpinBox" name="pollute_service_spin">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -1421,7 +1428,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="3" column="3">
-                  <widget class="QDoubleSpinBox" name="targets_runoff_spin_7">
+                  <widget class="QDoubleSpinBox" name="pollute_tss_spin">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -1456,34 +1463,21 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="1" column="2">
-                  <widget class="QLabel" name="runoff_pri_lbl_5">
+                  <widget class="QLabel" name="pollute_pri_lbl">
                    <property name="text">
                     <string>Objective's Priority</string>
                    </property>
                   </widget>
                  </item>
                  <item row="4" column="4">
-                  <widget class="QLabel" name="targets_runoff_lbl_20">
+                  <widget class="QLabel" name="pollute_tn_descr">
                    <property name="text">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(% of catchment impervious area)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="7" column="4" colspan="2">
-                  <spacer name="horizontalSpacer_42">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
                  <item row="0" column="0" colspan="3">
-                  <widget class="QLabel" name="design_ration_lbl_9">
+                  <widget class="QLabel" name="pollute_config_title">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -1554,14 +1548,14 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="5" column="4">
-                  <widget class="QLabel" name="targets_runoff_lbl_21">
+                  <widget class="QLabel" name="pollute_tp_descr">
                    <property name="text">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(of annual Total Phosphorus load)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QLabel" name="runoff_pri_lbl_3">
+                  <widget class="QLabel" name="pollute_pri_img">
                    <property name="minimumSize">
                     <size>
                      <width>20</width>
@@ -1586,7 +1580,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="3" column="1">
-                  <widget class="QLabel" name="runoff_pri_lbl_12">
+                  <widget class="QLabel" name="pollute_tss_img">
                    <property name="minimumSize">
                     <size>
                      <width>20</width>
@@ -1611,7 +1605,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="4" column="1">
-                  <widget class="QLabel" name="runoff_pri_lbl_13">
+                  <widget class="QLabel" name="pollute_tn_img">
                    <property name="minimumSize">
                     <size>
                      <width>20</width>
@@ -1636,7 +1630,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="5" column="1">
-                  <widget class="QLabel" name="runoff_pri_lbl_14">
+                  <widget class="QLabel" name="pollute_tp_img">
                    <property name="minimumSize">
                     <size>
                      <width>20</width>
@@ -1661,7 +1655,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="7" column="1">
-                  <widget class="QLabel" name="runoff_pri_lbl_21">
+                  <widget class="QLabel" name="pollute_redundancy_img">
                    <property name="minimumSize">
                     <size>
                      <width>20</width>
@@ -1686,7 +1680,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="6" column="1">
-                  <widget class="QLabel" name="runoff_pri_lbl_24">
+                  <widget class="QLabel" name="pollute_service_img">
                    <property name="minimumSize">
                     <size>
                      <width>20</width>
@@ -1710,6 +1704,26 @@ p, li { white-space: pre-wrap; }
                    </property>
                   </widget>
                  </item>
+                 <item row="7" column="5">
+                  <spacer name="horizontalSpacer_42">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="7" column="4">
+                  <widget class="QCheckBox" name="pollute_redundancy_ignore">
+                   <property name="text">
+                    <string>Ignore overdesign</string>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
                </widget>
               </item>
@@ -1729,17 +1743,17 @@ p, li { white-space: pre-wrap; }
                   <number>3</number>
                  </property>
                  <item>
-                  <widget class="Line" name="line_2">
+                  <widget class="Line" name="objectives_line2">
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QWidget" name="widget_29" native="true">
+                  <widget class="QWidget" name="recycle_titlewidget" native="true">
                    <layout class="QGridLayout" name="gridLayout_125">
                     <item row="0" column="2">
-                     <widget class="QLabel" name="design_ration_lbl_26">
+                     <widget class="QLabel" name="recycle_title">
                       <property name="minimumSize">
                        <size>
                         <width>0</width>
@@ -1765,7 +1779,7 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item row="0" column="1">
-                     <widget class="QLabel" name="design_ration_lbl_27">
+                     <widget class="QLabel" name="recycle_img">
                       <property name="minimumSize">
                        <size>
                         <width>30</width>
@@ -1793,7 +1807,7 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item row="0" column="0">
-                     <widget class="QCheckBox" name="ration_runoff_check_3">
+                     <widget class="QCheckBox" name="recycle_check">
                       <property name="text">
                        <string/>
                       </property>
@@ -1816,7 +1830,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="design_ration_lbl_6">
+                  <widget class="QLabel" name="recycle_descr">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -1845,7 +1859,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item>
-                  <widget class="QWidget" name="widget_12" native="true">
+                  <widget class="QWidget" name="recycle_config" native="true">
                    <layout class="QGridLayout" name="gridLayout_10">
                     <item row="4" column="0">
                      <spacer name="horizontalSpacer_41">
@@ -1864,7 +1878,7 @@ p, li { white-space: pre-wrap; }
                      </spacer>
                     </item>
                     <item row="1" column="2">
-                     <widget class="QLabel" name="runoff_pri_lbl_6">
+                     <widget class="QLabel" name="recycle_pri_lbl">
                       <property name="text">
                        <string>Objective's Priority</string>
                       </property>
@@ -1884,7 +1898,7 @@ p, li { white-space: pre-wrap; }
                      </spacer>
                     </item>
                     <item row="4" column="2">
-                     <widget class="QLabel" name="targets_runoff_lbl_23">
+                     <widget class="QLabel" name="recycle_service_lbl">
                       <property name="text">
                        <string>Service level</string>
                       </property>
@@ -1920,7 +1934,7 @@ p, li { white-space: pre-wrap; }
                      </spacer>
                     </item>
                     <item row="1" column="3">
-                     <widget class="QComboBox" name="comboBox_6">
+                     <widget class="QComboBox" name="recycle_pri_combo">
                       <item>
                        <property name="text">
                         <string>High</string>
@@ -1939,7 +1953,7 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item row="4" column="3">
-                     <widget class="QDoubleSpinBox" name="service_swmQty_5">
+                     <widget class="QDoubleSpinBox" name="recycle_service_spin">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -1961,7 +1975,7 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item row="5" column="3">
-                     <widget class="QDoubleSpinBox" name="service_swmQty_7">
+                     <widget class="QDoubleSpinBox" name="recycle_redundancy_spin">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -1983,34 +1997,21 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item row="3" column="4">
-                     <widget class="QLabel" name="targets_runoff_lbl_29">
+                     <widget class="QLabel" name="recycle_target_descr">
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(of water demand met by alternative source)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="5" column="4" colspan="2">
-                     <spacer name="horizontalSpacer_46">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
                     <item row="3" column="2">
-                     <widget class="QLabel" name="targets_runoff_lbl_27">
+                     <widget class="QLabel" name="recycle_target_lbl">
                       <property name="text">
                        <string>Supply Volumetric Reliability</string>
                       </property>
                      </widget>
                     </item>
                     <item row="3" column="3">
-                     <widget class="QDoubleSpinBox" name="targets_runoff_spin_12">
+                     <widget class="QDoubleSpinBox" name="recycle_target_spin">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -2032,14 +2033,14 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item row="5" column="2">
-                     <widget class="QLabel" name="targets_runoff_lbl_25">
+                     <widget class="QLabel" name="recycle_redundancy_lbl">
                       <property name="text">
                        <string>Allowable Service Redundancy</string>
                       </property>
                      </widget>
                     </item>
                     <item row="0" column="0" colspan="3">
-                     <widget class="QLabel" name="design_ration_lbl_10">
+                     <widget class="QLabel" name="recycle_config_title">
                       <property name="minimumSize">
                        <size>
                         <width>0</width>
@@ -2065,7 +2066,7 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item row="4" column="4">
-                     <widget class="QLabel" name="targets_runoff_lbl_22">
+                     <widget class="QLabel" name="recycle_service_descr">
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(% of catchment impervious area)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
@@ -2117,7 +2118,7 @@ p, li { white-space: pre-wrap; }
                      </spacer>
                     </item>
                     <item row="1" column="1">
-                     <widget class="QLabel" name="runoff_pri_lbl_4">
+                     <widget class="QLabel" name="recycle_pri_img">
                       <property name="minimumSize">
                        <size>
                         <width>20</width>
@@ -2142,7 +2143,7 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item row="3" column="1">
-                     <widget class="QLabel" name="runoff_pri_lbl_15">
+                     <widget class="QLabel" name="recycle_target_img">
                       <property name="minimumSize">
                        <size>
                         <width>20</width>
@@ -2167,7 +2168,7 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item row="5" column="1">
-                     <widget class="QLabel" name="runoff_pri_lbl_20">
+                     <widget class="QLabel" name="recycle_redundancy_img">
                       <property name="minimumSize">
                        <size>
                         <width>20</width>
@@ -2192,7 +2193,7 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item row="4" column="1">
-                     <widget class="QLabel" name="runoff_pri_lbl_25">
+                     <widget class="QLabel" name="recycle_service_img">
                       <property name="minimumSize">
                        <size>
                         <width>20</width>
@@ -2216,6 +2217,26 @@ p, li { white-space: pre-wrap; }
                       </property>
                      </widget>
                     </item>
+                    <item row="5" column="5">
+                     <spacer name="horizontalSpacer_46">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item row="5" column="4">
+                     <widget class="QCheckBox" name="recycle_redundancy_ignore">
+                      <property name="text">
+                       <string>Ignore overdesign</string>
+                      </property>
+                     </widget>
+                    </item>
                    </layout>
                   </widget>
                  </item>
@@ -2223,24 +2244,24 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="Line" name="line_3">
+               <widget class="Line" name="objectives_line3">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="widget_31" native="true">
+               <widget class="QWidget" name="amenity_titlewidget" native="true">
                 <layout class="QGridLayout" name="gridLayout_126">
                  <item row="1" column="0">
-                  <widget class="QCheckBox" name="ration_runoff_check_4">
+                  <widget class="QCheckBox" name="amenity_check">
                    <property name="text">
                     <string/>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="2">
-                  <widget class="QLabel" name="design_ration_lbl_28">
+                  <widget class="QLabel" name="amenity_title">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -2266,7 +2287,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QLabel" name="design_ration_lbl_29">
+                  <widget class="QLabel" name="amenity_img">
                    <property name="minimumSize">
                     <size>
                      <width>30</width>
@@ -2310,7 +2331,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="design_ration_lbl_13">
+               <widget class="QLabel" name="amenity_descr">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -2339,7 +2360,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="widget_19" native="true">
+               <widget class="QWidget" name="amenity_config" native="true">
                 <layout class="QGridLayout" name="gridLayout_108">
                  <item row="4" column="0">
                   <spacer name="horizontalSpacer_224">
@@ -2357,21 +2378,8 @@ p, li { white-space: pre-wrap; }
                    </property>
                   </spacer>
                  </item>
-                 <item row="6" column="5" colspan="4">
-                  <spacer name="horizontalSpacer_229">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
                  <item row="3" column="5">
-                  <widget class="QComboBox" name="comboBox_3">
+                  <widget class="QComboBox" name="amenity_target_andor">
                    <property name="maximumSize">
                     <size>
                      <width>50</width>
@@ -2391,7 +2399,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="4" column="4">
-                  <widget class="QDoubleSpinBox" name="service_swmQty_8">
+                  <widget class="QDoubleSpinBox" name="amenity_service_spin">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -2442,7 +2450,7 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="3" column="4">
-                  <widget class="QDoubleSpinBox" name="targets_runoff_spin_13">
+                  <widget class="QDoubleSpinBox" name="amenity_green_spin">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -2464,14 +2472,14 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="1" column="2" colspan="2">
-                  <widget class="QLabel" name="runoff_pri_lbl_7">
+                  <widget class="QLabel" name="amenity_pri_lbl">
                    <property name="text">
                     <string>Objective's Priority</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="4">
-                  <widget class="QComboBox" name="comboBox_7">
+                  <widget class="QComboBox" name="amenity_pri_combo">
                    <item>
                     <property name="text">
                      <string>High</string>
@@ -2490,7 +2498,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="0" column="0" colspan="4">
-                  <widget class="QLabel" name="design_ration_lbl_12">
+                  <widget class="QLabel" name="amenity_config_title">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -2532,14 +2540,14 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="3" column="3">
-                  <widget class="QLabel" name="targets_runoff_lbl_35">
+                  <widget class="QLabel" name="amenity_green_lbl">
                    <property name="text">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Green Spaces:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                   </widget>
                  </item>
                  <item row="6" column="4">
-                  <widget class="QDoubleSpinBox" name="service_swmQty_9">
+                  <widget class="QDoubleSpinBox" name="amenity_redundancy_spin">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -2561,7 +2569,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="4" column="5" colspan="3">
-                  <widget class="QLabel" name="targets_runoff_lbl_26">
+                  <widget class="QLabel" name="amenity_service_descr">
                    <property name="text">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(% of population)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
@@ -2597,21 +2605,21 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="6" column="2" colspan="2">
-                  <widget class="QLabel" name="targets_runoff_lbl_32">
+                  <widget class="QLabel" name="amenity_redundancy_lbl">
                    <property name="text">
                     <string>Allowable Service Redundancy</string>
                    </property>
                   </widget>
                  </item>
                  <item row="4" column="2" colspan="2">
-                  <widget class="QLabel" name="targets_runoff_lbl_28">
+                  <widget class="QLabel" name="amenity_service_lbl">
                    <property name="text">
                     <string>Service Level</string>
                    </property>
                   </widget>
                  </item>
                  <item row="3" column="2">
-                  <widget class="QLabel" name="targets_runoff_lbl_31">
+                  <widget class="QLabel" name="amenity_target_lbl">
                    <property name="text">
                     <string>Proximity to nearest:</string>
                    </property>
@@ -2631,14 +2639,14 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="3" column="6">
-                  <widget class="QLabel" name="targets_runoff_lbl_36">
+                  <widget class="QLabel" name="amenity_blue_lbl">
                    <property name="text">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Blue Spaces:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                   </widget>
                  </item>
                  <item row="3" column="7">
-                  <widget class="QDoubleSpinBox" name="targets_runoff_spin_14">
+                  <widget class="QDoubleSpinBox" name="amenity_blue_spin">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -2660,7 +2668,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QLabel" name="runoff_pri_lbl_9">
+                  <widget class="QLabel" name="amenity_pri_img">
                    <property name="minimumSize">
                     <size>
                      <width>20</width>
@@ -2685,7 +2693,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="3" column="1">
-                  <widget class="QLabel" name="runoff_pri_lbl_16">
+                  <widget class="QLabel" name="amenity_target_img">
                    <property name="minimumSize">
                     <size>
                      <width>20</width>
@@ -2710,7 +2718,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="6" column="1">
-                  <widget class="QLabel" name="runoff_pri_lbl_18">
+                  <widget class="QLabel" name="amenity_redundancy_img">
                    <property name="minimumSize">
                     <size>
                      <width>20</width>
@@ -2735,7 +2743,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="4" column="1">
-                  <widget class="QLabel" name="runoff_pri_lbl_26">
+                  <widget class="QLabel" name="amenity_service_img">
                    <property name="minimumSize">
                     <size>
                      <width>20</width>
@@ -2759,28 +2767,51 @@ p, li { white-space: pre-wrap; }
                    </property>
                   </widget>
                  </item>
+                 <item row="6" column="8">
+                  <spacer name="horizontalSpacer_229">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="6" column="5" colspan="3">
+                  <widget class="QCheckBox" name="amenity_redundancy_ignore">
+                   <property name="text">
+                    <string>Ignore overdesign</string>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
                </widget>
               </item>
               <item>
-               <widget class="Line" name="line_4">
+               <widget class="Line" name="objectives_line4">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="widget_33" native="true">
+               <widget class="QWidget" name="ecology_titlewidget" native="true">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <layout class="QGridLayout" name="gridLayout_127">
                  <item row="1" column="0">
-                  <widget class="QCheckBox" name="ration_runoff_check_5">
+                  <widget class="QCheckBox" name="ecology_check">
                    <property name="text">
                     <string/>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="2">
-                  <widget class="QLabel" name="design_ration_lbl_30">
+                  <widget class="QLabel" name="ecology_title">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -2806,7 +2837,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QLabel" name="design_ration_lbl_31">
+                  <widget class="QLabel" name="ecology_img">
                    <property name="minimumSize">
                     <size>
                      <width>30</width>
@@ -2850,7 +2881,10 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="design_ration_lbl_22">
+               <widget class="QLabel" name="ecology_descr">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -2879,17 +2913,20 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="widget_20" native="true">
+               <widget class="QWidget" name="ecology_config" native="true">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <layout class="QGridLayout" name="gridLayout_128">
                  <item row="1" column="2" colspan="2">
-                  <widget class="QLabel" name="runoff_pri_lbl_8">
+                  <widget class="QLabel" name="ecology_pri_lbl">
                    <property name="text">
                     <string>Objective's Priority</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="4">
-                  <widget class="QComboBox" name="comboBox_8">
+                  <widget class="QComboBox" name="ecology_pri_combo">
                    <item>
                     <property name="text">
                      <string>High</string>
@@ -2908,7 +2945,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="5" column="4">
-                  <widget class="QDoubleSpinBox" name="service_swmQty_10">
+                  <widget class="QDoubleSpinBox" name="ecology_redundancy_spin">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -2943,14 +2980,14 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="5" column="2" colspan="2">
-                  <widget class="QLabel" name="targets_runoff_lbl_38">
+                  <widget class="QLabel" name="ecology_redundancy_lbl">
                    <property name="text">
                     <string>Allowable Service Redundancy</string>
                    </property>
                   </widget>
                  </item>
                  <item row="3" column="2" colspan="2">
-                  <widget class="QLabel" name="targets_runoff_lbl_30">
+                  <widget class="QLabel" name="ecology_target_lbl">
                    <property name="text">
                     <string>Coming soon...</string>
                    </property>
@@ -3002,7 +3039,7 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="0" column="0" colspan="6">
-                  <widget class="QLabel" name="design_ration_lbl_32">
+                  <widget class="QLabel" name="ecology_config_title">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -3027,19 +3064,6 @@ p, li { white-space: pre-wrap; }
                    </property>
                   </widget>
                  </item>
-                 <item row="5" column="5" colspan="2">
-                  <spacer name="horizontalSpacer_250">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
                  <item row="3" column="0">
                   <spacer name="horizontalSpacer_251">
                    <property name="orientation">
@@ -3057,7 +3081,7 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QLabel" name="runoff_pri_lbl_10">
+                  <widget class="QLabel" name="ecology_pri_img">
                    <property name="minimumSize">
                     <size>
                      <width>20</width>
@@ -3082,7 +3106,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="3" column="1">
-                  <widget class="QLabel" name="runoff_pri_lbl_17">
+                  <widget class="QLabel" name="ecology_target_img">
                    <property name="minimumSize">
                     <size>
                      <width>20</width>
@@ -3107,7 +3131,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="5" column="1">
-                  <widget class="QLabel" name="runoff_pri_lbl_19">
+                  <widget class="QLabel" name="ecology_redundancy_img">
                    <property name="minimumSize">
                     <size>
                      <width>20</width>
@@ -3128,6 +3152,26 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="scaledContents">
                     <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="6">
+                  <spacer name="horizontalSpacer_250">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="5" column="5">
+                  <widget class="QCheckBox" name="ecology_redundancy_ignore">
+                   <property name="text">
+                    <string>Ignore overdesign</string>
                    </property>
                   </widget>
                  </item>
@@ -3159,27 +3203,27 @@ p, li { white-space: pre-wrap; }
      <widget class="QWidget" name="page_21">
       <layout class="QVBoxLayout" name="verticalLayout_55">
        <item>
-        <widget class="QGroupBox" name="groupBox_4">
+        <widget class="QGroupBox" name="spatialplanning_box">
          <property name="title">
           <string/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_8">
           <item>
-           <widget class="QLabel" name="bf_scale_title_5">
+           <widget class="QLabel" name="spatialrules_title">
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Spatial Planning Rules&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="Line" name="line_8">
+           <widget class="Line" name="spatialrules_line">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QScrollArea" name="scrollArea_4">
+           <widget class="QScrollArea" name="spatialrules_scrollarea">
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
@@ -3203,7 +3247,7 @@ p, li { white-space: pre-wrap; }
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_47">
               <item>
-               <widget class="QLabel" name="design_ration_lbl_17">
+               <widget class="QLabel" name="landuses_title">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -3229,7 +3273,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="design_ration_lbl_16">
+               <widget class="QLabel" name="landuse_descr">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -3258,7 +3302,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="widget_15" native="true">
+               <widget class="QWidget" name="landuse_widget" native="true">
                 <layout class="QGridLayout" name="gridLayout_13">
                  <item row="1" column="0">
                   <widget class="QCheckBox" name="service_hdr">
@@ -3299,7 +3343,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="design_ration_lbl_19">
+               <widget class="QLabel" name="overlays_title">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -3319,13 +3363,13 @@ p, li { white-space: pre-wrap; }
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;LOCATION CHOICE&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;PLANNING RESTRICTIONS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="design_ration_lbl_18">
+               <widget class="QLabel" name="overlays_descr">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -3345,8 +3389,8 @@ p, li { white-space: pre-wrap; }
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Customize how the model determines location choice for different technologies.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Restrict the planning and design of Blue-Green Systems based on planning overlays &lt;/span&gt;&lt;span style=&quot; font-size:10pt; font-style:italic;&quot;&gt;(Note: Overlays Option in Spatial Analyst needs to be enabled)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -3354,17 +3398,24 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="widget_17" native="true">
+               <widget class="QCheckBox" name="overlays_check">
+                <property name="text">
+                 <string>Consider Planning Overlays as restrictions for Blue-Green Systems (Note: Overlays Option in Spatial Analyst needs to be enabled)</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="restrictions_widget" native="true">
                 <layout class="QGridLayout" name="gridLayout_14">
                  <item row="2" column="0">
-                  <widget class="QCheckBox" name="ref_limit_check">
+                  <widget class="QCheckBox" name="restrictions_ref">
                    <property name="text">
                     <string>Prohibit Nature-based Infrastructure in Reserves and Floodways</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QDoubleSpinBox" name="targets_runoff_spin_2">
+                  <widget class="QDoubleSpinBox" name="restrictions_pgusable_spin">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -3399,21 +3450,21 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="1" column="0">
-                  <widget class="QCheckBox" name="pg_usable_prohibit">
+                  <widget class="QCheckBox" name="restrictions_pgusable">
                    <property name="text">
                     <string>Set an allowable % of usable space in Parks and Garden Land Use</string>
                    </property>
                   </widget>
                  </item>
                  <item row="3" column="0">
-                  <widget class="QCheckBox" name="ref_limit_check_2">
+                  <widget class="QCheckBox" name="restrictions_for">
                    <property name="text">
                     <string>Prohibit use of Blue-Green Infrastructure in Forests</string>
                    </property>
                   </widget>
                  </item>
                  <item row="0" column="0">
-                  <widget class="QLabel" name="design_ration_lbl_20">
+                  <widget class="QLabel" name="restrictions_title">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -3433,8 +3484,8 @@ p, li { white-space: pre-wrap; }
                     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Land Use Restrictions&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic;&quot;&gt;Other Land Use Restrictions&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>
@@ -3445,10 +3496,10 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="widget_18" native="true">
+               <widget class="QWidget" name="suitability_widget" native="true">
                 <layout class="QGridLayout" name="gridLayout_15">
                  <item row="1" column="0">
-                  <widget class="QCheckBox" name="ref_limit_check_3">
+                  <widget class="QCheckBox" name="comingsoon">
                    <property name="enabled">
                     <bool>false</bool>
                    </property>
@@ -3458,7 +3509,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="0" column="0">
-                  <widget class="QLabel" name="design_ration_lbl_21">
+                  <widget class="QLabel" name="suitability_title">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -3514,7 +3565,7 @@ p, li { white-space: pre-wrap; }
      <widget class="QWidget" name="page_2">
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
-        <widget class="QGroupBox" name="groupBox_21">
+        <widget class="QGroupBox" name="existing_box">
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -3538,21 +3589,21 @@ p, li { white-space: pre-wrap; }
            <number>9</number>
           </property>
           <item>
-           <widget class="QLabel" name="bf_scale_title_6">
+           <widget class="QLabel" name="existing_title">
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Existing Blue-Green Assets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="Line" name="line_9">
+           <widget class="Line" name="existing_line">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QScrollArea" name="scrollArea_21">
+           <widget class="QScrollArea" name="existing_scrollarea">
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
@@ -4405,27 +4456,27 @@ p, li { white-space: pre-wrap; }
      <widget class="QWidget" name="page_3">
       <layout class="QVBoxLayout" name="verticalLayout_7">
        <item>
-        <widget class="QGroupBox" name="groupBox_2">
+        <widget class="QGroupBox" name="bgs_solutions_box">
          <property name="title">
           <string/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
-           <widget class="QLabel" name="bf_scale_title_7">
+           <widget class="QLabel" name="bgs_solutions_title">
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Select Blue-Green Solutions&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="Line" name="line_10">
+           <widget class="Line" name="bgs_solutions_line">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QScrollArea" name="scrollArea_2">
+           <widget class="QScrollArea" name="bgs_solutions_scrollarea">
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
@@ -4446,7 +4497,7 @@ p, li { white-space: pre-wrap; }
              </property>
              <layout class="QGridLayout" name="gridLayout_3">
               <item row="3" column="2">
-               <widget class="QCheckBox" name="checkBox_5">
+               <widget class="QCheckBox" name="roof">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
@@ -4456,21 +4507,21 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item row="17" column="2">
-               <widget class="QCheckBox" name="checkBox_10">
+               <widget class="QCheckBox" name="tank">
                 <property name="text">
                  <string>Rainwater / Stormwater Tanks</string>
                 </property>
                </widget>
               </item>
               <item row="8" column="1">
-               <widget class="QCheckBox" name="checkBox_7">
+               <widget class="QCheckBox" name="infs">
                 <property name="text">
                  <string>Infiltration Systems</string>
                 </property>
                </widget>
               </item>
               <item row="2" column="2">
-               <widget class="QLabel" name="label_8">
+               <widget class="QLabel" name="bgs_solutions_lbl3">
                 <property name="text">
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Retrofit Solutions&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
@@ -4506,14 +4557,14 @@ p, li { white-space: pre-wrap; }
                </spacer>
               </item>
               <item row="0" column="0" colspan="3">
-               <widget class="QLabel" name="label_6">
+               <widget class="QLabel" name="bgs_solutions_lbl">
                 <property name="text">
                  <string>Select which types of infrastructure / solutions you would like to include in the simulation:</string>
                 </property>
                </widget>
               </item>
               <item row="16" column="2">
-               <widget class="QCheckBox" name="checkBox_9">
+               <widget class="QCheckBox" name="pave">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
@@ -4552,7 +4603,7 @@ p, li { white-space: pre-wrap; }
                </spacer>
               </item>
               <item row="13" column="1">
-               <widget class="QCheckBox" name="checkBox_13">
+               <widget class="QCheckBox" name="swal">
                 <property name="text">
                  <string>Swales</string>
                 </property>
@@ -4575,7 +4626,7 @@ p, li { white-space: pre-wrap; }
                </spacer>
               </item>
               <item row="16" column="1">
-               <widget class="QCheckBox" name="checkBox_14">
+               <widget class="QCheckBox" name="disc">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
@@ -4585,35 +4636,35 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item row="15" column="1">
-               <widget class="QLabel" name="label_10">
+               <widget class="QLabel" name="bgs_solutions_lbl4">
                 <property name="text">
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Planning Solutions&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
               <item row="3" column="1">
-               <widget class="QCheckBox" name="checkBox_2">
+               <widget class="QCheckBox" name="biof">
                 <property name="text">
                  <string>Bioretention System / Raingardens</string>
                 </property>
                </widget>
               </item>
               <item row="2" column="1">
-               <widget class="QLabel" name="label_7">
+               <widget class="QLabel" name="bgs_solutions_lbl2">
                 <property name="text">
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Nature-based solutions&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
               <item row="4" column="1">
-               <widget class="QCheckBox" name="checkBox_3">
+               <widget class="QCheckBox" name="wsur">
                 <property name="text">
                  <string>Constructed Wetlands</string>
                 </property>
                </widget>
               </item>
               <item row="6" column="1">
-               <widget class="QCheckBox" name="checkBox_4">
+               <widget class="QCheckBox" name="evap">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
@@ -4623,7 +4674,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item row="18" column="2">
-               <widget class="QCheckBox" name="checkBox_11">
+               <widget class="QCheckBox" name="basn">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
@@ -4633,7 +4684,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item row="17" column="1">
-               <widget class="QCheckBox" name="checkBox_15">
+               <widget class="QCheckBox" name="bank">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
@@ -4643,7 +4694,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item row="4" column="2">
-               <widget class="QCheckBox" name="checkBox_6">
+               <widget class="QCheckBox" name="wall">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
@@ -4653,21 +4704,21 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item row="15" column="2">
-               <widget class="QLabel" name="label_9">
+               <widget class="QLabel" name="bgs_solutions_lbl5">
                 <property name="text">
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Green/Grey Infrastructure&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
               <item row="12" column="1">
-               <widget class="QCheckBox" name="checkBox_8">
+               <widget class="QCheckBox" name="pond">
                 <property name="text">
                  <string>Sediment Ponds and Basin Systems</string>
                 </property>
                </widget>
               </item>
               <item row="19" column="2">
-               <widget class="QCheckBox" name="checkBox_12">
+               <widget class="QCheckBox" name="filt">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
@@ -4688,27 +4739,27 @@ p, li { white-space: pre-wrap; }
      <widget class="QWidget" name="page_4">
       <layout class="QVBoxLayout" name="verticalLayout_9">
        <item>
-        <widget class="QGroupBox" name="groupBox_3">
+        <widget class="QGroupBox" name="simsettings_box">
          <property name="title">
           <string/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <item>
-           <widget class="QLabel" name="bf_scale_title_8">
+           <widget class="QLabel" name="simsettings_title">
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Simulation Settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="Line" name="line_11">
+           <widget class="Line" name="simsettings_line">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QScrollArea" name="scrollArea_3">
+           <widget class="QScrollArea" name="simsettings_scrollarea">
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
@@ -4732,7 +4783,7 @@ p, li { white-space: pre-wrap; }
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_46">
               <item>
-               <widget class="QLabel" name="design_ration_lbl_14">
+               <widget class="QLabel" name="planalgo_title">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -4758,7 +4809,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="design_ration_lbl_15">
+               <widget class="QLabel" name="planalgo_descr">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -4787,17 +4838,17 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="widget_16" native="true">
+               <widget class="QWidget" name="planalgo_widget" native="true">
                 <layout class="QHBoxLayout" name="horizontalLayout_3">
                  <item>
-                  <widget class="QLabel" name="label">
+                  <widget class="QLabel" name="planalgo_lbl">
                    <property name="text">
                     <string>Planning Algorithm: </string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QComboBox" name="comboBox_2">
+                  <widget class="QComboBox" name="planalgo_combo">
                    <property name="minimumSize">
                     <size>
                      <width>400</width>
@@ -4833,7 +4884,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="design_ration_lbl_11">
+               <widget class="QLabel" name="planscales_title">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -4859,7 +4910,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="design_ration_lbl_8">
+               <widget class="QLabel" name="planscales_descr">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -4888,7 +4939,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="widget_7" native="true">
+               <widget class="QWidget" name="planscales_lot" native="true">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -4897,7 +4948,7 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <layout class="QGridLayout" name="gridLayout_5">
                  <item row="0" column="2" colspan="3">
-                  <widget class="QSlider" name="strategy_lot_rigour">
+                  <widget class="QSlider" name="planscales_lot_rigour">
                    <property name="minimumSize">
                     <size>
                      <width>240</width>
@@ -4938,7 +4989,7 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="1" column="2">
-                  <widget class="QLabel" name="strategy_lot_lbl2">
+                  <widget class="QLabel" name="planscales_lot_low">
                    <property name="minimumSize">
                     <size>
                      <width>80</width>
@@ -4951,7 +5002,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="1" column="3">
-                  <widget class="QLabel" name="strategy_lot_lbl3">
+                  <widget class="QLabel" name="planscales_lot_med">
                    <property name="minimumSize">
                     <size>
                      <width>80</width>
@@ -4968,7 +5019,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="0" column="0" colspan="2">
-                  <widget class="QCheckBox" name="strategy_lot_check">
+                  <widget class="QCheckBox" name="planscales_lot_check">
                    <property name="minimumSize">
                     <size>
                      <width>200</width>
@@ -4981,7 +5032,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QLabel" name="strategy_lot_lbl">
+                  <widget class="QLabel" name="planscales_lot_rigour_lbl">
                    <property name="text">
                     <string>Level of Rigour:</string>
                    </property>
@@ -5001,7 +5052,7 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="1" column="4">
-                  <widget class="QLabel" name="strategy_lot_lbl4">
+                  <widget class="QLabel" name="planscales_lot_high">
                    <property name="minimumSize">
                     <size>
                      <width>80</width>
@@ -5014,7 +5065,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="0" column="6">
-                  <widget class="QLabel" name="strategy_lot_lbl5">
+                  <widget class="QLabel" name="planscales_lot_1210">
                    <property name="text">
                     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -5025,7 +5076,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="0" column="5">
-                  <widget class="QLineEdit" name="strategy_lot_rigour_box">
+                  <widget class="QLineEdit" name="planscales_lot_box">
                    <property name="maximumSize">
                     <size>
                      <width>31</width>
@@ -5038,7 +5089,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="widget_10" native="true">
+               <widget class="QWidget" name="planscales_street" native="true">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -5047,7 +5098,7 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <layout class="QGridLayout" name="gridLayout_8">
                  <item row="0" column="2" colspan="3">
-                  <widget class="QSlider" name="strategy_lot_rigour_2">
+                  <widget class="QSlider" name="planscales_street_rigour">
                    <property name="minimumSize">
                     <size>
                      <width>240</width>
@@ -5088,7 +5139,7 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="1" column="2">
-                  <widget class="QLabel" name="strategy_lot_lbl2_2">
+                  <widget class="QLabel" name="planscales_street_low">
                    <property name="minimumSize">
                     <size>
                      <width>80</width>
@@ -5101,7 +5152,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="1" column="3">
-                  <widget class="QLabel" name="strategy_lot_lbl3_2">
+                  <widget class="QLabel" name="planscales_street_med">
                    <property name="minimumSize">
                     <size>
                      <width>80</width>
@@ -5118,7 +5169,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="0" column="0" colspan="2">
-                  <widget class="QCheckBox" name="strategy_lot_check_2">
+                  <widget class="QCheckBox" name="planscales_street_check">
                    <property name="minimumSize">
                     <size>
                      <width>200</width>
@@ -5131,7 +5182,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QLabel" name="strategy_lot_lbl_2">
+                  <widget class="QLabel" name="planscales_street_rigour_lbl">
                    <property name="text">
                     <string>Level of Rigour:</string>
                    </property>
@@ -5151,7 +5202,7 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="1" column="4">
-                  <widget class="QLabel" name="strategy_lot_lbl4_2">
+                  <widget class="QLabel" name="planscales_street_high">
                    <property name="minimumSize">
                     <size>
                      <width>80</width>
@@ -5164,7 +5215,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="0" column="6">
-                  <widget class="QLabel" name="strategy_lot_lbl5_2">
+                  <widget class="QLabel" name="planscales_street_1210">
                    <property name="text">
                     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -5175,7 +5226,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="0" column="5">
-                  <widget class="QLineEdit" name="strategy_lot_rigour_box_2">
+                  <widget class="QLineEdit" name="planscales_street_box">
                    <property name="maximumSize">
                     <size>
                      <width>31</width>
@@ -5188,7 +5239,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="widget_13" native="true">
+               <widget class="QWidget" name="planscales_region" native="true">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -5197,7 +5248,7 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <layout class="QGridLayout" name="gridLayout_11">
                  <item row="0" column="2" colspan="3">
-                  <widget class="QSlider" name="strategy_lot_rigour_3">
+                  <widget class="QSlider" name="planscales_region_rigour">
                    <property name="minimumSize">
                     <size>
                      <width>240</width>
@@ -5238,7 +5289,7 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="1" column="2">
-                  <widget class="QLabel" name="strategy_lot_lbl2_3">
+                  <widget class="QLabel" name="planscales_region_low">
                    <property name="minimumSize">
                     <size>
                      <width>80</width>
@@ -5251,7 +5302,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="1" column="3">
-                  <widget class="QLabel" name="strategy_lot_lbl3_3">
+                  <widget class="QLabel" name="planscales_region_med">
                    <property name="minimumSize">
                     <size>
                      <width>80</width>
@@ -5268,7 +5319,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="0" column="0" colspan="2">
-                  <widget class="QCheckBox" name="strategy_lot_check_3">
+                  <widget class="QCheckBox" name="planscales_region_check">
                    <property name="minimumSize">
                     <size>
                      <width>200</width>
@@ -5281,7 +5332,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QLabel" name="strategy_lot_lbl_3">
+                  <widget class="QLabel" name="planscales_region_rigour_lbl">
                    <property name="text">
                     <string>Level of Rigour:</string>
                    </property>
@@ -5301,7 +5352,7 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="1" column="4">
-                  <widget class="QLabel" name="strategy_lot_lbl4_3">
+                  <widget class="QLabel" name="planscales_region_high">
                    <property name="minimumSize">
                     <size>
                      <width>80</width>
@@ -5314,7 +5365,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="0" column="6">
-                  <widget class="QLabel" name="strategy_lot_lbl5_3">
+                  <widget class="QLabel" name="planscales_region_1210">
                    <property name="text">
                     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -5325,7 +5376,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="0" column="5">
-                  <widget class="QLineEdit" name="strategy_lot_rigour_box_3">
+                  <widget class="QLineEdit" name="planscales_region_box">
                    <property name="maximumSize">
                     <size>
                      <width>31</width>
@@ -5338,7 +5389,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="widget_14" native="true">
+               <widget class="QWidget" name="scalepref_widget" native="true">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -5363,7 +5414,7 @@ p, li { white-space: pre-wrap; }
                   </spacer>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QLabel" name="strategy_scalepref_lbl1">
+                  <widget class="QLabel" name="scalepref_lbl1">
                    <property name="text">
                     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -5375,7 +5426,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="1" column="3">
-                  <widget class="QLabel" name="strategy_scalepref_lbl3">
+                  <widget class="QLabel" name="scalepref_lbl3">
                    <property name="text">
                     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -5400,7 +5451,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="1" column="2">
-                  <widget class="QSlider" name="strategy_scalepref_slider">
+                  <widget class="QSlider" name="scalepref_slider">
                    <property name="minimumSize">
                     <size>
                      <width>400</width>
@@ -5440,7 +5491,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="2" column="2">
-                  <widget class="QLabel" name="strategy_scalepref_lbl2">
+                  <widget class="QLabel" name="scalepref_lbl2">
                    <property name="text">
                     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -5491,7 +5542,7 @@ p, li { white-space: pre-wrap; }
      <widget class="QWidget" name="page_5">
       <layout class="QVBoxLayout" name="verticalLayout_11">
        <item>
-        <widget class="QGroupBox" name="groupBox_5">
+        <widget class="QGroupBox" name="lcc_box">
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -5500,21 +5551,21 @@ p, li { white-space: pre-wrap; }
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_10">
           <item>
-           <widget class="QLabel" name="bf_scale_title_9">
+           <widget class="QLabel" name="lcc_title">
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Life Cycle Costing Details&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="Line" name="line_12">
+           <widget class="Line" name="lcc_line">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QScrollArea" name="scrollArea_5">
+           <widget class="QScrollArea" name="lcc_scrollarea">
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
@@ -6238,7 +6289,7 @@ p, li { white-space: pre-wrap; }
      <widget class="QWidget" name="page_6">
       <layout class="QVBoxLayout" name="verticalLayout_13">
        <item>
-        <widget class="QGroupBox" name="groupBox_6">
+        <widget class="QGroupBox" name="implementation_box">
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -6247,21 +6298,21 @@ p, li { white-space: pre-wrap; }
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_12">
           <item>
-           <widget class="QLabel" name="bf_scale_title_10">
+           <widget class="QLabel" name="implementation_title">
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Implementation Rules&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="Line" name="line_13">
+           <widget class="Line" name="implementation_line">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QScrollArea" name="scrollArea_6">
+           <widget class="QScrollArea" name="implementation_scrollarea">
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
@@ -19943,27 +19994,27 @@ p, li { white-space: pre-wrap; }
      <widget class="QWidget" name="page_19">
       <layout class="QVBoxLayout" name="verticalLayout_39">
        <item>
-        <widget class="QGroupBox" name="groupBox_19">
+        <widget class="QGroupBox" name="scores_box">
          <property name="title">
           <string/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_38">
           <item>
-           <widget class="QLabel" name="bf_scale_title_32">
+           <widget class="QLabel" name="scores_title">
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Define Technology Preference Scores&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="Line" name="line_81">
+           <widget class="Line" name="scores_line">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QScrollArea" name="scrollArea_19">
+           <widget class="QScrollArea" name="scores_scrollarea">
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
@@ -20317,27 +20368,27 @@ p, li { white-space: pre-wrap; }
      <widget class="QWidget" name="page_20">
       <layout class="QVBoxLayout" name="verticalLayout_41">
        <item>
-        <widget class="QGroupBox" name="groupBox_20">
+        <widget class="QGroupBox" name="evaluation_box">
          <property name="title">
           <string/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_40">
           <item>
-           <widget class="QLabel" name="bf_scale_title_33">
+           <widget class="QLabel" name="evaluation_title">
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Evaluation, Ranking and Selection&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="Line" name="line_82">
+           <widget class="Line" name="evaluation_line">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QScrollArea" name="scrollArea_20">
+           <widget class="QScrollArea" name="evaluation_scrollarea">
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>

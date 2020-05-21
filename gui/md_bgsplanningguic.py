@@ -20,8 +20,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-__author__ = "Peter M. Bach, Natalia Duque"
-__copyright__ = "Copyright 2018. Peter M. Bach, Natalia Duque"
+__author__ = "Peter M. Bach"
+__copyright__ = "Copyright 2018. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 
