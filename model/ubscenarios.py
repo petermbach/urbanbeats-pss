@@ -41,7 +41,7 @@ from .modules import md_climatesetup
 from .modules import md_delinblocks
 from .modules import md_urbandev
 from .modules import md_urbplanbb
-from .modules import md_socioecon
+from .modules import md_urbandynamics
 from .modules import md_spatialmapping
 from .modules import md_infrastructure
 from .modules import md_bgsplanning
@@ -271,12 +271,12 @@ class UrbanBeatsScenario(threading.Thread):
             if self.check_is_module_active("URBDEV"):
                 self.__modules["URBDEV"].append(
                     md_urbandev.UrbanDevelopment(inputs[0], inputs[1], inputs[2], inputs[3], i))
+            if self.check_is_module_active("URBDYN"):
+                self.__modules["URBDYN"].append(
+                    md_urbandynamics.UrbanDynamics(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("URBPLAN"):
                 self.__modules["URBPLAN"].append(
                     md_urbplanbb.UrbanPlanning(inputs[0], inputs[1], inputs[2], inputs[3], i))
-            if self.check_is_module_active("SOCIO"):
-                self.__modules["SOCIO"].append(
-                    md_socioecon.SocioEconomics(inputs[0], inputs[1], inputs[2], inputs[3], i))
             if self.check_is_module_active("MAP"):
                 self.__modules["MAP"].append(
                     md_spatialmapping.SpatialMapping(inputs[0], inputs[1], inputs[2], inputs[3], i))
@@ -572,6 +572,7 @@ class UrbanBeatsScenario(threading.Thread):
         temp_directory = self.simulation.get_global_options("tempdir")
         self.update_observers("Current temp directory: "+str(temp_directory))
         self.update_runtime_progress(5)
+
         # --- STATIC STEP 1: Block delineation ---
         self.update_runtime_progress(10)
         delinblocks = self.get_module_object("SPATIAL", 0)
@@ -593,12 +594,8 @@ class UrbanBeatsScenario(threading.Thread):
             urbplanbb.attach(self.__observers)
             urbplanbb.run_module()
 
-        # --- STATIC STEP 4: Socio-Economic ---
+        # --- STATIC STEP 4: Spatial Analyst ---
         self.update_runtime_progress(40)
-        # Skip this for now...
-
-        # --- STATIC STEP 5: Spatial Mapping ---
-        self.update_runtime_progress(50)
         spatialmap = self.get_module_object("MAP", 0)
         map_attr = self.get_asset_with_name("MapAttributes")
         if spatialmap is None:
@@ -608,12 +605,8 @@ class UrbanBeatsScenario(threading.Thread):
             spatialmap.attach(self.__observers)
             spatialmap.run_module()
 
-        # --- STATIC STEP 6: Regulation ---
-        self.update_runtime_progress(60)
-        # Skip this for now...
-
-        # --- STATIC STEP 7: Infrastructure ---
-        self.update_runtime_progress(65)
+        # --- STATIC STEP 6: Infrastructure ---
+        self.update_runtime_progress(50)
         infrastructure = self.get_module_object("INFRA", 0)
         if infrastructure is None:
             map_attr.add_attribute("HasINFRA", 0)
@@ -622,20 +615,29 @@ class UrbanBeatsScenario(threading.Thread):
             infrastructure.attach(self.__observers)
             infrastructure.run_module()
 
-        # --- STATIC STEP 8: Performance ---
+
+        # --- STATIC STEP 7: Blue-Green Systems ---
+        self.update_runtime_progress(60)
+        # Skip this for now...
+
+        # --- STATIC STEP 8: Water Cycle ---
         self.update_runtime_progress(70)
         # Skip this for now...
 
-        # --- STATIC STEP 9: Impact ---
+        # --- STATIC STEP 9: Microclimate ---
+        self.update_runtime_progress(75)
+        # Skip this for now...
+
+        # --- STATIC STEP 10: Flood ---
         self.update_runtime_progress(80)
         # Skip this for now...
 
-        # --- STATIC STEP 10: Decision Analysis ---
-        self.update_runtime_progress(90)
+        # --- STATIC STEP 11: Economics ---
+        self.update_runtime_progress(85)
         # Skip this for now...
 
         # --- DATA EXPORT AND CLEANUP STEPS ---
-        self.update_runtime_progress(95)
+        self.update_runtime_progress(90)
 
         # Export the data maps available - first check scenario name
         if int(self.get_metadata("usescenarioname")):
@@ -651,30 +653,39 @@ class UrbanBeatsScenario(threading.Thread):
         xblocks.export_block_assets_to_gis_shapefile(self.get_assets_with_identifier("BlockID"), map_attributes,
                                                        self.projectpath+"/output", file_basename + "_Blocks",
                                                        int(epsg))
+        self.update_runtime_progress(91)
         xpatches.export_patches_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
                                                   self.projectpath+"/output", file_basename + "_Patches",
                                                   int(epsg))
+        self.update_runtime_progress(92)
         xpatches.export_patch_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("PatchFloID"), map_attributes,
                                                  self.projectpath + "/output", file_basename + "_PatchFlowpaths",
                                                  int(epsg))
+        self.update_runtime_progress(93)
         xflowpaths.export_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("FlowID"), map_attributes,
                                                     self.projectpath + "/output", file_basename + "_Flowpaths",
                                                     int(epsg), "Blocks")  # Export Block FlowPaths
+        self.update_runtime_progress(94)
         xopenspace.export_oslink_to_gis_shapefile(self.get_assets_with_identifier("OSLinkID"), map_attributes,
                                                     self.projectpath + "/output", file_basename + "_OSLink",
                                                     int(epsg))
+        self.update_runtime_progress(95)
         xopenspace.export_osnet_to_gis_shapefile(self.get_assets_with_identifier("OSNetID"), map_attributes,
                                                     self.projectpath + "/output", file_basename + "_OSNet",
                                                     int(epsg))
+        self.update_runtime_progress(96)
         xopenspace.export_patch_buffers_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
                                                     self.projectpath + "/output", file_basename + "_OSBuffer",
                                                     int(epsg))
+        self.update_runtime_progress(97)
         xinfra.export_sww_network_to_gis_shapefile(self.get_assets_with_identifier("SwwID"), map_attributes,
                                                     self.projectpath + "/output", file_basename + "_SwwNet",
                                                     int(epsg), "Blocks")
+        self.update_runtime_progress(98)
         xinfra.export_sww_links_to_gis_shapefile(self.get_assets_with_identifier("LinkID"), map_attributes,
                                                     self.projectpath + "/output", file_basename + "_Links",
                                                     int(epsg), "Blocks")
+        self.update_runtime_progress(99)
         xinfra.export_sww_mst_to_gis_shapefile(self.get_assets_with_identifier("MST"), map_attributes,
                                                  self.projectpath + "/output", file_basename + "_MST",
                                                  int(epsg), "Blocks")
@@ -691,7 +702,7 @@ class UrbanBeatsScenario(threading.Thread):
         self.update_observers("Current temp directory: " + str(temp_directory))
         self.update_runtime_progress(5)
 
-        # --- DYNAMIC STEP 1: Urban Development Module ---
+        # --- DYNAMIC STEP 1: Development Mapping Module ---
         self.update_runtime_progress(10)
         urbdev = self.get_module_object("URBDEV", 0)
         if urbdev is None:
@@ -700,20 +711,24 @@ class UrbanBeatsScenario(threading.Thread):
             urbdev.attach(self.__observers)
             urbdev.run_module()
 
-        # --- DYNAMIC STEP 2: Block delineation ---
+        # --- DYNAMIC STEP 2: Urban Dynamics Module ---
+        self.update_runtime_progress(20)
+        # Skip for now
 
-        # --- DYNAMIC STEP 3: Climate setup ---
-        # --- DYNAMIC STEP 4: Urban Planning ---
-        # --- DYNAMIC STEP 5: Socio-Economic ---
-        # --- DYNAMIC STEP 6: Spatial Maping ---
-        # --- DYNAMIC STEP 7: Regulation ---
-        # --- DYNAMIC STEP 8: Infrastructure ---
-        # --- DYNAMIC STEP 9: Performance ---
-        # --- DYNAMIC STEP 10: Impact ---
-        # --- DYNAMIC STEP 11: Decision Analysis ---
+        # --- DYNAMIC STEP 3: Block delineation ---
+
+        # --- DYNAMIC STEP 4: Climate setup ---
+        # --- DYNAMIC STEP 5: Urban Planning ---
+        # --- DYNAMIC STEP 6: Spatial Analyst ---
+        # --- DYNAMIC STEP 7: Infrastructure ---
+        # --- DYNAMIC STEP 8: Blue-Green Systems ---
+        # --- DYNAMIC STEP 9: Water Cycle ---
+        # --- DYNAMIC STEP 10: Microclimate ---
+        # --- DYNAMIC STEP 11: Flood ---
+        # --- DYNAMIC STEP 12: Economics ---
 
         # --- DATA EXPORT AND CLEANUP STEPS ---
-        self.update_runtime_progress(95)
+        self.update_runtime_progress(90)
 
         # Export the data maps available - first check scenario name
         if int(self.get_metadata("usescenarioname")):
@@ -728,6 +743,7 @@ class UrbanBeatsScenario(threading.Thread):
         xurbanmodel.export_urbandev_cells_to_gis_shapefile(self.get_assets_with_identifier("CellID"), map_attributes,
                                                            self.projectpath+"/output", file_basename + "_Cells",
                                                            int(epsg))
+        self.update_runtime_progress(95)
         # xregions.export_municipalities_to_gis_shapefile()
 
         self.update_runtime_progress(100)

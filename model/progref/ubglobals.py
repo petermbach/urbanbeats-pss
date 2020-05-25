@@ -99,7 +99,7 @@ ext: 'png'
 
 # --- MODEL SETTING ---
 DECISIONS = ["best", "random", "none"]
-MODULENAMES = ["SPATIAL", "CLIMATE", "URBDEV", "URBPLAN", "SOCIO", "MAP", "INFRA", "BGS",
+MODULENAMES = ["SPATIAL", "CLIMATE", "URBDEV", "URBDYN", "URBPLAN", "MAP", "INFRA", "BGS",
                "CYCLE", "MICRO", "FLOOD", "ECON"]
 
 # NATURAL ELEMENTS

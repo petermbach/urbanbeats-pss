@@ -63,7 +63,10 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../graphics/ubeats.qrc">:/images/images/md_urbandev.png</pixmap>
+         <pixmap resource="../graphics/ubeats.qrc">:/icons/Very-Basic-Design-icon.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -77,7 +80,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Urban Development</string>
+         <string>Urban Development Setup</string>
         </property>
        </widget>
       </item>
@@ -274,7 +277,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>600</width>
-               <height>902</height>
+               <height>893</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -4606,8 +4609,8 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>553</width>
-                   <height>1604</height>
+                   <width>449</width>
+                   <height>1607</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -7050,7 +7053,7 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>553</width>
+                   <width>472</width>
                    <height>990</height>
                   </rect>
                  </property>
@@ -7835,8 +7838,8 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>553</width>
-                   <height>697</height>
+                   <width>484</width>
+                   <height>691</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -9060,8 +9063,8 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>570</width>
-                   <height>383</height>
+                   <width>510</width>
+                   <height>391</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -9447,7 +9450,7 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>553</width>
+                   <width>482</width>
                    <height>975</height>
                   </rect>
                  </property>

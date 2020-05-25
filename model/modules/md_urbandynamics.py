@@ -38,15 +38,14 @@ from .ubmodule import *
 
 
 # --- MODULE CLASS DEFINITION ---
-class SocioEconomics(UBModule):
-    """ SOCIO-ECONOMICS MODULE
-    Undertakes an assessment of the socio-economics of the planning process
-    including financial information for the assessment and stakeholder definition
-    so that the model can better understand the main players involved.
+class UrbanDynamics(UBModule):
+    """ URBAN DYNAMICS MODULE
+    Models the evolution of the urban environment x-years into the future based on population, land use and other
+    dynamic factors. Considers land quality, availability, occupancy and other factors.
     """
     def __init__(self, activesim, scenario, datalibrary, projectlog, simulationyear):
         UBModule.__init__(self)
-        self.name = "Socio-Economics Module for UrbanBEATS"
+        self.name = "Urban Dynamics Module for UrbanBEATS"
         self.simulationyear = simulationyear
 
         # CONNECTIONS WITH CORE SIMULATION

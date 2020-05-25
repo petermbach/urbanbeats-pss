@@ -265,8 +265,8 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
 
         # MODULE CHECKBOXES
         self.ui.citydevelopment.setChecked(self.scenario.check_is_module_active("URBDEV"))
+        self.ui.urbandynamics.setChecked(self.scenario.check_is_module_active("URBDYN"))
         self.ui.urbanplanning.setChecked(self.scenario.check_is_module_active("URBPLAN"))
-        self.ui.socioeconomic.setChecked(self.scenario.check_is_module_active("SOCIO"))
         self.ui.spatialmapping.setChecked(self.scenario.check_is_module_active("MAP"))
         self.ui.infrastructure.setChecked(self.scenario.check_is_module_active("INFRA"))
         self.ui.bluegreen.setChecked(self.scenario.check_is_module_active("BGS"))
@@ -290,6 +290,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.static_radio.clicked.connect(self.enable_disable_settings_tab)
         self.ui.dynamic_radio.clicked.connect(self.enable_disable_settings_tab)
 
+        self.ui.citydevelopment.clicked.connect(self.enable_disable_module_checkboxes)
         self.ui.urbanplanning.clicked.connect(self.enable_disable_module_checkboxes)
         self.ui.spatialmapping.clicked.connect(self.enable_disable_module_checkboxes)
         self.ui.infrastructure.clicked.connect(self.enable_disable_module_checkboxes)
@@ -498,7 +499,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
                 [boxes[b].setEnabled(mbool[b]) for b in range(len(boxes))]
                 self.ui.urbanplanning.setEnabled(0)
                 self.ui.citydevelopment.setEnabled(0)
-                self.ui.socioeconomic.setEnabled(0)
+                self.ui.urbandynamics.setEnabled(0)
                 return
         except KeyError:
             pass
@@ -507,6 +508,11 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
             self.ui.citydevelopment.setEnabled(0)  # no urban development if static or benchmark mode
         else:
             self.ui.citydevelopment.setEnabled(1)
+
+        if self.ui.citydevelopment.isChecked() and self.ui.citydevelopment.isEnabled():
+            self.ui.urbandynamics.setEnabled(1)
+        else:
+            self.ui.urbandynamics.setEnabled(0)
 
         # Urban Planning Module Chain
         if self.ui.urbanplanning.isChecked():
@@ -543,7 +549,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         disable method."""
         self.ui.urbanplanning.setChecked(0)
         self.ui.citydevelopment.setChecked(0)
-        self.ui.socioeconomic.setChecked(0)
+        self.ui.urbandynamics.setChecked(0)
         self.ui.spatialmapping.setChecked(0)
         self.ui.bluegreen.setChecked(0)
         self.ui.infrastructure.setChecked(0)
@@ -695,10 +701,10 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         # Activate the modules
         if self.ui.citydevelopment.isChecked():
             self.scenario.set_module_active("URBDEV")
+        if self.ui.urbandynamics.isChecked():
+            self.scenario.set_module_active("URBDYN")
         if self.ui.urbanplanning.isChecked():
             self.scenario.set_module_active("URBPLAN")
-        if self.ui.socioeconomic.isChecked():
-            self.scenario.set_module_active("SOCIO")
         if self.ui.spatialmapping.isChecked():
             self.scenario.set_module_active("MAP")
         if self.ui.infrastructure.isChecked():

@@ -90,7 +90,10 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../graphics/ubeats.qrc">:/images/images/md_urbanplan.png</pixmap>
+         <pixmap resource="../graphics/ubeats.qrc">:/icons/GISLayers.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -104,7 +107,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Spatial Mapping</string>
+         <string>Spatial Analyst</string>
         </property>
        </widget>
       </item>
@@ -445,8 +448,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>600</width>
-               <height>855</height>
+               <width>399</width>
+               <height>907</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1869,8 +1872,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>600</width>
-               <height>380</height>
+               <width>428</width>
+               <height>306</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -2362,7 +2365,7 @@ Laundry = Household</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>535</width>
+                       <width>514</width>
                        <height>735</height>
                       </rect>
                      </property>
@@ -4141,7 +4144,7 @@ p, li { white-space: pre-wrap; }
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>535</width>
+                       <width>471</width>
                        <height>440</height>
                       </rect>
                      </property>
@@ -4999,8 +5002,8 @@ p, li { white-space: pre-wrap; }
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-277</y>
-                   <width>553</width>
+                   <y>0</y>
+                   <width>471</width>
                    <height>581</height>
                   </rect>
                  </property>
@@ -6390,8 +6393,8 @@ p, li { white-space: pre-wrap; }
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-24</y>
-                   <width>553</width>
+                   <y>0</y>
+                   <width>478</width>
                    <height>328</height>
                   </rect>
                  </property>
@@ -6961,7 +6964,7 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>553</width>
+                   <width>451</width>
                    <height>343</height>
                   </rect>
                  </property>
@@ -7379,8 +7382,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>600</width>
-               <height>380</height>
+               <width>241</width>
+               <height>49</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_23">
