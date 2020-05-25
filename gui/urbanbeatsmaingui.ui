@@ -35,16 +35,16 @@
         <number>3</number>
        </property>
        <property name="leftMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <property name="topMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <property name="bottomMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <item>
         <widget class="QLabel" name="ScenarioView_lbl">
@@ -107,6 +107,13 @@ p, li { white-space: pre-wrap; }
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_6">
            <item>
+            <widget class="QLabel" name="Simulation_title">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Simulation Details&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QWidget" name="simulation_radios" native="true">
              <layout class="QHBoxLayout" name="horizontalLayout_4">
               <item>
@@ -127,540 +134,68 @@ p, li { white-space: pre-wrap; }
             </widget>
            </item>
            <item>
-            <widget class="QTreeWidget" name="stepwise_tree">
-             <property name="allColumnsShowFocus">
-              <bool>false</bool>
+            <widget class="QPlainTextEdit" name="Simulation"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="cache_title">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Simulation Caching&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
-             <attribute name="headerCascadingSectionResizes">
-              <bool>false</bool>
-             </attribute>
-             <column>
-              <property name="text">
-               <string>Module</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>Status</string>
-              </property>
-             </column>
-             <item>
-              <property name="text">
-               <string>Spatial Setup</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-              <property name="text">
-               <string>No data</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Block Delineation / Data Transfer</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>No data</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Urban Context</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>No data</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Catchment / Flow Paths</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>No data</string>
-               </property>
-              </item>
-             </item>
-             <item>
-              <property name="text">
-               <string>Climate Setup</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-              <property name="text">
-               <string>Inactive</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Development Setup</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-              <property name="text">
-               <string>No data</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Cell Creation / Data Transfer</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>No data</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Suitability Mapping</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>No data</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Accessibility Mapping</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>No data</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Zoning Mapping</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>No data</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Neighbourhood Mapping</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>No data</string>
-               </property>
-              </item>
-             </item>
-             <item>
-              <property name="text">
-               <string>Urban Dynamics</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-              <property name="text">
-               <string>No data</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Urban Form</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-              <property name="text">
-               <string>No data</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Spatial Analyst</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-              <property name="text">
-               <string>No data</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Planning Overlays</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>No data</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Land Cover</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>No data</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Open Spaces</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>No data</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Water Demand</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>No data</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Pollution</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>No data</string>
-               </property>
-              </item>
-             </item>
-             <item>
-              <property name="text">
-               <string>Water Infrastructure</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-              <property name="text">
-               <string>Inactive</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Water Supply System</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>Inactive</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Wastewater System</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>Inactive</string>
-               </property>
-              </item>
-             </item>
-             <item>
-              <property name="text">
-               <string>Blue-Green Systems</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-              <property name="text">
-               <string>No data</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Existing Asset Registry</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>No data</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>System Optioneering</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>No data</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Layout Generation</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>No data</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Ranking &amp; Filtering</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>No data</string>
-               </property>
-              </item>
-             </item>
-             <item>
-              <property name="text">
-               <string>Urban Water Cycle</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-              <property name="text">
-               <string>Inactive</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Total Urban Water Balance</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>Inactive</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>EPANET Link</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>Inactive</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>SWMM Link</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>Inactive</string>
-               </property>
-              </item>
-             </item>
-             <item>
-              <property name="text">
-               <string>Urban Microclimate</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-              <property name="text">
-               <string>Inactive</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Land Surface Temperature</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>Inactive</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Air Temperature</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>Inactive</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Urban Thermal Comfort</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-               <property name="text">
-                <string>Inactive</string>
-               </property>
-              </item>
-             </item>
-             <item>
-              <property name="text">
-               <string>Flood Assessment</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-              <property name="text">
-               <string>Inactive</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Economic Valuation</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-              <property name="text">
-               <string>Inactive</string>
-              </property>
-             </item>
             </widget>
            </item>
            <item>
-            <widget class="QWidget" name="stepwise_options" native="true">
-             <layout class="QHBoxLayout" name="horizontalLayout_6">
-              <item>
-               <spacer name="horizontalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="step_wise_export">
-                <property name="minimumSize">
-                 <size>
-                  <width>150</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
+            <widget class="QLabel" name="cache_descr">
+             <property name="text">
+              <string>Save and restore previous simulation state</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="cache_options" native="true">
+             <layout class="QGridLayout" name="gridLayout_2">
+              <item row="3" column="0">
+               <widget class="QLabel" name="cache_options_lbl">
                 <property name="text">
-                 <string>Export Results</string>
+                 <string>Other Options:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="QPushButton" name="cache_current_browse">
+                <property name="text">
+                 <string>Change...</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="cache_current_lbl">
+                <property name="text">
+                 <string>Current simulation cache:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QPushButton" name="cache_current_button">
+                <property name="text">
+                 <string>Cache Current Simulation...</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="cache_current_line"/>
+              </item>
+              <item row="3" column="2">
+               <widget class="QPushButton" name="cache_current_clear">
+                <property name="text">
+                 <string>Clear</string>
                 </property>
                 <property name="icon">
                  <iconset resource="../graphics/ubeats.qrc">
-                  <normaloff>:/icons/export-icon.png</normaloff>:/icons/export-icon.png</iconset>
+                  <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
                 </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QWidget" name="cache_widget" native="true">
-             <layout class="QVBoxLayout" name="verticalLayout_16">
-              <item>
-               <widget class="QLabel" name="cache_title">
-                <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Simulation Caching&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="cache_descr">
-                <property name="text">
-                 <string>Save and restore previous simulation state</string>
-                </property>
-                <property name="wordWrap">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QWidget" name="cache_options" native="true">
-                <layout class="QGridLayout" name="gridLayout_2">
-                 <item row="3" column="0">
-                  <widget class="QLabel" name="cache_options_lbl">
-                   <property name="text">
-                    <string>Other Options:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="2">
-                  <widget class="QPushButton" name="cache_current_browse">
-                   <property name="text">
-                    <string>Change...</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="cache_current_lbl">
-                   <property name="text">
-                    <string>Current simulation cache:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="1">
-                  <widget class="QPushButton" name="cache_current_button">
-                   <property name="text">
-                    <string>Cache Current Simulation...</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="1">
-                  <widget class="QLineEdit" name="cache_current_line"/>
-                 </item>
-                 <item row="3" column="2">
-                  <widget class="QPushButton" name="cache_current_clear">
-                   <property name="text">
-                    <string>Clear</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="../graphics/ubeats.qrc">
-                     <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
                </widget>
               </item>
              </layout>
@@ -756,99 +291,1040 @@ p, li { white-space: pre-wrap; }
      </widget>
     </item>
     <item>
-     <widget class="QWidget" name="DataView_Widget" native="true">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+     <widget class="QStackedWidget" name="MainView_stack">
+      <property name="currentIndex">
+       <number>0</number>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
-       <property name="spacing">
-        <number>3</number>
-       </property>
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QLabel" name="DataView_lbl">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>13</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Data View&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
-         <property name="spacing">
-          <number>3</number>
-         </property>
-         <item>
-          <widget class="QPushButton" name="DataView_options">
+      <widget class="QWidget" name="page">
+       <layout class="QVBoxLayout" name="verticalLayout_15">
+        <item>
+         <widget class="QWidget" name="DataView_Widget" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <property name="spacing">
+            <number>3</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="DataView_lbl">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>13</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Project Context View&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_5">
+             <property name="spacing">
+              <number>3</number>
+             </property>
+             <item>
+              <widget class="QPushButton" name="DataView_options">
+               <property name="text">
+                <string>Options</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../graphics/ubeats.qrc">
+                 <normaloff>:/icons/Settings-icon.png</normaloff>:/icons/Settings-icon.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="DataView_meta">
+               <property name="text">
+                <string>Metadata</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../graphics/ubeats.qrc">
+                 <normaloff>:/icons/map-icon.png</normaloff>:/icons/map-icon.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="DataView_extent">
+               <property name="text">
+                <string>Extent</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../graphics/ubeats.qrc">
+                 <normaloff>:/icons/2216358 - globe locati.png</normaloff>:/icons/2216358 - globe locati.png</iconset>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QWebEngineView" name="DataView_web" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="page_2">
+       <layout class="QVBoxLayout" name="verticalLayout_17">
+        <item>
+         <widget class="QLabel" name="SimView_lbl">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>13</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Simulation Controller View&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <property name="spacing">
+           <number>3</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="SimView_options">
+            <property name="text">
+             <string>Options</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../graphics/ubeats.qrc">
+              <normaloff>:/icons/Settings-icon.png</normaloff>:/icons/Settings-icon.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="SimView_scenario">
+            <property name="text">
+             <string>Scenario Info</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../graphics/ubeats.qrc">
+              <normaloff>:/icons/Editing-edit-icon.png</normaloff>:/icons/Editing-edit-icon.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="SimView_export">
+            <property name="text">
+             <string>Export Results</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../graphics/ubeats.qrc">
+              <normaloff>:/icons/export-icon.png</normaloff>:/icons/export-icon.png</iconset>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTreeWidget" name="stepwise_tree">
+          <property name="allColumnsShowFocus">
+           <bool>false</bool>
+          </property>
+          <attribute name="headerCascadingSectionResizes">
+           <bool>false</bool>
+          </attribute>
+          <column>
            <property name="text">
-            <string>Options</string>
+            <string>Module</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Status</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Runtime</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Report(s)</string>
+           </property>
+          </column>
+          <item>
+           <property name="text">
+            <string>Spatial Setup</string>
+           </property>
+           <property name="checkState">
+            <enum>Unchecked</enum>
            </property>
            <property name="icon">
             <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/Settings-icon.png</normaloff>:/icons/Settings-icon.png</iconset>
+             <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
            </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="DataView_meta">
            <property name="text">
-            <string>Metadata</string>
+            <string>No data</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="flags">
+            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
+           </property>
+           <item>
+            <property name="text">
+             <string>Block Delineation / Data Transfer</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>No data</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Urban Context</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>No data</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Catchment / Flow Paths</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>No data</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Climate Setup</string>
+           </property>
+           <property name="checkState">
+            <enum>Unchecked</enum>
            </property>
            <property name="icon">
             <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/map-icon.png</normaloff>:/icons/map-icon.png</iconset>
+             <normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</iconset>
            </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="DataView_extent">
            <property name="text">
-            <string>Extent</string>
+            <string>Inactive</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Development Setup</string>
+           </property>
+           <property name="checkState">
+            <enum>Unchecked</enum>
            </property>
            <property name="icon">
             <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/2216358 - globe locati.png</normaloff>:/icons/2216358 - globe locati.png</iconset>
+             <normaloff>:/icons/Very-Basic-Design-icon.png</normaloff>:/icons/Very-Basic-Design-icon.png</iconset>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QWebEngineView" name="DataView_web" native="true">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-        </widget>
-       </item>
-      </layout>
+           <property name="text">
+            <string>No data</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="flags">
+            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
+           </property>
+           <item>
+            <property name="text">
+             <string>Cell Creation / Data Transfer</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>No data</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Suitability Mapping</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="icon">
+             <iconset resource="../graphics/ubeats.qrc">
+              <normaloff>:/icons/icons8-approval-96.png</normaloff>:/icons/icons8-approval-96.png</iconset>
+            </property>
+            <property name="text">
+             <string>No data</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Accessibility Mapping</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="icon">
+             <iconset resource="../graphics/ubeats.qrc">
+              <normaloff>:/icons/icons8-key-2-96.png</normaloff>:/icons/icons8-key-2-96.png</iconset>
+            </property>
+            <property name="text">
+             <string>No data</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Zoning Mapping</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="icon">
+             <iconset resource="../graphics/ubeats.qrc">
+              <normaloff>:/icons/icons8-ios-application-placeholder-96.png</normaloff>:/icons/icons8-ios-application-placeholder-96.png</iconset>
+            </property>
+            <property name="text">
+             <string>No data</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Neighbourhood Mapping</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="icon">
+             <iconset resource="../graphics/ubeats.qrc">
+              <normaloff>:/icons/Social-network-icon.png</normaloff>:/icons/Social-network-icon.png</iconset>
+            </property>
+            <property name="text">
+             <string>No data</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Urban Dynamics</string>
+           </property>
+           <property name="checkState">
+            <enum>Unchecked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="../graphics/ubeats.qrc">
+             <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
+           </property>
+           <property name="text">
+            <string>No data</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Urban Form</string>
+           </property>
+           <property name="checkState">
+            <enum>Unchecked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="../graphics/ubeats.qrc">
+             <normaloff>:/icons/City_icon_(Noun_Project).svg.png</normaloff>:/icons/City_icon_(Noun_Project).svg.png</iconset>
+           </property>
+           <property name="text">
+            <string>No data</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Spatial Analyst</string>
+           </property>
+           <property name="checkState">
+            <enum>Unchecked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="../graphics/ubeats.qrc">
+             <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
+           </property>
+           <property name="text">
+            <string>No data</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="flags">
+            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
+           </property>
+           <item>
+            <property name="text">
+             <string>Planning Overlays</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>No data</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Land Cover</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>No data</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Open Spaces</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>No data</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Water Demand</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>No data</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Pollution</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>No data</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Water Infrastructure</string>
+           </property>
+           <property name="checkState">
+            <enum>Unchecked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="../graphics/ubeats.qrc">
+             <normaloff>:/images/images/md_infrastructure.png</normaloff>:/images/images/md_infrastructure.png</iconset>
+           </property>
+           <property name="text">
+            <string>Inactive</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="flags">
+            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
+           </property>
+           <item>
+            <property name="text">
+             <string>Water Supply System</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>Inactive</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wastewater System</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="icon">
+             <iconset resource="../graphics/ubeats.qrc">
+              <normaloff>:/icons/Water-closet-icon.png</normaloff>:/icons/Water-closet-icon.png</iconset>
+            </property>
+            <property name="text">
+             <string>Inactive</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Blue-Green Systems</string>
+           </property>
+           <property name="checkState">
+            <enum>Unchecked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="../graphics/ubeats.qrc">
+             <normaloff>:/icons/Tree-icon.png</normaloff>:/icons/Tree-icon.png</iconset>
+           </property>
+           <property name="text">
+            <string>No data</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="flags">
+            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
+           </property>
+           <item>
+            <property name="text">
+             <string>Existing Asset Registry</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>No data</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>System Optioneering</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>No data</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Layout Generation</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>No data</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Ranking &amp; Filtering</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>No data</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Urban Water Cycle</string>
+           </property>
+           <property name="checkState">
+            <enum>Unchecked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="../graphics/ubeats.qrc">
+             <normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</iconset>
+           </property>
+           <property name="text">
+            <string>Inactive</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="flags">
+            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
+           </property>
+           <item>
+            <property name="text">
+             <string>Total Urban Water Balance</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>Inactive</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>EPANET Link</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>Inactive</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>SWMM Link</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>Inactive</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Urban Microclimate</string>
+           </property>
+           <property name="checkState">
+            <enum>Unchecked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="../graphics/ubeats.qrc">
+             <normaloff>:/icons/temperature-icon.png</normaloff>:/icons/temperature-icon.png</iconset>
+           </property>
+           <property name="text">
+            <string>Inactive</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="flags">
+            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
+           </property>
+           <item>
+            <property name="text">
+             <string>Land Surface Temperature</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>Inactive</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Air Temperature</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>Inactive</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Urban Thermal Comfort</string>
+            </property>
+            <property name="checkState">
+             <enum>Unchecked</enum>
+            </property>
+            <property name="text">
+             <string>Inactive</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Flood Assessment</string>
+           </property>
+           <property name="checkState">
+            <enum>Unchecked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="../graphics/ubeats.qrc">
+             <normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</iconset>
+           </property>
+           <property name="text">
+            <string>Inactive</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Economic Valuation</string>
+           </property>
+           <property name="checkState">
+            <enum>Unchecked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="../graphics/ubeats.qrc">
+             <normaloff>:/icons/dollar-icon.png</normaloff>:/icons/dollar-icon.png</iconset>
+           </property>
+           <property name="text">
+            <string>Inactive</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="page_3">
+       <layout class="QVBoxLayout" name="verticalLayout_18">
+        <item>
+         <widget class="QLabel" name="DataSummaryView_lbl">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>13</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Data Summary View&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <property name="spacing">
+           <number>3</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="DataSummaryView_options">
+            <property name="text">
+             <string>Options</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../graphics/ubeats.qrc">
+              <normaloff>:/icons/Settings-icon.png</normaloff>:/icons/Settings-icon.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="DataSummaryView_meta">
+            <property name="text">
+             <string>Metadata</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../graphics/ubeats.qrc">
+              <normaloff>:/icons/map-icon.png</normaloff>:/icons/map-icon.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="DataSummaryView_locate">
+            <property name="text">
+             <string>Locate File</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../graphics/ubeats.qrc">
+              <normaloff>:/icons/open-file-icon.png</normaloff>:/icons/open-file-icon.png</iconset>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QWebEngineView" name="DataView_web_2" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="page_4">
+       <layout class="QVBoxLayout" name="verticalLayout_16">
+        <item>
+         <widget class="QLabel" name="LogView_lbl">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>13</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Performance Log View&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPlainTextEdit" name="Log_Performance">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWebEngineView" name="LogView_web" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>400</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -1596,19 +2072,7 @@ p, li { white-space: pre-wrap; }
           </item>
           <item>
            <property name="text">
-            <string>City Development</string>
-           </property>
-           <property name="checkState">
-            <enum>Checked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Urban Planning</string>
+            <string>Development Setup</string>
            </property>
            <property name="checkState">
             <enum>Checked</enum>
@@ -1620,14 +2084,26 @@ p, li { white-space: pre-wrap; }
           </item>
           <item>
            <property name="text">
-            <string>Socio-Economic</string>
+            <string>Urban Dynamics</string>
            </property>
            <property name="checkState">
             <enum>Checked</enum>
            </property>
            <property name="icon">
             <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/community-users-icon.png</normaloff>:/icons/community-users-icon.png</iconset>
+             <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Urban Form</string>
+           </property>
+           <property name="checkState">
+            <enum>Checked</enum>
+           </property>
+           <property name="icon">
+            <iconset resource="../graphics/ubeats.qrc">
+             <normaloff>:/icons/City_icon_(Noun_Project).svg.png</normaloff>:/icons/City_icon_(Noun_Project).svg.png</iconset>
            </property>
           </item>
           <item>
@@ -1961,7 +2437,7 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="ModuleDock_socioeconomic">
+         <widget class="QPushButton" name="ModuleDock_urbandynamics">
           <property name="minimumSize">
            <size>
             <width>138</width>

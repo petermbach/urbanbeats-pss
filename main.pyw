@@ -202,6 +202,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.DataView_options.clicked.connect(lambda: self.show_options(2))
 
         # Scenario Narrative Interface
+        self.ui.ScenarioView_Widget.currentChanged.connect(self.adjust_context_stack)
         # clicking a data set on the table
 
         # Modules Interface
@@ -209,10 +210,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.ModuleDock_climatesetup.clicked.connect(self.launch_climatesetup_modulegui)
 
         self.ui.ModuleDock_urbandev.clicked.connect(self.launch_urbandev_modulegui)
-        self.ui.ModuleDock_urbanplan.clicked.connect(self.launch_urbanplan_modulegui)
-        self.ui.ModuleDock_socioeconomic.clicked.connect(self.launch_socioeconomic_modulegui)
+        self.ui.ModuleDock_urbandynamics.clicked.connect(self.launch_urbandynamics_modulegui)
 
+        self.ui.ModuleDock_urbanplan.clicked.connect(self.launch_urbanplan_modulegui)
         self.ui.ModuleDock_spatialmap.clicked.connect(self.launch_spatialmap_modulegui)
+
         self.ui.ModuleDock_infrastructure.clicked.connect(self.launch_infrastructure_modulegui)
         self.ui.ModuleDock_bluegreen.clicked.connect(self.launch_bluegreen_modulegui)
 
@@ -286,6 +288,20 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.ScenarioView_Widget.setCurrentIndex(2)
         else:
             pass
+
+    def adjust_context_stack(self):
+        """Changes the Main context view depending on the tab selected in the Scenario Information Tab Widget."""
+        if self.ui.ScenarioView_Widget.currentIndex() in [0, 1]:
+            self.ui.MainView_stack.setCurrentIndex(0)
+        elif self.ui.ScenarioView_Widget.currentIndex() == 2:
+            self.ui.MainView_stack.setCurrentIndex(1)
+        elif self.ui.ScenarioView_Widget.currentIndex() == 3:
+            self.ui.MainView_stack.setCurrentIndex(2)
+        elif self.ui.ScenarioView_Widget.currentIndex() == 4:
+            self.ui.MainView_stack.setCurrentIndex(3)
+        else:
+            pass
+
 
     def setup_scenario(self):
         """Called when the scenario setup dialog box has successfully closed. i.e. signal accepted()"""
@@ -417,7 +433,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.ui.Narrative.clear()
         self.ui.DataSummary.setRowCount(0)
-        self.ui.Simulation.clear()
         self.enable_disable_module_icons([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
     # MAIN INTERFACE FUNCTIONALITY
@@ -604,7 +619,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.ScenarioView_lbl.setText(scenviewtext)
             self.ui.Project.clear()
             self.ui.Narrative.clear()
-            self.ui.Simulation.clear()
             self.ui.Log.clear()
             self.ui.DataSummary.setRowCount(0)
         elif condition == "scenario":
@@ -1122,15 +1136,15 @@ class MainWindow(QtWidgets.QMainWindow):
                                           self.get_active_data_library(), self.get_active_project_log())
         urbandevgui.exec_()
 
+    def launch_urbandynamics_modulegui(self):
+        """Launches the urban dynamics setup module's user interface and fills in relevant parameters."""
+        pass    # [TO DO]
+
     def launch_urbanplan_modulegui(self):
         """Launches the urban planning modules user interface and pre-fills all relevant parameters."""
         urbplanbbgui = UrbplanbbGuiLaunch(self, self.get_active_simulation_object(),
                                           self.get_active_data_library(), self.get_active_project_log())
         urbplanbbgui.exec_()
-
-    def launch_socioeconomic_modulegui(self):
-        """Launches the socio-economic setup module's user interface and fills in relevant parameters."""
-        pass    # [TO DO]
 
     def launch_spatialmap_modulegui(self):
         """Launches the spatial mapping module's user interface and fills in relevant parameters."""
@@ -1234,8 +1248,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.ModuleDock_spatialsetup.setEnabled(condition[0])
         self.ui.ModuleDock_climatesetup.setEnabled(condition[1])
         self.ui.ModuleDock_urbandev.setEnabled(condition[2])
-        self.ui.ModuleDock_urbanplan.setEnabled(condition[3])
-        self.ui.ModuleDock_socioeconomic.setEnabled(condition[4])
+        self.ui.ModuleDock_urbandynamics.setEnabled(condition[3])
+        self.ui.ModuleDock_urbanplan.setEnabled(condition[4])
         self.ui.ModuleDock_spatialmap.setEnabled(condition[5])
         self.ui.ModuleDock_infrastructure.setEnabled(condition[6])
         self.ui.ModuleDock_bluegreen.setEnabled(condition[7])
