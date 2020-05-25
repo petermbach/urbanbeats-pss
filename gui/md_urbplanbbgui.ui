@@ -74,7 +74,10 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../graphics/ubeats.qrc">:/images/images/md_urbanplan.png</pixmap>
+         <pixmap resource="../graphics/ubeats.qrc">:/icons/City_icon_(Noun_Project).svg.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -88,7 +91,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Urban Planning</string>
+         <string>Urban Form Abstraction</string>
         </property>
        </widget>
       </item>
@@ -1035,8 +1038,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>558</width>
-               <height>1097</height>
+               <width>443</width>
+               <height>1110</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -2426,7 +2429,7 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>558</width>
+               <width>467</width>
                <height>1381</height>
               </rect>
              </property>
@@ -4250,7 +4253,7 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>558</width>
+               <width>506</width>
                <height>1185</height>
               </rect>
              </property>
@@ -5795,7 +5798,7 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>558</width>
+               <width>518</width>
                <height>597</height>
               </rect>
              </property>
@@ -6433,8 +6436,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>558</width>
-               <height>471</height>
+               <width>385</width>
+               <height>484</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_17">

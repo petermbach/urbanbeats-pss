@@ -347,6 +347,12 @@ p, li { white-space: pre-wrap; }
              </property>
              <item>
               <widget class="QPushButton" name="DataView_options">
+               <property name="minimumSize">
+                <size>
+                 <width>120</width>
+                 <height>0</height>
+                </size>
+               </property>
                <property name="text">
                 <string>Options</string>
                </property>
@@ -358,6 +364,12 @@ p, li { white-space: pre-wrap; }
              </item>
              <item>
               <widget class="QPushButton" name="DataView_meta">
+               <property name="minimumSize">
+                <size>
+                 <width>120</width>
+                 <height>0</height>
+                </size>
+               </property>
                <property name="text">
                 <string>Metadata</string>
                </property>
@@ -369,6 +381,12 @@ p, li { white-space: pre-wrap; }
              </item>
              <item>
               <widget class="QPushButton" name="DataView_extent">
+               <property name="minimumSize">
+                <size>
+                 <width>120</width>
+                 <height>0</height>
+                </size>
+               </property>
                <property name="text">
                 <string>Extent</string>
                </property>
@@ -377,6 +395,19 @@ p, li { white-space: pre-wrap; }
                  <normaloff>:/icons/2216358 - globe locati.png</normaloff>:/icons/2216358 - globe locati.png</iconset>
                </property>
               </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
              </item>
             </layout>
            </item>
@@ -423,6 +454,12 @@ p, li { white-space: pre-wrap; }
           </property>
           <item>
            <widget class="QPushButton" name="SimView_options">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Options</string>
             </property>
@@ -434,6 +471,12 @@ p, li { white-space: pre-wrap; }
           </item>
           <item>
            <widget class="QPushButton" name="SimView_scenario">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Scenario Info</string>
             </property>
@@ -445,6 +488,12 @@ p, li { white-space: pre-wrap; }
           </item>
           <item>
            <widget class="QPushButton" name="SimView_export">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Export Results</string>
             </property>
@@ -453,6 +502,19 @@ p, li { white-space: pre-wrap; }
               <normaloff>:/icons/export-icon.png</normaloff>:/icons/export-icon.png</iconset>
             </property>
            </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </item>
@@ -1234,6 +1296,12 @@ p, li { white-space: pre-wrap; }
           </property>
           <item>
            <widget class="QPushButton" name="DataSummaryView_options">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Options</string>
             </property>
@@ -1245,6 +1313,12 @@ p, li { white-space: pre-wrap; }
           </item>
           <item>
            <widget class="QPushButton" name="DataSummaryView_meta">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Metadata</string>
             </property>
@@ -1256,6 +1330,12 @@ p, li { white-space: pre-wrap; }
           </item>
           <item>
            <widget class="QPushButton" name="DataSummaryView_locate">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Locate File</string>
             </property>
@@ -1264,6 +1344,19 @@ p, li { white-space: pre-wrap; }
               <normaloff>:/icons/open-file-icon.png</normaloff>:/icons/open-file-icon.png</iconset>
             </property>
            </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </item>
