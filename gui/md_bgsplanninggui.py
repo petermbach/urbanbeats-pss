@@ -8903,4 +8903,4 @@ class Ui_BlueGreenDialog(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Method for selecting final strategies:</p></body></html>"))
         self.strat_select_combo.setItemText(0, _translate("BlueGreenDialog", "Top Scoring Strategies"))
         self.strat_select_combo.setItemText(1, _translate("BlueGreenDialog", "Random (weighted probabilities)"))
-import ubeats_rc
+from . import ubeats_rc

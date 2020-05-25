@@ -556,21 +556,39 @@
                <property name="spacing">
                 <number>6</number>
                </property>
-               <item row="3" column="0">
-                <widget class="QCheckBox" name="citydevelopment">
-                 <property name="text">
-                  <string>City Development</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
-                 </property>
-                </widget>
-               </item>
                <item row="2" column="0">
                 <widget class="QLabel" name="descr_lbl3">
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Urban Planning&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Urban Development&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="11" column="0">
+                <widget class="QCheckBox" name="watercycle">
+                 <property name="text">
+                  <string>Water Cycle</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../graphics/ubeats.qrc">
+                   <normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QLabel" name="descr_lbl4">
+                 <property name="text">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Environment Mapping&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QCheckBox" name="citydevelopment">
+                 <property name="text">
+                  <string>Development Setup</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../graphics/ubeats.qrc">
+                   <normaloff>:/icons/Very-Basic-Design-icon.png</normaloff>:/icons/Very-Basic-Design-icon.png</iconset>
                  </property>
                 </widget>
                </item>
@@ -594,10 +612,76 @@
                  </property>
                 </widget>
                </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="descr_lbl2">
+               <item row="12" column="0">
+                <widget class="QCheckBox" name="flood">
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Data Processing&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>Flood Assessment</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../graphics/ubeats.qrc">
+                   <normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
+                <widget class="QCheckBox" name="spatialmapping">
+                 <property name="text">
+                  <string>Spatial Analyst</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../graphics/ubeats.qrc">
+                   <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="1">
+                <widget class="QCheckBox" name="bluegreen">
+                 <property name="text">
+                  <string>Blue-Green Systems</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../graphics/ubeats.qrc">
+                   <normaloff>:/icons/Tree-icon.png</normaloff>:/icons/Tree-icon.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item row="10" column="0">
+                <widget class="QLabel" name="descr_lbl5">
+                 <property name="text">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Evaluation&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QCheckBox" name="urbanplanning">
+                 <property name="text">
+                  <string>Urban Form</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../graphics/ubeats.qrc">
+                   <normaloff>:/icons/City_icon_(Noun_Project).svg.png</normaloff>:/icons/City_icon_(Noun_Project).svg.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item row="12" column="1">
+                <widget class="QCheckBox" name="economics">
+                 <property name="text">
+                  <string>Economic Valuation</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../graphics/ubeats.qrc">
+                   <normaloff>:/icons/dollar-icon.png</normaloff>:/icons/dollar-icon.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="0">
+                <widget class="QCheckBox" name="infrastructure">
+                 <property name="text">
+                  <string>Water Infrastructure</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../graphics/ubeats.qrc">
+                   <normaloff>:/images/images/md_infrastructure.png</normaloff>:/images/images/md_infrastructure.png</iconset>
                  </property>
                 </widget>
                </item>
@@ -624,98 +708,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="4" column="0">
-                <widget class="QCheckBox" name="urbanplanning">
-                 <property name="text">
-                  <string>Urban Planning</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/Very-Basic-Design-icon.png</normaloff>:/icons/Very-Basic-Design-icon.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="1">
-                <widget class="QCheckBox" name="socioeconomic">
-                 <property name="text">
-                  <string>Socio-Economic</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/community-users-icon.png</normaloff>:/icons/community-users-icon.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="0">
-                <widget class="QLabel" name="descr_lbl4">
-                 <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Environmental Planning&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="8" column="0">
-                <widget class="QLabel" name="descr_lbl5">
-                 <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Evaluation&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="0">
-                <widget class="QCheckBox" name="spatialmapping">
-                 <property name="text">
-                  <string>Spatial Analyst</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="1">
-                <widget class="QCheckBox" name="infrastructure">
-                 <property name="text">
-                  <string>Water Infrastructure</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/images/images/md_infrastructure.png</normaloff>:/images/images/md_infrastructure.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item row="7" column="0">
-                <widget class="QCheckBox" name="bluegreen">
-                 <property name="text">
-                  <string>Blue-Green Systems</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/Tree-icon.png</normaloff>:/icons/Tree-icon.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item row="9" column="0">
-                <widget class="QCheckBox" name="watercycle">
-                 <property name="text">
-                  <string>Water Cycle</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item row="10" column="0">
-                <widget class="QCheckBox" name="flood">
-                 <property name="text">
-                  <string>Flood Assessment</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item row="9" column="1">
+               <item row="11" column="1">
                 <widget class="QCheckBox" name="microclimate">
                  <property name="text">
                   <string>Urban Microclimate</string>
@@ -726,14 +719,28 @@
                  </property>
                 </widget>
                </item>
-               <item row="10" column="1">
-                <widget class="QCheckBox" name="economics">
+               <item row="0" column="0">
+                <widget class="QLabel" name="descr_lbl2">
                  <property name="text">
-                  <string>Economic Valuation</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Data Processing&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QCheckBox" name="urbandynamics">
+                 <property name="text">
+                  <string>Urban Dynamics</string>
                  </property>
                  <property name="icon">
                   <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/dollar-icon.png</normaloff>:/icons/dollar-icon.png</iconset>
+                   <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="0">
+                <widget class="QLabel" name="descr_lbl4_2">
+                 <property name="text">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Infrastructure Planning&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                 </widget>
                </item>
