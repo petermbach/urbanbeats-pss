@@ -57,6 +57,7 @@ class BlueGreenGuiLaunch(QtWidgets.QDialog):
         # The active scenario is already set when the GUI is launched because the user could only click it if
         # a scenario is active. This active scenario will inform the rest of the GUI.
         self.module = None  # Initialize the variable to hold the active module object
+        self.ui.bgs_listwidget.setCurrentRow(1)
 
         # --- SIMULATION YEAR SETTINGS ---
         # simyears = self.active_scenario.get_simulation_years()  # gets the simulation years
@@ -82,7 +83,7 @@ class BlueGreenGuiLaunch(QtWidgets.QDialog):
         # self.gui_state = "ready"
 
         # --- SIGNALS AND SLOTS ---
-
+        self.ui.bgs_listwidget.currentRowChanged.connect(self.change_stack_index)
 
         # OTHERS
         self.ui.buttonBox.accepted.connect(self.save_values)
@@ -134,6 +135,17 @@ class BlueGreenGuiLaunch(QtWidgets.QDialog):
         self.module = self.active_scenario.get_module_object("URBPLAN", self.ui.year_combo.currentIndex())
         self.setup_gui_with_parameters()
         return True
+
+    def change_stack_index(self):
+        """Changes the current stack index to the index of the selected items in the list widget."""
+        indexlookup = ["N", -1, -1, -1, -1, -1, -1, -1,
+                       "N", -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2,
+                       "N", -3, -3]
+        i = indexlookup[int(self.ui.bgs_listwidget.currentRow())]
+        if i == "N":
+            return True
+        else:
+            self.ui.bgs_stack.setCurrentIndex(int(self.ui.bgs_listwidget.currentRow()) + i)
 
     def setup_gui_with_parameters(self):
         """Fills in all parameters belonging to the module for the current year."""

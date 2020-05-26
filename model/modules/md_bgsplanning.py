@@ -110,7 +110,7 @@ class BlueGreenSystemsPlanning(UBModule):
         self.obj_amen_target_andor = 0
         self.obj_amen_target_blue = 100.0
         self.obj_amen_service = 100
-        self.obj_amen_redundancy = 0.0
+        self.obj_amen_redund = 0.0
 
         # --- Spatial Planning Rules ---
         self.create_parameter("service_res", BOOL, "Service in residential dwellings?")
@@ -485,7 +485,7 @@ class BlueGreenSystemsPlanning(UBModule):
         self.swal_exfil = "0"
 
         # Unique Design Specs for system
-        self.create_parameter("swale_spec", STRING, "Designspec for Swale")
+        self.create_parameter("swal_spec", STRING, "Designspec for Swale")
         self.swal_spec = "1perc_0.5mveg"
 
         # Life Cycle Costing

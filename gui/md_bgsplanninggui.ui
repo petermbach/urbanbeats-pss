@@ -454,7 +454,7 @@
     </widget>
    </item>
    <item row="2" column="1" colspan="2">
-    <widget class="QStackedWidget" name="stackedWidget">
+    <widget class="QStackedWidget" name="bgs_stack">
      <property name="enabled">
       <bool>true</bool>
      </property>
@@ -3590,6 +3590,9 @@ p, li { white-space: pre-wrap; }
           </property>
           <item>
            <widget class="QLabel" name="existing_title">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Existing Blue-Green Assets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
@@ -5544,7 +5547,7 @@ p, li { white-space: pre-wrap; }
        <item>
         <widget class="QGroupBox" name="lcc_box">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="title">
           <string/>
@@ -5552,6 +5555,9 @@ p, li { white-space: pre-wrap; }
          <layout class="QVBoxLayout" name="verticalLayout_10">
           <item>
            <widget class="QLabel" name="lcc_title">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Life Cycle Costing Details&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
@@ -5559,8 +5565,18 @@ p, li { white-space: pre-wrap; }
           </item>
           <item>
            <widget class="Line" name="lcc_line">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="lcc_check">
+            <property name="text">
+             <string>Undertake Life Cycle Costing Analysis</string>
             </property>
            </widget>
           </item>
@@ -5584,12 +5600,12 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>688</width>
-               <height>669</height>
+               <height>464</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_48">
               <item>
-               <widget class="QLabel" name="econ_title">
+               <widget class="QLabel" name="lcc_general_lbl">
                 <property name="minimumSize">
                  <size>
                   <width>445</width>
@@ -5607,379 +5623,165 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Economic Assessment Parameters&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;General Settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="econ_general_widget" native="true">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>230</width>
-                  <height>280</height>
-                 </size>
-                </property>
-                <widget class="QLabel" name="econ_years_lbl">
-                 <property name="geometry">
-                  <rect>
-                   <x>20</x>
-                   <y>35</y>
-                   <width>121</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Assessment Period:</string>
-                 </property>
-                </widget>
-                <widget class="QSpinBox" name="econ_years_spin">
-                 <property name="geometry">
-                  <rect>
-                   <x>140</x>
-                   <y>35</y>
-                   <width>81</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                 <property name="suffix">
-                  <string> years</string>
-                 </property>
-                 <property name="minimum">
-                  <number>5</number>
-                 </property>
-                 <property name="maximum">
-                  <number>100</number>
-                 </property>
-                 <property name="singleStep">
-                  <number>10</number>
-                 </property>
-                 <property name="value">
-                  <number>50</number>
-                 </property>
-                </widget>
-                <widget class="QLabel" name="econ_rates_title">
-                 <property name="geometry">
-                  <rect>
-                   <x>20</x>
-                   <y>65</y>
-                   <width>181</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Discount and Inflation Rates:</string>
-                 </property>
-                </widget>
-                <widget class="QRadioButton" name="econ_rateconstant_radio">
-                 <property name="geometry">
-                  <rect>
-                   <x>30</x>
-                   <y>90</y>
-                   <width>82</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Constant</string>
-                 </property>
-                </widget>
-                <widget class="QRadioButton" name="econ_ratedyn_radio">
-                 <property name="geometry">
-                  <rect>
-                   <x>30</x>
-                   <y>115</y>
-                   <width>82</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Dynamic</string>
-                 </property>
-                </widget>
-                <widget class="QLabel" name="econ_alloc_lbl">
-                 <property name="geometry">
-                  <rect>
-                   <x>10</x>
-                   <y>200</y>
-                   <width>141</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Allocation of Costs&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                </widget>
-                <widget class="QLabel" name="econ_gen_title">
-                 <property name="geometry">
-                  <rect>
-                   <x>10</x>
-                   <y>10</y>
-                   <width>101</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;General Settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                </widget>
-                <widget class="QCheckBox" name="econ_alloc_check">
-                 <property name="geometry">
-                  <rect>
-                   <x>20</x>
-                   <y>226</y>
-                   <width>341</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Perform Allocation based on pre-defined Stakeholders</string>
-                 </property>
-                </widget>
-                <widget class="QPushButton" name="econ_alloc_customize">
-                 <property name="geometry">
-                  <rect>
-                   <x>40</x>
-                   <y>250</y>
-                   <width>81</width>
-                   <height>23</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Customize...</string>
-                 </property>
-                </widget>
-                <widget class="QLineEdit" name="econ_ratefile_box">
-                 <property name="geometry">
-                  <rect>
-                   <x>140</x>
-                   <y>115</y>
-                   <width>201</width>
-                   <height>20</height>
-                  </rect>
-                 </property>
-                </widget>
-                <widget class="QPushButton" name="econ_ratefile_browse">
-                 <property name="geometry">
-                  <rect>
-                   <x>350</x>
-                   <y>114</y>
-                   <width>81</width>
-                   <height>23</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Browse...</string>
-                 </property>
-                </widget>
-                <widget class="QLabel" name="econ_dc_lbl">
-                 <property name="geometry">
-                  <rect>
-                   <x>140</x>
-                   <y>90</y>
-                   <width>81</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Discount rate:</string>
-                 </property>
-                </widget>
-                <widget class="QLabel" name="econ_ir_lbl">
-                 <property name="geometry">
-                  <rect>
-                   <x>290</x>
-                   <y>90</y>
-                   <width>71</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Inflation rate:</string>
-                 </property>
-                </widget>
-                <widget class="QDoubleSpinBox" name="econ_dc_spin">
-                 <property name="geometry">
-                  <rect>
-                   <x>220</x>
-                   <y>90</y>
-                   <width>61</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                 <property name="suffix">
-                  <string>%</string>
-                 </property>
-                 <property name="decimals">
-                  <number>1</number>
-                 </property>
-                </widget>
-                <widget class="QDoubleSpinBox" name="econ_ir_spin">
-                 <property name="geometry">
-                  <rect>
-                   <x>370</x>
-                   <y>90</y>
-                   <width>61</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                 <property name="suffix">
-                  <string>%</string>
-                 </property>
-                 <property name="decimals">
-                  <number>1</number>
-                 </property>
-                 <property name="value">
-                  <double>0.000000000000000</double>
-                 </property>
-                </widget>
-                <widget class="QCheckBox" name="econ_capital_check">
-                 <property name="geometry">
-                  <rect>
-                   <x>240</x>
-                   <y>35</y>
-                   <width>161</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Only assess Capital cost</string>
-                 </property>
-                </widget>
-                <widget class="QLabel" name="econ_currency_lbl">
-                 <property name="geometry">
-                  <rect>
-                   <x>20</x>
-                   <y>145</y>
-                   <width>121</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Currency to use:</string>
-                 </property>
-                </widget>
-                <widget class="QComboBox" name="econ_currency_combo">
-                 <property name="geometry">
-                  <rect>
-                   <x>140</x>
-                   <y>145</y>
-                   <width>201</width>
-                   <height>20</height>
-                  </rect>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>200</width>
-                   <height>0</height>
-                  </size>
-                 </property>
+               <widget class="QWidget" name="lcc_widget1" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_4">
                  <item>
-                  <property name="text">
-                   <string>Australian Dollar (AUD) (default)</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Chinese Yuan (RMB)</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Euro (EUR)</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>US Dollar (USD)</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Other...</string>
-                  </property>
-                 </item>
-                </widget>
-                <widget class="QLineEdit" name="econ_conv_box">
-                 <property name="geometry">
-                  <rect>
-                   <x>140</x>
-                   <y>175</y>
-                   <width>101</width>
-                   <height>20</height>
-                  </rect>
-                 </property>
-                </widget>
-                <widget class="QLabel" name="econ_conv_lbl">
-                 <property name="geometry">
-                  <rect>
-                   <x>50</x>
-                   <y>175</y>
-                   <width>101</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Conversion rate:</string>
-                 </property>
-                </widget>
-                <widget class="QComboBox" name="econ_conv_combo">
-                 <property name="geometry">
-                  <rect>
-                   <x>250</x>
-                   <y>175</y>
-                   <width>91</width>
-                   <height>20</height>
-                  </rect>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <item>
-                  <property name="text">
-                   <string>= AUD$1.00</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>= US$1.00</string>
-                  </property>
-                 </item>
-                </widget>
-               </widget>
-              </item>
-              <item>
-               <widget class="QWidget" name="econ_LCC_widget1" native="true">
-                <property name="minimumSize">
-                 <size>
-                  <width>230</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <layout class="QHBoxLayout" name="horizontalLayout_8">
-                 <item>
-                  <widget class="QLabel" name="econ_LCC_template">
-                   <property name="maximumSize">
-                    <size>
-                     <width>140</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
+                  <widget class="QLabel" name="lcc_years_lbl">
                    <property name="text">
-                    <string>Select Costing Template: </string>
+                    <string>Assessment Period:</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QComboBox" name="econ_LCC_combo">
+                  <widget class="QSpinBox" name="lcc_years_spin">
+                   <property name="suffix">
+                    <string> years</string>
+                   </property>
+                   <property name="minimum">
+                    <number>5</number>
+                   </property>
+                   <property name="maximum">
+                    <number>100</number>
+                   </property>
+                   <property name="singleStep">
+                    <number>10</number>
+                   </property>
+                   <property name="value">
+                    <number>50</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QCheckBox" name="lcc_capital_check">
+                   <property name="text">
+                    <string>Only assess Capital costs</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_245">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="lcc_widget2" native="true">
+                <layout class="QGridLayout" name="gridLayout_129">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="lcc_disc_lbl">
+                   <property name="text">
+                    <string>Annual Discount rate:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QDoubleSpinBox" name="lcc_disc_spin">
+                   <property name="suffix">
+                    <string>%</string>
+                   </property>
+                   <property name="decimals">
+                    <number>1</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QDoubleSpinBox" name="lcc_infla_spin">
+                   <property name="suffix">
+                    <string>%</string>
+                   </property>
+                   <property name="decimals">
+                    <number>1</number>
+                   </property>
+                   <property name="value">
+                    <double>0.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="lcc_infla_lbl">
+                   <property name="text">
+                    <string>Annual Inflation rate:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="2">
+                  <spacer name="horizontalSpacer_252">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="1" column="2">
+                  <spacer name="horizontalSpacer_253">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="2" column="0" colspan="3">
+                  <widget class="QLabel" name="lcc_rate_comment">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(Note: for dynamic variations in discount and inflation rates, please use the economic valuation module)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="lcc_widget3" native="true">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_2">
+                 <item>
+                  <widget class="QLabel" name="lcc_prefill_lbl">
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Pre-fill Technology costs based on template:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="lcc_prefill_combo">
                    <property name="minimumSize">
                     <size>
-                     <width>200</width>
+                     <width>0</width>
                      <height>0</height>
                     </size>
                    </property>
@@ -6001,17 +5803,146 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="econ_LCC_button">
+                  <widget class="QPushButton" name="lcc_prefill_button">
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Prefill</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="lcc_prefill_edit">
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
                    <property name="text">
                     <string>View/Modify...</string>
                    </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_248">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="lcc_widget4" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_6">
+                 <item>
+                  <widget class="QLabel" name="lcc_currency_lbl">
+                   <property name="text">
+                    <string>Display Currency:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="lcc_currency_combo">
+                   <property name="minimumSize">
+                    <size>
+                     <width>200</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>Australian Dollar (AUD) (default)</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Chinese Yuan (RMB)</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Euro (EUR)</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>US Dollar (USD)</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Other...</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_254">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="lcc_widget5" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_8">
+                 <item>
+                  <widget class="QCheckBox" name="lcc_currency_convert_check">
+                   <property name="text">
+                    <string>Convert input costs to display currency using a conversion rate of:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="lcc_currency_rate"/>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="lcc_currency_combo2">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>= AUD$1.00</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>= US$1.00</string>
+                    </property>
+                   </item>
                   </widget>
                  </item>
                 </layout>
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="econ_LCC_title">
+               <widget class="QLabel" name="lcc_assumptions_lbl">
                 <property name="minimumSize">
                  <size>
                   <width>445</width>
@@ -6029,19 +5960,19 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;WSUD Life Cycle Costing Settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Assumptions for Costing&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="econ_LCC_widget2" native="true">
+               <widget class="QWidget" name="lcc_widget6" native="true">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
                   <height>80</height>
                  </size>
                 </property>
-                <widget class="QCheckBox" name="econ_LCC_decom_check">
+                <widget class="QCheckBox" name="lcc_decom_at_end">
                  <property name="geometry">
                   <rect>
                    <x>10</x>
@@ -6054,7 +5985,7 @@ p, li { white-space: pre-wrap; }
                   <string>Decommission assets at the end of Life Cycle Costing</string>
                  </property>
                 </widget>
-                <widget class="QCheckBox" name="econ_LCC_maint_check">
+                <widget class="QCheckBox" name="lcc_maintain_also">
                  <property name="geometry">
                   <rect>
                    <x>10</x>
@@ -6067,199 +5998,17 @@ p, li { white-space: pre-wrap; }
                   <string>Also incur maintenance cost in renewal years</string>
                  </property>
                 </widget>
-                <widget class="QCheckBox" name="econ_LCC_lifespan_check">
+                <widget class="QCheckBox" name="lcc_ignore_lifespan">
                  <property name="geometry">
                   <rect>
                    <x>10</x>
                    <y>50</y>
-                   <width>341</width>
+                   <width>641</width>
                    <height>17</height>
                   </rect>
                  </property>
                  <property name="text">
-                  <string>Ignore system life spans</string>
-                 </property>
-                </widget>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="econ_other_costs">
-                <property name="minimumSize">
-                 <size>
-                  <width>445</width>
-                  <height>16</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Other Economic Assessments&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QWidget" name="econ_others_widget" native="true">
-                <property name="minimumSize">
-                 <size>
-                  <width>230</width>
-                  <height>160</height>
-                 </size>
-                </property>
-                <widget class="QLineEdit" name="econ_bulkwater_box">
-                 <property name="geometry">
-                  <rect>
-                   <x>300</x>
-                   <y>35</y>
-                   <width>113</width>
-                   <height>20</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-                <widget class="QLineEdit" name="econ_wwtp_box">
-                 <property name="geometry">
-                  <rect>
-                   <x>300</x>
-                   <y>60</y>
-                   <width>113</width>
-                   <height>20</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-                <widget class="QLineEdit" name="econ_nutrients_box">
-                 <property name="geometry">
-                  <rect>
-                   <x>300</x>
-                   <y>85</y>
-                   <width>113</width>
-                   <height>20</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-                <widget class="QLineEdit" name="econ_landplan_box">
-                 <property name="geometry">
-                  <rect>
-                   <x>300</x>
-                   <y>110</y>
-                   <width>113</width>
-                   <height>20</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-                <widget class="QLineEdit" name="econ_energy_box">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="geometry">
-                  <rect>
-                   <x>300</x>
-                   <y>135</y>
-                   <width>113</width>
-                   <height>20</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-                <widget class="QCheckBox" name="econ_other_check">
-                 <property name="geometry">
-                  <rect>
-                   <x>10</x>
-                   <y>10</y>
-                   <width>411</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Calculate other economic costs as part of the assessment (select and define)</string>
-                 </property>
-                </widget>
-                <widget class="QCheckBox" name="econ_bulkwater_check">
-                 <property name="geometry">
-                  <rect>
-                   <x>40</x>
-                   <y>35</y>
-                   <width>191</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Bulk Water Supply Cost [$ per ML]</string>
-                 </property>
-                </widget>
-                <widget class="QCheckBox" name="econ_wwtp_check">
-                 <property name="geometry">
-                  <rect>
-                   <x>40</x>
-                   <y>60</y>
-                   <width>241</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Wastewater Treatment / Disposal [$ per ML]</string>
-                 </property>
-                </widget>
-                <widget class="QCheckBox" name="econ_nutrients_check">
-                 <property name="geometry">
-                  <rect>
-                   <x>40</x>
-                   <y>85</y>
-                   <width>261</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Nutrient Pollution Management [$ per kg TN/TP]</string>
-                 </property>
-                </widget>
-                <widget class="QCheckBox" name="econ_landplan_check">
-                 <property name="geometry">
-                  <rect>
-                   <x>40</x>
-                   <y>110</y>
-                   <width>261</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Land Acquisition and Uptake [$ per sqm]</string>
-                 </property>
-                </widget>
-                <widget class="QCheckBox" name="econ_energy_check">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="geometry">
-                  <rect>
-                   <x>40</x>
-                   <y>135</y>
-                   <width>261</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Energy Cost [$ per kWh]</string>
+                  <string>Ignore system life spans (keep system even if lifespan has been exceeded)</string>
                  </property>
                 </widget>
                </widget>

@@ -85,6 +85,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # --- INITIALIZATION ---
         self.setWindowTitle("UrbanBEATS Planning Support Tool")
+        self.ui.stepwise_tree.setColumnWidth(0, 250)
+        self.ui.stepwise_tree.expandAll()
         # self.setWindowTitle("规划模型")       #Chinese Translation - automate!
         self.initialize_output_console()
         self.consoleobserver = ConsoleObserver()
@@ -301,7 +303,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.MainView_stack.setCurrentIndex(3)
         else:
             pass
-
 
     def setup_scenario(self):
         """Called when the scenario setup dialog box has successfully closed. i.e. signal accepted()"""
