@@ -3567,7 +3567,7 @@ p, li { white-space: pre-wrap; }
        <item>
         <widget class="QGroupBox" name="existing_box">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="title">
           <string/>
@@ -3591,7 +3591,7 @@ p, li { white-space: pre-wrap; }
           <item>
            <widget class="QLabel" name="existing_title">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Existing Blue-Green Assets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -3600,6 +3600,9 @@ p, li { white-space: pre-wrap; }
           </item>
           <item>
            <widget class="Line" name="existing_line">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -3625,14 +3628,14 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>688</width>
-               <height>598</height>
+               <height>1018</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_52">
               <item>
-               <widget class="QLabel" name="existing_area_title">
+               <widget class="QLabel" name="existing_assets_title">
                 <property name="enabled">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                 <property name="minimumSize">
                  <size>
@@ -3654,375 +3657,71 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Existing Retrofit Zones&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;LOAD EXISTING ASSETS INVENTORY&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="existing_area_widget" native="true">
+               <widget class="QCheckBox" name="assets_check">
+                <property name="text">
+                 <string>Consider existing assets in current simulation</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="assets_widget" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_11">
+                 <item>
+                  <widget class="QLabel" name="assets_lbl">
+                   <property name="text">
+                    <string>Select Existing Assets Data Set:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="assets_combo">
+                   <property name="minimumSize">
+                    <size>
+                     <width>200</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="assets_setup">
+                   <property name="minimumSize">
+                    <size>
+                     <width>150</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Setup Asset Table</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_256">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="assets_inventory_lbl">
                 <property name="enabled">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>210</height>
-                 </size>
-                </property>
-                <widget class="QLabel" name="area_retrofit_lbl_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>20</x>
-                   <y>10</y>
-                   <width>251</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Select Retrofit Scenario for retrofit areas</string>
-                 </property>
-                </widget>
-                <widget class="QComboBox" name="area_retrofit_combo_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>240</x>
-                   <y>10</y>
-                   <width>181</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                 <item>
-                  <property name="text">
-                   <string>Do Nothing</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>With Renewal</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Forced Retrofit</string>
-                  </property>
-                 </item>
-                </widget>
-                <widget class="QStackedWidget" name="retrofit_stack_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>10</x>
-                   <y>30</y>
-                   <width>421</width>
-                   <height>171</height>
-                  </rect>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>421</width>
-                   <height>100</height>
-                  </size>
-                 </property>
-                 <property name="currentIndex">
-                  <number>0</number>
-                 </property>
-                 <widget class="QWidget" name="page_32">
-                  <layout class="QHBoxLayout" name="horizontalLayout_23">
-                   <item>
-                    <widget class="QGroupBox" name="retrofit_nothing_group_3">
-                     <property name="title">
-                      <string>DO NOTHING SCENARIO</string>
-                     </property>
-                     <widget class="QLabel" name="retrofit_nothing_lbl_3">
-                      <property name="geometry">
-                       <rect>
-                        <x>70</x>
-                        <y>50</y>
-                        <width>291</width>
-                        <height>16</height>
-                       </rect>
-                      </property>
-                      <property name="whatsThis">
-                       <string>Adjust the weighting of each criteria. Assign an importance score between 1 and 10 to each of the selected bottom lines.</string>
-                      </property>
-                      <property name="text">
-                       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Nothing will 'literally' be done to existing retrofit areas&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                 <widget class="QWidget" name="page_33">
-                  <layout class="QHBoxLayout" name="horizontalLayout_24">
-                   <item>
-                    <widget class="QGroupBox" name="retrofit_renewal_group_3">
-                     <property name="title">
-                      <string>WITH RENEWAL SCENARIO</string>
-                     </property>
-                     <widget class="QSpinBox" name="renewal_lot_years_3">
-                      <property name="geometry">
-                       <rect>
-                        <x>310</x>
-                        <y>70</y>
-                        <width>71</width>
-                        <height>16</height>
-                       </rect>
-                      </property>
-                      <property name="suffix">
-                       <string> years</string>
-                      </property>
-                      <property name="minimum">
-                       <number>1</number>
-                      </property>
-                      <property name="maximum">
-                       <number>50</number>
-                      </property>
-                     </widget>
-                     <widget class="QLabel" name="retrofit_renewal_descr1_3">
-                      <property name="geometry">
-                       <rect>
-                        <x>20</x>
-                        <y>20</y>
-                        <width>371</width>
-                        <height>16</height>
-                       </rect>
-                      </property>
-                      <property name="whatsThis">
-                       <string>Adjust the weighting of each criteria. Assign an importance score between 1 and 10 to each of the selected bottom lines.</string>
-                      </property>
-                      <property name="text">
-                       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Define renewal cycles unless land use change data is available&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                     <widget class="QCheckBox" name="retrofit_renewal_check_3">
-                      <property name="geometry">
-                       <rect>
-                        <x>30</x>
-                        <y>45</y>
-                        <width>351</width>
-                        <height>17</height>
-                       </rect>
-                      </property>
-                      <property name="text">
-                       <string>Customize Renewal Cycles (set % renewal every x years)</string>
-                      </property>
-                     </widget>
-                     <widget class="QLabel" name="retrofit_renewal_lbl_13">
-                      <property name="geometry">
-                       <rect>
-                        <x>150</x>
-                        <y>70</y>
-                        <width>161</width>
-                        <height>20</height>
-                       </rect>
-                      </property>
-                      <property name="text">
-                       <string>of building stock renewed every </string>
-                      </property>
-                     </widget>
-                     <widget class="QSpinBox" name="renewal_lot_spin_3">
-                      <property name="geometry">
-                       <rect>
-                        <x>90</x>
-                        <y>72</y>
-                        <width>51</width>
-                        <height>16</height>
-                       </rect>
-                      </property>
-                      <property name="suffix">
-                       <string>%</string>
-                      </property>
-                      <property name="maximum">
-                       <number>100</number>
-                      </property>
-                     </widget>
-                     <widget class="QLabel" name="retrofit_renewal_lbl_14">
-                      <property name="geometry">
-                       <rect>
-                        <x>30</x>
-                        <y>70</y>
-                        <width>71</width>
-                        <height>20</height>
-                       </rect>
-                      </property>
-                      <property name="text">
-                       <string>Lot-Scale:</string>
-                      </property>
-                     </widget>
-                     <widget class="QLabel" name="retrofit_renewal_lbl_15">
-                      <property name="geometry">
-                       <rect>
-                        <x>30</x>
-                        <y>95</y>
-                        <width>151</width>
-                        <height>20</height>
-                       </rect>
-                      </property>
-                      <property name="text">
-                       <string>Street-Scale:</string>
-                      </property>
-                     </widget>
-                     <widget class="QSpinBox" name="renewal_street_years_3">
-                      <property name="geometry">
-                       <rect>
-                        <x>190</x>
-                        <y>95</y>
-                        <width>71</width>
-                        <height>16</height>
-                       </rect>
-                      </property>
-                      <property name="suffix">
-                       <string> years</string>
-                      </property>
-                      <property name="minimum">
-                       <number>1</number>
-                      </property>
-                      <property name="maximum">
-                       <number>50</number>
-                      </property>
-                     </widget>
-                     <widget class="QLabel" name="retrofit_renewal_lbl_16">
-                      <property name="geometry">
-                       <rect>
-                        <x>30</x>
-                        <y>120</y>
-                        <width>171</width>
-                        <height>20</height>
-                       </rect>
-                      </property>
-                      <property name="text">
-                       <string>Neighbourhood/Precinct Scales:</string>
-                      </property>
-                     </widget>
-                     <widget class="QSpinBox" name="renewal_neigh_years_3">
-                      <property name="geometry">
-                       <rect>
-                        <x>190</x>
-                        <y>120</y>
-                        <width>71</width>
-                        <height>16</height>
-                       </rect>
-                      </property>
-                      <property name="suffix">
-                       <string> years</string>
-                      </property>
-                      <property name="minimum">
-                       <number>1</number>
-                      </property>
-                      <property name="maximum">
-                       <number>50</number>
-                      </property>
-                     </widget>
-                     <widget class="QLabel" name="retrofit_renewal_lbl_17">
-                      <property name="geometry">
-                       <rect>
-                        <x>270</x>
-                        <y>95</y>
-                        <width>101</width>
-                        <height>20</height>
-                       </rect>
-                      </property>
-                      <property name="text">
-                       <string>renewal cycles</string>
-                      </property>
-                     </widget>
-                     <widget class="QLabel" name="retrofit_renewal_lbl_18">
-                      <property name="geometry">
-                       <rect>
-                        <x>270</x>
-                        <y>120</y>
-                        <width>101</width>
-                        <height>20</height>
-                       </rect>
-                      </property>
-                      <property name="text">
-                       <string>renewal cycles</string>
-                      </property>
-                     </widget>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                 <widget class="QWidget" name="page_34">
-                  <layout class="QVBoxLayout" name="verticalLayout_51">
-                   <item>
-                    <widget class="QGroupBox" name="retrofit_forced_group_3">
-                     <property name="title">
-                      <string>FORCED RETROFIT SCENARIO</string>
-                     </property>
-                     <widget class="QCheckBox" name="retrofit_forced_street_check_3">
-                      <property name="geometry">
-                       <rect>
-                        <x>30</x>
-                        <y>60</y>
-                        <width>351</width>
-                        <height>17</height>
-                       </rect>
-                      </property>
-                      <property name="text">
-                       <string>Force retrofit on Street-Scale Systems</string>
-                      </property>
-                     </widget>
-                     <widget class="QCheckBox" name="retrofit_forced_neigh_check_3">
-                      <property name="geometry">
-                       <rect>
-                        <x>30</x>
-                        <y>90</y>
-                        <width>351</width>
-                        <height>17</height>
-                       </rect>
-                      </property>
-                      <property name="text">
-                       <string>Force retrofit on Neighbourhood Systems</string>
-                      </property>
-                     </widget>
-                     <widget class="QCheckBox" name="retrofit_forced_prec_check_3">
-                      <property name="geometry">
-                       <rect>
-                        <x>30</x>
-                        <y>120</y>
-                        <width>351</width>
-                        <height>17</height>
-                       </rect>
-                      </property>
-                      <property name="text">
-                       <string>Force retrofit on Precinct-Scale Systems</string>
-                      </property>
-                     </widget>
-                     <widget class="QLabel" name="force_retrofit_lbl_3">
-                      <property name="geometry">
-                       <rect>
-                        <x>20</x>
-                        <y>30</y>
-                        <width>421</width>
-                        <height>16</height>
-                       </rect>
-                      </property>
-                      <property name="text">
-                       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-style:italic;&quot;&gt;(forced retrofit not allowed on lot-scale, un-checked systems are kept)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </widget>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="existing_sys_title">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -4035,416 +3734,778 @@ p, li { white-space: pre-wrap; }
                   <height>16</height>
                  </size>
                 </property>
+                <property name="whatsThis">
+                 <string>Select what design goals to consider and what priority they take over each other. Highest priority (1) and Lowest priority (3) influence technology's chance of being implemented. Note that equal priority can be set as well, in which case no one design rationale is more important than the other.</string>
+                </property>
                 <property name="text">
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;Life Cycle of Existing System Implementations&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Asset Inventory&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="existing_sys_widget" native="true">
+               <widget class="QTableWidget" name="assets_table">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>200</height>
+                 </size>
+                </property>
+                <row>
+                 <property name="text">
+                  <string>1</string>
+                 </property>
+                </row>
+                <column>
+                 <property name="text">
+                  <string>Type</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Quantity</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Year</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Scale</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Size</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Owner</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Location</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Specifications</string>
+                 </property>
+                </column>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="assets_table_widget" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_12">
+                 <item>
+                  <spacer name="horizontalSpacer_257">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="assets_table_apply">
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Apply to all</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="assets_table_clear">
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Clear Inventory</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="assets_predef_check">
+                <property name="text">
+                 <string>Use pre-defined specifications for unknown systems</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="assets_decom_check">
+                <property name="text">
+                 <string>Decommission systems older than specified lifespan</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="assets_locationforce_check">
+                <property name="text">
+                 <string>Use system locations (force model to use location, but substitute with another asset if system data is missing)</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="Line" name="assets_line">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="retrofit_title">
                 <property name="enabled">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>320</height>
+                  <height>16</height>
                  </size>
                 </property>
-                <widget class="QLabel" name="existing_lot_lbl_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>20</x>
-                   <y>40</y>
-                   <width>131</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16</height>
+                 </size>
+                </property>
+                <property name="whatsThis">
+                 <string>Select what design goals to consider and what priority they take over each other. Highest priority (1) and Lowest priority (3) influence technology's chance of being implemented. Note that equal priority can be set as well, in which case no one design rationale is more important than the other.</string>
+                </property>
+                <property name="text">
+                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;RETROFIT DYNAMICS OF IMPLEMENTED ASSETS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="retrofit_widget" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_10">
+                 <item>
+                  <widget class="QLabel" name="retrofit_lbl">
+                   <property name="text">
+                    <string>Select Retrofit Scenario for retrofit areas</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="retrofit_combo">
+                   <property name="minimumSize">
+                    <size>
+                     <width>150</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>Do Nothing</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>With Renewal</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Forced Retrofit</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_255">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QStackedWidget" name="retrofit_stack">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="currentIndex">
+                 <number>1</number>
+                </property>
+                <widget class="QWidget" name="page_32">
+                 <layout class="QHBoxLayout" name="horizontalLayout_23">
+                  <item>
+                   <widget class="QGroupBox" name="retrofit_nothing_group">
+                    <property name="title">
+                     <string>DO NOTHING SCENARIO</string>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_80">
+                     <item>
+                      <widget class="QLabel" name="retrofit_nothing_lbl">
+                       <property name="whatsThis">
+                        <string>Adjust the weighting of each criteria. Assign an importance score between 1 and 10 to each of the selected bottom lines.</string>
+                       </property>
+                       <property name="text">
+                        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Nothing will 'literally' be done to existing retrofit areas&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+                <widget class="QWidget" name="page_33">
+                 <layout class="QHBoxLayout" name="horizontalLayout_24">
+                  <item>
+                   <widget class="QGroupBox" name="retrofit_renewal_group">
+                    <property name="title">
+                     <string>WITH RENEWAL SCENARIO</string>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_51">
+                     <item>
+                      <widget class="QWidget" name="retrofit_renewal_widget" native="true">
+                       <layout class="QGridLayout" name="gridLayout_130">
+                        <item row="1" column="0" colspan="5">
+                         <widget class="QCheckBox" name="retrofit_renewal_custom_check">
+                          <property name="text">
+                           <string>Customize Renewal Cycles (set % renewal every x years)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="0" colspan="5">
+                         <widget class="QLabel" name="retrofit_renewal_lbl">
+                          <property name="whatsThis">
+                           <string>Adjust the weighting of each criteria. Assign an importance score between 1 and 10 to each of the selected bottom lines.</string>
+                          </property>
+                          <property name="text">
+                           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Lot Scale&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Define renewal cycles unless land use change data is available&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="3" column="1">
+                         <widget class="QSpinBox" name="retrofit_renewal_lot_spin_perc">
+                          <property name="suffix">
+                           <string>%</string>
+                          </property>
+                          <property name="maximum">
+                           <number>100</number>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="3" column="5">
+                         <spacer name="horizontalSpacer_258">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                        <item row="4" column="3">
+                         <widget class="QLabel" name="retrofit_renewal_street_lbl2">
+                          <property name="text">
+                           <string>renewal cycles</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="3" column="3">
+                         <widget class="QLabel" name="retrofit_renewal_lot_lbl2">
+                          <property name="text">
+                           <string>of building stock renewed every </string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="5" column="0">
+                         <widget class="QLabel" name="retrofit_renewal_region_lbl">
+                          <property name="text">
+                           <string>Regional Scale:</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="5" column="3">
+                         <widget class="QLabel" name="retrofit_renewal_region_lbl2">
+                          <property name="text">
+                           <string>renewal cycles</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="3" column="4">
+                         <widget class="QSpinBox" name="retrofit_renewal_lot_spin_years">
+                          <property name="suffix">
+                           <string> years</string>
+                          </property>
+                          <property name="minimum">
+                           <number>1</number>
+                          </property>
+                          <property name="maximum">
+                           <number>50</number>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="4" column="0">
+                         <widget class="QLabel" name="retrofit_renewal_street_lbl">
+                          <property name="text">
+                           <string>Street-Scale:</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="5" column="1">
+                         <widget class="QSpinBox" name="retrofit_renewal_region_spin_years">
+                          <property name="suffix">
+                           <string> years</string>
+                          </property>
+                          <property name="minimum">
+                           <number>1</number>
+                          </property>
+                          <property name="maximum">
+                           <number>50</number>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="3" column="0">
+                         <widget class="QLabel" name="retrofit_renewal_lot_lbl">
+                          <property name="text">
+                           <string>Lot-Scale:</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="4" column="1">
+                         <widget class="QSpinBox" name="retrofit_renewal_street_spin_years">
+                          <property name="suffix">
+                           <string> years</string>
+                          </property>
+                          <property name="minimum">
+                           <number>1</number>
+                          </property>
+                          <property name="maximum">
+                           <number>50</number>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="6" column="1">
+                         <spacer name="verticalSpacer_44">
+                          <property name="orientation">
+                           <enum>Qt::Vertical</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>20</width>
+                            <height>40</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
                 </widget>
-                <widget class="QLabel" name="existing_street_lbl_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>200</x>
-                   <y>40</y>
-                   <width>131</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Street Scale</string>
-                 </property>
+                <widget class="QWidget" name="page_34">
+                 <layout class="QVBoxLayout" name="verticalLayout_81">
+                  <item>
+                   <widget class="QGroupBox" name="retrofit_forced_group">
+                    <property name="title">
+                     <string>FORCED RETROFIT SCENARIO</string>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_82">
+                     <item>
+                      <widget class="QLabel" name="retrofit_forced_lbl">
+                       <property name="text">
+                        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-style:italic;&quot;&gt;(forced retrofit not allowed on lot-scale, un-checked systems are kept)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QCheckBox" name="retrofit_forced_street_check">
+                       <property name="text">
+                        <string>Force retrofit on Street-Scale Systems</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QCheckBox" name="retrofit_forced_region_check">
+                       <property name="text">
+                        <string>Force retrofit on Regional-Scale Systems</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="verticalSpacer_45">
+                       <property name="orientation">
+                        <enum>Qt::Vertical</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>20</width>
+                         <height>40</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
                 </widget>
-                <widget class="QLabel" name="existing_neigh_lbl_5">
-                 <property name="geometry">
-                  <rect>
-                   <x>20</x>
-                   <y>110</y>
-                   <width>221</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Neighbourhood Scale</string>
-                 </property>
-                </widget>
-                <widget class="QCheckBox" name="lot_renew_check_3">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="geometry">
-                  <rect>
-                   <x>40</x>
-                   <y>60</y>
-                   <width>121</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Upgrade/Renewal</string>
-                 </property>
-                </widget>
-                <widget class="QCheckBox" name="lot_decom_check_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>40</x>
-                   <y>80</y>
-                   <width>121</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Decommission</string>
-                 </property>
-                </widget>
-                <widget class="QLabel" name="existing_neigh_lbl_6">
-                 <property name="geometry">
-                  <rect>
-                   <x>20</x>
-                   <y>10</y>
-                   <width>421</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="retrofit_actions" native="true">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_131">
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="retrofit_action_region_lbl">
+                   <property name="text">
+                    <string>Regional Scale</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="5">
+                  <widget class="QCheckBox" name="retrofit_action_street_decom">
+                   <property name="text">
+                    <string>Decommission</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QCheckBox" name="retrofit_action_region_upgrade">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Upgrade/Renewal</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QCheckBox" name="retrofit_action_lot_upgrade">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Upgrade/Renewal</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="6">
+                  <spacer name="horizontalSpacer_259">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="1" column="5">
+                  <widget class="QCheckBox" name="retrofit_action_street_upgrade">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Upgrade/Renewal</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0" colspan="6">
+                  <widget class="QLabel" name="retrofit_actions_lbl">
+                   <property name="text">
+                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-style:italic;&quot;&gt;(by default, existing systems will be kept unless another possibility is checked below)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                </widget>
-                <widget class="QCheckBox" name="street_renew_check_3">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="geometry">
-                  <rect>
-                   <x>220</x>
-                   <y>60</y>
-                   <width>121</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Upgrade/Renewal</string>
-                 </property>
-                </widget>
-                <widget class="QCheckBox" name="street_decom_check_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>220</x>
-                   <y>80</y>
-                   <width>121</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Decommission</string>
-                 </property>
-                </widget>
-                <widget class="QCheckBox" name="neigh_decom_check_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>40</x>
-                   <y>150</y>
-                   <width>121</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Decommission</string>
-                 </property>
-                </widget>
-                <widget class="QCheckBox" name="neigh_renew_check_3">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="geometry">
-                  <rect>
-                   <x>40</x>
-                   <y>130</y>
-                   <width>121</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Upgrade/Renewal</string>
-                 </property>
-                </widget>
-                <widget class="QCheckBox" name="prec_decom_check_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>220</x>
-                   <y>150</y>
-                   <width>121</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Decommission</string>
-                 </property>
-                </widget>
-                <widget class="QCheckBox" name="prec_renew_check_3">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="geometry">
-                  <rect>
-                   <x>220</x>
-                   <y>130</y>
-                   <width>121</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Upgrade/Renewal</string>
-                 </property>
-                </widget>
-                <widget class="QLabel" name="existing_prec_lbl_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>200</x>
-                   <y>110</y>
-                   <width>221</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Precinct Scale</string>
-                 </property>
-                </widget>
-                <widget class="QSlider" name="decom_slider_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>150</x>
-                   <y>220</y>
-                   <width>221</width>
-                   <height>21</height>
-                  </rect>
-                 </property>
-                 <property name="maximum">
-                  <number>100</number>
-                 </property>
-                 <property name="singleStep">
-                  <number>5</number>
-                 </property>
-                 <property name="pageStep">
-                  <number>20</number>
-                 </property>
-                 <property name="value">
-                  <number>50</number>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="tickPosition">
-                  <enum>QSlider::TicksAbove</enum>
-                 </property>
-                </widget>
-                <widget class="QLabel" name="perf_deviation_lbl_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>20</x>
-                   <y>190</y>
-                   <width>211</width>
-                   <height>16</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Adjust Performance Deviation Thresholds:</string>
-                 </property>
-                </widget>
-                <widget class="QSlider" name="renew_slider_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>150</x>
-                   <y>250</y>
-                   <width>221</width>
-                   <height>21</height>
-                  </rect>
-                 </property>
-                 <property name="maximum">
-                  <number>100</number>
-                 </property>
-                 <property name="singleStep">
-                  <number>5</number>
-                 </property>
-                 <property name="pageStep">
-                  <number>20</number>
-                 </property>
-                 <property name="value">
-                  <number>20</number>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="tickPosition">
-                  <enum>QSlider::TicksBelow</enum>
-                 </property>
-                </widget>
-                <widget class="QLineEdit" name="decom_box_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>390</x>
-                   <y>220</y>
-                   <width>41</width>
-                   <height>20</height>
-                  </rect>
-                 </property>
-                 <property name="readOnly">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-                <widget class="QLineEdit" name="renew_box_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>390</x>
-                   <y>250</y>
-                   <width>41</width>
-                   <height>20</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="readOnly">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-                <widget class="QLabel" name="label_31">
-                 <property name="geometry">
-                  <rect>
-                   <x>10</x>
-                   <y>220</y>
-                   <width>131</width>
-                   <height>20</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="retrofit_action_lot_lbl">
+                   <property name="text">
+                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;right&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Decommission if &amp;gt;=&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                </widget>
-                <widget class="QLabel" name="thresholdlbl1_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>150</x>
-                   <y>270</y>
-                   <width>31</width>
-                   <height>20</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>0%</string>
-                 </property>
-                </widget>
-                <widget class="QLabel" name="threshold_lbl2_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>360</x>
-                   <y>270</y>
-                   <width>31</width>
-                   <height>20</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>100%</string>
-                 </property>
-                </widget>
-                <widget class="QLabel" name="label_32">
-                 <property name="geometry">
-                  <rect>
-                   <x>80</x>
-                   <y>250</y>
-                   <width>61</width>
-                   <height>20</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;right&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Renew if &amp;gt;=&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                </widget>
-                <widget class="QLabel" name="label_33">
-                 <property name="geometry">
-                  <rect>
-                   <x>50</x>
-                   <y>290</y>
-                   <width>131</width>
-                   <height>20</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Lot Scale&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QCheckBox" name="retrofit_action_lot_decom">
+                   <property name="text">
+                    <string>Decommission</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="3">
+                  <widget class="QLabel" name="retrofit_action_street_lbl">
+                   <property name="text">
+                    <string>Street Scale</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="1">
+                  <widget class="QCheckBox" name="retrofit_action_region_decom">
+                   <property name="text">
+                    <string>Decommission</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <spacer name="horizontalSpacer_260">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Fixed</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="retrofit_perf_widget" native="true">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_132">
+                 <item row="1" column="3">
+                  <widget class="QLineEdit" name="retrofit_decom_box">
+                   <property name="maximumSize">
+                    <size>
+                     <width>40</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="4">
+                  <spacer name="horizontalSpacer_261">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="4" column="0">
+                  <widget class="QLabel" name="retrofit_perf_lbl3">
+                   <property name="text">
+                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;If Renewal not possible:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                </widget>
-                <widget class="QRadioButton" name="radioKeep_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>190</x>
-                   <y>290</y>
-                   <width>82</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Keep</string>
-                 </property>
-                </widget>
-                <widget class="QRadioButton" name="radioDecom_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>260</x>
-                   <y>290</y>
-                   <width>91</width>
-                   <height>17</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Decommission</string>
-                 </property>
-                </widget>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="3">
+                  <widget class="QLineEdit" name="retrofit_renew_box">
+                   <property name="maximumSize">
+                    <size>
+                     <width>40</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="retrofit_perf_lbl1">
+                   <property name="text">
+                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;right&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Decommission if &amp;gt;=&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="retrofit_perf_lbl2">
+                   <property name="text">
+                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;right&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Renew if &amp;gt;=&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="1">
+                  <widget class="QRadioButton" name="retrofit_decom_radio">
+                   <property name="text">
+                    <string>Decommission</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QLabel" name="retrofit_perf_lbl4">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;0%&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0" colspan="4">
+                  <widget class="QLabel" name="retrofit_perf_title">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Adjust Performance Deviation Thresholds:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="1">
+                  <widget class="QRadioButton" name="retrofit_keep_radio">
+                   <property name="text">
+                    <string>Keep</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="2">
+                  <widget class="QLabel" name="retrofit_perf_lbl5">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;100%&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1" colspan="2">
+                  <widget class="QSlider" name="retrofit_renew_slider">
+                   <property name="minimumSize">
+                    <size>
+                     <width>250</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximum">
+                    <number>100</number>
+                   </property>
+                   <property name="singleStep">
+                    <number>5</number>
+                   </property>
+                   <property name="pageStep">
+                    <number>20</number>
+                   </property>
+                   <property name="value">
+                    <number>20</number>
+                   </property>
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="tickPosition">
+                    <enum>QSlider::TicksBelow</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1" colspan="2">
+                  <widget class="QSlider" name="retrofit_decom_slider">
+                   <property name="minimumSize">
+                    <size>
+                     <width>250</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximum">
+                    <number>100</number>
+                   </property>
+                   <property name="singleStep">
+                    <number>5</number>
+                   </property>
+                   <property name="pageStep">
+                    <number>20</number>
+                   </property>
+                   <property name="value">
+                    <number>50</number>
+                   </property>
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="tickPosition">
+                    <enum>QSlider::TicksAbove</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
               </item>
              </layout>
@@ -4526,7 +4587,7 @@ p, li { white-space: pre-wrap; }
               <item row="2" column="2">
                <widget class="QLabel" name="bgs_solutions_lbl3">
                 <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Retrofit Solutions&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic;&quot;&gt;Retrofit Solutions&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
@@ -4641,7 +4702,7 @@ p, li { white-space: pre-wrap; }
               <item row="15" column="1">
                <widget class="QLabel" name="bgs_solutions_lbl4">
                 <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Planning Solutions&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic;&quot;&gt;Planning Solutions&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
@@ -4655,7 +4716,7 @@ p, li { white-space: pre-wrap; }
               <item row="2" column="1">
                <widget class="QLabel" name="bgs_solutions_lbl2">
                 <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Nature-based solutions&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic;&quot;&gt;Nature-based solutions&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
@@ -4709,7 +4770,7 @@ p, li { white-space: pre-wrap; }
               <item row="15" column="2">
                <widget class="QLabel" name="bgs_solutions_lbl5">
                 <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Green/Grey Infrastructure&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic;&quot;&gt;Green/Grey Infrastructure&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
@@ -4832,8 +4893,8 @@ p, li { white-space: pre-wrap; }
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;.Select the planning algorithm to use. May depend on spatial representation method.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Select the planning algorithm to use. May depend on spatial representation method.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -5441,7 +5502,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item row="0" column="0" colspan="3">
-                  <widget class="QCheckBox" name="strategy_lot_check_4">
+                  <widget class="QCheckBox" name="scalepref_check">
                    <property name="minimumSize">
                     <size>
                      <width>200</width>
@@ -5817,6 +5878,9 @@ p, li { white-space: pre-wrap; }
                  </item>
                  <item>
                   <widget class="QPushButton" name="lcc_prefill_edit">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
@@ -5920,6 +5984,9 @@ p, li { white-space: pre-wrap; }
                  </item>
                  <item>
                   <widget class="QComboBox" name="lcc_currency_combo2">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -12334,7 +12401,7 @@ p, li { white-space: pre-wrap; }
            </widget>
           </item>
           <item>
-           <widget class="QScrollArea" name="scrollArea_8">
+           <widget class="QScrollArea" name="infs_scrollarea">
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>

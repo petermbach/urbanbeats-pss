@@ -64,12 +64,14 @@ class BlueGreenSystemsPlanning(UBModule):
         self.create_parameter("obj_run_priority", DOUBLE, "Priority level of runoff reduction")
         self.create_parameter("obj_run_target", DOUBLE, "Target for runoff reduction to achieve")
         self.create_parameter("obj_run_service", DOUBLE, "Service level for runoff reduction to achieve")
-        self.create_parameter("obj_run_redund", DOUBLE, "Allowable service redundancey for runoff volume reduction")
+        self.create_parameter("obj_run_redund", DOUBLE, "Allowable service redundancy for runoff volume reduction")
+        self.create_parameter("obj_run_reignore", BOOL, "Ignore redundancy")
         self.obj_run = 0
         self.obj_run_priority = 1.0
         self.obj_run_target = 20.0
         self.obj_run_service = 50.0
         self.obj_run_redund = 0.0
+        self.obj_run_reignore = 0
 
         self.create_parameter("obj_wq", BOOL, "Plan for pollution load reduction?")
         self.create_parameter("obj_wq_priority", DOUBLE, "Priority level of pollution reduction")
@@ -78,6 +80,7 @@ class BlueGreenSystemsPlanning(UBModule):
         self.create_parameter("obj_wq_target_tp", DOUBLE, "Target for pollution reduction to achieve")
         self.create_parameter("obj_wq_service", DOUBLE, "Service level for pollution reduction to achieve")
         self.create_parameter("obj_wq_redund", DOUBLE, "Allowable service redundancey for pollution load reduction")
+        self.create_parameter("obj_wq_reignore", BOOL, "Ignore redundancy")
         self.obj_wq = 0
         self.obj_wq_priority = 1.0
         self.obj_wq_target_tss = 80.0
@@ -85,17 +88,20 @@ class BlueGreenSystemsPlanning(UBModule):
         self.obj_wq_target_tp = 45.0
         self.obj_wq_service = 30.0
         self.obj_wq_redund = 0.0
+        self.obj_wq_reignore = 0
 
         self.create_parameter("obj_rec", BOOL, "Plan for potable water reduction i.e. recycling?")
         self.create_parameter("obj_rec_priority", DOUBLE, "Priority level of runoff reduction")
         self.create_parameter("obj_rec_target", DOUBLE, "Target for runoff reduction to achieve")
         self.create_parameter("obj_rec_service", DOUBLE, "Service level for runoff reduction to achieve")
         self.create_parameter("obj_rec_redund", DOUBLE, "Allowable service redundancey for runoff volume reduction")
+        self.create_parameter("obj_rec_reignore", BOOL, "Ignore redundancy")
         self.obj_rec = 0
         self.obj_rec_priority = 1.0
         self.obj_rec_target = 20.0
         self.obj_rec_service = 50.0
         self.obj_rec_redund = 0.0
+        self.obj_rec_reignore = 0
 
         self.create_parameter("obj_amen", BOOL, "Plan for potable water reduction i.e. recycling?")
         self.create_parameter("obj_amen_priority", DOUBLE, "Priority level of runoff reduction")
@@ -104,6 +110,7 @@ class BlueGreenSystemsPlanning(UBModule):
         self.create_parameter("obj_amen_target_blue", DOUBLE, "Service level for runoff reduction to achieve")
         self.create_parameter("obj_amen_service", DOUBLE, "Service level for runoff reduction to achieve")
         self.create_parameter("obj_amen_redund", DOUBLE, "Allowable service redundancey for runoff volume reduction")
+        self.create_parameter("obj_amen_reignore", BOOL, "Ignore redundancy")
         self.obj_amen = 0
         self.obj_amen_priority = 1.0
         self.obj_amen_target_green = 100.0
@@ -111,6 +118,7 @@ class BlueGreenSystemsPlanning(UBModule):
         self.obj_amen_target_blue = 100.0
         self.obj_amen_service = 100
         self.obj_amen_redund = 0.0
+        self.obj_amen_reignore = 0
 
         # --- Spatial Planning Rules ---
         self.create_parameter("service_res", BOOL, "Service in residential dwellings?")
@@ -137,6 +145,37 @@ class BlueGreenSystemsPlanning(UBModule):
         self.limit_for = 0
 
         # --- Existing Assets ---
+        self.create_parameter("consider_existing", BOOL, "Consider existing assets in the simulation?")
+        self.create_parameter("asset_data_set", STRING, "Data reference for the existing assets data set")
+        self.create_parameter("predef_specs", BOOL, "Use pre-defined specifications for unknown systems")
+        self.create_parameter("decom_older", BOOL, "Decommission systems that have exceeded lifespan")
+        self.create_parameter("system_loc", BOOL, "Force model to use existing locations, substitute if necessary")
+        self.consider_existing = 0
+        self.asset_data_set = ""
+        self.predef_specs = 0
+        self.decom_older = 0
+        self.system_loc = 0
+
+        self.create_parameter("retrofit_scenario", STRING, "Retrofit scenario to use when running dynamics")
+        self.create_parameter("renewal_check", BOOL, "Define renewal cycles")
+        self.create_parameter("renewal_lot_perc", DOUBLE, "Percentage of building stock renewed...")
+        self.create_parameter("renewal_lot_years", DOUBLE, "...every X years.")
+        self.create_parameter("renewal_street_years", DOUBLE, "Renewal cycle for street-scale")
+        self.create_parameter("renewal_region_years", DOUBLE, "Renewal cycle for regional systems")
+        self.create_parameter("forced_street", BOOL, "Force retrofit on street scale")
+        self.create_parameter("forced_region", BOOL, "Force retrofit on regional scale")
+        self.retrofit_scenario = "N"   # N = Do nothing, R = with renewal, F = forced retrofit
+        self.renewal_check = 0
+        self.renewal_lot_perc = 10.0
+        self.renewal_lot_years = 5.0
+        self.renewal_street_years = 5.0
+        self.renewal_region_years = 5.0
+        self.forced_street = 0
+        self.forced_region = 0
+
+        # Advanced parameters
+        self.create_parameter("asset_data_prepared", STRING, "The data library reference to modified list of assets")
+        self.asset_data_prepared = ""       # The reference to a unique data object created of existing assets
 
         # --- Select Technologies ---
         self.create_parameter("use_BIOF", BOOL, "Bioretention systems, raingardens")
@@ -170,7 +209,7 @@ class BlueGreenSystemsPlanning(UBModule):
 
         # --- Simulation Settings ---
         self.create_parameter("planning_algorithm", STRING, "Select the planning algorithm method")
-        self.planning_algorithm = "Bach2020"
+        self.planning_algorithm = "Bach2020"    # Bach2020 = standard, Patch=patch-based WSUD Planning
 
         self.create_parameter("scale_lot", BOOL, "Plan systems at the lot scale?")
         self.create_parameter("scale_lot_rig", DOUBLE, "Rigour of lot-scale systems planning, combinatorics")
@@ -197,6 +236,30 @@ class BlueGreenSystemsPlanning(UBModule):
         self.scale_region_w = 2
 
         # --- Life Cycle Costing ---
+        self.create_parameter("lcc_check", BOOL, "Undertake life cycle costing?")
+        self.lcc_check = 0
+
+        self.create_parameter("lcc_period", DOUBLE, "Assessment period [years]")
+        self.create_parameter("lcc_capital", BOOL, "Do only capital cost assessment?")
+        self.create_parameter("lcc_dc", DOUBLE, "Discount rate")
+        self.create_parameter("lcc_if", DOUBLE, "Inflation rate")
+        self.create_parameter("lcc_currency", STRING, "Base currency to use")
+        self.create_parameter("lcc_conversion", BOOL, "Convert values to currency")
+        self.create_parameter("lcc_convrate", DOUBLE, "Conversion rate")
+        self.create_parameter("lcc_decom", BOOL, "Decommission asset at end of life cycle costing?")
+        self.create_parameter("lcc_maintain", BOOL, "Also incur maintenance cost during renewal")
+        self.create_parameter("lcc_ignorelc", BOOL, "Ignore system lifespan during costing?")
+        self.lcc_period = 50.0
+        self.lcc_capital = 0
+        self.lcc_dc = 1.6
+        self.lcc_if = 0.5
+        self.lcc_currency = "AUD"
+        self.lcc_conversion = 0
+        self.lcc_convrate = 1.00
+        self.lcc_decom = 1
+        self.lcc_maintain = 0
+        self.lcc_ignorelc = 0
+
         # --- Implementation Rules ---
 
         ########################
