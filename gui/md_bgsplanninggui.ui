@@ -6778,9 +6778,9 @@ p, li { white-space: pre-wrap; }
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
+               <y>-399</y>
                <width>688</width>
-               <height>886</height>
+               <height>914</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_53">
@@ -7428,6 +7428,20 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
+               <widget class="QLabel" name="biof_lcc_title_2">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;TECHNOLOGY PREFERENCE SCORES&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="Line" name="biof_line4_2">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QLabel" name="biof_lcc_title">
                 <property name="text">
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;LIFE CYCLE &amp;amp; COSTING INFORMATION&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -7907,8 +7921,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>688</width>
-               <height>886</height>
+               <width>534</width>
+               <height>855</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -8980,8 +8994,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>688</width>
-               <height>886</height>
+               <width>534</width>
+               <height>855</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -10129,8 +10143,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>688</width>
-               <height>886</height>
+               <width>534</width>
+               <height>855</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_62">
@@ -11274,8 +11288,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>688</width>
-               <height>886</height>
+               <width>534</width>
+               <height>855</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_64">
@@ -12419,8 +12433,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>688</width>
-               <height>886</height>
+               <width>534</width>
+               <height>855</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -13510,8 +13524,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>688</width>
-               <height>886</height>
+               <width>534</width>
+               <height>855</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_57">
@@ -14587,8 +14601,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>688</width>
-               <height>860</height>
+               <width>534</width>
+               <height>829</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_66">
@@ -15645,8 +15659,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>688</width>
-               <height>868</height>
+               <width>534</width>
+               <height>837</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_71">
@@ -16682,8 +16696,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>688</width>
-               <height>860</height>
+               <width>534</width>
+               <height>829</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_70">
@@ -17733,8 +17747,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>688</width>
-               <height>860</height>
+               <width>534</width>
+               <height>829</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_76">
@@ -18784,8 +18798,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>688</width>
-               <height>886</height>
+               <width>534</width>
+               <height>855</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_73">
@@ -19848,8 +19862,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>688</width>
-               <height>487</height>
+               <width>229</width>
+               <height>217</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_78">
@@ -20222,8 +20236,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>688</width>
-               <height>487</height>
+               <width>219</width>
+               <height>392</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_79">

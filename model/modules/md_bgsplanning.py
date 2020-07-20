@@ -116,7 +116,7 @@ class BlueGreenSystemsPlanning(UBModule):
         self.obj_amen_target_green = 100.0
         self.obj_amen_target_andor = 0
         self.obj_amen_target_blue = 100.0
-        self.obj_amen_service = 100
+        self.obj_amen_service = 100.0
         self.obj_amen_redund = 0.0
         self.obj_amen_reignore = 0
 
@@ -214,22 +214,22 @@ class BlueGreenSystemsPlanning(UBModule):
         self.create_parameter("scale_lot", BOOL, "Plan systems at the lot scale?")
         self.create_parameter("scale_lot_rig", DOUBLE, "Rigour of lot-scale systems planning, combinatorics")
         self.scale_lot = 1
-        self.scale_lot_rig = 4
+        self.scale_lot_rig = 4.0
 
         self.create_parameter("scale_street", BOOL, "Plan systems at the street scale?")
         self.create_parameter("scale_street_rig", DOUBLE, "Rigour of street-scale systems planning, combinatorics")
         self.scale_street = 1
-        self.scale_street_rig = 4
+        self.scale_street_rig = 4.0
 
         self.create_parameter("scale_region", BOOL, "Plan regional systems")
         self.create_parameter("scale_region_rig", DOUBLE, "Rigour of regional systems planning, combinatorics")
         self.scale_region = 1
-        self.scale_region_rig = 4
+        self.scale_region_rig = 4.0
 
         self.create_parameter("scale_preference", BOOL, "Define a scale preference?")
         self.create_parameter("scale_preference_score", DOUBLE, "Scale preference score")
         self.scale_preference = 0
-        self.scale_preference_score = 3     # 1 = 4-1-1, 2 = 3-2-1, 3 = 2-2-2, 4 = 1-2-3, 5 = 1-1-4 small-med-large
+        self.scale_preference_score = 3.0     # 1 = 4-1-1, 2 = 3-2-1, 3 = 2-2-2, 4 = 1-2-3, 5 = 1-1-4 small-med-large
 
         self.scale_lot_w = 2        # Advanced - weights assigned to all scales based on scale-preference score
         self.scale_street_w = 2

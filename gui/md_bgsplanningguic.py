@@ -137,9 +137,6 @@ class BlueGreenGuiLaunch(QtWidgets.QDialog):
         self.ui.disc.clicked.connect(self.enable_disable_technology_guis)
         self.ui.bank.clicked.connect(self.enable_disable_technology_guis)
 
-
-
-
         # OTHERS
         self.ui.buttonBox.accepted.connect(self.save_values)
 
