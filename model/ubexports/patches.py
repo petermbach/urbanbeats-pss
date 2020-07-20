@@ -74,7 +74,6 @@ def export_vectorpatches_to_gis_shapefile(asset_col, map_attr, filepath, filenam
     fielddefmatrix.append(ogr.FieldDefn("CentreY", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("OriginX", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("OriginY", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("Status", ogr.OFTInteger))
 
     for field in fielddefmatrix:
         layer.CreateField(field)
@@ -82,8 +81,6 @@ def export_vectorpatches_to_gis_shapefile(asset_col, map_attr, filepath, filenam
 
     for i in range(len(asset_col)):
         current_patch = asset_col[i]
-        # if current_patch.get_attribute("Status") == 0:
-        #     continue
 
         offsetXY = (current_patch.get_attribute("OriginX") + xmin, current_patch.get_attribute("OriginY") + ymin)
 
@@ -104,11 +101,61 @@ def export_vectorpatches_to_gis_shapefile(asset_col, map_attr, filepath, filenam
         feature.SetField("LandUse", str(current_patch.get_attribute("LandUse")))
         feature.SetField("CentreX", float(current_patch.get_attribute("CentreX")))
         feature.SetField("CentreY", float(current_patch.get_attribute("CentreY")))
-        feature.SetField("CentreX", float(current_patch.get_attribute("OriginX")))
-        feature.SetField("CentreY", float(current_patch.get_attribute("OriginY")))
-        feature.SetField("Status", int(current_patch.get_attribute("Status")))
+        feature.SetField("OriginX", float(current_patch.get_attribute("OriginX")))
+        feature.SetField("OriginY", float(current_patch.get_attribute("OriginY")))
 
         layer.CreateFeature(feature)
+    shapefile.Destroy()
+
+    # Export Centroids
+    driver = ogr.GetDriverByName('ESRI Shapefile')
+    usefilename = fullname+"_Centroids"
+    fileduplicate_counter = 0
+    while os.path.exists(str(usefilename+".shp")):
+        fileduplicate_counter += 1
+        usefilename = usefilename + "(" + str(fileduplicate_counter)+ ")"
+    shapefile = driver.CreateDataSource(str(usefilename)+".shp")
+
+    layer = shapefile.CreateLayer('layer1', spatial_ref, ogr.wkbPoint)
+    layerDefinition = layer.GetLayerDefn()
+
+    fielddefmatrix = []
+    fielddefmatrix.append(ogr.FieldDefn("PatchID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("BlockID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("Area", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("LandUse", ogr.OFTString))
+    fielddefmatrix.append(ogr.FieldDefn("CentreX", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("CentreY", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("RepX", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("RepY", ogr.OFTReal))
+
+    for field in fielddefmatrix:
+        layer.CreateField(field)
+        layer.GetLayerDefn()
+
+    for i in range(len(asset_col)):
+        current_patch = asset_col[i]
+
+        offsetXY = (current_patch.get_attribute("OriginX") + xmin, current_patch.get_attribute("OriginY") + ymin)
+
+        centroid = ogr.Geometry(ogr.wkbPoint)
+        centroid.AddPoint(current_patch.get_attribute("RepX") + offsetXY[0],
+                          current_patch.get_attribute("RepY") + offsetXY[1])
+
+        feature = ogr.Feature(layerDefinition)
+        feature.SetGeometry(centroid)
+        feature.SetFID(0)
+
+        feature.SetField("PatchID", int(current_patch.get_attribute("PatchID")))
+        feature.SetField("BlockID", int(current_patch.get_attribute("BlockID")))
+        feature.SetField("Area", float(current_patch.get_attribute("Area")))
+        feature.SetField("LandUse", str(current_patch.get_attribute("LandUse")))
+        feature.SetField("CentreX", float(current_patch.get_attribute("CentreX")))
+        feature.SetField("CentreY", float(current_patch.get_attribute("CentreY")))
+        feature.SetField("RepX", float(current_patch.get_attribute("RepX")))
+        feature.SetField("RepY", float(current_patch.get_attribute("RepY")))
+        layer.CreateFeature(feature)
+
     shapefile.Destroy()
 
 
