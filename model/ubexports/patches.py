@@ -31,6 +31,87 @@ import os
 from ..progref import ubglobals
 
 
+def export_vectorpatches_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg):
+    """Exports all the vector patches in the asset_col list to a GIS Shapefile based on current filepath. Also exports
+    the centroids to a point shapefile.
+
+    :param asset_col: [] list containing all UBVector patch objects
+    :param map_attr: global map attributes to track any relevant information
+    :param filepath: the active filepath to export these assets to
+    :param filename: name of the file to export (without the 'shp' extension)
+    :param epsg: the EPSG code for the coordinate system to use
+    :return:
+    """
+    if map_attr.get_attribute("GeometryType") != "VECTORPATCH" or map_attr.get_attribute("HasLUC") != 1:
+        return True
+
+    xmin = map_attr.get_attribute("xllcorner")
+    ymin = map_attr.get_attribute("yllcorner")
+
+    fullname = filepath + "/" + filename
+
+    spatial_ref = osr.SpatialReference()
+    spatial_ref.ImportFromEPSG(epsg)
+
+    driver = ogr.GetDriverByName('ESRI Shapefile')
+
+    usefilename = fullname  # A placeholder filename
+    fileduplicate_counter = 0  # Tracks the number of duplicates
+    while os.path.exists(str(usefilename + ".shp")):
+        fileduplicate_counter += 1
+        usefilename = fullname + "(" + str(fileduplicate_counter) + ")"
+    shapefile = driver.CreateDataSource(str(usefilename) + ".shp")
+
+    layer = shapefile.CreateLayer('layer1', spatial_ref, ogr.wkbPolygon)
+    layerDefinition = layer.GetLayerDefn()
+
+    fielddefmatrix = []
+    fielddefmatrix.append(ogr.FieldDefn("PatchID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("BlockID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("Area", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("LandUse", ogr.OFTString))
+    fielddefmatrix.append(ogr.FieldDefn("CentreX", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("CentreY", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("OriginX", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("OriginY", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("Status", ogr.OFTInteger))
+
+    for field in fielddefmatrix:
+        layer.CreateField(field)
+        layer.GetLayerDefn()
+
+    for i in range(len(asset_col)):
+        current_patch = asset_col[i]
+        # if current_patch.get_attribute("Status") == 0:
+        #     continue
+
+        offsetXY = (current_patch.get_attribute("OriginX") + xmin, current_patch.get_attribute("OriginY") + ymin)
+
+        line = ogr.Geometry(ogr.wkbPolygon)
+        ring = ogr.Geometry(ogr.wkbLinearRing)
+        nl = current_patch.get_points()
+        for point in nl:
+            ring.AddPoint(point[0] + offsetXY[0], point[1] + offsetXY[1])
+        line.AddGeometry(ring)
+
+        feature = ogr.Feature(layerDefinition)
+        feature.SetGeometry(line)
+        feature.SetFID(0)
+
+        feature.SetField("PatchID", int(current_patch.get_attribute("PatchID")))
+        feature.SetField("BlockID", int(current_patch.get_attribute("BlockID")))
+        feature.SetField("Area", float(current_patch.get_attribute("Area")))
+        feature.SetField("LandUse", str(current_patch.get_attribute("LandUse")))
+        feature.SetField("CentreX", float(current_patch.get_attribute("CentreX")))
+        feature.SetField("CentreY", float(current_patch.get_attribute("CentreY")))
+        feature.SetField("CentreX", float(current_patch.get_attribute("OriginX")))
+        feature.SetField("CentreY", float(current_patch.get_attribute("OriginY")))
+        feature.SetField("Status", int(current_patch.get_attribute("Status")))
+
+        layer.CreateFeature(feature)
+    shapefile.Destroy()
+
+
 def export_patches_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg):
     """Exports all the patches in the asset_col list to a GIS Shapefile based on the current filepath.
 

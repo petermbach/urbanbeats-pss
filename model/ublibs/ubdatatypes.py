@@ -104,7 +104,7 @@ class UBRasterData(object):
         """
         if cells_tall == 0 and cells_wide == 0:      # If the resolutions are identical or the input resolution > cells
             return self.__data[row_start, col_start]
-        datamatrix = self.__data[row_start:row_start + cells_tall, col_start:col_start+cells_wide]
+        datamatrix = self.__data[row_start:row_start + cells_tall, col_start:col_start+cells_wide].astype('float32')
         return datamatrix
 
     def set_value(self, col, row, value):

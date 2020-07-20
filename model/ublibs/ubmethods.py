@@ -558,6 +558,7 @@ def extract_data_for_patch_from_map(originXY, input_res, mapXY, map_res, patch, 
             row_loc = int((p[0] * input_res + offsets[1]) / map_res)    # using the y-offset
             col_loc = int((p[1] * input_res + offsets[0]) / map_res)    # using the x-offset
             data.append(datasquare[row_loc, col_loc])
+            data.append(datasquare[row_loc, col_loc])
         else:   # if the map resolution is finer than the original patch
             rowmin, rowmax = int(math.ceil(p[0] * resratio)), int(math.ceil((p[0]+1) * resratio))
             colmin, colmax = int(math.ceil(p[1] * resratio)), int(math.ceil((p[1]+1) * resratio))

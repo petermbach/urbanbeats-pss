@@ -267,7 +267,7 @@ p, li { white-space: pre-wrap; }
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
+               <y>-220</y>
                <width>549</width>
                <height>629</height>
               </rect>
@@ -379,7 +379,7 @@ p, li { white-space: pre-wrap; }
                 <item>
                  <widget class="QLabel" name="geometry_title">
                   <property name="text">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;SPATIAL GEOMETRY&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;BLOCK GEOMETRY&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                  </widget>
                 </item>
@@ -459,7 +459,7 @@ p, li { white-space: pre-wrap; }
                      </item>
                      <item>
                       <property name="text">
-                       <string>Vector-based Patch Representation</string>
+                       <string>Patch-based Representation</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../graphics/ubeats.qrc">
@@ -496,14 +496,14 @@ p, li { white-space: pre-wrap; }
                    </sizepolicy>
                   </property>
                   <property name="currentIndex">
-                   <number>0</number>
+                   <number>2</number>
                   </property>
                   <widget class="QWidget" name="page">
                    <layout class="QVBoxLayout" name="verticalLayout_9">
                     <item>
                      <widget class="QLabel" name="blockrep_title">
                       <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Customize Block-based Representation&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Square-Grid Representation - Customize&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
@@ -1210,20 +1210,23 @@ p, li { white-space: pre-wrap; }
                     <item>
                      <widget class="QLabel" name="vector_title">
                       <property name="enabled">
-                       <bool>false</bool>
+                       <bool>true</bool>
                       </property>
                       <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Customize Vector-based Patch Representation (COMING SOON)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Patch-based Representation - Customize&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QWidget" name="vectorgrid_widget" native="true">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
                       <layout class="QHBoxLayout" name="horizontalLayout_13">
                        <item>
                         <widget class="QLabel" name="vectorgrid_lbl">
                          <property name="enabled">
-                          <bool>false</bool>
+                          <bool>true</bool>
                          </property>
                          <property name="whatsThis">
                           <string>Width of the square cell in the city grid in metres</string>
@@ -1252,7 +1255,7 @@ p, li { white-space: pre-wrap; }
                        <item>
                         <widget class="QSpinBox" name="vectorgrid_spin">
                          <property name="enabled">
-                          <bool>false</bool>
+                          <bool>true</bool>
                          </property>
                          <property name="minimumSize">
                           <size>
@@ -1287,7 +1290,7 @@ p, li { white-space: pre-wrap; }
                        <item>
                         <widget class="QCheckBox" name="vectorgrid_auto">
                          <property name="enabled">
-                          <bool>false</bool>
+                          <bool>true</bool>
                          </property>
                          <property name="toolTip">
                           <string>An automatic algorithm that determines a suitable block size based on the map for computational efficiency.</string>
@@ -1316,7 +1319,7 @@ p, li { white-space: pre-wrap; }
                     <item>
                      <widget class="QLabel" name="vectornhd_title">
                       <property name="enabled">
-                       <bool>false</bool>
+                       <bool>true</bool>
                       </property>
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Patch Neighbourhood Rule&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -1326,7 +1329,7 @@ p, li { white-space: pre-wrap; }
                     <item>
                      <widget class="QLabel" name="vectornhd_lbl">
                       <property name="enabled">
-                       <bool>false</bool>
+                       <bool>true</bool>
                       </property>
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose which neighbourhood rule to use, Border Edges (all adjacent patches that share a common edge), or a scan radius (all patches whose centroids are within a given radius of the current patch)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -1338,11 +1341,14 @@ p, li { white-space: pre-wrap; }
                     </item>
                     <item>
                      <widget class="QWidget" name="vectornhd_widget" native="true">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
                       <layout class="QHBoxLayout" name="horizontalLayout_14">
                        <item>
                         <widget class="QLabel" name="img_borders">
                          <property name="enabled">
-                          <bool>false</bool>
+                          <bool>true</bool>
                          </property>
                          <property name="minimumSize">
                           <size>
@@ -1365,9 +1371,9 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item>
-                        <widget class="QRadioButton" name="radio_borders">
+                        <widget class="QRadioButton" name="radio_dirichlet">
                          <property name="enabled">
-                          <bool>false</bool>
+                          <bool>true</bool>
                          </property>
                          <property name="toolTip">
                           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -1380,7 +1386,7 @@ p, li { white-space: pre-wrap; }
                           <string/>
                          </property>
                          <property name="text">
-                          <string>Border Edges</string>
+                          <string>Dirichlet</string>
                          </property>
                          <property name="checkable">
                           <bool>true</bool>
@@ -1434,6 +1440,73 @@ p, li { white-space: pre-wrap; }
                           <bool>false</bool>
                          </property>
                         </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="vectorgrid_lbl_3">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <property name="whatsThis">
+                       <string>Width of the square cell in the city grid in metres</string>
+                      </property>
+                      <property name="text">
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Additional Options:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QWidget" name="vectorgrid_widget_2" native="true">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <layout class="QHBoxLayout" name="horizontalLayout_16">
+                       <item>
+                        <widget class="QLabel" name="vectorgrid_lbl_2">
+                         <property name="enabled">
+                          <bool>true</bool>
+                         </property>
+                         <property name="whatsThis">
+                          <string>Width of the square cell in the city grid in metres</string>
+                         </property>
+                         <property name="text">
+                          <string>Scan Radius (as factor of discretization grid size): </string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QDoubleSpinBox" name="scan_radius_spin">
+                         <property name="decimals">
+                          <number>1</number>
+                         </property>
+                         <property name="minimum">
+                          <double>1.000000000000000</double>
+                         </property>
+                         <property name="maximum">
+                          <double>2.000000000000000</double>
+                         </property>
+                         <property name="singleStep">
+                          <double>0.100000000000000</double>
+                         </property>
+                         <property name="value">
+                          <double>1.200000000000000</double>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <spacer name="horizontalSpacer_18">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
                        </item>
                       </layout>
                      </widget>

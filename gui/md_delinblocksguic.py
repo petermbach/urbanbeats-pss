@@ -243,6 +243,14 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         else:
             self.ui.radio_hexnNOR.setChecked(1)
 
+        self.ui.vectorgrid_spin.setValue(self.module.get_parameter("disgrid"))
+        self.ui.vectorgrid_auto.setChecked(int(self.module.get_parameter("disgrid_auto")))
+        if self.module.get_parameter("patch_neigh") == "DIRICHLET":
+            self.ui.radio_dirichlet.setChecked(1)
+        else:
+            self.ui.radio_radius.setChecked(1)
+        self.ui.scan_radius_spin.setValue(self.module.get_parameter("patch_neigh_radius"))
+
         # --- JURISDICTIONAL AND SUBURBAN BOUNDARIES ---
         try:    # MUNICIPAL BOUNDARY MAP COMBO
             self.ui.geopolitical_combo.setCurrentIndex(self.municipalmaps[1].index(
@@ -413,6 +421,8 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
             self.module.set_parameter("geometry_type", "SQUARES")
         elif self.ui.rep_combo.currentIndex() == 1:
             self.module.set_parameter("geometry_type", "HEXAGONS")
+        elif self.ui.rep_combo.currentIndex() == 2:
+            self.module.set_parameter("geometry_type", "VECTORPATCH")
         self.module.set_parameter("blocksize", self.ui.resolution_spin.value())
         self.module.set_parameter("blocksize_auto", int(self.ui.resolution_auto.isChecked()))
         if self.ui.radio_moore.isChecked():
@@ -438,6 +448,15 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
             self.module.set_parameter("hex_neighbourhood", "YNOR")
         else:
             self.module.set_parameter("hex_neighbourhood", "NOR")
+
+        # VECTORPATCH GRID
+        self.module.set_parameter("disgrid", self.ui.vectorgrid_spin.value())
+        self.module.set_parameter("disgrid_auto", int(self.ui.vectorgrid_auto.isChecked()))
+        if self.ui.radio_dirichlet.isChecked():
+            self.module.set_parameter("patch_neigh", "DIRICHLET")
+        else:
+            self.module.set_parameter("patch_neigh", "RADIUS")
+        self.module.set_parameter("patch_neigh_radius", float(self.ui.scan_radius_spin.value()))
 
         # --- JURISDICTIONAL AND SUBURBAN BOUNDARIES ---
         self.module.set_parameter("include_geopolitical", int(self.ui.geopolitical_check.isChecked()))
