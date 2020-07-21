@@ -30,6 +30,74 @@ import os
 # URBANBEATS IMPORT
 from ..progref import ubglobals
 
+def export_dirichletnetwork_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg):
+    """ Exports the full dirichlet network among VectorPatches to GIS Shapefile based on current filepath.
+
+    :param asset_col: [] list containing all UBVector Link objects
+    :param map_attr: global map attributes to track relevant information
+    :param filepath: active filepath to export assets to
+    :param filename: name of file to export (without the .shp extension)
+    :param epsg: the EPSG code for the coordinate system to use
+    :return:
+    """
+    if map_attr.get_attribute("HasDIRICHLET_NET") != 1:
+        return True
+
+    xmin = map_attr.get_attribute("xllcorner")
+    ymin = map_attr.get_attribute("yllcorner")
+
+    fullname = filepath + "/" + filename
+
+    spatial_ref = osr.SpatialReference()
+    spatial_ref.ImportFromEPSG(epsg)
+
+    driver = ogr.GetDriverByName('ESRI Shapefile')
+
+    usefilename = fullname  # Placeholder filename
+    fileduplicate_counter = 0
+    while os.path.exists(str(usefilename + ".shp")):
+        fileduplicate_counter += 1
+        usefilename = fullname + "(" + str(fileduplicate_counter) + ")"
+    shapefile = driver.CreateDataSource(str(usefilename) + ".shp")
+
+    layer = shapefile.CreateLayer('layer1', spatial_ref, ogr.wkbLineString)
+    layerDefinition = layer.GetLayerDefn()
+
+    fielddefmatrix = []
+    fielddefmatrix.append(ogr.FieldDefn("LinkID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("NodeA", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("NodeB", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn("Distance", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("EdgeWidth", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("Traversal", ogr.OFTReal))
+
+    for field in fielddefmatrix:
+        layer.CreateField(field)
+        layer.GetLayerDefn()
+
+    for i in range(len(asset_col)):
+        current_link = asset_col[i]
+        linepoints = current_link.get_points()
+        line = ogr.Geometry(ogr.wkbLineString)
+        p1 = linepoints[0]
+        p2 = linepoints[1]
+        line.AddPoint(p1[0] + xmin, p1[1] + ymin)
+        line.AddPoint(p2[0] + xmin, p2[1] + ymin)
+
+        feature = ogr.Feature(layerDefinition)
+        feature.SetGeometry(line)
+        feature.SetFID(0)
+
+        feature.SetField("LinkID", int(current_link.get_attribute("LinkID")))
+        feature.SetField("NodeA", int(current_link.get_attribute("NodeA")))
+        feature.SetField("NodeB", int(current_link.get_attribute("NodeB")))
+        feature.SetField("Distance", float(current_link.get_attribute("Distance")))
+        feature.SetField("EdgeWidth", float(current_link.get_attribute("EdgeWidth")))
+        feature.SetField("Traversal", float(current_link.get_attribute("Traversal")))
+        layer.CreateFeature(feature)
+    shapefile.Destroy()
+    return True
+
 
 def export_vectorpatches_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg):
     """Exports all the vector patches in the asset_col list to a GIS Shapefile based on current filepath. Also exports
@@ -74,6 +142,34 @@ def export_vectorpatches_to_gis_shapefile(asset_col, map_attr, filepath, filenam
     fielddefmatrix.append(ogr.FieldDefn("CentreY", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("OriginX", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("OriginY", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("Neighbours", ogr.OFTString))
+
+    if map_attr.get_attribute("HasPOP"):
+        fielddefmatrix.append(ogr.FieldDefn("Population", ogr.OFTInteger))
+
+    if map_attr.get_attribute("HasELEV"):
+        fielddefmatrix.append(ogr.FieldDefn("AvgElev", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("MinElev", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("MaxElev", ogr.OFTReal))
+
+    if map_attr.get_attribute("HasGEOPOLITICAL"):  # IF A GEOPOLITICAL MAP WAS INCLUDED IN THE SIMULATION
+        fielddefmatrix.append(ogr.FieldDefn("Region", ogr.OFTString))
+
+    if map_attr.get_attribute("HasSUBURBS"):  # IF SUBURBS WERE INCLUDED IN THE SIMULATION
+        fielddefmatrix.append(ogr.FieldDefn("Suburb", ogr.OFTString))
+
+    if map_attr.get_attribute("HasPLANZONES"):  # IF PLANNING ZONES WERE INCLUDED IN THE SIMULATION
+        fielddefmatrix.append(ogr.FieldDefn("PlanZone", ogr.OFTString))
+
+    if map_attr.get_attribute("HasRIVERS"):         # IF A RIVERS MAP WAS LOADED IN THE SIMULATION
+        fielddefmatrix.append(ogr.FieldDefn("HasRiver", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("RiverNames", ogr.OFTString))
+
+    if map_attr.get_attribute("HasLAKES"):          # IF A LAKES MAP WAS LOADED IN THE SIMULATION
+        fielddefmatrix.append(ogr.FieldDefn("HasLake", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("LakeNames", ogr.OFTString))
+
+
 
     for field in fielddefmatrix:
         layer.CreateField(field)
@@ -81,14 +177,14 @@ def export_vectorpatches_to_gis_shapefile(asset_col, map_attr, filepath, filenam
 
     for i in range(len(asset_col)):
         current_patch = asset_col[i]
-
-        offsetXY = (current_patch.get_attribute("OriginX") + xmin, current_patch.get_attribute("OriginY") + ymin)
+        if current_patch.get_attribute("Status") == 0:
+            continue
 
         line = ogr.Geometry(ogr.wkbPolygon)
         ring = ogr.Geometry(ogr.wkbLinearRing)
         nl = current_patch.get_points()
         for point in nl:
-            ring.AddPoint(point[0] + offsetXY[0], point[1] + offsetXY[1])
+            ring.AddPoint(point[0] + xmin, point[1] + ymin)
         line.AddGeometry(ring)
 
         feature = ogr.Feature(layerDefinition)
@@ -104,16 +200,43 @@ def export_vectorpatches_to_gis_shapefile(asset_col, map_attr, filepath, filenam
         feature.SetField("OriginX", float(current_patch.get_attribute("OriginX")))
         feature.SetField("OriginY", float(current_patch.get_attribute("OriginY")))
 
+        if map_attr.get_attribute("HasPOP"):
+            feature.SetField("Population", int(current_patch.get_attribute("Population")))
+
+        if map_attr.get_attribute("HasELEV"):
+            feature.SetField("AvgElev", float(current_patch.get_attribute("AvgElev")))
+            feature.SetField("MinElev", float(current_patch.get_attribute("MinElev")))
+            feature.SetField("MaxElev", float(current_patch.get_attribute("MaxElev")))
+
+        if map_attr.get_attribute("HasGEOPOLITICAL"):
+            feature.SetField("Region", str(current_patch.get_attribute("Region")))
+
+        if map_attr.get_attribute("HasSUBURBS"):
+            feature.SetField("Suburb", str(current_patch.get_attribute("Suburb")))
+
+        if map_attr.get_attribute("HasPLANZONES"):
+            feature.SetField("PlanZone", str(current_patch.get_attribute("PlanZone")))
+
+        if map_attr.get_attribute("HasRIVERS"):
+            feature.SetField("HasRiver", int(current_patch.get_attribute("HasRiver")))
+            feature.SetField("RiverNames", str(",".join(map(str, current_patch.get_attribute("RiverNames")))))
+
+        if map_attr.get_attribute("HasLAKES"):
+            feature.SetField("HasLake", int(current_patch.get_attribute("HasLake")))
+            feature.SetField("LakeNames", str(",".join(map(str, current_patch.get_attribute("LakeNames")))))
+
+        feature.SetField("Neighbours", str(",".join(map(str, current_patch.get_attribute("Neighbours")))))
+
         layer.CreateFeature(feature)
     shapefile.Destroy()
 
-    # Export Centroids
+    # Export Representative Points
     driver = ogr.GetDriverByName('ESRI Shapefile')
     usefilename = fullname+"_Centroids"
     fileduplicate_counter = 0
     while os.path.exists(str(usefilename+".shp")):
         fileduplicate_counter += 1
-        usefilename = usefilename + "(" + str(fileduplicate_counter)+ ")"
+        usefilename = fullname+"_Centroids" + "(" + str(fileduplicate_counter)+ ")"
     shapefile = driver.CreateDataSource(str(usefilename)+".shp")
 
     layer = shapefile.CreateLayer('layer1', spatial_ref, ogr.wkbPoint)
@@ -128,6 +251,32 @@ def export_vectorpatches_to_gis_shapefile(asset_col, map_attr, filepath, filenam
     fielddefmatrix.append(ogr.FieldDefn("CentreY", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("RepX", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("RepY", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("Neighbours", ogr.OFTString))
+
+    if map_attr.get_attribute("HasPOP"):
+        fielddefmatrix.append(ogr.FieldDefn("Population", ogr.OFTInteger))
+
+    if map_attr.get_attribute("HasELEV"):
+        fielddefmatrix.append(ogr.FieldDefn("AvgElev", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("MinElev", ogr.OFTReal))
+        fielddefmatrix.append(ogr.FieldDefn("MaxElev", ogr.OFTReal))
+
+    if map_attr.get_attribute("HasGEOPOLITICAL"):  # IF A GEOPOLITICAL MAP WAS INCLUDED IN THE SIMULATION
+        fielddefmatrix.append(ogr.FieldDefn("Region", ogr.OFTString))
+
+    if map_attr.get_attribute("HasSUBURBS"):  # IF SUBURBS WERE INCLUDED IN THE SIMULATION
+        fielddefmatrix.append(ogr.FieldDefn("Suburb", ogr.OFTString))
+
+    if map_attr.get_attribute("HasPLANZONES"):  # IF PLANNING ZONES WERE INCLUDED IN THE SIMULATION
+        fielddefmatrix.append(ogr.FieldDefn("PlanZone", ogr.OFTString))
+
+    if map_attr.get_attribute("HasRIVERS"):         # IF A RIVERS MAP WAS LOADED IN THE SIMULATION
+        fielddefmatrix.append(ogr.FieldDefn("HasRiver", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("RiverNames", ogr.OFTString))
+
+    if map_attr.get_attribute("HasLAKES"):          # IF A LAKES MAP WAS LOADED IN THE SIMULATION
+        fielddefmatrix.append(ogr.FieldDefn("HasLake", ogr.OFTInteger))
+        fielddefmatrix.append(ogr.FieldDefn("LakeNames", ogr.OFTString))
 
     for field in fielddefmatrix:
         layer.CreateField(field)
@@ -135,12 +284,11 @@ def export_vectorpatches_to_gis_shapefile(asset_col, map_attr, filepath, filenam
 
     for i in range(len(asset_col)):
         current_patch = asset_col[i]
-
-        offsetXY = (current_patch.get_attribute("OriginX") + xmin, current_patch.get_attribute("OriginY") + ymin)
+        if current_patch.get_attribute("Status") == 0:
+            continue
 
         centroid = ogr.Geometry(ogr.wkbPoint)
-        centroid.AddPoint(current_patch.get_attribute("RepX") + offsetXY[0],
-                          current_patch.get_attribute("RepY") + offsetXY[1])
+        centroid.AddPoint(current_patch.get_attribute("RepX") + xmin, current_patch.get_attribute("RepY") + ymin)
 
         feature = ogr.Feature(layerDefinition)
         feature.SetGeometry(centroid)
@@ -154,6 +302,26 @@ def export_vectorpatches_to_gis_shapefile(asset_col, map_attr, filepath, filenam
         feature.SetField("CentreY", float(current_patch.get_attribute("CentreY")))
         feature.SetField("RepX", float(current_patch.get_attribute("RepX")))
         feature.SetField("RepY", float(current_patch.get_attribute("RepY")))
+
+        if map_attr.get_attribute("HasPOP"):
+            feature.SetField("Population", int(current_patch.get_attribute("Population")))
+
+        if map_attr.get_attribute("HasELEV"):
+            feature.SetField("AvgElev", float(current_patch.get_attribute("AvgElev")))
+            feature.SetField("MinElev", float(current_patch.get_attribute("MinElev")))
+            feature.SetField("MaxElev", float(current_patch.get_attribute("MaxElev")))
+
+        if map_attr.get_attribute("HasGEOPOLITICAL"):
+            feature.SetField("Region", str(current_patch.get_attribute("Region")))
+
+        if map_attr.get_attribute("HasSUBURBS"):
+            feature.SetField("Suburb", str(current_patch.get_attribute("Suburb")))
+
+        if map_attr.get_attribute("HasPLANZONES"):
+            feature.SetField("PlanZone", str(current_patch.get_attribute("PlanZone")))
+
+        feature.SetField("Neighbours", str(",".join(map(str, current_patch.get_attribute("Neighbours")))))
+
         layer.CreateFeature(feature)
 
     shapefile.Destroy()

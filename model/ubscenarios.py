@@ -665,11 +665,16 @@ class UrbanBeatsScenario(threading.Thread):
         # xpatches.export_patch_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("PatchFloID"), map_attributes,
         #                                          self.projectpath + "/output", file_basename + "_PatchFlowpaths",
         #                                          int(epsg))
-        # self.update_runtime_progress(93)
-        # xflowpaths.export_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("FlowID"), map_attributes,
-        #                                             self.projectpath + "/output", file_basename + "_Flowpaths",
-        #                                             int(epsg), "Blocks")  # Export Block FlowPaths
-        # self.update_runtime_progress(94)
+        self.update_runtime_progress(93)
+        xflowpaths.export_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("FlowID"), map_attributes,
+                                                    self.projectpath + "/output", file_basename + "_Flowpaths",
+                                                    int(epsg))  # Export FlowPaths
+
+        xpatches.export_dirichletnetwork_to_gis_shapefile(self.get_assets_with_identifier("LinkID"), map_attributes,
+                                                          self.projectpath + "/output", file_basename + "_Dirichletnet",
+                                                          int(epsg))    # Export the Dirichlet network
+
+        self.update_runtime_progress(94)
         # xopenspace.export_oslink_to_gis_shapefile(self.get_assets_with_identifier("OSLinkID"), map_attributes,
         #                                             self.projectpath + "/output", file_basename + "_OSLink",
         #                                             int(epsg))

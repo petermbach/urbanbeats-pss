@@ -28,7 +28,7 @@ import osgeo.ogr as ogr
 import os
 
 
-def export_flowpaths_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg, fptype):
+def export_flowpaths_to_gis_shapefile(asset_col, map_attr, filepath, filename, epsg):
     """Exports all flowpaths in the asset_col list to a GIS Shapefile based on the current filepath.
 
     :param asset_col: [] list containing all UBVector() Flowpath objects
@@ -39,7 +39,7 @@ def export_flowpaths_to_gis_shapefile(asset_col, map_attr, filepath, filename, e
     :param fptype: type of Flowpath ("Blocks", "Patches")
     :return:
     """
-    print(fptype)
+    idtype = map_attr.get_attribute("idtype")
     if map_attr.get_attribute("HasFLOWPATHS") != 1:
         return True
 
@@ -65,7 +65,7 @@ def export_flowpaths_to_gis_shapefile(asset_col, map_attr, filepath, filename, e
 
     fielddefmatrix = []
     fielddefmatrix.append(ogr.FieldDefn("FlowID", ogr.OFTInteger))
-    fielddefmatrix.append(ogr.FieldDefn("BlockID", ogr.OFTInteger))
+    fielddefmatrix.append(ogr.FieldDefn(idtype, ogr.OFTInteger))
     fielddefmatrix.append(ogr.FieldDefn("DownID", ogr.OFTInteger))
     fielddefmatrix.append(ogr.FieldDefn("Z_up", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("Z_down", ogr.OFTReal))
@@ -92,7 +92,7 @@ def export_flowpaths_to_gis_shapefile(asset_col, map_attr, filepath, filename, e
         feature.SetFID(0)
 
         feature.SetField("FlowID", int(current_path.get_attribute("FlowID")))
-        feature.SetField("BlockID", int(current_path.get_attribute("BlockID")))
+        feature.SetField(idtype, int(current_path.get_attribute(idtype)))
         feature.SetField("DownID", int(current_path.get_attribute("DownID")))
         feature.SetField("Z_up", float(current_path.get_attribute("Z_up")))
         feature.SetField("Z_down", float(current_path.get_attribute("Z_down")))
