@@ -650,51 +650,57 @@ class UrbanBeatsScenario(threading.Thread):
         epsg = self.simulation.get_project_parameter("project_epsg")
 
         # SHAPEFILE EXPORT FUNCTIONS
-        # xblocks.export_block_assets_to_gis_shapefile(self.get_assets_with_identifier("BlockID"), map_attributes,
-        #                                                self.projectpath+"/output", file_basename + "_Blocks",
-        #                                                int(epsg))
-        self.update_runtime_progress(91)
-        xpatches.export_vectorpatches_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
-                                                       self.projectpath+"/output", file_basename + "_Patches",
-                                                       int(epsg))
+        # -- SECTION 1 - BASE GEOMETRY
+        if map_attributes.get_attribute("GeometryType") in ["SQUARES", "HEXAGONS"]:
+            xblocks.export_block_assets_to_gis_shapefile(self.get_assets_with_identifier("BlockID"), map_attributes,
+                                                           self.projectpath+"/output", file_basename + "_Blocks",
+                                                           int(epsg))
 
-        # xpatches.export_patches_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
-        #                                           self.projectpath+"/output", file_basename + "_Patches",
-        #                                           int(epsg))
-        # self.update_runtime_progress(92)
-        # xpatches.export_patch_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("PatchFloID"), map_attributes,
-        #                                          self.projectpath + "/output", file_basename + "_PatchFlowpaths",
-        #                                          int(epsg))
+            xpatches.export_patches_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
+                                                     self.projectpath + "/output", file_basename + "_Patches",
+                                                     int(epsg))
+
+        if map_attributes.get_attribute("GeometryType") in ["VECTORPATCH"]:
+            xpatches.export_vectorpatches_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
+                                                           self.projectpath+"/output", file_basename + "_Patches",
+                                                           int(epsg))
+
         self.update_runtime_progress(93)
+
+        # -- SECTION 2 - FLOW PATHS
         xflowpaths.export_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("FlowID"), map_attributes,
-                                                    self.projectpath + "/output", file_basename + "_Flowpaths",
-                                                    int(epsg))  # Export FlowPaths
+                                                     self.projectpath + "/output", file_basename + "_Flowpaths",
+                                                     int(epsg))  # Export FlowPaths
 
-        xpatches.export_dirichletnetwork_to_gis_shapefile(self.get_assets_with_identifier("LinkID"), map_attributes,
-                                                          self.projectpath + "/output", file_basename + "_Dirichletnet",
-                                                          int(epsg))    # Export the Dirichlet network
+        if map_attributes.get_attribute("GeometryType") in ["SQUARES", "HEXAGONS"]:
+            # Patch Flowpaths
+            xpatches.export_patch_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("PatchFloID"),
+                                                             map_attributes, self.projectpath + "/output",
+                                                             file_basename + "_PatchFlowpaths", int(epsg))
+        if map_attributes.get_attribute("GeometryType") in ["VECTORPATCH"]:
+            # Dirichlet Network
+            xpatches.export_dirichletnetwork_to_gis_shapefile(self.get_assets_with_identifier("LinkID"),
+                                                              map_attributes, self.projectpath + "/output",
+                                                              file_basename + "_Dirichletnet", int(epsg))
 
-        self.update_runtime_progress(94)
-        # xopenspace.export_oslink_to_gis_shapefile(self.get_assets_with_identifier("OSLinkID"), map_attributes,
-        #                                             self.projectpath + "/output", file_basename + "_OSLink",
-        #                                             int(epsg))
-        # self.update_runtime_progress(95)
-        # xopenspace.export_osnet_to_gis_shapefile(self.get_assets_with_identifier("OSNetID"), map_attributes,
-        #                                             self.projectpath + "/output", file_basename + "_OSNet",
-        #                                             int(epsg))
-        # self.update_runtime_progress(96)
-        # xopenspace.export_patch_buffers_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
-        #                                             self.projectpath + "/output", file_basename + "_OSBuffer",
-        #                                             int(epsg))
-        # self.update_runtime_progress(97)
+        self.update_runtime_progress(96)
+        # -- SECTION 3 - Other Maps
+        xopenspace.export_oslink_to_gis_shapefile(self.get_assets_with_identifier("OSLinkID"), map_attributes,
+                                                    self.projectpath + "/output", file_basename + "_OSLink",
+                                                    int(epsg))
+        xopenspace.export_osnet_to_gis_shapefile(self.get_assets_with_identifier("OSNetID"), map_attributes,
+                                                    self.projectpath + "/output", file_basename + "_OSNet",
+                                                    int(epsg))
+        xopenspace.export_patch_buffers_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
+                                                    self.projectpath + "/output", file_basename + "_OSBuffer",
+                                                    int(epsg))
+
         # xinfra.export_sww_network_to_gis_shapefile(self.get_assets_with_identifier("SwwID"), map_attributes,
         #                                             self.projectpath + "/output", file_basename + "_SwwNet",
         #                                             int(epsg), "Blocks")
-        # self.update_runtime_progress(98)
         # xinfra.export_sww_links_to_gis_shapefile(self.get_assets_with_identifier("LinkID"), map_attributes,
         #                                             self.projectpath + "/output", file_basename + "_Links",
         #                                             int(epsg), "Blocks")
-        # self.update_runtime_progress(99)
         # xinfra.export_sww_mst_to_gis_shapefile(self.get_assets_with_identifier("MST"), map_attributes,
         #                                          self.projectpath + "/output", file_basename + "_MST",
         #                                          int(epsg), "Blocks")

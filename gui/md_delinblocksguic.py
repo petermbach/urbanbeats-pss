@@ -104,6 +104,7 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.city_combo.clear()
         self.citynames = list(ubglobals.COORDINATES.keys())
         self.citynames.sort()
+        self.citynames.append("Other")
         [self.ui.city_combo.addItem(str(n)) for n in self.citynames]
 
         self.rivermaps = self.get_dataref_array("spatial", "Water Bodies", "Rivers")
@@ -129,6 +130,9 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.gui_state = "initial"
         self.change_active_module()
         self.gui_state = "ready"
+
+        self.ui.rep_stack.setCurrentIndex(self.ui.rep_combo.currentIndex())
+
 
         # --- SIGNALS AND SLOTS ---
         self.ui.year_combo.currentIndexChanged.connect(self.change_active_module)

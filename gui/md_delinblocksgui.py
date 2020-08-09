@@ -115,7 +115,7 @@ class Ui_Delinblocks_Dialog(object):
         self.geometry_scrollArea.setWidgetResizable(True)
         self.geometry_scrollArea.setObjectName("geometry_scrollArea")
         self.geometry_contents = QtWidgets.QWidget()
-        self.geometry_contents.setGeometry(QtCore.QRect(0, -220, 549, 629))
+        self.geometry_contents.setGeometry(QtCore.QRect(0, 0, 549, 629))
         self.geometry_contents.setObjectName("geometry_contents")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.geometry_contents)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
@@ -952,7 +952,7 @@ class Ui_Delinblocks_Dialog(object):
 
         self.retranslateUi(Delinblocks_Dialog)
         self.parameters.setCurrentIndex(0)
-        self.rep_stack.setCurrentIndex(2)
+        self.rep_stack.setCurrentIndex(0)
         self.flowpath_combo.setCurrentIndex(0)
         self.buttonBox.accepted.connect(Delinblocks_Dialog.accept)
         self.buttonBox.rejected.connect(Delinblocks_Dialog.reject)
@@ -1428,4 +1428,4 @@ class Ui_Delinblocks_Dialog(object):
         self.reset_button.setWhatsThis(_translate("Delinblocks_Dialog", "<html><head/><body><p>Resets all parameters of this module in the current \'scenario time step\' to the default values.</p></body></html>"))
         self.reset_button.setText(_translate("Delinblocks_Dialog", "Reset..."))
         self.help_button.setText(_translate("Delinblocks_Dialog", "Help"))
-from . import ubeats_rc
+import ubeats_rc

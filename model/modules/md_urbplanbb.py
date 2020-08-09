@@ -899,7 +899,7 @@ class UrbanPlanning(UBModule):
                 # Add to cumulative area variables
                 blk_tia += 0
                 blk_eia += 0
-                pip += 0
+                blk_roof += 0
                 blk_avspace += A_res
 
             # 2.6 - NON-RESIDENTIAL AREAS  ---------------------
