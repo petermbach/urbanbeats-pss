@@ -133,7 +133,6 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
 
         self.ui.rep_stack.setCurrentIndex(self.ui.rep_combo.currentIndex())
 
-
         # --- SIGNALS AND SLOTS ---
         self.ui.year_combo.currentIndexChanged.connect(self.change_active_module)
         self.ui.autofillButton.clicked.connect(self.autofill_from_previous_year)
@@ -142,60 +141,33 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
 
         self.ui.lu_fromurbandev.clicked.connect(self.enable_disable_guis)
         self.ui.pop_fromurbandev.clicked.connect(self.enable_disable_guis)
+        self.ui.pop_correct_check.clicked.connect(self.enable_disable_guis)
+        self.ui.pop_correct_auto.clicked.connect(self.enable_disable_guis)
+        self.ui.resolution_sq_auto.clicked.connect(self.enable_disable_guis)
+        self.ui.edgelength_auto.clicked.connect(self.enable_disable_guis)
+        self.ui.hexsize_auto.clicked.connect(self.enable_disable_guis)
+        self.ui.vectorgrid_auto.clicked.connect(self.enable_disable_guis)
+
         self.ui.geopolitical_check.clicked.connect(self.enable_disable_guis)
         self.ui.suburb_check.clicked.connect(self.enable_disable_guis)
         self.ui.planzone_check.clicked.connect(self.enable_disable_guis)
-        self.ui.resolution_auto.clicked.connect(self.enable_disable_guis)
         self.ui.considergeo_check.clicked.connect(self.enable_disable_guis)
         self.ui.cbdknown_radio.clicked.connect(self.enable_disable_guis)
         self.ui.cbdmanual_radio.clicked.connect(self.enable_disable_guis)
+
         self.ui.rivers_check.clicked.connect(self.enable_disable_guis)
         self.ui.lakes_check.clicked.connect(self.enable_disable_guis)
         self.ui.storm_check.clicked.connect(self.enable_disable_guis)
         # self.ui.sewer_check.clicked.connect(self.enable_disable_guis)
         # self.ui.supply_check.clicked.connect(self.enable_disable_guis)
+
+        self.ui.flowpath_check.clicked.connect(self.enable_disable_guis)
+
+        # Advanced / Experimental
         self.ui.patchflow_delin.clicked.connect(self.enable_disable_guis)
         self.ui.patchflow_searchradius_auto.clicked.connect(self.enable_disable_guis)
 
         self.ui.buttonBox.accepted.connect(self.save_values)
-
-    def same_parameters_check(self):    # TO DO
-        """Checks if the 'same parameters' checkbox is checked, automatically disables GUI time combobox, takes
-        current parameters in the GUI and saves to all modules when the GUI box is closed with accept() signal
-        (i.e. OK button pressed)."""
-        if self.ui.same_params.isChecked():
-            pass    # Functions if checked
-        else:
-            pass    # Functions if unchecked
-
-    def autofill_from_previous_year(self):  # TO DO
-        """Autofills all GUI parameters from the previous year's class instance."""
-        pass    # Figure out some automatic parameter filling function that can be called in the delinblocks module
-
-    def reset_parameters_to_default(self):  # TO DO
-        """Resets all parameters of the current module instance back to default values."""
-        pass
-
-    def change_active_module(self):
-        """Searches for the active module based on the simulation year combo box and updates the GUI."""
-        # Send message box to user to ask whether to save current parameters
-        if self.gui_state == "ready":
-            prompt_msg = "You are about to change the time period, do you wish to save changes made to your parameters " \
-                         "for the current time step?"
-            reply = QtWidgets.QMessageBox.question(self, "Changing Time Period", prompt_msg,
-                                           QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No |
-                                           QtWidgets.QMessageBox.Cancel, QtWidgets.QMessageBox.Cancel)
-            if reply == QtWidgets.QMessageBox.Yes:
-                self.save_values()
-            elif reply == QtWidgets.QMessageBox.No:
-                pass
-            else:
-                return
-
-        # Retrieve the DelinBlocks() Reference corresponding to the current year
-        self.module = self.active_scenario.get_module_object("SPATIAL", self.ui.year_combo.currentIndex())
-        self.setup_gui_with_parameters()
-        return True
 
     def setup_gui_with_parameters(self):
         """Sets all parameters in the GUI based on the current year."""
@@ -220,40 +192,46 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.pop_fromurbandev.setChecked(int(self.module.get_parameter("population_fud")))
         self.ui.lu_fromurbandev.setChecked(int(self.module.get_parameter("landuse_fud")))
 
+        self.ui.pop_correct_check.setChecked(int(self.module.get_parameter("population_corr")))
+        self.ui.pop_correct_spin.setValue(self.module.get_parameter("population_scale"))
+        self.ui.pop_correct_auto.setChecked(int(self.module.get_parameter("population_scale_auto")))
+        self.ui.demsmooth_check.setChecked(self.module.get_parameter("dem_smooth"))
+        self.ui.demsmooth_spin.setValue(self.module.get_parameter("dem_passes"))
+
         # --- SPATIAL GEOMETRY ---
         spatial_ref = ["SQUARES", "HEXAGONS", "VECTORPATCH"]
         self.ui.rep_combo.setCurrentIndex(spatial_ref.index(self.module.get_parameter("geometry_type")))
+
+        # BLOCKS GEOMETRY
         self.ui.resolution_spin.setValue(self.module.get_parameter("blocksize"))
         self.ui.resolution_auto.setChecked(int(self.module.get_parameter("blocksize_auto")))
+        self.ui.spatialmetrics_sq_check.setChecked(int(self.module.get_parameter("spatialmetrics_sq")))
+        self.ui.patchdelin_sq_check.setChecked(int(self.module.get_parameter("patchdelin_sq")))
+
         if self.module.get_parameter("neighbourhood") == "M":
             self.ui.radio_moore.setChecked(1)
         else:
             self.ui.radio_vonNeu.setChecked(1)
-        self.ui.spatialindices_check.setChecked(self.module.get_parameter("spatialmetrics"))
-        self.ui.patchdelin_check.setChecked(self.module.get_parameter("patchdelin"))
 
+        self.ui.edgelength_spin.setValue(self.module.get_parameter("minimum_edge_length"))
+        self.ui.edgelength_auto.setChecked(int(self.module.get_parameter("minimum_edge_auto")))
+
+        # HEXAGON GEOMETRY
         self.ui.hexsize_spin.setValue(self.module.get_parameter("hexsize"))
         self.ui.hexsize_auto.setChecked(int(self.module.get_parameter("hexsize_auto")))
         if self.module.get_parameter("hex_orientation") == "NS":
             self.ui.radio_hexoNS.setChecked(1)
         else:
             self.ui.radio_hexoEW.setChecked(1)
-        if self.module.get_parameter("hex_neighbourhood") == "ISO":
-            self.ui.radio_hexnISO.setChecked(1)
-        elif self.module.get_parameter("hex_neighbourhood") == "YINV":
-            self.ui.radio_hexnYINV.setChecked(1)
-        elif self.module.get_parameter("hex_neighbourhood") == "YNOR":
-            self.ui.radio_hexnYNOR.setChecked(1)
-        else:
-            self.ui.radio_hexnNOR.setChecked(1)
 
+        self.ui.spatialmetrics_hex_check.setChecked(int(self.module.get_parameter("spatialmetrics_hex")))
+        self.ui.patchdelin_hex_check.setChecked(int(self.module.get_parameter("patchdelin_hex")))
+
+        # VECTORPATCHES
+        disgrid = ["SQ", "HNS", "HEW"]
+        self.ui.disgrid_combo.setCurrentIndex(disgrid.index(self.module.get_parameter("disgrid_shape")))
         self.ui.vectorgrid_spin.setValue(self.module.get_parameter("disgrid"))
         self.ui.vectorgrid_auto.setChecked(int(self.module.get_parameter("disgrid_auto")))
-        if self.module.get_parameter("patch_neigh") == "DIRICHLET":
-            self.ui.radio_dirichlet.setChecked(1)
-        else:
-            self.ui.radio_radius.setChecked(1)
-        self.ui.scan_radius_spin.setValue(self.module.get_parameter("patch_neigh_radius"))
 
         # --- JURISDICTIONAL AND SUBURBAN BOUNDARIES ---
         try:    # MUNICIPAL BOUNDARY MAP COMBO
@@ -292,10 +270,6 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.cbdlong_box.setText(str(self.module.get_parameter("locationLong")))
         self.ui.cbdlat_box.setText(str(self.module.get_parameter("locationLat")))
         self.ui.cbdmark_check.setChecked(self.module.get_parameter("marklocation"))
-
-        # --- OPEN SPACE NETWORK ---
-        self.ui.osnet_accessibility_check.setChecked(self.module.get_parameter("osnet_accessibility"))
-        self.ui.osnet_spacenet_check.setChecked(self.module.get_parameter("osnet_network"))
 
         # --- MAJOR WATER FEATURES ---
         try:    # RIVER COMBO
@@ -340,18 +314,32 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         # --- FLOWPATH DELINEATION ---
         self.ui.flowpath_check.setChecked(int(self.module.get_parameter("flowpaths")))
         self.ui.flowpath_combo.setCurrentIndex(self.delin_methods.index(self.module.get_parameter("flowpath_method")))
-        self.ui.demsmooth_check.setChecked(self.module.get_parameter("dem_smooth"))
-        self.ui.demsmooth_spin.setValue(self.module.get_parameter("dem_passes"))
         self.ui.natfeature_check.setChecked(self.module.get_parameter("guide_natural"))
         self.ui.infrastructure_check.setChecked(self.module.get_parameter("guide_built"))
         self.ui.ignore_rivers_check.setChecked(self.module.get_parameter("ignore_rivers"))
         self.ui.ignore_lakes_check.setChecked(self.module.get_parameter("ignore_lakes"))
 
+        # --- ADVANCED / EXPERIMENTAL PARAMETERS ---
+        # Patch Flow Paths
         self.ui.patchflow_delin.setChecked(int(self.module.get_parameter("patchflowpaths")))
         self.ui.patchflow_method_combo.setCurrentIndex(ubglobals.PATCHFLOWMETHODS.index(
             self.module.get_parameter("patchflowmethod")))
         self.ui.patchflow_searchradius_spin.setValue(float(self.module.get_parameter("patchsearchradius")))
         self.ui.patchflow_searchradius_auto.setChecked(int(self.module.get_parameter("patchsearchauto")))
+
+        # Hexagon Neighbourhood GUIs
+        if self.module.get_parameter("hex_neighbourhood") == "ISO":
+            self.ui.radio_hexnISO.setChecked(1)
+        elif self.module.get_parameter("hex_neighbourhood") == "YINV":
+            self.ui.radio_hexnYINV.setChecked(1)
+        elif self.module.get_parameter("hex_neighbourhood") == "YNOR":
+            self.ui.radio_hexnYNOR.setChecked(1)
+        else:
+            self.ui.radio_hexnNOR.setChecked(1)
+
+        # Open Space Network GUIs
+        self.ui.osnet_accessibility_check.setChecked(self.module.get_parameter("osnet_accessibility"))
+        self.ui.osnet_spacenet_check.setChecked(self.module.get_parameter("osnet_network"))
 
         self.enable_disable_guis()
 
@@ -359,6 +347,15 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         """Enables and disabled the combox boxes based on the parameter values."""
         self.ui.lu_combo.setEnabled(not(self.ui.lu_fromurbandev.isChecked()))
         self.ui.pop_combo.setEnabled(not(self.ui.pop_fromurbandev.isChecked()))
+        self.ui.pop_correct_spin.setEnabled(not (self.ui.pop_correct_auto.isChecked()))
+        self.ui.pop_correct_auto.setEnabled(self.ui.pop_correct_spin.isChecked())
+        self.ui.pop_correct_spin.setEnabled(self.ui.pop_correct_spin.isChecked())
+
+        self.ui.resolution_spin.setEnabled(not(self.ui.resolution_sq_auto.isChecked()))
+        self.ui.edgelength_spin.setEnabled(not(self.ui.edgelength_auto.isChecked()))
+        self.ui.hexsize_spin.setEnabled(not(self.ui.hexsize_auto.isChecked()))
+        self.ui.vectorgrid_spin.setEnabled(not(self.ui.vectorgrid_auto.isChecked()))
+
         self.ui.geopolitical_combo.setEnabled(self.ui.geopolitical_check.isChecked())
         self.ui.suburb_combo.setEnabled(self.ui.suburb_check.isChecked())
         self.ui.planzone_combo.setEnabled(self.ui.planzone_check.isChecked())
@@ -387,11 +384,52 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.ignore_rivers_check.setEnabled(self.ui.rivers_check.isChecked())
         self.ui.ignore_lakes_check.setEnabled(self.ui.lakes_check.isChecked())
 
+        self.ui.flowpath_combo.setEnabled(self.ui.flowpath_check.isChecked())
+        self.ui.flowpath_stack.setEnabled(self.ui.flowpath_check.isChecked())
+
+        # Advanced / Experimental
         self.ui.patchflow_method_combo.setEnabled(self.ui.patchflow_delin.isChecked())
         self.ui.patchflow_searchradius_spin.setEnabled(self.ui.patchflow_delin.isChecked() and
                                                        not self.ui.patchflow_searchradius_auto.isChecked())
         self.ui.patchflow_searchradius_auto.setEnabled(self.ui.patchflow_delin.isChecked())
 
+    def same_parameters_check(self):    # TO DO
+        """Checks if the 'same parameters' checkbox is checked, automatically disables GUI time combobox, takes
+        current parameters in the GUI and saves to all modules when the GUI box is closed with accept() signal
+        (i.e. OK button pressed)."""
+        if self.ui.same_params.isChecked():
+            pass    # Functions if checked
+        else:
+            pass    # Functions if unchecked
+
+    def autofill_from_previous_year(self):  # TO DO
+        """Autofills all GUI parameters from the previous year's class instance."""
+        pass    # Figure out some automatic parameter filling function that can be called in the delinblocks module
+
+    def reset_parameters_to_default(self):  # TO DO
+        """Resets all parameters of the current module instance back to default values."""
+        pass
+
+    def change_active_module(self):
+        """Searches for the active module based on the simulation year combo box and updates the GUI."""
+        # Send message box to user to ask whether to save current parameters
+        if self.gui_state == "ready":
+            prompt_msg = "You are about to change the time period, do you wish to save changes made to your parameters " \
+                         "for the current time step?"
+            reply = QtWidgets.QMessageBox.question(self, "Changing Time Period", prompt_msg,
+                                           QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No |
+                                           QtWidgets.QMessageBox.Cancel, QtWidgets.QMessageBox.Cancel)
+            if reply == QtWidgets.QMessageBox.Yes:
+                self.save_values()
+            elif reply == QtWidgets.QMessageBox.No:
+                pass
+            else:
+                return
+
+        # Retrieve the DelinBlocks() Reference corresponding to the current year
+        self.module = self.active_scenario.get_module_object("SPATIAL", self.ui.year_combo.currentIndex())
+        self.setup_gui_with_parameters()
+        return True
 
     def get_dataref_array(self, dataclass, datatype, *args):
         """Retrieves a list of data files loaded into the current scenario for display in the GUI
@@ -419,22 +457,32 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("landuse_fud", int(self.ui.lu_fromurbandev.isChecked()))
         self.module.set_parameter("population_fud", int(self.ui.pop_fromurbandev.isChecked()))
 
+        self.module.set_parameter("population_corr", int(self.ui.pop_correct_check.isChecked()))
+        self.module.set_parameter("population_scale", float(self.ui.pop_correct_spin.value()))
+        self.module.set_parameter("population_scale_auto", int(self.ui.pop_correct_auto.isChecked()))
+        self.module.set_parameter("dem_smooth", int(self.ui.demsmooth_check.isChecked()))
+        self.module.set_parameter("dem_passes", int(self.ui.demsmooth_spin.value()))
+
         # --- SPATIAL GEOMETRY ---
-        # SQUARE GRIDS
         if self.ui.rep_combo.currentIndex() == 0:
             self.module.set_parameter("geometry_type", "SQUARES")
         elif self.ui.rep_combo.currentIndex() == 1:
             self.module.set_parameter("geometry_type", "HEXAGONS")
         elif self.ui.rep_combo.currentIndex() == 2:
             self.module.set_parameter("geometry_type", "VECTORPATCH")
+
+        # SQUARE GRIDS
         self.module.set_parameter("blocksize", self.ui.resolution_spin.value())
         self.module.set_parameter("blocksize_auto", int(self.ui.resolution_auto.isChecked()))
+        self.module.set_parameter("patchdelin_sq", int(self.ui.patchdelin_sq_check.isChecked()))
+        self.module.set_parameter("spatialmetrics_sq", int(self.ui.spatialmetrics_sq_check.isChecked()))
+        self.module.set_parameter("minimum_edge_length", self.ui.edgelength_spin.value())
+        self.module.set_parameter("minimum_edge_auto", int(self.ui.edgelength_auto.isChecked()))
+
         if self.ui.radio_moore.isChecked():
             self.module.set_parameter("neighbourhood", "M")
         else:
             self.module.set_parameter("neighbourhood", "V")
-        self.module.set_parameter("patchdelin", int(self.ui.patchdelin_check.isChecked()))
-        self.module.set_parameter("spatialmetrics", int(self.ui.spatialindices_check.isChecked()))
 
         # HEX GRIDS
         self.module.set_parameter("hexsize", self.ui.hexsize_spin.value())
@@ -443,24 +491,18 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
             self.module.set_parameter("hex_orientation", "NS")
         else:
             self.module.set_parameter("hex_orientation", "EW")
-
-        if self.ui.radio_hexnISO.isChecked():
-            self.module.set_parameter("hex_neighbourhood", "ISO")
-        elif self.ui.radio_hexnYINV.isChecked():
-            self.module.set_parameter("hex_neighbourhood", "YINV")
-        elif self.ui.radio_hexnYNOR.isChecked():
-            self.module.set_parameter("hex_neighbourhood", "YNOR")
-        else:
-            self.module.set_parameter("hex_neighbourhood", "NOR")
+        self.module.set_parameter("patchdelin_hex", int(self.ui.patchdelin_hex_check.isChecked()))
+        self.module.set_parameter("spatialmetrics_hex", int(self.ui.spatialmetrics_hex_check.isChecked()))
 
         # VECTORPATCH GRID
+        if self.ui.disgrid_combo.currentIndex() == 0:
+            self.module.set_parameter("disgrid_shape", "SQ")
+        elif self.ui.rep_combo.currentIndex() == 1:
+            self.module.set_parameter("disgrid_shape", "HNS")
+        elif self.ui.rep_combo.currentIndex() == 2:
+            self.module.set_parameter("disgrid_shape", "HEW")
         self.module.set_parameter("disgrid", self.ui.vectorgrid_spin.value())
         self.module.set_parameter("disgrid_auto", int(self.ui.vectorgrid_auto.isChecked()))
-        if self.ui.radio_dirichlet.isChecked():
-            self.module.set_parameter("patch_neigh", "DIRICHLET")
-        else:
-            self.module.set_parameter("patch_neigh", "RADIUS")
-        self.module.set_parameter("patch_neigh_radius", float(self.ui.scan_radius_spin.value()))
 
         # --- JURISDICTIONAL AND SUBURBAN BOUNDARIES ---
         self.module.set_parameter("include_geopolitical", int(self.ui.geopolitical_check.isChecked()))
@@ -484,10 +526,6 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.module.set_parameter("locationLat", float(self.ui.cbdlat_box.text()))
         self.module.set_parameter("marklocation", int(self.ui.cbdmark_check.isChecked()))
 
-        # --- OPEN SPACE NETWORK ---
-        self.module.set_parameter("osnet_accessibility", int(self.ui.osnet_accessibility_check.isChecked()))
-        self.module.set_parameter("osnet_network", int(self.ui.osnet_spacenet_check.isChecked()))
-
         # --- MAJOR WATER FEATURES ---
         self.module.set_parameter("include_rivers", int(self.ui.rivers_check.isChecked()))
         self.module.set_parameter("include_lakes", int(self.ui.lakes_check.isChecked()))
@@ -500,24 +538,41 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         # --- BUILT WATER INFRASTRUCTURE ---
         self.module.set_parameter("include_storm", int(self.ui.storm_check.isChecked()))
         self.module.set_parameter("storm_map", self.builtwaterfeatures[1][self.ui.storm_combo.currentIndex()])
-        print(f"{self.builtwaterfeatures}, {self.builtwaterfeatures[1][self.ui.storm_combo.currentIndex()]}")
         # self.module.set_parameter("include_sewer", int(self.ui.sewer_check.isChecked()))
         # self.module.set_parameter("sewer_map", self.builtwaterfeatures[1][self.ui.sewer_combo.currentIndex()])
         # self.module.set_parameter("include_supply", int(self.ui.supply_check.isChecked()))
         # self.module.set_parameter("supply_map", self.builtwaterfeatures[1][self.ui.supply_combo.currentIndex()])
 
+        # DEBUG
+        # print(f"{self.builtwaterfeatures}, {self.builtwaterfeatures[1][self.ui.storm_combo.currentIndex()]}")
+
         # --- FLOW PATH DELINEATION ---
         self.module.set_parameter("flowpaths", int(self.ui.flowpath_check.isChecked()))
         self.module.set_parameter("flowpath_method", self.delin_methods[self.ui.flowpath_combo.currentIndex()])
-        self.module.set_parameter("dem_smooth", int(self.ui.demsmooth_check.isChecked()))
-        self.module.set_parameter("dem_passes", int(self.ui.demsmooth_spin.value()))
         self.module.set_parameter("guide_natural", int(self.ui.natfeature_check.isChecked()))
         self.module.set_parameter("guide_built", int(self.ui.infrastructure_check.isChecked()))
         self.module.set_parameter("ignore_rivers", int(self.ui.ignore_rivers_check.isChecked()))
         self.module.set_parameter("ignore_lakes", int(self.ui.ignore_lakes_check.isChecked()))
 
+        # --- ADVANCED / EXPERIMENTAL PARAMETERS -----------------------------------------------------------------------
+        # Patch Flowpaths
         self.module.set_parameter("patchflowpaths", int(self.ui.patchflow_delin.isChecked()))
         self.module.set_parameter("patchflowmethod",
                                   ubglobals.PATCHFLOWMETHODS[int(self.ui.patchflow_method_combo.currentIndex())])
         self.module.set_parameter("patchsearchradius", float(self.ui.patchflow_searchradius_spin.value()))
         self.module.set_parameter("patchsearchauto", int(self.ui.patchflow_searchradius_auto.isChecked()))
+
+        # Hexagon Neighbourhoods
+        if self.ui.radio_hexnISO.isChecked():
+            self.module.set_parameter("hex_neighbourhood", "ISO")
+        elif self.ui.radio_hexnYINV.isChecked():
+            self.module.set_parameter("hex_neighbourhood", "YINV")
+        elif self.ui.radio_hexnYNOR.isChecked():
+            self.module.set_parameter("hex_neighbourhood", "YNOR")
+        else:
+            self.module.set_parameter("hex_neighbourhood", "NOR")
+
+        # Open Space Networks
+        self.module.set_parameter("osnet_accessibility", int(self.ui.osnet_accessibility_check.isChecked()))
+        self.module.set_parameter("osnet_network", int(self.ui.osnet_spacenet_check.isChecked()))
+        # --------------------------------------------------------------------------------------------------------------
