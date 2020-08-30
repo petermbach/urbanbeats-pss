@@ -557,7 +557,8 @@ class UrbanPlanning(UBModule):
         # SECTION 1 - Get all global map attributes and prepare parameters
         # 1.1 MAP ATTRIBUTES
         block_size = map_attr.get_attribute("BlockSize")    # size of blocks
-        Atblock = block_size * block_size                   # Total area of one block
+        Atblock = map_attr.get_attribute("BlockArea")       # Total area of one block
+        geomtype = map_attr.get_attribute("GeometryType")   # Square, Hex, VectorPatches
 
         # 1.2 PREPARE SAMPLING PARAMETERS RANGES
         # If parameter range median boxes were checked, adjust these parameters to reflect that
@@ -1434,7 +1435,7 @@ class UrbanPlanning(UBModule):
 
         pPG = block_attr.get_attribute("pLU_PG")
         pactive = block_attr.get_attribute("Active")
-        Ablock = map_attr.get_attribute("BlockSize") * map_attr.get_attribute("BlockSize")
+        Ablock = map_attr.get_attribute("BlockArea")
         Apg = pPG * pactive * Ablock * float(int(self.park_OSR))
 
         # Step 4a: Work out Building Footprint using OSR

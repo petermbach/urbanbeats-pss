@@ -428,6 +428,8 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
         self.get_modelled_data()
         mod_N = len(self.active_model_data)
         obs_N = len(self.active_calib_data)
+        if obs_N == 0 or mod_N == 0:
+            return True     # No calibration data yet
         keyindex = []
         mod = []
         obs = []

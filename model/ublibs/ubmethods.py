@@ -145,7 +145,6 @@ def calculate_frequency_of_lu_classes(lucdatamatrix, nodatavalue, mask_count):
             if int(landclass) == nodatavalue:
                 pass
             else:
-                matrix_size += 1  # Count towards 'activity'
                 lucprop[int(landclass) - 1] += 1
                 total_n_luc += 1
 
