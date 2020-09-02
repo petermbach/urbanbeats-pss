@@ -204,7 +204,7 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
 
         # BLOCKS GEOMETRY
         self.ui.resolution_spin.setValue(self.module.get_parameter("blocksize"))
-        self.ui.resolution_auto.setChecked(int(self.module.get_parameter("blocksize_auto")))
+        self.ui.resolution_sq_auto.setChecked(int(self.module.get_parameter("blocksize_auto")))
         self.ui.spatialmetrics_sq_check.setChecked(int(self.module.get_parameter("spatialmetrics_sq")))
         self.ui.patchdelin_sq_check.setChecked(int(self.module.get_parameter("patchdelin_sq")))
 
@@ -213,8 +213,8 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         else:
             self.ui.radio_vonNeu.setChecked(1)
 
-        self.ui.edgelength_spin.setValue(self.module.get_parameter("minimum_edge_length"))
-        self.ui.edgelength_auto.setChecked(int(self.module.get_parameter("minimum_edge_auto")))
+        self.ui.edgelength_spin.setValue(self.module.get_parameter("min_edge_length"))
+        self.ui.edgelength_auto.setChecked(int(self.module.get_parameter("min_edge_auto")))
 
         # HEXAGON GEOMETRY
         self.ui.hexsize_spin.setValue(self.module.get_parameter("hexsize"))
@@ -348,8 +348,8 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.lu_combo.setEnabled(not(self.ui.lu_fromurbandev.isChecked()))
         self.ui.pop_combo.setEnabled(not(self.ui.pop_fromurbandev.isChecked()))
         self.ui.pop_correct_spin.setEnabled(not (self.ui.pop_correct_auto.isChecked()))
-        self.ui.pop_correct_auto.setEnabled(self.ui.pop_correct_spin.isChecked())
-        self.ui.pop_correct_spin.setEnabled(self.ui.pop_correct_spin.isChecked())
+        self.ui.pop_correct_auto.setEnabled(self.ui.pop_correct_check.isChecked())
+        self.ui.pop_correct_spin.setEnabled(self.ui.pop_correct_check.isChecked())
 
         self.ui.resolution_spin.setEnabled(not(self.ui.resolution_sq_auto.isChecked()))
         self.ui.edgelength_spin.setEnabled(not(self.ui.edgelength_auto.isChecked()))
@@ -363,7 +363,7 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.suburb_line.setEnabled(self.ui.suburb_check.isChecked())
         self.ui.planzone_line.setEnabled(self.ui.planzone_check.isChecked())
 
-        self.ui.resolution_spin.setEnabled(not(self.ui.resolution_auto.isChecked()))
+        self.ui.resolution_spin.setEnabled(not(self.ui.resolution_sq_auto.isChecked()))
         self.ui.city_combo.setEnabled(self.ui.cbdknown_radio.isChecked())
         self.ui.cbdlong_box.setEnabled(self.ui.cbdmanual_radio.isChecked())
         self.ui.cbdlat_box.setEnabled(self.ui.cbdmanual_radio.isChecked())
@@ -473,11 +473,11 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
 
         # SQUARE GRIDS
         self.module.set_parameter("blocksize", self.ui.resolution_spin.value())
-        self.module.set_parameter("blocksize_auto", int(self.ui.resolution_auto.isChecked()))
+        self.module.set_parameter("blocksize_auto", int(self.ui.resolution_sq_auto.isChecked()))
         self.module.set_parameter("patchdelin_sq", int(self.ui.patchdelin_sq_check.isChecked()))
         self.module.set_parameter("spatialmetrics_sq", int(self.ui.spatialmetrics_sq_check.isChecked()))
-        self.module.set_parameter("minimum_edge_length", self.ui.edgelength_spin.value())
-        self.module.set_parameter("minimum_edge_auto", int(self.ui.edgelength_auto.isChecked()))
+        self.module.set_parameter("min_edge_length", self.ui.edgelength_spin.value())
+        self.module.set_parameter("min_edge_auto", int(self.ui.edgelength_auto.isChecked()))
 
         if self.ui.radio_moore.isChecked():
             self.module.set_parameter("neighbourhood", "M")

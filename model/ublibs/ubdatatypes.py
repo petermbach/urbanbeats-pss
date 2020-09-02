@@ -29,6 +29,7 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 import ast
+import numpy as np
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 
@@ -134,6 +135,19 @@ class UBRasterData(object):
         """Erases the data matrix (to free up memory), use only if necessary!"""
         self.__data = None
         return True
+
+    def replace_nodatavalues(self, value):
+        """Replaces the entire raster's nodata value with the specified 'value'"""
+        self.__data[self.__data == self.__nodatavalue] = value
+        return True
+
+    def get_nonzero_count(self):
+        """Returns the number of elements in the entire raster with non-zero values"""
+        return np.count_nonzero(self.__data)
+
+    def get_raster_sum(self):
+        """Returns the straight up sum of the entire data set raster. Useful for querying map totals."""
+        return self.__data.sum()
 
 
 class UBComponent(object):
