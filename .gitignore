@@ -1,5 +1,8 @@
 *.pyc
 .idea/
+build/
+doc/
+dist/
 graphics/
 splashscreens/
 scriptboard/
