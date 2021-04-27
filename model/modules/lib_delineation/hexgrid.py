@@ -110,7 +110,7 @@ def create_hex_geometry_ew(x,y,bs, ID, boundary):
         e6 = ((int(h1[0]), int(h1[1]), 0), (int(h6[0]), int(h6[1]), 0))     # Left top (1, 6)
 
         # Define the UrbanBEATS Vector Asset
-        block_attr = ubdata.UBVector((h1, h2, h3, h4, h5, h6), (e1, e2, e3, e4, e5, e6))
+        block_attr = ubdata.UBVector((h1, h2, h3, h4, h5, h6, h1), (e1, e2, e3, e4, e5, e6))
         block_attr.add_attribute("BlockID", int(ID))  # ATTRIBUTE: Block identification
 
         xcentre = anchorX + 0.5*h_factor
@@ -174,7 +174,7 @@ def create_hex_geometry_ns(x, y, bs, H, blocks_tall, ID, boundary):
         e6 = ((int(h6[0]), int(h6[1]), 0), (int(h1[0]), int(h1[1]), 0))     # Bottom left (6, 1)
 
         # Define the UrbanBEATS Vector Asset
-        block_attr = ubdata.UBVector((h1, h2, h3, h4, h5, h6), (e1, e2, e3, e4, e5, e6))
+        block_attr = ubdata.UBVector((h1, h2, h3, h4, h5, h6, h1), (e1, e2, e3, e4, e5, e6))
         block_attr.add_attribute("BlockID", int(ID))    # ATTRIBUTE: Block identification
 
         xcentre = anchorX + 0.5*bs

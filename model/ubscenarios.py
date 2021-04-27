@@ -685,6 +685,7 @@ class UrbanBeatsScenario(threading.Thread):
 
         self.update_runtime_progress(96)
         # -- SECTION 3 - Other Maps
+        print("Exporting Open Space Stuff")
         xopenspace.export_oslink_to_gis_shapefile(self.get_assets_with_identifier("OSLinkID"), map_attributes,
                                                     self.projectpath + "/output", file_basename + "_OSLink",
                                                     int(epsg))

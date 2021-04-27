@@ -2640,7 +2640,7 @@ class UrbanDevelopment(UBModule):
         :param lucdata: the lucdatamatrix containing the section of geographic data currently being analysed
         :return: luc_class (the dominant land use category), activity (the proportion of cell space occupied by data)
         """
-        lucprop, activity = ubmethods.calculate_frequency_of_lu_classes(lucdata)
+        lucprop, activity = ubmethods.calculate_frequency_of_lu_classes(lucdata, -9999, 0)
         if activity == 0:
             return None, 0
         else:

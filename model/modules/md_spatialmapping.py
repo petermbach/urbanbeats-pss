@@ -819,6 +819,7 @@ class SpatialMapping(UBModule):
 
         :param map_attr: the global MapAttributes UBComponent() instance.
         """
+        print("Patchdelin", map_attr.get_attribute("patchdelin"))
         if not map_attr.get_attribute("patchdelin"):        # Check on whether patches were delineated
             map_attr.add_attribute("HasOSNET", 0)
             map_attr.add_attribute("HasOSLINK", 0)
