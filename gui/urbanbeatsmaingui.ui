@@ -49,7 +49,7 @@
        <item>
         <widget class="QLabel" name="ScenarioView_lbl">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Scenario Information&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Overview&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
@@ -71,6 +71,10 @@
           <number>0</number>
          </property>
          <widget class="QWidget" name="Project_tab">
+          <attribute name="icon">
+           <iconset resource="../graphics/ubeats.qrc">
+            <normaloff>:/icons/Distributor-report-icon.png</normaloff>:/icons/Distributor-report-icon.png</iconset>
+          </attribute>
           <attribute name="title">
            <string>Project</string>
           </attribute>
@@ -91,9 +95,147 @@ p, li { white-space: pre-wrap; }
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="Narrative_tab">
+         <widget class="QWidget" name="Simulation_tab">
+          <attribute name="icon">
+           <iconset resource="../graphics/ubeats.qrc">
+            <normaloff>:/icons/icons8-polygon-96.png</normaloff>:/icons/icons8-polygon-96.png</iconset>
+          </attribute>
           <attribute name="title">
-           <string>Narrative</string>
+           <string>Boundaries</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_6">
+           <item>
+            <widget class="QTableWidget" name="DataSummary_2">
+             <property name="sortingEnabled">
+              <bool>true</bool>
+             </property>
+             <column>
+              <property name="text">
+               <string>Boundary Name</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Size</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Used in Scenarios</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="widget_2" native="true">
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <spacer name="horizontalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="ModuleDock_spatialsetup_2">
+                <property name="minimumSize">
+                 <size>
+                  <width>138</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>Spatial Delineation</string>
+                </property>
+                <property name="text">
+                 <string>Add Boundary</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../graphics/ubeats.qrc">
+                  <normaloff>:/icons/icons8-polygon-96.png</normaloff>:/icons/icons8-polygon-96.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="shortcut">
+                 <string>Up</string>
+                </property>
+                <property name="checkable">
+                 <bool>false</bool>
+                </property>
+                <property name="flat">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="ModuleDock_spatialsetup_3">
+                <property name="minimumSize">
+                 <size>
+                  <width>138</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>Spatial Delineation</string>
+                </property>
+                <property name="text">
+                 <string>Delete Boundary</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../graphics/ubeats.qrc">
+                  <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="shortcut">
+                 <string>Up</string>
+                </property>
+                <property name="checkable">
+                 <bool>false</bool>
+                </property>
+                <property name="flat">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="Narrative_tab">
+          <attribute name="icon">
+           <iconset resource="../graphics/ubeats.qrc">
+            <normaloff>:/icons/pages-brown-icon.png</normaloff>:/icons/pages-brown-icon.png</iconset>
+          </attribute>
+          <attribute name="title">
+           <string>Scenario</string>
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_8">
            <item>
@@ -101,111 +243,13 @@ p, li { white-space: pre-wrap; }
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="Simulation_tab">
-          <attribute name="title">
-           <string>Simulation</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_6">
-           <item>
-            <widget class="QLabel" name="Simulation_title">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Simulation Details&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QWidget" name="simulation_radios" native="true">
-             <layout class="QHBoxLayout" name="horizontalLayout_4">
-              <item>
-               <widget class="QRadioButton" name="continuous_radio">
-                <property name="text">
-                 <string>Run UrbanBEATS Continuously</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QRadioButton" name="stepwise_radio">
-                <property name="text">
-                 <string>Run UrbanBEATS Step-wise</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPlainTextEdit" name="Simulation"/>
-           </item>
-           <item>
-            <widget class="QLabel" name="cache_title">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Simulation Caching&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="cache_descr">
-             <property name="text">
-              <string>Save and restore previous simulation state</string>
-             </property>
-             <property name="wordWrap">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QWidget" name="cache_options" native="true">
-             <layout class="QGridLayout" name="gridLayout_2">
-              <item row="3" column="0">
-               <widget class="QLabel" name="cache_options_lbl">
-                <property name="text">
-                 <string>Other Options:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="2">
-               <widget class="QPushButton" name="cache_current_browse">
-                <property name="text">
-                 <string>Change...</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="cache_current_lbl">
-                <property name="text">
-                 <string>Current simulation cache:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QPushButton" name="cache_current_button">
-                <property name="text">
-                 <string>Cache Current Simulation...</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="cache_current_line"/>
-              </item>
-              <item row="3" column="2">
-               <widget class="QPushButton" name="cache_current_clear">
-                <property name="text">
-                 <string>Clear</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../graphics/ubeats.qrc">
-                  <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-          </layout>
-         </widget>
          <widget class="QWidget" name="DataSummary_tab">
+          <attribute name="icon">
+           <iconset resource="../graphics/ubeats.qrc">
+            <normaloff>:/icons/Misc-Database-3-icon.png</normaloff>:/icons/Misc-Database-3-icon.png</iconset>
+          </attribute>
           <attribute name="title">
-           <string>Data Summary</string>
+           <string>Data</string>
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
@@ -233,6 +277,10 @@ p, li { white-space: pre-wrap; }
           </layout>
          </widget>
          <widget class="QWidget" name="Log_tab">
+          <attribute name="icon">
+           <iconset resource="../graphics/ubeats.qrc">
+            <normaloff>:/icons/Clipboard-icon.png</normaloff>:/icons/Clipboard-icon.png</iconset>
+          </attribute>
           <attribute name="title">
            <string>Log</string>
           </attribute>
@@ -1668,6 +1716,7 @@ p, li { white-space: pre-wrap; }
    <addaction name="actionSave"/>
    <addaction name="actionExport_Project"/>
    <addaction name="separator"/>
+   <addaction name="actionAdd_Simulation_Boundary"/>
    <addaction name="actionView_Project_Description"/>
    <addaction name="actionView_Full_Project_Log"/>
    <addaction name="actionResults_Viewer"/>
@@ -2088,6 +2137,11 @@ p, li { white-space: pre-wrap; }
           <item>
            <property name="text">
             <string>Type: (static)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Boundary: (none)</string>
            </property>
           </item>
           <item>
@@ -3662,6 +3716,15 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+Shift+C</string>
+   </property>
+  </action>
+  <action name="actionAdd_Simulation_Boundary">
+   <property name="icon">
+    <iconset resource="../graphics/ubeats.qrc">
+     <normaloff>:/icons/icons8-polygon-96.png</normaloff>:/icons/icons8-polygon-96.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Simulation Boundary</string>
    </property>
   </action>
  </widget>
