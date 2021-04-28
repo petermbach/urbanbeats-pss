@@ -146,7 +146,7 @@
             <x>0</x>
             <y>0</y>
             <width>443</width>
-            <height>672</height>
+            <height>698</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -189,6 +189,96 @@
                 <property name="bottomMargin">
                  <number>6</number>
                 </property>
+                <item row="2" column="2">
+                 <spacer name="horizontalSpacer_5">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="date_lbl">
+                  <property name="text">
+                   <string>Project Start Date:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="2">
+                 <spacer name="horizontalSpacer_6">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QComboBox" name="country_combo">
+                  <property name="currentIndex">
+                   <number>3</number>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>Adelaide, Australia</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Brisbane, Australia</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Innsbruck, Austria</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Melbourne, Australia</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Nanjing, China</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Perth, Australia</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>San Francisco, USA</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Sydney, Australia</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Zurich, Switzerland</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Other...</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
                 <item row="0" column="2">
                  <spacer name="horizontalSpacer_4">
                   <property name="orientation">
@@ -202,18 +292,36 @@
                   </property>
                  </spacer>
                 </item>
-                <item row="3" column="2">
-                 <spacer name="horizontalSpacer_6">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="region_lbl">
+                  <property name="whatsThis">
+                   <string>Width of the square cell in the city grid in metres</string>
                   </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
+                  <property name="text">
+                   <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Region&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
-                 </spacer>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="country_lbl">
+                  <property name="whatsThis">
+                   <string>Width of the square cell in the city grid in metres</string>
+                  </property>
+                  <property name="text">
+                   <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Country&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QLineEdit" name="region_line"/>
                 </item>
                 <item row="0" column="1">
                  <widget class="QDateEdit" name="date_spin">
@@ -232,7 +340,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="0">
+                <item row="5" column="0">
                  <widget class="QLabel" name="location_lbl">
                   <property name="whatsThis">
                    <string>Width of the square cell in the city grid in metres</string>
@@ -246,7 +354,7 @@ p, li { white-space: pre-wrap; }
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="1">
+                <item row="5" column="1">
                  <widget class="QComboBox" name="location_combo">
                   <property name="currentIndex">
                    <number>3</number>
@@ -303,8 +411,8 @@ p, li { white-space: pre-wrap; }
                   </item>
                  </widget>
                 </item>
-                <item row="2" column="2">
-                 <spacer name="horizontalSpacer_5">
+                <item row="5" column="2">
+                 <spacer name="horizontalSpacer_8">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
                   </property>
@@ -315,30 +423,6 @@ p, li { white-space: pre-wrap; }
                    </size>
                   </property>
                  </spacer>
-                </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="region_lbl">
-                  <property name="whatsThis">
-                   <string>Width of the square cell in the city grid in metres</string>
-                  </property>
-                  <property name="text">
-                   <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Region&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="1">
-                 <widget class="QLineEdit" name="region_line"/>
-                </item>
-                <item row="0" column="0">
-                 <widget class="QLabel" name="date_lbl">
-                  <property name="text">
-                   <string>Project Start Date:</string>
-                  </property>
-                 </widget>
                 </item>
                </layout>
               </widget>
@@ -706,7 +790,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>projname_line</tabstop>
   <tabstop>date_spin</tabstop>
   <tabstop>region_line</tabstop>
-  <tabstop>location_combo</tabstop>
+  <tabstop>country_combo</tabstop>
   <tabstop>modellername_box</tabstop>
   <tabstop>affiliation_box</tabstop>
   <tabstop>otherpersons_box</tabstop>

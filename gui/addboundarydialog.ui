@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ProjectSetupDialog</class>
- <widget class="QDialog" name="ProjectSetupDialog">
+ <class>AddBoundaryDialog</class>
+ <widget class="QDialog" name="AddBoundaryDialog">
   <property name="geometry">
    <rect>
     <x>0</x>

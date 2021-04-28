@@ -582,24 +582,25 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.DataView_web.load(QtCore.QUrl.fromLocalFile(self.app_tempdir+"/default.html"))
         self.__dataview_displaystate = "default"
 
-    def update_data_view(self, maptype):
+    def update_data_view(self, maptype):    # [REVAMP]
         """Updates the current leaflet map view to show base map and plot new data.
 
         :param newdata: The input data map, if the data map is of type SHP or .txt, leaflet will attempt to plot it.
         :return:
         """
-        tileserver = ubglobals.TILESERVERS[self.get_option("mapstyle")]
-        projectdata = self.get_active_simulation_object().get_all_project_info()
-
-        if maptype == "boundary":
-            projboundarymap = self.get_active_simulation_object().get_project_parameter("boundaryshp")
-            coordinates, mapstats = ubspatial.get_bounding_polygon(projboundarymap, "leaflet", UBEATSROOT)
-            leaflet_html = gui_ubspatial.generate_leaflet_boundary_map(coordinates, mapstats, projectdata, tileserver, UBEATSROOT)
-            f = open(self.app_tempdir+"/boundary.html", 'w')
-            f.write(leaflet_html)
-            f.close()
-            self.ui.DataView_web.load(QtCore.QUrl.fromLocalFile(self.app_tempdir+"/boundary.html"))
-            self.__dataview_displaystate = "boundary"
+        # tileserver = ubglobals.TILESERVERS[self.get_option("mapstyle")]
+        # projectdata = self.get_active_simulation_object().get_all_project_info()
+        #
+        # if maptype == "boundary":
+        #     projboundarymap = self.get_active_simulation_object().get_project_parameter("boundaryshp")
+        #     coordinates, mapstats = ubspatial.get_bounding_polygon(projboundarymap, "leaflet", UBEATSROOT)
+        #     leaflet_html = gui_ubspatial.generate_leaflet_boundary_map(coordinates, mapstats, projectdata, tileserver, UBEATSROOT)
+        #     f = open(self.app_tempdir+"/boundary.html", 'w')
+        #     f.write(leaflet_html)
+        #     f.close()
+        #     self.ui.DataView_web.load(QtCore.QUrl.fromLocalFile(self.app_tempdir+"/boundary.html"))
+        #     self.__dataview_displaystate = "boundary"
+        pass
 
     def initialize_output_console(self):
         """Resets the Output Console by first clearing its contents and then reprinting the three starting lines"""

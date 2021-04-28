@@ -10,13 +10,13 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_ProjectSetupDialog(object):
-    def setupUi(self, ProjectSetupDialog):
-        ProjectSetupDialog.setObjectName("ProjectSetupDialog")
-        ProjectSetupDialog.resize(502, 291)
-        self.verticalLayout = QtWidgets.QVBoxLayout(ProjectSetupDialog)
+class Ui_AddBoundaryDialog(object):
+    def setupUi(self, AddBoundaryDialog):
+        AddBoundaryDialog.setObjectName("AddBoundaryDialog")
+        AddBoundaryDialog.resize(502, 291)
+        self.verticalLayout = QtWidgets.QVBoxLayout(AddBoundaryDialog)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.header = QtWidgets.QWidget(ProjectSetupDialog)
+        self.header = QtWidgets.QWidget(AddBoundaryDialog)
         self.header.setObjectName("header")
         self.gridLayout_12 = QtWidgets.QGridLayout(self.header)
         self.gridLayout_12.setContentsMargins(6, 6, 6, 6)
@@ -41,7 +41,7 @@ class Ui_ProjectSetupDialog(object):
         self.title.setObjectName("title")
         self.gridLayout_12.addWidget(self.title, 0, 1, 1, 1)
         self.verticalLayout.addWidget(self.header)
-        self.boundaryWizard = QtWidgets.QStackedWidget(ProjectSetupDialog)
+        self.boundaryWizard = QtWidgets.QStackedWidget(AddBoundaryDialog)
         self.boundaryWizard.setObjectName("boundaryWizard")
         self.page = QtWidgets.QWidget()
         self.page.setObjectName("page")
@@ -282,64 +282,64 @@ class Ui_ProjectSetupDialog(object):
         self.boundaryWizard.addWidget(self.page_4)
         self.verticalLayout.addWidget(self.boundaryWizard)
 
-        self.retranslateUi(ProjectSetupDialog)
+        self.retranslateUi(AddBoundaryDialog)
         self.boundaryWizard.setCurrentIndex(0)
         self.coords_combo.setCurrentIndex(0)
-        QtCore.QMetaObject.connectSlotsByName(ProjectSetupDialog)
+        QtCore.QMetaObject.connectSlotsByName(AddBoundaryDialog)
 
-    def retranslateUi(self, ProjectSetupDialog):
+    def retranslateUi(self, AddBoundaryDialog):
         _translate = QtCore.QCoreApplication.translate
-        ProjectSetupDialog.setWindowTitle(_translate("ProjectSetupDialog", "Setup New Project"))
-        self.subtitle.setText(_translate("ProjectSetupDialog", "Add simulation boundaries to the project"))
-        self.title.setText(_translate("ProjectSetupDialog", "Add Simulation Boundary"))
-        self.step1title.setText(_translate("ProjectSetupDialog", "<html><head/><body><p><span style=\" font-weight:600;\">STEP 1 - Select Boundary File</span></p></body></html>"))
-        self.step1descr.setWhatsThis(_translate("ProjectSetupDialog", "Width of the square cell in the city grid in metres"))
-        self.step1descr.setText(_translate("ProjectSetupDialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        AddBoundaryDialog.setWindowTitle(_translate("AddBoundaryDialog", "Setup New Project"))
+        self.subtitle.setText(_translate("AddBoundaryDialog", "Add simulation boundaries to the project"))
+        self.title.setText(_translate("AddBoundaryDialog", "Add Simulation Boundary"))
+        self.step1title.setText(_translate("AddBoundaryDialog", "<html><head/><body><p><span style=\" font-weight:600;\">STEP 1 - Select Boundary File</span></p></body></html>"))
+        self.step1descr.setWhatsThis(_translate("AddBoundaryDialog", "Width of the square cell in the city grid in metres"))
+        self.step1descr.setText(_translate("AddBoundaryDialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Please specify the shapefile containing simulation boundary polygon</p></body></html>"))
-        self.step1_lbl.setText(_translate("ProjectSetupDialog", "Boundary (.shp)"))
-        self.projectboundary_browse.setText(_translate("ProjectSetupDialog", "Browse..."))
-        self.projectboundary_line.setText(_translate("ProjectSetupDialog", "(none)"))
-        self.step1next.setText(_translate("ProjectSetupDialog", "Next >"))
-        self.step2title.setText(_translate("ProjectSetupDialog", "<html><head/><body><p><span style=\" font-weight:600;\">STEP 2 - Multiple Features</span></p></body></html>"))
-        self.step2descr.setWhatsThis(_translate("ProjectSetupDialog", "Width of the square cell in the city grid in metres"))
-        self.step2descr.setText(_translate("ProjectSetupDialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.step1_lbl.setText(_translate("AddBoundaryDialog", "Boundary (.shp)"))
+        self.projectboundary_browse.setText(_translate("AddBoundaryDialog", "Browse..."))
+        self.projectboundary_line.setText(_translate("AddBoundaryDialog", "(none)"))
+        self.step1next.setText(_translate("AddBoundaryDialog", "Next >"))
+        self.step2title.setText(_translate("AddBoundaryDialog", "<html><head/><body><p><span style=\" font-weight:600;\">STEP 2 - Multiple Features</span></p></body></html>"))
+        self.step2descr.setWhatsThis(_translate("AddBoundaryDialog", "Width of the square cell in the city grid in metres"))
+        self.step2descr.setText(_translate("AddBoundaryDialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">If the map has multiple features, you will need to determine which features to include</p></body></html>"))
-        self.boundary_thresh_spin.setSuffix(_translate("ProjectSetupDialog", " sq.km"))
-        self.include_thresh_radio.setText(_translate("ProjectSetupDialog", "Include only features above threshold area"))
-        self.include_all_radio.setText(_translate("ProjectSetupDialog", "Include all features"))
-        self.include_largest_radio.setText(_translate("ProjectSetupDialog", "Include only the largest feature (by area)"))
-        self.step2back.setText(_translate("ProjectSetupDialog", "< Back"))
-        self.step2next.setText(_translate("ProjectSetupDialog", "Next >"))
-        self.step3title.setText(_translate("ProjectSetupDialog", "<html><head/><body><p><span style=\" font-weight:600;\">STEP 3 - Define Boundary Coordinate System</span></p></body></html>"))
-        self.step3descr.setWhatsThis(_translate("ProjectSetupDialog", "Width of the square cell in the city grid in metres"))
-        self.step3descr.setText(_translate("ProjectSetupDialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.boundary_thresh_spin.setSuffix(_translate("AddBoundaryDialog", " sq.km"))
+        self.include_thresh_radio.setText(_translate("AddBoundaryDialog", "Include only features above threshold area"))
+        self.include_all_radio.setText(_translate("AddBoundaryDialog", "Include all features"))
+        self.include_largest_radio.setText(_translate("AddBoundaryDialog", "Include only the largest feature (by area)"))
+        self.step2back.setText(_translate("AddBoundaryDialog", "< Back"))
+        self.step2next.setText(_translate("AddBoundaryDialog", "Next >"))
+        self.step3title.setText(_translate("AddBoundaryDialog", "<html><head/><body><p><span style=\" font-weight:600;\">STEP 3 - Define Boundary Coordinate System</span></p></body></html>"))
+        self.step3descr.setWhatsThis(_translate("AddBoundaryDialog", "Width of the square cell in the city grid in metres"))
+        self.step3descr.setText(_translate("AddBoundaryDialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Set the coordinate system for the boundary. The simulation will following this coordinate system by default, so ensure that all other data use the same coordinate system.</p></body></html>"))
-        self.epsg_lbl.setText(_translate("ProjectSetupDialog", "EPSG Code:"))
-        self.coords_combo.setItemText(0, _translate("ProjectSetupDialog", "(select coordinate system)"))
-        self.coords_lbl.setText(_translate("ProjectSetupDialog", "Default Coordinate System:"))
-        self.step3back.setText(_translate("ProjectSetupDialog", "< Back"))
-        self.step3next.setText(_translate("ProjectSetupDialog", "Next >"))
-        self.step4title.setText(_translate("ProjectSetupDialog", "<html><head/><body><p><span style=\" font-weight:600;\">STEP 4 - Set Boundary Name(s)</span></p></body></html>"))
-        self.step4descr.setWhatsThis(_translate("ProjectSetupDialog", "Width of the square cell in the city grid in metres"))
-        self.step4descr.setText(_translate("ProjectSetupDialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.epsg_lbl.setText(_translate("AddBoundaryDialog", "EPSG Code:"))
+        self.coords_combo.setItemText(0, _translate("AddBoundaryDialog", "(select coordinate system)"))
+        self.coords_lbl.setText(_translate("AddBoundaryDialog", "Default Coordinate System:"))
+        self.step3back.setText(_translate("AddBoundaryDialog", "< Back"))
+        self.step3next.setText(_translate("AddBoundaryDialog", "Next >"))
+        self.step4title.setText(_translate("AddBoundaryDialog", "<html><head/><body><p><span style=\" font-weight:600;\">STEP 4 - Set Boundary Name(s)</span></p></body></html>"))
+        self.step4descr.setWhatsThis(_translate("AddBoundaryDialog", "Width of the square cell in the city grid in metres"))
+        self.step4descr.setText(_translate("AddBoundaryDialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Setup a \'naming convention\' or define name based on feature attributes</p></body></html>"))
-        self.name_featureattr_radio.setText(_translate("ProjectSetupDialog", "Based on feature attributes"))
-        self.name_featureattr_combo.setItemText(0, _translate("ProjectSetupDialog", "(select attribute)"))
-        self.name_userdefined_line.setText(_translate("ProjectSetupDialog", "(none)"))
-        self.name_userdefined_radio.setText(_translate("ProjectSetupDialog", "User-defined"))
-        self.name_featureattr_check.setText(_translate("ProjectSetupDialog", "Differentiate duplicate entries"))
-        self.step4back.setText(_translate("ProjectSetupDialog", "< Back"))
-        self.step4finish.setText(_translate("ProjectSetupDialog", "Finish"))
+        self.name_featureattr_radio.setText(_translate("AddBoundaryDialog", "Based on feature attributes"))
+        self.name_featureattr_combo.setItemText(0, _translate("AddBoundaryDialog", "(select attribute)"))
+        self.name_userdefined_line.setText(_translate("AddBoundaryDialog", "(none)"))
+        self.name_userdefined_radio.setText(_translate("AddBoundaryDialog", "User-defined"))
+        self.name_featureattr_check.setText(_translate("AddBoundaryDialog", "Differentiate duplicate entries"))
+        self.step4back.setText(_translate("AddBoundaryDialog", "< Back"))
+        self.step4finish.setText(_translate("AddBoundaryDialog", "Finish"))
 from . import ubeats_rc

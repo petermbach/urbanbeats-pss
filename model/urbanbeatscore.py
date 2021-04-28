@@ -86,17 +86,21 @@ class UrbanBeatsSim(object):
             "affiliation": self.__global_options["defaultaffil"],
             "otherpersons": "none",
             "synopsis": "no synopsis",
-            "boundaryshp": "no file selected",
             "logstyle": self.__global_options["projectlogstyle"],
             "projectpath": self.__global_options["defaultpath"],
             "keepcopy": 0,
+        }
+
+        # Simulation Boundary Variables
+        self.__current_boundaryinfo = {}  # [REVAMP] - this variable will be the 'current boundary'
+        self.__project_boundaries = {}      # Collects different boundaries
+        self.__project_boundaries_template = {
+            "boundaryshp": "no file selected",
             "project_coord_sys": self.__global_options["defaultcoordsys"],
             "project_epsg": self.__global_options["customepsg"]
         }
 
-        self.__project_boundaries = {}      # Collects different boundaries
-        self.__boundaryinfo = {}    # [REVAMP]
-
+        # Major classes that form part of the project
         self.__datalibrary = None   # initialize the data library
         self.__projectlog = None    # initialize the project log
         self.__scenarios = {}       # initialize the scenarios
@@ -155,6 +159,7 @@ class UrbanBeatsSim(object):
         # Regardless of mode, all of them should now load the boundary map and get the details
         self.update_project_boundaryinfo()
 
+
     def register_observer(self, observerobj):
         """Adds an observer references by observerobj to the self.__observers array. This uses the Observer design
         pattern."""
@@ -185,12 +190,23 @@ class UrbanBeatsSim(object):
         return True
 
     def update_project_boundaryinfo(self):      # [REVAMP]
-        """Loads the boundary map shapefile, obtains coordinates of the bounding polygon and spatial
+        """One of two cases is carried out, either the project has boundary information, so UrbanBEATS will plot this,
+        alternatively in the case of a brand new project, the model simply centres the map on the 'closest city'.
+        Boundary Present: Loads the boundary map shapefile, obtains coordinates of the bounding polygon and spatial
         stats including simulation area, extents, etc. Information is saved to self.__boundaryinfo."""
-        boundaryshp = self.get_project_parameter("boundaryshp")
-        coordinates, mapstats = ubspatial.get_bounding_polygon(boundaryshp, "native", self.__rootpath)
-        self.__boundaryinfo = mapstats.copy()
-        self.__boundaryinfo["coordinates"] = coordinates
+
+        if len(self.__project_boundaries) == 0:
+            pass
+            # Algorithm [REVAMP]
+            #   1) Grab the city and country details
+            #   2) Lookup the city Lat/Long and centre the map on this city
+        else:
+            pass
+            # [REVAMP] - note no longer working with the property 'boundaryshp'
+            # boundaryshp = self.get_project_parameter("boundaryshp")
+            # coordinates, mapstats = ubspatial.get_bounding_polygon(boundaryshp, "native", self.__rootpath)
+            # self.__boundaryinfo = mapstats.copy()
+            # self.__boundaryinfo["coordinates"] = coordinates
         return True
 
     def get_project_boundary_info(self, param):
@@ -200,12 +216,12 @@ class UrbanBeatsSim(object):
         :return: value if key is existent, None if not.
         """
         if param == "all":
-            return self.__boundaryinfo
+            return self.__current_boundaryinfo
         if param == "mapextents":
-            return self.__boundaryinfo["xmin"], self.__boundaryinfo["xmax"], \
-                   self.__boundaryinfo["ymin"], self.__boundaryinfo["ymax"]
+            return self.__current_boundaryinfo["xmin"], self.__current_boundaryinfo["xmax"], \
+                   self.__current_boundaryinfo["ymin"], self.__current_boundaryinfo["ymax"]
         try:
-            return self.__boundaryinfo[param]
+            return self.__current_boundaryinfo[param]
         except KeyError:
             return None
 

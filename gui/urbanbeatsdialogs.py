@@ -1007,86 +1007,25 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         # --- GUI PARAMETERS ---
         self.ui.projname_line.setText(self.simulation.get_project_parameter("name"))
         self.ui.date_spin.setDate(self.simulation.get_project_parameter("date"))
-        self.ui.region_line.setText(self.simulation.get_project_parameter("region"))
-        self.ui.location_combo.setCurrentIndex(ubglobals.CITIES.index(self.simulation.get_project_parameter("city")))
+        self.ui.region_line.setText(self.simulation.get_project_parameter("region"))        # [REVAMP] - city library
+        self.ui.location_combo.setCurrentIndex(ubglobals.CITIES.index(self.simulation.get_project_parameter("city")))   # [REVAMP]
         self.ui.modellername_box.setText(self.simulation.get_project_parameter("modeller"))
         self.ui.affiliation_box.setText(self.simulation.get_project_parameter("affiliation"))
         self.ui.otherpersons_box.setPlainText(self.simulation.get_project_parameter("otherpersons"))
-        self.ui.synopsis_box.setPlainText(self.simulation.get_project_parameter("synopsis"))
 
         self.ui.projpath_line.setText(self.simulation.get_project_parameter("projectpath"))
         self.ui.keepcopy_check.setChecked(int(self.simulation.get_project_parameter("keepcopy")))
+
+        self.ui.synopsis_box.setPlainText(self.simulation.get_project_parameter("synopsis"))
 
         if self.simulation.get_project_parameter("logstyle") == "comprehensive":
             self.ui.projectlog_compreh.setChecked(1)
         else:
             self.ui.projectlog_simple.setChecked(1)
 
-        # self.ui.projectboundary_line.setText(self.simulation.get_project_parameter("boundaryshp"))
-
-        # - COORDINATE SYSTEM
-        # self.update_coord_combo()
-        # self.ui.epsg_line.setText(self.simulation.get_project_parameter("project_epsg"))
-        # self.update_combo_from_epsg()
-
-        # Enable Pop-up completion for the coordinate system combo box. Note that the combo box has to be editable!
-        # self.ui.coords_combo.completer().setCompletionMode(QtWidgets.QCompleter.PopupCompletion)
-
         # --- SIGNALS AND SLOTS ---
-        # self.ui.projectboundary_browse.clicked.connect(self.browse_boundary_file)
         self.ui.projpath_button.clicked.connect(self.browse_project_path)
         self.accepted.connect(self.run_setup_project)
-
-        # - SIGNALS AND SLOTS FOR COORDINATE SYSTEMS
-        # self.timer_linedit = QtCore.QTimer()
-        # self.timer_linedit.setSingleShot(True)
-        # self.timer_linedit.setInterval(300)
-        # self.timer_linedit.timeout.connect(self.update_combo_from_epsg)
-
-        # self.ui.epsg_line.textEdited.connect(lambda: self.timer_linedit.start())
-        # self.ui.coords_combo.currentIndexChanged.connect(self.update_epsg_from_combo)
-
-    def update_coord_combo(self):
-        """Updates the coordinate system's combobox and the UI elements associated with it."""
-        self.ui.coords_combo.clear()
-        self.ui.coords_combo.addItem("(select coordinate system)")
-        names = list(self.epsg_dict.keys())
-        names.sort()
-        for i in names:
-            self.ui.coords_combo.addItem(i)
-        self.ui.coords_combo.addItem("Other...")
-        self.ui.coords_combo.setCurrentIndex(0)
-
-    def update_combo_from_epsg(self):
-        """Updates the coordinate system combo box based on the EPSG code entered in the text box, if the EPSG
-        does not exist in the dictionary, the combo box displays "Other...". """
-        names = list(self.epsg_dict.keys())
-        names.sort()
-        try:
-            for name, epsg in self.epsg_dict.items():
-                if int(epsg) == int(self.ui.epsg_line.text()):
-                    curindex = names.index(name) + 1    # +1 to account for Index 0 < > text
-                    self.ui.coords_combo.setCurrentIndex(curindex)
-                    return True
-            self.ui.coords_combo.setCurrentIndex(len(names) + 1)  # Set to 'Other'
-        except ValueError:
-            self.ui.coords_combo.setCurrentIndex(len(names)+1)   # Set to 'Other'
-
-    def update_epsg_from_combo(self):
-        """Updates the EPSG text box based on the selected coordinate system in the combo box. If < >, index 0
-        or "Other ..." are selected, the EPSG box remains blank."""
-        try:
-            self.ui.epsg_line.setText(self.epsg_dict[self.ui.coords_combo.currentText()])
-        except KeyError:
-            pass
-
-    def browse_boundary_file(self):
-        """Opens a file dialog, which requests a shapefile of the case study boundary. UrbanBEATS
-        uses this to delineate data for the project and for visualisation purposes and other calculations."""
-        message = "Browse for Project Boundary Shapefile..."
-        boundaryfile, _filter = QtWidgets.QFileDialog.getOpenFileName(self, message, os.curdir, "Shapefile (*.shp)")
-        if boundaryfile:
-            self.ui.projectboundary_line.setText(boundaryfile)
 
     def browse_project_path(self):
         """Opens a file dialog, which requests for a folder path within which UrbanBEATS will
@@ -1114,7 +1053,6 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         self.ui.aboutproject_widget2.setEnabled(0)
         self.ui.aboutuser_widget.setEnabled(0)
         self.ui.synopsis_box.setEnabled(0)
-        self.ui.boundary_widget.setEnabled(0)
         self.ui.projectlog_widget.setEnabled(0)
         self.ui.path_widget.setEnabled(0)
 
@@ -1124,7 +1062,6 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         of project parameters is passed back to the main runtime. If self.__viewer == 2, then nothing
         happens and the dialog window just closes."""
         if self.__viewer == 0:
-            # Do stuff
             self.save_values()
         elif self.__viewer == 1:
             self.save_values()
@@ -1139,7 +1076,7 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         :return: Nothing if all conditions are fine, warning message box if not.
         """
         if self.Accepted == r:
-            conditions_met = [1, 1, 1]
+            condition_met = True
 
             # CONDITIONS FOR A VALID PROJECT PATH - conditions_met[0]
             if os.path.isdir(self.ui.projpath_line.text()):
@@ -1147,46 +1084,13 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
             else:
                 prompt_msg = "Please select a valid project path!"
                 QtWidgets.QMessageBox.warning(self, 'Invalid Path', prompt_msg, QtWidgets.QMessageBox.Ok)
-                conditions_met[0] = 0
+                condition_met = False
 
-            # CONDITION FOR A VALID BOUNDARY SHAPEFILE - conditions_met[1]
-            if os.path.isfile(self.ui.projectboundary_line.text()):
-                pass
-            else:
-                prompt_msg = "Please select a valid boundary shapefile!"
-                QtWidgets.QMessageBox.warning(self, 'Invalid Boundary File', prompt_msg, QtWidgets.QMessageBox.Ok)
-                conditions_met[1] = 0
-
-            # CONDITIONS FOR THE COORDINATE SYSTEM SELECTION - conditions_met[2]
-            if self.ui.coords_combo.currentText() not in ["Other...", "(select coordinate system)"]:
-                # Case 1 - the coordinate system combo has a valid selection
-                pass
-                # datatype.append(self.ui.coord_combo.currentText())  # index 4
-                # datatype.append(int(self.ui.epsg_box.text()))  # index 5
-            else:
-                try:  # Case 2 - the EPSG box can be converted to an integer and is not empty
-                    if self.ui.epsg_line != "":
-                        epsg = int(self.ui.epsg_line.text())
-                        # datatype.append(self.ui.coord_combo.currentText())  # index 4
-                        # datatype.append(int(self.ui.epsg_box.text()))
-                    else:
-                        prompt_msg = "Error, please select a valid coordinate system or EPSG code!"
-                        QtWidgets.QMessageBox.warning(self, 'Invalid Coordinate System', prompt_msg,
-                                                      QtWidgets.QMessageBox.Ok)
-                        conditions_met[2] = 0
-                except ValueError:  # Case 3 - the EPSG box has illegal entry
-                    prompt_msg = "Error, please select a valid coordinate system or EPSG code!"
-                    QtWidgets.QMessageBox.warning(self, 'Invalid Coordinate System', prompt_msg,
-                                                  QtWidgets.QMessageBox.Ok)
-                    conditions_met[2] = 0
-
-            if sum(conditions_met) == len(conditions_met):
+            if condition_met:
                 self.save_values()
                 QtWidgets.QDialog.done(self, r)
-            else:
-                return
         else:
-            QtWidgets.QDialog.done(self, r) # Call the parent's method instead of the override.
+            QtWidgets.QDialog.done(self, r)     # Call the parent's method instead of the override.
 
     def save_values(self):
         """Saves all project parameters values and returns a dictionary for use to setup simulation."""
@@ -1197,12 +1101,9 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         self.simulation.set_project_parameter("modeller", self.ui.modellername_box.text())
         self.simulation.set_project_parameter("affiliation", self.ui.affiliation_box.text())
         self.simulation.set_project_parameter("otherpersons", self.ui.otherpersons_box.toPlainText())
-        self.simulation.set_project_parameter("synopsis", self.ui.synopsis_box.toPlainText())
-        # self.simulation.set_project_parameter("boundaryshp", self.ui.projectboundary_line.text())
         self.simulation.set_project_parameter("projectpath", self.ui.projpath_line.text())
         self.simulation.set_project_parameter("keepcopy", int(self.ui.keepcopy_check.isChecked()))
-        # self.simulation.set_project_parameter("project_coord_sys", self.ui.coords_combo.currentText())
-        # self.simulation.set_project_parameter("project_epsg", int(self.ui.epsg_line.text()))
+        self.simulation.set_project_parameter("synopsis", self.ui.synopsis_box.toPlainText())
 
         if self.ui.projectlog_compreh.isChecked():
             self.simulation.set_project_parameter("logstyle", "comprehensive")
