@@ -31,6 +31,7 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 import random
 import os
 import xml.etree.ElementTree as ET
+import datetime
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 from . import ubdatalibrary
@@ -58,12 +59,10 @@ class UrbanBeatsSim(object):
         # Initialize variables
         self.__rootpath = rootpath          # the root path for UrbanBEATS' runtime
         self.__global_options = options     # global model options
-        self.__runtime_method = "SF"
+        self.__runtime_method = "SF"        # SF = Single Scenario, Full Simulation, AF = All scenarios, full sim,
+                                            # SP = single scenario, performance only
         self.__runtime_progress = 0         # virtual progress bar
         self.__parent = parent
-        # SF = Single Scenario, Full Simulation,
-        # AF = All scenarios, full sim,
-        # SP = single scenario, performance only
 
         #Initialize paths
         self.emptyBlockPath = self.__rootpath+"/ancillary/emptyblockmap.shp"
@@ -73,14 +72,14 @@ class UrbanBeatsSim(object):
         self.__observers = []   # Observers of the current simulation
         self.__progressbars = []     # Progressbar of the current simulation
 
-        self.__project_saved = 0    # BOOL - has the project been saved?
-        self.__simulation_completed = 0 # BOOL - has the simulation completed run?
-        self.__projectpath = ""     # Project Path. Starts blank, is then replaced.
+        self.__project_saved = 0            # BOOL - has the project been saved?
+        self.__simulation_completed = 0     # BOOL - has the simulation completed run?
+        self.__projectpath = ""             # Project Path. Starts blank, is then replaced.
 
-        # Project Parameters
+        # Project Parameters - base initialization
         self.__project_info = {
             "name": "New UrbanBEATS Project",
-            "date": "",
+            "date": datetime.datetime.today().date(),
             "region": "",
             "city": self.__global_options["city"],
             "modeller": self.__global_options["defaultmodeller"],
@@ -95,7 +94,8 @@ class UrbanBeatsSim(object):
             "project_epsg": self.__global_options["customepsg"]
         }
 
-        self.__boundaryinfo = {}
+        self.__project_boundaries = {}      # Collects different boundaries
+        self.__boundaryinfo = {}    # [REVAMP]
 
         self.__datalibrary = None   # initialize the data library
         self.__projectlog = None    # initialize the project log
@@ -184,7 +184,7 @@ class UrbanBeatsSim(object):
             self.set_project_parameter(k, type(self.get_project_parameter(k))(projdict[k]))
         return True
 
-    def update_project_boundaryinfo(self):
+    def update_project_boundaryinfo(self):      # [REVAMP]
         """Loads the boundary map shapefile, obtains coordinates of the bounding polygon and spatial
         stats including simulation area, extents, etc. Information is saved to self.__boundaryinfo."""
         boundaryshp = self.get_project_parameter("boundaryshp")
@@ -226,6 +226,8 @@ class UrbanBeatsSim(object):
         os.makedirs(projectpath+"/"+projectnewname+"/datalib")
         os.makedirs(projectpath+"/"+projectnewname+"/scenarios")
         os.makedirs(projectpath+"/"+projectnewname+"/output")
+        os.makedirs(projectpath + "/" + projectnewname + "/boundaries")
+        os.makedirs(projectpath + "/" + projectnewname + "/cache")
         self.write_project_info_file()
         self.__projectpath = projectpath+"/"+projectnewname
 

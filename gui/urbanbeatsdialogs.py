@@ -30,8 +30,8 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 # --- --- --- --- --- --- --- --- ---
 
 # --- PYTHON LIBRARY IMPORTS ---
-import sys
 import os
+import datetime
 import webbrowser
 import xml.etree.ElementTree as ET
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -996,7 +996,7 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         self.ui.setupUi(self)
         self.__viewer = viewer
         self.simulation = simulation
-        self.epsg_dict = main.epsg_dict
+        self.epsg_dict = main.epsg_dict     # [REVAMP]
 
         # --- PRE-FILLING GUI SETUP ---
         if self.__viewer == 1:     # Edit Project Details
@@ -1006,6 +1006,7 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
 
         # --- GUI PARAMETERS ---
         self.ui.projname_line.setText(self.simulation.get_project_parameter("name"))
+        self.ui.date_spin.setDate(self.simulation.get_project_parameter("date"))
         self.ui.region_line.setText(self.simulation.get_project_parameter("region"))
         self.ui.location_combo.setCurrentIndex(ubglobals.CITIES.index(self.simulation.get_project_parameter("city")))
         self.ui.modellername_box.setText(self.simulation.get_project_parameter("modeller"))
@@ -1021,29 +1022,29 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         else:
             self.ui.projectlog_simple.setChecked(1)
 
-        self.ui.projectboundary_line.setText(self.simulation.get_project_parameter("boundaryshp"))
+        # self.ui.projectboundary_line.setText(self.simulation.get_project_parameter("boundaryshp"))
 
         # - COORDINATE SYSTEM
-        self.update_coord_combo()
-        self.ui.epsg_line.setText(self.simulation.get_project_parameter("project_epsg"))
-        self.update_combo_from_epsg()
+        # self.update_coord_combo()
+        # self.ui.epsg_line.setText(self.simulation.get_project_parameter("project_epsg"))
+        # self.update_combo_from_epsg()
 
         # Enable Pop-up completion for the coordinate system combo box. Note that the combo box has to be editable!
-        self.ui.coords_combo.completer().setCompletionMode(QtWidgets.QCompleter.PopupCompletion)
+        # self.ui.coords_combo.completer().setCompletionMode(QtWidgets.QCompleter.PopupCompletion)
 
         # --- SIGNALS AND SLOTS ---
-        self.ui.projectboundary_browse.clicked.connect(self.browse_boundary_file)
+        # self.ui.projectboundary_browse.clicked.connect(self.browse_boundary_file)
         self.ui.projpath_button.clicked.connect(self.browse_project_path)
         self.accepted.connect(self.run_setup_project)
 
         # - SIGNALS AND SLOTS FOR COORDINATE SYSTEMS
-        self.timer_linedit = QtCore.QTimer()
-        self.timer_linedit.setSingleShot(True)
-        self.timer_linedit.setInterval(300)
-        self.timer_linedit.timeout.connect(self.update_combo_from_epsg)
+        # self.timer_linedit = QtCore.QTimer()
+        # self.timer_linedit.setSingleShot(True)
+        # self.timer_linedit.setInterval(300)
+        # self.timer_linedit.timeout.connect(self.update_combo_from_epsg)
 
-        self.ui.epsg_line.textEdited.connect(lambda: self.timer_linedit.start())
-        self.ui.coords_combo.currentIndexChanged.connect(self.update_epsg_from_combo)
+        # self.ui.epsg_line.textEdited.connect(lambda: self.timer_linedit.start())
+        # self.ui.coords_combo.currentIndexChanged.connect(self.update_epsg_from_combo)
 
     def update_coord_combo(self):
         """Updates the coordinate system's combobox and the UI elements associated with it."""
@@ -1190,17 +1191,18 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
     def save_values(self):
         """Saves all project parameters values and returns a dictionary for use to setup simulation."""
         self.simulation.set_project_parameter("name", self.ui.projname_line.text())
+        self.simulation.set_project_parameter("date", self.ui.date_spin.date().toPyDate())
         self.simulation.set_project_parameter("region", self.ui.region_line.text())
         self.simulation.set_project_parameter("city", ubglobals.CITIES[self.ui.location_combo.currentIndex()])
         self.simulation.set_project_parameter("modeller", self.ui.modellername_box.text())
         self.simulation.set_project_parameter("affiliation", self.ui.affiliation_box.text())
         self.simulation.set_project_parameter("otherpersons", self.ui.otherpersons_box.toPlainText())
         self.simulation.set_project_parameter("synopsis", self.ui.synopsis_box.toPlainText())
-        self.simulation.set_project_parameter("boundaryshp", self.ui.projectboundary_line.text())
+        # self.simulation.set_project_parameter("boundaryshp", self.ui.projectboundary_line.text())
         self.simulation.set_project_parameter("projectpath", self.ui.projpath_line.text())
         self.simulation.set_project_parameter("keepcopy", int(self.ui.keepcopy_check.isChecked()))
-        self.simulation.set_project_parameter("project_coord_sys", self.ui.coords_combo.currentText())
-        self.simulation.set_project_parameter("project_epsg", int(self.ui.epsg_line.text()))
+        # self.simulation.set_project_parameter("project_coord_sys", self.ui.coords_combo.currentText())
+        # self.simulation.set_project_parameter("project_epsg", int(self.ui.epsg_line.text()))
 
         if self.ui.projectlog_compreh.isChecked():
             self.simulation.set_project_parameter("logstyle", "comprehensive")
