@@ -454,7 +454,7 @@ class Ui_NewScenarioDialog(object):
         self.verticalLayout.addWidget(self.footer)
 
         self.retranslateUi(NewScenarioDialog)
-        self.setup_widget.setCurrentIndex(2)
+        self.setup_widget.setCurrentIndex(0)
         self.cancel_button.clicked.connect(NewScenarioDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(NewScenarioDialog)
         NewScenarioDialog.setTabOrder(self.name_box, self.static_radio)

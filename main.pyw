@@ -348,11 +348,13 @@ class MainWindow(QtWidgets.QMainWindow):
             return
         if self.ui.ScenarioDock_Combo.currentIndex() == 0:
             self.get_active_simulation_object().set_active_scenario(None)
+            self.get_active_simulation_object().set_active_boundary(None)
             self.scenario_view_reset()
             return
         active_scenario_name = self.ui.ScenarioDock_Combo.currentText()
         self.get_active_simulation_object().set_active_scenario(active_scenario_name)
         self.__activeScenario = self.get_active_simulation_object().get_active_scenario()
+        self.get_active_simulation_object().set_active_boundary(self.__activeScenario.get_metadata("boundary"))
 
         # Tree Widget Info:
         twi = QtWidgets.QTreeWidgetItem()
@@ -424,10 +426,11 @@ class MainWindow(QtWidgets.QMainWindow):
         """Resets the scenario view to the default """
         self.ui.ScenarioDock_View.topLevelItem(0).takeChildren()
         self.ui.ScenarioDock_View.topLevelItem(1).child(0).setText(0, "Type: <N/A>")
-        self.ui.ScenarioDock_View.topLevelItem(1).child(1).setText(0, "Status: <none>")
-        self.ui.ScenarioDock_View.topLevelItem(1).child(2).setText(0, "Simulation Year(s): <year>")
-        self.ui.ScenarioDock_View.topLevelItem(1).child(3).setText(0, "Simulation Time Step: N/A")
-        self.ui.ScenarioDock_View.topLevelItem(1).child(4).setText(0, "Benchmark Iterations: N/A")
+        self.ui.ScenarioDock_View.topLevelItem(1).child(1).setText(0, "Boundary: <N/A>")
+        self.ui.ScenarioDock_View.topLevelItem(1).child(2).setText(0, "Status: <none>")
+        self.ui.ScenarioDock_View.topLevelItem(1).child(3).setText(0, "Simulation Year(s): <year>")
+        self.ui.ScenarioDock_View.topLevelItem(1).child(4).setText(0, "Simulation Time Step: N/A")
+        self.ui.ScenarioDock_View.topLevelItem(1).child(5).setText(0, "Benchmark Iterations: N/A")
         self.ui.ScenarioDock_View.topLevelItem(2).takeChildren()
         for i in range(11):
             self.ui.ScenarioDock_View.topLevelItem(3).child(i).setCheckState(0, 0)
@@ -591,8 +594,14 @@ class MainWindow(QtWidgets.QMainWindow):
         :param newdata: The input data map, if the data map is of type SHP or .txt, leaflet will attempt to plot it.
         :return:
         """
-        # tileserver = ubglobals.TILESERVERS[self.get_option("mapstyle")]
-        # projectdata = self.get_active_simulation_object().get_all_project_info()
+        # Data to create map!
+        tileserver = ubglobals.TILESERVERS[self.get_option("mapstyle")]
+        projectdata = self.get_active_simulation_object().get_all_project_info()
+        projectboundaries = self.get_active_simulation_object().get_project_boundaries()
+        activeboundary = self.get_active_simulation_object().get_active_boundary()
+
+        
+
         #
         # if maptype == "boundary":
         #     projboundarymap = self.get_active_simulation_object().get_project_parameter("boundaryshp")
@@ -749,7 +758,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.ui.Project.setHtml(ubreport.generate_project_overview_html(self.get_options(),
                                                                         activesimulation.get_all_project_info(),
-                                                                        activesimulation.get_project_boundary_info("all"),
+                                                                        activesimulation.get_scenario_boundary_info("all"),
                                                                         activesimulation.get_num_scenarios(),
                                                                         activesimulation.get_num_datasets()))
         self.ui.ScenarioDock_View.expandAll()

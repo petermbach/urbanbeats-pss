@@ -57,7 +57,7 @@ COORDINATESYSTEMS = ["GDA", "UTM", "Other"]     # Short-form abbreviation for ke
 
 CITIES = ["Adelaide", "Brisbane", "Innsbruck", "Melbourne", "Nanjing", "Perth",
                   "SanFrancisco", "Sydney", "Zurich", "Other"]      # Spelling and naming for cities
-MAPSTYLES = ["CARTO", "ESRI", "OSM", "TONER", "TERRAIN"]
+MAPSTYLES = ["CARTODBPOS", "CARTODARK", "ESRI", "OSM", "OTM", "STADIA", "TONER", "TERRAIN", "WATERCOLOR"]
 
 COORDINATES = {"Adelaide": [-34.9285, 138.6007],
                 "Brisbane": [-27.4698, 153.0251],
@@ -69,33 +69,6 @@ COORDINATES = {"Adelaide": [-34.9285, 138.6007],
                 "Sydney": [-33.8688, 151.2093],
                 "Zurich": [47.3769, 8.5417]
                }
-
-TILESERVERS = {
-    "CARTO": """var mapstyle= L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
-attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-subdomains: 'abcd',
-maxZoom: 19
-});""",
-    "ESRI": """var mapstyle= L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-});""",
-    "OSM": """var mapstyle= L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-maxZoom: 19, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'});""",
-    "TONER": """var mapstyle= L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}', {
-attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-subdomains: 'abcd',
-minZoom: 0,
-maxZoom: 20,
-ext: 'png'
-});""",
-    "TERRAIN": """var mapstyle= L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
-attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-subdomains: 'abcd',
-minZoom: 0,
-maxZoom: 18,
-ext: 'png'
-});"""
-    }
 
 # --- MODEL SETTING ---
 DECISIONS = ["best", "random", "none"]
@@ -182,3 +155,43 @@ ASSET_IDENTIFIERS = {"Block": "The most basic building block of the city in Urba
                                  "the modelling.",
                      "MapAttributes": "Global attributes of the simulation map that all modules are working on."
                      }
+
+TILESERVERS = {
+    "CARTODBPOS": """var mapstyle = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+subdomains: 'abcd',
+maxZoom: 19
+});""",
+    "CARTODARK": """var mapstyle = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+subdomains: 'abcd',
+maxZoom: 19
+});""",
+    "ESRI": """var mapstyle= L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+});""",
+    "OSM": """var mapstyle = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	maxZoom: 19,
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+});""",
+    "OTM": """var mapstyle = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+maxZoom: 17, attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+});""",
+    "STADIA": """var mapstyle = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+	maxZoom: 20,
+	attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+});""",
+    "TONER": """var mapstyle= L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}', {
+attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+subdomains: 'abcd', minZoom: 0, maxZoom: 20, ext: 'png'
+});""",
+    "TERRAIN": """var mapstyle= L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
+attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+subdomains: 'abcd', minZoom: 0, maxZoom: 18,ext: 'png'
+});""",
+    "WATERCOLOR": """var mapstyle = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
+attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+subdomains: 'abcd', minZoom: 1, maxZoom: 16, ext: 'jpg'
+});"""
+    }
+

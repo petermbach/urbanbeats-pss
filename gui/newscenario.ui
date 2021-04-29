@@ -212,7 +212,7 @@
    <item>
     <widget class="QTabWidget" name="setup_widget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="narrative_tab">
       <attribute name="icon">

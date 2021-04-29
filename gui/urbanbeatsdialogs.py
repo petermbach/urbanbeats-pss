@@ -245,7 +245,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
 
         self.ui.boundary_combo.clear()
         self.ui.boundary_combo.addItem("(select simulation boundary)")
-        boundarynames = self.simulation.get_simulation_boundary_names()
+        boundarynames = self.simulation.get_project_boundary_names()
         for n in boundarynames:
             self.ui.boundary_combo.addItem(str(n))
         scenario_boundaryname = self.scenario.get_metadata("boundary")
@@ -1172,7 +1172,6 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         self.ui_setmapstyle_pixmap()
 
         self.ui.tileserver_line.setText(self.options["tileserverURL"])
-        self.ui.cache_check.setChecked(bool(self.options["cachetiles"]))
         self.ui.offline_check.setChecked(bool(self.options["offline"]))
 
         # DEFAULT COORDINATE SYSTEM
@@ -1279,9 +1278,11 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
     def ui_setmapstyle_pixmap(self):
         """Dynamically changes the displayed minimap on the preference dialog Map Settings Tab to the appropriate
         map style."""
-        mapstylepixmaps = ["mt_cartodb.png", "mt_esriworld.png", "mt_osm.png",
-                           "mt_stamentoner.png", "mt_stamenterrain.png"]
-        self.ui.mapstyle_pic.setPixmap(QtGui.QPixmap(":/media/map templates/" +
+        mapstylepixmaps = ["mt_cartodbpositron.png","mt_cartodbdarkmatter.png","mt_esriworldimagery.png",
+                           "mt_openstreetmap.png", "mt_opentopomap.png", "mt_stadia.png",
+                           "mt_stamentoner.png", "mt_stamenterrain.png", "mt_stamenwatercolor.png"]
+
+        self.ui.mapstyle_pic.setPixmap(QtGui.QPixmap(":/media/map templates/gui/" +
                                                      mapstylepixmaps[self.ui.mapstyle_combo.currentIndex()]))
 
     def ui_epsg_line_enabledisable(self):
@@ -1344,7 +1345,6 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         # MAP SETTINGS TAB
         self.options["mapstyle"] = str(ubglobals.MAPSTYLES[self.ui.mapstyle_combo.currentIndex()])
         self.options["tileserverURL"] = str(self.ui.tileserver_line.text())
-        self.options["cachetiles"] = int(self.ui.cache_check.isChecked())
         self.options["offline"] = int(self.ui.offline_check.isChecked())
         self.options["defaultcoordsys"] = str(self.ui.coords_combo.currentText())
         self.options["customepsg"] = str(self.ui.epsg_line.text())

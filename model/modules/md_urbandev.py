@@ -756,7 +756,7 @@ class UrbanDevelopment(UBModule):
         rand.seed()
 
         # --- SECTION 1 - Get Boundary, Setup Details for the Simulation Grid and MapAttributes Component
-        xmin, xmax, ymin, ymax = self.activesim.get_project_boundary_info("mapextents")
+        xmin, xmax, ymin, ymax = self.activesim.get_scenario_boundary_info("mapextents")
         mapwidth = xmax - xmin  # width of the map [m]
         mapheight = ymax - ymin  # height of map [m]
 
@@ -793,7 +793,7 @@ class UrbanDevelopment(UBModule):
         self.scenario.add_asset("MapAttributes", self.map_attr)
 
         # --- SECTION 2 - Create the simulation grid ---
-        boundarygeom = self.activesim.get_project_boundary_info("coordinates")
+        boundarygeom = self.activesim.get_scenario_boundary_info("coordinates")
         boundarygeom_zeroorigin = []    # Contains the polygon's coordinates shifted to the zero origin
         for coord in boundarygeom:      # Shift the map to (0,0) origin
             boundarygeom_zeroorigin.append((coord[0] - xmin, coord[1] - ymin))

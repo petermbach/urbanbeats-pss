@@ -393,23 +393,6 @@ def get_epsg_all(rootpath):
     return epsg_dict
 
 
-def create_coord_transformation_leaflet(inputEPSG):
-    """Creates the coordinate transformation variable for the leaflet map, uses OSR library. The leaflet
-    EPSG code is 4326, which is WGS84, geographic coordinate system.
-
-    :param inputEPSG: the input EPSG code, format int(), specifying the EPSG of the input map. Can use get_epsg()
-    :return: osr.CoordinateTransformation() object
-    """
-    inSpatial = osr.SpatialReference()
-    inSpatial.ImportFromEPSG(inputEPSG)
-
-    outSpatial = osr.SpatialReference()
-    outSpatial.ImportFromEPSG(4326)
-
-    coordTrans = osr.CoordinateTransformation(inSpatial, outSpatial)
-    return coordTrans
-
-
 def load_shapefile_details(file):
     """ Loads the basic shapefile for a few key properties including Map Extent, Number of Features, List of Attributes
     and EPSG Code
@@ -449,7 +432,7 @@ def load_shapefile_details(file):
     return [geometry.GetGeometryName(), xmin, xmax, ymin, ymax, inputprojcs, epsg, featurecount, attnames]
 
 
-def get_bounding_polygons(boundaryfile, option, rootpath):
+def get_bounding_polygon(boundaryfile, option, rootpath):
     """Loads the boundary Shapefile and obtains the coordinates of the bounding polygon, returns as a list of coords.
 
     :param boundaryfile: full filepath to the boundary shapefile to load
@@ -544,6 +527,25 @@ def get_bounding_polygons(boundaryfile, option, rootpath):
             coordinates[p] = [coordinates[p][0], coordinates[p][1]]
         mapstats["centroid"] = [(xmin + xmax) / 2.0, (ymin + ymax)/2.0]
     return coordinates, mapstats
+
+
+def create_coord_transformation_leaflet(inputEPSG):     # [REVAMP] - SLATE FOR DELETION - now in mapping_leaflet.py
+    """Creates the coordinate transformation variable for the leaflet map, uses OSR library. The leaflet
+    EPSG code is 4326, which is WGS84, geographic coordinate system.
+
+    :param inputEPSG: the input EPSG code, format int(), specifying the EPSG of the input map. Can use get_epsg()
+    :return: osr.CoordinateTransformation() object
+    """
+    inSpatial = osr.SpatialReference()
+    inSpatial.ImportFromEPSG(inputEPSG)
+
+    outSpatial = osr.SpatialReference()
+    outSpatial.ImportFromEPSG(4326)
+
+    coordTrans = osr.CoordinateTransformation(inSpatial, outSpatial)
+    return coordTrans
+
+
 
 # # TEST SCRIPT - get_bounding_polygons() function
 # MAPPATH = r"C:\Users\peter\Dropbox\UrbanBEATS Benchmark Case Studies\AU VIC Upper Dandenong Ck\Input Files\Boundary_UTM.shp"

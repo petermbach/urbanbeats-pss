@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2012. Peter M. Bach"
 
+# [REVAMP] SLATE FOR DELETION - NOW REFACTORED TO mapping_leaflet.py
 
 def generate_initial_leaflet_map(coordinates, tileserver, rootpath):
     """Generates html text for the initial leaflet map to be displayed on the main interface.

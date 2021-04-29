@@ -92,7 +92,7 @@ class UrbanBeatsSim(object):
         }
 
         # Simulation Boundary Variables
-        self.__current_boundaryinfo = {}  # [REVAMP] - this variable will be the 'current boundary'
+        self.__activeboundary = None
         self.__current_boundary_to_load = []    # Current Boundary Shapefile to load [filename,
         self.__project_boundaries = {}      # Collects different boundaries
         self.__project_boundaries_template = {
@@ -108,6 +108,15 @@ class UrbanBeatsSim(object):
         self.__functions = []       # initialize the list of functions
         self.__activescenario = None
 
+    def set_active_boundary(self, boundaryname):
+        try:
+            self.__activeboundary = self.__project_boundaries[boundaryname]
+        except KeyError:
+            self.__activeboundary = None
+
+    def get_active_boundary(self):
+        return self.__activeboundary
+
     def set_current_boundary_file_to_load(self, filename, multifeatoptions, namingoptions, epsg, inputprojcs):
         """Defines the parameters of a boundary shapefile for the core to load. This shapefile is run through
 
@@ -121,9 +130,12 @@ class UrbanBeatsSim(object):
         print("Successful", self.__current_boundary_to_load)
         return True
 
-    def get_simulation_boundary_names(self):
+    def get_project_boundary_names(self):
         """Returns all names of current boundaries loaded into the project as a list of strings."""
         return self.__project_boundaries.keys()
+
+    def get_project_boundaries(self):
+        return self.__project_boundaries
 
     def import_simulation_boundaries(self):
         """Imports new boundaries into the simulation based on the self.__current_boundar_to_load variable. After
@@ -168,6 +180,7 @@ class UrbanBeatsSim(object):
             mapstats["centroid"] = boundary_polys[i].get_centroid()
 
             coordinates = boundary_polys[i].get_points()
+            mapstats["coordinates"] = coordinates
 
             if naming_rule == "user":
                 boundary_base_name = naming_key
@@ -181,7 +194,7 @@ class UrbanBeatsSim(object):
             while boundarynewname in self.__project_boundaries.keys():
                 namecounter += 1
                 boundarynewname = boundary_base_name + "_" + str(namecounter)
-            self.__project_boundaries[boundarynewname] = [coordinates, mapstats]    # Add new project boundary
+            self.__project_boundaries[boundarynewname] = mapstats    # Add new project boundary
 
         self.__current_boundary_to_load = []    # Reset the current boundary to load
         print("Current number of boundaries in the simulation: ", str(len(self.__project_boundaries)))
@@ -236,10 +249,6 @@ class UrbanBeatsSim(object):
         elif condition == "import": # for importing a project
             pass    # [TO DO]
 
-        # Regardless of mode, all of them should now load the boundary map and get the details
-        self.update_project_boundaryinfo()
-
-
     def register_observer(self, observerobj):
         """Adds an observer references by observerobj to the self.__observers array. This uses the Observer design
         pattern."""
@@ -269,7 +278,7 @@ class UrbanBeatsSim(object):
             self.set_project_parameter(k, type(self.get_project_parameter(k))(projdict[k]))
         return True
 
-    def update_project_boundaryinfo(self):      # [REVAMP]
+    def update_project_boundaryinfo(self):      # [REVAMP] - SLATED FOR DELETION
         """One of two cases is carried out, either the project has boundary information, so UrbanBEATS will plot this,
         alternatively in the case of a brand new project, the model simply centres the map on the 'closest city'.
         Boundary Present: Loads the boundary map shapefile, obtains coordinates of the bounding polygon and spatial
@@ -287,21 +296,21 @@ class UrbanBeatsSim(object):
             # coordinates, mapstats = ubspatial.get_bounding_polygons(boundaryshp, "native", self.__rootpath)
             # self.__boundaryinfo = mapstats.copy()
             # self.__boundaryinfo["coordinates"] = coordinates
-        return True
+        return True     # SLATED FOR DELETION
 
-    def get_project_boundary_info(self, param):
+    def get_scenario_boundary_info(self, param):
         """Retrieves spatial boundary information for the current project from the self.__boundarinfo variable.
 
         :param param: the name of the key of self.__boundaryinfo.
         :return: value if key is existent, None if not.
         """
         if param == "all":
-            return self.__current_boundaryinfo
+            return self.__activeboundary
         if param == "mapextents":
-            return self.__current_boundaryinfo["xmin"], self.__current_boundaryinfo["xmax"], \
-                   self.__current_boundaryinfo["ymin"], self.__current_boundaryinfo["ymax"]
+            return self.__activeboundary["xmin"], self.__activeboundary["xmax"], \
+                   self.__activeboundary["ymin"], self.__activeboundary["ymax"]
         try:
-            return self.__current_boundaryinfo[param]
+            return self.__activeboundary[param]
         except KeyError:
             return None
 
@@ -412,7 +421,6 @@ class UrbanBeatsSim(object):
         """Creates a new scenario object and sets it as the active scenario."""
         newscenario = ubscenarios.UrbanBeatsScenario(self, self.__datalibrary, self.__projectlog)
         self.__activescenario = newscenario     # Set the active scenario's name
-        print ("Created")
 
     def add_new_scenario(self, scenario_object):
         """Adds a new scenario to the simulation by creating a UrbanBeatsScenario() instance and initializing
@@ -427,8 +435,10 @@ class UrbanBeatsSim(object):
         """Sets the current active scenario to the scenario with the name "name"."""
         try:
             self.__activescenario = self.__scenarios[scenario_name]
+            self.__activeboundary = self.__activescenario.get_metadata["boundary"]
         except KeyError:
             self.__activescenario = None
+            self.__activeboundary = None
 
     def get_active_scenario(self):
         """Returns the active scenario in the core simulation."""
