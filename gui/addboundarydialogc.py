@@ -58,7 +58,7 @@ class AddBoundaryDialogLaunch(QtWidgets.QDialog):
             "boundaryshp": "(none)",
             "featurecount": 0,
             "multifeatures": "ALL",
-            "multifeatures_thresh": 1,
+            "thresh": 1,
             "attnames": [],
             "extent": [],
             "epsg": None,
@@ -97,7 +97,6 @@ class AddBoundaryDialogLaunch(QtWidgets.QDialog):
         self.ui.step2next.clicked.connect(self.advancestack)
         self.ui.step3next.clicked.connect(self.advancestack)
         self.ui.step4finish.clicked.connect(self.save_values)
-        self.ui.step4finish.clicked.connect(self.accept)
         self.ui.step2back.clicked.connect(self.regressstack)
         self.ui.step3back.clicked.connect(self.regressstack)
         self.ui.step4back.clicked.connect(self.regressstack)
@@ -124,12 +123,34 @@ class AddBoundaryDialogLaunch(QtWidgets.QDialog):
             self.update_rest_of_wizard()
 
         elif currentIndex == 1:     # Deal with multiple features
-            pass
+            if self.ui.include_all_radio.isChecked():
+                self.parameters["multifeatures"] = "ALL"
+            elif self.ui.include_largest_radio.isChecked():
+                self.parameters["multifeatures"] = "LRG"
+            else:
+                self.parameters["multifeatures"] = "THR"
+            self.parameters["thresh"] = float(self.ui.boundary_thresh_spin.value())
+
         elif currentIndex == 2:     # Coordinate System
-            pass
+            try:
+                if self.ui.epsg_line != "":
+                    epsg = int(self.ui.epsg_line.text())
+                else:
+                    prompt_msg = "Error, please select a valid coordinate system or EPSG code!"
+                    QtWidgets.QMessageBox.warning(self, 'Invalid Coordinate System', prompt_msg,
+                                                  QtWidgets.QMessageBox.Ok)
+                    return True
+            except ValueError:  # Case 3 - the EPSG box has illegal entry
+                prompt_msg = "Error, please select a valid coordinate system or EPSG code!"
+                QtWidgets.QMessageBox.warning(self, 'Invalid Coordinate System', prompt_msg,
+                                              QtWidgets.QMessageBox.Ok)
+                return True
+            self.parameters["epsg"] = int(self.ui.epsg_line.text())
+
         self.ui.boundaryWizard.setCurrentIndex(currentIndex + 1)
 
     def regressstack(self):
+        """Sets the stack widget one index backwards."""
         self.ui.boundaryWizard.setCurrentIndex(self.ui.boundaryWizard.currentIndex() - 1)
 
     def update_rest_of_wizard(self):
@@ -145,10 +166,14 @@ class AddBoundaryDialogLaunch(QtWidgets.QDialog):
                 self.ui.include_largest_radio.setChecked(1)
             else:
                 self.ui.include_thresh_radio.setChecked(1)
-        self.ui.boundary_thresh_spin.setValue(self.parameters["multifeatures_thresh"])
+        self.ui.boundary_thresh_spin.setValue(self.parameters["thresh"])
 
         self.ui.epsg_line.setText(str(self.parameters["epsg"]))     # >> PAGE 3
         self.update_combo_from_epsg()                   # Use the shapefile's EPSG to update the combo
+        self.ui.extent_x.setText("Left: "+str(self.parameters["extent"][0])+
+                                 " | Right: "+str(self.parameters["extent"][1]))
+        self.ui.extent_y.setText("Bottom: "+str(self.parameters["extent"][2])+
+                                 " | Top: "+str(self.parameters["extent"][3]))
 
         if self.parameters["naming"] == "user":         # >> PAGE 4
             self.ui.name_userdefined_radio.setChecked(1)
@@ -217,59 +242,41 @@ class AddBoundaryDialogLaunch(QtWidgets.QDialog):
         except KeyError:
             pass
 
-    # def done(self):
-    #     # CONDITION FOR A VALID BOUNDARY SHAPEFILE - conditions_met[1]
-    #     if os.path.isfile(self.ui.projectboundary_line.text()):
-    #         pass
-    #     else:
-    #         prompt_msg = "Please select a valid boundary shapefile!"
-    #         QtWidgets.QMessageBox.warning(self, 'Invalid Boundary File', prompt_msg, QtWidgets.QMessageBox.Ok)
-    #         conditions_met[1] = 0
-    #
-    #     # CONDITIONS FOR THE COORDINATE SYSTEM SELECTION - conditions_met[2]
-    #     if self.ui.coords_combo.currentText() not in ["Other...", "(select coordinate system)"]:
-    #         # Case 1 - the coordinate system combo has a valid selection
-    #         pass
-    #         # datatype.append(self.ui.coord_combo.currentText())  # index 4
-    #         # datatype.append(int(self.ui.epsg_box.text()))  # index 5
-    #     else:
-    #         try:  # Case 2 - the EPSG box can be converted to an integer and is not empty
-    #             if self.ui.epsg_line != "":
-    #                 epsg = int(self.ui.epsg_line.text())
-    #                 # datatype.append(self.ui.coord_combo.currentText())  # index 4
-    #                 # datatype.append(int(self.ui.epsg_box.text()))
-    #             else:
-    #                 prompt_msg = "Error, please select a valid coordinate system or EPSG code!"
-    #                 QtWidgets.QMessageBox.warning(self, 'Invalid Coordinate System', prompt_msg,
-    #                                               QtWidgets.QMessageBox.Ok)
-    #                 conditions_met[2] = 0
-    #         except ValueError:  # Case 3 - the EPSG box has illegal entry
-    #             prompt_msg = "Error, please select a valid coordinate system or EPSG code!"
-    #             QtWidgets.QMessageBox.warning(self, 'Invalid Coordinate System', prompt_msg,
-    #                                           QtWidgets.QMessageBox.Ok)
-    #             conditions_met[2] = 0
-    #
-    #     if sum(conditions_met) == len(conditions_met):
-    #         self.save_values()
-    #         QtWidgets.QDialog.done(self, r)
-    #     else:
-    #         return
+    def done(self, r):
+        # CONDITIONS FOR THE COORDINATE SYSTEM SELECTION - conditions_met[2]
+
+        condition = False
+        if self.ui.name_userdefined_radio.isChecked():
+            for char in ubglobals.NOCHARS:
+                if char in self.ui.name_userdefined_line.text():
+                    prompt = "Invalid Boundary Name, one or more illegal characters used, please alter name!"
+                    condition = True
+        if self.ui.name_featureattr_radio.isChecked() and self.ui.name_featureattr_combo.currentIndex() == 0:
+            prompt = "Invalid attribute name selected! Please select one of the shapefile's attribute names!"
+            condition = True
+        if condition:
+            QtWidgets.QMessageBox.warning(self, 'Invalid Boundary Name', prompt, QtWidgets.QMessageBox.Ok)
+            return True
+        else:
+            self.save_values()
+            QtWidgets.QDialog.done(self, r)
 
     def save_values(self):
-        # self.simulation.set_project_parameter("boundaryshp", self.ui.projectboundary_line.text())
-        # self.simulation.set_project_parameter("project_coord_sys", self.ui.coords_combo.currentText())
-        # self.simulation.set_project_parameter("project_epsg", int(self.ui.epsg_line.text()))
-        pass
+        """Saves all values to the current simulation as a boundary to load and process."""
+        if self.ui.name_userdefined_radio.isChecked():
+            self.parameters["naming"] = "user"
+            self.parameters["name"] = str(self.ui.name_userdefined_line.text)
+        else:
+            self.parameters["naming"] = "attr"
+            self.parameters["name"] = str(self.ui.name_featureattr_combo.currentText())
 
+        self.simulation.\
+            set_current_boundary_file_to_load(self.parameters["boundaryshp"],
+                                              [self.parameters["multifeatures"], self.parameters["thresh"]],
+                                              [self.parameters["naming"], self.parameters["name"]],
+                                              self.parameters["epsg"])
+        return True
 
 # <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:8pt;"><strong>Coordinates:</strong> x """+str(mapstats["centroid"][0])+""", y """+str(mapstats["centroid"][1])+"""</span></p>
 # <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:8pt;"><strong>Case Study Size:</strong> """+str(round(mapstats["area"], 2))+""" km</span><span style=" font-size:8pt; vertical-align:super;">2</span></p>
 # <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:8pt;"><strong>Coordinate System:</strong> """+mapstats["coordsysname"]+""" ("""+str(mapstats["inputEPSG"])+""")</span></p>
-
-
-
-# PARAMETERS
-# Boundary shapefile
-# Features to include --> Largest, above area threshold, all
-# Default coordinate system + EPSG Code
-# Naming convention - user-defined or based on name

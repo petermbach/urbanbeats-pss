@@ -93,6 +93,7 @@ class UrbanBeatsSim(object):
 
         # Simulation Boundary Variables
         self.__current_boundaryinfo = {}  # [REVAMP] - this variable will be the 'current boundary'
+        self.__current_boundary_to_load = []    # Current Boundary Shapefile to load [filename,
         self.__project_boundaries = {}      # Collects different boundaries
         self.__project_boundaries_template = {
             "boundaryshp": "no file selected",
@@ -106,6 +107,32 @@ class UrbanBeatsSim(object):
         self.__scenarios = {}       # initialize the scenarios
         self.__functions = []       # initialize the list of functions
         self.__activescenario = None
+
+    def set_current_boundary_file_to_load(self, filename, multifeatoptions, namingoptions, epsg):
+        """Defines the parameters of a boundary shapefile for the core to load. This shapefile is run through
+
+        :param filename: full path to the shapefile
+        :param multifeatoptions: ["ALL"/"LRG"/"THR" , THRESHOLD_VALUE [km2]]
+        :param namingoptions: ["USER"/"ATTR", "USER-DEFINED-NAME"]
+        :param epsg: the EPSG integer code
+        :return: updates the self.__current_boundar_to_load variable.
+        """
+        self.__current_boundary_to_load = [filename, multifeatoptions, namingoptions, epsg]
+        print("Successful", self.__current_boundary_to_load)
+        return True
+
+    def import_simulation_boundaries(self):
+        """Imports new boundaries into the simulation based on the self.__current_boundar_to_load variable. After
+        loading, it resets the boundary variable to []. Loaded boundaries are updated in the
+        self.__project_boundaries variable."""
+        if len(self.__current_boundary_to_load) == 0:
+            return True
+
+
+
+        self.__current_boundary_to_load = []    # Reset the current boundary to load
+        return True
+
 
     # INITIALIZATION METHODS
     def initialize_simulation(self, condition):

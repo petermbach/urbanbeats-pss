@@ -421,8 +421,11 @@ def load_shapefile_details(file):
     print(f"{xmin}, {xmax}, {ymin}, {ymax}")
 
     spatialref = layer.GetSpatialRef()          # Coordinate system
-    inputprojcs = spatialref.GetAttrValue("PROJCS")
-    epsg = spatialref.GetAttrValue("PROJCS|AUTHORITY", 1)
+    inputprojcs = "(none)"
+    epsg = "(none)"
+    if spatialref is not None:
+        inputprojcs = spatialref.GetAttrValue("PROJCS")
+        epsg = spatialref.GetAttrValue("PROJCS|AUTHORITY", 1)
     print(epsg)
 
     featurecount = layer.GetFeatureCount()      # Total number of features
