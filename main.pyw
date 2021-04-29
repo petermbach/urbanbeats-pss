@@ -365,7 +365,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.ScenarioDock_View.topLevelItem(0).takeChildren()
         self.ui.ScenarioDock_View.topLevelItem(0).addChild(twi)
         self.ui.ScenarioDock_View.topLevelItem(1).child(0).setText(0, "Type: "+self.__activeScenario.get_metadata("type"))
-        self.ui.ScenarioDock_View.topLevelItem(1).child(1).setText(0, "Status: "+"not simulated")
+        self.ui.ScenarioDock_View.topLevelItem(1).child(1).setText(0, "Boundary: "+self.__activeScenario.get_metadata("boundary"))
+        self.ui.ScenarioDock_View.topLevelItem(1).child(2).setText(0, "Status: "+"not simulated")
         if self.__activeScenario.get_metadata("type") == "DYNAMIC":
             yeartext = str(self.__activeScenario.get_metadata("startyear")) + " - " + str(self.__activeScenario.get_metadata("endyear"))
             dttext = str(self.__activeScenario.get_metadata("dt")) + " year(s)"
@@ -378,9 +379,9 @@ class MainWindow(QtWidgets.QMainWindow):
             yeartext = str(self.__activeScenario.get_metadata("startyear"))
             dttext = "N/A"
             benchtext = "N/A"
-        self.ui.ScenarioDock_View.topLevelItem(1).child(2).setText(0, "Simulation Year(s): " + yeartext)
-        self.ui.ScenarioDock_View.topLevelItem(1).child(3).setText(0, "Simulation Time Step: " + dttext)
-        self.ui.ScenarioDock_View.topLevelItem(1).child(4).setText(0, "Benchmark Iterations: " + benchtext)
+        self.ui.ScenarioDock_View.topLevelItem(1).child(3).setText(0, "Simulation Year(s): " + yeartext)
+        self.ui.ScenarioDock_View.topLevelItem(1).child(4).setText(0, "Simulation Time Step: " + dttext)
+        self.ui.ScenarioDock_View.topLevelItem(1).child(5).setText(0, "Benchmark Iterations: " + benchtext)
         self.ui.ScenarioDock_View.topLevelItem(4).\
             child(0).setText(0, "File Naming: "+self.__activeScenario.get_metadata("filename"))
         project_path = self.get_active_simulation_object().get_project_path()
@@ -595,7 +596,7 @@ class MainWindow(QtWidgets.QMainWindow):
         #
         # if maptype == "boundary":
         #     projboundarymap = self.get_active_simulation_object().get_project_parameter("boundaryshp")
-        #     coordinates, mapstats = ubspatial.get_bounding_polygon(projboundarymap, "leaflet", UBEATSROOT)
+        #     coordinates, mapstats = ubspatial.get_bounding_polygons(projboundarymap, "leaflet", UBEATSROOT)
         #     leaflet_html = gui_ubspatial.generate_leaflet_boundary_map(coordinates, mapstats, projectdata, tileserver, UBEATSROOT)
         #     f = open(self.app_tempdir+"/boundary.html", 'w')
         #     f.write(leaflet_html)
@@ -631,8 +632,11 @@ class MainWindow(QtWidgets.QMainWindow):
     def show_add_simulation_boundary_dialog(self):
         """Launches the add simulation boundary dialog."""
         addsimboundarydialog = gui_addboundary.AddBoundaryDialogLaunch(self, self.get_active_simulation_object())
-        # addsimboundarydialog.accepted.connect(self.dosomethingwithmapdata)
+        addsimboundarydialog.accepted.connect(self.update_simulation_boundary_collection)
         addsimboundarydialog.exec_()
+
+    def update_simulation_boundary_collection(self):
+        self.get_active_simulation_object().import_simulation_boundaries()
 
     def show_new_project_dialog(self, viewmode):
         """Launches the New Project Dialog. Called either when starting new project, editing project info or

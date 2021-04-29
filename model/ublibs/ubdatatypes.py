@@ -202,12 +202,23 @@ class UBVector(UBComponent):
         self.__dtype = ""
         self.__points = points     # Required to draw the geometry
         self.__edges = edges
+        self.__extents = []
+        self.__centroidXY = []
+        self.__nativeEPSG = None
         # self.__edges has None type if the data type is a point otherwise a tuple array of edges
         # of format ( ( (x1, y1, 0), (x2, y2, 0) ), ( ... ),  ... )
 
         self.determine_geometry(self.__points)
 
-    def change_coordintaes(self, points):
+    def set_epsg(self, epsg):
+        """Sets the native EPSG coordinate system code of the UBVector"""
+        self.__nativeEPSG = epsg
+
+    def get_epsg(self):
+        """Returns the native EPSG code of the UBVector object."""
+        return self.__nativeEPSG
+
+    def change_coordinates(self, points):
         """Allows for the current coordinates to be changed, this may lead to a change in geometry
         which is communicated as a warning."""
         currentgeometry = self.__dtype
@@ -224,6 +235,14 @@ class UBVector(UBComponent):
     def get_edges(self):
         """Returns an array of edges (tuples), each having two pts with (x, y, z) sets of coordinates."""
         return self.__edges
+
+    def get_extents(self):
+        """Returns the map extents as [xmin, xmax, ymin, ymax]"""
+        return self.__extents
+
+    def get_centroid(self):
+        """Returns the centroid XY coordinates."""
+        return self.__centroidXY
 
     def shares_geometry(self, geom_object, geom_type="points", select="all"):
         """Determines whether the current geometry shares similar geometry with another UBVector object
@@ -270,8 +289,16 @@ class UBVector(UBComponent):
                 self.__dtype = "FACE"
             else:
                 self.__dtype = "POLYLINE"
+        self.determine_extents()
         return True
 
+    def determine_extents(self):
+        """Determines the xmin, xmax, ymin, ymax and centroid"""
+        xpoints = [self.__points[i][0] for i in range(len(self.__points))]
+        ypoints = [self.__points[i][1] for i in range(len(self.__points))]
+        self.__extents = [min(xpoints), max(xpoints), min(ypoints), max(ypoints)]
+        self.__centroidXY = [(min(xpoints) + max(xpoints))/2.0, (min(ypoints) + max(ypoints))/2.0]
+        return True
 
 class UBCollection(object):
     """The UrbanBEATS Collection class structure. A collection stores a whole array of assets

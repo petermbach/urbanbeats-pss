@@ -77,7 +77,7 @@ def import_ascii_raster(filepath, naming):
     return rasterdata
 
 
-def import_polygonal_map(filepath, option, naming, global_offsets):
+def import_polygonal_map(filepath, option, naming, global_offsets, **kwargs):
     """Imports a polygonal map and saves the information into a UBVector format. Returns a list [ ] of UBVector()
     objects.
 
@@ -86,6 +86,7 @@ def import_polygonal_map(filepath, option, naming, global_offsets):
                     if the option is "RINGPOINTS", returns simply a points list of all ring points
     :param naming: naming convention of type str() to be used.
     :param global_offsets: (x, y) coordinates that are used to offset the map's coordinates to 0,0 system
+    :param **kwargs: "useEPSG:int()" - use a custom EPSG code
     """
     driver = ogr.GetDriverByName('ESRI Shapefile')  # Load the shapefile driver and data source
     datasource = driver.Open(filepath)
@@ -100,11 +101,15 @@ def import_polygonal_map(filepath, option, naming, global_offsets):
     for a in range(attributecount):
         attnames.append(layerDefinition.GetFieldDefn(a).GetName())
 
-    spatialref = layer.GetSpatialRef()
-    inputprojcs = spatialref.GetAttrValue("PROJCS")
-    if inputprojcs is None:
-        print("Warning, spatial reference epsg cannot be found!")
-        return None
+    if "useEPSG" not in kwargs.keys():
+        spatialref = layer.GetSpatialRef()
+        if spatialref is None:
+            print("Warning, map does not have a spatial reference, no EPSG provided")
+            return None
+        inputprojcs = spatialref.GetAttrValue("PROJCS")
+        if inputprojcs is None:
+            print("Warning, map does not have a spatial reference!")
+            return None
 
     geometry_collection = []
     featurecount = layer.GetFeatureCount()
@@ -162,6 +167,8 @@ def import_polygonal_map(filepath, option, naming, global_offsets):
                 polygon.determine_geometry(coordinates)
                 polygon.add_attribute("Map_Naming", str(naming)+"_ID"+str(i+1))
                 polygon.add_attribute("Area_sqkm", area)
+                if "useEPSG" in kwargs.keys():
+                    polygon.set_epsg(kwargs["useEPSG"])
                 for n in attnames:
                     polygon.add_attribute(str(n), feature.GetFieldAsString(n))
                 geometry_collection.append(polygon)
@@ -442,7 +449,7 @@ def load_shapefile_details(file):
     return [geometry.GetGeometryName(), xmin, xmax, ymin, ymax, inputprojcs, epsg, featurecount, attnames]
 
 
-def get_bounding_polygon(boundaryfile, option, rootpath):
+def get_bounding_polygons(boundaryfile, option, rootpath):
     """Loads the boundary Shapefile and obtains the coordinates of the bounding polygon, returns as a list of coords.
 
     :param boundaryfile: full filepath to the boundary shapefile to load
@@ -538,9 +545,9 @@ def get_bounding_polygon(boundaryfile, option, rootpath):
         mapstats["centroid"] = [(xmin + xmax) / 2.0, (ymin + ymax)/2.0]
     return coordinates, mapstats
 
-# # TEST SCRIPT - get_bounding_polygon() function
+# # TEST SCRIPT - get_bounding_polygons() function
 # MAPPATH = r"C:\Users\peter\Dropbox\UrbanBEATS Benchmark Case Studies\AU VIC Upper Dandenong Ck\Input Files\Boundary_UTM.shp"
-# coordinates, mapstats = get_bounding_polygon(MAPPATH, "leaflet",
+# coordinates, mapstats = get_bounding_polygons(MAPPATH, "leaflet",
 #                                              "C:/Users/peter/Documents/Coding Projects/UrbanBEATS-PSS")
 # print(mapstats)
 # print(coordinates)

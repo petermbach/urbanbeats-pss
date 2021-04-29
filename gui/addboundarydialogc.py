@@ -61,6 +61,7 @@ class AddBoundaryDialogLaunch(QtWidgets.QDialog):
             "thresh": 1,
             "attnames": [],
             "extent": [],
+            "inputprojcs": "",
             "epsg": None,
             "naming": "user",
             "name": "(none)"
@@ -146,6 +147,7 @@ class AddBoundaryDialogLaunch(QtWidgets.QDialog):
                                               QtWidgets.QMessageBox.Ok)
                 return True
             self.parameters["epsg"] = int(self.ui.epsg_line.text())
+            self.parameters["inputprojcs"] = str(self.ui.coords_combo.currentText())
 
         self.ui.boundaryWizard.setCurrentIndex(currentIndex + 1)
 
@@ -274,7 +276,8 @@ class AddBoundaryDialogLaunch(QtWidgets.QDialog):
             set_current_boundary_file_to_load(self.parameters["boundaryshp"],
                                               [self.parameters["multifeatures"], self.parameters["thresh"]],
                                               [self.parameters["naming"], self.parameters["name"]],
-                                              self.parameters["epsg"])
+                                              self.parameters["epsg"],
+                                              self.parameters["inputprojcs"])
         return True
 
 # <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:8pt;"><strong>Coordinates:</strong> x """+str(mapstats["centroid"][0])+""", y """+str(mapstats["centroid"][1])+"""</span></p>

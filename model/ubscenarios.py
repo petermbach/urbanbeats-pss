@@ -77,6 +77,7 @@ class UrbanBeatsScenario(threading.Thread):
         self.runstate = False
 
         self.__scenariometadata = {"name": "My UrbanBEATS Scenario",
+                                   "boundary": "(select simulation boundary)",
                                    "type": "STATIC",
                                    "narrative": "(A description of my scenario)",
                                    "startyear": 2018,

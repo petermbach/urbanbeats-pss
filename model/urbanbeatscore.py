@@ -108,7 +108,7 @@ class UrbanBeatsSim(object):
         self.__functions = []       # initialize the list of functions
         self.__activescenario = None
 
-    def set_current_boundary_file_to_load(self, filename, multifeatoptions, namingoptions, epsg):
+    def set_current_boundary_file_to_load(self, filename, multifeatoptions, namingoptions, epsg, inputprojcs):
         """Defines the parameters of a boundary shapefile for the core to load. This shapefile is run through
 
         :param filename: full path to the shapefile
@@ -117,9 +117,13 @@ class UrbanBeatsSim(object):
         :param epsg: the EPSG integer code
         :return: updates the self.__current_boundar_to_load variable.
         """
-        self.__current_boundary_to_load = [filename, multifeatoptions, namingoptions, epsg]
+        self.__current_boundary_to_load = [filename, multifeatoptions, namingoptions, epsg, inputprojcs]
         print("Successful", self.__current_boundary_to_load)
         return True
+
+    def get_simulation_boundary_names(self):
+        """Returns all names of current boundaries loaded into the project as a list of strings."""
+        return self.__project_boundaries.keys()
 
     def import_simulation_boundaries(self):
         """Imports new boundaries into the simulation based on the self.__current_boundar_to_load variable. After
@@ -128,11 +132,60 @@ class UrbanBeatsSim(object):
         if len(self.__current_boundary_to_load) == 0:
             return True
 
+        # Naming Convention
+        naming_rule = str(self.__current_boundary_to_load[2][0])
+        naming_key = str(self.__current_boundary_to_load[2][1])
+        naming = str(naming_rule+"_"+naming_key)
 
+        # GET THE POLYGONS
+        boundaries = ubspatial.import_polygonal_map(self.__current_boundary_to_load[0], "native", naming, [0, 0],
+                                                    useEPSG=self.__current_boundary_to_load[3])
+
+        # FILTER OUT AND CREATE BOUNDARY ITEMS
+        boundary_polys = []
+        polyareas = [boundaries[i].get_attribute("Area_sqkm") for i in range(len(boundaries))]
+
+        if self.__current_boundary_to_load[1][0] == "LRG":
+            boundary_polys = [boundaries[polyareas.index(max(polyareas))]]
+        elif self.__current_boundary_to_load[1][0] == "THR":
+            boundary_polys = [boundaries[i] for i in range(len(boundaries))
+                              if polyareas[i] > self.__current_boundary_to_load[1][1]]
+        else:
+            boundary_polys = boundaries
+
+        # ADD BOUNDARIES TO SIMULATION AND ORGANISE NAMING-CONVENTION
+        for i in range(len(boundary_polys)):
+            mapstats = {}
+            mapstats["inputEPSG"] = self.__current_boundary_to_load[3]
+            mapstats["coordsysname"] = self.__current_boundary_to_load[4]
+            mapstats["area"] = boundary_polys[i].get_attribute("Area_sqkm")
+
+            extents = boundary_polys[i].get_extents()
+            mapstats["xmin"] = extents[0]
+            mapstats["xmax"] = extents[1]
+            mapstats["ymin"] = extents[2]
+            mapstats["ymax"] = extents[3]
+            mapstats["centroid"] = boundary_polys[i].get_centroid()
+
+            coordinates = boundary_polys[i].get_points()
+
+            if naming_rule == "user":
+                boundary_base_name = naming_key
+            elif naming_rule == "attr":
+                boundary_base_name = boundary_polys[i].get_attribute(naming_key)
+                if boundary_base_name is None:
+                    boundary_base_name = naming_key
+
+            namecounter = 0
+            boundarynewname = boundary_base_name
+            while boundarynewname in self.__project_boundaries.keys():
+                namecounter += 1
+                boundarynewname = boundary_base_name + "_" + str(namecounter)
+            self.__project_boundaries[boundarynewname] = [coordinates, mapstats]    # Add new project boundary
 
         self.__current_boundary_to_load = []    # Reset the current boundary to load
+        print("Current number of boundaries in the simulation: ", str(len(self.__project_boundaries)))
         return True
-
 
     # INITIALIZATION METHODS
     def initialize_simulation(self, condition):
@@ -231,7 +284,7 @@ class UrbanBeatsSim(object):
             pass
             # [REVAMP] - note no longer working with the property 'boundaryshp'
             # boundaryshp = self.get_project_parameter("boundaryshp")
-            # coordinates, mapstats = ubspatial.get_bounding_polygon(boundaryshp, "native", self.__rootpath)
+            # coordinates, mapstats = ubspatial.get_bounding_polygons(boundaryshp, "native", self.__rootpath)
             # self.__boundaryinfo = mapstats.copy()
             # self.__boundaryinfo["coordinates"] = coordinates
         return True

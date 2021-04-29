@@ -243,6 +243,17 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
 
         self.ui.name_box.setText(self.scenario.get_metadata("name"))
 
+        self.ui.boundary_combo.clear()
+        self.ui.boundary_combo.addItem("(select simulation boundary)")
+        boundarynames = self.simulation.get_simulation_boundary_names()
+        for n in boundarynames:
+            self.ui.boundary_combo.addItem(str(n))
+        scenario_boundaryname = self.scenario.get_metadata("boundary")
+        if scenario_boundaryname == "(select simulation boundary)":
+            self.ui.boundary_combo.setCurrentIndex(0)
+        else:
+            self.ui.boundary_combo.setCurrentIndex(boundarynames.index(scenario_boundaryname)+1)
+
         if self.scenario.get_metadata("type") == "STATIC":
             self.ui.static_radio.setChecked(1)
         elif self.scenario.get_metadata("type") == "BENCHMARK":
@@ -682,6 +693,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
                 return False
 
         self.scenario.set_metadata("name", str(self.ui.name_box.text()))
+        self.scenario.set_metadata("boundary", str(self.ui.boundary_combo.currentText()))
         self.scenario.set_metadata("narrative", str(self.ui.narrative_box.toPlainText()))
 
         if self.ui.static_radio.isChecked():
