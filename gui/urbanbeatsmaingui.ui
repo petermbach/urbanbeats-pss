@@ -1520,7 +1520,10 @@ p, li { white-space: pre-wrap; }
     </widget>
     <addaction name="actionView_Project_Description"/>
     <addaction name="actionView_Full_Project_Log"/>
+    <addaction name="separator"/>
+    <addaction name="actionAdd_Simulation_Boundary"/>
     <addaction name="menuScenario"/>
+    <addaction name="separator"/>
     <addaction name="actionReporting_Options"/>
     <addaction name="actionMap_Export_Options"/>
    </widget>

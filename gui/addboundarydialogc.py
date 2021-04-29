@@ -24,9 +24,11 @@ __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2018. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
+import os
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 import model.progref.ubglobals as ubglobals
+import model.ublibs.ubspatial as ubspatial
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -51,116 +53,223 @@ class AddBoundaryDialogLaunch(QtWidgets.QDialog):
         self.simulation = simulation
         self.epsg_dict = main.epsg_dict     # [REVAMP]
 
-        # self.ui.projectboundary_line.setText(self.simulation.get_project_parameter("boundaryshp"))
+        # Define a dummy set of parameters that are passed to the simulation at the end of the wizard
+        self.parameters = {
+            "boundaryshp": "(none)",
+            "featurecount": 0,
+            "multifeatures": "ALL",
+            "multifeatures_thresh": 1,
+            "attnames": [],
+            "extent": [],
+            "epsg": None,
+            "naming": "user",
+            "name": "(none)"
+        }
 
-        # - COORDINATE SYSTEM
-        # self.update_coord_combo()
-        # self.ui.epsg_line.setText(self.simulation.get_project_parameter("project_epsg"))
-        # self.update_combo_from_epsg()
-
-        # Enable Pop-up completion for the coordinate system combo box. Note that the combo box has to be editable!
-        # self.ui.coords_combo.completer().setCompletionMode(QtWidgets.QCompleter.PopupCompletion)
+        self.ui.projectboundary_line.setText(self.parameters["boundaryshp"])
 
         # - SIGNALS AND SLOTS
-        # self.ui.projectboundary_browse.clicked.connect(self.browse_boundary_file)
+        self.ui.projectboundary_browse.clicked.connect(self.browse_boundary_file)
+        self.ui.include_all_radio.clicked.connect(self.enable_disable_wizard_elements)
+        self.ui.include_thresh_radio.clicked.connect(self.enable_disable_wizard_elements)
+        self.ui.include_largest_radio.clicked.connect(self.enable_disable_wizard_elements)
+        self.ui.name_featureattr_radio.clicked.connect(self.enable_disable_wizard_elements)
+        self.ui.name_userdefined_radio.clicked.connect(self.enable_disable_wizard_elements)
 
-        # self.timer_linedit = QtCore.QTimer()
-        # self.timer_linedit.setSingleShot(True)
-        # self.timer_linedit.setInterval(300)
-        # self.timer_linedit.timeout.connect(self.update_combo_from_epsg)
+        # - COORDINATE SYSTEM
+        self.update_coord_combo()
+        self.ui.epsg_line.setText(self.simulation.get_project_parameter("project_epsg"))
+        self.update_combo_from_epsg()
 
-        # self.ui.epsg_line.textEdited.connect(lambda: self.timer_linedit.start())
-        # self.ui.coords_combo.currentIndexChanged.connect(self.update_epsg_from_combo)
+        # Enable Pop-up completion for the coordinate system combo box. Note that the combo box has to be editable!
+        self.ui.coords_combo.completer().setCompletionMode(QtWidgets.QCompleter.PopupCompletion)
 
-        def update_coord_combo(self):
-            """Updates the coordinate system's combobox and the UI elements associated with it."""
-            self.ui.coords_combo.clear()
-            self.ui.coords_combo.addItem("(select coordinate system)")
-            names = list(self.epsg_dict.keys())
-            names.sort()
-            for i in names:
-                self.ui.coords_combo.addItem(i)
-            self.ui.coords_combo.addItem("Other...")
-            self.ui.coords_combo.setCurrentIndex(0)
+        self.timer_linedit = QtCore.QTimer()
+        self.timer_linedit.setSingleShot(True)
+        self.timer_linedit.setInterval(300)
+        self.timer_linedit.timeout.connect(self.update_combo_from_epsg)
 
-        def update_combo_from_epsg(self):
-            """Updates the coordinate system combo box based on the EPSG code entered in the text box, if the EPSG
-            does not exist in the dictionary, the combo box displays "Other...". """
-            names = list(self.epsg_dict.keys())
-            names.sort()
-            try:
-                for name, epsg in self.epsg_dict.items():
-                    if int(epsg) == int(self.ui.epsg_line.text()):
-                        curindex = names.index(name) + 1  # +1 to account for Index 0 < > text
-                        self.ui.coords_combo.setCurrentIndex(curindex)
-                        return True
-                self.ui.coords_combo.setCurrentIndex(len(names) + 1)  # Set to 'Other'
-            except ValueError:
-                self.ui.coords_combo.setCurrentIndex(len(names) + 1)  # Set to 'Other'
+        self.ui.epsg_line.textEdited.connect(lambda: self.timer_linedit.start())
+        self.ui.coords_combo.currentIndexChanged.connect(self.update_epsg_from_combo)
 
-        def update_epsg_from_combo(self):
-            """Updates the EPSG text box based on the selected coordinate system in the combo box. If < >, index 0
-            or "Other ..." are selected, the EPSG box remains blank."""
-            try:
-                self.ui.epsg_line.setText(self.epsg_dict[self.ui.coords_combo.currentText()])
-            except KeyError:
-                pass
+        # - WIZARD CONTROLS
+        self.ui.step1next.clicked.connect(self.advancestack)
+        self.ui.step2next.clicked.connect(self.advancestack)
+        self.ui.step3next.clicked.connect(self.advancestack)
+        self.ui.step4finish.clicked.connect(self.save_values)
+        self.ui.step4finish.clicked.connect(self.accept)
+        self.ui.step2back.clicked.connect(self.regressstack)
+        self.ui.step3back.clicked.connect(self.regressstack)
+        self.ui.step4back.clicked.connect(self.regressstack)
 
-        def browse_boundary_file(self):
-            """Opens a file dialog, which requests a shapefile of the case study boundary. UrbanBEATS
-            uses this to delineate data for the project and for visualisation purposes and other calculations."""
-            message = "Browse for Project Boundary Shapefile..."
-            boundaryfile, _filter = QtWidgets.QFileDialog.getOpenFileName(self, message, os.curdir, "Shapefile (*.shp)")
-            if boundaryfile:
-                self.ui.projectboundary_line.setText(boundaryfile)
+    def advancestack(self):
+        currentIndex = self.ui.boundaryWizard.currentIndex()
+        if currentIndex == 0:   # Load shapefile
+            fileprops = ubspatial.load_shapefile_details(self.parameters["boundaryshp"])
+            if type(fileprops) is str:
+                prompt_msg = "Warning: Invalid Shapefile! Please load a valid Boundary File.\n Message: "+ fileprops
+                QtWidgets.QMessageBox.warning(self, fileprops, prompt_msg, QtWidgets.QMessageBox.Ok)
+                return True
+            if fileprops[0] not in ["POLYGON", "MULTIPOLYGON"]:
+                prompt_msg = "Warning: Invalid Geometry! Please load a valid POLYGON File."
+                QtWidgets.QMessageBox.warning(self, "Invalid Geometry", prompt_msg, QtWidgets.QMessageBox.Ok)
+                return True
+            self.parameters["geometry"] = fileprops[0]
+            self.parameters["extent"] = fileprops[1:5]
+            self.parameters["epsg"] = fileprops[6]
+            self.parameters["featurecount"] = fileprops[7]
+            self.parameters["attnames"] = fileprops[8]
+            print("Fileprops", fileprops[8])
 
-        def disable_all_parameters(self):
-            self.ui.boundary_widget.setEnabled(0)
+            self.update_rest_of_wizard()
 
-        def done(self):
-            # CONDITION FOR A VALID BOUNDARY SHAPEFILE - conditions_met[1]
-            if os.path.isfile(self.ui.projectboundary_line.text()):
-                pass
+        elif currentIndex == 1:     # Deal with multiple features
+            pass
+        elif currentIndex == 2:     # Coordinate System
+            pass
+        self.ui.boundaryWizard.setCurrentIndex(currentIndex + 1)
+
+    def regressstack(self):
+        self.ui.boundaryWizard.setCurrentIndex(self.ui.boundaryWizard.currentIndex() - 1)
+
+    def update_rest_of_wizard(self):
+        """Updates pages 2 to 4 of the stack widget with new information from the shapefile boundary file."""
+        if self.parameters["featurecount"] == 1:        # >> PAGE 2
+            self.ui.step2scrollArea.setEnabled(0)
+            self.ui.include_all_radio.setChecked(1)
+        else:
+            self.ui.step2scrollArea.setEnabled(1)
+            if self.parameters["multifeatures"] == "ALL":
+                self.ui.include_all_radio.setChecked(1)
+            elif self.parameters["multifeatures"] == "LRG":
+                self.ui.include_largest_radio.setChecked(1)
             else:
-                prompt_msg = "Please select a valid boundary shapefile!"
-                QtWidgets.QMessageBox.warning(self, 'Invalid Boundary File', prompt_msg, QtWidgets.QMessageBox.Ok)
-                conditions_met[1] = 0
+                self.ui.include_thresh_radio.setChecked(1)
+        self.ui.boundary_thresh_spin.setValue(self.parameters["multifeatures_thresh"])
 
-            # CONDITIONS FOR THE COORDINATE SYSTEM SELECTION - conditions_met[2]
-            if self.ui.coords_combo.currentText() not in ["Other...", "(select coordinate system)"]:
-                # Case 1 - the coordinate system combo has a valid selection
-                pass
-                # datatype.append(self.ui.coord_combo.currentText())  # index 4
-                # datatype.append(int(self.ui.epsg_box.text()))  # index 5
-            else:
-                try:  # Case 2 - the EPSG box can be converted to an integer and is not empty
-                    if self.ui.epsg_line != "":
-                        epsg = int(self.ui.epsg_line.text())
-                        # datatype.append(self.ui.coord_combo.currentText())  # index 4
-                        # datatype.append(int(self.ui.epsg_box.text()))
-                    else:
-                        prompt_msg = "Error, please select a valid coordinate system or EPSG code!"
-                        QtWidgets.QMessageBox.warning(self, 'Invalid Coordinate System', prompt_msg,
-                                                      QtWidgets.QMessageBox.Ok)
-                        conditions_met[2] = 0
-                except ValueError:  # Case 3 - the EPSG box has illegal entry
-                    prompt_msg = "Error, please select a valid coordinate system or EPSG code!"
-                    QtWidgets.QMessageBox.warning(self, 'Invalid Coordinate System', prompt_msg,
-                                                  QtWidgets.QMessageBox.Ok)
-                    conditions_met[2] = 0
+        self.ui.epsg_line.setText(str(self.parameters["epsg"]))     # >> PAGE 3
+        self.update_combo_from_epsg()                   # Use the shapefile's EPSG to update the combo
 
-            if sum(conditions_met) == len(conditions_met):
-                self.save_values()
-                QtWidgets.QDialog.done(self, r)
-            else:
-                return
+        if self.parameters["naming"] == "user":         # >> PAGE 4
+            self.ui.name_userdefined_radio.setChecked(1)
+        else:
+            self.ui.name_featureattr_radio.setChecked(1)
 
-        def save_values(self):
-            self.simulation.set_project_parameter("boundaryshp", self.ui.projectboundary_line.text())
-            self.simulation.set_project_parameter("project_coord_sys", self.ui.coords_combo.currentText())
-            self.simulation.set_project_parameter("project_epsg", int(self.ui.epsg_line.text()))
+        self.enable_disable_wizard_elements()
+        self.update_attnames_combo()
+
+    def browse_boundary_file(self):
+        """Opens a file dialog, which requests a shapefile of the case study boundary. UrbanBEATS
+        uses this to delineate data for the project and for visualisation purposes and other calculations."""
+        message = "Browse for Project Boundary Shapefile..."
+        boundaryfile, _filter = QtWidgets.QFileDialog.getOpenFileName(self, message, os.curdir, "Shapefile (*.shp)")
+        if boundaryfile:
+            self.ui.projectboundary_line.setText(boundaryfile)
+            self.parameters["boundaryshp"] = boundaryfile
+
+    def enable_disable_wizard_elements(self):
+        """Enables and disables elements in the wizard based on conditions of the radio buttons"""
+        self.ui.boundary_thresh_spin.setEnabled(self.ui.include_thresh_radio.isChecked())
+        self.ui.name_userdefined_line.setEnabled(self.ui.name_userdefined_radio.isChecked())
+        self.ui.name_featureattr_combo.setEnabled(self.ui.name_featureattr_radio.isChecked())
+
+    def update_coord_combo(self):
+        """Updates the coordinate system's combobox and the UI elements associated with it."""
+        self.ui.coords_combo.clear()
+        self.ui.coords_combo.addItem("(select coordinate system)")
+        names = list(self.epsg_dict.keys())
+        names.sort()
+        for i in names:
+            self.ui.coords_combo.addItem(i)
+        self.ui.coords_combo.addItem("Other...")
+        self.ui.coords_combo.setCurrentIndex(0)
+
+    def update_attnames_combo(self):
+        """Updates the attribute names combo box with the shapefile's attribute names."""
+        self.ui.name_featureattr_combo.clear()
+        attnames = self.parameters["attnames"]
+        attnames.sort()
+        self.ui.name_featureattr_combo.addItem("(select attribute name)")
+        for i in attnames:
+            self.ui.name_featureattr_combo.addItem(i)
+        self.ui.name_featureattr_combo.setCurrentIndex(0)
+
+    def update_combo_from_epsg(self):
+        """Updates the coordinate system combo box based on the EPSG code entered in the text box, if the EPSG
+        does not exist in the dictionary, the combo box displays "Other...". """
+        names = list(self.epsg_dict.keys())
+        names.sort()
+        try:
+            for name, epsg in self.epsg_dict.items():
+                if int(epsg) == int(self.ui.epsg_line.text()):
+                    curindex = names.index(name) + 1  # +1 to account for Index 0 < > text
+                    self.ui.coords_combo.setCurrentIndex(curindex)
+                    return True
+            self.ui.coords_combo.setCurrentIndex(len(names) + 1)  # Set to 'Other'
+        except ValueError:
+            self.ui.coords_combo.setCurrentIndex(len(names) + 1)  # Set to 'Other'
+
+    def update_epsg_from_combo(self):
+        """Updates the EPSG text box based on the selected coordinate system in the combo box. If < >, index 0
+        or "Other ..." are selected, the EPSG box remains blank."""
+        try:
+            self.ui.epsg_line.setText(self.epsg_dict[self.ui.coords_combo.currentText()])
+        except KeyError:
+            pass
+
+    # def done(self):
+    #     # CONDITION FOR A VALID BOUNDARY SHAPEFILE - conditions_met[1]
+    #     if os.path.isfile(self.ui.projectboundary_line.text()):
+    #         pass
+    #     else:
+    #         prompt_msg = "Please select a valid boundary shapefile!"
+    #         QtWidgets.QMessageBox.warning(self, 'Invalid Boundary File', prompt_msg, QtWidgets.QMessageBox.Ok)
+    #         conditions_met[1] = 0
+    #
+    #     # CONDITIONS FOR THE COORDINATE SYSTEM SELECTION - conditions_met[2]
+    #     if self.ui.coords_combo.currentText() not in ["Other...", "(select coordinate system)"]:
+    #         # Case 1 - the coordinate system combo has a valid selection
+    #         pass
+    #         # datatype.append(self.ui.coord_combo.currentText())  # index 4
+    #         # datatype.append(int(self.ui.epsg_box.text()))  # index 5
+    #     else:
+    #         try:  # Case 2 - the EPSG box can be converted to an integer and is not empty
+    #             if self.ui.epsg_line != "":
+    #                 epsg = int(self.ui.epsg_line.text())
+    #                 # datatype.append(self.ui.coord_combo.currentText())  # index 4
+    #                 # datatype.append(int(self.ui.epsg_box.text()))
+    #             else:
+    #                 prompt_msg = "Error, please select a valid coordinate system or EPSG code!"
+    #                 QtWidgets.QMessageBox.warning(self, 'Invalid Coordinate System', prompt_msg,
+    #                                               QtWidgets.QMessageBox.Ok)
+    #                 conditions_met[2] = 0
+    #         except ValueError:  # Case 3 - the EPSG box has illegal entry
+    #             prompt_msg = "Error, please select a valid coordinate system or EPSG code!"
+    #             QtWidgets.QMessageBox.warning(self, 'Invalid Coordinate System', prompt_msg,
+    #                                           QtWidgets.QMessageBox.Ok)
+    #             conditions_met[2] = 0
+    #
+    #     if sum(conditions_met) == len(conditions_met):
+    #         self.save_values()
+    #         QtWidgets.QDialog.done(self, r)
+    #     else:
+    #         return
+
+    def save_values(self):
+        # self.simulation.set_project_parameter("boundaryshp", self.ui.projectboundary_line.text())
+        # self.simulation.set_project_parameter("project_coord_sys", self.ui.coords_combo.currentText())
+        # self.simulation.set_project_parameter("project_epsg", int(self.ui.epsg_line.text()))
+        pass
 
 
 # <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:8pt;"><strong>Coordinates:</strong> x """+str(mapstats["centroid"][0])+""", y """+str(mapstats["centroid"][1])+"""</span></p>
 # <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:8pt;"><strong>Case Study Size:</strong> """+str(round(mapstats["area"], 2))+""" km</span><span style=" font-size:8pt; vertical-align:super;">2</span></p>
 # <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:8pt;"><strong>Coordinate System:</strong> """+mapstats["coordsysname"]+""" ("""+str(mapstats["inputEPSG"])+""")</span></p>
+
+
+
+# PARAMETERS
+# Boundary shapefile
+# Features to include --> Largest, above area threshold, all
+# Default coordinate system + EPSG Code
+# Naming convention - user-defined or based on name

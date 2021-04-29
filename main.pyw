@@ -55,6 +55,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from gui.urbanbeatsmaingui import Ui_MainWindow
 from gui.startscreen import Ui_StartDialog
 from gui import urbanbeatsdialogs as ubdialogs
+from gui import addboundarydialogc as gui_addboundary
 from gui.urbanbeatsresultsguic import LaunchResultsExplorer
 from gui.urbanbeatscalibrationguic import LaunchCalibrationViewer
 import gui.ubgui_spatialhandling as gui_ubspatial
@@ -133,6 +134,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionPreferences.triggered.connect(self.show_options)
 
         # PROJECT MENU
+        self.ui.actionAdd_Simulation_Boundary.triggered.connect(self.show_add_simulation_boundary_dialog)
         self.ui.actionView_Project_Description.triggered.connect(lambda: self.show_new_project_dialog(2))
         self.ui.actionView_Full_Project_Log.triggered.connect(self.show_project_log)
         # Scenario Submenu ---
@@ -625,6 +627,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.DataSummary.setRowCount(0)
         elif condition == "scenario":
             pass    #[TO DO]
+
+    def show_add_simulation_boundary_dialog(self):
+        """Launches the add simulation boundary dialog."""
+        addsimboundarydialog = gui_addboundary.AddBoundaryDialogLaunch(self, self.get_active_simulation_object())
+        # addsimboundarydialog.accepted.connect(self.dosomethingwithmapdata)
+        addsimboundarydialog.exec_()
 
     def show_new_project_dialog(self, viewmode):
         """Launches the New Project Dialog. Called either when starting new project, editing project info or

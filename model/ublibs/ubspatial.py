@@ -403,6 +403,42 @@ def create_coord_transformation_leaflet(inputEPSG):
     return coordTrans
 
 
+def load_shapefile_details(file):
+    """ Loads the basic shapefile for a few key properties including Map Extent, Number of Features, List of Attributes
+    and EPSG Code
+
+    :param file: Full path to the shapefile
+    :return: a list containing geometry type (0) map extent (1-4), spatialref (5-6), feature count (7),
+            attribute names (8-list)
+    """
+    driver = ogr.GetDriverByName('ESRI Shapefile')  # Loads the shapefile driver and data source
+    datasource = driver.Open(file)
+    if datasource is None:
+        return "Shapefile not found!"
+
+    layer = datasource.GetLayer(0)
+    xmin, xmax, ymin, ymax = layer.GetExtent()  # Map extents
+    print(f"{xmin}, {xmax}, {ymin}, {ymax}")
+
+    spatialref = layer.GetSpatialRef()          # Coordinate system
+    inputprojcs = spatialref.GetAttrValue("PROJCS")
+    epsg = spatialref.GetAttrValue("PROJCS|AUTHORITY", 1)
+    print(epsg)
+
+    featurecount = layer.GetFeatureCount()      # Total number of features
+    print(featurecount)
+    if featurecount == 0:
+        return "Shapefile has no features!"
+
+    layerDefn = layer.GetLayerDefn()            # Get attribute names
+    attnames = [layerDefn.GetFieldDefn(i).name for i in range(layerDefn.GetFieldCount())]
+
+    feature = layer.GetFeature(0)               # Get Geometry Type
+    geometry = feature.GetGeometryRef()
+    print ([geometry.GetGeometryName(), xmin, xmax, ymin, ymax, inputprojcs, epsg, featurecount, attnames])
+    return [geometry.GetGeometryName(), xmin, xmax, ymin, ymax, inputprojcs, epsg, featurecount, attnames]
+
+
 def get_bounding_polygon(boundaryfile, option, rootpath):
     """Loads the boundary Shapefile and obtains the coordinates of the bounding polygon, returns as a list of coords.
 
