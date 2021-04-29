@@ -70,6 +70,7 @@ from gui.md_spatialmappingguic import SpatialMappingGuiLaunch
 from gui.md_infrastructureguic import InfrastructureGuiLaunch
 from gui.md_bgsplanningguic import BlueGreenGuiLaunch
 from gui import ssanto_dialogs as ssanto_dialogs
+from gui import mapping_leaflet as mapping_leaflet
 
 # --- MAIN GUI FUNCTION ---
 class MainWindow(QtWidgets.QMainWindow):
@@ -581,7 +582,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         tileserver = ubglobals.TILESERVERS[self.get_option("mapstyle")]
 
-        leaflet_html = gui_ubspatial.generate_initial_leaflet_map(coordinates, tileserver, UBEATSROOT)
+        leaflet_html = mapping_leaflet.generate_initial_leaflet_map(coordinates, tileserver, UBEATSROOT)
         f = open(self.app_tempdir+"/default.html", 'w')
         f.write(leaflet_html)
         f.close()
@@ -600,18 +601,28 @@ class MainWindow(QtWidgets.QMainWindow):
         projectboundaries = self.get_active_simulation_object().get_project_boundaries()
         activeboundary = self.get_active_simulation_object().get_active_boundary()
 
-        
+        print(projectboundaries)
+        print(activeboundary)
+        print(projectdata)
 
-        #
-        # if maptype == "boundary":
+        if maptype == "boundary":
+            self.__dataview_displaystate = "boundary"
+
+        if len(projectboundaries.keys()) == 0:
+            return True
+
+        temp_map_file = self.app_tempdir+"/boundary.html"
+        mapping_leaflet.generate_leaflet_boundaries(temp_map_file, projectboundaries, activeboundary, projectdata,
+                                                        self.get_active_simulation_object().get_global_centroid(),
+                                                        self.get_active_simulation_object().get_project_epsg(),
+                                                        tileserver, UBEATSROOT)
+        self.ui.DataView_web.load(QtCore.QUrl.fromLocalFile(temp_map_file))
+
+
         #     projboundarymap = self.get_active_simulation_object().get_project_parameter("boundaryshp")
         #     coordinates, mapstats = ubspatial.get_bounding_polygons(projboundarymap, "leaflet", UBEATSROOT)
         #     leaflet_html = gui_ubspatial.generate_leaflet_boundary_map(coordinates, mapstats, projectdata, tileserver, UBEATSROOT)
-        #     f = open(self.app_tempdir+"/boundary.html", 'w')
-        #     f.write(leaflet_html)
-        #     f.close()
-        #     self.ui.DataView_web.load(QtCore.QUrl.fromLocalFile(self.app_tempdir+"/boundary.html"))
-        #     self.__dataview_displaystate = "boundary"
+
         pass
 
     def initialize_output_console(self):
@@ -646,6 +657,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def update_simulation_boundary_collection(self):
         self.get_active_simulation_object().import_simulation_boundaries()
+        self.update_data_view("boundary")
 
     def show_new_project_dialog(self, viewmode):
         """Launches the New Project Dialog. Called either when starting new project, editing project info or

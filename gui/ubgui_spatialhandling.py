@@ -71,6 +71,7 @@ def generate_initial_leaflet_map(coordinates, tileserver, rootpath):
         </script>
         </body>
         </html>"""
+    print(leaflethtml)
     return leaflethtml
 
 

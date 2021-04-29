@@ -1154,17 +1154,7 @@
                      </item>
                      <item>
                       <property name="text">
-                       <string>Open Street Map</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
                        <string>Open Topo Map</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Stadia AlidadeSmoothDark</string>
                       </property>
                      </item>
                      <item>

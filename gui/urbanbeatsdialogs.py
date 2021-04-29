@@ -1279,8 +1279,7 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         """Dynamically changes the displayed minimap on the preference dialog Map Settings Tab to the appropriate
         map style."""
         mapstylepixmaps = ["mt_cartodbpositron.png","mt_cartodbdarkmatter.png","mt_esriworldimagery.png",
-                           "mt_openstreetmap.png", "mt_opentopomap.png", "mt_stadia.png",
-                           "mt_stamentoner.png", "mt_stamenterrain.png", "mt_stamenwatercolor.png"]
+                           "mt_opentopomap.png","mt_stamentoner.png", "mt_stamenterrain.png", "mt_stamenwatercolor.png"]
 
         self.ui.mapstyle_pic.setPixmap(QtGui.QPixmap(":/media/map templates/gui/" +
                                                      mapstylepixmaps[self.ui.mapstyle_combo.currentIndex()]))

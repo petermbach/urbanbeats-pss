@@ -90,7 +90,55 @@ def generate_initial_leaflet_map(coordinates, tileserver, rootpath):
         </script>
         </body>
         </html>"""
+    # print(leaflethtml)
     return leaflethtml
+
+
+def generate_leaflet_boundaries(filename, boundarydata, activeboundaryname, projectdata, centroid, epsg, tilemapserver,
+                                rootpath):
+    """Generates html text for the boundaries within boundarydata and colours the activeboundary name differently"""
+    leafletpath = rootpath + "/libs/leaflet/"
+
+    # Project data
+    centroid_pt = ogr.Geometry(ogr.wkbPoint)
+    centroid_pt.AddPoint(centroid[0], centroid[1])
+    coordtrans = create_coord_transformation_leaflet(int(epsg))
+    centroid_pt.Transform(coordtrans)
+    centroidXY = (centroid_pt.GetX(), centroid_pt.GetY())       # REMEMBER: reverse X and Y in leaflet plotting
+    print("Saving Leaflet file")
+    # Start writing the HTML file
+    f = open(filename, 'w')
+    # f = open("C:/Users/peter/Documents/boundarytest.html", 'w')   #Debug Line
+    f.write(f"""<!DOCTYPE html>
+            <html>
+            <head>
+            <link rel="stylesheet" href="file:///""" + leafletpath + """leaflet.css" />
+            <script src="file:///""" + leafletpath + """leaflet.js"></script>
+            <style>
+            html, body, #map {
+            height: 100%;
+            width: 100%;
+            }
+            body {
+            padding: 0;
+            margin: 0;
+            }
+            </style>
+            </head>
+            <body>
+            <div id="map"></div>
+            <script type="text/javascript">
+            var map = L.map('map', {
+            center: [""" + str(centroidXY[0]) + ", " + str(centroidXY[1]) + """],
+            zoom: 12
+            });""" + tilemapserver + """
+            mapstyle.addTo(map);"""+"\n")
+
+
+    f.write(f"""</script>
+            </body>
+            </html>""")
+    f.close()
 
 
 def generate_leaflet_boundary_map(coordinates, mapstats, projectdata, tileserver, rootpath):

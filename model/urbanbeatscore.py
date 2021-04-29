@@ -92,7 +92,10 @@ class UrbanBeatsSim(object):
         }
 
         # Simulation Boundary Variables
+        self.__project_epsg = None
         self.__activeboundary = None
+        self.__project_centroids = [[], []]
+        self.__global_centroid = [0, 0]
         self.__current_boundary_to_load = []    # Current Boundary Shapefile to load [filename,
         self.__project_boundaries = {}      # Collects different boundaries
         self.__project_boundaries_template = {
@@ -107,6 +110,9 @@ class UrbanBeatsSim(object):
         self.__scenarios = {}       # initialize the scenarios
         self.__functions = []       # initialize the list of functions
         self.__activescenario = None
+
+    def get_project_epsg(self):
+        return self.__project_epsg
 
     def set_active_boundary(self, boundaryname):
         try:
@@ -166,9 +172,11 @@ class UrbanBeatsSim(object):
             boundary_polys = boundaries
 
         # ADD BOUNDARIES TO SIMULATION AND ORGANISE NAMING-CONVENTION
+        centroid_collection = [[],[]]
         for i in range(len(boundary_polys)):
             mapstats = {}
             mapstats["inputEPSG"] = self.__current_boundary_to_load[3]
+            self.__project_epsg = mapstats["inputEPSG"]
             mapstats["coordsysname"] = self.__current_boundary_to_load[4]
             mapstats["area"] = boundary_polys[i].get_attribute("Area_sqkm")
 
@@ -178,6 +186,8 @@ class UrbanBeatsSim(object):
             mapstats["ymin"] = extents[2]
             mapstats["ymax"] = extents[3]
             mapstats["centroid"] = boundary_polys[i].get_centroid()
+            self.__project_centroids[0].append(mapstats["centroid"][0])
+            self.__project_centroids[1].append(mapstats["centroid"][1])
 
             coordinates = boundary_polys[i].get_points()
             mapstats["coordinates"] = coordinates
@@ -194,11 +204,17 @@ class UrbanBeatsSim(object):
             while boundarynewname in self.__project_boundaries.keys():
                 namecounter += 1
                 boundarynewname = boundary_base_name + "_" + str(namecounter)
+            mapstats["boundaryname"] = boundarynewname
             self.__project_boundaries[boundarynewname] = mapstats    # Add new project boundary
 
         self.__current_boundary_to_load = []    # Reset the current boundary to load
+        self.__global_centroid = [sum(self.__project_centroids[0])/len(self.__project_centroids[0]),
+                                  sum(self.__project_centroids[1])/len(self.__project_centroids[1])]
         print("Current number of boundaries in the simulation: ", str(len(self.__project_boundaries)))
         return True
+
+    def get_global_centroid(self):
+        return self.__global_centroid
 
     # INITIALIZATION METHODS
     def initialize_simulation(self, condition):
