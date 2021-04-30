@@ -134,6 +134,8 @@ def generate_leaflet_boundaries(filename, boundarydata, activeboundaryname, proj
             });""" + tilemapserver + """
             mapstyle.addTo(map);"""+"\n")
 
+    # Time to generate boundaries
+
 
     f.write(f"""</script>
             </body>

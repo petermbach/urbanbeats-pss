@@ -58,7 +58,6 @@ from gui import urbanbeatsdialogs as ubdialogs
 from gui import addboundarydialogc as gui_addboundary
 from gui.urbanbeatsresultsguic import LaunchResultsExplorer
 from gui.urbanbeatscalibrationguic import LaunchCalibrationViewer
-import gui.ubgui_spatialhandling as gui_ubspatial
 import gui.ubgui_reporting as ubreport
 import model.ublibs.ubspatial as ubspatial
 import model.ublibs.ubconfigfiles as ubconfigfiles
