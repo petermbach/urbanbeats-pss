@@ -428,7 +428,7 @@ def load_shapefile_details(file):
 
     feature = layer.GetFeature(0)               # Get Geometry Type
     geometry = feature.GetGeometryRef()
-    print ([geometry.GetGeometryName(), xmin, xmax, ymin, ymax, inputprojcs, epsg, featurecount, attnames])
+    print([geometry.GetGeometryName(), xmin, xmax, ymin, ymax, inputprojcs, epsg, featurecount, attnames])
     return [geometry.GetGeometryName(), xmin, xmax, ymin, ymax, inputprojcs, epsg, featurecount, attnames]
 
 

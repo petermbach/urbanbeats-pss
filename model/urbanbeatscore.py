@@ -96,6 +96,8 @@ class UrbanBeatsSim(object):
         self.__activeboundary = None
         self.__project_centroids = [[], []]
         self.__global_centroid = [0, 0]
+        self.__project_extents = [[], [], [], []]
+        self.__global_extents = None # xmin, xmax, ymin, ymax
         self.__current_boundary_to_load = []    # Current Boundary Shapefile to load [filename,
         self.__project_boundaries = {}      # Collects different boundaries
         self.__project_boundaries_template = {
@@ -172,7 +174,6 @@ class UrbanBeatsSim(object):
             boundary_polys = boundaries
 
         # ADD BOUNDARIES TO SIMULATION AND ORGANISE NAMING-CONVENTION
-        centroid_collection = [[],[]]
         for i in range(len(boundary_polys)):
             mapstats = {}
             mapstats["inputEPSG"] = self.__current_boundary_to_load[3]
@@ -182,9 +183,13 @@ class UrbanBeatsSim(object):
 
             extents = boundary_polys[i].get_extents()
             mapstats["xmin"] = extents[0]
+            self.__project_extents[0].append(extents[0])
             mapstats["xmax"] = extents[1]
+            self.__project_extents[1].append(extents[1])
             mapstats["ymin"] = extents[2]
+            self.__project_extents[2].append(extents[2])
             mapstats["ymax"] = extents[3]
+            self.__project_extents[3].append(extents[3])
             mapstats["centroid"] = boundary_polys[i].get_centroid()
             self.__project_centroids[0].append(mapstats["centroid"][0])
             self.__project_centroids[1].append(mapstats["centroid"][1])
@@ -194,7 +199,7 @@ class UrbanBeatsSim(object):
 
             if naming_rule == "user":
                 boundary_base_name = naming_key
-            elif naming_rule == "attr":
+            else:   # naming_rule == "attr"
                 boundary_base_name = boundary_polys[i].get_attribute(naming_key)
                 if boundary_base_name is None:
                     boundary_base_name = naming_key
@@ -210,11 +215,16 @@ class UrbanBeatsSim(object):
         self.__current_boundary_to_load = []    # Reset the current boundary to load
         self.__global_centroid = [sum(self.__project_centroids[0])/len(self.__project_centroids[0]),
                                   sum(self.__project_centroids[1])/len(self.__project_centroids[1])]
+        self.__global_extents = [min(self.__project_extents[0]), max(self.__project_extents[1]),
+                                 min(self.__project_extents[2]), max(self.__project_extents[3])]
         print("Current number of boundaries in the simulation: ", str(len(self.__project_boundaries)))
         return True
 
     def get_global_centroid(self):
         return self.__global_centroid
+
+    def get_global_extents(self):
+        return self.__global_extents
 
     # INITIALIZATION METHODS
     def initialize_simulation(self, condition):

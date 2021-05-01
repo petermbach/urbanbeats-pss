@@ -617,21 +617,16 @@ class MainWindow(QtWidgets.QMainWindow):
             self.__dataview_displaystate = "boundary"
 
         if len(projectboundaries.keys()) == 0:
-            return True
+            return False
 
         temp_map_file = self.app_tempdir+"/boundary.html"
         mapping_leaflet.generate_leaflet_boundaries(temp_map_file, projectboundaries, activeboundaryname, projectdata,
                                                         self.get_active_simulation_object().get_global_centroid(),
+                                                        self.get_active_simulation_object().get_global_extents(),
                                                         self.get_active_simulation_object().get_project_epsg(),
                                                         tileserver, UBEATSROOT)
         self.ui.DataView_web.load(QtCore.QUrl.fromLocalFile(temp_map_file))
-
-
-        #     projboundarymap = self.get_active_simulation_object().get_project_parameter("boundaryshp")
-        #     coordinates, mapstats = ubspatial.get_bounding_polygons(projboundarymap, "leaflet", UBEATSROOT)
-        #     leaflet_html = gui_ubspatial.generate_leaflet_boundary_map(coordinates, mapstats, projectdata, tileserver, UBEATSROOT)
-
-        pass
+        return True
 
     def initialize_output_console(self):
         """Resets the Output Console by first clearing its contents and then reprinting the three starting lines"""
@@ -665,7 +660,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def update_simulation_boundary_collection(self):
         self.get_active_simulation_object().import_simulation_boundaries()
-        self.update_data_view("boundary")
+        if self.update_data_view("boundary"):
+            prompt_msg = "Simulation Boundaries updated successfully!"
+            QtWidgets.QMessageBox.information(self, "Boundaries Updated", prompt_msg, QtWidgets.QMessageBox.Ok)
+
 
     def show_new_project_dialog(self, viewmode):
         """Launches the New Project Dialog. Called either when starting new project, editing project info or

@@ -246,21 +246,35 @@ class AddBoundaryDialogLaunch(QtWidgets.QDialog):
 
     def done(self, r):
         # CONDITIONS FOR THE COORDINATE SYSTEM SELECTION - conditions_met[2]
+        if self.Accepted == r:
+            close_conditions = [1, 1]   # [feature limit, illegal characters]
 
-        condition = False
-        if self.ui.name_userdefined_radio.isChecked():
-            for char in ubglobals.NOCHARS:
-                if char in self.ui.name_userdefined_line.text():
-                    prompt = "Invalid Boundary Name, one or more illegal characters used, please alter name!"
-                    condition = True
-        if self.ui.name_featureattr_radio.isChecked() and self.ui.name_featureattr_combo.currentIndex() == 0:
-            prompt = "Invalid attribute name selected! Please select one of the shapefile's attribute names!"
-            condition = True
-        if condition:
-            QtWidgets.QMessageBox.warning(self, 'Invalid Boundary Name', prompt, QtWidgets.QMessageBox.Ok)
-            return True
+            # ISSUE WARNING IF FEATURECOUNT EXCEEDS LIMIT
+            if self.parameters["featurecount"] >= 5:
+                prompt = "Warning: The boundary file has over 5 features. Loading can take some time. " \
+                         "Do you wish to continue?"
+                continue_bool = QtWidgets.QMessageBox.question(self, "Feature Count", prompt,
+                                                               QtWidgets.QMessageBox.Yes |
+                                                               QtWidgets.QMessageBox.No)
+                if continue_bool == QtWidgets.QMessageBox.No:
+                    close_conditions[0] = 0
+
+            # CHECK FOR ILLEGAL CHARACTERS
+            if self.ui.name_userdefined_radio.isChecked():
+                for char in ubglobals.NOCHARS:
+                    if char in self.ui.name_userdefined_line.text():
+                        prompt = "Invalid Boundary Name, one or more illegal characters used, please alter name!"
+                        close_conditions[1] = 0
+            elif self.ui.name_featureattr_radio.isChecked() and self.ui.name_featureattr_combo.currentIndex() == 0:
+                prompt = "Invalid attribute name selected! Please select one of the shapefile's attribute names!"
+                close_conditions[1] = 0
+            if close_conditions[1] == 0:
+                QtWidgets.QMessageBox.warning(self, 'Invalid Boundary Name', prompt, QtWidgets.QMessageBox.Ok)
+
+            if sum(close_conditions) == len(close_conditions):
+                self.save_values()
+                QtWidgets.QDialog.done(self, r)
         else:
-            self.save_values()
             QtWidgets.QDialog.done(self, r)
 
     def save_values(self):

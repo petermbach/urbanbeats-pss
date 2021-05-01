@@ -24,7 +24,7 @@ __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2012. Peter M. Bach"
 
 # --- GENERAL ---
-NOCHARS = ["<", ">", ":", '"', "/", "\\", "|", "?", "*"]    # Illegal characters for filenames
+NOCHARS = ["<", ">", ":", '"', "/", "\\", "|", "?", "*", "!"]    # Illegal characters for filenames
 
 # --- LANGUAGE ---
 LANGUAGECOMBO = ["DE", "EN", "ES", "FR", "PO", "CN", "JP"]      # Abbreviations for foreign languages used

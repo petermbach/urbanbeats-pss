@@ -1663,5 +1663,6 @@ class Ui_MainWindow(object):
         self.actionaction_coffeebreak.setToolTip(_translate("MainWindow", "Take a coffee break!"))
         self.actionaction_coffeebreak.setShortcut(_translate("MainWindow", "Ctrl+Alt+Shift+C"))
         self.actionAdd_Simulation_Boundary.setText(_translate("MainWindow", "Add Simulation Boundary"))
+        self.actionAdd_Simulation_Boundary.setShortcut(_translate("MainWindow", "Ctrl+B"))
 from PyQt5 import QtWebEngineWidgets
 from . import ubeats_rc

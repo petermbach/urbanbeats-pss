@@ -78,17 +78,29 @@ def generate_initial_leaflet_map(coordinates, tileserver, rootpath):
     return leaflethtml
 
 
-def generate_leaflet_boundaries(filename, boundarydata, activeboundaryname, projectdata, centroid, epsg, tilemapserver,
-                                rootpath):
+def generate_leaflet_boundaries(filename, boundarydata, activeboundaryname, projectdata, centroid, extents,
+                                epsg, tilemapserver, rootpath):
     """Generates html text for the boundaries within boundarydata and colours the activeboundary name differently"""
     leafletpath = rootpath + "/libs/leaflet/"
 
     # Project data
+    coordtrans = create_coord_transformation_leaflet(int(epsg))
+
     centroid_pt = ogr.Geometry(ogr.wkbPoint)
     centroid_pt.AddPoint(centroid[0], centroid[1])
-    coordtrans = create_coord_transformation_leaflet(int(epsg))
     centroid_pt.Transform(coordtrans)
     centroidXY = (centroid_pt.GetX(), centroid_pt.GetY())       # REMEMBER: reverse X and Y in leaflet plotting
+
+    latlngBounds = [[],[]]
+    if extents is not None:
+        extentmin = ogr.Geometry(ogr.wkbPoint)
+        extentmin.AddPoint(extents[0], extents[2])
+        extentmin.Transform(coordtrans)
+        extentmax = ogr.Geometry(ogr.wkbPoint)
+        extentmax.AddPoint(extents[1], extents[3])
+        extentmax.Transform(coordtrans)
+        latlngBounds = [[extentmin.GetX(), extentmin.GetY()], [extentmax.GetX(), extentmax.GetY()]]
+
     print("Saving Leaflet file")
     # Start writing the HTML file
     f = open(filename, 'w')
@@ -137,6 +149,8 @@ def generate_leaflet_boundaries(filename, boundarydata, activeboundaryname, proj
 
     #             map.fitBounds(polygon.getBounds());
     #
+    if extents is not None:
+        f.write("map.fitBounds("+str(latlngBounds)+");\n")
 
     f.write(f"""</script>
             </body>
