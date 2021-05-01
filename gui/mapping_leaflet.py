@@ -27,22 +27,6 @@ import osgeo.osr as osr
 import osgeo.ogr as ogr
 import numpy as np
 
-def create_coord_transformation_leaflet(inputEPSG):
-    """Creates the coordinate transformation variable for the leaflet map, uses OSR library. The leaflet
-    EPSG code is 4326, which is WGS84, geographic coordinate system.
-
-    :param inputEPSG: the input EPSG code, format int(), specifying the EPSG of the input map. Can use get_epsg()
-    :return: osr.CoordinateTransformation() object
-    """
-    inSpatial = osr.SpatialReference()
-    inSpatial.ImportFromEPSG(inputEPSG)
-
-    outSpatial = osr.SpatialReference()
-    outSpatial.ImportFromEPSG(4326)
-
-    coordTrans = osr.CoordinateTransformation(inSpatial, outSpatial)
-    return coordTrans
-
 
 def generate_initial_leaflet_map(coordinates, tileserver, rootpath):
     """Generates html text for the initial leaflet map to be displayed on the main interface.
@@ -135,12 +119,95 @@ def generate_leaflet_boundaries(filename, boundarydata, activeboundaryname, proj
             mapstyle.addTo(map);"""+"\n")
 
     # Time to generate boundaries
+    polyIDs = 0
+    polygonVarnames = []
+    for i in boundarydata.keys():
+        curname = i
+        popuptext = generate_boundary_popupinfo(curname, boundarydata[curname], projectdata)
+        leaflet_coordinates = convert_polygon_to_leaflet_projection(boundarydata[curname]["coordinates"],
+                                                                    boundarydata[curname]["inputEPSG"])
+        if curname == activeboundaryname:
+            color = 'red'
+        else:
+            color = 'blue'
+        polyname, leafletpolygontext = generate_leaflet_polygon_text(polyIDs, leaflet_coordinates, popuptext, color)
+        polygonVarnames.append(polyname)
+        polyIDs += 1
+        f.write(leafletpolygontext+"\n")
 
+    #             map.fitBounds(polygon.getBounds());
+    #
 
     f.write(f"""</script>
             </body>
             </html>""")
     f.close()
+
+def generate_leaflet_polygon_text(poly_id, coordinates, popupinfo, color):
+    """Generates a leaflet polygon and returns the HTML text and polygon name"""
+    polygon_name = "polygon"+str(poly_id)
+
+    # START OF JS WRAPPER
+    leaflettext = "var latlngs"+str(poly_id)+" = "+str(coordinates)+";\n"
+    leaflettext += "var "+str(polygon_name)+" = L.polygon(latlngs"+str(poly_id)+", {color: '"+str(color)+"'}).addTo(map);\n"
+    leaflettext += 'var popupContent'+str(poly_id)+'="'+popupinfo+'";\n'
+    leaflettext += polygon_name+".bindPopup(popupContent"+str(poly_id)+");\n"
+    return polygon_name, leaflettext
+
+def generate_boundary_popupinfo(name, boundarydata, projectdata):
+    """Generates all the information to be placed into a popup window and writes this as leaflet code for the script."""
+    popupinfo = "<h4>"+str(name)+"</h4>"
+    popupinfo +="<h5>" + str(projectdata["region"]) + ", " + str(projectdata["city"]) + "</h5><hr />"
+    popupinfo +="<strong>PROJECTION: </strong>"+str(boundarydata["coordsysname"])+"<br />"
+    popupinfo +="<strong>LOCATION: </strong> X = "+str(boundarydata["centroid"][0])+\
+                "| Y = "+str(boundarydata["centroid"][1])+"<br />"
+    popupinfo +="<strong> STUDY AREA: </strong>" + str(round(boundarydata["area"], 2))+ " km<sup>2</sup> <br />"
+    popupinfo +="<strong> EXTENTS: </strong><br />"
+    popupinfo +="     x<sub>min/max</sub> (left/right): "+\
+                str(boundarydata["xmin"])+" | "+str(boundarydata["xmax"])+"<br />"
+    popupinfo +="     y<sub>min/max</sub> (bottom/top): "\
+                +str(boundarydata["ymin"])+" | "+str(boundarydata["ymax"])+"<br />"
+    return popupinfo
+
+def create_coord_transformation_leaflet(inputEPSG):
+    """Creates the coordinate transformation variable for the leaflet map, uses OSR library. The leaflet
+    EPSG code is 4326, which is WGS84, geographic coordinate system.
+
+    :param inputEPSG: the input EPSG code, format int(), specifying the EPSG of the input map. Can use get_epsg()
+    :return: osr.CoordinateTransformation() object
+    """
+    inSpatial = osr.SpatialReference()
+    inSpatial.ImportFromEPSG(inputEPSG)
+
+    outSpatial = osr.SpatialReference()
+    outSpatial.ImportFromEPSG(4326)
+
+    coordTrans = osr.CoordinateTransformation(inSpatial, outSpatial)
+    return coordTrans
+
+
+def convert_polygon_to_leaflet_projection(coordinates, inputEPSG):
+    """Converts an input list of coordinates based on the given shape to leaflet coordinates using the inputEPSG and
+    leaflet's EPSG: 4326"""
+    if inputEPSG == 4326:       # If the projection is already the same, return the same coordinates
+        return [[coordinates[pt][0], coordinates[pt][1]] for pt in coordinates]
+
+    coordtrans = create_coord_transformation_leaflet(inputEPSG)
+
+    # Make the polygon object
+    poly = ogr.Geometry(ogr.wkbPolygon)
+    ring = ogr.Geometry(ogr.wkbLinearRing)
+    for pt in coordinates:
+        ring.AddPoint(pt[0], pt[1])
+    poly.AddGeometry(ring)
+
+    # Project and return the polygon coordinates
+    coordinates_pj = []
+    poly.Transform(coordtrans)
+    ring = poly.GetGeometryRef(0)
+    for pt in range(ring.GetPointCount()):
+        coordinates_pj.append([ring.GetPoint(pt)[0], ring.GetPoint(pt)[1]])
+    return coordinates_pj
 
 
 def generate_leaflet_boundary_map(coordinates, mapstats, projectdata, tileserver, rootpath):

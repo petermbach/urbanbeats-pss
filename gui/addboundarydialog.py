@@ -259,7 +259,7 @@ class Ui_AddBoundaryDialog(object):
         self.name_userdefined_radio.setObjectName("name_userdefined_radio")
         self.gridLayout_8.addWidget(self.name_userdefined_radio, 1, 0, 1, 1)
         self.name_userdefined_line = QtWidgets.QLineEdit(self.step4widget)
-        self.name_userdefined_line.setReadOnly(True)
+        self.name_userdefined_line.setReadOnly(False)
         self.name_userdefined_line.setObjectName("name_userdefined_line")
         self.gridLayout_8.addWidget(self.name_userdefined_line, 1, 1, 1, 1)
         self.name_featureattr_radio = QtWidgets.QRadioButton(self.step4widget)

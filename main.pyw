@@ -422,6 +422,9 @@ class MainWindow(QtWidgets.QMainWindow):
             modulebools.append(int(mbool))
         self.enable_disable_module_icons(modulebools)   # enables corresponding module buttons
 
+        # MAP DISPLAY
+        self.update_map_display()
+
     def scenario_view_reset(self):
         """Resets the scenario view to the default """
         self.ui.ScenarioDock_View.topLevelItem(0).takeChildren()
@@ -441,6 +444,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.Narrative.clear()
         self.ui.DataSummary.setRowCount(0)
         self.enable_disable_module_icons([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        self.update_map_display()
 
     # MAIN INTERFACE FUNCTIONALITY
     def printc(self, textmessage):
@@ -600,8 +604,13 @@ class MainWindow(QtWidgets.QMainWindow):
         projectboundaries = self.get_active_simulation_object().get_project_boundaries()
         activeboundary = self.get_active_simulation_object().get_active_boundary()
 
-        print(projectboundaries)
-        print(activeboundary)
+        if activeboundary is None:
+            activeboundaryname = ""
+        else:
+            activeboundaryname = activeboundary["boundaryname"]
+
+        # print(projectboundaries)
+        print(activeboundaryname)
         print(projectdata)
 
         if maptype == "boundary":
@@ -611,7 +620,7 @@ class MainWindow(QtWidgets.QMainWindow):
             return True
 
         temp_map_file = self.app_tempdir+"/boundary.html"
-        mapping_leaflet.generate_leaflet_boundaries(temp_map_file, projectboundaries, activeboundary, projectdata,
+        mapping_leaflet.generate_leaflet_boundaries(temp_map_file, projectboundaries, activeboundaryname, projectdata,
                                                         self.get_active_simulation_object().get_global_centroid(),
                                                         self.get_active_simulation_object().get_project_epsg(),
                                                         tileserver, UBEATSROOT)

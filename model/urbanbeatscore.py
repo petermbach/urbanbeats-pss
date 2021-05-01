@@ -451,7 +451,7 @@ class UrbanBeatsSim(object):
         """Sets the current active scenario to the scenario with the name "name"."""
         try:
             self.__activescenario = self.__scenarios[scenario_name]
-            self.__activeboundary = self.__activescenario.get_metadata["boundary"]
+            self.__activeboundary = self.__activescenario.get_metadata("boundary")
         except KeyError:
             self.__activescenario = None
             self.__activeboundary = None
