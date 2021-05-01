@@ -26,6 +26,7 @@ __copyright__ = "Copyright 2012. Peter M. Bach"
 import osgeo.osr as osr
 import osgeo.ogr as ogr
 import numpy as np
+from model.progref import ubglobals as ubglobals
 
 
 def generate_initial_leaflet_map(coordinates, tileserver, rootpath):
@@ -74,7 +75,7 @@ def generate_initial_leaflet_map(coordinates, tileserver, rootpath):
         </script>
         </body>
         </html>"""
-    # print(leaflethtml)
+    # print(leaflethtml)    # DEBUG
     return leaflethtml
 
 
@@ -101,7 +102,6 @@ def generate_leaflet_boundaries(filename, boundarydata, activeboundaryname, proj
         extentmax.Transform(coordtrans)
         latlngBounds = [[extentmin.GetX(), extentmin.GetY()], [extentmax.GetX(), extentmax.GetY()]]
 
-    print("Saving Leaflet file")
     # Start writing the HTML file
     f = open(filename, 'w')
     # f = open("C:/Users/peter/Documents/boundarytest.html", 'w')   #Debug Line
@@ -139,9 +139,9 @@ def generate_leaflet_boundaries(filename, boundarydata, activeboundaryname, proj
         leaflet_coordinates = convert_polygon_to_leaflet_projection(boundarydata[curname]["coordinates"],
                                                                     boundarydata[curname]["inputEPSG"])
         if curname == activeboundaryname:
-            color = 'red'
+            color = ubglobals.URBANBEATSLOGOCOLORHEX[2]
         else:
-            color = 'blue'
+            color = ubglobals.URBANBEATSLOGOCOLORHEX[0]
         polyname, leafletpolygontext = generate_leaflet_polygon_text(polyIDs, leaflet_coordinates, popuptext, color)
         polygonVarnames.append(polyname)
         polyIDs += 1

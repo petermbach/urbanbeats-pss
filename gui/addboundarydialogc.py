@@ -51,6 +51,7 @@ class AddBoundaryDialogLaunch(QtWidgets.QDialog):
         self.ui = Ui_AddBoundaryDialog()
         self.ui.setupUi(self)
         self.simulation = simulation
+        self.options = main.get_options()
         self.epsg_dict = main.epsg_dict     # [REVAMP]
 
         # Define a dummy set of parameters that are passed to the simulation at the end of the wizard
@@ -250,9 +251,9 @@ class AddBoundaryDialogLaunch(QtWidgets.QDialog):
             close_conditions = [1, 1]   # [feature limit, illegal characters]
 
             # ISSUE WARNING IF FEATURECOUNT EXCEEDS LIMIT
-            if self.parameters["featurecount"] >= 5:
-                prompt = "Warning: The boundary file has over 5 features. Loading can take some time. " \
-                         "Do you wish to continue?"
+            if self.parameters["featurecount"] >= self.options["featcountwarning"]:
+                prompt = "Warning: The boundary file has over "+str(self.options["featcountwarning"])+" features. " \
+                            "Loading can take some time. Do you wish to continue?"
                 continue_bool = QtWidgets.QMessageBox.question(self, "Feature Count", prompt,
                                                                QtWidgets.QMessageBox.Yes |
                                                                QtWidgets.QMessageBox.No)

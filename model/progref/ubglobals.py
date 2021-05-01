@@ -25,6 +25,7 @@ __copyright__ = "Copyright 2012. Peter M. Bach"
 
 # --- GENERAL ---
 NOCHARS = ["<", ">", ":", '"', "/", "\\", "|", "?", "*", "!"]    # Illegal characters for filenames
+URBANBEATSLOGOCOLORHEX = ["#346FAC", "#CF7328", "#8EBA52"]  # BLUE, ORANGE, GREEN as on the UB Logo
 
 # --- LANGUAGE ---
 LANGUAGECOMBO = ["DE", "EN", "ES", "FR", "PO", "CN", "JP"]      # Abbreviations for foreign languages used

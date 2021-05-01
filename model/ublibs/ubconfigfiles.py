@@ -35,6 +35,7 @@ OPTIONSGENERAL = {
     "defaultpath": "none",
     "tempdir": "none",
     "tempdefault": "1",
+    "featcountwarning": "100",
     "bodytextcolor": "000000",
     "consoledatestampcolor": "93cbc7",
     "errortextcolor": "000000" }

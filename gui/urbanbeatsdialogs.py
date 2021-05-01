@@ -1159,6 +1159,8 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         self.ui.temppath_check.setChecked(bool(self.options["tempdefault"]))
         self.ui_temppath_line_enabledisable()
 
+        self.ui.simboundary_featcount_spin.setValue(int(self.options["featcountwarning"]))
+
         # Text Appearance
 
         # SIMULATION TAB
@@ -1333,6 +1335,8 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         self.options["defaultpath"] = str(self.ui.projpath_line.text())
         self.options["tempdir"] = str(self.ui.temppath_line.text())
         self.options["tempdefault"] = int(self.ui.temppath_check.isChecked())
+
+        self.options["featcountwarning"] = int(self.ui.simboundary_featcount_spin.value())
 
         # Text Appearance
 
