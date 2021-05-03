@@ -189,11 +189,6 @@ p, li { white-space: pre-wrap; }
                    <string>Coordinate System</string>
                   </property>
                  </column>
-                 <column>
-                  <property name="text">
-                   <string>Scenarios</string>
-                  </property>
-                 </column>
                 </widget>
                </item>
               </layout>
@@ -487,7 +482,7 @@ p, li { white-space: pre-wrap; }
          <widget class="QWidget" name="Narrative_tab">
           <attribute name="icon">
            <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/pages-brown-icon.png</normaloff>:/icons/pages-brown-icon.png</iconset>
+            <normaloff>:/icons/Map-icon (1).png</normaloff>:/icons/Map-icon (1).png</iconset>
           </attribute>
           <attribute name="title">
            <string>Scenario</string>
@@ -1773,10 +1768,25 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionEdit_Scenario"/>
      <addaction name="actionDelete_Scenario"/>
     </widget>
+    <widget class="QMenu" name="menuGeography">
+     <property name="title">
+      <string>Geography</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../graphics/ubeats.qrc">
+       <normaloff>:/icons/earth-icon.png</normaloff>:/icons/earth-icon.png</iconset>
+     </property>
+     <addaction name="actionAdd_Location"/>
+     <addaction name="actionView_Locations"/>
+     <addaction name="separator"/>
+     <addaction name="actionAdd_Simulation_Boundary"/>
+     <addaction name="actionAdd_Basic_Shape_Boundary"/>
+     <addaction name="actionView_Simulation_Boundaries"/>
+    </widget>
     <addaction name="actionView_Project_Description"/>
     <addaction name="actionView_Full_Project_Log"/>
     <addaction name="separator"/>
-    <addaction name="actionAdd_Simulation_Boundary"/>
+    <addaction name="menuGeography"/>
     <addaction name="menuScenario"/>
     <addaction name="separator"/>
     <addaction name="actionReporting_Options"/>
@@ -4013,25 +4023,13 @@ p, li { white-space: pre-wrap; }
     <string>Ctrl+B</string>
    </property>
   </action>
-  <action name="actionDelete_Simulation_Boundary">
-   <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
-     <normaloff>:/icons/boundaries_delete.png</normaloff>:/icons/boundaries_delete.png</iconset>
-   </property>
-   <property name="text">
-    <string>Delete_Simulation_Boundary</string>
-   </property>
-   <property name="toolTip">
-    <string>Delete the current simulation boundary</string>
-   </property>
-  </action>
   <action name="actionView_Simulation_Boundaries">
    <property name="icon">
     <iconset resource="../graphics/ubeats.qrc">
      <normaloff>:/icons/boundaries_view.png</normaloff>:/icons/boundaries_view.png</iconset>
    </property>
    <property name="text">
-    <string>View_Simulation_Boundaries</string>
+    <string>View Simulation Boundaries</string>
    </property>
    <property name="toolTip">
     <string>View a summary of project simulation boundaries</string>
@@ -4043,7 +4041,7 @@ p, li { white-space: pre-wrap; }
      <normaloff>:/icons/custom_shape.png</normaloff>:/icons/custom_shape.png</iconset>
    </property>
    <property name="text">
-    <string>Add_Basic_Shape_Boundary</string>
+    <string>Define Basic Shape Boundary</string>
    </property>
    <property name="toolTip">
     <string>Create a basic shape boundary</string>
@@ -4055,7 +4053,7 @@ p, li { white-space: pre-wrap; }
      <normaloff>:/icons/location_add.png</normaloff>:/icons/location_add.png</iconset>
    </property>
    <property name="text">
-    <string>Add_Location</string>
+    <string>Add Location</string>
    </property>
    <property name="toolTip">
     <string>Add a key location to the project</string>
@@ -4067,7 +4065,7 @@ p, li { white-space: pre-wrap; }
      <normaloff>:/icons/location.png</normaloff>:/icons/location.png</iconset>
    </property>
    <property name="text">
-    <string>View_Locations</string>
+    <string>View Locations</string>
    </property>
    <property name="toolTip">
     <string>View all loaded locations in the current project</string>

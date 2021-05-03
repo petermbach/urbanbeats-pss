@@ -134,9 +134,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionPreferences.triggered.connect(self.show_options)
 
         # PROJECT MENU
-        self.ui.actionAdd_Simulation_Boundary.triggered.connect(self.show_add_simulation_boundary_dialog)
         self.ui.actionView_Project_Description.triggered.connect(lambda: self.show_new_project_dialog(2))
         self.ui.actionView_Full_Project_Log.triggered.connect(self.show_project_log)
+
+        # Geography Submenu ---
+        # self.ui.actionAdd_Location.triggered.connect(self.show_add_location_dialog)
+        # self.ui.actionView_Locations.triggered.connect(self.show_LocationSummary)
+        self.ui.actionAdd_Simulation_Boundary.triggered.connect(self.show_add_simulation_boundary_dialog)
+        # self.ui.actionAdd_Basic_Shape_Boundary.triggered.connect(self.show_add_shape_boundary_dialog)
+        # self.ui.actionView_Simulation_Boundaries.triggered.connect(self.show_BoundarySummary)
+
         # Scenario Submenu ---
         self.ui.actionDefine_New_Scenario.triggered.connect(lambda: self.show_scenario_dialog(0))
         self.ui.actionEdit_Scenario.triggered.connect(lambda: self.show_scenario_dialog(1))

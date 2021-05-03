@@ -125,13 +125,6 @@ class UrbanBeatsSim(object):
     def get_active_boundary(self):
         return self.__activeboundary
 
-    def change_boundary_scenario_count(self, boundaryname, value):
-        """Increments/decrements the number of scenarios that a boundary is used in."""
-        try:
-            self.__project_boundaries[boundaryname]["scenariocount"] += value
-        except KeyError:
-            return True
-
     def set_current_boundary_file_to_load(self, filename, multifeatoptions, namingoptions, epsg, inputprojcs):
         """Defines the parameters of a boundary shapefile for the core to load. This shapefile is run through
 
@@ -251,7 +244,6 @@ class UrbanBeatsSim(object):
 
             # Save shapefiles into the 'boundaries' folder
             mapstats["filename"] = boundarynewname+"_Boundary_"+str(mapstats["inputEPSG"])
-            mapstats["scenariocount"] = 0   # Scenario counter (how many scenarios use this boundary)
             boundarypath = self.get_project_parameter("projectpath") + "/" + self.get_project_parameter("name") \
                            + "/boundaries/"
             ubspatial.save_boundary_as_shapefile(mapstats, boundarypath+mapstats["filename"])
@@ -541,6 +533,7 @@ class UrbanBeatsSim(object):
         """Removes the scenario with the given scenario name from the simulation core."""
         if self.__activescenario.get_metadata("name") == scenario_name:
             self.__activescenario = None            # Set the active scenario to None
+
         try:
             self.__scenarios.pop(scenario_name)     # Pop the scenario with the key 'scenario_name'
         except KeyError:
