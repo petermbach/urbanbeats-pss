@@ -202,6 +202,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Summary Window Buttons
         self.ui.boundary_add_button.clicked.connect(self.show_add_simulation_boundary_dialog)
+        self.ui.boundary_delete_button.clicked.connect(self.delete_simulation_boundary)
 
         # Data View Interface
         self.ui.DataView_extent.clicked.connect(self.update_map_display)
@@ -675,6 +676,14 @@ class MainWindow(QtWidgets.QMainWindow):
         addsimboundarydialog = gui_addboundary.AddBoundaryDialogLaunch(self, self.get_active_simulation_object())
         addsimboundarydialog.accepted.connect(self.update_simulation_boundary_collection)
         addsimboundarydialog.exec_()
+
+    def delete_simulation_boundary(self):
+        boundaryname = self.ui.BoundarySummary.selectedItems()[0].text()    # Get the name of the boundary from table
+        self.get_active_simulation_object().delete_simulation_boundary(boundaryname)
+        self.update_map_display()
+        self.ui.BoundarySummary.removeRow(self.ui.BoundarySummary.currentRow())
+        prompt_msg = "Simulation Boundary deleted!"
+        QtWidgets.QMessageBox.information(self, "Boundary Removed from Proejct", prompt_msg, QtWidgets.QMessageBox.Ok)
 
     def update_simulation_boundary_collection(self):
         self.get_active_simulation_object().import_simulation_boundaries()

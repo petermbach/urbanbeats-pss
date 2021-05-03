@@ -145,6 +145,36 @@ class UrbanBeatsSim(object):
     def get_project_boundaries(self):
         return self.__project_boundaries
 
+    def delete_simulation_boundary(self, boundaryname):
+        """Removes the boundary with the name 'boundaryname' from the project."""
+        if boundaryname not in self.__project_boundaries.keys():
+            print("Error, boundary not found, please check name")
+            return True
+
+        # Step 1 - if it's the active boundary, set to None
+        if self.__activeboundary["boundaryname"] == boundaryname:
+            self.__activeboundary = None
+
+        # Step 2 - loop through all scenarios - remove the boundary if it is the selected boundary
+        for s in self.__scenarios.keys():
+            if self.__scenarios[s].get_metadata("boundary") == boundaryname:
+                self.__scenarios[s].set_metadata("boundary", "(select simulation boundary)")
+
+        # Step 3 - delete the Shapefile and all related files
+        filepath = self.get_project_parameter("projectpath") + "/" + self.get_project_parameter("name") \
+                       + "/boundaries/"
+        filename = self.__project_boundaries[boundaryname]["filename"]
+        available_files = os.listdir(filepath)
+        for file in available_files:
+            if filename in file:
+                os.remove(filepath+file)
+
+        # Step 4 - Remove the boundary from the boundaries dictionary
+        try:
+            del self.__project_boundaries[boundaryname]
+        except KeyError:
+            return True
+
     def import_simulation_boundaries(self):
         """Imports new boundaries into the simulation based on the self.__current_boundar_to_load variable. After
         loading, it resets the boundary variable to []. Loaded boundaries are updated in the

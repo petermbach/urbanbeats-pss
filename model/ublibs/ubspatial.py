@@ -458,7 +458,7 @@ def save_boundary_as_shapefile(data, filename):
     fielddefmatrix.append(ogr.FieldDefn("ymax", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("centroidX", ogr.OFTReal))
     fielddefmatrix.append(ogr.FieldDefn("centroidY", ogr.OFTReal))
-    fielddefmatrix.append(ogr.FieldDefn("boundaryname", ogr.OFTString))
+    fielddefmatrix.append(ogr.FieldDefn("name", ogr.OFTString))
 
     for field in fielddefmatrix:
         layer.CreateField(field)
@@ -481,7 +481,7 @@ def save_boundary_as_shapefile(data, filename):
     feature.SetField("ymax", data["ymax"])
     feature.SetField("centroidX", data["centroid"][0])
     feature.SetField("centroidY", data["centroid"][1])
-    feature.SetField("name", data["name"])
+    feature.SetField("name", data["boundaryname"])
 
     layer.CreateFeature(feature)
     shapefile.Destroy()
