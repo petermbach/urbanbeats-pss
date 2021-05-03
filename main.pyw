@@ -678,12 +678,21 @@ class MainWindow(QtWidgets.QMainWindow):
         addsimboundarydialog.exec_()
 
     def delete_simulation_boundary(self):
+        prompt = "Are you sure you want to remove this boundary from the project?" \
+                 "All scenarios using this boundary will be updated and any cached simulations using this boundary" \
+                 "will be removed. Click Yes to confirm!"
+        continue_bool = QtWidgets.QMessageBox.warning(self, "Delete Boundary?", prompt,
+                                                       QtWidgets.QMessageBox.Yes |
+                                                       QtWidgets.QMessageBox.No)
+        if continue_bool == QtWidgets.QMessageBox.No:
+            return True
+
         boundaryname = self.ui.BoundarySummary.selectedItems()[0].text()    # Get the name of the boundary from table
         self.get_active_simulation_object().delete_simulation_boundary(boundaryname)
         self.update_map_display()
         self.ui.BoundarySummary.removeRow(self.ui.BoundarySummary.currentRow())
         prompt_msg = "Simulation Boundary deleted!"
-        QtWidgets.QMessageBox.information(self, "Boundary Removed from Proejct", prompt_msg, QtWidgets.QMessageBox.Ok)
+        QtWidgets.QMessageBox.information(self, "Boundary Removed from Project", prompt_msg, QtWidgets.QMessageBox.Ok)
 
     def update_simulation_boundary_collection(self):
         self.get_active_simulation_object().import_simulation_boundaries()
@@ -691,7 +700,6 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.update_data_view("boundary"):
             prompt_msg = "Simulation Boundaries updated successfully!"
             QtWidgets.QMessageBox.information(self, "Boundaries Updated", prompt_msg, QtWidgets.QMessageBox.Ok)
-
 
     def show_new_project_dialog(self, viewmode):
         """Launches the New Project Dialog. Called either when starting new project, editing project info or

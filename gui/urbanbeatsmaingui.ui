@@ -98,46 +98,113 @@ p, li { white-space: pre-wrap; }
          <widget class="QWidget" name="Simulation_tab">
           <attribute name="icon">
            <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/icons8-polygon-96.png</normaloff>:/icons/icons8-polygon-96.png</iconset>
+            <normaloff>:/icons/earth-icon.png</normaloff>:/icons/earth-icon.png</iconset>
           </attribute>
           <attribute name="title">
-           <string>Boundaries</string>
+           <string>Geography</string>
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_6">
            <item>
-            <widget class="QTableWidget" name="BoundarySummary">
-             <property name="selectionBehavior">
-              <enum>QAbstractItemView::SelectRows</enum>
+            <widget class="QComboBox" name="geography_combo">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>25</height>
+              </size>
              </property>
-             <property name="sortingEnabled">
-              <bool>true</bool>
+             <property name="layoutDirection">
+              <enum>Qt::LeftToRight</enum>
              </property>
-             <column>
+             <item>
               <property name="text">
-               <string>Boundary Name</string>
+               <string>Locations</string>
               </property>
-             </column>
-             <column>
+              <property name="icon">
+               <iconset resource="../graphics/ubeats.qrc">
+                <normaloff>:/icons/location.png</normaloff>:/icons/location.png</iconset>
+              </property>
+             </item>
+             <item>
               <property name="text">
-               <string>Size [sqkm]</string>
+               <string>Simulation Boundaries</string>
               </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>Coordinate System</string>
+              <property name="icon">
+               <iconset resource="../graphics/ubeats.qrc">
+                <normaloff>:/icons/boundaries_view.png</normaloff>:/icons/boundaries_view.png</iconset>
               </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>Scenarios</string>
-              </property>
-             </column>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <widget class="QStackedWidget" name="geography_stack">
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
+             <widget class="QWidget" name="page_7">
+              <layout class="QVBoxLayout" name="verticalLayout_20">
+               <item>
+                <widget class="QTableWidget" name="LocationSummary">
+                 <property name="selectionBehavior">
+                  <enum>QAbstractItemView::SelectRows</enum>
+                 </property>
+                 <property name="sortingEnabled">
+                  <bool>true</bool>
+                 </property>
+                 <column>
+                  <property name="text">
+                   <string>Location Name</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Type</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="page_5">
+              <layout class="QVBoxLayout" name="verticalLayout_19">
+               <item>
+                <widget class="QTableWidget" name="BoundarySummary">
+                 <property name="selectionBehavior">
+                  <enum>QAbstractItemView::SelectRows</enum>
+                 </property>
+                 <property name="sortingEnabled">
+                  <bool>true</bool>
+                 </property>
+                 <column>
+                  <property name="text">
+                   <string>Boundary Name</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Size [sqkm]</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Coordinate System</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Scenarios</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="page_6"/>
             </widget>
            </item>
            <item>
             <widget class="QWidget" name="BoundarySummary_widget" native="true">
-             <layout class="QHBoxLayout" name="horizontalLayout_4">
-              <item>
+             <layout class="QGridLayout" name="gridLayout_2">
+              <item row="0" column="0">
                <spacer name="horizontalSpacer_4">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -150,11 +217,137 @@ p, li { white-space: pre-wrap; }
                 </property>
                </spacer>
               </item>
-              <item>
-               <widget class="QPushButton" name="boundary_focus_button">
+              <item row="1" column="7">
+               <widget class="QPushButton" name="boundary_delete_button">
                 <property name="minimumSize">
                  <size>
-                  <width>138</width>
+                  <width>0</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>Spatial Delineation</string>
+                </property>
+                <property name="text">
+                 <string>Delete Boundary</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../graphics/ubeats.qrc">
+                  <normaloff>:/icons/boundaries_delete.png</normaloff>:/icons/boundaries_delete.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="shortcut">
+                 <string>Up</string>
+                </property>
+                <property name="checkable">
+                 <bool>false</bool>
+                </property>
+                <property name="flat">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="7">
+               <widget class="QPushButton" name="location_delete_button">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>Spatial Delineation</string>
+                </property>
+                <property name="text">
+                 <string>Delete Location</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../graphics/ubeats.qrc">
+                  <normaloff>:/icons/location_remove.png</normaloff>:/icons/location_remove.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="shortcut">
+                 <string>Up</string>
+                </property>
+                <property name="checkable">
+                 <bool>false</bool>
+                </property>
+                <property name="flat">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="6">
+               <widget class="QPushButton" name="location_add_button">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>Spatial Delineation</string>
+                </property>
+                <property name="text">
+                 <string>Add Location</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../graphics/ubeats.qrc">
+                  <normaloff>:/icons/location_add.png</normaloff>:/icons/location_add.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="shortcut">
+                 <string>Up</string>
+                </property>
+                <property name="checkable">
+                 <bool>false</bool>
+                </property>
+                <property name="flat">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="4">
+               <widget class="QPushButton" name="geography_focus_button">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
                   <height>25</height>
                  </size>
                 </property>
@@ -191,11 +384,11 @@ p, li { white-space: pre-wrap; }
                 </property>
                </widget>
               </item>
-              <item>
+              <item row="1" column="6">
                <widget class="QPushButton" name="boundary_add_button">
                 <property name="minimumSize">
                  <size>
-                  <width>138</width>
+                  <width>0</width>
                   <height>25</height>
                  </size>
                 </property>
@@ -213,7 +406,7 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <property name="icon">
                  <iconset resource="../graphics/ubeats.qrc">
-                  <normaloff>:/icons/icons8-polygon-96.png</normaloff>:/icons/icons8-polygon-96.png</iconset>
+                  <normaloff>:/icons/boundaries_add.png</normaloff>:/icons/boundaries_add.png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -232,11 +425,11 @@ p, li { white-space: pre-wrap; }
                 </property>
                </widget>
               </item>
-              <item>
-               <widget class="QPushButton" name="boundary_delete_button">
+              <item row="1" column="4">
+               <widget class="QPushButton" name="boundary_shape_add_button">
                 <property name="minimumSize">
                  <size>
-                  <width>138</width>
+                  <width>0</width>
                   <height>25</height>
                  </size>
                 </property>
@@ -250,11 +443,11 @@ p, li { white-space: pre-wrap; }
                  <string>Spatial Delineation</string>
                 </property>
                 <property name="text">
-                 <string>Delete Boundary</string>
+                 <string>Add Shape</string>
                 </property>
                 <property name="icon">
                  <iconset resource="../graphics/ubeats.qrc">
-                  <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
+                  <normaloff>:/icons/custom_shape.png</normaloff>:/icons/custom_shape.png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -272,6 +465,19 @@ p, li { white-space: pre-wrap; }
                  <bool>false</bool>
                 </property>
                </widget>
+              </item>
+              <item row="1" column="0">
+               <spacer name="horizontalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
              </layout>
             </widget>
@@ -1752,7 +1958,6 @@ p, li { white-space: pre-wrap; }
    <addaction name="menuWindow"/>
    <addaction name="menuHelp"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="General_toolbar">
    <property name="windowTitle">
     <string>General</string>
@@ -1767,13 +1972,6 @@ p, li { white-space: pre-wrap; }
    <addaction name="actionOpen_Project"/>
    <addaction name="actionSave"/>
    <addaction name="actionExport_Project"/>
-   <addaction name="separator"/>
-   <addaction name="actionAdd_Simulation_Boundary"/>
-   <addaction name="actionView_Project_Description"/>
-   <addaction name="actionView_Full_Project_Log"/>
-   <addaction name="actionResults_Viewer"/>
-   <addaction name="separator"/>
-   <addaction name="actionRun"/>
   </widget>
   <widget class="QDockWidget" name="DataDock">
    <property name="minimumSize">
@@ -3182,6 +3380,38 @@ p, li { white-space: pre-wrap; }
     </layout>
    </widget>
   </widget>
+  <widget class="QToolBar" name="Project_Toolbar">
+   <property name="windowTitle">
+    <string>Project Management</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionView_Project_Description"/>
+   <addaction name="actionView_Full_Project_Log"/>
+   <addaction name="actionResults_Viewer"/>
+   <addaction name="separator"/>
+   <addaction name="actionRun"/>
+  </widget>
+  <widget class="QToolBar" name="Geography_Toolbar">
+   <property name="windowTitle">
+    <string>Simulation Boundaries</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionAdd_Location"/>
+   <addaction name="actionView_Locations"/>
+   <addaction name="actionAdd_Simulation_Boundary"/>
+   <addaction name="actionAdd_Basic_Shape_Boundary"/>
+   <addaction name="actionView_Simulation_Boundaries"/>
+  </widget>
   <widget class="QToolBar" name="Settings_Toolbar">
    <property name="windowTitle">
     <string>Settings</string>
@@ -3202,6 +3432,7 @@ p, li { white-space: pre-wrap; }
    <addaction name="actionShare_on_Twiter"/>
    <addaction name="actionaction_coffeebreak"/>
   </widget>
+  <widget class="QStatusBar" name="statusbar"/>
   <action name="actionNew_Project">
    <property name="icon">
     <iconset resource="../graphics/ubeats.qrc">
@@ -3773,13 +4004,73 @@ p, li { white-space: pre-wrap; }
   <action name="actionAdd_Simulation_Boundary">
    <property name="icon">
     <iconset resource="../graphics/ubeats.qrc">
-     <normaloff>:/icons/icons8-polygon-96.png</normaloff>:/icons/icons8-polygon-96.png</iconset>
+     <normaloff>:/icons/boundaries_add.png</normaloff>:/icons/boundaries_add.png</iconset>
    </property>
    <property name="text">
     <string>Add Simulation Boundary</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+B</string>
+   </property>
+  </action>
+  <action name="actionDelete_Simulation_Boundary">
+   <property name="icon">
+    <iconset resource="../graphics/ubeats.qrc">
+     <normaloff>:/icons/boundaries_delete.png</normaloff>:/icons/boundaries_delete.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete_Simulation_Boundary</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete the current simulation boundary</string>
+   </property>
+  </action>
+  <action name="actionView_Simulation_Boundaries">
+   <property name="icon">
+    <iconset resource="../graphics/ubeats.qrc">
+     <normaloff>:/icons/boundaries_view.png</normaloff>:/icons/boundaries_view.png</iconset>
+   </property>
+   <property name="text">
+    <string>View_Simulation_Boundaries</string>
+   </property>
+   <property name="toolTip">
+    <string>View a summary of project simulation boundaries</string>
+   </property>
+  </action>
+  <action name="actionAdd_Basic_Shape_Boundary">
+   <property name="icon">
+    <iconset resource="../graphics/ubeats.qrc">
+     <normaloff>:/icons/custom_shape.png</normaloff>:/icons/custom_shape.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add_Basic_Shape_Boundary</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a basic shape boundary</string>
+   </property>
+  </action>
+  <action name="actionAdd_Location">
+   <property name="icon">
+    <iconset resource="../graphics/ubeats.qrc">
+     <normaloff>:/icons/location_add.png</normaloff>:/icons/location_add.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add_Location</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a key location to the project</string>
+   </property>
+  </action>
+  <action name="actionView_Locations">
+   <property name="icon">
+    <iconset resource="../graphics/ubeats.qrc">
+     <normaloff>:/icons/location.png</normaloff>:/icons/location.png</iconset>
+   </property>
+   <property name="text">
+    <string>View_Locations</string>
+   </property>
+   <property name="toolTip">
+    <string>View all loaded locations in the current project</string>
    </property>
   </action>
  </widget>
