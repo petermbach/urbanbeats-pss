@@ -91,7 +91,7 @@ class UrbanBeatsSim(object):
             "keepcopy": 0,
         }
 
-        # Simulation Boundary Variables
+        # Geography Variables
         self.__project_epsg = None
         self.__activeboundary = None
         self.__project_centroids = [[], []]
@@ -105,6 +105,7 @@ class UrbanBeatsSim(object):
             "project_coord_sys": self.__global_options["defaultcoordsys"],
             "project_epsg": self.__global_options["customepsg"]
         }
+        self.__project_locations = {}
 
         # Major classes that form part of the project
         self.__datalibrary = None   # initialize the data library
@@ -112,6 +113,28 @@ class UrbanBeatsSim(object):
         self.__scenarios = {}       # initialize the scenarios
         self.__functions = []       # initialize the list of functions
         self.__activescenario = None
+
+    def add_project_location(self, loc_name, latlng, loc_description, loc_type):
+        self.__project_locations[loc_name] = {"loc_name" : loc_name, "latitude": latlng[0], "longitude": latlng[1],
+                                              "description": loc_description, "loc_type":loc_type}
+
+    def get_project_location_names(self):
+        return self.__project_locations.keys()
+
+    def get_project_location_info(self, locname):
+        try:
+            return self.__project_locations[locname]
+        except KeyError:
+            return None
+
+    def get_project_locations(self):
+        return self.__project_locations
+
+    def remove_project_location(self, locname):
+        try:
+            del self.__project_locations[locname]
+        except KeyError:
+            return True
 
     def get_project_epsg(self):
         return self.__project_epsg

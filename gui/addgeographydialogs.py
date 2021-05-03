@@ -33,19 +33,77 @@ import model.ublibs.ubspatial as ubspatial
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .addboundarydialog import Ui_AddBoundaryDialog
+from .addlocationdialog import Ui_AddLocationDialog
 
-
-# --- MAIN GUI FUNCTION ---
-class AddBoundaryDialogLaunch(QtWidgets.QDialog):
-    """Class definition for launching the setup of a new project dialog window Ui_ProjectSetupDialog
-    with the main window or startup dialog. This dialog helps the user set up a new project from
-    scratch and includes the essential elements for creating the initial project folder."""
+# --- DIALOG CLASSES ---
+class AddLocationDialogLaunch(QtWidgets.QDialog):
+    """Class definition for launching the dialog to add location points to the project."""
     def __init__(self, main, simulation, parent=None):
-        """Initialization of class, takes two key parameters that differentiate the dialog window's
-        use as a viewer or a setup dialog.
+        """Initialization of class
 
         :param main: the instance of the main runtime environment
-        :param viewer: int, if 0, then the dialog is being opened for a new project, 1 to modify, 2 to view
+        :param simulation: the current simulation object
+        """
+        QtWidgets.QDialog.__init__(self, parent)
+        self.ui = Ui_AddLocationDialog()
+        self.ui.setupUi(self)
+        self.simulation = simulation
+        self.options = main.get_options()
+
+        self.latlng = [0, 0]
+
+    def done(self, r):
+        # CHECKS BEFORE CLOSING AND ADDING THE LOCATION... 2 conditions: illegal lat/long entries, name already exists
+        if self.Accepted == r:
+            close_conditions = [1,1,1]   # Lat, Long, Name
+
+            if self.ui.locname_line.text() in self.simulation.get_project_location_names():
+                prompt = "Warning: Another location with the same name already exists for this project. Please choose" \
+                         "a different name for the location you defined!"
+                QtWidgets.QMessageBox.warning(self, "Location name already exists", prompt, QtWidgets.QMessageBox.Ok)
+                close_conditions[0] = 0
+
+            laterror = 0
+            try:
+                self.latlng[0] = float(self.ui.loclat_line.text())
+                if self.latlng[0] < -90.0 or self.latlng[0] > 90.0:
+                    laterror = 1
+            except ValueError:
+                laterror = 1
+            if laterror:
+                prompt = "Error: Please enter a valid latitude (number between -90.0 and +90.0 decimal degrees)!"
+                QtWidgets.QMessageBox.warning(self, "Invalid Latitude", prompt, QtWidgets.QMessageBox.Ok)
+                close_conditions[1] = 0
+
+            longerror = 0
+            try:
+                self.latlng[1] = float(self.ui.loclong_line.text())
+                if self.latlng[1] < -180.0 or self.latlng[1] > 180.0:
+                    longerror = 1
+            except ValueError:
+                longerror = 1
+            if longerror:
+                prompt = "Error: Please enter a valid longitude (number between -180.0 and +180.0 decimal degrees)!"
+                QtWidgets.QMessageBox.warning(self, "Invalid Longitude", prompt, QtWidgets.QMessageBox.Ok)
+                close_conditions[2] = 0
+
+            if sum(close_conditions) == len(close_conditions):
+                self.simulation.add_project_location(str(self.ui.locname_line.text()), self.latlng,
+                                                     str(self.ui.locdescr_textedit.toPlainText()), "Key Location")
+                QtWidgets.QDialog.done(self, r)
+        else:
+            QtWidgets.QDialog.done(self, r)
+
+
+class AddBoundaryDialogLaunch(QtWidgets.QDialog):
+    """Class definition for launching the dialog to add simulation boundaries to the project. The dialog is a
+    wizard style, 4 steps that walk the user through the process of loading a shapefile, defining some rules for adding
+    and projection as well as naming conventions."""
+    def __init__(self, main, simulation, parent=None):
+        """Initialization of class.
+
+        :param main: the instance of the main runtime environment
+        :param simulation: the current simulation object
         """
         QtWidgets.QDialog.__init__(self, parent)
         self.ui = Ui_AddBoundaryDialog()

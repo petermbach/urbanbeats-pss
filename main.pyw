@@ -55,7 +55,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from gui.urbanbeatsmaingui import Ui_MainWindow
 from gui.startscreen import Ui_StartDialog
 from gui import urbanbeatsdialogs as ubdialogs
-from gui import addboundarydialogc as gui_addboundary
+from gui import addgeographydialogs as geographydialogs
 from gui.urbanbeatsresultsguic import LaunchResultsExplorer
 from gui.urbanbeatscalibrationguic import LaunchCalibrationViewer
 import gui.ubgui_reporting as ubreport
@@ -138,11 +138,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionView_Full_Project_Log.triggered.connect(self.show_project_log)
 
         # Geography Submenu ---
-        # self.ui.actionAdd_Location.triggered.connect(self.show_add_location_dialog)
-        # self.ui.actionView_Locations.triggered.connect(self.show_LocationSummary)
+        self.ui.actionAdd_Location.triggered.connect(self.show_add_location_dialog)
+        self.ui.actionView_Locations.triggered.connect(self.show_location_summary)
         self.ui.actionAdd_Simulation_Boundary.triggered.connect(self.show_add_simulation_boundary_dialog)
         # self.ui.actionAdd_Basic_Shape_Boundary.triggered.connect(self.show_add_shape_boundary_dialog)
-        # self.ui.actionView_Simulation_Boundaries.triggered.connect(self.show_BoundarySummary)
+        self.ui.actionView_Simulation_Boundaries.triggered.connect(self.show_boundary_summary)
 
         # Scenario Submenu ---
         self.ui.actionDefine_New_Scenario.triggered.connect(lambda: self.show_scenario_dialog(0))
@@ -208,8 +208,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.ScenarioDock_View.itemClicked.connect(self.change_narrative_gui_tab)
 
         # Summary Window Buttons
+        self.ui.location_add_button.clicked.connect(self.show_add_location_dialog)
+        self.ui.location_delete_button.clicked.connect(self.delete_location_from_project)
         self.ui.boundary_add_button.clicked.connect(self.show_add_simulation_boundary_dialog)
         self.ui.boundary_delete_button.clicked.connect(self.delete_simulation_boundary)
+        self.ui.geography_combo.currentIndexChanged.connect(self.update_active_geography_table)
 
         # Data View Interface
         self.ui.DataView_extent.clicked.connect(self.update_map_display)
@@ -251,6 +254,16 @@ class MainWindow(QtWidgets.QMainWindow):
         ssantomain = ssanto_dialogs.SSANTOMainLaunch(self.get_active_simulation_object())
         ssantomain.exec_()
 
+    def update_active_geography_table(self):
+        self.ui.geography_stack.setCurrentIndex(int(self.ui.geography_combo.currentIndex()))
+
+    def show_location_summary(self):
+        self.ui.geography_combo.setCurrentIndex(0)
+        self.ui.ScenarioView_Widget.setCurrentIndex(1)
+
+    def show_boundary_summary(self):
+        self.ui.geography_combo.setCurrentIndex(1)
+        self.ui.ScenarioView_Widget.setCurrentIndex(1)
 
     # SCENARIO CREATION AND MANAGEMENT FUNCTIONALITY
     def show_scenario_dialog(self, viewmode):
@@ -471,6 +484,19 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.BoundarySummary.setItem(rowposition, 2,
                                             QtWidgets.QTableWidgetItem(str(boundarylist[b]["coordsysname"])))
             self.ui.BoundarySummary.resizeColumnsToContents()
+        return True
+
+    def update_location_collection_table(self):
+        """Updates the LocationSummary table in the main GUI."""
+        loclist = self.get_active_simulation_object().get_project_locations()
+        self.ui.LocationSummary.setRowCount(0)
+        for l in loclist.keys():
+            rowposition = self.ui.LocationSummary.rowCount()
+            self.ui.LocationSummary.insertRow(rowposition)
+            self.ui.LocationSummary.setItem(rowposition, 0, QtWidgets.QTableWidgetItem(l))
+            self.ui.LocationSummary.setItem(rowposition, 1, QtWidgets.QTableWidgetItem(loclist[l]["loc_type"]))
+            self.ui.LocationSummary.resizeColumnsToContents()
+        return True
 
     # MAIN INTERFACE FUNCTIONALITY
     def printc(self, textmessage):
@@ -678,11 +704,23 @@ class MainWindow(QtWidgets.QMainWindow):
         elif condition == "scenario":
             pass    #[TO DO]
 
+    def show_add_location_dialog(self):
+        """Opens the 'Add Location' dialog box."""
+        addlocationdialog = geographydialogs.AddLocationDialogLaunch(self, self.get_active_simulation_object())
+        addlocationdialog.accepted.connect(self.update_location_collection)
+        addlocationdialog.exec_()
+
     def show_add_simulation_boundary_dialog(self):
         """Launches the add simulation boundary dialog."""
-        addsimboundarydialog = gui_addboundary.AddBoundaryDialogLaunch(self, self.get_active_simulation_object())
-        addsimboundarydialog.accepted.connect(self.update_simulation_boundary_collection)
+        addsimboundarydialog = geographydialogs.AddBoundaryDialogLaunch(self, self.get_active_simulation_object())
+        addsimboundarydialog.accepted.connect(self.update_location_collection)
         addsimboundarydialog.exec_()
+
+    def update_location_collection(self):
+        self.update_location_collection_table()
+        if self.update_data_view("boundary"):
+            prompt_msg = "Location successfully added!"
+            QtWidgets.QMessageBox.information(self, "Location Added", prompt_msg, QtWidgets.QMessageBox.Ok)
 
     def delete_simulation_boundary(self):
         prompt = "Are you sure you want to remove this boundary from the project?" \
@@ -700,6 +738,21 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.BoundarySummary.removeRow(self.ui.BoundarySummary.currentRow())
         prompt_msg = "Simulation Boundary deleted!"
         QtWidgets.QMessageBox.information(self, "Boundary Removed from Project", prompt_msg, QtWidgets.QMessageBox.Ok)
+
+    def delete_location_from_project(self):
+        prompt = "Are you sure you want to remove this location from the project?"
+        continue_bool = QtWidgets.QMessageBox.warning(self, "Delete Location?", prompt,
+                                                      QtWidgets.QMessageBox.Yes |
+                                                      QtWidgets.QMessageBox.No)
+        if continue_bool == QtWidgets.QMessageBox.No:
+            return True
+
+        locationname = self.ui.LocationSummary.selectedItems()[0].text()
+        self.get_active_simulation_object().remove_project_location(locationname)
+        self.update_map_display()
+        self.ui.LocationSummary.removeRow(self.ui.LocationSummary.currentRow())
+        prompt_msg = "Location removed from Project!"
+        QtWidgets.QMessageBox.information(self, "Location removed", prompt_msg, QtWidgets.QMessageBox.Ok)
 
     def update_simulation_boundary_collection(self):
         self.get_active_simulation_object().import_simulation_boundaries()
