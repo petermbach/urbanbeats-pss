@@ -200,6 +200,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.ScenarioDock_Combo.currentIndexChanged.connect(self.update_scenario_gui)
         self.ui.ScenarioDock_View.itemClicked.connect(self.change_narrative_gui_tab)
 
+        # Summary Window Buttons
+        self.ui.boundary_add_button.clicked.connect(self.show_add_simulation_boundary_dialog)
+
         # Data View Interface
         self.ui.DataView_extent.clicked.connect(self.update_map_display)
         self.ui.DataView_meta.clicked.connect(self.show_metadata_dialog)
@@ -446,6 +449,21 @@ class MainWindow(QtWidgets.QMainWindow):
         self.enable_disable_module_icons([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
         self.update_map_display()
 
+    # BOUNDARY TABLE
+    def update_simulation_boundaries_table(self):
+        """Updates the simulation boundaries table in the main GUI."""
+        boundarylist = self.get_active_simulation_object().get_project_boundaries()
+        self.ui.BoundarySummary.setRowCount(0)
+        for b in boundarylist.keys():
+            rowposition = self.ui.BoundarySummary.rowCount()
+            self.ui.BoundarySummary.insertRow(rowposition)
+            self.ui.BoundarySummary.setItem(rowposition, 0, QtWidgets.QTableWidgetItem(b))
+            self.ui.BoundarySummary.setItem(rowposition, 1,
+                                            QtWidgets.QTableWidgetItem(str(round(boundarylist[b]["area"], 2))))
+            self.ui.BoundarySummary.setItem(rowposition, 2,
+                                            QtWidgets.QTableWidgetItem(str(boundarylist[b]["coordsysname"])))
+            self.ui.BoundarySummary.resizeColumnsToContents()
+
     # MAIN INTERFACE FUNCTIONALITY
     def printc(self, textmessage):
         """Print to console function, adds the textmessage to the console"""
@@ -660,6 +678,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def update_simulation_boundary_collection(self):
         self.get_active_simulation_object().import_simulation_boundaries()
+        self.update_simulation_boundaries_table()
         if self.update_data_view("boundary"):
             prompt_msg = "Simulation Boundaries updated successfully!"
             QtWidgets.QMessageBox.information(self, "Boundaries Updated", prompt_msg, QtWidgets.QMessageBox.Ok)

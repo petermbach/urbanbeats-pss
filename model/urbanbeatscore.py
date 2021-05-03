@@ -210,7 +210,15 @@ class UrbanBeatsSim(object):
                 namecounter += 1
                 boundarynewname = boundary_base_name + "_" + str(namecounter)
             mapstats["boundaryname"] = boundarynewname
-            self.__project_boundaries[boundarynewname] = mapstats    # Add new project boundary
+
+            # Save shapefiles into the 'boundaries' folder
+            mapstats["filename"] = boundarynewname+"_Boundary_"+str(mapstats["inputEPSG"])
+            boundarypath = self.get_project_parameter("projectpath") + "/" + self.get_project_parameter("name") \
+                           + "/boundaries/"
+            ubspatial.save_boundary_as_shapefile(mapstats, boundarypath+mapstats["filename"])
+
+            # Add the boundary data to the project
+            self.__project_boundaries[boundarynewname] = mapstats  # Add new project boundary
 
         self.__current_boundary_to_load = []    # Reset the current boundary to load
         self.__global_centroid = [sum(self.__project_centroids[0])/len(self.__project_centroids[0]),

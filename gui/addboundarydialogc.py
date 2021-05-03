@@ -251,7 +251,7 @@ class AddBoundaryDialogLaunch(QtWidgets.QDialog):
             close_conditions = [1, 1]   # [feature limit, illegal characters]
 
             # ISSUE WARNING IF FEATURECOUNT EXCEEDS LIMIT
-            if self.parameters["featurecount"] >= self.options["featcountwarning"]:
+            if self.parameters["featurecount"] >= int(self.options["featcountwarning"]):
                 prompt = "Warning: The boundary file has over "+str(self.options["featcountwarning"])+" features. " \
                             "Loading can take some time. Do you wish to continue?"
                 continue_bool = QtWidgets.QMessageBox.question(self, "Feature Count", prompt,
@@ -282,7 +282,7 @@ class AddBoundaryDialogLaunch(QtWidgets.QDialog):
         """Saves all values to the current simulation as a boundary to load and process."""
         if self.ui.name_userdefined_radio.isChecked():
             self.parameters["naming"] = "user"
-            self.parameters["name"] = str(self.ui.name_userdefined_line.text)
+            self.parameters["name"] = str(self.ui.name_userdefined_line.text())
         else:
             self.parameters["naming"] = "attr"
             self.parameters["name"] = str(self.ui.name_featureattr_combo.currentText())

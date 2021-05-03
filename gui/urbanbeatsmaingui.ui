@@ -105,7 +105,10 @@ p, li { white-space: pre-wrap; }
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_6">
            <item>
-            <widget class="QTableWidget" name="DataSummary_2">
+            <widget class="QTableWidget" name="BoundarySummary">
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
+             </property>
              <property name="sortingEnabled">
               <bool>true</bool>
              </property>
@@ -116,18 +119,23 @@ p, li { white-space: pre-wrap; }
              </column>
              <column>
               <property name="text">
-               <string>Size</string>
+               <string>Size [sqkm]</string>
               </property>
              </column>
              <column>
               <property name="text">
-               <string>Used in Scenarios</string>
+               <string>Coordinate System</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Scenarios</string>
               </property>
              </column>
             </widget>
            </item>
            <item>
-            <widget class="QWidget" name="widget_2" native="true">
+            <widget class="QWidget" name="BoundarySummary_widget" native="true">
              <layout class="QHBoxLayout" name="horizontalLayout_4">
               <item>
                <spacer name="horizontalSpacer_4">
@@ -143,7 +151,48 @@ p, li { white-space: pre-wrap; }
                </spacer>
               </item>
               <item>
-               <widget class="QPushButton" name="ModuleDock_spatialsetup_2">
+               <widget class="QPushButton" name="boundary_focus_button">
+                <property name="minimumSize">
+                 <size>
+                  <width>138</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>Spatial Delineation</string>
+                </property>
+                <property name="text">
+                 <string>Focus</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../graphics/ubeats.qrc">
+                  <normaloff>:/icons/eye-2387853_960_720.png</normaloff>:/icons/eye-2387853_960_720.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="shortcut">
+                 <string>Up</string>
+                </property>
+                <property name="checkable">
+                 <bool>false</bool>
+                </property>
+                <property name="flat">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="boundary_add_button">
                 <property name="minimumSize">
                  <size>
                   <width>138</width>
@@ -184,7 +233,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="ModuleDock_spatialsetup_3">
+               <widget class="QPushButton" name="boundary_delete_button">
                 <property name="minimumSize">
                  <size>
                   <width>138</width>

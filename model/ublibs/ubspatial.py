@@ -26,6 +26,7 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 import osgeo.osr as osr
 import osgeo.ogr as ogr
 import numpy as np
+import os
 
 # URBANBEATS IMPORT
 from . import ubdatatypes as ubdata
@@ -77,6 +78,10 @@ def import_ascii_raster(filepath, naming):
     return rasterdata
 
 
+def import_geotiff_raster():    # [TO DO]
+    return True
+
+
 def import_polygonal_map(filepath, option, naming, global_offsets, **kwargs):
     """Imports a polygonal map and saves the information into a UBVector format. Returns a list [ ] of UBVector()
     objects.
@@ -122,10 +127,6 @@ def import_polygonal_map(filepath, option, naming, global_offsets, **kwargs):
         area = geom.GetArea() / 1000000.0   # Conversion to km2
         # print(f"Name {str(naming)}_ID{str(i + 1)}")    # For Debugging
         # print(f"Area: {area}")  # For Debugging
-
-        # Projection    check for later... [TO DO]
-        if option == "leaflet":     # [TO DO]
-            pass
 
         if geom.GetGeometryName() == "MULTIPOLYGON":
             for g in geom:
@@ -351,6 +352,7 @@ def calculate_offsets(map_input, global_extents):
     offset = [int(offset[0]/cellsize), int(offset[1]/cellsize)]
     return offset
 
+
 def adjust_position_by_offset(origin_position, offset, csc):
     """Adjusts the starting position index based on a given offset. For example, a population input map offset by
     an x or y value will not align correctly with a boundary map. This function, determines where in the raster to
@@ -432,118 +434,172 @@ def load_shapefile_details(file):
     return [geometry.GetGeometryName(), xmin, xmax, ymin, ymax, inputprojcs, epsg, featurecount, attnames]
 
 
-def get_bounding_polygon(boundaryfile, option, rootpath):
-    """Loads the boundary Shapefile and obtains the coordinates of the bounding polygon, returns as a list of coords.
+def save_boundary_as_shapefile(data, filename):
+    """Saves the boundary as an ESRI shapefile. Contains all the basic information needed."""
+    spatialref = osr.SpatialReference()
+    spatialref.ImportFromEPSG(data["inputEPSG"])
+    driver = ogr.GetDriverByName('ESRI Shapefile')
 
-    :param boundaryfile: full filepath to the boundary shapefile to load
-    :param option: can obtain coordinates either in the input coordinate system or EPSG4326
-    :return: a list() of coordinates in the format []
-    """
-    mapstats = {}
-    driver = ogr.GetDriverByName('ESRI Shapefile')  # Load the shapefile driver and data source
-    datasource = driver.Open(boundaryfile)
-    if datasource is None:
-        print("Could not open shapefile!")
-        return []
+    usefilename = filename
+    duplicatecounter = 0
+    while os.path.exists(str(usefilename)+".shp"):
+        duplicatecounter += 1
+        usefilename = filename+"("+str(duplicatecounter)+")"
 
-    layer = datasource.GetLayer(0)  # Get the first layer, which should be the only layer!
-    xmin, xmax, ymin, ymax = layer.GetExtent()      # CONVENTION: LATITUDE = Y, LONGITUDE = X
-    print(f"{xmin}, {xmax}, {ymin}, {ymax}")
+    shapefile = driver.CreateDataSource(str(usefilename)+".shp")
+    layer = shapefile.CreateLayer('layer1', spatialref, ogr.wkbPolygon)
+    layerDefinition = layer.GetLayerDefn()
 
-    # Get some Map Metadata - the extents of the map, this is displayed later on in the pop-up window.
-    point1 = ogr.Geometry(ogr.wkbPoint)
-    point1.AddPoint(xmin, ymin)
-    point2 = ogr.Geometry(ogr.wkbPoint)
-    point2.AddPoint(xmax, ymax)
+    fielddefmatrix = []
+    fielddefmatrix.append(ogr.FieldDefn("area", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("xmin", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("xmax", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("ymin", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("ymax", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("centroidX", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("centroidY", ogr.OFTReal))
+    fielddefmatrix.append(ogr.FieldDefn("boundaryname", ogr.OFTString))
 
-    # Get the spatial reference of the map
-    spatialref = layer.GetSpatialRef()
-    print(spatialref)  # Debug Comment - if you want to view shapefile metadata, use this
-    inputprojcs = spatialref.GetAttrValue("PROJCS")
-    if inputprojcs is None:
-        print("Warning, spatial reference epsg cannot be found")
-        return []
+    for field in fielddefmatrix:
+        layer.CreateField(field)
+        layer.GetLayerDefn()
 
-    featurecount = layer.GetFeatureCount()
-    print(f"Total number of features: {featurecount}")
+    coordinates = data["coordinates"]
+    polygon = ogr.Geometry(ogr.wkbPolygon)
+    ring = ogr.Geometry(ogr.wkbLinearRing)
+    for points in coordinates:
+        ring.AddPoint(points[0], points[1])
+    polygon.AddGeometry(ring)
+    feature = ogr.Feature(layerDefinition)
+    feature.SetGeometry(polygon)
+    feature.SetFID(0)
 
-    feature = layer.GetFeature(0)
-    geom = feature.GetGeometryRef()
+    feature.SetField("area", data["area"])
+    feature.SetField("xmin", data["xmin"])
+    feature.SetField("xmax", data["xmax"])
+    feature.SetField("ymin", data["ymin"])
+    feature.SetField("ymax", data["ymax"])
+    feature.SetField("centroidX", data["centroid"][0])
+    feature.SetField("centroidY", data["centroid"][1])
+    feature.SetField("name", data["name"])
 
-    area = geom.GetArea() / 1000000.0
-
-    inputepsg1 = spatialref.GetAttrValue("AUTHORITY", 1)
-    inputepsg2 = get_epsg(inputprojcs, rootpath)
-
-    if inputepsg1 is None:
-        inputepsg = inputepsg2
-    elif inputepsg2 is None:
-        inputepsg = inputepsg1
-    else:
-        if int(inputepsg1) == int(inputepsg2):
-            inputepsg = inputepsg1
-        else:
-            inputepsg = inputepsg2
-            # Experimenting with Marsh Ck Case Study's boundary, the embedded EPSG was not
-            # correct. So I will have to default to this lookup config file.
-
-    if option == "leaflet":
-        coordtrans = create_coord_transformation_leaflet(int(inputepsg))
-        geom.Transform(coordtrans)
-        point1.Transform(coordtrans)
-        point2.Transform(coordtrans)
-        xmin = point1.GetX()
-        ymin = point1.GetY()
-        xmax = point2.GetX()
-        ymax = point2.GetY()
-
-    mapstats["xmin"] = xmin
-    mapstats["xmax"] = xmax
-    mapstats["ymin"] = ymin
-    mapstats["ymax"] = ymax
-    mapstats["area"] = area
-    mapstats["centroid"] = [(xmin + xmax)/2.0, (ymin + ymax)/2.0]
-    mapstats["inputEPSG"] = inputepsg
-    mapstats["coordsysname"] = inputprojcs
-    coordinates = []
-    ring = geom.GetGeometryRef(0)
-
-    if ring.GetGeometryType() == -2147483645:   # POLYGON25D
-        ring.FlattenTo2D()
-        ring = ring.GetGeometryRef(0)
-    # Need to test this on other Geometry Types including:
-    #   -2147483642 MultiPolygon25D
-    #   6 MultiPolygon
-    #   https://gist.github.com/walkermatt/7121427
-
-    points = ring.GetPointCount()
-    # print(f"Ring Points: {points}")
-    for i in range(points):
-        coordinates.append((ring.GetX(i), ring.GetY(i)))
-
-    if option == "leaflet":
-        # Reverse the x, y to form lat, long because in ESRI's case, lat almost always Y and long almost always X
-        for p in range(len(coordinates)):
-            coordinates[p] = [coordinates[p][0], coordinates[p][1]]
-        mapstats["centroid"] = [(xmin + xmax) / 2.0, (ymin + ymax)/2.0]
-    return coordinates, mapstats
+    layer.CreateFeature(feature)
+    shapefile.Destroy()
+    return True
 
 
-def create_coord_transformation_leaflet(inputEPSG):     # [REVAMP] - SLATE FOR DELETION - now in mapping_leaflet.py
-    """Creates the coordinate transformation variable for the leaflet map, uses OSR library. The leaflet
-    EPSG code is 4326, which is WGS84, geographic coordinate system.
-
-    :param inputEPSG: the input EPSG code, format int(), specifying the EPSG of the input map. Can use get_epsg()
-    :return: osr.CoordinateTransformation() object
-    """
-    inSpatial = osr.SpatialReference()
-    inSpatial.ImportFromEPSG(inputEPSG)
-
-    outSpatial = osr.SpatialReference()
-    outSpatial.ImportFromEPSG(4326)
-
-    coordTrans = osr.CoordinateTransformation(inSpatial, outSpatial)
-    return coordTrans
+# def get_bounding_polygon(boundaryfile, option, rootpath):
+#     """Loads the boundary Shapefile and obtains the coordinates of the bounding polygon, returns as a list of coords.
+#
+#     :param boundaryfile: full filepath to the boundary shapefile to load
+#     :param option: can obtain coordinates either in the input coordinate system or EPSG4326
+#     :return: a list() of coordinates in the format []
+#     """
+#     mapstats = {}
+#     driver = ogr.GetDriverByName('ESRI Shapefile')  # Load the shapefile driver and data source
+#     datasource = driver.Open(boundaryfile)
+#     if datasource is None:
+#         print("Could not open shapefile!")
+#         return []
+#
+#     layer = datasource.GetLayer(0)  # Get the first layer, which should be the only layer!
+#     xmin, xmax, ymin, ymax = layer.GetExtent()      # CONVENTION: LATITUDE = Y, LONGITUDE = X
+#     print(f"{xmin}, {xmax}, {ymin}, {ymax}")
+#
+#     # Get some Map Metadata - the extents of the map, this is displayed later on in the pop-up window.
+#     point1 = ogr.Geometry(ogr.wkbPoint)
+#     point1.AddPoint(xmin, ymin)
+#     point2 = ogr.Geometry(ogr.wkbPoint)
+#     point2.AddPoint(xmax, ymax)
+#
+#     # Get the spatial reference of the map
+#     spatialref = layer.GetSpatialRef()
+#     print(spatialref)  # Debug Comment - if you want to view shapefile metadata, use this
+#     inputprojcs = spatialref.GetAttrValue("PROJCS")
+#     if inputprojcs is None:
+#         print("Warning, spatial reference epsg cannot be found")
+#         return []
+#
+#     featurecount = layer.GetFeatureCount()
+#     print(f"Total number of features: {featurecount}")
+#
+#     feature = layer.GetFeature(0)
+#     geom = feature.GetGeometryRef()
+#
+#     area = geom.GetArea() / 1000000.0
+#
+#     inputepsg1 = spatialref.GetAttrValue("AUTHORITY", 1)
+#     inputepsg2 = get_epsg(inputprojcs, rootpath)
+#
+#     if inputepsg1 is None:
+#         inputepsg = inputepsg2
+#     elif inputepsg2 is None:
+#         inputepsg = inputepsg1
+#     else:
+#         if int(inputepsg1) == int(inputepsg2):
+#             inputepsg = inputepsg1
+#         else:
+#             inputepsg = inputepsg2
+#             # Experimenting with Marsh Ck Case Study's boundary, the embedded EPSG was not
+#             # correct. So I will have to default to this lookup config file.
+#
+#     if option == "leaflet":
+#         coordtrans = create_coord_transformation_leaflet(int(inputepsg))
+#         geom.Transform(coordtrans)
+#         point1.Transform(coordtrans)
+#         point2.Transform(coordtrans)
+#         xmin = point1.GetX()
+#         ymin = point1.GetY()
+#         xmax = point2.GetX()
+#         ymax = point2.GetY()
+#
+#     mapstats["xmin"] = xmin
+#     mapstats["xmax"] = xmax
+#     mapstats["ymin"] = ymin
+#     mapstats["ymax"] = ymax
+#     mapstats["area"] = area
+#     mapstats["centroid"] = [(xmin + xmax)/2.0, (ymin + ymax)/2.0]
+#     mapstats["inputEPSG"] = inputepsg
+#     mapstats["coordsysname"] = inputprojcs
+#     coordinates = []
+#     ring = geom.GetGeometryRef(0)
+#
+#     if ring.GetGeometryType() == -2147483645:   # POLYGON25D
+#         ring.FlattenTo2D()
+#         ring = ring.GetGeometryRef(0)
+#     # Need to test this on other Geometry Types including:
+#     #   -2147483642 MultiPolygon25D
+#     #   6 MultiPolygon
+#     #   https://gist.github.com/walkermatt/7121427
+#
+#     points = ring.GetPointCount()
+#     # print(f"Ring Points: {points}")
+#     for i in range(points):
+#         coordinates.append((ring.GetX(i), ring.GetY(i)))
+#
+#     if option == "leaflet":
+#         # Reverse the x, y to form lat, long because in ESRI's case, lat almost always Y and long almost always X
+#         for p in range(len(coordinates)):
+#             coordinates[p] = [coordinates[p][0], coordinates[p][1]]
+#         mapstats["centroid"] = [(xmin + xmax) / 2.0, (ymin + ymax)/2.0]
+#     return coordinates, mapstats
+#
+#
+# def create_coord_transformation_leaflet(inputEPSG):     # [REVAMP] - SLATE FOR DELETION - now in mapping_leaflet.py
+#     """Creates the coordinate transformation variable for the leaflet map, uses OSR library. The leaflet
+#     EPSG code is 4326, which is WGS84, geographic coordinate system.
+#
+#     :param inputEPSG: the input EPSG code, format int(), specifying the EPSG of the input map. Can use get_epsg()
+#     :return: osr.CoordinateTransformation() object
+#     """
+#     inSpatial = osr.SpatialReference()
+#     inSpatial.ImportFromEPSG(inputEPSG)
+#
+#     outSpatial = osr.SpatialReference()
+#     outSpatial.ImportFromEPSG(4326)
+#
+#     coordTrans = osr.CoordinateTransformation(inSpatial, outSpatial)
+#     return coordTrans
 
 
 
