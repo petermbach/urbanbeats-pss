@@ -651,10 +651,12 @@ class MainWindow(QtWidgets.QMainWindow):
         :return:
         """
         # Data to create map!
+        print ("HELLOW DATA VIEW")
         tileserver = ubglobals.TILESERVERS[self.get_option("mapstyle")]
         projectdata = self.get_active_simulation_object().get_all_project_info()
         projectboundaries = self.get_active_simulation_object().get_project_boundaries()
         activeboundary = self.get_active_simulation_object().get_active_boundary()
+        projectlocations = self.get_active_simulation_object().get_project_locations()
 
         if activeboundary is None:
             activeboundaryname = ""
@@ -668,15 +670,16 @@ class MainWindow(QtWidgets.QMainWindow):
         if maptype == "boundary":
             self.__dataview_displaystate = "boundary"
 
-        if len(projectboundaries.keys()) == 0:
+        if len(projectboundaries.keys()) == 0 and len(projectlocations.keys()) == 0:
             return False
 
         temp_map_file = self.app_tempdir+"/boundary.html"
-        mapping_leaflet.generate_leaflet_boundaries(temp_map_file, projectboundaries, activeboundaryname, projectdata,
-                                                        self.get_active_simulation_object().get_global_centroid(),
-                                                        self.get_active_simulation_object().get_global_extents(),
-                                                        self.get_active_simulation_object().get_project_epsg(),
-                                                        tileserver, UBEATSROOT)
+        mapping_leaflet.generate_leaflet_projectmap(temp_map_file, projectboundaries, activeboundaryname,
+                                                    projectdata, projectlocations,
+                                                    self.get_active_simulation_object().get_global_centroid(),
+                                                    self.get_active_simulation_object().get_global_extents(),
+                                                    self.get_active_simulation_object().get_project_epsg(),
+                                                    tileserver, UBEATSROOT)
         self.ui.DataView_web.load(QtCore.QUrl.fromLocalFile(temp_map_file))
         return True
 
@@ -713,7 +716,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def show_add_simulation_boundary_dialog(self):
         """Launches the add simulation boundary dialog."""
         addsimboundarydialog = geographydialogs.AddBoundaryDialogLaunch(self, self.get_active_simulation_object())
-        addsimboundarydialog.accepted.connect(self.update_location_collection)
+        addsimboundarydialog.accepted.connect(self.update_simulation_boundary_collection)
         addsimboundarydialog.exec_()
 
     def update_location_collection(self):
@@ -755,6 +758,7 @@ class MainWindow(QtWidgets.QMainWindow):
         QtWidgets.QMessageBox.information(self, "Location removed", prompt_msg, QtWidgets.QMessageBox.Ok)
 
     def update_simulation_boundary_collection(self):
+        print ("HELLOW UPDATE SIMULATION_BOUNDARYCOLLECTION")
         self.get_active_simulation_object().import_simulation_boundaries()
         self.update_simulation_boundaries_table()
         if self.update_data_view("boundary"):

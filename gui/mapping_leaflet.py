@@ -79,9 +79,10 @@ def generate_initial_leaflet_map(coordinates, tileserver, rootpath):
     return leaflethtml
 
 
-def generate_leaflet_boundaries(filename, boundarydata, activeboundaryname, projectdata, centroid, extents,
-                                epsg, tilemapserver, rootpath):
+def generate_leaflet_projectmap(filename, boundarydata, activeboundaryname, projectdata, locationdata, centroid,
+                                extents, epsg, tilemapserver, rootpath):
     """Generates html text for the boundaries within boundarydata and colours the activeboundary name differently"""
+    print("LOCATIONDATA", locationdata)
     leafletpath = rootpath + "/libs/leaflet/"
 
     # Project data
@@ -145,10 +146,22 @@ def generate_leaflet_boundaries(filename, boundarydata, activeboundaryname, proj
         polyname, leafletpolygontext = generate_leaflet_polygon_text(polyIDs, leaflet_coordinates, popuptext, color)
         polygonVarnames.append(polyname)
         polyIDs += 1
-        f.write(leafletpolygontext+"\n")
+        f.write(leafletpolygontext)
 
-    #             map.fitBounds(polygon.getBounds());
-    #
+    # Time to add markers
+    ptIDs = 0
+    markerVarnames = []
+    for i in locationdata.keys():
+        print("FIRST KEY", i)
+        curname = i
+        latlng = [locationdata[i]["latitude"], locationdata[i]["longitude"]]
+        popuptext = generate_marker_popupinfo(curname, latlng, locationdata[i]["description"],
+                                              locationdata[i]["loc_type"])
+        marker_name, leaflettext = generate_leaflet_point_text(ptIDs, latlng, popuptext)
+        markerVarnames.append(marker_name)
+        ptIDs += 1
+        f.write(leaflettext)
+
     if extents is not None:
         f.write("map.fitBounds("+str(latlngBounds)+");\n")
 
@@ -167,6 +180,24 @@ def generate_leaflet_polygon_text(poly_id, coordinates, popupinfo, color):
     leaflettext += 'var popupContent'+str(poly_id)+'="'+popupinfo+'";\n'
     leaflettext += polygon_name+".bindPopup(popupContent"+str(poly_id)+");\n"
     return polygon_name, leaflettext
+
+def generate_leaflet_point_text(pt_id, coordinates, popupinfo):
+    """Generates a leaflet marker and returns the HTML text and marker name"""
+    marker_name = "point"+str(pt_id)
+
+    # START OF JS WRAPPER
+    leaflettext = "var "+str(marker_name)+" = L.marker("+str(coordinates)+").addTo(map);\n"
+    leaflettext += 'var popupContent'+str(pt_id)+'="'+popupinfo+'";\n'
+    leaflettext += str(marker_name)+".bindPopup(popupContent"+str(pt_id)+");\n"
+    return marker_name, leaflettext
+
+def generate_marker_popupinfo(markername, coordinates, description, loctype):
+    """Generates all the information to be placed into a popup window for a marker and writes the leaflet code."""
+    popupinfo = "<h4>"+str(markername)+"</h4>"
+    popupinfo += "<strong>TYPE:</strong> "+str(loctype)+"<br />"
+    popupinfo += "<strong>LOCATION:</strong> "+str(coordinates)+"<br /><hr />"
+    popupinfo += str(description)
+    return popupinfo
 
 def generate_boundary_popupinfo(name, boundarydata, projectdata):
     """Generates all the information to be placed into a popup window and writes this as leaflet code for the script."""

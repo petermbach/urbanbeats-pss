@@ -179,10 +179,9 @@ class UrbanBeatsSim(object):
             self.__activeboundary = None
 
         # Step 2 - loop through all scenarios - remove the boundary if it is the selected boundary
-        if self.get_boundary_scenariocount(boundaryname) > 0:
-            for s in self.__scenarios.keys():
-                if self.__scenarios[s].get_metadata("boundary") == boundaryname:
-                    self.__scenarios[s].set_metadata("boundary", "(select simulation boundary)")
+        for s in self.__scenarios.keys():
+            if self.__scenarios[s].get_metadata("boundary") == boundaryname:
+                self.__scenarios[s].set_metadata("boundary", "(select simulation boundary)")
 
         # Step 3 - delete the Shapefile and all related files
         filepath = self.get_project_parameter("projectpath") + "/" + self.get_project_parameter("name") \

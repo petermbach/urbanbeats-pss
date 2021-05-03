@@ -34,6 +34,7 @@ import model.ublibs.ubspatial as ubspatial
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .addboundarydialog import Ui_AddBoundaryDialog
 from .addlocationdialog import Ui_AddLocationDialog
+from .addshapedialog import Ui_AddShapeDialog
 
 # --- DIALOG CLASSES ---
 class AddLocationDialogLaunch(QtWidgets.QDialog):
@@ -93,6 +94,23 @@ class AddLocationDialogLaunch(QtWidgets.QDialog):
                 QtWidgets.QDialog.done(self, r)
         else:
             QtWidgets.QDialog.done(self, r)
+
+
+class AddShapeDialogLaunch(QtWidgets.QDialog):
+    """Class definition for launching the dialog to add basic shapes as boundaries to the project."""
+    def __init__(self, main, simulation, parent=None):
+        """
+
+        :param main:
+        :param simulation:
+        """
+        QtWidgets.QDialog.__init__(self, parent)
+        self.ui = Ui_AddShapeDialog()
+        self.ui.setupUi(self)
+        self.simulation = simulation
+        self.options = main.get_options()
+        self.epsg_dict = main.epsg_dict
+
 
 
 class AddBoundaryDialogLaunch(QtWidgets.QDialog):
