@@ -58,6 +58,7 @@ from gui import urbanbeatsdialogs as ubdialogs
 from gui import addgeographydialogs as geographydialogs
 from gui.urbanbeatsresultsguic import LaunchResultsExplorer
 from gui.urbanbeatscalibrationguic import LaunchCalibrationViewer
+
 import gui.ubgui_reporting as ubreport
 import model.ublibs.ubspatial as ubspatial
 import model.ublibs.ubconfigfiles as ubconfigfiles
@@ -141,7 +142,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionAdd_Location.triggered.connect(self.show_add_location_dialog)
         self.ui.actionView_Locations.triggered.connect(self.show_location_summary)
         self.ui.actionAdd_Simulation_Boundary.triggered.connect(self.show_add_simulation_boundary_dialog)
-        # self.ui.actionAdd_Basic_Shape_Boundary.triggered.connect(self.show_add_shape_boundary_dialog)
+        self.ui.actionAdd_Basic_Shape_Boundary.triggered.connect(self.show_add_shape_boundary_dialog)
         self.ui.actionView_Simulation_Boundaries.triggered.connect(self.show_boundary_summary)
 
         # Scenario Submenu ---
@@ -253,6 +254,8 @@ class MainWindow(QtWidgets.QMainWindow):
         """Launches the SSANTO Plugin using the current project's information."""
         ssantomain = ssanto_dialogs.SSANTOMainLaunch(self.get_active_simulation_object())
         ssantomain.exec_()
+
+    # GEOGRAPHY FEATURES
 
     def update_active_geography_table(self):
         self.ui.geography_stack.setCurrentIndex(int(self.ui.geography_combo.currentIndex()))
@@ -480,8 +483,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.BoundarySummary.insertRow(rowposition)
             self.ui.BoundarySummary.setItem(rowposition, 0, QtWidgets.QTableWidgetItem(b))
             self.ui.BoundarySummary.setItem(rowposition, 1,
-                                            QtWidgets.QTableWidgetItem(str(round(boundarylist[b]["area"], 2))))
+                                            QtWidgets.QTableWidgetItem(str(boundarylist[b]["shape"])))
             self.ui.BoundarySummary.setItem(rowposition, 2,
+                                            QtWidgets.QTableWidgetItem(str(round(boundarylist[b]["area"], 2))))
+            self.ui.BoundarySummary.setItem(rowposition, 3,
                                             QtWidgets.QTableWidgetItem(str(boundarylist[b]["coordsysname"])))
             self.ui.BoundarySummary.resizeColumnsToContents()
         return True
@@ -707,6 +712,12 @@ class MainWindow(QtWidgets.QMainWindow):
         elif condition == "scenario":
             pass    #[TO DO]
 
+    def show_add_shape_boundary_dialog(self):
+        """Opens the 'Add Basic Shape Boundary Dialog box."""
+        addshapedialog = geographydialogs.AddShapeDialogLaunch(self, self.get_active_simulation_object())
+        addshapedialog.accepted.connect(self.add_new_shape_boundary)
+        addshapedialog.exec_()
+
     def show_add_location_dialog(self):
         """Opens the 'Add Location' dialog box."""
         addlocationdialog = geographydialogs.AddLocationDialogLaunch(self, self.get_active_simulation_object())
@@ -757,8 +768,14 @@ class MainWindow(QtWidgets.QMainWindow):
         prompt_msg = "Location removed from Project!"
         QtWidgets.QMessageBox.information(self, "Location removed", prompt_msg, QtWidgets.QMessageBox.Ok)
 
+    def add_new_shape_boundary(self):
+        self.update_simulation_boundaries_table()
+        if self.update_data_view("boundary"):
+            prompt_msg = "Basic Shape Boundary added successfully!"
+            QtWidgets.QMessageBox.information(self, "Boundaries Updated", prompt_msg, QtWidgets.QMessageBox.Ok)
+
+
     def update_simulation_boundary_collection(self):
-        print ("HELLOW UPDATE SIMULATION_BOUNDARYCOLLECTION")
         self.get_active_simulation_object().import_simulation_boundaries()
         self.update_simulation_boundaries_table()
         if self.update_data_view("boundary"):

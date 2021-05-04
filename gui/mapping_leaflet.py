@@ -140,6 +140,8 @@ def generate_leaflet_projectmap(filename, boundarydata, activeboundaryname, proj
         leaflet_coordinates = convert_polygon_to_leaflet_projection(boundarydata[curname]["coordinates"],
                                                                     boundarydata[curname]["inputEPSG"])
         if curname == activeboundaryname:
+            color = ubglobals.URBANBEATSLOGOCOLORHEX[1]
+        elif boundarydata[curname]["shape"] in ["Rect", "Circ", "Hex"]:
             color = ubglobals.URBANBEATSLOGOCOLORHEX[2]
         else:
             color = ubglobals.URBANBEATSLOGOCOLORHEX[0]

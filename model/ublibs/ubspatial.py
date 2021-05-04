@@ -26,7 +26,7 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 import osgeo.osr as osr
 import osgeo.ogr as ogr
 import numpy as np
-import os
+import os, math
 
 # URBANBEATS IMPORT
 from . import ubdatatypes as ubdata
@@ -487,6 +487,140 @@ def save_boundary_as_shapefile(data, filename):
     shapefile.Destroy()
     return True
 
+
+def create_rectangle_from_centroid(shapename, epsg, centroid, w, h):
+    """Creates a rectangle from a given centroid using th EPSG provided.
+
+    :param shapename: name identifier for the shape
+    :param epsg: EPSG code int()
+    :param centroid: [x, y] latlng coordinates
+    :param w: width of shape [m]
+    :param h: height of shape [m]
+    :return: a dictionary with all the shape details in the given EPSG projection
+    """
+    boundarydata = {}
+    boundarydata["inputEPSG"] = epsg
+    boundarydata["boundaryname"] = shapename
+
+    coordtrans = create_coordtrans(4326, epsg)  # EPSG4326 - latlng
+    shapecentroid = ogr.Geometry(ogr.wkbPoint)
+    shapecentroid.AddPoint(centroid[0], centroid[1])
+    shapecentroid.Transform(coordtrans)
+    boundarydata["centroid"] = [shapecentroid.GetX(), shapecentroid.GetY()]
+
+    # Draw the rectangle
+    xmin = shapecentroid.GetX() - w/2.0
+    boundarydata["xmin"] = xmin
+    xmax = shapecentroid.GetX() + w/2.0
+    boundarydata["xmax"] = xmax
+    ymin = shapecentroid.GetY() - h/2.0
+    boundarydata["ymin"] = ymin
+    ymax = shapecentroid.GetY() + h/2.0
+    boundarydata["ymax"] = ymax
+
+    boundarydata["area"] = w/1000.0 * h/1000.0      # [km2]
+    boundarydata["coordinates"] = [[xmin, ymin], [xmax, ymin], [xmax, ymax], [xmin, ymax], [xmin, ymin]]
+    boundarydata["shape"] = "Rect"
+    return boundarydata
+
+
+def create_circle_from_centroid(shapename, epsg, centroid, r):
+    """Creates a circle from a given centroid using the EPSG provided
+
+    :param shapename: name identifier for the shape
+    :param epsg: EPSG code int()
+    :param centroid: [x, y] latlng coordinates
+    :param r: radius of the circle [m]
+    :return: a dictionary with all the shape details in the given EPSG projection
+    """
+    boundarydata = {}
+    boundarydata["inputEPSG"] = epsg
+    boundarydata["boundaryname"] = shapename
+
+    coordtrans = create_coordtrans(4326, epsg)  # EPSG4326 - latlng
+    shapecentroid = ogr.Geometry(ogr.wkbPoint)
+    shapecentroid.AddPoint(centroid[0], centroid[1])
+    shapecentroid.Transform(coordtrans)
+    boundarydata["centroid"] = [shapecentroid.GetX(), shapecentroid.GetY()]
+
+    # Extents
+    xmin = shapecentroid.GetX() - r
+    boundarydata["xmin"] = xmin
+    xmax = shapecentroid.GetX() + r
+    boundarydata["xmax"] = xmax
+    ymin = shapecentroid.GetY() - r
+    boundarydata["ymin"] = ymin
+    ymax = shapecentroid.GetY() + r
+    boundarydata["ymax"] = ymax
+
+    # Draw the circle
+    pt = ogr.CreateGeometryFromWkt("POINT ("+str(shapecentroid.GetX())+" "+str(shapecentroid.GetY())+")")
+    circle = pt.Buffer(r)
+    ring = circle.GetGeometryRef(0)
+    points = ring.GetPointCount()
+    coordinates = []
+    for i in range(points):
+        coordinates.append([ring.GetX(i), ring.GetY(i)])
+    boundarydata["coordinates"] = coordinates
+    boundarydata["area"] = math.pi * pow(r/1000.0, 2)
+    boundarydata["shape"] = "Circ"
+    return boundarydata
+
+
+def create_hexagon_from_centroid(shapename, epsg, centroid, w, orient ):
+    """Creates a hexagon from a given centroid using the EPSG provided
+
+    :param shapename: name identifier for the shape
+    :param epsg: EPSG code int()
+    :param centroid: [x, y] latlng coordinates
+    :param w: edge width of shape [m]
+    :param orient: "NE" or "EW" to signify the orientation of the hexagon based on its parallels"
+    :return: a dictionary with all the shape details in the given EPSG projection
+    """
+    boundarydata = {}
+    boundarydata["inputEPSG"] = epsg
+    boundarydata["boundaryname"] = shapename
+
+    coordtrans = create_coordtrans(4326, epsg)  # EPSG4326 - latlng
+    shapecentroid = ogr.Geometry(ogr.wkbPoint)
+    shapecentroid.AddPoint(centroid[0], centroid[1])
+    shapecentroid.Transform(coordtrans)
+    boundarydata["centroid"] = [shapecentroid.GetX(), shapecentroid.GetY()]
+
+    # Extents
+    if orient == "NS":
+        xmin = shapecentroid.GetX() - w
+        xmax = shapecentroid.GetX() + w
+        ymin = shapecentroid.GetY() - 0.5 * math.sqrt(3) * w
+        ymax = shapecentroid.GetY() + 0.5 * math.sqrt(3) * w
+        boundarydata["coordinates"] = [[shapecentroid.GetX() - w/2.0, ymin], [shapecentroid.GetX() + w/2.0, ymin],
+                                       [xmax, shapecentroid.GetY()], [shapecentroid.GetX()+w/2.0, ymax],
+                                       [shapecentroid.GetX()-w/2.0, ymax], [xmin, shapecentroid.GetY()],
+                                       [shapecentroid.GetX() - w/2.0, ymin]]
+    else:
+        xmin = shapecentroid.GetX() - 0.5 * math.sqrt(3) * w
+        xmax = shapecentroid.GetX() + 0.5 * math.sqrt(3) * w
+        ymin = shapecentroid.GetY() - w
+        ymax = shapecentroid.GetY() + w
+        boundarydata["coordinates"] = [[xmin, shapecentroid.GetY() + w/2.0], [xmin, shapecentroid.GetY() - w/2.0],
+                                       [shapecentroid.GetX(), ymin], [xmax, shapecentroid.GetY() - w/2.0],
+                                       [xmax, shapecentroid.GetY() + w/2.0], [shapecentroid.GetX(), ymax],
+                                       [xmin, shapecentroid.GetY() + w/2.0]]
+    boundarydata["area"] = 1.5 * math.sqrt(3) * w/1000.0 * w/1000.0
+    boundarydata["xmin"] = xmin
+    boundarydata["xmax"] = xmax
+    boundarydata["ymin"] = ymin
+    boundarydata["ymax"] = ymax
+    boundarydata["shape"] = "Hex"
+    return boundarydata
+
+
+def create_coordtrans(inputEPSG, outputEPSG):
+    inEPSG = osr.SpatialReference()
+    inEPSG.ImportFromEPSG(inputEPSG)
+    outEPSG = osr.SpatialReference()
+    outEPSG.ImportFromEPSG(outputEPSG)
+    return osr.CoordinateTransformation(inEPSG, outEPSG)
 
 # def get_bounding_polygon(boundaryfile, option, rootpath):
 #     """Loads the boundary Shapefile and obtains the coordinates of the bounding polygon, returns as a list of coords.

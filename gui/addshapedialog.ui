@@ -564,8 +564,45 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>step1scrollArea</tabstop>
+  <tabstop>loc_name_combo</tabstop>
+  <tabstop>shape_name_line</tabstop>
+  <tabstop>name_loc_same_check</tabstop>
+  <tabstop>coords_combo</tabstop>
+  <tabstop>epsg_line</tabstop>
+  <tabstop>next_button</tabstop>
+  <tabstop>step2scrollArea</tabstop>
+  <tabstop>rectangle_radio</tabstop>
+  <tabstop>rect_w_line</tabstop>
+  <tabstop>rect_h_line</tabstop>
+  <tabstop>circle_radio</tabstop>
+  <tabstop>circ_radius_line</tabstop>
+  <tabstop>hex_radio</tabstop>
+  <tabstop>hex_orient_combo</tabstop>
+  <tabstop>hex_edge_line</tabstop>
+  <tabstop>back_button</tabstop>
+  <tabstop>finish_button</tabstop>
+ </tabstops>
  <resources>
   <include location="../graphics/ubeats.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>finish_button</sender>
+   <signal>clicked()</signal>
+   <receiver>AddShapeDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>437</x>
+     <y>331</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>250</x>
+     <y>184</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

@@ -107,6 +107,12 @@ class Ui_AddLocationDialog(object):
         self.add_button.clicked.connect(AddLocationDialog.accept)
         self.cancel_button.clicked.connect(AddLocationDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(AddLocationDialog)
+        AddLocationDialog.setTabOrder(self.step1scrollArea, self.locname_line)
+        AddLocationDialog.setTabOrder(self.locname_line, self.loclat_line)
+        AddLocationDialog.setTabOrder(self.loclat_line, self.loclong_line)
+        AddLocationDialog.setTabOrder(self.loclong_line, self.locdescr_textedit)
+        AddLocationDialog.setTabOrder(self.locdescr_textedit, self.add_button)
+        AddLocationDialog.setTabOrder(self.add_button, self.cancel_button)
 
     def retranslateUi(self, AddLocationDialog):
         _translate = QtCore.QCoreApplication.translate

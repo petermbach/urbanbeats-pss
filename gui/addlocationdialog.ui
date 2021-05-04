@@ -239,6 +239,15 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>step1scrollArea</tabstop>
+  <tabstop>locname_line</tabstop>
+  <tabstop>loclat_line</tabstop>
+  <tabstop>loclong_line</tabstop>
+  <tabstop>locdescr_textedit</tabstop>
+  <tabstop>add_button</tabstop>
+  <tabstop>cancel_button</tabstop>
+ </tabstops>
  <resources>
   <include location="../graphics/ubeats.qrc"/>
   <include location="../graphics/ubeats.qrc"/>

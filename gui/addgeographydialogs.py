@@ -99,10 +99,10 @@ class AddLocationDialogLaunch(QtWidgets.QDialog):
 class AddShapeDialogLaunch(QtWidgets.QDialog):
     """Class definition for launching the dialog to add basic shapes as boundaries to the project."""
     def __init__(self, main, simulation, parent=None):
-        """
+        """Initialization of class.
 
-        :param main:
-        :param simulation:
+        :param main: the instance of the main runtime environment
+        :param simulation: the current simulation object
         """
         QtWidgets.QDialog.__init__(self, parent)
         self.ui = Ui_AddShapeDialog()
@@ -111,6 +111,177 @@ class AddShapeDialogLaunch(QtWidgets.QDialog):
         self.options = main.get_options()
         self.epsg_dict = main.epsg_dict
 
+        # - COMBO BOXES ON PAGE 1 - LOCATIONS & COORDINATE SYSTEM
+        self.update_locations_combo()
+        self.update_coord_combo()
+        self.ui.epsg_line.setText(self.simulation.get_project_parameter("project_epsg"))
+        self.update_combo_from_epsg()
+
+        # Enable Pop-up completion for the coordinate system combo box. Note that the combo box has to be editable!
+        self.ui.coords_combo.completer().setCompletionMode(QtWidgets.QCompleter.PopupCompletion)
+
+        self.timer_linedit = QtCore.QTimer()
+        self.timer_linedit.setSingleShot(True)
+        self.timer_linedit.setInterval(300)
+        self.timer_linedit.timeout.connect(self.update_combo_from_epsg)
+
+        self.ui.epsg_line.textEdited.connect(lambda: self.timer_linedit.start())
+        self.ui.coords_combo.currentIndexChanged.connect(self.update_epsg_from_combo)
+
+        # - WIZARD CONTROLS - SIGNALS AND SLOTS
+        self.ui.next_button.clicked.connect(self.advancestack)
+        self.ui.back_button.clicked.connect(self.regressstack)
+        self.ui.name_loc_same_check.clicked.connect(self.enable_disable_wizard_elements)
+        self.ui.rectangle_radio.clicked.connect(self.enable_disable_wizard_elements)
+        self.ui.circle_radio.clicked.connect(self.enable_disable_wizard_elements)
+        self.ui.hex_radio.clicked.connect(self.enable_disable_wizard_elements)
+
+        self.enable_disable_wizard_elements()
+
+    def advancestack(self):
+        """Advances the stack widget one index forward."""
+        if self.ui.loc_name_combo.currentIndex() == 0:      # Check #1 - valid location
+            prompt = "Please select a valid location from project locations!"
+            QtWidgets.QMessageBox.warning(self, 'No location selected', prompt, QtWidgets.QMessageBox.Ok)
+            return True
+
+        if not self.ui.name_loc_same_check.isChecked():     # Check #2 - valid boundary name
+            for char in ubglobals.NOCHARS:
+                if char in self.ui.shape_name_line.text():
+                    prompt = "Invalid Boundary Name, one or more illegal characters used, please alter name!"
+                    QtWidgets.QMessageBox.warning(self, 'Invalid Boundary Name', prompt, QtWidgets.QMessageBox.Ok)
+                    return True
+
+        invalid = 0
+        try:    # Check #3 - valid EPSG
+            int(self.ui.epsg_line.text())
+        except ValueError:  # Case 3 - the EPSG box has illegal entry
+            invalid = 1
+        if self.ui.epsg_line == "":
+            invalid = 1
+        if invalid:
+            prompt_msg = "Error, please select a valid coordinate system or EPSG code!"
+            QtWidgets.QMessageBox.warning(self, 'Invalid Coordinate System', prompt_msg, QtWidgets.QMessageBox.Ok)
+            return True
+
+        self.ui.shape_stack.setCurrentIndex(1)
+        return True
+
+    def regressstack(self):
+        """Sets the stack widget one index backwards."""
+        self.ui.shape_stack.setCurrentIndex(0)
+
+    def enable_disable_wizard_elements(self):
+        """Enables and disables elements in the wizard based on conditions of the radio buttons"""
+        self.ui.shape_name_line.setEnabled(not self.ui.name_loc_same_check.isChecked())
+        self.ui.rect_w_line.setEnabled(self.ui.rectangle_radio.isChecked())
+        self.ui.rect_h_line.setEnabled(self.ui.rectangle_radio.isChecked())
+        self.ui.circ_radius_line.setEnabled(self.ui.circle_radio.isChecked())
+        self.ui.hex_edge_line.setEnabled(self.ui.hex_radio.isChecked())
+        self.ui.hex_orient_combo.setEnabled(self.ui.hex_radio.isChecked())
+
+    def update_locations_combo(self):
+        """Updates the project locations combo box with location names."""
+        self.ui.loc_name_combo.clear()
+        self.ui.loc_name_combo.addItem("(select a project location as centroid)")
+        locnames = self.simulation.get_project_location_names()
+        for i in locnames:
+            self.ui.loc_name_combo.addItem(i)
+        self.ui.loc_name_combo.setCurrentIndex(0)
+
+    def update_coord_combo(self):
+        """Updates the coordinate system's combobox and the UI elements associated with it."""
+        self.ui.coords_combo.clear()
+        self.ui.coords_combo.addItem("(select coordinate system)")
+        names = list(self.epsg_dict.keys())
+        names.sort()
+        for i in names:
+            self.ui.coords_combo.addItem(i)
+        self.ui.coords_combo.addItem("Other...")
+        self.ui.coords_combo.setCurrentIndex(0)
+
+    def update_combo_from_epsg(self):
+        """Updates the coordinate system combo box based on the EPSG code entered in the text box, if the EPSG
+        does not exist in the dictionary, the combo box displays "Other...". """
+        names = list(self.epsg_dict.keys())
+        names.sort()
+        try:
+            for name, epsg in self.epsg_dict.items():
+                if int(epsg) == int(self.ui.epsg_line.text()):
+                    curindex = names.index(name) + 1  # +1 to account for Index 0 < > text
+                    self.ui.coords_combo.setCurrentIndex(curindex)
+                    return True
+            self.ui.coords_combo.setCurrentIndex(len(names) + 1)  # Set to 'Other'
+        except ValueError:
+            self.ui.coords_combo.setCurrentIndex(len(names) + 1)  # Set to 'Other'
+
+    def update_epsg_from_combo(self):
+        """Updates the EPSG text box based on the selected coordinate system in the combo box. If < >, index 0
+        or "Other ..." are selected, the EPSG box remains blank."""
+        try:
+            self.ui.epsg_line.setText(self.epsg_dict[self.ui.coords_combo.currentText()])
+        except KeyError:
+            pass
+
+    def done(self, r):
+        if self.Accepted == r:
+            # CHECK VALIDITY OF GEOMETRY TO DRAW - must have readable number inputs and must be greater than
+            # minimum Block size - try/except block checks legal input and minimum size requirements (min. block size)
+            invalid = 0
+            if self.ui.rectangle_radio.isChecked():
+                try:
+                    invalid = max(float(self.ui.rect_w_line.text()) < 0.2, float(self.ui.rect_h_line.text()) < 0.2)
+                except ValueError:
+                    invalid = 1
+
+            if self.ui.circle_radio.isChecked():
+                try:
+                    invalid = float(self.ui.circ_radius_line.text()) < 0.2
+                except ValueError:
+                    invalid = 1
+
+            if self.ui.hex_radio.isChecked():
+                try:
+                    invalid = float(self.ui.hex_edge_line.text()) < 0.2
+                except ValueError:
+                    invalid = 1
+
+            if invalid:
+                prompt_msg = "Invalid input for geometric dimensions, please specify a readable number above 0.2 km"
+                QtWidgets.QMessageBox.warning(self, "Invalid Geometry", prompt_msg, QtWidgets.QMessageBox.Ok)
+            else:
+                # Close the GUI and execute boundary creation in the core
+                parameters = self.define_shape_boundary_parameter_set()
+                self.simulation.add_basic_shape_as_simulation_boundary(parameters)
+                QtWidgets.QDialog.done(self, r)
+        else:
+            QtWidgets.QDialog.done(self, r)
+
+    def define_shape_boundary_parameter_set(self):
+        """Sets up a dict() from all inputs across the GUI."""
+        parameters = {}
+        if self.ui.name_loc_same_check.isChecked():
+            parameters["name"] = self.ui.loc_name_combo.currentText()
+        else:
+            parameters["name"] = self.ui.shape_name_line.text()
+        parameters["epsg"] = int(self.ui.epsg_line.text())
+        parameters["inputprojcs"] = str(self.ui.coords_combo.currentText())
+
+        locinfo = self.simulation.get_project_location_info(self.ui.loc_name_combo.currentText())
+        parameters["centroid"] = [locinfo["latitude"], locinfo["longitude"]]
+
+        if self.ui.rectangle_radio.isChecked():
+            parameters["shape"] = "rect"
+            parameters["shapeparameters"] = [float(self.ui.rect_w_line.text()), float(self.ui.rect_h_line.text())]
+        elif self.ui.circle_radio.isChecked():
+            parameters["shape"] = "circ"
+            parameters["shapeparameters"] = float(self.ui.circ_radius_line.text())
+        else:
+            orientation = ["NS", "EW"]
+            parameters["shape"] = "hex"
+            parameters["shapeparameters"] = [float(self.ui.hex_edge_line.text()),
+                                                  orientation[self.ui.hex_orient_combo.currentIndex()]]
+        return parameters
 
 
 class AddBoundaryDialogLaunch(QtWidgets.QDialog):

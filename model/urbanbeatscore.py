@@ -198,8 +198,61 @@ class UrbanBeatsSim(object):
         except KeyError:
             return True
 
+    def add_basic_shape_as_simulation_boundary(self, parameters):
+        """Adds a basic shape (rectangle, circle, hexagon) as a simulation boundary to the project.
+
+        :param parameters: a dictionary with key parameter keys including 'name', 'epsg', 'inputprojcs', 'centroid',
+                'shape', 'shapeparameters'
+        """
+        if parameters["shape"] == "rect":
+            w = parameters["shapeparameters"][0]
+            h = parameters["shapeparameters"][1]
+            boundarydata = ubspatial.create_rectangle_from_centroid(parameters["name"], parameters["epsg"],
+                                                                    parameters["centroid"], w*1000.0, h*1000.0)
+        elif parameters["shape"] == "circ":
+            boundarydata = ubspatial.create_circle_from_centroid(parameters["name"], parameters["epsg"],
+                                                                 parameters["centroid"],
+                                                                 parameters["shapeparameters"]*1000.0)
+        else:
+            w = parameters["shapeparameters"][0]
+            orient = parameters["shapeparameters"][1]
+            boundarydata = ubspatial.create_hexagon_from_centroid(parameters["name"], parameters["epsg"],
+                                                                  parameters["centroid"], w*1000.0, orient)
+
+        self.__project_extents[0].append(boundarydata["xmin"])
+        self.__project_extents[1].append(boundarydata["xmax"])
+        self.__project_extents[2].append(boundarydata["ymin"])
+        self.__project_extents[3].append(boundarydata["ymax"])
+        self.__project_centroids[0].append(boundarydata["centroid"][0])
+        self.__project_centroids[1].append(boundarydata["centroid"][1])
+
+        namecounter = 0
+        boundarynewname = boundarydata["boundaryname"]
+        while boundarynewname in self.__project_boundaries.keys():
+            namecounter += 1
+            boundarynewname = boundarydata["boundaryname"] + "_" + str(namecounter)
+        boundarydata["boundaryname"] = boundarynewname
+        boundarydata["filename"] = boundarynewname + "_Boundary_"+str(boundarydata["shape"])+"_"\
+                                   + str(boundarydata["inputEPSG"])
+        boundarydata["coordsysname"] = parameters["inputprojcs"]
+
+        # Save as Shapefile
+        boundarypath = self.get_project_parameter("projectpath") + "/" + self.get_project_parameter("name") \
+                       + "/boundaries/"
+        print ("Boundary Data", boundarydata)
+        ubspatial.save_boundary_as_shapefile(boundarydata, boundarypath + boundarydata["filename"])
+
+        # Update central core project boundary information
+        self.__project_boundaries[boundarynewname] = boundarydata  # Add new project boundary
+        self.__global_centroid = [sum(self.__project_centroids[0]) / len(self.__project_centroids[0]),
+                                  sum(self.__project_centroids[1]) / len(self.__project_centroids[1])]
+        self.__global_extents = [min(self.__project_extents[0]), max(self.__project_extents[1]),
+                                 min(self.__project_extents[2]), max(self.__project_extents[3])]
+        print("Current number of boundaries in the simulation: ", str(len(self.__project_boundaries)))
+        return True
+
     def import_simulation_boundaries(self):
-        """Imports new boundaries into the simulation based on the self.__current_boundar_to_load variable. After
+        """Imports new boundaries into the simulation based on the self.__current_boundary_to_load variable. After
         loading, it resets the boundary variable to []. Loaded boundaries are updated in the
         self.__project_boundaries variable."""
         if len(self.__current_boundary_to_load) == 0:
@@ -249,6 +302,7 @@ class UrbanBeatsSim(object):
 
             coordinates = boundary_polys[i].get_points()
             mapstats["coordinates"] = coordinates
+            mapstats["shape"] = "Polygon"
 
             if naming_rule == "user":
                 boundary_base_name = naming_key
@@ -265,7 +319,7 @@ class UrbanBeatsSim(object):
             mapstats["boundaryname"] = boundarynewname
 
             # Save shapefiles into the 'boundaries' folder
-            mapstats["filename"] = boundarynewname+"_Boundary_"+str(mapstats["inputEPSG"])
+            mapstats["filename"] = boundarynewname+"_Boundary_"+str(mapstats["shape"])+"_"+str(mapstats["inputEPSG"])
             boundarypath = self.get_project_parameter("projectpath") + "/" + self.get_project_parameter("name") \
                            + "/boundaries/"
             ubspatial.save_boundary_as_shapefile(mapstats, boundarypath+mapstats["filename"])
