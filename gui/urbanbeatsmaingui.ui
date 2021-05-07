@@ -529,7 +529,6 @@ p, li { white-space: pre-wrap; }
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="page_6"/>
             </widget>
            </item>
           </layout>
