@@ -192,8 +192,18 @@ class UrbanBeatsSim(object):
                 os.remove(filepath+file)
 
         # Step 4 - Remove the boundary from the boundaries dictionary
+        # Remove the extents and centroids from self.__project_extents and self.__project_centroids
+        self.__project_extents[0].remove(self.__project_boundaries[boundaryname]["xmin"])
+        self.__project_extents[1].remove(self.__project_boundaries[boundaryname]["xmax"])
+        self.__project_extents[2].remove(self.__project_boundaries[boundaryname]["ymin"])
+        self.__project_extents[3].remove(self.__project_boundaries[boundaryname]["ymax"])
+        self.__project_centroids[0].remove(self.__project_boundaries[boundaryname]["centroid"][0])
+        self.__project_centroids[1].remove(self.__project_boundaries[boundaryname]["centroid"][1])
+        self.update_global_centroid_and_extents()
+        # Remove the boundary from the self.__project_boundaries
         try:
             del self.__project_boundaries[boundaryname]
+            self.save_project_boundaries()  # Update the save file
         except KeyError:
             return True
 
@@ -243,12 +253,16 @@ class UrbanBeatsSim(object):
 
         # Update central core project boundary information
         self.__project_boundaries[boundarynewname] = boundarydata  # Add new project boundary
+        self.update_global_centroid_and_extents()
+        print("Current number of boundaries in the simulation: ", str(len(self.__project_boundaries)))
+        return True
+
+    def update_global_centroid_and_extents(self):
+        """Updates the global centroid and extents variables."""
         self.__global_centroid = [sum(self.__project_centroids[0]) / len(self.__project_centroids[0]),
                                   sum(self.__project_centroids[1]) / len(self.__project_centroids[1])]
         self.__global_extents = [min(self.__project_extents[0]), max(self.__project_extents[1]),
                                  min(self.__project_extents[2]), max(self.__project_extents[3])]
-        print("Current number of boundaries in the simulation: ", str(len(self.__project_boundaries)))
-        return True
 
     def import_simulation_boundaries(self):
         """Imports new boundaries into the simulation based on the self.__current_boundary_to_load variable. After
@@ -327,10 +341,7 @@ class UrbanBeatsSim(object):
             self.__project_boundaries[boundarynewname] = mapstats  # Add new project boundary
 
         self.__current_boundary_to_load = []    # Reset the current boundary to load
-        self.__global_centroid = [sum(self.__project_centroids[0])/len(self.__project_centroids[0]),
-                                  sum(self.__project_centroids[1])/len(self.__project_centroids[1])]
-        self.__global_extents = [min(self.__project_extents[0]), max(self.__project_extents[1]),
-                                 min(self.__project_extents[2]), max(self.__project_extents[3])]
+        self.update_global_centroid_and_extents()
         print("Current number of boundaries in the simulation: ", str(len(self.__project_boundaries)))
         return True
 
@@ -437,6 +448,15 @@ class UrbanBeatsSim(object):
                 except (ValueError, SyntaxError):
                     bdict[child.tag] = str(child.text)
             self.__project_boundaries[bname] = bdict
+            self.__project_epsg = bdict["inputEPSG"]
+            # Fill out extents and centroid
+            self.__project_extents[0].append(bdict["xmin"])
+            self.__project_extents[1].append(bdict["xmax"])
+            self.__project_extents[2].append(bdict["ymin"])
+            self.__project_extents[3].append(bdict["ymax"])
+            self.__project_centroids[0].append(bdict["centroid"][0])
+            self.__project_centroids[1].append(bdict["centroid"][1])
+        self.update_global_centroid_and_extents()   # Once all boundaries have been loaded, update the global values
 
         for location in root.find('project_locations'):
             ldict = {}

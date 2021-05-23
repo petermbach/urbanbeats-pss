@@ -913,6 +913,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.ui.ScenarioDock_Combo.addItem(n)   # Adds the names to the Dock
                 self.ui.ScenarioDock_Combo.setCurrentIndex(0)
                 activesimulation.set_active_scenario(None)
+                activesimulation.set_active_boundary(None)
 
         # Update Main Window Title
         self.setWindowTitle("UrbanBEATS Planning Support Tool - "+str(self.get_current_project_name()))
