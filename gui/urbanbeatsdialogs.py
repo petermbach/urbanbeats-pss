@@ -1035,9 +1035,58 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         else:
             self.ui.projectlog_simple.setChecked(1)
 
+        self.update_coord_combo()
+        self.ui.epsg_line.setText(self.simulation.get_project_parameter("project_epsg"))
+        self.update_combo_from_epsg()
+
+        # Enable Pop-up completion for the coordinate system combo box. Note that the combo box has to be editable!
+        self.ui.coords_combo.completer().setCompletionMode(QtWidgets.QCompleter.PopupCompletion)
+
         # --- SIGNALS AND SLOTS ---
         self.ui.projpath_button.clicked.connect(self.browse_project_path)
         self.accepted.connect(self.run_setup_project)
+
+        # - SIGNALS AND SLOTS FOR COORDINATE SYSTEMS
+        self.timer_linedit = QtCore.QTimer()
+        self.timer_linedit.setSingleShot(True)
+        self.timer_linedit.setInterval(300)
+        self.timer_linedit.timeout.connect(self.update_combo_from_epsg)
+        self.ui.epsg_line.textEdited.connect(lambda: self.timer_linedit.start())
+        self.ui.coords_combo.currentIndexChanged.connect(self.update_epsg_from_combo)
+
+    def update_coord_combo(self):
+        """Updates the coordinate system's combobox and the UI elements associated with it."""
+        self.ui.coords_combo.clear()
+        self.ui.coords_combo.addItem("(select coordinate system)")
+        names = list(self.epsg_dict.keys())
+        names.sort()
+        for i in names:
+            self.ui.coords_combo.addItem(i)
+        self.ui.coords_combo.addItem("Other...")
+        self.ui.coords_combo.setCurrentIndex(0)
+
+    def update_combo_from_epsg(self):
+        """Updates the coordinate system combo box based on the EPSG code entered in the text box, if the EPSG
+        does not exist in the dictionary, the combo box displays "Other...". """
+        names = list(self.epsg_dict.keys())
+        names.sort()
+        try:
+            for name, epsg in self.epsg_dict.items():
+                if int(epsg) == int(self.ui.epsg_line.text()):
+                    curindex = names.index(name) + 1  # +1 to account for Index 0 < > text
+                    self.ui.coords_combo.setCurrentIndex(curindex)
+                    return True
+            self.ui.coords_combo.setCurrentIndex(len(names) + 1)  # Set to 'Other'
+        except ValueError:
+            self.ui.coords_combo.setCurrentIndex(len(names) + 1)  # Set to 'Other'
+
+    def update_epsg_from_combo(self):
+        """Updates the EPSG text box based on the selected coordinate system in the combo box. If < >, index 0
+        or "Other ..." are selected, the EPSG box remains blank."""
+        try:
+            self.ui.epsg_line.setText(self.epsg_dict[self.ui.coords_combo.currentText()])
+        except KeyError:
+            pass
 
     def browse_project_path(self):
         """Opens a file dialog, which requests for a folder path within which UrbanBEATS will
@@ -1058,6 +1107,7 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         self.ui.projpath_line.setEnabled(0)
         self.ui.projpath_button.setEnabled(0)
         self.ui.keepcopy_check.setEnabled(0)
+        self.ui.coords_widget.setEnabled(0)
 
     def disable_all_parameters(self):
         """Disables the whole interface as it was opened just for viewing the information."""
@@ -1067,6 +1117,7 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         self.ui.synopsis_box.setEnabled(0)
         self.ui.projectlog_widget.setEnabled(0)
         self.ui.path_widget.setEnabled(0)
+        self.ui.coords_widget.setEnabled(0)
 
     def run_setup_project(self):
         """Determines based on how the GUI was opened what needs to occur. If self.__viewer == 0 then
@@ -1116,7 +1167,8 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         self.simulation.set_project_parameter("projectpath", self.ui.projpath_line.text())
         self.simulation.set_project_parameter("keepcopy", int(self.ui.keepcopy_check.isChecked()))
         self.simulation.set_project_parameter("synopsis", self.ui.synopsis_box.toPlainText())
-
+        self.simulation.set_project_parameter("project_coord_sys", self.ui.coords_combo.currentText())
+        self.simulation.set_project_parameter("project_epsg", int(self.ui.epsg_line.text()))
         if self.ui.projectlog_compreh.isChecked():
             self.simulation.set_project_parameter("logstyle", "comprehensive")
         else:

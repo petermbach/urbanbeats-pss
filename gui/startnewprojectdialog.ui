@@ -106,15 +106,15 @@
           <property name="bottomMargin">
            <number>6</number>
           </property>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="projname_line"/>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="projname_lbl">
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;PROJECT NAME&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="projname_line"/>
           </item>
          </layout>
         </widget>
@@ -146,7 +146,7 @@
             <x>0</x>
             <y>0</y>
             <width>443</width>
-            <height>1077</height>
+            <height>1115</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -171,6 +171,13 @@
               <widget class="QLabel" name="aboutproject_lbl">
                <property name="text">
                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;About the Project&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="about1_descr">
+               <property name="text">
+                <string>Provide some basic details about the project</string>
                </property>
               </widget>
              </item>
@@ -431,6 +438,13 @@ p, li { white-space: pre-wrap; }
               <widget class="QLabel" name="aboutuser_lbl">
                <property name="text">
                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;About the Modellers&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="about2_descr">
+               <property name="text">
+                <string>Details of the modelling team or group undertaking this project.</string>
                </property>
               </widget>
              </item>

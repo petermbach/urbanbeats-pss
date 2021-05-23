@@ -90,12 +90,13 @@ class UrbanBeatsSim(object):
             "logstyle": self.__global_options["projectlogstyle"],
             "projectpath": self.__global_options["defaultpath"],
             "keepcopy": 0,
+            "project_coord_sys": self.__global_options["defaultcoordsys"],
+            "project_epsg": self.__global_options["customepsg"]
         }
 
         # Geography Variables - TRACKING VARIABLES
         self.__activeboundary = None    # Tracking variables
         self.__current_boundary_to_load = []  # Current Boundary Shapefile to load [filename,
-        self.__project_epsg = None
         self.__project_extents = [[], [], [], []]  # Tracks ALL extents loaded to determine 'global_extents'
         self.__project_centroids = [[], []]  # Tracks ALL centroids loaded to determine 'global_centroid'
         self.__global_centroid = [0, 0]
@@ -136,7 +137,7 @@ class UrbanBeatsSim(object):
             return True
 
     def get_project_epsg(self):
-        return self.__project_epsg
+        return self.__project_info["project_epsg"]
 
     def set_active_boundary(self, boundaryname):
         try:
@@ -281,7 +282,6 @@ class UrbanBeatsSim(object):
                                                     useEPSG=self.__current_boundary_to_load[3])
 
         # FILTER OUT AND CREATE BOUNDARY ITEMS
-        boundary_polys = []
         polyareas = [boundaries[i].get_attribute("Area_sqkm") for i in range(len(boundaries))]
 
         if self.__current_boundary_to_load[1][0] == "LRG":
@@ -296,7 +296,6 @@ class UrbanBeatsSim(object):
         for i in range(len(boundary_polys)):
             mapstats = {}
             mapstats["inputEPSG"] = self.__current_boundary_to_load[3]
-            self.__project_epsg = mapstats["inputEPSG"]
             mapstats["coordsysname"] = self.__current_boundary_to_load[4]
             mapstats["area"] = boundary_polys[i].get_attribute("Area_sqkm")
 
@@ -448,7 +447,6 @@ class UrbanBeatsSim(object):
                 except (ValueError, SyntaxError):
                     bdict[child.tag] = str(child.text)
             self.__project_boundaries[bname] = bdict
-            self.__project_epsg = bdict["inputEPSG"]        # [REVAMP] = need to make global project EPSG!
 
             # Fill out extents and centroid
             self.__project_extents[0].append(bdict["xmin"])

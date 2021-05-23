@@ -114,7 +114,7 @@ class AddShapeDialogLaunch(QtWidgets.QDialog):
         # - COMBO BOXES ON PAGE 1 - LOCATIONS & COORDINATE SYSTEM
         self.update_locations_combo()
         self.update_coord_combo()
-        self.ui.epsg_line.setText(self.simulation.get_project_parameter("project_epsg"))
+        self.ui.epsg_line.setText(str(self.simulation.get_project_parameter("project_epsg")))
         self.update_combo_from_epsg()
 
         # Enable Pop-up completion for the coordinate system combo box. Note that the combo box has to be editable!
@@ -327,7 +327,7 @@ class AddBoundaryDialogLaunch(QtWidgets.QDialog):
 
         # - COORDINATE SYSTEM
         self.update_coord_combo()
-        self.ui.epsg_line.setText(self.simulation.get_project_parameter("project_epsg"))
+        self.ui.epsg_line.setText(str(self.simulation.get_project_parameter("project_epsg")))
         self.update_combo_from_epsg()
 
         # Enable Pop-up completion for the coordinate system combo box. Note that the combo box has to be editable!
