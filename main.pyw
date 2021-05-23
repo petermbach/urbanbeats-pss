@@ -944,18 +944,19 @@ class MainWindow(QtWidgets.QMainWindow):
         operation as UrbanBEATS tracks the status of the project throughout the workflow."""
 
         # Save the active data library
-        self.printc("Consolidating Data Library...")
+        self.printc("Saving Data Library...")
         if self.__activeDataLibrary is not None:
-            self.__activeDataLibrary.consolidate_library()
+            self.__activeDataLibrary.save_library()
         self.printc("Saving Active Scenario...")
 
         if self.__activeScenario is not None:
-            self.__activeScenario.consolidate_scenario()
+            self.__activeScenario.save_scenario()
 
-        # Consolidate the functions list
-        self.printc("Consolidating Project Functions List")
+        # Save elements in the simulation core
+        self.printc("Saving Project Functions List")
         if self.__activeSimulationObject is not None:
-            self.__activeSimulationObject.consolidate_functions_list()
+            self.__activeSimulationObject.save_functions_list()
+            self.__activeSimulationObject.save_project_boundaries()
 
         # Add project to the recent.cfg file
         self.update_recent_cfg(self.__activeSimulationObject.get_project_parameter("name"),

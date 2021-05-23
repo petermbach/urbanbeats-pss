@@ -54,7 +54,7 @@ class UrbanBeatsDataLibrary(object):
             os.mkdir(projectpath+"/datalib")
         self.__projectdatafolder = projectpath+"/datalib/"
 
-    def consolidate_library(self):
+    def save_library(self):
         """Writes the data library information into the data library folder."""
         f = open(self.__projectdatafolder+"/dataindex.xml", 'w')
         f.write('<URBANBEATSDATALIBRARY creator="Peter M. Bach" version="1.0">\n')

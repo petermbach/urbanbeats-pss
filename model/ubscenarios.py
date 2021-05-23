@@ -304,7 +304,7 @@ class UrbanBeatsScenario(threading.Thread):
             self.__assets[str(i)] = {}
         return True
 
-    def consolidate_scenario(self):
+    def save_scenario(self):
         """Creates an updated scenario_name.xml file of the current scenario including all module parameters."""
         scenario_fname = self.projectpath+"/scenarios/"+self.__scenariometadata["name"].replace(" ", "_")+".xml"
 

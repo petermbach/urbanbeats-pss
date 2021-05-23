@@ -91,20 +91,18 @@ class UrbanBeatsSim(object):
             "keepcopy": 0,
         }
 
-        # Geography Variables
+        # Geography Variables - TRACKING VARIABLES
+        self.__activeboundary = None    # Tracking variables
+        self.__current_boundary_to_load = []  # Current Boundary Shapefile to load [filename,
         self.__project_epsg = None
-        self.__activeboundary = None
-        self.__project_centroids = [[], []]
+        self.__project_extents = [[], [], [], []]  # Tracks ALL extents loaded to determine 'global_extents'
+        self.__project_centroids = [[], []]  # Tracks ALL centroids loaded to determine 'global_centroid'
         self.__global_centroid = [0, 0]
-        self.__project_extents = [[], [], [], []]
-        self.__global_extents = None # xmin, xmax, ymin, ymax
-        self.__current_boundary_to_load = []    # Current Boundary Shapefile to load [filename,
+        self.__global_extents = None  # xmin, xmax, ymin, ymax
+        # self.__project_boundaries_template = { "boundaryshp": "no file selected", "project_coord_sys": self.__global_options["defaultcoordsys"], "project_epsg": self.__global_options["customepsg"]}
+
+        # Geography Variables - PERSISTENT INFORMATION
         self.__project_boundaries = {}      # Collects different boundaries
-        self.__project_boundaries_template = {
-            "boundaryshp": "no file selected",
-            "project_coord_sys": self.__global_options["defaultcoordsys"],
-            "project_epsg": self.__global_options["customepsg"]
-        }
         self.__project_locations = {}
 
         # Major classes that form part of the project
@@ -335,6 +333,28 @@ class UrbanBeatsSim(object):
         print("Current number of boundaries in the simulation: ", str(len(self.__project_boundaries)))
         return True
 
+    def save_project_boundaries(self):
+        """Saves the simulation boundaries data file to list."""
+        
+        # projectpath = self.get_project_parameter("projectpath")
+        # projectname = self.get_project_parameter("name")
+        # f = open(projectpath + "/" + projectname + "/functions.xml", 'w')
+        # f.write('<URBANBEATSPROJECTFUNCTIONS creator="Peter M. Bach" version="1.0">\n')
+        # f.write('\t<functionlist>\n')
+        # for i in range(len(self.__functions)):
+        #     # Get the text for each function, write the text to the file.
+        #     for line in self.__functions[i].get_function_data_as_xml():
+        #         f.write(line)
+        # f.write('\t</functionlist>\n')
+        # f.write('</URBANBEATSPROJECTFUNCTIONS>\n')
+        # f.close()
+
+
+
+
+
+        return True
+
     def get_global_centroid(self):
         return self.__global_centroid
 
@@ -419,26 +439,6 @@ class UrbanBeatsSim(object):
             self.set_project_parameter(k, type(self.get_project_parameter(k))(projdict[k]))
         return True
 
-    def update_project_boundaryinfo(self):      # [REVAMP] - SLATED FOR DELETION
-        """One of two cases is carried out, either the project has boundary information, so UrbanBEATS will plot this,
-        alternatively in the case of a brand new project, the model simply centres the map on the 'closest city'.
-        Boundary Present: Loads the boundary map shapefile, obtains coordinates of the bounding polygon and spatial
-        stats including simulation area, extents, etc. Information is saved to self.__boundaryinfo."""
-
-        if len(self.__project_boundaries) == 0:
-            pass
-            # Algorithm [REVAMP]
-            #   1) Grab the city and country details
-            #   2) Lookup the city Lat/Long and centre the map on this city
-        else:
-            pass
-            # [REVAMP] - note no longer working with the property 'boundaryshp'
-            # boundaryshp = self.get_project_parameter("boundaryshp")
-            # coordinates, mapstats = ubspatial.get_bounding_polygons(boundaryshp, "native", self.__rootpath)
-            # self.__boundaryinfo = mapstats.copy()
-            # self.__boundaryinfo["coordinates"] = coordinates
-        return True     # SLATED FOR DELETION
-
     def get_scenario_boundary_info(self, param):
         """Retrieves spatial boundary information for the current project from the self.__boundarinfo variable.
 
@@ -504,7 +504,7 @@ class UrbanBeatsSim(object):
         self.__functions.append(function_obj)
         return True
 
-    def consolidate_functions_list(self):
+    def save_functions_list(self):
         """Saves functions in the active list to an xml file."""
         projectpath = self.get_project_parameter("projectpath")
         projectname = self.get_project_parameter("name")
