@@ -448,7 +448,8 @@ class UrbanBeatsSim(object):
                 except (ValueError, SyntaxError):
                     bdict[child.tag] = str(child.text)
             self.__project_boundaries[bname] = bdict
-            self.__project_epsg = bdict["inputEPSG"]
+            self.__project_epsg = bdict["inputEPSG"]        # [REVAMP] = need to make global project EPSG!
+
             # Fill out extents and centroid
             self.__project_extents[0].append(bdict["xmin"])
             self.__project_extents[1].append(bdict["xmax"])

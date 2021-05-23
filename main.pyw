@@ -656,7 +656,6 @@ class MainWindow(QtWidgets.QMainWindow):
         :return:
         """
         # Data to create map!
-        print ("HELLOW DATA VIEW")
         tileserver = ubglobals.TILESERVERS[self.get_option("mapstyle")]
         projectdata = self.get_active_simulation_object().get_all_project_info()
         projectboundaries = self.get_active_simulation_object().get_project_boundaries()
@@ -686,6 +685,8 @@ class MainWindow(QtWidgets.QMainWindow):
                                                     self.get_active_simulation_object().get_project_epsg(),
                                                     tileserver, UBEATSROOT)
         self.ui.DataView_web.load(QtCore.QUrl.fromLocalFile(temp_map_file))
+        self.update_simulation_boundaries_table()
+        self.update_location_collection_table()
         return True
 
     def initialize_output_console(self):
@@ -731,7 +732,6 @@ class MainWindow(QtWidgets.QMainWindow):
         addsimboundarydialog.exec_()
 
     def update_location_collection(self):
-        self.update_location_collection_table()
         if self.update_data_view("boundary"):
             prompt_msg = "Location successfully added!"
             QtWidgets.QMessageBox.information(self, "Location Added", prompt_msg, QtWidgets.QMessageBox.Ok)
@@ -769,7 +769,6 @@ class MainWindow(QtWidgets.QMainWindow):
         QtWidgets.QMessageBox.information(self, "Location removed", prompt_msg, QtWidgets.QMessageBox.Ok)
 
     def add_new_shape_boundary(self):
-        self.update_simulation_boundaries_table()
         if self.update_data_view("boundary"):
             prompt_msg = "Basic Shape Boundary added successfully!"
             QtWidgets.QMessageBox.information(self, "Boundaries Updated", prompt_msg, QtWidgets.QMessageBox.Ok)
@@ -777,7 +776,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def update_simulation_boundary_collection(self):
         self.get_active_simulation_object().import_simulation_boundaries()
-        self.update_simulation_boundaries_table()
         if self.update_data_view("boundary"):
             prompt_msg = "Simulation Boundaries updated successfully!"
             QtWidgets.QMessageBox.information(self, "Boundaries Updated", prompt_msg, QtWidgets.QMessageBox.Ok)
