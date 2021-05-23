@@ -335,24 +335,28 @@ class UrbanBeatsSim(object):
 
     def save_project_boundaries(self):
         """Saves the simulation boundaries data file to list."""
-        
-        # projectpath = self.get_project_parameter("projectpath")
-        # projectname = self.get_project_parameter("name")
-        # f = open(projectpath + "/" + projectname + "/functions.xml", 'w')
-        # f.write('<URBANBEATSPROJECTFUNCTIONS creator="Peter M. Bach" version="1.0">\n')
-        # f.write('\t<functionlist>\n')
-        # for i in range(len(self.__functions)):
-        #     # Get the text for each function, write the text to the file.
-        #     for line in self.__functions[i].get_function_data_as_xml():
-        #         f.write(line)
-        # f.write('\t</functionlist>\n')
-        # f.write('</URBANBEATSPROJECTFUNCTIONS>\n')
-        # f.close()
-
-
-
-
-
+        projectpath = self.get_project_parameter("projectpath")
+        projectname = self.get_project_parameter("name")
+        f = open(projectpath + "/" + projectname + "/boundaries/boundloc.xml", 'w')
+        f.write('<URBANBEATSBOUNDARIESLOCATIONS creator="Peter M. Bach" version="1.0">\n')
+        f.write('\t<project_boundaries>\n')
+        for i in self.__project_boundaries.keys():
+            f.write('\t\t<boundary>\n')
+            f.write('\t\t\t<name>'+i+'</name>\n')
+            for att in self.__project_boundaries[i].keys():
+                f.write('\t\t\t<'+att+'>'+str(self.__project_boundaries[i][att])+'</'+att+'>\n')
+            f.write('\t\t</boundary>\n')
+        f.write('\t</project_boundaries>\n')
+        f.write('\t<project_locations>\n')
+        for i in self.__project_locations.keys():
+            f.write('\t\t<location>\n')
+            f.write('\t\t\t<name>'+i+'</name>\n')
+            for att in self.__project_locations[i].keys():
+                f.write('\t\t\t<'+att+'>'+str(self.__project_locations[i][att])+'</'+att+'>\n')
+            f.write('\t\t</location>\n')
+        f.write('\t</project_locations>\n')
+        f.write('</URBANBEATSBOUNDARIESLOCATIONS>\n')
+        f.close()
         return True
 
     def get_global_centroid(self):
