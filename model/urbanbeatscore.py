@@ -32,6 +32,7 @@ import random
 import os
 import xml.etree.ElementTree as ET
 import datetime
+import ast
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 from . import ubdatalibrary
@@ -341,15 +342,14 @@ class UrbanBeatsSim(object):
         f.write('<URBANBEATSBOUNDARIESLOCATIONS creator="Peter M. Bach" version="1.0">\n')
         f.write('\t<project_boundaries>\n')
         for i in self.__project_boundaries.keys():
-            f.write('\t\t<boundary>\n')
-            f.write('\t\t\t<name>'+i+'</name>\n')
+            f.write('\t\t<boundary name="'+str(i)+'">\n')
             for att in self.__project_boundaries[i].keys():
                 f.write('\t\t\t<'+att+'>'+str(self.__project_boundaries[i][att])+'</'+att+'>\n')
             f.write('\t\t</boundary>\n')
         f.write('\t</project_boundaries>\n')
         f.write('\t<project_locations>\n')
         for i in self.__project_locations.keys():
-            f.write('\t\t<location>\n')
+            f.write('\t\t<location name="'+str(i)+'">\n')
             f.write('\t\t\t<name>'+i+'</name>\n')
             for att in self.__project_locations[i].keys():
                 f.write('\t\t\t<'+att+'>'+str(self.__project_locations[i][att])+'</'+att+'>\n')
@@ -393,6 +393,9 @@ class UrbanBeatsSim(object):
             datalib.setup_library_from_xml()
             self.set_data_library(datalib)
 
+            # Add simulation boundaries and locations to the project
+            self.restore_project_boundaries_and_locations_from_xml(self.__projectpath)
+
             # Restore the list of functions saved in the project
             self.restore_functions_from_xml(self.__projectpath)
 
@@ -414,6 +417,38 @@ class UrbanBeatsSim(object):
         elif condition == "import": # for importing a project
             pass    # [TO DO]
 
+    def restore_project_boundaries_and_locations_from_xml(self, projectpath):
+        """Loads the boundloc.xml file from the boundaries folder and restores the dictionaries for
+        self.__project_boundaries and self.__project_locations."""
+        try:
+            projboundloc = ET.parse(projectpath+"/boundaries/boundloc.xml")
+        except IOError:
+            return False
+        root = projboundloc.getroot()       # Root = <project_boundaries> and <project_locations>
+
+        # Restore boundaries
+        for boundary in root.find('project_boundaries'):
+            bdict = {}
+            bname = boundary.attrib["name"]
+            for child in boundary:
+                print(child.text)
+                try:
+                    bdict[child.tag] = ast.literal_eval(child.text)
+                except (ValueError, SyntaxError):
+                    bdict[child.tag] = str(child.text)
+            self.__project_boundaries[bname] = bdict
+
+        for location in root.find('project_locations'):
+            ldict = {}
+            lname = location.attrib["name"]
+            for child in location:
+                try:
+                    ldict[child.tag] = ast.literal_eval(child.text)
+                except (ValueError, SyntaxError):
+                    ldict[child.tag] = str(child.text)
+            self.__project_locations[lname] = ldict
+        return True
+
     def register_observer(self, observerobj):
         """Adds an observer references by observerobj to the self.__observers array. This uses the Observer design
         pattern."""
@@ -433,14 +468,17 @@ class UrbanBeatsSim(object):
             projinfo = ET.parse(projectpath+"/info.xml")
         except IOError:
             return False
-        print (projectpath + "/info.xml")
+        print(projectpath + "/info.xml")
         root = projinfo.getroot()
         projdict = {}
         projdata = root.find('projectinfo')
         for child in projdata:
             projdict[child.tag] = child.text
         for k in projdict.keys():
-            self.set_project_parameter(k, type(self.get_project_parameter(k))(projdict[k]))
+            if k == "date":
+                self.set_project_parameter(k, datetime.date.fromisoformat(projdict[k]))
+            else:
+                self.set_project_parameter(k, type(self.get_project_parameter(k))(projdict[k]))
         return True
 
     def get_scenario_boundary_info(self, param):
