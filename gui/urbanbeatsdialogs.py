@@ -252,7 +252,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         if scenario_boundaryname == "(select simulation boundary)":
             self.ui.boundary_combo.setCurrentIndex(0)
         else:
-            self.ui.boundary_combo.setCurrentIndex(boundarynames.index(scenario_boundaryname)+1)
+            self.ui.boundary_combo.setCurrentIndex(list(boundarynames).index(scenario_boundaryname)+1)
 
         if self.scenario.get_metadata("type") == "STATIC":
             self.ui.static_radio.setChecked(1)

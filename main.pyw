@@ -1352,6 +1352,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def call_run_simulation(self):
         """Executes the run function for the current scenario that is active in the Scenario Browser."""
+        if self.get_active_simulation_object().get_active_scenario() is None:
+            prompt_msg = "There is currently no active scenario. Please select a scenario to run a simulation on."
+            QtWidgets.QMessageBox.warning(self, 'No Active Scenario', prompt_msg, QtWidgets.QMessageBox.Ok)
+            return
+        if self.get_active_simulation_object().get_active_boundary() is None:
+            prompt_msg = "The current scenario has no active boundary assigned to it. " \
+                         "Please assign the boundary before running the simulation!"
+            QtWidgets.QMessageBox.warning(self, 'No Active Boundary', prompt_msg, QtWidgets.QMessageBox.Ok)
+            return
         self.get_active_simulation_object().run()
 
     def enable_disable_run_controls(self, state):

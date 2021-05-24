@@ -785,6 +785,9 @@ class UrbanBeatsSim(object):
         if self.get_active_scenario() is None:
             self.update_observers("No active scenario selected!")
             return
+        if self.get_active_boundary() is None:
+            self.update_observers("Scenario has no assigned boundary!")
+            return
         print("Running Active Scenario!")
         if self.__parent is None:
             pass
