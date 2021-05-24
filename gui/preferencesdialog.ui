@@ -112,7 +112,7 @@
             <x>0</x>
             <y>0</y>
             <width>473</width>
-            <height>495</height>
+            <height>476</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -317,92 +317,42 @@
                 <property name="bottomMargin">
                  <number>6</number>
                 </property>
-                <item row="2" column="2">
-                 <widget class="QLineEdit" name="coords_line">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="text">
-                   <string>lattitude longitude [decimal degrees]</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="0">
-                 <widget class="QLabel" name="location_lbl">
-                  <property name="text">
-                   <string>Default City:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="coords_lbl">
-                  <property name="text">
-                   <string>Other (enter coordinates):</string>
-                  </property>
-                 </widget>
-                </item>
                 <item row="0" column="2">
-                 <widget class="QComboBox" name="location_combo">
+                 <widget class="QComboBox" name="country_combo">
                   <property name="currentIndex">
-                   <number>3</number>
+                   <number>0</number>
                   </property>
                   <item>
                    <property name="text">
-                    <string>Adelaide, Australia</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Brisbane, Australia</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Innsbruck, Austria</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Melbourne, Australia</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Nanjing, China</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Perth, Australia</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>San Francisco, USA</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Sydney, Australia</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Zurich, Switzerland</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Other...</string>
+                    <string>(select country)</string>
                    </property>
                   </item>
                  </widget>
                 </item>
                 <item row="1" column="0">
-                 <widget class="QLabel" name="location_lbl2">
+                 <widget class="QLabel" name="location_lbl">
                   <property name="text">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(select closest city)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   <string>Default Closest City:</string>
                   </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="country_lbl">
+                  <property name="text">
+                   <string>Default Country:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <widget class="QComboBox" name="location_combo">
+                  <property name="currentIndex">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>(select city)</string>
+                   </property>
+                  </item>
                  </widget>
                 </item>
                </layout>
@@ -1649,8 +1599,7 @@
   <tabstop>projectlog_simple</tabstop>
   <tabstop>projectlog_compreh</tabstop>
   <tabstop>lang_combo</tabstop>
-  <tabstop>location_combo</tabstop>
-  <tabstop>coords_line</tabstop>
+  <tabstop>country_combo</tabstop>
   <tabstop>projpath_line</tabstop>
   <tabstop>projpath_button</tabstop>
   <tabstop>temppath_line</tabstop>

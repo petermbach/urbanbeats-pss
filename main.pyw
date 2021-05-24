@@ -99,10 +99,13 @@ class MainWindow(QtWidgets.QMainWindow):
         # --- GLOBAL OPTIONS ---
         self.__global_options = {}
         self.epsg_dict = ubspatial.get_epsg_all(UBEATSROOT)
+        self.cities_dict = ubspatial.get_cities_all(UBEATSROOT)
         self.set_options_from_config()
+        self.__default_latlong = self.cities_dict[self.__global_options["country"]][self.__global_options["city"]]
 
         # --- WORKFLOW VARIABLES ---
         self.__current_project_name = ""    # Name of the current project
+        self.__current_latlong = self.__default_latlong
         self.__saveProjectState = True      # True = unsaved, False = saved - used to track changes in workflow
         self.__activeSimulationObject = None    # The active simulation class instance: urbanbeatscore.UrbanBeatsSim()
         self.__activeScenario = None            # The active scenario
@@ -111,7 +114,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__dataview_displaystate = "default"    # The display state of the Leaflet data view, allows tracking
 
         self.__datalibraryexpanded = 0      # STATE: is the data library browser fully expanded?
-        self.__current_location = self.get_option("city")   # STATE: the current location
 
         # --- GUI SIGNALS AND SLOTS ---
         # Function naming conventions: show_ = launching dialog windows,
@@ -599,7 +601,19 @@ class MainWindow(QtWidgets.QMainWindow):
             for child in section:
                 child.text = str(newoptions[child.tag])
         options.write(UBEATSROOT+"/config.cfg")
+        self.update_default_latlong()
         self.update_gui_elements()
+
+    def update_default_latlong(self):
+        self.__default_latlong = self.cities_dict[self.__global_options["country"]][self.__global_options["city"]]
+
+    def update_current_latlong(self):
+        country = self.get_active_simulation_object().get_project_parameter("country")
+        city = self.get_active_simulation_object().get_project_parameter("city")
+        if country in ["(select country)", "Multiple"] or city in ["(select city)", "Multiple"]:
+            return
+        else:
+            self.__current_latlong = self.cities_dict[country][city]
 
     def reset_default_options(self):
         """Completely restores the default options based on the .cfg's default attribute for each option type.
@@ -607,6 +621,7 @@ class MainWindow(QtWidgets.QMainWindow):
         print("RESETTING")       #[TO DO]
         ubconfigfiles.create_default_config_cfg(UBEATSROOT)
         self.set_options_from_config()      # Reset everything, update it
+        self.update_default_latlong()
         self.update_gui_elements()
         return True
 
@@ -636,9 +651,9 @@ class MainWindow(QtWidgets.QMainWindow):
         """Resets the leaflet map view to the default location and default style based on when the program was
         opened"""
         if self.get_active_simulation_object() == None:
-            coordinates = ubglobals.COORDINATES[self.get_option("city")]
+            coordinates = self.__default_latlong
         else:
-            coordinates = ubglobals.COORDINATES[self.__current_location]
+            coordinates = self.__current_latlong
 
         tileserver = ubglobals.TILESERVERS[self.get_option("mapstyle")]
 
@@ -667,14 +682,11 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             activeboundaryname = activeboundary["boundaryname"]
 
-        # print(projectboundaries)
-        print(activeboundaryname)
-        print(projectdata)
-
         if maptype == "boundary":
             self.__dataview_displaystate = "boundary"
 
         if len(projectboundaries.keys()) == 0 and len(projectlocations.keys()) == 0:
+            self.reset_data_view_to_default()
             return False
 
         temp_map_file = self.app_tempdir+"/boundary.html"
@@ -885,8 +897,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_current_project_name(activesimulation.get_project_parameter("name"))
         self.set_active_data_library(activesimulation.get_data_library())
         self.set_active_project_log(activesimulation.get_project_log())
-        self.__current_location = activesimulation.get_project_parameter("city")
-
+        self.update_current_latlong()
         self.update_data_view("boundary")
 
         self.ui.Project.setHtml(ubreport.generate_project_overview_html(self.get_options(),

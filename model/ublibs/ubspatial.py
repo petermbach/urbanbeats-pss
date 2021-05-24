@@ -394,6 +394,19 @@ def get_epsg_all(rootpath):
     f.close()
     return epsg_dict
 
+def get_cities_all(rootpath):
+    """Returns a dictionary of all cities, countries and their lat longs. Uses the Simplemaps.com database."""
+    f = open(rootpath+"/ancillary/cities.cfg", 'r')
+    f.readline()
+    cities_dict = {}    # By Country and then by city
+    for lines in f:
+        cities_line = lines.rstrip("\n").split(",")
+        if str(cities_line[3]) not in cities_dict.keys():
+            cities_dict[str(cities_line[3])] = {}
+        cities_dict[str(cities_line[3])][str(cities_line[0])] = (float(cities_line[1]), float(cities_line[2]))
+    f.close()
+    return cities_dict
+
 
 def load_shapefile_details(file):
     """ Loads the basic shapefile for a few key properties including Map Extent, Number of Features, List of Attributes

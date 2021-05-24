@@ -82,6 +82,7 @@ class UrbanBeatsSim(object):
             "name": "New UrbanBEATS Project",
             "date": datetime.datetime.today().date(),
             "region": "",
+            "country": self.__global_options["country"],
             "city": self.__global_options["city"],
             "modeller": self.__global_options["defaultmodeller"],
             "affiliation": self.__global_options["defaultaffil"],

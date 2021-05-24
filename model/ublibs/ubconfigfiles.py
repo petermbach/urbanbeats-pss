@@ -30,8 +30,8 @@ OPTIONSGENERAL = {
     "defaultaffil": "affiliation",
     "projectlogstyle": "comprehensive",
     "language": "EN",
-    "city": "Melbourne",
-    "coordinates": "lattitude longitude [decimal degrees]",
+    "country": "Switzerland",
+    "city": "Zurich",
     "defaultpath": "none",
     "tempdir": "none",
     "tempdefault": "1",
@@ -46,12 +46,12 @@ OPTIONSSIMULATION = {
     "defaultdecision": "best" }
 
 OPTIONSMAPS = {
-    "mapstyle": "OSM",
+    "mapstyle": "TONER",
     "tileserverURL": "none",
     "cachetiles": "0",
     "offline": "0",
-    "defaultcoordsys": "WGS_1972_UTM_Zone_55S",
-    "customepsg": "32355" }
+    "defaultcoordsys": "CH1903+_LV95",
+    "customepsg": "2056" }
 
 OPTIONSEXTERNAL = {
     "epanetpath": "none",

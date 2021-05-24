@@ -1009,6 +1009,7 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         self.__viewer = viewer
         self.simulation = simulation
         self.epsg_dict = main.epsg_dict     # [REVAMP]
+        self.cities_dict = main.cities_dict
 
         # --- PRE-FILLING GUI SETUP ---
         if self.__viewer == 1:     # Edit Project Details
@@ -1020,7 +1021,6 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         self.ui.projname_line.setText(self.simulation.get_project_parameter("name"))
         self.ui.date_spin.setDate(self.simulation.get_project_parameter("date"))
         self.ui.region_line.setText(self.simulation.get_project_parameter("region"))        # [REVAMP] - city library
-        self.ui.location_combo.setCurrentIndex(ubglobals.CITIES.index(self.simulation.get_project_parameter("city")))   # [REVAMP]
         self.ui.modellername_box.setText(self.simulation.get_project_parameter("modeller"))
         self.ui.affiliation_box.setText(self.simulation.get_project_parameter("affiliation"))
         self.ui.otherpersons_box.setPlainText(self.simulation.get_project_parameter("otherpersons"))
@@ -1034,6 +1034,29 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
             self.ui.projectlog_compreh.setChecked(1)
         else:
             self.ui.projectlog_simple.setChecked(1)
+
+        # Country combo box
+        self.update_country_combo()
+        countryname = self.simulation.get_project_parameter("country")
+        countrynames = list(self.cities_dict.keys())
+        if countryname == "(select country)":
+            self.ui.country_combo.setCurrentIndex(0)
+        elif countryname == "Multiple":
+            self.ui.country_combo.setCurrentIndex(len(countrynames)+2)
+        else:
+            self.ui.country_combo.setCurrentIndex(list(self.cities_dict.keys()).index(countryname)+1)
+
+        # City combo box
+        self.update_city_combo()
+        cityname = self.simulation.get_project_parameter("city")
+        citynames = list(self.cities_dict[countryname].keys())
+        citynames.sort()
+        if cityname == "(select city)" or countryname == "(select country)":
+            self.ui.location_combo.setCurrentIndex(0)
+        elif cityname == "Multiple":
+            self.ui.location_combo.setCurrentIndex(len(citynames)+2)
+        else:
+            self.ui.location_combo.setCurrentIndex(citynames.index(cityname)+1)
 
         self.update_coord_combo()
         self.ui.epsg_line.setText(self.simulation.get_project_parameter("project_epsg"))
@@ -1053,6 +1076,32 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         self.timer_linedit.timeout.connect(self.update_combo_from_epsg)
         self.ui.epsg_line.textEdited.connect(lambda: self.timer_linedit.start())
         self.ui.coords_combo.currentIndexChanged.connect(self.update_epsg_from_combo)
+        self.ui.country_combo.currentIndexChanged.connect(self.update_city_combo)
+
+    def update_city_combo(self):
+        """Updates the closest city combo box based on the current value of country in the country combo box."""
+        self.ui.location_combo.clear()
+        self.ui.location_combo.addItem("(select city)")
+        countryname = self.ui.country_combo.currentText()
+        if countryname == "(select country)":
+            self.ui.location_combo.setCurrentIndex(0)
+            return
+        citynames = list(self.cities_dict[countryname].keys())
+        citynames.sort()
+        for i in citynames:
+            self.ui.location_combo.addItem(i)
+        self.ui.location_combo.addItem("Multiple")
+        self.ui.location_combo.setCurrentIndex(0)
+
+    def update_country_combo(self):
+        """Fills in the list of countries into the combo box."""
+        self.ui.country_combo.clear()
+        self.ui.country_combo.addItem("(select country)")
+        names = list(self.cities_dict.keys())
+        for i in names:
+            self.ui.country_combo.addItem(i)
+        self.ui.country_combo.addItem("Multiple")
+        self.ui.country_combo.setCurrentIndex(0)
 
     def update_coord_combo(self):
         """Updates the coordinate system's combobox and the UI elements associated with it."""
@@ -1160,7 +1209,8 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
         self.simulation.set_project_parameter("name", self.ui.projname_line.text())
         self.simulation.set_project_parameter("date", self.ui.date_spin.date().toPyDate())
         self.simulation.set_project_parameter("region", self.ui.region_line.text())
-        self.simulation.set_project_parameter("city", ubglobals.CITIES[self.ui.location_combo.currentIndex()])
+        self.simulation.set_project_parameter("country", self.ui.country_combo.currentText())
+        self.simulation.set_project_parameter("city", self.ui.location_combo.currentText())
         self.simulation.set_project_parameter("modeller", self.ui.modellername_box.text())
         self.simulation.set_project_parameter("affiliation", self.ui.affiliation_box.text())
         self.simulation.set_project_parameter("otherpersons", self.ui.otherpersons_box.toPlainText())
@@ -1186,6 +1236,8 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         self.ui = Ui_PreferencesDialog()
         self.ui.setupUi(self)
         self.epsg_dict = main.epsg_dict
+        self.cities_dict = main.cities_dict
+
         self.ui.options_tabs.setCurrentIndex(tabindex)
 
         self.module = main
@@ -1203,8 +1255,28 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
 
         self.ui.lang_combo.setCurrentIndex(ubglobals.LANGUAGECOMBO.index(self.options["language"]))
 
-        self.ui.location_combo.setCurrentIndex(ubglobals.CITIES.index(self.options["city"]))
-        self.ui_coords_line_enabledisable()
+        # Country combo box
+        self.update_country_combo()
+        countryname = self.options["country"]
+        countrynames = list(self.cities_dict.keys())
+        if countryname == "(select country)":
+            self.ui.country_combo.setCurrentIndex(0)
+        elif countryname == "Multiple":
+            self.ui.country_combo.setCurrentIndex(len(countrynames) + 2)
+        else:
+            self.ui.country_combo.setCurrentIndex(list(self.cities_dict.keys()).index(countryname) + 1)
+
+        # City combo box
+        self.update_city_combo()
+        cityname = self.options["city"]
+        citynames = list(self.cities_dict[countryname].keys())
+        citynames.sort()
+        if cityname == "(select city)" or countryname == "(select country)":
+            self.ui.location_combo.setCurrentIndex(0)
+        elif cityname == "Multiple":
+            self.ui.location_combo.setCurrentIndex(len(citynames) + 2)
+        else:
+            self.ui.location_combo.setCurrentIndex(citynames.index(cityname) + 1)
 
         self.ui.projpath_line.setText(str(self.options["defaultpath"]))
         self.ui.temppath_line.setText(str(self.options["tempdir"]))
@@ -1253,7 +1325,7 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         # --- SIGNALS AND SLOTS ---
         self.accepted.connect(self.save_values)
         self.ui.reset_button.clicked.connect(self.reset_values)
-        self.ui.location_combo.currentIndexChanged.connect(self.ui_coords_line_enabledisable)
+        self.ui.country_combo.currentIndexChanged.connect(self.update_city_combo)
         self.ui.temppath_check.clicked.connect(self.ui_temppath_line_enabledisable)
         self.ui.projpath_button.clicked.connect(lambda: self.get_path("P"))
         self.ui.temppath_button.clicked.connect(lambda: self.get_path("T"))
@@ -1261,6 +1333,31 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
         self.ui.epanetpath_button.clicked.connect(lambda: self.get_path("E"))
         self.ui.swmmpath_button.clicked.connect(lambda: self.get_path("S"))
         self.ui.musicpath_button.clicked.connect(lambda: self.get_path("M"))
+
+    def update_city_combo(self):
+        """Updates the closest city combo box based on the current value of country in the country combo box."""
+        self.ui.location_combo.clear()
+        self.ui.location_combo.addItem("(select city)")
+        countryname = self.ui.country_combo.currentText()
+        if countryname == "(select country)":
+            self.ui.location_combo.setCurrentIndex(0)
+            return
+        citynames = list(self.cities_dict[countryname].keys())
+        citynames.sort()
+        for i in citynames:
+            self.ui.location_combo.addItem(i)
+        self.ui.location_combo.addItem("Multiple")
+        self.ui.location_combo.setCurrentIndex(0)
+
+    def update_country_combo(self):
+        """Fills in the list of countries into the combo box."""
+        self.ui.country_combo.clear()
+        self.ui.country_combo.addItem("(select country)")
+        names = list(self.cities_dict.keys())
+        for i in names:
+            self.ui.country_combo.addItem(i)
+        self.ui.country_combo.addItem("Multiple")
+        self.ui.country_combo.setCurrentIndex(0)
 
     def update_coord_combo(self):
         """Updates the coordinate system's combobox and the UI elements associated with it."""
@@ -1354,13 +1451,6 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
             self.ui.temppath_line.setEnabled(1)
             self.ui.temppath_button.setEnabled(1)
 
-    def ui_coords_line_enabledisable(self):
-        """Enables/Disables the coordinates input box based on selected city"""
-        if self.ui.location_combo.currentIndex() == self.ui.location_combo.count()-1:
-            self.ui.coords_line.setEnabled(1)
-        else:
-            self.ui.coords_line.setEnabled(0)
-
     def reset_values(self):
         """Resets all option values and closes the options/preferences dialog window."""
         self.module.reset_default_options()
@@ -1381,9 +1471,10 @@ class PreferenceDialogLaunch(QtWidgets.QDialog):
             self.options["projectlogstyle"] = "simplified"
 
         self.options["language"] = str(ubglobals.LANGUAGECOMBO[self.ui.lang_combo.currentIndex()])
-        self.options["city"] = str(ubglobals.CITIES[self.ui.location_combo.currentIndex()])
 
-        self.options["coordinates"] = str(self.ui.coords_line.text())
+        self.options["country"] = str(self.ui.country_combo.currentText())
+        self.options["city"] = str(self.ui.location_combo.currentText())
+
         self.options["defaultpath"] = str(self.ui.projpath_line.text())
         self.options["tempdir"] = str(self.ui.temppath_line.text())
         self.options["tempdefault"] = int(self.ui.temppath_check.isChecked())
