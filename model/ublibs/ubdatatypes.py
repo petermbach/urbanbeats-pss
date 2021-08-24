@@ -230,6 +230,8 @@ class UBVector(UBComponent):
     def get_points(self):
         """Returns an array of points (tuples), each having (x, y, z) sets of
         coordinates"""
+        if len(self.__points) == 1:     # If the feature is simply a POINT features, then just return the x, y as tuple
+            return self.__points[0]     # This catches the exception in scripts with points.
         return self.__points
 
     def get_edges(self):
