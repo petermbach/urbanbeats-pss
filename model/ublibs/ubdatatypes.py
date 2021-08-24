@@ -290,6 +290,7 @@ class UBVector(UBComponent):
             else:
                 self.__dtype = "POLYLINE"
         self.determine_extents()
+
         return True
 
     def determine_extents(self):

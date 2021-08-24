@@ -1,5 +1,5 @@
 r"""
-@file   md_infrastructureguic.py
+@file   md_bgsplanningguic.py
 @author Peter M Bach <peterbach@gmail.com>, Natalia Duque <natalia.duquevillarreal@eawag.ch>
 @section LICENSE
 

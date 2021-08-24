@@ -2252,6 +2252,9 @@ p, li { white-space: pre-wrap; }
               </item>
               <item>
                <widget class="QWidget" name="amenity_titlewidget" native="true">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <layout class="QGridLayout" name="gridLayout_126">
                  <item row="1" column="0">
                   <widget class="QCheckBox" name="amenity_check">
@@ -2361,6 +2364,9 @@ p, li { white-space: pre-wrap; }
               </item>
               <item>
                <widget class="QWidget" name="amenity_config" native="true">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <layout class="QGridLayout" name="gridLayout_108">
                  <item row="4" column="0">
                   <spacer name="horizontalSpacer_224">
@@ -3318,13 +3324,6 @@ p, li { white-space: pre-wrap; }
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="1">
-                  <widget class="QCheckBox" name="service_li">
-                   <property name="text">
-                    <string>Light Industrial Estates</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="2" column="0">
                   <widget class="QCheckBox" name="service_com">
                    <property name="text">
@@ -3332,10 +3331,24 @@ p, li { white-space: pre-wrap; }
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="1">
+                 <item row="0" column="1">
+                  <widget class="QCheckBox" name="service_li">
+                   <property name="text">
+                    <string>Light Industrial Estates</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
                   <widget class="QCheckBox" name="service_hi">
                    <property name="text">
                     <string>Heavy Industrial Estates</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QCheckBox" name="service_civ">
+                   <property name="text">
+                    <string>Civic Facilities</string>
                    </property>
                   </widget>
                  </item>
@@ -3410,7 +3423,7 @@ p, li { white-space: pre-wrap; }
                  <item row="2" column="0">
                   <widget class="QCheckBox" name="restrictions_ref">
                    <property name="text">
-                    <string>Prohibit Nature-based Infrastructure in Reserves and Floodways</string>
+                    <string>Restrict use of Blue Green Infrastructure in Reserves and Floodways</string>
                    </property>
                   </widget>
                  </item>
@@ -3459,7 +3472,7 @@ p, li { white-space: pre-wrap; }
                  <item row="3" column="0">
                   <widget class="QCheckBox" name="restrictions_for">
                    <property name="text">
-                    <string>Prohibit use of Blue-Green Infrastructure in Forests</string>
+                    <string>Restrict use of Blue-Green Infrastructure in Forests</string>
                    </property>
                   </widget>
                  </item>
@@ -3567,7 +3580,7 @@ p, li { white-space: pre-wrap; }
        <item>
         <widget class="QGroupBox" name="existing_box">
          <property name="enabled">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="title">
           <string/>
@@ -3591,7 +3604,7 @@ p, li { white-space: pre-wrap; }
           <item>
            <widget class="QLabel" name="existing_title">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Existing Blue-Green Assets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -3601,7 +3614,7 @@ p, li { white-space: pre-wrap; }
           <item>
            <widget class="Line" name="existing_line">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -3635,7 +3648,7 @@ p, li { white-space: pre-wrap; }
               <item>
                <widget class="QLabel" name="existing_assets_title">
                 <property name="enabled">
-                 <bool>true</bool>
+                 <bool>false</bool>
                 </property>
                 <property name="minimumSize">
                  <size>
@@ -3720,7 +3733,7 @@ p, li { white-space: pre-wrap; }
               <item>
                <widget class="QLabel" name="assets_inventory_lbl">
                 <property name="enabled">
-                 <bool>true</bool>
+                 <bool>false</bool>
                 </property>
                 <property name="minimumSize">
                  <size>
@@ -3877,7 +3890,7 @@ p, li { white-space: pre-wrap; }
               <item>
                <widget class="QLabel" name="retrofit_title">
                 <property name="enabled">
-                 <bool>true</bool>
+                 <bool>false</bool>
                 </property>
                 <property name="minimumSize">
                  <size>
@@ -4716,7 +4729,7 @@ p, li { white-space: pre-wrap; }
               <item row="2" column="1">
                <widget class="QLabel" name="bgs_solutions_lbl2">
                 <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic;&quot;&gt;Nature-based solutions&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic;&quot;&gt;Nature-based technologies&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
@@ -4903,6 +4916,9 @@ p, li { white-space: pre-wrap; }
               </item>
               <item>
                <widget class="QWidget" name="planalgo_widget" native="true">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_3">
                  <item>
                   <widget class="QLabel" name="planalgo_lbl">
@@ -5608,7 +5624,7 @@ p, li { white-space: pre-wrap; }
        <item>
         <widget class="QGroupBox" name="lcc_box">
          <property name="enabled">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="title">
           <string/>
@@ -5617,7 +5633,7 @@ p, li { white-space: pre-wrap; }
           <item>
            <widget class="QLabel" name="lcc_title">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Life Cycle Costing Details&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -5627,7 +5643,7 @@ p, li { white-space: pre-wrap; }
           <item>
            <widget class="Line" name="lcc_line">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -6778,7 +6794,7 @@ p, li { white-space: pre-wrap; }
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>-399</y>
+               <y>0</y>
                <width>688</width>
                <height>914</height>
               </rect>
@@ -7921,8 +7937,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>534</width>
-               <height>855</height>
+               <width>688</width>
+               <height>886</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -8994,8 +9010,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>534</width>
-               <height>855</height>
+               <width>688</width>
+               <height>886</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -10143,8 +10159,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>534</width>
-               <height>855</height>
+               <width>688</width>
+               <height>886</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_62">
@@ -11289,7 +11305,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>534</width>
-               <height>855</height>
+               <height>886</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_64">
@@ -12434,7 +12450,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>534</width>
-               <height>855</height>
+               <height>886</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -13525,7 +13541,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>534</width>
-               <height>855</height>
+               <height>886</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_57">
@@ -14602,7 +14618,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>534</width>
-               <height>829</height>
+               <height>860</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_66">
@@ -15660,7 +15676,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>534</width>
-               <height>837</height>
+               <height>868</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_71">
@@ -16697,7 +16713,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>534</width>
-               <height>829</height>
+               <height>860</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_70">
@@ -17748,7 +17764,7 @@ p, li { white-space: pre-wrap; }
                <x>0</x>
                <y>0</y>
                <width>534</width>
-               <height>829</height>
+               <height>860</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_76">
@@ -18798,8 +18814,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>534</width>
-               <height>855</height>
+               <width>688</width>
+               <height>886</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_73">
@@ -19862,8 +19878,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>229</width>
-               <height>217</height>
+               <width>688</width>
+               <height>487</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_78">
@@ -20236,8 +20252,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>219</width>
-               <height>392</height>
+               <width>688</width>
+               <height>487</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_79">
