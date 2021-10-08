@@ -8,6 +8,7 @@ splashscreens/
 scriptboard/
 temp/
 virtualenv/
+venv/
 whl/
 config.cfg
 recent.cfg
