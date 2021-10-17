@@ -101,11 +101,8 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.planzone_combo.clear()
         [self.ui.planzone_combo.addItem(str(self.planzonemaps[0][i])) for i in range(len(self.planzonemaps[0]))]
 
-        self.ui.city_combo.clear()
-        self.citynames = list(ubglobals.COORDINATES.keys())
-        self.citynames.sort()
-        self.citynames.append("Other")
-        [self.ui.city_combo.addItem(str(n)) for n in self.citynames]
+        self.update_city_combo()
+        self.ui.city_combo.setEnabled(0)    # Disables this combo box
 
         self.rivermaps = self.get_dataref_array("spatial", "Water Bodies", "Rivers")
         self.ui.rivers_combo.clear()
@@ -168,6 +165,19 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.patchflow_searchradius_auto.clicked.connect(self.enable_disable_guis)
 
         self.ui.buttonBox.accepted.connect(self.save_values)
+
+    def update_city_combo(self):
+        """Updates the city in the combo box based on the project's current settings."""
+        self.ui.city_combo.clear()
+        self.ui.city_combo.addItem("(select city)")
+        countryname = self.simulation.get_project_parameter("country")
+        citynames = list(self.maingui.cities_dict[countryname].keys())
+        citynames.sort()
+        for i in citynames:
+            self.ui.city_combo.addItem(i)
+
+        currentcity = self.simulation.get_project_parameter("city")
+        self.ui.city_combo.setCurrentIndex(citynames.index(currentcity) + 1)
 
     def setup_gui_with_parameters(self):
         """Sets all parameters in the GUI based on the current year."""
@@ -265,8 +275,6 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         else:
             self.ui.cbdmanual_radio.setChecked(1)
 
-        project_city = self.simulation.get_project_parameter("city")
-        self.ui.city_combo.setCurrentIndex(self.citynames.index(project_city))
         self.ui.cbdlong_box.setText(str(self.module.get_parameter("locationLong")))
         self.ui.cbdlat_box.setText(str(self.module.get_parameter("locationLat")))
         self.ui.cbdmark_check.setChecked(self.module.get_parameter("marklocation"))
@@ -364,7 +372,7 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
         self.ui.planzone_line.setEnabled(self.ui.planzone_check.isChecked())
 
         self.ui.resolution_spin.setEnabled(not(self.ui.resolution_sq_auto.isChecked()))
-        self.ui.city_combo.setEnabled(self.ui.cbdknown_radio.isChecked())
+        # self.ui.city_combo.setEnabled(self.ui.cbdknown_radio.isChecked())
         self.ui.cbdlong_box.setEnabled(self.ui.cbdmanual_radio.isChecked())
         self.ui.cbdlat_box.setEnabled(self.ui.cbdmanual_radio.isChecked())
         self.ui.cbdmark_check.setEnabled(self.ui.cbdmanual_radio.isChecked())
@@ -521,7 +529,6 @@ class DelinBlocksGuiLaunch(QtWidgets.QDialog):
             self.module.set_parameter("locationOption", "S")
         else:
             self.module.set_parameter("locationOption", "C")
-        self.module.set_parameter("locationCity", self.citynames[self.ui.city_combo.currentIndex()])
         self.module.set_parameter("locationLong", float(self.ui.cbdlong_box.text()))
         self.module.set_parameter("locationLat", float(self.ui.cbdlat_box.text()))
         self.module.set_parameter("marklocation", int(self.ui.cbdmark_check.isChecked()))

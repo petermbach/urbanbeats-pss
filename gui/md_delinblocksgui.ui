@@ -62,7 +62,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../graphics/ubeats.qrc">:/images/images/md_spatial.png</pixmap>
+         <pixmap resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">:/images/images/md_spatial.png</pixmap>
         </property>
        </widget>
       </item>
@@ -218,7 +218,7 @@
             <string/>
            </property>
            <property name="pixmap">
-            <pixmap resource="../graphics/ubeats.qrc">:/images/images/md_spatial_pic.png</pixmap>
+            <pixmap resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">:/images/images/md_spatial_pic.png</pixmap>
            </property>
           </widget>
          </item>
@@ -544,7 +544,7 @@ p, li { white-space: pre-wrap; }
                        <string>Square-based Representation</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="../graphics/ubeats.qrc">
+                       <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
                         <normaloff>:/images/images/md_spatial_block.png</normaloff>:/images/images/md_spatial_block.png</iconset>
                       </property>
                      </item>
@@ -553,7 +553,7 @@ p, li { white-space: pre-wrap; }
                        <string>Hex-based Representation</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="../graphics/ubeats.qrc">
+                       <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
                         <normaloff>:/images/images/md_spatial_hex.png</normaloff>:/images/images/md_spatial_hex.png</iconset>
                       </property>
                      </item>
@@ -562,7 +562,7 @@ p, li { white-space: pre-wrap; }
                        <string>Patch-based Representation</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="../graphics/ubeats.qrc">
+                       <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
                         <normaloff>:/images/images/md_spatial_patch.png</normaloff>:/images/images/md_spatial_patch.png</iconset>
                       </property>
                      </item>
@@ -805,7 +805,7 @@ p, li { white-space: pre-wrap; }
                           <string/>
                          </property>
                          <property name="pixmap">
-                          <pixmap resource="../graphics/ubeats.qrc">:/images/images/md_spatial_moore.png</pixmap>
+                          <pixmap resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">:/images/images/md_spatial_moore.png</pixmap>
                          </property>
                         </widget>
                        </item>
@@ -850,7 +850,7 @@ p, li { white-space: pre-wrap; }
                           <string/>
                          </property>
                          <property name="pixmap">
-                          <pixmap resource="../graphics/ubeats.qrc">:/images/images/md_spatial_vNeumann.png</pixmap>
+                          <pixmap resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">:/images/images/md_spatial_vNeumann.png</pixmap>
                          </property>
                         </widget>
                        </item>
@@ -1159,7 +1159,7 @@ p, li { white-space: pre-wrap; }
                           <string/>
                          </property>
                          <property name="pixmap">
-                          <pixmap resource="../graphics/ubeats.qrc">:/images/images/md_hex_NSorient.png</pixmap>
+                          <pixmap resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">:/images/images/md_hex_NSorient.png</pixmap>
                          </property>
                         </widget>
                        </item>
@@ -1207,7 +1207,7 @@ p, li { white-space: pre-wrap; }
                           <string/>
                          </property>
                          <property name="pixmap">
-                          <pixmap resource="../graphics/ubeats.qrc">:/images/images/md_hex_EWorient.png</pixmap>
+                          <pixmap resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">:/images/images/md_hex_EWorient.png</pixmap>
                          </property>
                         </widget>
                        </item>
@@ -1316,7 +1316,7 @@ p, li { white-space: pre-wrap; }
                           <string/>
                          </property>
                          <property name="pixmap">
-                          <pixmap resource="../graphics/ubeats.qrc">:/images/images/md_spatial_hexiso.png</pixmap>
+                          <pixmap resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">:/images/images/md_spatial_hexiso.png</pixmap>
                          </property>
                         </widget>
                        </item>
@@ -1417,7 +1417,7 @@ p, li { white-space: pre-wrap; }
                            <string>Square</string>
                           </property>
                           <property name="icon">
-                           <iconset resource="../graphics/ubeats.qrc">
+                           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
                             <normaloff>:/images/images/md_spatial_block.png</normaloff>:/images/images/md_spatial_block.png</iconset>
                           </property>
                          </item>
@@ -1426,7 +1426,7 @@ p, li { white-space: pre-wrap; }
                            <string>Hexagonal (North-South)</string>
                           </property>
                           <property name="icon">
-                           <iconset resource="../graphics/ubeats.qrc">
+                           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
                             <normaloff>:/images/images/md_hex_NSorient.png</normaloff>:/images/images/md_hex_NSorient.png</iconset>
                           </property>
                          </item>
@@ -1435,7 +1435,7 @@ p, li { white-space: pre-wrap; }
                            <string>Hexagonal (East-West)</string>
                           </property>
                           <property name="icon">
-                           <iconset resource="../graphics/ubeats.qrc">
+                           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
                             <normaloff>:/images/images/md_hex_EWorient.png</normaloff>:/images/images/md_hex_EWorient.png</iconset>
                           </property>
                          </item>
@@ -1593,7 +1593,7 @@ p, li { white-space: pre-wrap; }
                           <string/>
                          </property>
                          <property name="pixmap">
-                          <pixmap resource="../graphics/ubeats.qrc">:/images/images/md_spatial_patchedges.png</pixmap>
+                          <pixmap resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">:/images/images/md_spatial_patchedges.png</pixmap>
                          </property>
                         </widget>
                        </item>
@@ -1652,7 +1652,7 @@ p, li { white-space: pre-wrap; }
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
+               <y>-26</y>
                <width>549</width>
                <height>435</height>
               </rect>
@@ -1962,7 +1962,7 @@ p, li { white-space: pre-wrap; }
                       <string>Choose the nearest city if your case study is within its metropolitan region.</string>
                      </property>
                      <property name="text">
-                      <string>Select from a list of known locations</string>
+                      <string>Use current project city</string>
                      </property>
                     </widget>
                    </item>
@@ -2915,7 +2915,7 @@ p, li { white-space: pre-wrap; }
                       <string/>
                      </property>
                      <property name="pixmap">
-                      <pixmap resource="../graphics/ubeats.qrc">:/images/images/md_spatial_hexiso.png</pixmap>
+                      <pixmap resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">:/images/images/md_spatial_hexiso.png</pixmap>
                      </property>
                     </widget>
                    </item>
@@ -2940,7 +2940,7 @@ p, li { white-space: pre-wrap; }
                       <string/>
                      </property>
                      <property name="pixmap">
-                      <pixmap resource="../graphics/ubeats.qrc">:/images/images/md_spatial_hex4.png</pixmap>
+                      <pixmap resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">:/images/images/md_spatial_hex4.png</pixmap>
                      </property>
                     </widget>
                    </item>
@@ -3034,7 +3034,7 @@ p, li { white-space: pre-wrap; }
                       <string/>
                      </property>
                      <property name="pixmap">
-                      <pixmap resource="../graphics/ubeats.qrc">:/images/images/md_spatial_hexYnorm.png</pixmap>
+                      <pixmap resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">:/images/images/md_spatial_hexYnorm.png</pixmap>
                      </property>
                     </widget>
                    </item>
@@ -3059,7 +3059,7 @@ p, li { white-space: pre-wrap; }
                       <string/>
                      </property>
                      <property name="pixmap">
-                      <pixmap resource="../graphics/ubeats.qrc">:/images/images/md_spatial_hexYinv.png</pixmap>
+                      <pixmap resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">:/images/images/md_spatial_hexYinv.png</pixmap>
                      </property>
                     </widget>
                    </item>
@@ -3241,7 +3241,7 @@ p, li { white-space: pre-wrap; }
          <string>Help</string>
         </property>
         <property name="icon">
-         <iconset resource="../graphics/ubeats.qrc">
+         <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
           <normaloff>:/icons/Help-icon.png</normaloff>:/icons/Help-icon.png</iconset>
         </property>
        </widget>
@@ -3260,7 +3260,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>help_button</tabstop>
  </tabstops>
  <resources>
-  <include location="../graphics/ubeats.qrc"/>
+  <include location="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
+  <include location="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
   <include location="../graphics/ubeats.qrc"/>
  </resources>
  <connections>
