@@ -54,7 +54,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../graphics/ubeats.qrc">:/icons/Map-icon (1).png</pixmap>
+         <pixmap resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">:/icons/Map-icon (1).png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -78,7 +78,7 @@
       <item row="1" column="1">
        <widget class="QLabel" name="subtitle">
         <property name="text">
-         <string>Customize the simulation type and modules.</string>
+         <string>Customize key details for the new scenario</string>
         </property>
        </widget>
       </item>
@@ -146,141 +146,93 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="simtype_widget" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <property name="spacing">
-       <number>6</number>
-      </property>
-      <property name="leftMargin">
-       <number>6</number>
-      </property>
-      <property name="topMargin">
-       <number>6</number>
-      </property>
-      <property name="rightMargin">
-       <number>6</number>
-      </property>
-      <property name="bottomMargin">
-       <number>6</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="simtype_lbl">
-        <property name="whatsThis">
-         <string>Rainfall time series, obtain data from weather station or climate authority of your city. Time series should be in rainfall depth and have units millimetres.</string>
-        </property>
-        <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Simulation Type:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="static_radio">
-        <property name="text">
-         <string>Static</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../graphics/ubeats.qrc">
-          <normaloff>:/icons/camera.png</normaloff>:/icons/camera.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="benchmark_radio">
-        <property name="text">
-         <string>Benchmark</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../graphics/ubeats.qrc">
-          <normaloff>:/icons/78125-park-bench.png</normaloff>:/icons/78125-park-bench.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="dynamic_radio">
-        <property name="text">
-         <string>Dynamic</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../graphics/ubeats.qrc">
-          <normaloff>:/icons/55191-clock-symbol-of-circular-shape.png</normaloff>:/icons/55191-clock-symbol-of-circular-shape.png</iconset>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
     <widget class="QTabWidget" name="setup_widget">
      <property name="currentIndex">
       <number>0</number>
      </property>
      <widget class="QWidget" name="narrative_tab">
       <attribute name="icon">
-       <iconset resource="../graphics/ubeats.qrc">
-        <normaloff>:/icons/pages-brown-icon.png</normaloff>:/icons/pages-brown-icon.png</iconset>
-      </attribute>
-      <attribute name="title">
-       <string>Narrative</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_6">
-         <property name="spacing">
-          <number>6</number>
-         </property>
-         <property name="leftMargin">
-          <number>6</number>
-         </property>
-         <property name="topMargin">
-          <number>6</number>
-         </property>
-         <property name="rightMargin">
-          <number>6</number>
-         </property>
-         <property name="bottomMargin">
-          <number>6</number>
-         </property>
-         <item>
-          <widget class="QLabel" name="narrative_lbl">
-           <property name="whatsThis">
-            <string>Rainfall time series, obtain data from weather station or climate authority of your city. Time series should be in rainfall depth and have units millimetres.</string>
-           </property>
-           <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Provide some details on the scenario&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPlainTextEdit" name="narrative_box">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>100</height>
-            </size>
-           </property>
-           <property name="documentTitle">
-            <string/>
-           </property>
-           <property name="plainText">
-            <string>(enter scenario description)</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="details_tab">
-      <attribute name="icon">
-       <iconset resource="../graphics/ubeats.qrc">
+       <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
         <normaloff>:/icons/Settings-icon.png</normaloff>:/icons/Settings-icon.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>Details</string>
+       <string>General Info</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_8">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QWidget" name="timestep_widget" native="true">
+        <widget class="QWidget" name="widget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="narrative_icon">
+            <property name="minimumSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="pixmap">
+             <pixmap resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">:/icons/pages-brown-icon.png</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="narrative_lbl">
+            <property name="whatsThis">
+             <string>Rainfall time series, obtain data from weather station or climate authority of your city. Time series should be in rainfall depth and have units millimetres.</string>
+            </property>
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Scenario Description / Narrative&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="scaledContents">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPlainTextEdit" name="narrative_box">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>100</height>
+          </size>
+         </property>
+         <property name="documentTitle">
+          <string/>
+         </property>
+         <property name="plainText">
+          <string>(enter scenario description)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="metadata_widget" native="true">
          <layout class="QGridLayout" name="gridLayout_6">
           <property name="leftMargin">
            <number>6</number>
@@ -297,34 +249,28 @@
           <property name="spacing">
            <number>6</number>
           </property>
-          <item row="0" column="3">
-           <widget class="QLabel" name="simyear_lbl2">
-            <property name="text">
-             <string>to</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="4">
-           <widget class="QSpinBox" name="endyear_spin">
-            <property name="minimumSize">
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
              <size>
-              <width>75</width>
-              <height>0</height>
+              <width>40</width>
+              <height>20</height>
              </size>
             </property>
-            <property name="minimum">
-             <number>1900</number>
-            </property>
-            <property name="maximum">
-             <number>2500</number>
-            </property>
-            <property name="value">
-             <number>2068</number>
+           </spacer>
+          </item>
+          <item row="2" column="3" colspan="2">
+           <widget class="QCheckBox" name="naming_check">
+            <property name="text">
+             <string>Use scenario name (spaces become underscores)</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="timestep_lbl">
+          <item row="0" column="1">
+           <widget class="QLabel" name="simyear_lbl">
             <property name="minimumSize">
              <size>
               <width>120</width>
@@ -335,27 +281,24 @@
              <string>Rainfall time series, obtain data from weather station or climate authority of your city. Time series should be in rainfall depth and have units millimetres.</string>
             </property>
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Dynamic Time Step:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Simulation Year:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QSpinBox" name="timestep_spin">
-            <property name="suffix">
-             <string> years</string>
+          <item row="1" column="3" colspan="2">
+           <widget class="QLineEdit" name="naming_line">
+            <property name="enabled">
+             <bool>true</bool>
             </property>
-            <property name="minimum">
-             <number>1</number>
+            <property name="text">
+             <string>(enter a naming convention for outputs)</string>
             </property>
-            <property name="maximum">
-             <number>20</number>
-            </property>
-            <property name="value">
-             <number>1</number>
+            <property name="readOnly">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
+          <item row="0" column="3">
            <widget class="QSpinBox" name="startyear_spin">
             <property name="minimumSize">
              <size>
@@ -374,422 +317,78 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="5">
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="simyear_lbl">
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>0</height>
-             </size>
-            </property>
+          <item row="1" column="1">
+           <widget class="QLabel" name="naming_lbl">
             <property name="whatsThis">
              <string>Rainfall time series, obtain data from weather station or climate authority of your city. Time series should be in rainfall depth and have units millimetres.</string>
             </property>
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Simulation Period:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Base Filename:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="4">
-           <widget class="QCheckBox" name="timestep_irregular">
+          <item row="0" column="0">
+           <widget class="QLabel" name="simyear_icon">
+            <property name="minimumSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
             <property name="text">
-             <string>Irregular</string>
+             <string/>
+            </property>
+            <property name="pixmap">
+             <pixmap resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">:/icons/55191-clock-symbol-of-circular-shape.png</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
-          <item row="1" column="5">
-           <widget class="QPushButton" name="timestep_irregular_button">
+          <item row="1" column="0">
+           <widget class="QLabel" name="naming_icon">
+            <property name="minimumSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
             <property name="text">
-             <string>Select Years to Run</string>
+             <string/>
+            </property>
+            <property name="pixmap">
+             <pixmap resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">:/icons/Reports-icon.png</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
          </layout>
         </widget>
-       </item>
-       <item>
-        <widget class="QWidget" name="timestep_widget_2" native="true">
-         <layout class="QGridLayout" name="gridLayout_7">
-          <property name="leftMargin">
-           <number>6</number>
-          </property>
-          <property name="topMargin">
-           <number>6</number>
-          </property>
-          <property name="rightMargin">
-           <number>6</number>
-          </property>
-          <property name="bottomMargin">
-           <number>6</number>
-          </property>
-          <property name="spacing">
-           <number>6</number>
-          </property>
-          <item row="0" column="2">
-           <widget class="QSpinBox" name="benchmark_spin">
-            <property name="minimumSize">
-             <size>
-              <width>75</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="minimum">
-             <number>10</number>
-            </property>
-            <property name="maximum">
-             <number>10000</number>
-            </property>
-            <property name="singleStep">
-             <number>10</number>
-            </property>
-            <property name="value">
-             <number>100</number>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3">
-           <spacer name="horizontalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="benchmark_lbl">
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="whatsThis">
-             <string>Rainfall time series, obtain data from weather station or climate authority of your city. Time series should be in rainfall depth and have units millimetres.</string>
-            </property>
-            <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Benchmark Iterations:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>193</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="module_tab">
-      <attribute name="icon">
-       <iconset resource="../graphics/ubeats.qrc">
-        <normaloff>:/icons/palette-icon.png</normaloff>:/icons/palette-icon.png</iconset>
-      </attribute>
-      <attribute name="title">
-       <string>Customize Modules</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <layout class="QVBoxLayout" name="verticalLayout_7">
-         <property name="spacing">
-          <number>6</number>
-         </property>
-         <property name="leftMargin">
-          <number>6</number>
-         </property>
-         <property name="topMargin">
-          <number>6</number>
-         </property>
-         <property name="rightMargin">
-          <number>6</number>
-         </property>
-         <property name="bottomMargin">
-          <number>6</number>
-         </property>
-         <item>
-          <widget class="QLabel" name="descr_lbl">
-           <property name="text">
-            <string>Select the Modules you would like to include (you can selectively run modules later):</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QScrollArea" name="scrollArea">
-           <property name="widgetResizable">
-            <bool>true</bool>
-           </property>
-           <widget class="QWidget" name="scrollAreaWidgetContents">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>462</width>
-              <height>289</height>
-             </rect>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_4">
-             <item row="4" column="0">
-              <layout class="QGridLayout" name="gridLayout_5">
-               <property name="leftMargin">
-                <number>6</number>
-               </property>
-               <property name="topMargin">
-                <number>6</number>
-               </property>
-               <property name="rightMargin">
-                <number>6</number>
-               </property>
-               <property name="bottomMargin">
-                <number>6</number>
-               </property>
-               <property name="spacing">
-                <number>6</number>
-               </property>
-               <item row="2" column="0">
-                <widget class="QLabel" name="descr_lbl3">
-                 <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Urban Development&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="11" column="0">
-                <widget class="QCheckBox" name="watercycle">
-                 <property name="text">
-                  <string>Water Cycle</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="descr_lbl4">
-                 <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Environment Mapping&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="0">
-                <widget class="QCheckBox" name="citydevelopment">
-                 <property name="text">
-                  <string>Development Setup</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/Very-Basic-Design-icon.png</normaloff>:/icons/Very-Basic-Design-icon.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QCheckBox" name="climate">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="text">
-                  <string>Climate Setup</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</iconset>
-                 </property>
-                 <property name="checkable">
-                  <bool>true</bool>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="12" column="0">
-                <widget class="QCheckBox" name="flood">
-                 <property name="text">
-                  <string>Flood Assessment</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="1">
-                <widget class="QCheckBox" name="spatialmapping">
-                 <property name="text">
-                  <string>Spatial Analyst</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item row="7" column="1">
-                <widget class="QCheckBox" name="bluegreen">
-                 <property name="text">
-                  <string>Blue-Green Systems</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/Tree-icon.png</normaloff>:/icons/Tree-icon.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item row="10" column="0">
-                <widget class="QLabel" name="descr_lbl5">
-                 <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Evaluation&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="0">
-                <widget class="QCheckBox" name="urbanplanning">
-                 <property name="text">
-                  <string>Urban Form</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/City_icon_(Noun_Project).svg.png</normaloff>:/icons/City_icon_(Noun_Project).svg.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item row="12" column="1">
-                <widget class="QCheckBox" name="economics">
-                 <property name="text">
-                  <string>Economic Valuation</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/dollar-icon.png</normaloff>:/icons/dollar-icon.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item row="7" column="0">
-                <widget class="QCheckBox" name="infrastructure">
-                 <property name="text">
-                  <string>Water Infrastructure</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/images/images/md_infrastructure.png</normaloff>:/images/images/md_infrastructure.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QCheckBox" name="spatialsetup">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="text">
-                  <string>Spatial Setup</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
-                 </property>
-                 <property name="checkable">
-                  <bool>true</bool>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                 <property name="tristate">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="11" column="1">
-                <widget class="QCheckBox" name="microclimate">
-                 <property name="text">
-                  <string>Urban Microclimate</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/temperature-icon.png</normaloff>:/icons/temperature-icon.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="descr_lbl2">
-                 <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Data Processing&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="1">
-                <widget class="QCheckBox" name="urbandynamics">
-                 <property name="text">
-                  <string>Urban Dynamics</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../graphics/ubeats.qrc">
-                   <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="0">
-                <widget class="QLabel" name="descr_lbl4_2">
-                 <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Infrastructure Planning&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item row="6" column="0">
-              <spacer name="verticalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </widget>
-          </widget>
-         </item>
-        </layout>
        </item>
       </layout>
      </widget>
      <widget class="QWidget" name="data_tab">
       <attribute name="icon">
-       <iconset resource="../graphics/ubeats.qrc">
+       <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
         <normaloff>:/icons/Misc-Database-3-icon.png</normaloff>:/icons/Misc-Database-3-icon.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>Select Data</string>
+       <string>Scenario Base Data Set</string>
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
@@ -1086,83 +685,6 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="output_tab">
-      <attribute name="icon">
-       <iconset resource="../graphics/ubeats.qrc">
-        <normaloff>:/icons/export-icon.png</normaloff>:/icons/export-icon.png</iconset>
-      </attribute>
-      <attribute name="title">
-       <string>Output</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
-       <item>
-        <widget class="QWidget" name="naming_convention" native="true">
-         <layout class="QGridLayout" name="gridLayout_2">
-          <property name="leftMargin">
-           <number>6</number>
-          </property>
-          <property name="topMargin">
-           <number>6</number>
-          </property>
-          <property name="rightMargin">
-           <number>6</number>
-          </property>
-          <property name="bottomMargin">
-           <number>6</number>
-          </property>
-          <property name="spacing">
-           <number>6</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="naming_lbl">
-            <property name="whatsThis">
-             <string>Rainfall time series, obtain data from weather station or climate authority of your city. Time series should be in rainfall depth and have units millimetres.</string>
-            </property>
-            <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;File naming convention:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="naming_line">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string>(enter a naming convention for outputs)</string>
-            </property>
-            <property name="readOnly">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QCheckBox" name="naming_check">
-            <property name="text">
-             <string>Use scenario name (spaces become underscores)</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>260</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-      <zorder>naming_convention</zorder>
-      <zorder>verticalSpacer</zorder>
-     </widget>
     </widget>
    </item>
    <item>
@@ -1248,20 +770,17 @@
  </widget>
  <tabstops>
   <tabstop>name_box</tabstop>
-  <tabstop>static_radio</tabstop>
-  <tabstop>benchmark_radio</tabstop>
-  <tabstop>dynamic_radio</tabstop>
   <tabstop>datalibrary_tree</tabstop>
   <tabstop>scenariodata_tree</tabstop>
   <tabstop>add_to_button</tabstop>
   <tabstop>remove_from_button</tabstop>
-  <tabstop>naming_line</tabstop>
   <tabstop>create_button</tabstop>
   <tabstop>clear_button</tabstop>
   <tabstop>cancel_button</tabstop>
  </tabstops>
  <resources>
-  <include location="../graphics/ubeats.qrc"/>
+  <include location="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
+  <include location="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
   <include location="../graphics/ubeats.qrc"/>
  </resources>
  <connections>

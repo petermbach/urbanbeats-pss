@@ -1540,41 +1540,30 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="icon">
            <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
-            <normaloff>:/icons/pages-brown-icon.png</normaloff>:/icons/pages-brown-icon.png</iconset>
+            <normaloff>:/icons/book-open.png</normaloff>:/icons/book-open.png</iconset>
           </property>
           <item>
            <property name="text">
-            <string>Type: (static)</string>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>8</pointsize>
-            </font>
-           </property>
-          </item>
-          <item>
-           <property name="text">
             <string>Boundary: (none)</string>
+           </property>
+           <property name="flags">
+            <set>NoItemFlags</set>
            </property>
           </item>
           <item>
            <property name="text">
             <string>Status: (none)</string>
            </property>
+           <property name="flags">
+            <set>NoItemFlags</set>
+           </property>
           </item>
           <item>
            <property name="text">
             <string>Simulation Year(s): (year)</string>
            </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Simulation Time Step: N/A</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Benchmark Iterations: N/A</string>
+           <property name="flags">
+            <set>NoItemFlags</set>
            </property>
           </item>
          </item>

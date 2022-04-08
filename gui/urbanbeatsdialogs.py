@@ -48,7 +48,6 @@ from .openprojectdialog import Ui_OpenProjectDialog      # Open Existing Project
 from .logdialog import Ui_LogDialog         # Project Log Dialog
 from .adddatadialog import Ui_AddDataDialog      # Add Data Dialog
 from .newscenario import Ui_NewScenarioDialog    # Scenario Creation Dialog
-from .newscenario_timestep import Ui_TimeStep_Dialog     # Irregular time step customization
 from .mapexportoptions import Ui_MapExportDialog
 from .reportoptions import Ui_ReportingDialog
 
@@ -254,66 +253,19 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         else:
             self.ui.boundary_combo.setCurrentIndex(list(boundarynames).index(scenario_boundaryname)+1)
 
-        if self.scenario.get_metadata("type") == "STATIC":
-            self.ui.static_radio.setChecked(1)
-        elif self.scenario.get_metadata("type") == "BENCHMARK":
-            self.ui.benchmark_radio.setChecked(1)
-        else:
-            self.ui.dynamic_radio.setChecked(1)
-
         self.ui.narrative_box.setPlainText(self.scenario.get_metadata("narrative"))
 
         self.ui.startyear_spin.setValue(int(self.scenario.get_metadata("startyear")))
-        self.ui.endyear_spin.setValue(int(self.scenario.get_metadata("endyear")))
-        self.ui.timestep_spin.setValue(int(self.scenario.get_metadata("dt")))
-        self.ui.timestep_irregular.setChecked(int(self.scenario.get_metadata("dt_irregular")))
-        self.timesteps = self.scenario.get_metadata("dt_array_parameter")  # Holds the full array of years to simulate.
-
-        self.ui.benchmark_spin.setValue(int(self.scenario.get_metadata("benchmarks")))
-
         self.ui.naming_line.setText(self.scenario.get_metadata("filename"))
         self.ui.naming_check.setChecked(self.scenario.get_metadata("usescenarioname"))
 
-        # MODULE CHECKBOXES
-        self.ui.citydevelopment.setChecked(self.scenario.check_is_module_active("URBDEV"))
-        self.ui.urbandynamics.setChecked(self.scenario.check_is_module_active("URBDYN"))
-        self.ui.urbanplanning.setChecked(self.scenario.check_is_module_active("URBPLAN"))
-        self.ui.spatialmapping.setChecked(self.scenario.check_is_module_active("MAP"))
-        self.ui.infrastructure.setChecked(self.scenario.check_is_module_active("INFRA"))
-        self.ui.bluegreen.setChecked(self.scenario.check_is_module_active("BGS"))
-        self.ui.watercycle.setChecked(self.scenario.check_is_module_active("CYCLE"))
-        self.ui.microclimate.setChecked(self.scenario.check_is_module_active("MICRO"))
-        self.ui.flood.setChecked(self.scenario.check_is_module_active("FLOOD"))
-        self.ui.economics.setChecked(self.scenario.check_is_module_active("ECON"))
-
-        self.enable_disable_module_checkboxes()
-        self.enable_disable_settings_tab()
         self.enable_disable_naming_line()
-        self.enable_disable_years_to_run_button()
-
         self.update_dialog_data_library()
 
         # --- SIGNALS AND SLOTS
-        self.ui.benchmark_radio.clicked.connect(self.enable_disable_module_checkboxes)
-        self.ui.static_radio.clicked.connect(self.enable_disable_module_checkboxes)
-        self.ui.dynamic_radio.clicked.connect(self.enable_disable_module_checkboxes)
-        self.ui.benchmark_radio.clicked.connect(self.enable_disable_settings_tab)
-        self.ui.static_radio.clicked.connect(self.enable_disable_settings_tab)
-        self.ui.dynamic_radio.clicked.connect(self.enable_disable_settings_tab)
-
-        self.ui.citydevelopment.clicked.connect(self.enable_disable_module_checkboxes)
-        self.ui.urbanplanning.clicked.connect(self.enable_disable_module_checkboxes)
-        self.ui.spatialmapping.clicked.connect(self.enable_disable_module_checkboxes)
-        self.ui.infrastructure.clicked.connect(self.enable_disable_module_checkboxes)
-        self.ui.bluegreen.clicked.connect(self.enable_disable_module_checkboxes)
-        self.ui.watercycle.clicked.connect(self.enable_disable_module_checkboxes)
-        self.ui.microclimate.clicked.connect(self.enable_disable_module_checkboxes)
-
         self.ui.naming_check.clicked.connect(self.enable_disable_naming_line)
         self.ui.create_button.clicked.connect(self.create_scenario)
         self.ui.clear_button.clicked.connect(self.reset_interface)
-        self.ui.timestep_irregular.clicked.connect(self.enable_disable_years_to_run_button)
-        self.ui.timestep_irregular_button.clicked.connect(self.launch_timestep_window)
         self.ui.add_to_button.clicked.connect(self.add_datalibrary_to_scenariodata)
         self.ui.remove_from_button.clicked.connect(self.remove_scenariodata_entry)
 
@@ -330,33 +282,10 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
                     twi.setToolTip(0, str(dref.get_data_id())+" :: "+str(dref.get_data_file_path()))
                     self.ui.scenariodata_tree.topLevelItem(i).addChild(twi)
 
-    def launch_timestep_window(self):
-        """Launches the 'select years' dialog window for irregular time step simulations."""
-        irregular_timestep_window = IrregularTimeStepDialogLaunch(self)
-        irregular_timestep_window.exec_()
-
-    def enable_disable_years_to_run_button(self):
-        """Disables the irregular time step selection button."""
-        if self.ui.timestep_irregular.isChecked():
-            self.ui.timestep_spin.setEnabled(0)
-            self.ui.timestep_irregular_button.setEnabled(1)
-        else:
-            self.ui.timestep_spin.setEnabled(1)
-            self.ui.timestep_irregular_button.setEnabled(0)
-
     def enable_disable_guis_for_editonly(self):
         """Disables certain features of the interface for editing mode."""
         self.ui.name_box.setEnabled(0)
-        self.ui.benchmark_radio.setEnabled(0)
-        self.ui.static_radio.setEnabled(0)
-        self.ui.dynamic_radio.setEnabled(0)
-        self.ui.benchmark_spin.setEnabled(0)
-        self.ui.startyear_spin.setEnabled(0)
-        self.ui.endyear_spin.setEnabled(0)
-        self.ui.timestep_spin.setEnabled(0)
-        self.ui.timestep_irregular.setEnabled(0)
-        self.ui.timestep_irregular_button.setEnabled(self.ui.timestep_irregular.isChecked())
-        self.ui.scrollArea.setEnabled(0)
+        # self.ui.startyear_spin.setEnabled(0)
         # self.ui.naming_line.setEnabled(0)
         # self.ui.naming_check.setEnabled(0)
         self.ui.create_button.setText("Update...")
@@ -419,30 +348,20 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         """Just like the main window, this method populates the dialog window's data library
         browser with the info from the project's data library."""
         self.reset_scenario_tree_widgets()  # Redo the data library
-        datacol = self.datalibrary.get_all_data_of_class("spatial")  # Get the list of data
-        cur_toplevelitem = self.ui.datalibrary_tree.topLevelItem(0)
-        for dref in datacol:
-            dtype = dref.get_metadata("parent")  # Returns overall type (e.g. Land Use, Rainfall, etc.)
-            dtypeindex = ubglobals.SPATIALDATA.index(dtype)  # Get the index in the tree-widget
-            if cur_toplevelitem.child(dtypeindex).child(0).text(0) == "(no data)":
-                cur_toplevelitem.child(dtypeindex).takeChild(0)
-            twi = QtWidgets.QTreeWidgetItem()
-            twi.setText(0, dref.get_metadata("filename"))
-            twi.setToolTip(0, str(dref.get_data_id()) + " :: " + str(dref.get_data_file_path()))
-            cur_toplevelitem.child(dtypeindex).addChild(twi)
-
-        # Update Temporal Data Sets
-        datacol = self.datalibrary.get_all_data_of_class("temporal")
-        cur_toplevelitem = self.ui.datalibrary_tree.topLevelItem(1)
-        for dref in datacol:
-            dtype = dref.get_metadata("parent")
-            dtypeindex = ubglobals.TEMPORALDATA.index(dtype)
-            if cur_toplevelitem.child(dtypeindex).child(0).text(0) == "(no data)":
-                cur_toplevelitem.child(dtypeindex).takeChild(0)
-            twi = QtWidgets.QTreeWidgetItem()
-            twi.setText(0, dref.get_metadata("filename"))
-            twi.setToolTip(0, str(dref.get_data_id()) + " :: " + str(dref.get_data_file_path()))
-            cur_toplevelitem.child(dtypeindex).addChild(twi)
+        datacol_classes = ["spatial", "temporal"]
+        ubglobals_refs = [ubglobals.SPATIALDATA, ubglobals.TEMPORALDATA]    # TO DO  - update for qualitative
+        for i in range(len(datacol_classes)):
+            datacol = self.datalibrary.get_all_data_of_class(datacol_classes[i])    # Get the list of data
+            cur_toplevelitem = self.ui.datalibrary_tree.topLevelItem(i)
+            for dref in datacol:
+                dtype = dref.get_metadata("parent")
+                dtypeindex = ubglobals_refs[i].index(dtype)
+                if cur_toplevelitem.child(dtypeindex).child(0).text(0) == "(no data)":
+                    cur_toplevelitem.child(dtypeindex).takeChild(0)
+                twi = QtWidgets.QTreeWidgetItem()
+                twi.setText(0, dref.get_metadata("filename"))
+                twi.setToolTip(0, str(dref.get_data_id()) + " :: " + str(dref.get_data_file_path()))
+                cur_toplevelitem.child(dtypeindex).addChild(twi)
 
         # Update the Qualitative Data Set
         datacol = self.datalibrary.get_all_data_of_class("qualitative")
@@ -457,118 +376,9 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.ui.datalibrary_tree.expandAll()
         self.ui.scenariodata_tree.expandAll()
 
-    def enable_disable_guis_for_viewonly(self):
-        """Disables all items to prevent user interference once the scenario has been creatd. The edit scenario
-        option is only meant for changes in file naming convention, narrative, data and name changes.
-
-        :return:
-        """
-        self.ui.static_radio.setEnabled(0)
-        self.ui.benchmark_radio.setEnabled(0)
-        self.ui.dynamic_radio.setEnabled(0)
-        self.ui.timestep_widget.setEnabled(0)
-        self.ui.timestep_widget_2.setEnabled(0)
-        self.ui.timestep_irregular_button.setEnabled(self.ui.timestep_irregular.isChecked())
-        self.ui.timestep_irregular.setEnabled(0)
-        self.enable_disable_module_checkboxes(special="ALL")
-
-    def enable_disable_settings_tab(self):
-        """Enables and disables the details tab widgets based on the simulation type selected. This determines
-        what kinds of options are available to the user.
-
-        :return: None (GUI changes)
-        """
-        if self.ui.dynamic_radio.isChecked():
-            self.ui.benchmark_spin.setEnabled(0)
-            self.ui.timestep_irregular.setEnabled(1)
-            self.enable_disable_years_to_run_button()
-            self.ui.endyear_spin.setEnabled(1)
-        elif self.ui.benchmark_radio.isChecked():
-            self.ui.benchmark_spin.setEnabled(1)
-            self.ui.timestep_spin.setEnabled(0)
-            self.ui.timestep_irregular_button.setEnabled(0)
-            self.ui.timestep_irregular.setEnabled(0)
-            self.ui.endyear_spin.setEnabled(0)
-        elif self.ui.static_radio.isChecked():
-            self.ui.benchmark_spin.setEnabled(0)
-            self.ui.timestep_spin.setEnabled(0)
-            self.ui.timestep_irregular_button.setEnabled(0)
-            self.ui.timestep_irregular.setEnabled(0)
-            self.ui.endyear_spin.setEnabled(0)
-
-    def enable_disable_module_checkboxes(self, **kwargs):
-        """Enables and disables the module checkboxes based on various conditionals. This is a clusterfuck of
-        if else statements! Good luck working out the logic!
-        """
-        boxes = [self.ui.spatialmapping, self.ui.infrastructure, self.ui.bluegreen,
-                 self.ui.watercycle, self.ui.microclimate, self.ui.flood, self.ui.economics]
-        # LOGIC CHAIN 1 - URBAN DEVELOPMENT
-        # Spatial setup and climate setup are ALWAYS active
-        try:
-            if kwargs["special"] == "ALL":
-                mbool = [0, 0, 0, 0, 0, 0, 0]
-                [boxes[b].setEnabled(mbool[b]) for b in range(len(boxes))]
-                self.ui.urbanplanning.setEnabled(0)
-                self.ui.citydevelopment.setEnabled(0)
-                self.ui.urbandynamics.setEnabled(0)
-                return
-        except KeyError:
-            pass
-
-        if self.ui.static_radio.isChecked() or self.ui.benchmark_radio.isChecked():
-            self.ui.citydevelopment.setEnabled(0)  # no urban development if static or benchmark mode
-        else:
-            self.ui.citydevelopment.setEnabled(1)
-
-        if self.ui.citydevelopment.isChecked() and self.ui.citydevelopment.isEnabled():
-            self.ui.urbandynamics.setEnabled(1)
-        else:
-            self.ui.urbandynamics.setEnabled(0)
-
-        # Urban Planning Module Chain
-        if self.ui.urbanplanning.isChecked():
-            mbool = [1, 1, 1, 1, 1, 1, 1]
-            [boxes[b].setEnabled(mbool[b]) for b in range(len(boxes))]  # list comprehension a.k.a. one-line for loop
-        else:
-            mbool = [0, 0, 0, 0, 0, 0, 0 ]
-            [boxes[b].setEnabled(mbool[b]) for b in range(len(boxes))]
-            return
-
-        # Spatial Mapping Chain
-        if self.ui.spatialmapping.isChecked():
-            mbool = [1, 1, 1, 1, 1, 1, 1]
-            [boxes[b].setEnabled(mbool[b]) for b in range(len(boxes))]
-        else:
-            mbool = [1, 1, 1, 0, 0, 0, 0]
-            [boxes[b].setEnabled(mbool[b]) for b in range(len(boxes))]
-            return
-
-        # Conditions to enable infrastructure planning
-        if self.ui.spatialmapping.isChecked():
-            self.ui.infrastructure.setEnabled(1)
-            self.ui.bluegreen.setEnabled(1)
-        else:
-            self.ui.infrastructure.setEnabled(0)
-            self.ui.bluegreen.setEnabled(0)
-
     def enable_disable_naming_line(self):
         """Enables or disables the naming convention lineEdit if the checkbox is unchecked/checked."""
         self.ui.naming_line.setEnabled(not self.ui.naming_check.isChecked())
-
-    def uncheck_all_module_checkboxes(self):
-        """Unchecks all module checkboxes as part of the resetting of the user interface. Then calls enable
-        disable method."""
-        self.ui.urbanplanning.setChecked(0)
-        self.ui.citydevelopment.setChecked(0)
-        self.ui.urbandynamics.setChecked(0)
-        self.ui.spatialmapping.setChecked(0)
-        self.ui.bluegreen.setChecked(0)
-        self.ui.infrastructure.setChecked(0)
-        self.ui.watercycle.setChecked(0)
-        self.ui.microclimate.setChecked(0)
-        self.ui.flood.setChecked(0)
-        self.ui.economics.setChecked(0)
-        self.enable_disable_module_checkboxes()
 
     def reset_interface(self):
         """Reverts entire interface back to default settings."""
@@ -577,18 +387,7 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         # Refresh narrative tab
         self.ui.name_box.setText("(enter scenario name)")
         self.ui.narrative_box.setPlainText("(enter scenario description)")
-        self.ui.static_radio.setChecked(1)
-        self.ui.endyear_spin.setValue(2068)
         self.ui.startyear_spin.setValue(2018)
-        self.ui.timestep_spin.setValue(1)
-        self.enable_disable_years_to_run_button()
-        self.timesteps = []
-
-        # Refresh Modules
-        self.uncheck_all_module_checkboxes()
-        self.enable_disable_settings_tab()
-
-        # Refresh Data TreeWidgets
 
         # Refresh Output tab
         self.ui.naming_line.setText("(enter a naming convention for outputs)")
@@ -670,67 +469,17 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
             self.scenario.remove_data_reference(dref.get_data_id())
             dref.remove_from_scenario(self.scenario.get_metadata("name"))
 
-    def raise_timestep_error(self):
-        """Catches the case in the UI where irregular time steps are used, but there are no years in the list because
-        the user may have changed the start and end years beyond the range. Cancels the create_scenario operation."""
-        prompt_msg = "Error, no time steps selected within start- and end-year range!"
-        QtWidgets.QMessageBox.warning(self, 'No time steps selected!', prompt_msg, QtWidgets.QMessageBox.Ok)
-
     def create_scenario(self):
         """Saves the newly created data to the scenario object and closes the window. Accept() signal
         calls core functions that then create the scenario."""
         if self.viewmode == 1:
             self.update_scenario_edit()
 
-        # Pre- accept() checks
-        if self.ui.timestep_irregular.isChecked():
-            revised_years = []
-            for i in self.timesteps:
-                if i >= self.ui.startyear_spin.value() and i <= self.ui.endyear_spin.value():
-                    revised_years.append(i)
-            if len(revised_years) == 0:
-                self.raise_timestep_error()
-                return False
-
         self.scenario.set_metadata("name", str(self.ui.name_box.text()))
         self.scenario.set_metadata("boundary", str(self.ui.boundary_combo.currentText()))
         self.scenario.set_metadata("narrative", str(self.ui.narrative_box.toPlainText()))
 
-        if self.ui.static_radio.isChecked():
-            self.scenario.set_metadata("type", "STATIC")
-        elif self.ui.benchmark_radio.isChecked():
-            self.scenario.set_metadata("type", "BENCHMARK")
-        else:
-            self.scenario.set_metadata("type", "DYNAMIC")
-
         self.scenario.set_metadata("startyear", int(self.ui.startyear_spin.value()))
-        self.scenario.set_metadata("endyear", int(self.ui.endyear_spin.value()))
-        self.scenario.set_metadata("dt", int(self.ui.timestep_spin.value()))
-        self.scenario.set_metadata("dt_irregular", int(self.ui.timestep_irregular.isChecked()))
-        self.scenario.set_metadata("dt_array_parameter", self.timesteps)
-        self.scenario.set_metadata("benchmarks", int(self.ui.benchmark_spin.value()))
-
-        # Activate the modules
-        if self.ui.citydevelopment.isChecked():
-            self.scenario.set_module_active("URBDEV")
-        if self.ui.urbandynamics.isChecked():
-            self.scenario.set_module_active("URBDYN")
-        if self.ui.urbanplanning.isChecked():
-            self.scenario.set_module_active("URBPLAN")
-        if self.ui.spatialmapping.isChecked():
-            self.scenario.set_module_active("MAP")
-        if self.ui.infrastructure.isChecked():
-            self.scenario.set_module_active("INFRA")
-        if self.ui.bluegreen.isChecked():
-            self.scenario.set_module_active("BGS")
-        if self.ui.watercycle.isChecked():
-            self.scenario.set_module_active("CYCLE")
-        if self.ui.microclimate.isChecked():
-            self.scenario.set_module_active("MICRO")
-        if self.ui.flood.isChecked():
-            self.scenario.set_module_active("FLOOD")
-        if self.ui.economics.isChecked():
-            self.scenario.set_module_active("ECON")
 
         self.update_scenario_datasets()
 
@@ -767,50 +516,6 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         else:
             # If cancel or close is called, ignore
             QtWidgets.QDialog.done(self, r)  # Call the parent's method instead of the override.
-
-
-# --- CUSTOM TIME STEPS DIALOG ---
-class IrregularTimeStepDialogLaunch(QtWidgets.QDialog):
-    """Class definition for the custom time step window, where users can select the years to simulate and create
-    irregular time steps. Connects the New Scenario GUI with the Irregular Time Step GUI."""
-    def __init__(self, newscenario_gui, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
-        self.ui = Ui_TimeStep_Dialog()
-        self.ui.setupUi(self)
-        self.newscenario_gui = newscenario_gui
-        self.fill_years()
-        self.accepted.connect(self.save_checked_years)
-
-    def fill_years(self):
-        """Fills the list widget with all the possible years to simulate."""
-        years_list = self.newscenario_gui.timesteps
-        self.startyear = self.newscenario_gui.ui.startyear_spin.value()
-        self.endyear = self.newscenario_gui.ui.endyear_spin.value()
-        self.ui.years_list.clear()
-        for i in range(self.endyear - self.startyear + 1):
-            curyear = self.startyear + i        # Get the current year
-            item = QtWidgets.QListWidgetItem()  # Create the QListWidgetItem()
-            item.setText(str(curyear))          # Set its text
-            if curyear in years_list:           # Check if the current year has been previously selected
-                item.setCheckState(QtCore.Qt.Checked)
-            else:                               # If No, then set as unchecked
-                item.setCheckState(QtCore.Qt.Unchecked)
-            if self.newscenario_gui.viewmode == 1:
-                # In ViewMode - we disable the ability to check the boxes. This allow users to still scroll through.
-                item.setFlags(item.flags() ^ QtCore.Qt.ItemIsUserCheckable)
-            self.ui.years_list.addItem(item)    # Add the item to the list
-
-    def save_checked_years(self):
-        """Saves only the checked years to the newscenario module's years array."""
-        if self.newscenario_gui.viewmode == 1:
-            pass
-        else:
-            years_list = []
-            for i in range(self.ui.years_list.count()):
-                item = self.ui.years_list.item(i)
-                if item.checkState():
-                    years_list.append(int(item.text()))
-            self.newscenario_gui.timesteps = years_list
 
 
 # --- MAP EXPORT DIALOG ---

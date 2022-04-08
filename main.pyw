@@ -4,7 +4,7 @@ r"""
 @section LICENSE
 
 Urban Biophysical Environments and Technologies Simulator (UrbanBEATS)
-Copyright (C) 2018  Peter M. Bach
+Copyright (C) 2017-2022  Peter M. Bach
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -103,8 +103,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__activeDataLibrary = None         # The active simulation's data library
         self.__activeProjectLog = None          # The active simulation's log file
         self.__dataview_displaystate = "default"    # The display state of the Leaflet data view, allows tracking
-
         self.__datalibraryexpanded = 0      # STATE: is the data library browser fully expanded?
+
 
         # --- GUI SIGNALS AND SLOTS ---
         # Function naming conventions: show_ = launching dialog windows,
@@ -144,7 +144,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Scenario Submenu ---
         self.ui.actionDefine_New_Scenario.triggered.connect(lambda: self.show_scenario_dialog(0))
         self.ui.actionEdit_Scenario.triggered.connect(lambda: self.show_scenario_dialog(1))
-        self.ui.actionDelete_Scenario.triggered.connect(self.delete_current_scenario)
+        self.ui.actionDelete_Scenario.triggered.connect(self.delete_selected_scenario)
 
         # DATA MENU
         self.ui.actionAdd_Data.triggered.connect(self.show_add_data_dialog)
@@ -192,8 +192,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # SCENARIOS DOCK ---
         self.ui.newScenario.clicked.connect(lambda: self.show_scenario_dialog(0))
         self.ui.editScenario.clicked.connect(lambda: self.show_scenario_dialog(1))
-        self.ui.deleteScenario.clicked.connect(self.delete_current_scenario)
-        # self.ui.ScenarioDock_View.itemClicked.connect(self.change_narrative_gui_tab)        # [REVAMP]
+        self.ui.deleteScenario.clicked.connect(self.delete_selected_scenario)
+        self.ui.activateScenario.clicked.connect(self.update_scenario_gui)
 
         # OVERVIEW SECTION --- (tabs: Project, Geography, Scenario, Log)
         self.ui.location_add_button.clicked.connect(self.show_add_location_dialog)
@@ -209,7 +209,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.DataView_options.clicked.connect(lambda: self.show_options(2))
 
         # TOOLBOX DOCK ---
-        # To Do...
+        self.ui.toolboxTree.expandAll()
 
         # CONTROL PANEL INTERFACE
         self.ui.SimDock_projectfolder.clicked.connect(self.open_project_folder)
@@ -754,6 +754,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.update_data_library_view()
 
         # SCENARIO VIEW TREE WIDGET - Populate with scenarios
+        self.ui.ScenarioDock_View.clear()
+        # [TTD]
         # if viewmode == 0:
         #     moduleTree = self.ui.ScenarioDock_View.topLevelItem(3)
         #     moduleCount = moduleTree.childCount()
@@ -1090,27 +1092,36 @@ class MainWindow(QtWidgets.QMainWindow):
         self.get_active_simulation_object().add_new_scenario(active_scenario)
 
         # ADD NEW ITEM TO THE SCENARIO TREE WIDGET AND SET AS ACTIVE [REVAMP]
-        # self.ui.ScenarioDock_Combo.addItem(active_scenario.get_metadata("name"))
-        # self.ui.ScenarioDock_Combo.setCurrentIndex(int(self.ui.ScenarioDock_Combo.count() - 1))
+        twicon = QtGui.QIcon()
+        twicon.addPixmap(QtGui.QPixmap(":/icons/book-open.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        twi = QtWidgets.QTreeWidgetItem()
+        twi.setText(0, str(active_scenario.get_metadata("name")))
+        twi.setIcon(0, twicon)
+        item_1 = QtWidgets.QTreeWidgetItem(twi)
+        item_1.setText(0, "Boundary: "+active_scenario.get_metadata("boundary"))
+        item_1.setFlags(QtCore.Qt.NoItemFlags)
+        item_1 = QtWidgets.QTreeWidgetItem(twi)
+        item_1.setText(0, "Simulation Year: "+str(active_scenario.get_metadata("startyear")))
+        item_1.setFlags(QtCore.Qt.NoItemFlags)
+        self.ui.ScenarioDock_View.addTopLevelItem(twi)
 
-    def delete_current_scenario(self):
-        """Deletes the active scenario based on the scenario combobox. This includes removing it from the active
+    def delete_selected_scenario(self):
+        """Deletes the selected scenario based on the scenario combobox. This includes removing it from the active
         simulation as well. The scenario interface is then reset to the default <select scenario> setting."""
+        # Algorithm: (1) Get selected scenario name data, (2)
         # Algorithm: (1) Get current scenario data, (2) Reset scenario narrative interface by clearing it
         # (3) Reset module buttons and control panel buttons, (4) Change current index of scenario combo
         # (5) Update the scenario description information, (6) Remove the scenario from the combo box,
         # (7) Remove the scenario from the simulation, (8) Delete the scenario folder from the project
-        active_scenario = self.get_active_simulation_object().get_active_scenario()  # (1)
-        self.get_active_simulation_object().delete_scenario(active_scenario.get_metadata("name"))  # (7), (8)
-
-        # UPDATE SCENARIO TREE WIDGET
-        # self.ui.ScenarioDock_Combo.removeItem(self.ui.ScenarioDock_Combo.currentIndex())
-        # self.ui.ScenarioDock_Combo.setCurrentIndex(0)  # (2), (3), (4), (5), (6)
+        if self.ui.ScenarioDock_View.currentItem() is not None:
+            scenario_name = self.ui.ScenarioDock_View.currentItem().text(0)
+            self.get_active_simulation_object().delete_scenario(scenario_name)
+            self.ui.ScenarioDock_View.takeTopLevelItem(int(self.ui.ScenarioDock_View.currentIndex().row()))
+            self.update_scenario_gui()
 
     def scenario_change_ui_setup(self):
-        """Modifies the current Main Window Interface to suit the selected scenario. This includes enabling and
-        disabling the module buttons, the control panel and updating the Scenario Narrative Section of the GUI
-        with information on the current scenario. It also includes printing out details into the output console."""
+        """Modifies the current Main Window Interface to suit the selected scenario. It also includes printing out
+        details into the output console."""
         # if self.ui.ScenarioDock_Combo.currentIndex() == 0:
         #     # <Select Scenario> Case - disables everything
         #     self.scenario_view_reset()
@@ -1122,57 +1133,16 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def update_scenario_gui(self):
         """Updates the scenario GUI and narrative section with the current scenario's details."""
-        # if self.ui.ScenarioDock_Combo.count() == 0:
-        #     return
-        # if self.ui.ScenarioDock_Combo.currentIndex() == 0:
-        #     self.get_active_simulation_object().set_active_scenario(None)
-        #     self.get_active_simulation_object().set_active_boundary(None)
-        #     self.scenario_view_reset()
-        #     return
+
         # active_scenario_name = self.ui.ScenarioDock_Combo.currentText()
         # self.get_active_simulation_object().set_active_scenario(active_scenario_name)
         # self.__activeScenario = self.get_active_simulation_object().get_active_scenario()
         # self.get_active_simulation_object().set_active_boundary(self.__activeScenario.get_metadata("boundary"))
         pass
-        # Tree Widget Info:
-        # twi = QtWidgets.QTreeWidgetItem()
-        # twi.setText(0, str(self.__activeScenario.get_metadata("narrative")[:100] + "..."))
-        # twi.setToolTip(0, str(self.__activeScenario.get_metadata("narrative")[:100] + "..."))
-        #
         # # Narrative
         # self.ui.Narrative.setPlainText(self.__activeScenario.get_metadata("narrative"))
         #
-        # self.ui.ScenarioDock_View.topLevelItem(0).takeChildren()
-        # self.ui.ScenarioDock_View.topLevelItem(0).addChild(twi)
-        # self.ui.ScenarioDock_View.topLevelItem(1).child(0).setText(0, "Type: " + self.__activeScenario.get_metadata(
-        #     "type"))
-        # self.ui.ScenarioDock_View.topLevelItem(1).child(1).setText(0,
-        #                                                            "Boundary: " + self.__activeScenario.get_metadata(
-        #                                                                "boundary"))
-        # self.ui.ScenarioDock_View.topLevelItem(1).child(2).setText(0, "Status: " + "not simulated")
-        # if self.__activeScenario.get_metadata("type") == "DYNAMIC":
-        #     yeartext = str(self.__activeScenario.get_metadata("startyear")) + " - " + str(
-        #         self.__activeScenario.get_metadata("endyear"))
-        #     dttext = str(self.__activeScenario.get_metadata("dt")) + " year(s)"
-        #     benchtext = "N/A"
-        # elif self.__activeScenario.get_metadata("type") == "BENCHMARK":
-        #     yeartext = str(self.__activeScenario.get_metadata("startyear"))
-        #     dttext = "N/A"
-        #     benchtext = str(self.__activeScenario.get_metadata("benchmarks"))
-        # else:
-        #     yeartext = str(self.__activeScenario.get_metadata("startyear"))
-        #     dttext = "N/A"
-        #     benchtext = "N/A"
-        # self.ui.ScenarioDock_View.topLevelItem(1).child(3).setText(0, "Simulation Year(s): " + yeartext)
-        # self.ui.ScenarioDock_View.topLevelItem(1).child(4).setText(0, "Simulation Time Step: " + dttext)
-        # self.ui.ScenarioDock_View.topLevelItem(1).child(5).setText(0, "Benchmark Iterations: " + benchtext)
-        # self.ui.ScenarioDock_View.topLevelItem(4). \
-        #     child(0).setText(0, "File Naming: " + self.__activeScenario.get_metadata("filename"))
-        # project_path = self.get_active_simulation_object().get_project_path()
-        # self.ui.ScenarioDock_View.topLevelItem(4).child(1).setText(0,
-        #                                                            "Path: " + str(os.path.normpath(project_path)))
-        # self.ui.ScenarioDock_View.topLevelItem(4).child(1).setToolTip(0, str(os.path.normpath(project_path)))
-        #
+
         # # LIST OF DATA SETS
         # datalist = self.__activeScenario.create_dataset_file_list()
         # self.ui.DataSummary.setRowCount(0)
@@ -1192,43 +1162,16 @@ class MainWindow(QtWidgets.QMainWindow):
         #     self.ui.DataSummary.setItem(rowposition, 2, QtWidgets.QTableWidgetItem(entry[4]))
         #     self.ui.DataSummary.resizeColumnsToContents()
         #
-        # # MODULES
-        # modulebools = []  # Holds 1 and 0 booleans that represent different modules in the module dock
-        # for i in range(len(ubglobals.MODULENAMES)):
-        #     mbool = self.__activeScenario.check_is_module_active(ubglobals.MODULENAMES[i])
-        #     if mbool:
-        #         self.ui.ScenarioDock_View.topLevelItem(3).child(i).setDisabled(0)
-        #         self.ui.ScenarioDock_View.topLevelItem(3).child(i).setCheckState(0, 2)
-        #     else:
-        #         self.ui.ScenarioDock_View.topLevelItem(3).child(i).setDisabled(1)
-        #         self.ui.ScenarioDock_View.topLevelItem(3).child(i).setCheckState(0, 0)
-        #     modulebools.append(int(mbool))
-        # self.enable_disable_module_icons(modulebools)  # enables corresponding module buttons
-
         # MAP DISPLAY
         self.update_map_display()
 
     def scenario_view_reset(self):
         """Resets the scenario view to the default """
-        # self.ui.ScenarioDock_View.topLevelItem(0).takeChildren()
-        # self.ui.ScenarioDock_View.topLevelItem(1).child(0).setText(0, "Type: <N/A>")
-        # self.ui.ScenarioDock_View.topLevelItem(1).child(1).setText(0, "Boundary: <N/A>")
-        # self.ui.ScenarioDock_View.topLevelItem(1).child(2).setText(0, "Status: <none>")
-        # self.ui.ScenarioDock_View.topLevelItem(1).child(3).setText(0, "Simulation Year(s): <year>")
-        # self.ui.ScenarioDock_View.topLevelItem(1).child(4).setText(0, "Simulation Time Step: N/A")
-        # self.ui.ScenarioDock_View.topLevelItem(1).child(5).setText(0, "Benchmark Iterations: N/A")
-        # self.ui.ScenarioDock_View.topLevelItem(2).takeChildren()
-        # for i in range(11):
-        #     self.ui.ScenarioDock_View.topLevelItem(3).child(i).setCheckState(0, 0)
-        #     self.ui.ScenarioDock_View.topLevelItem(3).child(i).setDisabled(1)
-        # self.ui.ScenarioDock_View.topLevelItem(4).child(0).setText(0, "File Naming: <name>")
-        # self.ui.ScenarioDock_View.topLevelItem(4).child(1).setText(0, "Path: <path>")
-        #
-        # self.ui.Narrative.clear()
-        # self.ui.DataSummary.setRowCount(0)
-        # self.enable_disable_module_icons([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-        # self.update_map_display()
-        pass
+        self.ui.scenario_summarybox.clear()
+        self.ui.module_browser.clear()
+        self.ui.output_data_summary.setRowCount(0)
+        self.ui.module_browser.clear()
+        self.update_map_display()
 
     # FUNCTIONS TO DO
     def checks_before_run(self):

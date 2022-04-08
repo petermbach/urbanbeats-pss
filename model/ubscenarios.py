@@ -4,7 +4,7 @@ r"""
 @section LICENSE
 
 Urban Biophysical Environments and Technologies Simulator (UrbanBEATS)
-Copyright (C) 2018  Peter M. Bach
+Copyright (C) 2017-2022  Peter M. Bach
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -78,31 +78,14 @@ class UrbanBeatsScenario(threading.Thread):
 
         self.__scenariometadata = {"name": "My UrbanBEATS Scenario",
                                    "boundary": "(select simulation boundary)",
-                                   "type": "STATIC",
                                    "narrative": "(A description of my scenario)",
                                    "startyear": 2018,
-                                   "endyear": 2068,
-                                   "dt": 1,
-                                   "dt_irregular": 0,
-                                   "dt_array_parameter": [],
-                                   "yearlist": [],
-                                   "benchmarks": 100,
                                    "filename": "(enter a naming convention for outputs)",
                                    "usescenarioname": 0}
-
-        self.__modulesbools = {key:0 for key in ubglobals.MODULENAMES}      # Generate based on ubglobals module names
-        self.__modulesbools["SPATIAL"] = 1      # Set SPATIAL and CLIMATE modules to always equal 1
-        self.__modulesbools["CLIMATE"] = 1
 
         self.__spatial_data = [] # a list of map data to be used, holds the data references.
         self.__time_series_data = []   # a list of time series data to be used in the scenario or stored.
         self.__qual_data = []   # a list of qualitative data to be used in the scenario
-
-        # A dictionary of arrays, containing modules, depending on scenario type
-        self.__modules = {key:[] for key in ubglobals.MODULENAMES}
-        # self.__modules = {"SPATIAL" : [], "CLIMATE" : [], "URBDEV": [], "URBPLAN": [], ... }
-
-        self.__dt_array = []
 
         self.__assets = {}      # The collection of model assets that are stored for later retrieval
         self.__global_edge_list = []
@@ -225,84 +208,26 @@ class UrbanBeatsScenario(threading.Thread):
         self.__assets = {}
         gc.collect()
 
-    def get_simulation_years(self):
-        """Retrieves the list of simulation years to use."""
-        return self.__dt_array
-
-    def get_module_object(self, modulecat, dt_index):
-        """Returns the active module instance from self.__modules based on the key 'modulecat' and the index from
-        self.__dt_array i.e. the simulation year. In the GUI, this directly corresponds to the combo box index.
-
-        :param modulecat: module category e.g. SPATIAL, CLIMATE, URBDEV, etc.
-        :param index: the list index to look up for the module.
-        :return: the instantiated module object e.g. DelinBlocks() or UrbPlanBB()
-        """
-        try:
-            return self.__modules[modulecat][dt_index]
-        except KeyError:
-            print("Error, cannot find module instance!")
-            return None
-        except IndexError:
-            print(f"No module instances of {modulecat} found for current time step.")
-            return None
+    # def get_module_object(self, modulenama, dt_index):
+    #     """Returns the active module instance from self.__modules based on the key 'modulecat' and the index from
+    #     self.__dt_array i.e. the simulation year. In the GUI, this directly corresponds to the combo box index.
+    #
+    #     :param modulecat: module category e.g. SPATIAL, CLIMATE, URBDEV, etc.
+    #     :param index: the list index to look up for the module.
+    #     :return: the instantiated module object e.g. DelinBlocks() or UrbPlanBB()
+    #     """
+    #     try:
+    #         return self.__modules[modulecat][dt_index]
+    #     except KeyError:
+    #         print("Error, cannot find module instance!")
+    #         return None
+    #     except IndexError:
+    #         print(f"No module instances of {modulecat} found for current time step.")
+    #         return None
 
     def setup_scenario(self):
         """Initializes the scenario with the setup data provided by the user."""
-        # print "setting up scenario"
-        inputs = [self.simulation, self, self.datalibrary, self.projectlog]
-        self.__dt_array = []
-        if self.get_metadata("type") in ["STATIC", "BENCHMARK"]:
-            self.__dt_array.append(self.get_metadata("startyear"))
-        elif self.get_metadata("dt_irregular"):
-            self.__dt_array = self.get_metadata("dt_array_parameter")
-        else:
-            currentyear = self.get_metadata("startyear")
-            while currentyear < self.get_metadata("endyear"):
-                self.__dt_array.append(currentyear)
-                currentyear += self.get_metadata("dt")
-
-        # INSTANTIATE MODULES
-        for i in self.__dt_array:
-            if self.check_is_module_active("SPATIAL"):
-                self.__modules["SPATIAL"].append(
-                    md_delinblocks.DelinBlocks(inputs[0], inputs[1], inputs[2], inputs[3], i))
-            if self.check_is_module_active("CLIMATE"):
-                self.__modules["CLIMATE"].append(
-                    md_climatesetup.ClimateSetup(inputs[0], inputs[1], inputs[2], inputs[3], i))
-            if self.check_is_module_active("URBDEV"):
-                self.__modules["URBDEV"].append(
-                    md_urbandev.UrbanDevelopment(inputs[0], inputs[1], inputs[2], inputs[3], i))
-            if self.check_is_module_active("URBDYN"):
-                self.__modules["URBDYN"].append(
-                    md_urbandynamics.UrbanDynamics(inputs[0], inputs[1], inputs[2], inputs[3], i))
-            if self.check_is_module_active("URBPLAN"):
-                self.__modules["URBPLAN"].append(
-                    md_urbplanbb.UrbanPlanning(inputs[0], inputs[1], inputs[2], inputs[3], i))
-            if self.check_is_module_active("MAP"):
-                self.__modules["MAP"].append(
-                    md_spatialmapping.SpatialMapping(inputs[0], inputs[1], inputs[2], inputs[3], i))
-            if self.check_is_module_active("INFRA"):
-                self.__modules["INFRA"].append(
-                    md_infrastructure.Infrastructure(inputs[0], inputs[1], inputs[2], inputs[3], i))
-            if self.check_is_module_active("BGS"):
-                self.__modules["BGS"].append(
-                    md_bgsplanning.BlueGreenSystemsPlanning(inputs[0], inputs[1], inputs[2], inputs[3], i))
-            if self.check_is_module_active("CYCLE"):
-                self.__modules["CYCLE"].append(
-                    md_watercycle.UrbanWaterCycle(inputs[0], inputs[1], inputs[2], inputs[3], i))
-            if self.check_is_module_active("MICRO"):
-                self.__modules["MICRO"].append(
-                    md_microclimate.Microclimate(inputs[0], inputs[1], inputs[2], inputs[3], i))
-            if self.check_is_module_active("FLOOD"):
-                self.__modules["FLOOD"].append(
-                    md_floodassessment.FloodAssessment(inputs[0], inputs[1], inputs[2], inputs[3], i))
-            if self.check_is_module_active("ECON"):
-                self.__modules["ECON"].append(
-                    md_economics.EconomicValuation(inputs[0], inputs[1], inputs[2], inputs[3], i))
-
-            # CREATE ASSETS SUPERSTRUCTURE
-            self.__assets[str(i)] = {}
-        return True
+        # [POSSIBLE TO DO] CREATE ASSETS SUPERSTRUCTURE
 
     def save_scenario(self):
         """Creates an updated scenario_name.xml file of the current scenario including all module parameters."""
@@ -323,22 +248,22 @@ class UrbanBeatsScenario(threading.Thread):
                 f.write('\t\t<datarefid type="'+str(dref.get_metadata("class"))+'">'+str(dref.get_data_id())+'</datarefid>\n')
         f.write('\t</scenariodata>\n')
 
-        f.write('\t<scenariomodules>\n')
-        for i in self.__modulesbools.keys():
-            # Data for all the modules. This includes: active/in-active, number of instances, parameters
-            f.write('\t\t<' + str(i) + '>\n')     # <MODULENAME>
-            f.write('\t\t\t<active>'+str(self.__modulesbools[i])+'</active>\n')
-            f.write('\t\t\t<count>'+str(len(self.__modules[i]))+'</count>\n')
-            for j in range(len(self.__modules[i])):     # Loop across keys to get the module objects for parameters
-                f.write('\t\t\t<parameters index="'+str(j)+'">\n')
-                curmod = self.__modules[i][j]   # The current module object
-                parlist = curmod.get_module_parameter_list()
-                for par in parlist.keys():
-                    f.write('\t\t\t\t<'+str(par)+'>'+str(curmod.get_parameter(par))+'</'+str(par)+'>\n')
-                f.write('\t\t\t</parameters>\n')
-
-            f.write('\t\t</' + str(i) + '>\n')
-        f.write('\t</scenariomodules>\n')
+        # f.write('\t<scenariomodules>\n')
+        # for i in self.__modulesbools.keys():
+        #     # Data for all the modules. This includes: active/in-active, number of instances, parameters
+        #     f.write('\t\t<' + str(i) + '>\n')     # <MODULENAME>
+        #     f.write('\t\t\t<active>'+str(self.__modulesbools[i])+'</active>\n')
+        #     f.write('\t\t\t<count>'+str(len(self.__modules[i]))+'</count>\n')
+        #     for j in range(len(self.__modules[i])):     # Loop across keys to get the module objects for parameters
+        #         f.write('\t\t\t<parameters index="'+str(j)+'">\n')
+        #         curmod = self.__modules[i][j]   # The current module object
+        #         parlist = curmod.get_module_parameter_list()
+        #         for par in parlist.keys():
+        #             f.write('\t\t\t\t<'+str(par)+'>'+str(curmod.get_parameter(par))+'</'+str(par)+'>\n')
+        #         f.write('\t\t\t</parameters>\n')
+        #
+        #     f.write('\t\t</' + str(i) + '>\n')
+        # f.write('\t</scenariomodules>\n')
 
         f.write('</URBANBEATSSCENARIO>')
         f.close()
@@ -356,12 +281,7 @@ class UrbanBeatsScenario(threading.Thread):
         # Load metadata of the scenario
         metadata = {}       # Fill out self.__scenariometadata
         for child in root.find("scenariometa"):
-            if child.tag in ["dt_array_parameter", "yearlist"]:
-                metadata[child.tag] = ast.literal_eval(child.text)
-            elif child.tag in ["startyear", "endyear", "dt", "dt_irregular", "usescenarioname", "benchmarks"]:
-                metadata[child.tag] = int(child.text)
-            else:
-                metadata[child.tag] = child.text
+            metadata[child.tag] = child.text
 
         self.__scenariometadata = metadata
 
@@ -374,24 +294,24 @@ class UrbanBeatsScenario(threading.Thread):
             else:
                 self.__qual_data.append(self.datalibrary.get_data_with_id(child.text))
 
-        # Create modules and fill out the modules with parameters
-        mdata = root.find("scenariomodules")
-        for modname in self.__modulesbools.keys():
-            mbool = int(mdata.find(modname).find("active").text)
-            self.__modulesbools[modname] = mbool
-        self.setup_scenario()   # Instantiates all modules
+        # # Create modules and fill out the modules with parameters
+        # mdata = root.find("scenariomodules")
+        # for modname in self.__modulesbools.keys():
+        #     mbool = int(mdata.find(modname).find("active").text)
+        #     self.__modulesbools[modname] = mbool
+        # self.setup_scenario()   # Instantiates all modules
 
-        # Loop through module information and set parameters
-        for modname in self.__modules.keys():
-            for instance in mdata.find(modname).findall("parameters"):
-                m = self.get_module_object(modname, int(instance.attrib["index"]))
-                for child in instance:
-                    print(f"{child.tag}, {child.text}")  # DEBUG WITH THIS IN CASE PROGRAM CRASHES ON LOADING
-                    if m.get_parameter_type(child.tag) == 'LISTDOUBLE':     # IF IT's a LISTDOUBLE
-                        m.set_parameter(child.tag, ast.literal_eval(child.text))    # Use literal eval
-                    else:
-                        # Currently this does some explicit type casting based on the parameter types defined
-                        m.set_parameter(child.tag, type(m.get_parameter(child.tag))(child.text))
+        # # Loop through module information and set parameters
+        # for modname in self.__modules.keys():
+        #     for instance in mdata.find(modname).findall("parameters"):
+        #         m = self.get_module_object(modname, int(instance.attrib["index"]))
+        #         for child in instance:
+        #             print(f"{child.tag}, {child.text}")  # DEBUG WITH THIS IN CASE PROGRAM CRASHES ON LOADING
+        #             if m.get_parameter_type(child.tag) == 'LISTDOUBLE':     # IF IT's a LISTDOUBLE
+        #                 m.set_parameter(child.tag, ast.literal_eval(child.text))    # Use literal eval
+        #             else:
+        #                 # Currently this does some explicit type casting based on the parameter types defined
+        #                 m.set_parameter(child.tag, type(m.get_parameter(child.tag))(child.text))
 
     def add_data_reference(self, dataref):
         """Adds the data reference to the scenario's data store depending on its class."""
@@ -453,24 +373,6 @@ class UrbanBeatsScenario(threading.Thread):
                 datalist.append([dataid, filename, filepath, category, sub])
         return datalist
 
-    def check_is_module_active(self, modulename):
-        """Checks if a particular module is currently active in the scenario. Returns false if
-        the module is not active.
-
-        :param modulename: the short-form name of each module e.g. URBPLAN, PERF, etc.
-        :return: True if module is active, false if inactive.
-        """
-        if self.__modulesbools[modulename] == 1:
-            return True
-        else:
-            return False
-
-    def set_module_active(self, modulename):
-        """Actives a module. Note that this does not go both ways. The scenario creation and module
-        activation is done only once, cannot be changed for that scenario to prevent me from doing
-        more work, haha."""
-        self.__modulesbools[modulename] = 1
-
     def set_metadata(self, parname, value):
         """Used to change a parameter in the scenario metadata.
 
@@ -527,20 +429,20 @@ class UrbanBeatsScenario(threading.Thread):
         """Assigns an array of observers to the Scenario's self.__observers variable."""
         self.__observers = observers
 
-    def attach_progressbars(self, progbars):
-        """Assigns an array of progressbar observers to the Scenario's self.__progressbar variable."""
-        self.__progressbars = progbars
+    # def attach_progressbars(self, progbars):
+    #     """Assigns an array of progressbar observers to the Scenario's self.__progressbar variable."""
+    #     self.__progressbars = progbars
 
     def update_observers(self, message):
         """Sends the message to all observers contained in the core's observer list."""
         for observer in self.__observers:
             observer.update_observer(str(message))
 
-    def update_runtime_progress(self, value):
-        """Sends the value to the progress bar(s)."""
-        print("Updating Progress")
-        for progbar in self.__progressbars:
-            progbar.update_progress(int(value))
+    # def update_runtime_progress(self, value):
+    #     """Sends the value to the progress bar(s)."""
+    #     print("Updating Progress")
+    #     for progbar in self.__progressbars:
+    #         progbar.update_progress(int(value))
 
     def reinitialize(self):
         """Reinitializes the thread, resets the assets, edges and point lists and runs a garbage collection."""
@@ -554,221 +456,222 @@ class UrbanBeatsScenario(threading.Thread):
     def run(self):
         """Overrides the thread.run() function, called when thread.start() is used. Determines, which kind of
         simulation to run."""
-        # BEGIN THE SCENARIO'S SIMULATION
-        self.update_observers("Scenario Start!")
-        print("Starting Scenario !!")
-        self.runstate = True
-        if self.get_metadata("type") == "STATIC":
-            self.run_static_simulation()
-        elif self.get_metadata("type") == "DYNAMIC":
-            self.run_dynamic_simulation()
-        else:
-            self.run_benchmark_simulation()
-        self.simulation.on_thread_finished()
-
-    def run_static_simulation(self):
-        """This function presents the logical module flow for a STATIC simulation."""
-        # --- STEP 0: Begin by setting up the basic global variables ---
-        self.update_observers("Scenario Type: STATIC")
-        temp_directory = self.simulation.get_global_options("tempdir")
-        self.update_observers("Current temp directory: "+str(temp_directory))
-        self.update_runtime_progress(5)
-
-        # --- STATIC STEP 1: Block delineation ---
-        self.update_runtime_progress(10)
-        delinblocks = self.get_module_object("SPATIAL", 0)
-        delinblocks.attach(self.__observers)
-        delinblocks.run_module()
-
-        # --- STATIC STEP 2: Climate Setup ---
-        self.update_runtime_progress(20)
-        # Skip this for now.
-
-        # --- STATIC STEP 3: Urban Planning ---
-        self.update_runtime_progress(30)             # From this point forth, modules may be optional!
-        urbplanbb = self.get_module_object("URBPLAN", 0)
-        map_attr = self.get_asset_with_name("MapAttributes")
-        if urbplanbb is None:
-            map_attr.add_attribute("HasURBANFORM", 0)
-        else:
-            map_attr.add_attribute("HasURBANFORM", 1)
-            urbplanbb.attach(self.__observers)
-            urbplanbb.run_module()
-
-        # --- STATIC STEP 4: Spatial Analyst ---
-        self.update_runtime_progress(40)
-        spatialmap = self.get_module_object("MAP", 0)
-        map_attr = self.get_asset_with_name("MapAttributes")
-        if spatialmap is None:
-            map_attr.add_attribute("HasSPATIALMAPPING", 0)
-        else:
-            map_attr.add_attribute("HasSPATIALMAPPING", 1)
-            spatialmap.attach(self.__observers)
-            spatialmap.run_module()
-
-        # --- STATIC STEP 6: Infrastructure ---
-        self.update_runtime_progress(50)
-        infrastructure = self.get_module_object("INFRA", 0)
-        if infrastructure is None:
-            map_attr.add_attribute("HasINFRA", 0)
-        else:
-            map_attr.add_attribute("HasINFRA", 1)
-            infrastructure.attach(self.__observers)
-            infrastructure.run_module()
-
-
-        # --- STATIC STEP 7: Blue-Green Systems ---
-        self.update_runtime_progress(60)
-        # Skip this for now...
-
-        # --- STATIC STEP 8: Water Cycle ---
-        self.update_runtime_progress(70)
-        # Skip this for now...
-
-        # --- STATIC STEP 9: Microclimate ---
-        self.update_runtime_progress(75)
-        # Skip this for now...
-
-        # --- STATIC STEP 10: Flood ---
-        self.update_runtime_progress(80)
-        # Skip this for now...
-
-        # --- STATIC STEP 11: Economics ---
-        self.update_runtime_progress(85)
-        # Skip this for now...
-
-        # --- DATA EXPORT AND CLEANUP STEPS ---
-        self.update_runtime_progress(90)
-
-        # Export the data maps available - first check scenario name
-        if int(self.get_metadata("usescenarioname")):
-            file_basename = self.get_metadata("name").replace(" ", "_")
-        else:
-            file_basename = self.get_metadata("filename")
-
-        print(self.projectpath)
-        map_attributes = self.get_asset_with_name("MapAttributes")
-        epsg = self.simulation.get_project_parameter("project_epsg")
-
-        # SHAPEFILE EXPORT FUNCTIONS
-        # -- SECTION 1 - BASE GEOMETRY
-        if map_attributes.get_attribute("GeometryType") in ["SQUARES", "HEXAGONS"]:
-            xblocks.export_block_assets_to_gis_shapefile(self.get_assets_with_identifier("BlockID"), map_attributes,
-                                                           self.projectpath+"/output", file_basename + "_Blocks",
-                                                           int(epsg))
-
-            xpatches.export_patches_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
-                                                     self.projectpath + "/output", file_basename + "_Patches",
-                                                     int(epsg))
-
-        if map_attributes.get_attribute("GeometryType") in ["VECTORPATCH"]:
-            xpatches.export_vectorpatches_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
-                                                           self.projectpath+"/output", file_basename + "_Patches",
-                                                           int(epsg))
-
-        self.update_runtime_progress(93)
-
-        # -- SECTION 2 - FLOW PATHS
-        xflowpaths.export_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("FlowID"), map_attributes,
-                                                     self.projectpath + "/output", file_basename + "_Flowpaths",
-                                                     int(epsg))  # Export FlowPaths
-
-        if map_attributes.get_attribute("GeometryType") in ["SQUARES", "HEXAGONS"]:
-            # Patch Flowpaths
-            xpatches.export_patch_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("PatchFloID"),
-                                                             map_attributes, self.projectpath + "/output",
-                                                             file_basename + "_PatchFlowpaths", int(epsg))
-        if map_attributes.get_attribute("GeometryType") in ["VECTORPATCH"]:
-            # Dirichlet Network
-            xpatches.export_dirichletnetwork_to_gis_shapefile(self.get_assets_with_identifier("LinkID"),
-                                                              map_attributes, self.projectpath + "/output",
-                                                              file_basename + "_Dirichletnet", int(epsg))
-
-        self.update_runtime_progress(96)
-        # -- SECTION 3 - Other Maps
-        print("Exporting Open Space Stuff")
-        xopenspace.export_oslink_to_gis_shapefile(self.get_assets_with_identifier("OSLinkID"), map_attributes,
-                                                    self.projectpath + "/output", file_basename + "_OSLink",
-                                                    int(epsg))
-        xopenspace.export_osnet_to_gis_shapefile(self.get_assets_with_identifier("OSNetID"), map_attributes,
-                                                    self.projectpath + "/output", file_basename + "_OSNet",
-                                                    int(epsg))
-        xopenspace.export_patch_buffers_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
-                                                    self.projectpath + "/output", file_basename + "_OSBuffer",
-                                                    int(epsg))
-
-        # xinfra.export_sww_network_to_gis_shapefile(self.get_assets_with_identifier("SwwID"), map_attributes,
-        #                                             self.projectpath + "/output", file_basename + "_SwwNet",
-        #                                             int(epsg), "Blocks")
-        # xinfra.export_sww_links_to_gis_shapefile(self.get_assets_with_identifier("LinkID"), map_attributes,
-        #                                             self.projectpath + "/output", file_basename + "_Links",
-        #                                             int(epsg), "Blocks")
-        # xinfra.export_sww_mst_to_gis_shapefile(self.get_assets_with_identifier("MST"), map_attributes,
-        #                                          self.projectpath + "/output", file_basename + "_MST",
-        #                                          int(epsg), "Blocks")
-        # [TO DO] Export options - WSUD Systems
-        # [TO DO] Export options - centrepoints
-
-        self.update_runtime_progress(100)
-        return True
-
-    def run_dynamic_simulation(self):
-        """This function presents the logical module flow for a DYNAMIC simulation."""
-        self.update_observers("Scenario Type: DYNAMIC")
-        temp_directory = self.simulation.get_global_options("tempdir")
-        self.update_observers("Current temp directory: " + str(temp_directory))
-        self.update_runtime_progress(5)
-
-        # --- DYNAMIC STEP 1: Development Mapping Module ---
-        self.update_runtime_progress(10)
-        urbdev = self.get_module_object("URBDEV", 0)
-        if urbdev is None:
-            pass
-        else:
-            urbdev.attach(self.__observers)
-            urbdev.run_module()
-
-        # --- DYNAMIC STEP 2: Urban Dynamics Module ---
-        self.update_runtime_progress(20)
-        # Skip for now
-
-        # --- DYNAMIC STEP 3: Block delineation ---
-
-        # --- DYNAMIC STEP 4: Climate setup ---
-        # --- DYNAMIC STEP 5: Urban Planning ---
-        # --- DYNAMIC STEP 6: Spatial Analyst ---
-        # --- DYNAMIC STEP 7: Infrastructure ---
-        # --- DYNAMIC STEP 8: Blue-Green Systems ---
-        # --- DYNAMIC STEP 9: Water Cycle ---
-        # --- DYNAMIC STEP 10: Microclimate ---
-        # --- DYNAMIC STEP 11: Flood ---
-        # --- DYNAMIC STEP 12: Economics ---
-
-        # --- DATA EXPORT AND CLEANUP STEPS ---
-        self.update_runtime_progress(90)
-
-        # Export the data maps available - first check scenario name
-        if int(self.get_metadata("usescenarioname")):
-            file_basename = self.get_metadata("name").replace(" ", "_")
-        else:
-            file_basename = self.get_metadata("filename")
-
-        print(self.projectpath)
-        map_attributes = self.get_asset_with_name("MapAttributes")
-        epsg = self.simulation.get_project_parameter("project_epsg")
-
-        xurbanmodel.export_urbandev_cells_to_gis_shapefile(self.get_assets_with_identifier("CellID"), map_attributes,
-                                                           self.projectpath+"/output", file_basename + "_Cells",
-                                                           int(epsg))
-        self.update_runtime_progress(95)
-        # xregions.export_municipalities_to_gis_shapefile()
-
-        self.update_runtime_progress(100)
-
-    def run_benchmark_simulation(self):
-        """This function presents the logical module flow for a BENCHMARK simulation."""
         pass
-        self.update_runtime_progress(100)
+        # BEGIN THE SCENARIO'S SIMULATION
+        # self.update_observers("Scenario Start!")
+        # print("Starting Scenario !!")
+        # self.runstate = True
+        # if self.get_metadata("type") == "STATIC":
+        #     self.run_static_simulation()
+        # elif self.get_metadata("type") == "DYNAMIC":
+        #     self.run_dynamic_simulation()
+        # else:
+        #     self.run_benchmark_simulation()
+        # self.simulation.on_thread_finished()
+
+    # def run_static_simulation(self):
+    #     """This function presents the logical module flow for a STATIC simulation."""
+    #     # --- STEP 0: Begin by setting up the basic global variables ---
+    #     self.update_observers("Scenario Type: STATIC")
+    #     temp_directory = self.simulation.get_global_options("tempdir")
+    #     self.update_observers("Current temp directory: "+str(temp_directory))
+    #     self.update_runtime_progress(5)
+    #
+    #     # --- STATIC STEP 1: Block delineation ---
+    #     self.update_runtime_progress(10)
+    #     delinblocks = self.get_module_object("SPATIAL", 0)
+    #     delinblocks.attach(self.__observers)
+    #     delinblocks.run_module()
+    #
+    #     # --- STATIC STEP 2: Climate Setup ---
+    #     self.update_runtime_progress(20)
+    #     # Skip this for now.
+    #
+    #     # --- STATIC STEP 3: Urban Planning ---
+    #     self.update_runtime_progress(30)             # From this point forth, modules may be optional!
+    #     urbplanbb = self.get_module_object("URBPLAN", 0)
+    #     map_attr = self.get_asset_with_name("MapAttributes")
+    #     if urbplanbb is None:
+    #         map_attr.add_attribute("HasURBANFORM", 0)
+    #     else:
+    #         map_attr.add_attribute("HasURBANFORM", 1)
+    #         urbplanbb.attach(self.__observers)
+    #         urbplanbb.run_module()
+    #
+    #     # --- STATIC STEP 4: Spatial Analyst ---
+    #     self.update_runtime_progress(40)
+    #     spatialmap = self.get_module_object("MAP", 0)
+    #     map_attr = self.get_asset_with_name("MapAttributes")
+    #     if spatialmap is None:
+    #         map_attr.add_attribute("HasSPATIALMAPPING", 0)
+    #     else:
+    #         map_attr.add_attribute("HasSPATIALMAPPING", 1)
+    #         spatialmap.attach(self.__observers)
+    #         spatialmap.run_module()
+    #
+    #     # --- STATIC STEP 6: Infrastructure ---
+    #     self.update_runtime_progress(50)
+    #     infrastructure = self.get_module_object("INFRA", 0)
+    #     if infrastructure is None:
+    #         map_attr.add_attribute("HasINFRA", 0)
+    #     else:
+    #         map_attr.add_attribute("HasINFRA", 1)
+    #         infrastructure.attach(self.__observers)
+    #         infrastructure.run_module()
+    #
+    #
+    #     # --- STATIC STEP 7: Blue-Green Systems ---
+    #     self.update_runtime_progress(60)
+    #     # Skip this for now...
+    #
+    #     # --- STATIC STEP 8: Water Cycle ---
+    #     self.update_runtime_progress(70)
+    #     # Skip this for now...
+    #
+    #     # --- STATIC STEP 9: Microclimate ---
+    #     self.update_runtime_progress(75)
+    #     # Skip this for now...
+    #
+    #     # --- STATIC STEP 10: Flood ---
+    #     self.update_runtime_progress(80)
+    #     # Skip this for now...
+    #
+    #     # --- STATIC STEP 11: Economics ---
+    #     self.update_runtime_progress(85)
+    #     # Skip this for now...
+    #
+    #     # --- DATA EXPORT AND CLEANUP STEPS ---
+    #     self.update_runtime_progress(90)
+    #
+    #     # Export the data maps available - first check scenario name
+    #     if int(self.get_metadata("usescenarioname")):
+    #         file_basename = self.get_metadata("name").replace(" ", "_")
+    #     else:
+    #         file_basename = self.get_metadata("filename")
+    #
+    #     print(self.projectpath)
+    #     map_attributes = self.get_asset_with_name("MapAttributes")
+    #     epsg = self.simulation.get_project_parameter("project_epsg")
+    #
+    #     # SHAPEFILE EXPORT FUNCTIONS
+    #     # -- SECTION 1 - BASE GEOMETRY
+    #     if map_attributes.get_attribute("GeometryType") in ["SQUARES", "HEXAGONS"]:
+    #         xblocks.export_block_assets_to_gis_shapefile(self.get_assets_with_identifier("BlockID"), map_attributes,
+    #                                                        self.projectpath+"/output", file_basename + "_Blocks",
+    #                                                        int(epsg))
+    #
+    #         xpatches.export_patches_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
+    #                                                  self.projectpath + "/output", file_basename + "_Patches",
+    #                                                  int(epsg))
+    #
+    #     if map_attributes.get_attribute("GeometryType") in ["VECTORPATCH"]:
+    #         xpatches.export_vectorpatches_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
+    #                                                        self.projectpath+"/output", file_basename + "_Patches",
+    #                                                        int(epsg))
+    #
+    #     self.update_runtime_progress(93)
+    #
+    #     # -- SECTION 2 - FLOW PATHS
+    #     xflowpaths.export_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("FlowID"), map_attributes,
+    #                                                  self.projectpath + "/output", file_basename + "_Flowpaths",
+    #                                                  int(epsg))  # Export FlowPaths
+    #
+    #     if map_attributes.get_attribute("GeometryType") in ["SQUARES", "HEXAGONS"]:
+    #         # Patch Flowpaths
+    #         xpatches.export_patch_flowpaths_to_gis_shapefile(self.get_assets_with_identifier("PatchFloID"),
+    #                                                          map_attributes, self.projectpath + "/output",
+    #                                                          file_basename + "_PatchFlowpaths", int(epsg))
+    #     if map_attributes.get_attribute("GeometryType") in ["VECTORPATCH"]:
+    #         # Dirichlet Network
+    #         xpatches.export_dirichletnetwork_to_gis_shapefile(self.get_assets_with_identifier("LinkID"),
+    #                                                           map_attributes, self.projectpath + "/output",
+    #                                                           file_basename + "_Dirichletnet", int(epsg))
+    #
+    #     self.update_runtime_progress(96)
+    #     # -- SECTION 3 - Other Maps
+    #     print("Exporting Open Space Stuff")
+    #     xopenspace.export_oslink_to_gis_shapefile(self.get_assets_with_identifier("OSLinkID"), map_attributes,
+    #                                                 self.projectpath + "/output", file_basename + "_OSLink",
+    #                                                 int(epsg))
+    #     xopenspace.export_osnet_to_gis_shapefile(self.get_assets_with_identifier("OSNetID"), map_attributes,
+    #                                                 self.projectpath + "/output", file_basename + "_OSNet",
+    #                                                 int(epsg))
+    #     xopenspace.export_patch_buffers_to_gis_shapefile(self.get_assets_with_identifier("PatchID"), map_attributes,
+    #                                                 self.projectpath + "/output", file_basename + "_OSBuffer",
+    #                                                 int(epsg))
+    #
+    #     # xinfra.export_sww_network_to_gis_shapefile(self.get_assets_with_identifier("SwwID"), map_attributes,
+    #     #                                             self.projectpath + "/output", file_basename + "_SwwNet",
+    #     #                                             int(epsg), "Blocks")
+    #     # xinfra.export_sww_links_to_gis_shapefile(self.get_assets_with_identifier("LinkID"), map_attributes,
+    #     #                                             self.projectpath + "/output", file_basename + "_Links",
+    #     #                                             int(epsg), "Blocks")
+    #     # xinfra.export_sww_mst_to_gis_shapefile(self.get_assets_with_identifier("MST"), map_attributes,
+    #     #                                          self.projectpath + "/output", file_basename + "_MST",
+    #     #                                          int(epsg), "Blocks")
+    #     # [TO DO] Export options - WSUD Systems
+    #     # [TO DO] Export options - centrepoints
+    #
+    #     self.update_runtime_progress(100)
+    #     return True
+
+    # def run_dynamic_simulation(self):
+    #     """This function presents the logical module flow for a DYNAMIC simulation."""
+    #     self.update_observers("Scenario Type: DYNAMIC")
+    #     temp_directory = self.simulation.get_global_options("tempdir")
+    #     self.update_observers("Current temp directory: " + str(temp_directory))
+    #     self.update_runtime_progress(5)
+    #
+    #     # --- DYNAMIC STEP 1: Development Mapping Module ---
+    #     self.update_runtime_progress(10)
+    #     urbdev = self.get_module_object("URBDEV", 0)
+    #     if urbdev is None:
+    #         pass
+    #     else:
+    #         urbdev.attach(self.__observers)
+    #         urbdev.run_module()
+    #
+    #     # --- DYNAMIC STEP 2: Urban Dynamics Module ---
+    #     self.update_runtime_progress(20)
+    #     # Skip for now
+    #
+    #     # --- DYNAMIC STEP 3: Block delineation ---
+    #
+    #     # --- DYNAMIC STEP 4: Climate setup ---
+    #     # --- DYNAMIC STEP 5: Urban Planning ---
+    #     # --- DYNAMIC STEP 6: Spatial Analyst ---
+    #     # --- DYNAMIC STEP 7: Infrastructure ---
+    #     # --- DYNAMIC STEP 8: Blue-Green Systems ---
+    #     # --- DYNAMIC STEP 9: Water Cycle ---
+    #     # --- DYNAMIC STEP 10: Microclimate ---
+    #     # --- DYNAMIC STEP 11: Flood ---
+    #     # --- DYNAMIC STEP 12: Economics ---
+    #
+    #     # --- DATA EXPORT AND CLEANUP STEPS ---
+    #     self.update_runtime_progress(90)
+    #
+    #     # Export the data maps available - first check scenario name
+    #     if int(self.get_metadata("usescenarioname")):
+    #         file_basename = self.get_metadata("name").replace(" ", "_")
+    #     else:
+    #         file_basename = self.get_metadata("filename")
+    #
+    #     print(self.projectpath)
+    #     map_attributes = self.get_asset_with_name("MapAttributes")
+    #     epsg = self.simulation.get_project_parameter("project_epsg")
+    #
+    #     xurbanmodel.export_urbandev_cells_to_gis_shapefile(self.get_assets_with_identifier("CellID"), map_attributes,
+    #                                                        self.projectpath+"/output", file_basename + "_Cells",
+    #                                                        int(epsg))
+    #     self.update_runtime_progress(95)
+    #     # xregions.export_municipalities_to_gis_shapefile()
+    #
+    #     self.update_runtime_progress(100)
+    #
+    # def run_benchmark_simulation(self):
+    #     """This function presents the logical module flow for a BENCHMARK simulation."""
+    #     pass
+    #     self.update_runtime_progress(100)
 
 
 
