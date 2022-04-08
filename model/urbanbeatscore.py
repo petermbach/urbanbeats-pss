@@ -695,10 +695,6 @@ class UrbanBeatsSim(object):
         """Returns the total number of scenarios currently in the project."""
         return len(self.__scenarios)
 
-    def get_all_scenario_names(self):
-        """Returns all scenario names."""
-        return self.__scenarios.keys()
-
     def get_num_datasets(self):
         """Returns a single integer indicating the number of data files in the library."""
         return self.__datalibrary.get_num_datafiles()

@@ -294,7 +294,7 @@ class UrbanBeatsScenario(threading.Thread):
             else:
                 self.__qual_data.append(self.datalibrary.get_data_with_id(child.text))
 
-        # # Create modules and fill out the modules with parameters
+        # # Create modules and fill out the modules with parameters [REVAMP]
         # mdata = root.find("scenariomodules")
         # for modname in self.__modulesbools.keys():
         #     mbool = int(mdata.find(modname).find("active").text)

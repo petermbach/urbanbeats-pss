@@ -193,7 +193,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.newScenario.clicked.connect(lambda: self.show_scenario_dialog(0))
         self.ui.editScenario.clicked.connect(lambda: self.show_scenario_dialog(1))
         self.ui.deleteScenario.clicked.connect(self.delete_selected_scenario)
-        self.ui.activateScenario.clicked.connect(self.update_scenario_gui)
+        self.ui.activateScenario.clicked.connect(self.set_current_tree_selected_as_active_scenario)
+        self.ui.ScenarioDock_View.itemDoubleClicked.connect(self.set_current_tree_selected_as_active_scenario)
 
         # OVERVIEW SECTION --- (tabs: Project, Geography, Scenario, Log)
         self.ui.location_add_button.clicked.connect(self.show_add_location_dialog)
@@ -753,23 +754,12 @@ class MainWindow(QtWidgets.QMainWindow):
                                                                         activesimulation.get_num_datasets()))
         self.update_data_library_view()
 
-        # SCENARIO VIEW TREE WIDGET - Populate with scenarios
+        # SCENARIO VIEW TREE WIDGET - Populate with scenarios - loop through and populate the scenario dock
         self.ui.ScenarioDock_View.clear()
-        # [TTD]
-        # if viewmode == 0:
-        #     moduleTree = self.ui.ScenarioDock_View.topLevelItem(3)
-        #     moduleCount = moduleTree.childCount()
-        #     for twi_module in range(moduleCount):
-        #         moduleTree.child(twi_module).setDisabled(1)
-        #         moduleTree.child(twi_module).setCheckState(0, False)
-        # else:
-        #     # Prepare Scenario View by simply adding the names based on the active simulation's scenario names
-        #     scenarionames = activesimulation.get_scenario_names()
-        #     for n in scenarionames:
-        #         self.ui.ScenarioDock_Combo.addItem(n)   # Adds the names to the Dock
-        #         self.ui.ScenarioDock_Combo.setCurrentIndex(0)
-        #         activesimulation.set_active_scenario(None)
-        #         activesimulation.set_active_boundary(None)
+        for scenario in self.get_active_simulation_object().get_scenario_names():
+            scenario_obj = self.get_active_simulation_object().get_scenario_by_name(scenario)
+            twi = self.create_scenario_item_for_treewidget(scenario_obj)
+            self.ui.ScenarioDock_View.addTopLevelItem(twi)
 
         # Update Main Window Title
         self.setWindowTitle("UrbanBEATS Planning Support Tool - "+str(self.get_current_project_name()))
@@ -806,8 +796,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.__activeDataLibrary.save_library()
         self.printc("Saving Active Scenario...")
 
-        if self.__activeScenario is not None:
-            self.__activeScenario.save_scenario()
+        # Save off all scenarios
+        for scen_name in self.get_active_simulation_object().get_scenario_names():
+            scenario_obj = self.get_active_simulation_object().get_scenario_by_name(scen_name)
+            scenario_obj.save_scenario()
 
         # Save elements in the simulation core
         self.printc("Saving Project Functions List")
@@ -1087,90 +1079,107 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def setup_scenario(self):
         """Called when the scenario setup dialog box has successfully closed. i.e. signal accepted()"""
-        active_scenario = self.get_active_simulation_object().get_active_scenario()
-        active_scenario.setup_scenario()
-        self.get_active_simulation_object().add_new_scenario(active_scenario)
+        self.__activeScenario = self.get_active_simulation_object().get_active_scenario()
+        self.__activeScenario.setup_scenario()
+        self.get_active_simulation_object().add_new_scenario(self.__activeScenario)
 
         # ADD NEW ITEM TO THE SCENARIO TREE WIDGET AND SET AS ACTIVE [REVAMP]
+        self.ui.ScenarioDock_View.addTopLevelItem(self.create_scenario_item_for_treewidget(self.__activeScenario))
+
+        # Finally, update the GUI features
+        self.update_scenario_gui()
+
+    def create_scenario_item_for_treewidget(self, scenario_obj):
+        """Generates the tree-widget item to populate the Scenario dock with."""
         twicon = QtGui.QIcon()
-        twicon.addPixmap(QtGui.QPixmap(":/icons/book-open.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        twicon.addPixmap(QtGui.QPixmap(":/icons/book_closed.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         twi = QtWidgets.QTreeWidgetItem()
-        twi.setText(0, str(active_scenario.get_metadata("name")))
+        twi.setText(0, str(scenario_obj.get_metadata("name")))
         twi.setIcon(0, twicon)
         item_1 = QtWidgets.QTreeWidgetItem(twi)
-        item_1.setText(0, "Boundary: "+active_scenario.get_metadata("boundary"))
+        item_1.setText(0, "Boundary: " + scenario_obj.get_metadata("boundary"))
         item_1.setFlags(QtCore.Qt.NoItemFlags)
         item_1 = QtWidgets.QTreeWidgetItem(twi)
-        item_1.setText(0, "Simulation Year: "+str(active_scenario.get_metadata("startyear")))
+        item_1.setText(0, "Simulation Year: " + str(scenario_obj.get_metadata("startyear")))
         item_1.setFlags(QtCore.Qt.NoItemFlags)
-        self.ui.ScenarioDock_View.addTopLevelItem(twi)
+        return twi
 
     def delete_selected_scenario(self):
-        """Deletes the selected scenario based on the scenario combobox. This includes removing it from the active
-        simulation as well. The scenario interface is then reset to the default <select scenario> setting."""
-        # Algorithm: (1) Get selected scenario name data, (2)
-        # Algorithm: (1) Get current scenario data, (2) Reset scenario narrative interface by clearing it
-        # (3) Reset module buttons and control panel buttons, (4) Change current index of scenario combo
-        # (5) Update the scenario description information, (6) Remove the scenario from the combo box,
-        # (7) Remove the scenario from the simulation, (8) Delete the scenario folder from the project
+        """Deletes the selected scenario based on the selection in the Dock. This includes removing it from the active
+        simulation as well. The scenario interface is then reset depending on whether the scenarios was active or not
+        to the default <select scenario> setting."""
         if self.ui.ScenarioDock_View.currentItem() is not None:
             scenario_name = self.ui.ScenarioDock_View.currentItem().text(0)
             self.get_active_simulation_object().delete_scenario(scenario_name)
             self.ui.ScenarioDock_View.takeTopLevelItem(int(self.ui.ScenarioDock_View.currentIndex().row()))
             self.update_scenario_gui()
 
-    def scenario_change_ui_setup(self):
-        """Modifies the current Main Window Interface to suit the selected scenario. It also includes printing out
-        details into the output console."""
-        # if self.ui.ScenarioDock_Combo.currentIndex() == 0:
-        #     # <Select Scenario> Case - disables everything
-        #     self.scenario_view_reset()
-        #     self.ui.ModuleDock.setEnabled(0)
-        #     self.ui.SimDock.setEnabled(0)
-        # else:
+    def set_current_tree_selected_as_active_scenario(self):
+        """Sets the current treewidget top level item selected as the new active scenario."""
+        new_active_scenario_name = self.ui.ScenarioDock_View.currentItem().text(0)
+        if self.__activeScenario is not None:
+            if new_active_scenario_name == self.__activeScenario.get_metadata("name"):
+                return True     # If the current scenario is the same, do nothing, otherwise update gui
+        self.get_active_simulation_object().set_active_scenario(new_active_scenario_name)
         self.update_scenario_gui()
-        self.ui.SimDock.setEnabled(1)
 
     def update_scenario_gui(self):
         """Updates the scenario GUI and narrative section with the current scenario's details."""
+        # Get active simulation object and the active boundary
+        self.__activeScenario = self.get_active_simulation_object().get_active_scenario()
+        if self.__activeScenario is None:      # Escape clause
+            self.scenario_view_reset()
+            return True
+        active_scenario_name = self.__activeScenario.get_metadata("name")
+        self.get_active_simulation_object().set_active_boundary(self.__activeScenario.get_metadata("boundary"))
 
-        # active_scenario_name = self.ui.ScenarioDock_Combo.currentText()
-        # self.get_active_simulation_object().set_active_scenario(active_scenario_name)
-        # self.__activeScenario = self.get_active_simulation_object().get_active_scenario()
-        # self.get_active_simulation_object().set_active_boundary(self.__activeScenario.get_metadata("boundary"))
-        pass
-        # # Narrative
-        # self.ui.Narrative.setPlainText(self.__activeScenario.get_metadata("narrative"))
-        #
+        # Set icons in the scenario dock and expand the current scenario
+        twicon_active = QtGui.QIcon()       # Define active and passive icons
+        twicon_active.addPixmap(QtGui.QPixmap(":/icons/book-open.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        twicon_non = QtGui.QIcon()
+        twicon_non.addPixmap(QtGui.QPixmap(":/icons/book_closed.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        for i in range(int(self.ui.ScenarioDock_View.topLevelItemCount())):
+            if self.ui.ScenarioDock_View.topLevelItem(i).text(0) == active_scenario_name:
+                self.ui.ScenarioDock_View.topLevelItem(i).setIcon(0, twicon_active)
+                self.ui.ScenarioDock_View.topLevelItem(i).setExpanded(1)
+            else:
+                self.ui.ScenarioDock_View.topLevelItem(i).setIcon(0, twicon_non)
+                self.ui.ScenarioDock_View.topLevelItem(i).setExpanded(0)
 
-        # # LIST OF DATA SETS
-        # datalist = self.__activeScenario.create_dataset_file_list()
-        # self.ui.DataSummary.setRowCount(0)
-        # self.ui.ScenarioDock_View.topLevelItem(2).takeChildren()
-        # self.ui.DataSummary.setRowCount(0)
-        # for entry in datalist:
-        #     twi = QtWidgets.QTreeWidgetItem()
-        #     twi.setText(0, entry[1])
-        #     twi.setToolTip(0, entry[0] + " - " + entry[2])
-        #     self.ui.ScenarioDock_View.topLevelItem(2).addChild(twi)
-        #
-        #     # Update the Data Table Widget.
-        #     rowposition = self.ui.DataSummary.rowCount()
-        #     self.ui.DataSummary.insertRow(rowposition)
-        #     self.ui.DataSummary.setItem(rowposition, 0, QtWidgets.QTableWidgetItem(entry[1]))
-        #     self.ui.DataSummary.setItem(rowposition, 1, QtWidgets.QTableWidgetItem(entry[3]))
-        #     self.ui.DataSummary.setItem(rowposition, 2, QtWidgets.QTableWidgetItem(entry[4]))
-        #     self.ui.DataSummary.resizeColumnsToContents()
-        #
+        # Narrative
+        self.ui.ScenarioView_lbl.setText(str(active_scenario_name))
+        self.ui.ScenarioView_Widget.setCurrentIndex(2)
+        self.ui.scenarioMgmt_tabview.setCurrentIndex(0)
+        self.ui.scenario_summarybox.setPlainText(self.__activeScenario.get_metadata("narrative"))
+
+        # Update Data Sets Table
+        datalist = self.__activeScenario.create_dataset_file_list()
+        self.ui.DataSummary.setRowCount(0)
+        for entry in datalist:
+            rowposition = self.ui.DataSummary.rowCount()
+            self.ui.DataSummary.insertRow(rowposition)
+            self.ui.DataSummary.setItem(rowposition, 0, QtWidgets.QTableWidgetItem(entry[1]))
+            self.ui.DataSummary.setItem(rowposition, 1, QtWidgets.QTableWidgetItem(entry[3]))
+            self.ui.DataSummary.setItem(rowposition, 2, QtWidgets.QTableWidgetItem(entry[4]))
+            self.ui.DataSummary.resizeColumnsToContents()
+
+        # Modules List
+        # COMING SOON [REVAMP]
+
+        # Outputs List
+        # COMING SOON [REVAMP]
+
         # MAP DISPLAY
         self.update_map_display()
 
     def scenario_view_reset(self):
         """Resets the scenario view to the default """
-        self.ui.scenario_summarybox.clear()
-        self.ui.module_browser.clear()
-        self.ui.output_data_summary.setRowCount(0)
-        self.ui.module_browser.clear()
+        self.ui.ScenarioView_Widget.setCurrentIndex(0)      # Go back to Project Tab
+        self.ui.ScenarioView_lbl.setText("Scenario Overview") # Relabel the header
+        self.ui.scenario_summarybox.clear()                 # Clear the Summary Box
+        self.ui.DataSummary.setRowCount(0)                  # Set the Data Set Table rows to 0
+        self.ui.module_browser.clear()                      # Clear all Modules in the browser
+        self.ui.output_data_summary.setRowCount(0)          # Clear the output data table rows
         self.update_map_display()
 
     # FUNCTIONS TO DO

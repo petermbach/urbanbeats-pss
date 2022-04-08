@@ -79,7 +79,7 @@ class LaunchResultsExplorer(QtWidgets.QDialog):
 
     def update_all_scenario_combos(self):
         """Adds the model's scenarios to the combo boxes."""
-        scenarionames = self.simulation.get_all_scenario_names()
+        scenarionames = self.simulation.get_scenario_names()
         self.ui.summary_scenario_combo.clear()      # Clear the combo box
         self.ui.summary_scenario_combo.addItem("<Select Scenario>")
         [self.ui.summary_scenario_combo.addItem(str(scenarionames[i])) for i in range(len(scenarionames))]
