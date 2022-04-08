@@ -47,13 +47,6 @@
         <number>9</number>
        </property>
        <item>
-        <widget class="QLabel" name="ScenarioView_lbl">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Overview&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QTabWidget" name="ScenarioView_Widget">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -72,7 +65,7 @@
          </property>
          <widget class="QWidget" name="Project_tab">
           <attribute name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
+           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
             <normaloff>:/icons/Distributor-report-icon.png</normaloff>:/icons/Distributor-report-icon.png</iconset>
           </attribute>
           <attribute name="title">
@@ -97,7 +90,7 @@ p, li { white-space: pre-wrap; }
          </widget>
          <widget class="QWidget" name="Simulation_tab">
           <attribute name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
+           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
             <normaloff>:/icons/earth-icon.png</normaloff>:/icons/earth-icon.png</iconset>
           </attribute>
           <attribute name="title">
@@ -120,7 +113,7 @@ p, li { white-space: pre-wrap; }
                <string>Locations</string>
               </property>
               <property name="icon">
-               <iconset resource="../graphics/ubeats.qrc">
+               <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
                 <normaloff>:/icons/location.png</normaloff>:/icons/location.png</iconset>
               </property>
              </item>
@@ -129,7 +122,7 @@ p, li { white-space: pre-wrap; }
                <string>Simulation Boundaries</string>
               </property>
               <property name="icon">
-               <iconset resource="../graphics/ubeats.qrc">
+               <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
                 <normaloff>:/icons/boundaries_view.png</normaloff>:/icons/boundaries_view.png</iconset>
               </property>
              </item>
@@ -186,7 +179,7 @@ p, li { white-space: pre-wrap; }
                      <string>Add</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../graphics/ubeats.qrc">
+                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
                       <normaloff>:/icons/location_add.png</normaloff>:/icons/location_add.png</iconset>
                     </property>
                     <property name="iconSize">
@@ -240,7 +233,7 @@ p, li { white-space: pre-wrap; }
                      <string>Delete</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../graphics/ubeats.qrc">
+                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
                       <normaloff>:/icons/location_remove.png</normaloff>:/icons/location_remove.png</iconset>
                     </property>
                     <property name="iconSize">
@@ -284,7 +277,7 @@ p, li { white-space: pre-wrap; }
                      <string>Focus</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../graphics/ubeats.qrc">
+                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
                       <normaloff>:/icons/eye-2387853_960_720.png</normaloff>:/icons/eye-2387853_960_720.png</iconset>
                     </property>
                     <property name="iconSize">
@@ -365,7 +358,7 @@ p, li { white-space: pre-wrap; }
                      <string>Add</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../graphics/ubeats.qrc">
+                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
                       <normaloff>:/icons/boundaries_add.png</normaloff>:/icons/boundaries_add.png</iconset>
                     </property>
                     <property name="iconSize">
@@ -409,7 +402,7 @@ p, li { white-space: pre-wrap; }
                      <string>Focus</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../graphics/ubeats.qrc">
+                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
                       <normaloff>:/icons/eye-2387853_960_720.png</normaloff>:/icons/eye-2387853_960_720.png</iconset>
                     </property>
                     <property name="iconSize">
@@ -450,7 +443,7 @@ p, li { white-space: pre-wrap; }
                      <string>Delete</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../graphics/ubeats.qrc">
+                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
                       <normaloff>:/icons/boundaries_delete.png</normaloff>:/icons/boundaries_delete.png</iconset>
                     </property>
                     <property name="iconSize">
@@ -491,7 +484,7 @@ p, li { white-space: pre-wrap; }
                      <string>Add Shape</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../graphics/ubeats.qrc">
+                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
                       <normaloff>:/icons/custom_shape.png</normaloff>:/icons/custom_shape.png</iconset>
                     </property>
                     <property name="iconSize">
@@ -535,54 +528,226 @@ p, li { white-space: pre-wrap; }
          </widget>
          <widget class="QWidget" name="Narrative_tab">
           <attribute name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
+           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
             <normaloff>:/icons/Map-icon (1).png</normaloff>:/icons/Map-icon (1).png</iconset>
           </attribute>
           <attribute name="title">
            <string>Scenario</string>
           </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_8">
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
-            <widget class="QPlainTextEdit" name="Narrative"/>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="DataSummary_tab">
-          <attribute name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/Misc-Database-3-icon.png</normaloff>:/icons/Misc-Database-3-icon.png</iconset>
-          </attribute>
-          <attribute name="title">
-           <string>Data</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_4">
-           <item>
-            <widget class="QTableWidget" name="DataSummary">
-             <property name="sortingEnabled">
-              <bool>true</bool>
+            <widget class="QTabWidget" name="scenarioMgmt_tabview">
+             <property name="tabPosition">
+              <enum>QTabWidget::West</enum>
              </property>
-             <column>
-              <property name="text">
-               <string>Filename</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>Type</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>Subtype</string>
-              </property>
-             </column>
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
+             <widget class="QWidget" name="general">
+              <attribute name="icon">
+               <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                <normaloff>:/icons/Info-icon.png</normaloff>:/icons/Info-icon.png</iconset>
+              </attribute>
+              <attribute name="title">
+               <string>General</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_8">
+               <item>
+                <widget class="QTextEdit" name="scenario_summarybox">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                 <property name="html">
+                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="modules">
+              <attribute name="icon">
+               <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                <normaloff>:/icons/Data-Flow-Chart-icon.png</normaloff>:/icons/Data-Flow-Chart-icon.png</iconset>
+              </attribute>
+              <attribute name="title">
+               <string>Modules</string>
+              </attribute>
+              <layout class="QHBoxLayout" name="horizontalLayout_6">
+               <item>
+                <widget class="QTreeWidget" name="module_browser">
+                 <property name="allColumnsShowFocus">
+                  <bool>false</bool>
+                 </property>
+                 <attribute name="headerCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>Active Modules</string>
+                  </property>
+                 </column>
+                 <item>
+                  <property name="text">
+                   <string>Spatial Representation</string>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>Create Simulation Grid</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                     <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
+                   </property>
+                  </item>
+                 </item>
+                </widget>
+               </item>
+               <item>
+                <widget class="QWidget" name="module_controller" native="true">
+                 <layout class="QVBoxLayout" name="verticalLayout">
+                  <item>
+                   <widget class="QPushButton" name="module_add">
+                    <property name="text">
+                     <string>Add...</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                      <normaloff>:/icons/add-icon.png</normaloff>:/icons/add-icon.png</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="module_remove">
+                    <property name="text">
+                     <string>Remove</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                      <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="module_properties">
+                    <property name="text">
+                     <string>Properties</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                      <normaloff>:/icons/Info-icon.png</normaloff>:/icons/Info-icon.png</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="verticalSpacer">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="outputs">
+              <attribute name="icon">
+               <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                <normaloff>:/icons/Misc-Database-3-icon.png</normaloff>:/icons/Misc-Database-3-icon.png</iconset>
+              </attribute>
+              <attribute name="title">
+               <string>Outputs</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_5">
+               <item>
+                <widget class="QTableWidget" name="output_data_summary">
+                 <property name="verticalScrollBarPolicy">
+                  <enum>Qt::ScrollBarAlwaysOn</enum>
+                 </property>
+                 <property name="sortingEnabled">
+                  <bool>true</bool>
+                 </property>
+                 <column>
+                  <property name="text">
+                   <string>Name</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Type</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Subtype</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+               <item>
+                <widget class="QWidget" name="output_data_widget" native="true">
+                 <layout class="QHBoxLayout" name="horizontalLayout_7">
+                  <item>
+                   <widget class="QPushButton" name="output_update_button">
+                    <property name="text">
+                     <string>Update View</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                      <normaloff>:/icons/Refresh-icon.png</normaloff>:/icons/Refresh-icon.png</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="output_metadata_button">
+                    <property name="minimumSize">
+                     <size>
+                      <width>120</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>Metadata</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                      <normaloff>:/icons/map-icon.png</normaloff>:/icons/map-icon.png</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="output_export_button">
+                    <property name="text">
+                     <string>Export...</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                      <normaloff>:/icons/export-icon.png</normaloff>:/icons/export-icon.png</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+              </layout>
+             </widget>
             </widget>
            </item>
           </layout>
          </widget>
          <widget class="QWidget" name="Log_tab">
           <attribute name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
+           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
             <normaloff>:/icons/Clipboard-icon.png</normaloff>:/icons/Clipboard-icon.png</iconset>
           </attribute>
           <attribute name="title">
@@ -629,1147 +794,94 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QProgressBar" name="ProgressBar">
-         <property name="value">
-          <number>0</number>
-         </property>
-         <property name="invertedAppearance">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
     </item>
     <item>
-     <widget class="QStackedWidget" name="MainView_stack">
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="QWidget" name="page">
-       <layout class="QVBoxLayout" name="verticalLayout_15">
-        <item>
-         <widget class="QWidget" name="DataView_Widget" native="true">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_5">
-           <property name="spacing">
-            <number>3</number>
+     <widget class="QWidget" name="widget_3" native="true">
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="DataView_options">
+           <property name="minimumSize">
+            <size>
+             <width>120</width>
+             <height>0</height>
+            </size>
            </property>
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QLabel" name="DataView_lbl">
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>13</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Project Context View&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_5">
-             <property name="spacing">
-              <number>3</number>
-             </property>
-             <item>
-              <widget class="QPushButton" name="DataView_options">
-               <property name="minimumSize">
-                <size>
-                 <width>120</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Options</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../graphics/ubeats.qrc">
-                 <normaloff>:/icons/Settings-icon.png</normaloff>:/icons/Settings-icon.png</iconset>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="DataView_meta">
-               <property name="minimumSize">
-                <size>
-                 <width>120</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Metadata</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../graphics/ubeats.qrc">
-                 <normaloff>:/icons/map-icon.png</normaloff>:/icons/map-icon.png</iconset>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="DataView_extent">
-               <property name="minimumSize">
-                <size>
-                 <width>120</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Extent</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../graphics/ubeats.qrc">
-                 <normaloff>:/icons/2216358 - globe locati.png</normaloff>:/icons/2216358 - globe locati.png</iconset>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QWebEngineView" name="DataView_web" native="true">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="page_2">
-       <layout class="QVBoxLayout" name="verticalLayout_17">
-        <item>
-         <widget class="QLabel" name="SimView_lbl">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>13</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Simulation Controller View&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_7">
-          <property name="spacing">
-           <number>3</number>
-          </property>
-          <item>
-           <widget class="QPushButton" name="SimView_options">
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Options</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../graphics/ubeats.qrc">
-              <normaloff>:/icons/Settings-icon.png</normaloff>:/icons/Settings-icon.png</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="SimView_scenario">
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Scenario Info</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../graphics/ubeats.qrc">
-              <normaloff>:/icons/Editing-edit-icon.png</normaloff>:/icons/Editing-edit-icon.png</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="SimView_export">
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Export Results</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../graphics/ubeats.qrc">
-              <normaloff>:/icons/export-icon.png</normaloff>:/icons/export-icon.png</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QTreeWidget" name="stepwise_tree">
-          <property name="allColumnsShowFocus">
-           <bool>false</bool>
-          </property>
-          <attribute name="headerCascadingSectionResizes">
-           <bool>false</bool>
-          </attribute>
-          <column>
            <property name="text">
-            <string>Module</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Status</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Runtime</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Report(s)</string>
-           </property>
-          </column>
-          <item>
-           <property name="text">
-            <string>Spatial Setup</string>
-           </property>
-           <property name="checkState">
-            <enum>Unchecked</enum>
+            <string>Options</string>
            </property>
            <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
+            <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+             <normaloff>:/icons/Settings-icon.png</normaloff>:/icons/Settings-icon.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="DataView_meta">
+           <property name="minimumSize">
+            <size>
+             <width>120</width>
+             <height>0</height>
+            </size>
            </property>
            <property name="text">
-            <string>No data</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="flags">
-            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
-           </property>
-           <item>
-            <property name="text">
-             <string>Block Delineation / Data Transfer</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>No data</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Urban Context</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>No data</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Catchment / Flow Paths</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>No data</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-          </item>
-          <item>
-           <property name="text">
-            <string>Climate Setup</string>
-           </property>
-           <property name="checkState">
-            <enum>Unchecked</enum>
+            <string>Metadata</string>
            </property>
            <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</iconset>
+            <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+             <normaloff>:/icons/map-icon.png</normaloff>:/icons/map-icon.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="DataView_extent">
+           <property name="minimumSize">
+            <size>
+             <width>120</width>
+             <height>0</height>
+            </size>
            </property>
            <property name="text">
-            <string>Inactive</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Development Setup</string>
-           </property>
-           <property name="checkState">
-            <enum>Unchecked</enum>
+            <string>Extent</string>
            </property>
            <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/Very-Basic-Design-icon.png</normaloff>:/icons/Very-Basic-Design-icon.png</iconset>
-           </property>
-           <property name="text">
-            <string>No data</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="flags">
-            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
-           </property>
-           <item>
-            <property name="text">
-             <string>Cell Creation / Data Transfer</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>No data</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Suitability Mapping</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="icon">
-             <iconset resource="../graphics/ubeats.qrc">
-              <normaloff>:/icons/icons8-approval-96.png</normaloff>:/icons/icons8-approval-96.png</iconset>
-            </property>
-            <property name="text">
-             <string>No data</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Accessibility Mapping</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="icon">
-             <iconset resource="../graphics/ubeats.qrc">
-              <normaloff>:/icons/icons8-key-2-96.png</normaloff>:/icons/icons8-key-2-96.png</iconset>
-            </property>
-            <property name="text">
-             <string>No data</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Zoning Mapping</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="icon">
-             <iconset resource="../graphics/ubeats.qrc">
-              <normaloff>:/icons/icons8-ios-application-placeholder-96.png</normaloff>:/icons/icons8-ios-application-placeholder-96.png</iconset>
-            </property>
-            <property name="text">
-             <string>No data</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Neighbourhood Mapping</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="icon">
-             <iconset resource="../graphics/ubeats.qrc">
-              <normaloff>:/icons/Social-network-icon.png</normaloff>:/icons/Social-network-icon.png</iconset>
-            </property>
-            <property name="text">
-             <string>No data</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-          </item>
-          <item>
-           <property name="text">
-            <string>Urban Dynamics</string>
-           </property>
-           <property name="checkState">
-            <enum>Unchecked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
-           </property>
-           <property name="text">
-            <string>No data</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Urban Form</string>
-           </property>
-           <property name="checkState">
-            <enum>Unchecked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/City_icon_(Noun_Project).svg.png</normaloff>:/icons/City_icon_(Noun_Project).svg.png</iconset>
-           </property>
-           <property name="text">
-            <string>No data</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Spatial Analyst</string>
-           </property>
-           <property name="checkState">
-            <enum>Unchecked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
-           </property>
-           <property name="text">
-            <string>No data</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="flags">
-            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
-           </property>
-           <item>
-            <property name="text">
-             <string>Planning Overlays</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>No data</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Land Cover</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>No data</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Open Spaces</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>No data</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Water Demand</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>No data</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Pollution</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>No data</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-          </item>
-          <item>
-           <property name="text">
-            <string>Water Infrastructure</string>
-           </property>
-           <property name="checkState">
-            <enum>Unchecked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/images/images/md_infrastructure.png</normaloff>:/images/images/md_infrastructure.png</iconset>
-           </property>
-           <property name="text">
-            <string>Inactive</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="flags">
-            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
-           </property>
-           <item>
-            <property name="text">
-             <string>Water Supply System</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>Inactive</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Wastewater System</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="icon">
-             <iconset resource="../graphics/ubeats.qrc">
-              <normaloff>:/icons/Water-closet-icon.png</normaloff>:/icons/Water-closet-icon.png</iconset>
-            </property>
-            <property name="text">
-             <string>Inactive</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-          </item>
-          <item>
-           <property name="text">
-            <string>Blue-Green Systems</string>
-           </property>
-           <property name="checkState">
-            <enum>Unchecked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/Tree-icon.png</normaloff>:/icons/Tree-icon.png</iconset>
-           </property>
-           <property name="text">
-            <string>No data</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="flags">
-            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
-           </property>
-           <item>
-            <property name="text">
-             <string>Existing Asset Registry</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>No data</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>System Optioneering</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>No data</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Layout Generation</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>No data</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Ranking &amp; Filtering</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>No data</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-          </item>
-          <item>
-           <property name="text">
-            <string>Urban Water Cycle</string>
-           </property>
-           <property name="checkState">
-            <enum>Unchecked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</iconset>
-           </property>
-           <property name="text">
-            <string>Inactive</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="flags">
-            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
-           </property>
-           <item>
-            <property name="text">
-             <string>Total Urban Water Balance</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>Inactive</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>EPANET Link</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>Inactive</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>SWMM Link</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>Inactive</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-          </item>
-          <item>
-           <property name="text">
-            <string>Urban Microclimate</string>
-           </property>
-           <property name="checkState">
-            <enum>Unchecked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/temperature-icon.png</normaloff>:/icons/temperature-icon.png</iconset>
-           </property>
-           <property name="text">
-            <string>Inactive</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="flags">
-            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled|ItemIsTristate</set>
-           </property>
-           <item>
-            <property name="text">
-             <string>Land Surface Temperature</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>Inactive</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Air Temperature</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>Inactive</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Urban Thermal Comfort</string>
-            </property>
-            <property name="checkState">
-             <enum>Unchecked</enum>
-            </property>
-            <property name="text">
-             <string>Inactive</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-          </item>
-          <item>
-           <property name="text">
-            <string>Flood Assessment</string>
-           </property>
-           <property name="checkState">
-            <enum>Unchecked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</iconset>
-           </property>
-           <property name="text">
-            <string>Inactive</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Economic Valuation</string>
-           </property>
-           <property name="checkState">
-            <enum>Unchecked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/dollar-icon.png</normaloff>:/icons/dollar-icon.png</iconset>
-           </property>
-           <property name="text">
-            <string>Inactive</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="page_3">
-       <layout class="QVBoxLayout" name="verticalLayout_18">
-        <item>
-         <widget class="QLabel" name="DataSummaryView_lbl">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>13</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Data Summary View&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_8">
-          <property name="spacing">
-           <number>3</number>
-          </property>
-          <item>
-           <widget class="QPushButton" name="DataSummaryView_options">
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Options</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../graphics/ubeats.qrc">
-              <normaloff>:/icons/Settings-icon.png</normaloff>:/icons/Settings-icon.png</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="DataSummaryView_meta">
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Metadata</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../graphics/ubeats.qrc">
-              <normaloff>:/icons/map-icon.png</normaloff>:/icons/map-icon.png</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="DataSummaryView_locate">
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Locate File</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../graphics/ubeats.qrc">
-              <normaloff>:/icons/open-file-icon.png</normaloff>:/icons/open-file-icon.png</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QWebEngineView" name="DataView_web_2" native="true">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="page_4">
-       <layout class="QVBoxLayout" name="verticalLayout_16">
-        <item>
-         <widget class="QLabel" name="LogView_lbl">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>13</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Performance Log View&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPlainTextEdit" name="Log_Performance">
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QWebEngineView" name="LogView_web" native="true">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>400</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
+            <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+             <normaloff>:/icons/2216358 - globe locati.png</normaloff>:/icons/2216358 - globe locati.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QWebEngineView" name="DataView_web" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>
@@ -1815,7 +927,7 @@ p, li { white-space: pre-wrap; }
       <string>Scenario</string>
      </property>
      <property name="icon">
-      <iconset resource="../graphics/ubeats.qrc">
+      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
        <normaloff>:/icons/Map-icon (1).png</normaloff>:/icons/Map-icon (1).png</iconset>
      </property>
      <addaction name="actionDefine_New_Scenario"/>
@@ -1827,7 +939,7 @@ p, li { white-space: pre-wrap; }
       <string>Geography</string>
      </property>
      <property name="icon">
-      <iconset resource="../graphics/ubeats.qrc">
+      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
        <normaloff>:/icons/earth-icon.png</normaloff>:/icons/earth-icon.png</iconset>
      </property>
      <addaction name="actionAdd_Location"/>
@@ -1855,7 +967,7 @@ p, li { white-space: pre-wrap; }
       <string>Urban Modelling</string>
      </property>
      <property name="icon">
-      <iconset resource="../graphics/ubeats.qrc">
+      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
        <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
      </property>
      <addaction name="actionGrowth_Model"/>
@@ -1868,7 +980,7 @@ p, li { white-space: pre-wrap; }
       <string>Urban Planning</string>
      </property>
      <property name="icon">
-      <iconset resource="../graphics/ubeats.qrc">
+      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
        <normaloff>:/icons/Very-Basic-Design-icon.png</normaloff>:/icons/Very-Basic-Design-icon.png</iconset>
      </property>
      <addaction name="actionCity_wide_Planning"/>
@@ -1885,7 +997,7 @@ p, li { white-space: pre-wrap; }
       <string>Spatial Mapping</string>
      </property>
      <property name="icon">
-      <iconset resource="../graphics/ubeats.qrc">
+      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
        <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
      </property>
      <addaction name="actionPlanning_Overlays"/>
@@ -1899,7 +1011,7 @@ p, li { white-space: pre-wrap; }
       <string>Infrastructure</string>
      </property>
      <property name="icon">
-      <iconset resource="../graphics/ubeats.qrc">
+      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
        <normaloff>:/icons/Bench-icon.png</normaloff>:/icons/Bench-icon.png</iconset>
      </property>
      <addaction name="actionHousehold_Appliances"/>
@@ -1911,7 +1023,7 @@ p, li { white-space: pre-wrap; }
       <string>Socio-Economic</string>
      </property>
      <property name="icon">
-      <iconset resource="../graphics/ubeats.qrc">
+      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
        <normaloff>:/icons/community-users-icon.png</normaloff>:/icons/community-users-icon.png</iconset>
      </property>
      <addaction name="actionStakeholder_Groups"/>
@@ -1923,7 +1035,7 @@ p, li { white-space: pre-wrap; }
       <string>Spatial Setup</string>
      </property>
      <property name="icon">
-      <iconset resource="../graphics/ubeats.qrc">
+      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
        <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
      </property>
      <addaction name="actionRepresentation"/>
@@ -1934,7 +1046,7 @@ p, li { white-space: pre-wrap; }
       <string>Climate Setup</string>
      </property>
      <property name="icon">
-      <iconset resource="../graphics/ubeats.qrc">
+      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
        <normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</iconset>
      </property>
      <addaction name="actionData_Selection"/>
@@ -2272,7 +1384,7 @@ p, li { white-space: pre-wrap; }
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../graphics/ubeats.qrc">
+             <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
               <normaloff>:/icons/add-icon.png</normaloff>:/icons/add-icon.png</iconset>
             </property>
             <property name="iconSize">
@@ -2289,7 +1401,7 @@ p, li { white-space: pre-wrap; }
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../graphics/ubeats.qrc">
+             <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
               <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
             </property>
             <property name="iconSize">
@@ -2306,7 +1418,7 @@ p, li { white-space: pre-wrap; }
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../graphics/ubeats.qrc">
+             <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
               <normaloff>:/icons/map-icon.png</normaloff>:/icons/map-icon.png</iconset>
             </property>
             <property name="iconSize">
@@ -2323,7 +1435,7 @@ p, li { white-space: pre-wrap; }
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../graphics/ubeats.qrc">
+             <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
               <normaloff>:/icons/eye-2387853_960_720.png</normaloff>:/icons/eye-2387853_960_720.png</iconset>
             </property>
             <property name="iconSize">
@@ -2340,7 +1452,7 @@ p, li { white-space: pre-wrap; }
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../graphics/ubeats.qrc">
+             <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
               <normaloff>:/icons/arrowright.png</normaloff>:/icons/arrowright.png</iconset>
             </property>
             <property name="iconSize">
@@ -2363,7 +1475,7 @@ p, li { white-space: pre-wrap; }
    <property name="minimumSize">
     <size>
      <width>291</width>
-     <height>207</height>
+     <height>217</height>
     </size>
    </property>
    <property name="floating">
@@ -2401,28 +1513,19 @@ p, li { white-space: pre-wrap; }
         <number>0</number>
        </property>
        <item>
-        <widget class="QComboBox" name="ScenarioDock_Combo">
-         <item>
-          <property name="text">
-           <string>&lt;Select Scenario&gt;</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item>
         <widget class="QTreeWidget" name="ScenarioDock_View">
          <property name="verticalScrollBarPolicy">
           <enum>Qt::ScrollBarAlwaysOn</enum>
          </property>
          <property name="alternatingRowColors">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
          </property>
          <column>
           <property name="text">
-           <string>Scenario Description</string>
+           <string>Scenario Browser</string>
           </property>
           <property name="font">
            <font>
@@ -2433,24 +1536,20 @@ p, li { white-space: pre-wrap; }
          </column>
          <item>
           <property name="text">
-           <string>Narrative</string>
+           <string>Scenario_Name</string>
           </property>
           <property name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
+           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
             <normaloff>:/icons/pages-brown-icon.png</normaloff>:/icons/pages-brown-icon.png</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Simulation Details</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/Settings-icon.png</normaloff>:/icons/Settings-icon.png</iconset>
           </property>
           <item>
            <property name="text">
             <string>Type: (static)</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
            </property>
           </item>
           <item>
@@ -2479,254 +1578,104 @@ p, li { white-space: pre-wrap; }
            </property>
           </item>
          </item>
-         <item>
-          <property name="text">
-           <string>Using Spatial Data Sets</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/Misc-Database-3-icon.png</normaloff>:/icons/Misc-Database-3-icon.png</iconset>
-          </property>
-          <item>
-           <property name="text">
-            <string>(no files)</string>
-           </property>
-          </item>
-         </item>
-         <item>
-          <property name="text">
-           <string>Modules</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/palette-icon.png</normaloff>:/icons/palette-icon.png</iconset>
-          </property>
-          <item>
-           <property name="text">
-            <string>Spatial Setup</string>
-           </property>
-           <property name="checkState">
-            <enum>Checked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
-           </property>
-           <property name="flags">
-            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsEnabled</set>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Climate Setup</string>
-           </property>
-           <property name="checkState">
-            <enum>Checked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</iconset>
-           </property>
-           <property name="flags">
-            <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsEnabled</set>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Development Setup</string>
-           </property>
-           <property name="checkState">
-            <enum>Checked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/Very-Basic-Design-icon.png</normaloff>:/icons/Very-Basic-Design-icon.png</iconset>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Urban Dynamics</string>
-           </property>
-           <property name="checkState">
-            <enum>Checked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Urban Form</string>
-           </property>
-           <property name="checkState">
-            <enum>Checked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/City_icon_(Noun_Project).svg.png</normaloff>:/icons/City_icon_(Noun_Project).svg.png</iconset>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Spatial Analyst</string>
-           </property>
-           <property name="checkState">
-            <enum>Checked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Water Infrastructure</string>
-           </property>
-           <property name="checkState">
-            <enum>Checked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/images/images/md_infrastructure.png</normaloff>:/images/images/md_infrastructure.png</iconset>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Blue-Green Systems</string>
-           </property>
-           <property name="checkState">
-            <enum>Checked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/Tree-icon.png</normaloff>:/icons/Tree-icon.png</iconset>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Water Cycle</string>
-           </property>
-           <property name="checkState">
-            <enum>Checked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</iconset>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Urban Microclimate</string>
-           </property>
-           <property name="checkState">
-            <enum>Checked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/temperature-icon.png</normaloff>:/icons/temperature-icon.png</iconset>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Flood Assessment</string>
-           </property>
-           <property name="checkState">
-            <enum>Checked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</iconset>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Economic Valuation</string>
-           </property>
-           <property name="checkState">
-            <enum>Checked</enum>
-           </property>
-           <property name="icon">
-            <iconset resource="../graphics/ubeats.qrc">
-             <normaloff>:/icons/dollar-icon.png</normaloff>:/icons/dollar-icon.png</iconset>
-           </property>
-          </item>
-         </item>
-         <item>
-          <property name="text">
-           <string>Export Details</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/export-icon.png</normaloff>:/icons/export-icon.png</iconset>
-          </property>
-          <item>
-           <property name="text">
-            <string>File Naming: (name)</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Path: (path)</string>
-           </property>
-          </item>
-         </item>
-        </widget>
-       </item>
-       <item>
-        <widget class="QWidget" name="ScenarioDock_Controls" native="true">
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QPushButton" name="newScenario">
-            <property name="text">
-             <string>New...</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../graphics/ubeats.qrc">
-              <normaloff>:/icons/add-icon.png</normaloff>:/icons/add-icon.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="editScenario">
-            <property name="text">
-             <string>Edit...</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../graphics/ubeats.qrc">
-              <normaloff>:/icons/Editing-edit-icon.png</normaloff>:/icons/Editing-edit-icon.png</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="deleteScenario">
-            <property name="text">
-             <string>Delete...</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../graphics/ubeats.qrc">
-              <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </widget>
        </item>
       </layout>
      </item>
+     <item>
+      <widget class="QWidget" name="ScenarioDock_Controls" native="true">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="newScenario">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+            <normaloff>:/icons/add-icon.png</normaloff>:/icons/add-icon.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="activateScenario">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+            <normaloff>:/icons/activate.png</normaloff>:/icons/activate.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="editScenario">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+            <normaloff>:/icons/Editing-edit-icon.png</normaloff>:/icons/Editing-edit-icon.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="deleteScenario">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+            <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="ModuleDock">
+  <widget class="QDockWidget" name="ToolboxDock">
    <property name="minimumSize">
     <size>
-     <width>165</width>
+     <width>195</width>
      <height>483</height>
     </size>
    </property>
@@ -2740,14 +1689,14 @@ p, li { white-space: pre-wrap; }
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
    </property>
    <property name="windowTitle">
-    <string>Modules</string>
+    <string>Toolbox</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>2</number>
    </attribute>
    <widget class="QWidget" name="ModuleDock_Contents">
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
+    <layout class="QGridLayout" name="gridLayout_4">
+     <item row="1" column="1">
       <widget class="QWidget" name="widget" native="true">
        <layout class="QVBoxLayout" name="verticalLayout_11">
         <property name="spacing">
@@ -2765,486 +1714,196 @@ p, li { white-space: pre-wrap; }
         <property name="bottomMargin">
          <number>0</number>
         </property>
-        <item>
-         <widget class="QLabel" name="lbl_dataproc">
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Data Processing&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="ModuleDock_spatialsetup">
-          <property name="minimumSize">
-           <size>
-            <width>138</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>Spatial Delineation</string>
-          </property>
-          <property name="text">
-           <string>Spatial Setup</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="shortcut">
-           <string>Up</string>
-          </property>
-          <property name="checkable">
-           <bool>false</bool>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="ModuleDock_climatesetup">
-          <property name="minimumSize">
-           <size>
-            <width>138</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>Spatial Connectivity</string>
-          </property>
-          <property name="text">
-           <string>Climate Setup</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="sep_dataproc">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="lbl_planning">
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Urban Development&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="ModuleDock_urbandev">
-          <property name="minimumSize">
-           <size>
-            <width>138</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>Urban Development Modelling</string>
-          </property>
-          <property name="text">
-           <string>Development Setup</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/Very-Basic-Design-icon.png</normaloff>:/icons/Very-Basic-Design-icon.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="ModuleDock_urbandynamics">
-          <property name="minimumSize">
-           <size>
-            <width>138</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Urban Dynamics</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="sep_planning_2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="lbl_environment_2">
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Environment Mapping&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="ModuleDock_urbanplan">
-          <property name="minimumSize">
-           <size>
-            <width>138</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>Urban Planning</string>
-          </property>
-          <property name="text">
-           <string>Urban Form</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/City_icon_(Noun_Project).svg.png</normaloff>:/icons/City_icon_(Noun_Project).svg.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="ModuleDock_spatialmap">
-          <property name="minimumSize">
-           <size>
-            <width>138</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Spatial Analyst</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>22</width>
-            <height>22</height>
-           </size>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="sep_planning">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="lbl_environment">
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Infrastructure Planning&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="ModuleDock_infrastructure">
-          <property name="minimumSize">
-           <size>
-            <width>138</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Water Infrastructure</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/images/images/md_infrastructure.png</normaloff>:/images/images/md_infrastructure.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="ModuleDock_bluegreen">
-          <property name="minimumSize">
-           <size>
-            <width>138</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Blue-Green Systems</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/Tree-icon.png</normaloff>:/icons/Tree-icon.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>22</width>
-            <height>22</height>
-           </size>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="sep_environment">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="lbl_evaluation">
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Performance Evaluation&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="ModuleDock_watercycle">
-          <property name="minimumSize">
-           <size>
-            <width>138</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>40</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Urban Water Cycle</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</normaloff>:/icons/iconfinder_Ecology_tap_water_2992443.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="ModuleDock_microclimate">
-          <property name="minimumSize">
-           <size>
-            <width>138</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>40</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Urban Microclimate</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/temperature-icon.png</normaloff>:/icons/temperature-icon.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="ModuleDock_flood">
-          <property name="minimumSize">
-           <size>
-            <width>138</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>40</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Flood Assessment</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</normaloff>:/icons/iconfinder_wave_ocean_sea_water_surf_splash_5296676.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="ModuleDock_economics">
-          <property name="minimumSize">
-           <size>
-            <width>138</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>40</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Economic Valuation</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../graphics/ubeats.qrc">
-            <normaloff>:/icons/dollar-icon.png</normaloff>:/icons/dollar-icon.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
        </layout>
       </widget>
      </item>
-     <item>
-      <spacer name="sep_evaluation">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
+     <item row="0" column="0" colspan="2">
+      <widget class="QTreeWidget" name="toolboxTree">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
        </property>
-      </spacer>
+       <property name="dragDropMode">
+        <enum>QAbstractItemView::DragOnly</enum>
+       </property>
+       <property name="indentation">
+        <number>15</number>
+       </property>
+       <property name="uniformRowHeights">
+        <bool>false</bool>
+       </property>
+       <property name="allColumnsShowFocus">
+        <bool>false</bool>
+       </property>
+       <property name="headerHidden">
+        <bool>true</bool>
+       </property>
+       <column>
+        <property name="text">
+         <string>Modules</string>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
+       </column>
+       <item>
+        <property name="text">
+         <string>Spatial Representation</string>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
+        <property name="flags">
+         <set>ItemIsEnabled</set>
+        </property>
+        <item>
+         <property name="text">
+          <string>Create Simulation Grid</string>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>7</pointsize>
+          </font>
+         </property>
+         <property name="icon">
+          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+           <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
+         </property>
+         <property name="flags">
+          <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsEnabled</set>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Define Neighbourhood</string>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>7</pointsize>
+          </font>
+         </property>
+         <property name="icon">
+          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+           <normaloff>:/images/images/md_spatial_moore.png</normaloff>:/images/images/md_spatial_moore.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Map Topography</string>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>7</pointsize>
+          </font>
+         </property>
+         <property name="icon">
+          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+           <normaloff>:/icons/topography.png</normaloff>:/icons/topography.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Map Regions</string>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>7</pointsize>
+          </font>
+         </property>
+         <property name="icon">
+          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+           <normaloff>:/icons/admin_border.png</normaloff>:/icons/admin_border.png</iconset>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Catchment Hydrology</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Catchment Delineation</string>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>7</pointsize>
+          </font>
+         </property>
+         <property name="icon">
+          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+           <normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</iconset>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Define Urban Form</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Import Urban Form Data</string>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>7</pointsize>
+          </font>
+         </property>
+         <property name="icon">
+          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+           <normaloff>:/icons/House-icon.png</normaloff>:/icons/House-icon.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Generate Urban Form</string>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>7</pointsize>
+          </font>
+         </property>
+         <property name="icon">
+          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+           <normaloff>:/icons/City_icon_(Noun_Project).svg.png</normaloff>:/icons/City_icon_(Noun_Project).svg.png</iconset>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Spatial Interaction</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Green Space Mapping</string>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>7</pointsize>
+          </font>
+         </property>
+         <property name="icon">
+          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+           <normaloff>:/icons/Bench-icon.png</normaloff>:/icons/Bench-icon.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Accessibility Mapping</string>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>7</pointsize>
+          </font>
+         </property>
+        </item>
+       </item>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -3296,7 +1955,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../graphics/ubeats.qrc">
+          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
            <normaloff>:/icons/chart-search-icon.png</normaloff>:/icons/chart-search-icon.png</iconset>
          </property>
          <property name="iconSize">
@@ -3325,7 +1984,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../graphics/ubeats.qrc">
+          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
            <normaloff>:/icons/Play-icon.png</normaloff>:/icons/Play-icon.png</iconset>
          </property>
          <property name="iconSize">
@@ -3354,7 +2013,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../graphics/ubeats.qrc">
+          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
            <normaloff>:/icons/folder-open-icon.png</normaloff>:/icons/folder-open-icon.png</iconset>
          </property>
          <property name="iconSize">
@@ -3383,7 +2042,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../graphics/ubeats.qrc">
+          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
            <normaloff>:/icons/Reports-icon.png</normaloff>:/icons/Reports-icon.png</iconset>
          </property>
          <property name="iconSize">
@@ -3412,7 +2071,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../graphics/ubeats.qrc">
+          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
            <normaloff>:/icons/maps-icon.png</normaloff>:/icons/maps-icon.png</iconset>
          </property>
          <property name="iconSize">
@@ -3499,7 +2158,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionNew_Project">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/new-file-icon.png</normaloff>:/icons/new-file-icon.png</iconset>
    </property>
    <property name="text">
@@ -3511,7 +2170,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionOpen_Project">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/open-file-icon.png</normaloff>:/icons/open-file-icon.png</iconset>
    </property>
    <property name="text">
@@ -3523,7 +2182,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionSave">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Actions-document-save-icon.png</normaloff>:/icons/Actions-document-save-icon.png</iconset>
    </property>
    <property name="text">
@@ -3540,7 +2199,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionImport_Project">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/import-icon.png</normaloff>:/icons/import-icon.png</iconset>
    </property>
    <property name="text">
@@ -3549,7 +2208,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionExport_Project">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/export-icon.png</normaloff>:/icons/export-icon.png</iconset>
    </property>
    <property name="text">
@@ -3558,7 +2217,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionQuit">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Sign-Shutdown-icon.png</normaloff>:/icons/Sign-Shutdown-icon.png</iconset>
    </property>
    <property name="text">
@@ -3570,7 +2229,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionPreferences">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Settings-icon (1).png</normaloff>:/icons/Settings-icon (1).png</iconset>
    </property>
    <property name="text">
@@ -3579,7 +2238,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionEdit_Project_Details">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/edit-file-icon.png</normaloff>:/icons/edit-file-icon.png</iconset>
    </property>
    <property name="text">
@@ -3588,7 +2247,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionView_Documentation">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Help-icon.png</normaloff>:/icons/Help-icon.png</iconset>
    </property>
    <property name="text">
@@ -3597,7 +2256,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionOnline_Help">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Categories-applications-internet-icon.png</normaloff>:/icons/Categories-applications-internet-icon.png</iconset>
    </property>
    <property name="text">
@@ -3606,7 +2265,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionAbout">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Info-icon.png</normaloff>:/icons/Info-icon.png</iconset>
    </property>
    <property name="text">
@@ -3615,7 +2274,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionLike_on_Facebook">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/social-facebook-box-blue-icon.png</normaloff>:/icons/social-facebook-box-blue-icon.png</iconset>
    </property>
    <property name="text">
@@ -3624,7 +2283,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionShare_on_Twiter">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/twitter-icon.png</normaloff>:/icons/twitter-icon.png</iconset>
    </property>
    <property name="text">
@@ -3633,7 +2292,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionOpen_Project_Folder">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/folder-open-icon.png</normaloff>:/icons/folder-open-icon.png</iconset>
    </property>
    <property name="text">
@@ -3647,7 +2306,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionResults_Viewer">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/chart-search-icon.png</normaloff>:/icons/chart-search-icon.png</iconset>
    </property>
    <property name="text">
@@ -3656,7 +2315,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionModel_Calibration_Viewer">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Actions-office-chart-area-icon.png</normaloff>:/icons/Actions-office-chart-area-icon.png</iconset>
    </property>
    <property name="text">
@@ -3685,7 +2344,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionView_Project_Description">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Distributor-report-icon.png</normaloff>:/icons/Distributor-report-icon.png</iconset>
    </property>
    <property name="text">
@@ -3699,7 +2358,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionAdd_Data">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/add-icon.png</normaloff>:/icons/add-icon.png</iconset>
    </property>
    <property name="text">
@@ -3711,7 +2370,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionImport_Archive_File">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Misc-Download-Database-icon.png</normaloff>:/icons/Misc-Download-Database-icon.png</iconset>
    </property>
    <property name="text">
@@ -3725,7 +2384,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionExport_Data_Archive">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/if_Upload_Database_66056.png</normaloff>:/icons/if_Upload_Database_66056.png</iconset>
    </property>
    <property name="text">
@@ -3734,7 +2393,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionReset_Data_Library">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Refresh-icon.png</normaloff>:/icons/Refresh-icon.png</iconset>
    </property>
    <property name="text">
@@ -3748,7 +2407,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionDelete_Scenario">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
    </property>
    <property name="text">
@@ -3757,7 +2416,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionDefine_New_Scenario">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/add-icon.png</normaloff>:/icons/add-icon.png</iconset>
    </property>
    <property name="text">
@@ -3766,7 +2425,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionView_Full_Project_Log">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Clipboard-icon.png</normaloff>:/icons/Clipboard-icon.png</iconset>
    </property>
    <property name="text">
@@ -3775,7 +2434,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionPerformance">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Bar-chart-icon.png</normaloff>:/icons/Bar-chart-icon.png</iconset>
    </property>
    <property name="text">
@@ -3784,7 +2443,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionSubmit_a_Bug_Report">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/debug-png-image-88477.png</normaloff>:/icons/debug-png-image-88477.png</iconset>
    </property>
    <property name="text">
@@ -3793,7 +2452,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionRun">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Play-icon.png</normaloff>:/icons/Play-icon.png</iconset>
    </property>
    <property name="text">
@@ -3820,7 +2479,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionResidential">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/House-icon.png</normaloff>:/icons/House-icon.png</iconset>
    </property>
    <property name="text">
@@ -3829,7 +2488,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionNon_Residentail">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Building-icon.png</normaloff>:/icons/Building-icon.png</iconset>
    </property>
    <property name="text">
@@ -3843,7 +2502,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionTransport">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Car-icon.png</normaloff>:/icons/Car-icon.png</iconset>
    </property>
    <property name="text">
@@ -3852,7 +2511,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionOpen_Spaces">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Tree-icon.png</normaloff>:/icons/Tree-icon.png</iconset>
    </property>
    <property name="text">
@@ -3861,7 +2520,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionMiscellaneous">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/gps-2845363_960_720.png</normaloff>:/icons/gps-2845363_960_720.png</iconset>
    </property>
    <property name="text">
@@ -3900,7 +2559,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionSocio_Economic">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Actions-view-pim-tasks-icon.png</normaloff>:/icons/Actions-view-pim-tasks-icon.png</iconset>
    </property>
    <property name="text">
@@ -3944,7 +2603,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionImpact">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Market-Analysis-icon.png</normaloff>:/icons/Market-Analysis-icon.png</iconset>
    </property>
    <property name="text">
@@ -3953,7 +2612,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionDecision_Analysis">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Data-Flow-Chart-icon.png</normaloff>:/icons/Data-Flow-Chart-icon.png</iconset>
    </property>
    <property name="text">
@@ -3982,7 +2641,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionEdit_Scenario">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Editing-edit-icon.png</normaloff>:/icons/Editing-edit-icon.png</iconset>
    </property>
    <property name="text">
@@ -3991,7 +2650,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionReporting_Options">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Distributor-report-icon.png</normaloff>:/icons/Distributor-report-icon.png</iconset>
    </property>
    <property name="text">
@@ -4000,7 +2659,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionMap_Export_Options">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/maps-icon.png</normaloff>:/icons/maps-icon.png</iconset>
    </property>
    <property name="text">
@@ -4017,7 +2676,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionActionReset">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/Refresh-icon.png</normaloff>:/icons/Refresh-icon.png</iconset>
    </property>
    <property name="text">
@@ -4052,7 +2711,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionaction_coffeebreak">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/iconfinder_addiction_Coffee_1_3122405.png</normaloff>:/icons/iconfinder_addiction_Coffee_1_3122405.png</iconset>
    </property>
    <property name="text">
@@ -4067,7 +2726,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionAdd_Simulation_Boundary">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/boundaries_add.png</normaloff>:/icons/boundaries_add.png</iconset>
    </property>
    <property name="text">
@@ -4079,7 +2738,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionView_Simulation_Boundaries">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/boundaries_view.png</normaloff>:/icons/boundaries_view.png</iconset>
    </property>
    <property name="text">
@@ -4091,7 +2750,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionAdd_Basic_Shape_Boundary">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/custom_shape.png</normaloff>:/icons/custom_shape.png</iconset>
    </property>
    <property name="text">
@@ -4103,7 +2762,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionAdd_Location">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/location_add.png</normaloff>:/icons/location_add.png</iconset>
    </property>
    <property name="text">
@@ -4115,7 +2774,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionView_Locations">
    <property name="icon">
-    <iconset resource="../graphics/ubeats.qrc">
+    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
      <normaloff>:/icons/location.png</normaloff>:/icons/location.png</iconset>
    </property>
    <property name="text">
@@ -4144,14 +2803,12 @@ p, li { white-space: pre-wrap; }
   <tabstop>editScenario</tabstop>
   <tabstop>deleteScenario</tabstop>
   <tabstop>ScenarioView_Widget</tabstop>
-  <tabstop>Narrative</tabstop>
-  <tabstop>DataSummary</tabstop>
   <tabstop>Log</tabstop>
   <tabstop>OutputConsole</tabstop>
   <tabstop>SimDock_resultsview</tabstop>
  </tabstops>
  <resources>
-  <include location="../graphics/ubeats.qrc"/>
+  <include location="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
  </resources>
  <connections>
   <connection>

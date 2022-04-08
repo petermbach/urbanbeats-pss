@@ -63,13 +63,6 @@ import gui.ubgui_reporting as ubreport
 import model.ublibs.ubspatial as ubspatial
 import model.ublibs.ubconfigfiles as ubconfigfiles
 
-from gui.md_delinblocksguic import DelinBlocksGuiLaunch
-from gui.md_urbplanbbguic import UrbplanbbGuiLaunch
-from gui.md_urbdevelopguic import UrbdevelopGuiLaunch, InfluenceFunctionGUILaunch
-from gui.md_spatialmappingguic import SpatialMappingGuiLaunch
-from gui.md_infrastructureguic import InfrastructureGuiLaunch
-from gui.md_bgsplanningguic import BlueGreenGuiLaunch
-from gui import ssanto_dialogs as ssanto_dialogs
 from gui import mapping_leaflet as mapping_leaflet
 
 # --- MAIN GUI FUNCTION ---
@@ -87,12 +80,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # --- INITIALIZATION ---
         self.setWindowTitle("UrbanBEATS Planning Support Tool")
-        self.ui.stepwise_tree.setColumnWidth(0, 250)
-        self.ui.stepwise_tree.expandAll()
         # self.setWindowTitle("规划模型")       #Chinese Translation - automate!
         self.initialize_output_console()
         self.consoleobserver = ConsoleObserver()
-        self.progressbarobserver = ProgressBarObserver()
+        # self.progressbarobserver = ProgressBarObserver()        # [REVAMP]
         self.rootfolder = UBEATSROOT
         self.app_tempdir = UBEATSTEMP       # The temp directory defined by tempfile
 
@@ -122,6 +113,7 @@ class MainWindow(QtWidgets.QMainWindow):
         #                              run_ = executes some form of runtime function
         #                              launch_ = for working with larger module dialog windows
 
+        # === TOP MENU BAR ACTINS ====================================================================
         # FILE MENU
         # actionQuit has been implemented through QtDesigner
         self.ui.actionNew_Project.triggered.connect(self.create_new_project)
@@ -139,6 +131,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # PROJECT MENU
         self.ui.actionView_Project_Description.triggered.connect(lambda: self.show_new_project_dialog(2))
         self.ui.actionView_Full_Project_Log.triggered.connect(self.show_project_log)
+        self.ui.actionReporting_Options.triggered.connect(self.show_reporting_settings)
+        self.ui.actionMap_Export_Options.triggered.connect(self.show_map_export_settings)
 
         # Geography Submenu ---
         self.ui.actionAdd_Location.triggered.connect(self.show_add_location_dialog)
@@ -151,9 +145,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionDefine_New_Scenario.triggered.connect(lambda: self.show_scenario_dialog(0))
         self.ui.actionEdit_Scenario.triggered.connect(lambda: self.show_scenario_dialog(1))
         self.ui.actionDelete_Scenario.triggered.connect(self.delete_current_scenario)
-        # --- //
-        self.ui.actionReporting_Options.triggered.connect(self.show_reporting_settings)
-        self.ui.actionMap_Export_Options.triggered.connect(self.show_map_export_settings)
 
         # DATA MENU
         self.ui.actionAdd_Data.triggered.connect(self.show_add_data_dialog)
@@ -164,18 +155,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # SIMULATION MENU
         # Do this much later once GUIs for modules have been defined.
-        self.ui.actionRun.triggered.connect(self.call_run_simulation)
-        self.ui.actionDefine_IF.triggered.connect(self.launch_influencefunction_gui)
+        # self.ui.actionRun.triggered.connect(self.call_run_simulation)
+        # self.ui.actionDefine_IF.triggered.connect(self.launch_influencefunction_gui)
         # Variant for calling only the performance assessment
 
-        #
         # ADVANCED MENU
         self.ui.actionModel_Calibration_Viewer.triggered.connect(self.show_calibration_viewer)
 
-        # PLUGINS
-        self.ui.actionSSANTO.triggered.connect(self.launch_SSANTO)
-
-        #
         # WINDOW MENU
         # actionMinimize has been implemented through QtDesigner
         self.ui.actionOpen_Project_Folder.triggered.connect(self.open_project_folder)
@@ -189,323 +175,50 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.ui.actionLike_on_Facebook.triggered.connect()
         # self.ui.actionShare_on_Twitter.triggered.connect()
 
-        # --- END OF ACTIONS ---
+        # --- END OF ACTIONS ---- TOP MENU BAR
 
         # OBSERVER PATTERN - CONSOLE UPDATE
         self.consoleobserver.updateConsole[str].connect(self.printc)
-        self.progressbarobserver.updateProgressBar[int].connect(self.update_progress_bar_value)
+        # self.progressbarobserver.updateProgressBar[int].connect(self.update_progress_bar_value)     # [REVAMP]
 
-        # --- MAIN INTERFACE BUTTONS ---
-        # Project Data Library Interface
+        # --- MAIN INTERFACE BUTTONS --- (all elements in the main window area)
+        # PROJECT DATA LIBRARY DOCK ---
         self.ui.addData.clicked.connect(self.show_add_data_dialog)
         self.ui.removeData.clicked.connect(self.remove_data_from_library)
         self.ui.infoData.clicked.connect(self.show_metadata_dialog)
         self.ui.previewData.clicked.connect(self.update_preview_data)
         self.ui.expcolData.clicked.connect(self.expand_collapse_data_library)
 
-        # Scenario Browser Interface
+        # SCENARIOS DOCK ---
         self.ui.newScenario.clicked.connect(lambda: self.show_scenario_dialog(0))
         self.ui.editScenario.clicked.connect(lambda: self.show_scenario_dialog(1))
         self.ui.deleteScenario.clicked.connect(self.delete_current_scenario)
-        self.ui.ScenarioDock_Combo.currentIndexChanged.connect(self.update_scenario_gui)
-        self.ui.ScenarioDock_View.itemClicked.connect(self.change_narrative_gui_tab)
+        # self.ui.ScenarioDock_View.itemClicked.connect(self.change_narrative_gui_tab)        # [REVAMP]
 
-        # Summary Window Buttons
+        # OVERVIEW SECTION --- (tabs: Project, Geography, Scenario, Log)
         self.ui.location_add_button.clicked.connect(self.show_add_location_dialog)
         self.ui.location_delete_button.clicked.connect(self.delete_location_from_project)
         self.ui.boundary_add_button.clicked.connect(self.show_add_simulation_boundary_dialog)
+        self.ui.boundary_shape_add_button.clicked.connect(self.show_add_shape_boundary_dialog)
         self.ui.boundary_delete_button.clicked.connect(self.delete_simulation_boundary)
         self.ui.geography_combo.currentIndexChanged.connect(self.update_active_geography_table)
 
-        # Data View Interface
+        # MAP AND DATA VIEW SECTION --- (with the map controls)
         self.ui.DataView_extent.clicked.connect(self.update_map_display)
         self.ui.DataView_meta.clicked.connect(self.show_metadata_dialog)
         self.ui.DataView_options.clicked.connect(lambda: self.show_options(2))
 
-        # Scenario Narrative Interface
-        self.ui.ScenarioView_Widget.currentChanged.connect(self.adjust_context_stack)
-        # clicking a data set on the table
+        # TOOLBOX DOCK ---
+        # To Do...
 
-        # Modules Interface
-        self.ui.ModuleDock_spatialsetup.clicked.connect(self.launch_spatialsetup_modulegui)
-        self.ui.ModuleDock_climatesetup.clicked.connect(self.launch_climatesetup_modulegui)
-
-        self.ui.ModuleDock_urbandev.clicked.connect(self.launch_urbandev_modulegui)
-        self.ui.ModuleDock_urbandynamics.clicked.connect(self.launch_urbandynamics_modulegui)
-
-        self.ui.ModuleDock_urbanplan.clicked.connect(self.launch_urbanplan_modulegui)
-        self.ui.ModuleDock_spatialmap.clicked.connect(self.launch_spatialmap_modulegui)
-
-        self.ui.ModuleDock_infrastructure.clicked.connect(self.launch_infrastructure_modulegui)
-        self.ui.ModuleDock_bluegreen.clicked.connect(self.launch_bluegreen_modulegui)
-
-        self.ui.ModuleDock_watercycle.clicked.connect(self.launch_watercycle_modulegui)
-        self.ui.ModuleDock_microclimate.clicked.connect(self.launch_microclimate_modulegui)
-        self.ui.ModuleDock_flood.clicked.connect(self.launch_flood_modulegui)
-        self.ui.ModuleDock_economics.clicked.connect(self.launch_economics_modulegui)
-
-        # Control Panel Interface
+        # CONTROL PANEL INTERFACE
         self.ui.SimDock_projectfolder.clicked.connect(self.open_project_folder)
         self.ui.SimDock_mapoptions.clicked.connect(self.show_map_export_settings)
         self.ui.SimDock_report.clicked.connect(self.show_reporting_settings)
         self.ui.SimDock_resultsview.clicked.connect(self.show_results_viewer)
         self.ui.SimDock_run.clicked.connect(self.call_run_simulation)
 
-    # SSANTO
-    def launch_SSANTO(self):
-        """Launches the SSANTO Plugin using the current project's information."""
-        ssantomain = ssanto_dialogs.SSANTOMainLaunch(self.get_active_simulation_object())
-        ssantomain.exec_()
-
-    # GEOGRAPHY FEATURES
-
-    def update_active_geography_table(self):
-        self.ui.geography_stack.setCurrentIndex(int(self.ui.geography_combo.currentIndex()))
-
-    def show_location_summary(self):
-        self.ui.geography_combo.setCurrentIndex(0)
-        self.ui.ScenarioView_Widget.setCurrentIndex(1)
-
-    def show_boundary_summary(self):
-        self.ui.geography_combo.setCurrentIndex(1)
-        self.ui.ScenarioView_Widget.setCurrentIndex(1)
-
-    # SCENARIO CREATION AND MANAGEMENT FUNCTIONALITY
-    def show_scenario_dialog(self, viewmode):
-        """Launches the scenario dialog window, which the user can use to customize and set up a simulation scenario.
-
-        :param viewmode: 0 = new scenario, 1 = edit scenario
-        """
-        if viewmode == 0:       # Create New Scenario
-            # Instantiate the scenario first, then make sure it is the active one
-            self.get_active_simulation_object().create_new_scenario()
-            newscenariodialog = ubdialogs.CreateScenarioLaunch(self, self.get_active_simulation_object(),
-                                                               self.get_active_data_library(), viewmode)
-            newscenariodialog.accepted.connect(self.setup_scenario)
-            newscenariodialog.exec_()
-        elif viewmode == 1:     # Edit Scenario
-            if self.ui.ScenarioDock_Combo.currentIndex() == 0:
-                return
-            newscenariodialog = ubdialogs.CreateScenarioLaunch(self, self.get_active_simulation_object(),
-                                                               self.get_active_data_library(), viewmode)
-            newscenariodialog.accepted.connect(self.update_scenario_gui)
-            newscenariodialog.exec_()
-
-    def show_results_viewer(self):
-        """Launches the results viewer dialog, passes the active simulation information to the viewer."""
-        resultsexplorerdialog = LaunchResultsExplorer(self, self.get_active_simulation_object(),
-                                                      self.get_active_data_library())
-        resultsexplorerdialog.exec_()
-
-    def show_calibration_viewer(self):
-        """Launches the calibration viewer, passes the active simulation information for the user to undertake
-        the calibration."""
-        activesim = self.get_active_simulation_object()
-        activescenario = activesim.get_active_scenario()
-        calibrationviewer = LaunchCalibrationViewer(self, activesim, activescenario)
-        calibrationviewer.exec_()
-
-    def change_narrative_gui_tab(self):
-        """Changes the current tab in the Scenario Narrative based on what is clicked in the Scenario Description
-        tree view widget. Only updates if a top level item has been clicked."""
-        # print(self.ui.ScenarioDock_View.selectedItems()[0].text(0))
-        if self.ui.ScenarioDock_View.selectedItems()[0].text(0) == "Narrative":
-            self.ui.ScenarioView_Widget.setCurrentIndex(1)
-        elif self.ui.ScenarioDock_View.selectedItems()[0].text(0) == "Simulation Details":
-            self.ui.ScenarioView_Widget.setCurrentIndex(2)
-        elif self.ui.ScenarioDock_View.selectedItems()[0].text(0) == "Using Spatial Data Sets":
-            self.ui.ScenarioView_Widget.setCurrentIndex(3)
-        elif self.ui.ScenarioDock_View.selectedItems()[0].text(0) == "Modules":
-            self.ui.ScenarioView_Widget.setCurrentIndex(2)
-        elif self.ui.ScenarioDock_View.selectedItems()[0].text(0) == "Export Details":
-            self.ui.ScenarioView_Widget.setCurrentIndex(2)
-        else:
-            pass
-
-    def adjust_context_stack(self):
-        """Changes the Main context view depending on the tab selected in the Scenario Information Tab Widget."""
-        if self.ui.ScenarioView_Widget.currentIndex() in [0, 1]:
-            self.ui.MainView_stack.setCurrentIndex(0)
-        elif self.ui.ScenarioView_Widget.currentIndex() == 2:
-            self.ui.MainView_stack.setCurrentIndex(1)
-        elif self.ui.ScenarioView_Widget.currentIndex() == 3:
-            self.ui.MainView_stack.setCurrentIndex(2)
-        elif self.ui.ScenarioView_Widget.currentIndex() == 4:
-            self.ui.MainView_stack.setCurrentIndex(3)
-        else:
-            pass
-
-    def setup_scenario(self):
-        """Called when the scenario setup dialog box has successfully closed. i.e. signal accepted()"""
-        active_scenario = self.get_active_simulation_object().get_active_scenario()
-        active_scenario.setup_scenario()
-        self.get_active_simulation_object().add_new_scenario(active_scenario)
-        self.ui.ScenarioDock_Combo.addItem(active_scenario.get_metadata("name"))
-        self.ui.ScenarioDock_Combo.setCurrentIndex(int(self.ui.ScenarioDock_Combo.count() - 1))
-
-    def delete_current_scenario(self):
-        """Deletes the active scenario based on the scenario combobox. This includes removing it from the active
-        simulation as well. The scenario interface is then reset to the default <select scenario> setting."""
-        # Algorithm: (1) Get current scenario data, (2) Reset scenario narrative interface by clearing it
-        # (3) Reset module buttons and control panel buttons, (4) Change current index of scenario combo
-        # (5) Update the scenario description information, (6) Remove the scenario from the combo box,
-        # (7) Remove the scenario from the simulation, (8) Delete the scenario folder from the project
-        if self.ui.ScenarioDock_Combo.currentIndex() == 0:
-            return  # Do nothing if no scenario selected.
-        active_scenario = self.get_active_simulation_object().get_active_scenario()    # (1)
-        self.get_active_simulation_object().delete_scenario(active_scenario.get_metadata("name"))   # (7), (8)
-        self.ui.ScenarioDock_Combo.removeItem(self.ui.ScenarioDock_Combo.currentIndex())
-        self.ui.ScenarioDock_Combo.setCurrentIndex(0)  # (2), (3), (4), (5), (6)
-
-    def scenario_change_ui_setup(self):
-        """Modifies the current Main Window Interface to suit the selected scenario. This includes enabling and
-        disabling the module buttons, the control panel and updating the Scenario Narrative Section of the GUI
-        with information on the current scenario. It also includes printing out details into the output console."""
-        if self.ui.ScenarioDock_Combo.currentIndex() == 0:
-            # <Select Scenario> Case - disables everything
-            self.scenario_view_reset()
-            self.ui.ModuleDock.setEnabled(0)
-            self.ui.SimDock.setEnabled(0)
-        else:
-            self.update_scenario_gui()
-            self.ui.SimDock.setEnabled(1)
-        pass # [TO DO]
-
-    def update_scenario_gui(self):
-        """Updates the scenario GUI and narrative section with the current scenario's details."""
-        if self.ui.ScenarioDock_Combo.count() == 0:
-            return
-        if self.ui.ScenarioDock_Combo.currentIndex() == 0:
-            self.get_active_simulation_object().set_active_scenario(None)
-            self.get_active_simulation_object().set_active_boundary(None)
-            self.scenario_view_reset()
-            return
-        active_scenario_name = self.ui.ScenarioDock_Combo.currentText()
-        self.get_active_simulation_object().set_active_scenario(active_scenario_name)
-        self.__activeScenario = self.get_active_simulation_object().get_active_scenario()
-        self.get_active_simulation_object().set_active_boundary(self.__activeScenario.get_metadata("boundary"))
-
-        # Tree Widget Info:
-        twi = QtWidgets.QTreeWidgetItem()
-        twi.setText(0, str(self.__activeScenario.get_metadata("narrative")[:100]+"..."))
-        twi.setToolTip(0, str(self.__activeScenario.get_metadata("narrative")[:100] + "..."))
-
-        # Narrative
-        self.ui.Narrative.setPlainText(self.__activeScenario.get_metadata("narrative"))
-
-        self.ui.ScenarioDock_View.topLevelItem(0).takeChildren()
-        self.ui.ScenarioDock_View.topLevelItem(0).addChild(twi)
-        self.ui.ScenarioDock_View.topLevelItem(1).child(0).setText(0, "Type: "+self.__activeScenario.get_metadata("type"))
-        self.ui.ScenarioDock_View.topLevelItem(1).child(1).setText(0, "Boundary: "+self.__activeScenario.get_metadata("boundary"))
-        self.ui.ScenarioDock_View.topLevelItem(1).child(2).setText(0, "Status: "+"not simulated")
-        if self.__activeScenario.get_metadata("type") == "DYNAMIC":
-            yeartext = str(self.__activeScenario.get_metadata("startyear")) + " - " + str(self.__activeScenario.get_metadata("endyear"))
-            dttext = str(self.__activeScenario.get_metadata("dt")) + " year(s)"
-            benchtext = "N/A"
-        elif self.__activeScenario.get_metadata("type") == "BENCHMARK":
-            yeartext = str(self.__activeScenario.get_metadata("startyear"))
-            dttext = "N/A"
-            benchtext = str(self.__activeScenario.get_metadata("benchmarks"))
-        else:
-            yeartext = str(self.__activeScenario.get_metadata("startyear"))
-            dttext = "N/A"
-            benchtext = "N/A"
-        self.ui.ScenarioDock_View.topLevelItem(1).child(3).setText(0, "Simulation Year(s): " + yeartext)
-        self.ui.ScenarioDock_View.topLevelItem(1).child(4).setText(0, "Simulation Time Step: " + dttext)
-        self.ui.ScenarioDock_View.topLevelItem(1).child(5).setText(0, "Benchmark Iterations: " + benchtext)
-        self.ui.ScenarioDock_View.topLevelItem(4).\
-            child(0).setText(0, "File Naming: "+self.__activeScenario.get_metadata("filename"))
-        project_path = self.get_active_simulation_object().get_project_path()
-        self.ui.ScenarioDock_View.topLevelItem(4).child(1).setText(0, "Path: " + str(os.path.normpath(project_path)))
-        self.ui.ScenarioDock_View.topLevelItem(4).child(1).setToolTip(0, str(os.path.normpath(project_path)))
-
-        # LIST OF DATA SETS
-        datalist = self.__activeScenario.create_dataset_file_list()
-        self.ui.DataSummary.setRowCount(0)
-        self.ui.ScenarioDock_View.topLevelItem(2).takeChildren()
-        self.ui.DataSummary.setRowCount(0)
-        for entry in datalist:
-            twi = QtWidgets.QTreeWidgetItem()
-            twi.setText(0, entry[1])
-            twi.setToolTip(0, entry[0]+" - "+entry[2])
-            self.ui.ScenarioDock_View.topLevelItem(2).addChild(twi)
-
-            # Update the Data Table Widget.
-            rowposition = self.ui.DataSummary.rowCount()
-            self.ui.DataSummary.insertRow(rowposition)
-            self.ui.DataSummary.setItem(rowposition, 0, QtWidgets.QTableWidgetItem(entry[1]))
-            self.ui.DataSummary.setItem(rowposition, 1, QtWidgets.QTableWidgetItem(entry[3]))
-            self.ui.DataSummary.setItem(rowposition, 2, QtWidgets.QTableWidgetItem(entry[4]))
-            self.ui.DataSummary.resizeColumnsToContents()
-
-        # MODULES
-        modulebools = []    # Holds 1 and 0 booleans that represent different modules in the module dock
-        for i in range(len(ubglobals.MODULENAMES)):
-            mbool = self.__activeScenario.check_is_module_active(ubglobals.MODULENAMES[i])
-            if mbool:
-                self.ui.ScenarioDock_View.topLevelItem(3).child(i).setDisabled(0)
-                self.ui.ScenarioDock_View.topLevelItem(3).child(i).setCheckState(0, 2)
-            else:
-                self.ui.ScenarioDock_View.topLevelItem(3).child(i).setDisabled(1)
-                self.ui.ScenarioDock_View.topLevelItem(3).child(i).setCheckState(0, 0)
-            modulebools.append(int(mbool))
-        self.enable_disable_module_icons(modulebools)   # enables corresponding module buttons
-
-        # MAP DISPLAY
-        self.update_map_display()
-
-    def scenario_view_reset(self):
-        """Resets the scenario view to the default """
-        self.ui.ScenarioDock_View.topLevelItem(0).takeChildren()
-        self.ui.ScenarioDock_View.topLevelItem(1).child(0).setText(0, "Type: <N/A>")
-        self.ui.ScenarioDock_View.topLevelItem(1).child(1).setText(0, "Boundary: <N/A>")
-        self.ui.ScenarioDock_View.topLevelItem(1).child(2).setText(0, "Status: <none>")
-        self.ui.ScenarioDock_View.topLevelItem(1).child(3).setText(0, "Simulation Year(s): <year>")
-        self.ui.ScenarioDock_View.topLevelItem(1).child(4).setText(0, "Simulation Time Step: N/A")
-        self.ui.ScenarioDock_View.topLevelItem(1).child(5).setText(0, "Benchmark Iterations: N/A")
-        self.ui.ScenarioDock_View.topLevelItem(2).takeChildren()
-        for i in range(11):
-            self.ui.ScenarioDock_View.topLevelItem(3).child(i).setCheckState(0, 0)
-            self.ui.ScenarioDock_View.topLevelItem(3).child(i).setDisabled(1)
-        self.ui.ScenarioDock_View.topLevelItem(4).child(0).setText(0, "File Naming: <name>")
-        self.ui.ScenarioDock_View.topLevelItem(4).child(1).setText(0, "Path: <path>")
-
-        self.ui.Narrative.clear()
-        self.ui.DataSummary.setRowCount(0)
-        self.enable_disable_module_icons([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-        self.update_map_display()
-
-    # BOUNDARY TABLE
-    def update_simulation_boundaries_table(self):
-        """Updates the simulation boundaries table in the main GUI."""
-        boundarylist = self.get_active_simulation_object().get_project_boundaries()
-        self.ui.BoundarySummary.setRowCount(0)
-        for b in boundarylist.keys():
-            rowposition = self.ui.BoundarySummary.rowCount()
-            self.ui.BoundarySummary.insertRow(rowposition)
-            self.ui.BoundarySummary.setItem(rowposition, 0, QtWidgets.QTableWidgetItem(b))
-            self.ui.BoundarySummary.setItem(rowposition, 1,
-                                            QtWidgets.QTableWidgetItem(str(boundarylist[b]["shape"])))
-            self.ui.BoundarySummary.setItem(rowposition, 2,
-                                            QtWidgets.QTableWidgetItem(str(round(boundarylist[b]["area"], 2))))
-            self.ui.BoundarySummary.setItem(rowposition, 3,
-                                            QtWidgets.QTableWidgetItem(str(boundarylist[b]["coordsysname"])))
-            self.ui.BoundarySummary.resizeColumnsToContents()
-        return True
-
-    def update_location_collection_table(self):
-        """Updates the LocationSummary table in the main GUI."""
-        loclist = self.get_active_simulation_object().get_project_locations()
-        self.ui.LocationSummary.setRowCount(0)
-        for l in loclist.keys():
-            rowposition = self.ui.LocationSummary.rowCount()
-            self.ui.LocationSummary.insertRow(rowposition)
-            self.ui.LocationSummary.setItem(rowposition, 0, QtWidgets.QTableWidgetItem(l))
-            self.ui.LocationSummary.setItem(rowposition, 1, QtWidgets.QTableWidgetItem(loclist[l]["loc_type"]))
-            self.ui.LocationSummary.resizeColumnsToContents()
-        return True
-
-    # MAIN INTERFACE FUNCTIONALITY
+    # MAIN INTERFACE GENERAL FUNCTIONALITY
     def printc(self, textmessage):
         """Print to console function, adds the textmessage to the console"""
         if "PROGRESSUPDATE" in str(textmessage):
@@ -513,7 +226,8 @@ class MainWindow(QtWidgets.QMainWindow):
             # self.updateProgressBar(int(progress[1]))
             pass
         else:
-            self.ui.OutputConsole.append(str("<font color=\"#93cbc7\">"+time.asctime())+"</font> | "+str(textmessage))
+            self.ui.OutputConsole.append(
+                str("<font color=\"#93cbc7\">" + time.asctime()) + "</font> | " + str(textmessage))
 
     def open_project_folder(self):
         """Opens the proejct folder of the active simulation. The function is called differently
@@ -524,21 +238,87 @@ class MainWindow(QtWidgets.QMainWindow):
         simulation = self.get_active_simulation_object()
         if simulation:
             projectpath = os.path.normpath(simulation.get_project_path())
-            self.printc("Opening Project Folder: "+str(projectpath))
+            self.printc("Opening Project Folder: " + str(projectpath))
             if platform.system() == "Windows":
-                subprocess.Popen('explorer "%s"' %projectpath)
+                subprocess.Popen('explorer "%s"' % projectpath)
             else:
-                subprocess.Popen(["open", projectpath])    # NOTE: untested!
+                subprocess.Popen(["open", projectpath])  # NOTE: untested!
         else:
-            pass    # If no active project then the button will be disabled
+            pass  # If no active project then the button will be disabled
         return
 
-    # ABOUT AND OPTIONS DIALOG AND RELATED FUNCTIONS
-    def show_about_dialog(self):
-        """Shows the About Dialog with all model information, development team, etc."""
-        aboutdialog = ubdialogs.AboutDialogLaunch()
-        aboutdialog.exec_()
+    # ENABLERS AND DISABLERS
+    def enable_disable_main_interface(self, condition):
+        """Enables and disables certain components of the main interface depending on the condition
+        specified. Note that this is somewhat different from self.__gui_state as that tracks general
+        behaviour throughout the program. The condition here is just what idle state the GUI should be in.
 
+        :param condition: "startup", "new" or "scenario" will determine which buttons are enabled
+        """
+        if condition == "startup":
+            self.ui.DataDock.setEnabled(0)
+            self.ui.ScenarioDock.setEnabled(0)
+            self.ui.SimDock.setEnabled(0)
+            self.ui.ScenarioView_Widget.setEnabled(0)
+            self.ui.DataView_extent.setEnabled(0)
+            self.ui.DataView_meta.setEnabled(0)
+            self.ui.actionView_Full_Project_Log.setEnabled(0)
+            self.ui.actionView_Project_Description.setEnabled(0)
+        elif condition == "new":
+            self.ui.toolboxTree.setEnabled(1)
+            self.ui.DataDock.setEnabled(1)
+            self.ui.ScenarioDock.setEnabled(1)
+            self.ui.SimDock.setEnabled(1)
+            self.ui.ScenarioView_Widget.setEnabled(1)
+            self.ui.DataView_extent.setEnabled(1)
+            self.ui.DataView_meta.setEnabled(1)
+            self.ui.actionView_Full_Project_Log.setEnabled(1)
+            self.ui.actionView_Project_Description.setEnabled(1)
+        else:
+            pass
+
+    # GETTERS and SETTERS
+    def set_active_simulation_object(self, simobjectfromcore):
+        self.__activeSimulationObject = simobjectfromcore
+
+    def set_active_data_library(self, libraryfromcore):
+        self.__activeDataLibrary = libraryfromcore
+
+    def set_active_project_log(self, logfromcore):
+        self.__activeProjectLog = logfromcore
+
+    def get_active_simulation_object(self):
+        return self.__activeSimulationObject
+
+    def get_active_data_library(self):
+        return self.__activeDataLibrary
+
+    def get_active_project_log(self):
+        return self.__activeProjectLog
+
+    def set_save_project_state(self, status):
+        """Reverses the state of saveProjectState. Tracks changes made to project settings. Then, changes
+         the Main Window title depending on the save state. If unsaved, appends *, if saved, removes *
+
+        :param status: bool, True = all changes saved, False = changes made and project unsaved
+        :return: None
+        """
+        self.__saveProjectState = status
+        if self.__saveProjectState:  # if saved
+            self.setWindowTitle("UrbanBEATS Planning Support Tool - " + self.__current_project_name + "")
+        else:
+            self.setWindowTitle("UrbanBEATS Planning Support Tool - " + self.__current_project_name + "*")
+
+    def get_save_project_state(self):
+        return self.__saveProjectState
+
+    def set_current_project_name(self, pname):
+        self.__current_project_name = pname
+
+    def get_current_project_name(self):
+        return self.__current_project_name
+
+    # ABOUT AND OPTIONS DIALOG AND RELATED FUNCTIONS
     def show_options(self, tabindex):
         """Launches the Options/Preferences Dialog window and updates its interface with the data from
         the variable self.__global_options. Upon closing the window, an accept() signal will call the
@@ -577,11 +357,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.printc("Options have been successfully changed!")
 
     def set_options_from_config(self):
-        """Parses config.cfg file and saves all attributes into the self.__global_options dictionary
-
-        :param filepath: str, full filepath to the .cfg file. Usually UBEATSROOT
-        :return: None
-        """
+        """Parses config.cfg file and saves all attributes into the self.__global_options dictionary"""
         if not os.path.isfile(UBEATSROOT+"/config.cfg"):
             print("Creating Default Config File")
             ubconfigfiles.create_default_config_cfg(UBEATSROOT)     # if config.cfg does not exist, will create default
@@ -604,6 +380,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.update_default_latlong()
         self.update_gui_elements()
 
+    def reset_default_options(self):
+        """Completely restores the default options based on the .cfg's default attribute for each option type.
+        Also closes the options window."""
+        print("RESETTING")       #[TO DO]
+        ubconfigfiles.create_default_config_cfg(UBEATSROOT)
+        self.set_options_from_config()      # Reset everything, update it
+        self.update_default_latlong()
+        self.update_gui_elements()
+        return True
+
     def update_default_latlong(self):
         self.__default_latlong = self.cities_dict[self.__global_options["country"]][self.__global_options["city"]]
 
@@ -614,16 +400,6 @@ class MainWindow(QtWidgets.QMainWindow):
             return
         else:
             self.__current_latlong = self.cities_dict[country][city]
-
-    def reset_default_options(self):
-        """Completely restores the default options based on the .cfg's default attribute for each option type.
-        Also closes the options window."""
-        print("RESETTING")       #[TO DO]
-        ubconfigfiles.create_default_config_cfg(UBEATSROOT)
-        self.set_options_from_config()      # Reset everything, update it
-        self.update_default_latlong()
-        self.update_gui_elements()
-        return True
 
     def update_gui_elements(self):
         """Updates elements on the main window GUI depending on what has changed in the options menu. This
@@ -641,33 +417,163 @@ class MainWindow(QtWidgets.QMainWindow):
             pass
             # Do nothing
 
-    # NEW PROJECT INSTANCE CREATION
-    def create_new_project(self):
-        """Sets up the main user interface and calls the new project dialog"""
-        self.setup_main_gui()
-        self.show_new_project_dialog(0)
+    # MAIN WINDOW SPACE >> GEOGRAPHY TAB FUNCTIONS
+    def show_add_shape_boundary_dialog(self):
+        """Opens the 'Add Basic Shape Boundary Dialog box."""
+        addshapedialog = geographydialogs.AddShapeDialogLaunch(self, self.get_active_simulation_object())
+        addshapedialog.accepted.connect(self.add_new_shape_boundary)
+        addshapedialog.exec_()
 
-    def reset_data_view_to_default(self):
-        """Resets the leaflet map view to the default location and default style based on when the program was
-        opened"""
-        if self.get_active_simulation_object() == None:
-            coordinates = self.__default_latlong
-        else:
-            coordinates = self.__current_latlong
+    def show_add_location_dialog(self):
+        """Opens the 'Add Location' dialog box."""
+        addlocationdialog = geographydialogs.AddLocationDialogLaunch(self, self.get_active_simulation_object())
+        addlocationdialog.accepted.connect(self.update_location_collection)
+        addlocationdialog.exec_()
 
-        tileserver = ubglobals.TILESERVERS[self.get_option("mapstyle")]
+    def show_add_simulation_boundary_dialog(self):
+        """Launches the add simulation boundary dialog."""
+        addsimboundarydialog = geographydialogs.AddBoundaryDialogLaunch(self, self.get_active_simulation_object())
+        addsimboundarydialog.accepted.connect(self.update_simulation_boundary_collection)
+        addsimboundarydialog.exec_()
 
-        leaflet_html = mapping_leaflet.generate_initial_leaflet_map(coordinates, tileserver, UBEATSROOT)
-        f = open(self.app_tempdir+"/default.html", 'w')
-        f.write(leaflet_html)
-        f.close()
-        self.ui.DataView_web.load(QtCore.QUrl.fromLocalFile(self.app_tempdir+"/default.html"))
-        self.__dataview_displaystate = "default"
+    def update_active_geography_table(self):
+        self.ui.geography_stack.setCurrentIndex(int(self.ui.geography_combo.currentIndex()))
 
+    def show_location_summary(self):
+        self.ui.geography_combo.setCurrentIndex(0)
+        self.ui.ScenarioView_Widget.setCurrentIndex(1)
+
+    def show_boundary_summary(self):
+        self.ui.geography_combo.setCurrentIndex(1)
+        self.ui.ScenarioView_Widget.setCurrentIndex(1)
+
+    # Boundary Data Management
+    def update_simulation_boundaries_table(self):
+        """Updates the simulation boundaries table in the main GUI."""
+        boundarylist = self.get_active_simulation_object().get_project_boundaries()
+        self.ui.BoundarySummary.setRowCount(0)
+        for b in boundarylist.keys():
+            rowposition = self.ui.BoundarySummary.rowCount()
+            self.ui.BoundarySummary.insertRow(rowposition)
+            self.ui.BoundarySummary.setItem(rowposition, 0, QtWidgets.QTableWidgetItem(b))
+            self.ui.BoundarySummary.setItem(rowposition, 1,
+                                            QtWidgets.QTableWidgetItem(str(boundarylist[b]["shape"])))
+            self.ui.BoundarySummary.setItem(rowposition, 2,
+                                            QtWidgets.QTableWidgetItem(str(round(boundarylist[b]["area"], 2))))
+            self.ui.BoundarySummary.setItem(rowposition, 3,
+                                            QtWidgets.QTableWidgetItem(str(boundarylist[b]["coordsysname"])))
+            self.ui.BoundarySummary.resizeColumnsToContents()
+        return True
+
+    def update_location_collection_table(self):
+        """Updates the LocationSummary table in the main GUI."""
+        loclist = self.get_active_simulation_object().get_project_locations()
+        self.ui.LocationSummary.setRowCount(0)
+        for l in loclist.keys():
+            rowposition = self.ui.LocationSummary.rowCount()
+            self.ui.LocationSummary.insertRow(rowposition)
+            self.ui.LocationSummary.setItem(rowposition, 0, QtWidgets.QTableWidgetItem(l))
+            self.ui.LocationSummary.setItem(rowposition, 1, QtWidgets.QTableWidgetItem(loclist[l]["loc_type"]))
+            self.ui.LocationSummary.resizeColumnsToContents()
+        return True
+
+    def update_location_collection(self):
+        if self.update_data_view("boundary"):
+            prompt_msg = "Location successfully added!"
+            QtWidgets.QMessageBox.information(self, "Location Added", prompt_msg, QtWidgets.QMessageBox.Ok)
+
+    def delete_simulation_boundary(self):
+        prompt = "Are you sure you want to remove this boundary from the project?" \
+                 "All scenarios using this boundary will be updated and any cached simulations using this boundary" \
+                 "will be removed. Click Yes to confirm!"
+        continue_bool = QtWidgets.QMessageBox.warning(self, "Delete Boundary?", prompt,
+                                                      QtWidgets.QMessageBox.Yes |
+                                                      QtWidgets.QMessageBox.No)
+        if continue_bool == QtWidgets.QMessageBox.No:
+            return True
+
+        boundaryname = self.ui.BoundarySummary.selectedItems()[0].text()  # Get the name of the boundary from table
+        self.get_active_simulation_object().delete_simulation_boundary(boundaryname)
+        self.update_map_display()
+        self.ui.BoundarySummary.removeRow(self.ui.BoundarySummary.currentRow())
+        prompt_msg = "Simulation Boundary deleted!"
+        QtWidgets.QMessageBox.information(self, "Boundary Removed from Project", prompt_msg, QtWidgets.QMessageBox.Ok)
+
+    def delete_location_from_project(self):
+        prompt = "Are you sure you want to remove this location from the project?"
+        continue_bool = QtWidgets.QMessageBox.warning(self, "Delete Location?", prompt,
+                                                      QtWidgets.QMessageBox.Yes |
+                                                      QtWidgets.QMessageBox.No)
+        if continue_bool == QtWidgets.QMessageBox.No:
+            return True
+
+        locationname = self.ui.LocationSummary.selectedItems()[0].text()
+        self.get_active_simulation_object().remove_project_location(locationname)
+        self.update_map_display()
+        self.ui.LocationSummary.removeRow(self.ui.LocationSummary.currentRow())
+        prompt_msg = "Location removed from Project!"
+        QtWidgets.QMessageBox.information(self, "Location removed", prompt_msg, QtWidgets.QMessageBox.Ok)
+
+    def add_new_shape_boundary(self):
+        if self.update_data_view("boundary"):
+            prompt_msg = "Basic Shape Boundary added successfully!"
+            QtWidgets.QMessageBox.information(self, "Boundaries Updated", prompt_msg, QtWidgets.QMessageBox.Ok)
+
+    def update_simulation_boundary_collection(self):
+        self.get_active_simulation_object().import_simulation_boundaries()
+        if self.update_data_view("boundary"):
+            prompt_msg = "Simulation Boundaries updated successfully!"
+            QtWidgets.QMessageBox.information(self, "Boundaries Updated", prompt_msg, QtWidgets.QMessageBox.Ok)
+
+    # DIALOG LAUNCHES
+    def show_about_dialog(self):
+        """Shows the About Dialog with all model information, development team, etc."""
+        aboutdialog = ubdialogs.AboutDialogLaunch()
+        aboutdialog.exec_()
+
+    def show_results_viewer(self):
+        """Launches the results viewer dialog, passes the active simulation information to the viewer."""
+        resultsexplorerdialog = LaunchResultsExplorer(self, self.get_active_simulation_object(),
+                                                      self.get_active_data_library())
+        resultsexplorerdialog.exec_()
+
+    def show_calibration_viewer(self):
+        """Launches the calibration viewer, passes the active simulation information for the user to undertake
+        the calibration."""
+        activesim = self.get_active_simulation_object()
+        activescenario = activesim.get_active_scenario()
+        calibrationviewer = LaunchCalibrationViewer(self, activesim, activescenario)
+        calibrationviewer.exec_()
+
+    # Output option guis - map export and report creation dialogs
+    def show_map_export_settings(self):
+        """Launches the map export options dialog window for the current scenario, where the user can customize
+        the export format and types of spatial data required as output files from the model."""
+        mapexportdialog = ubdialogs.MapExportDialogLaunch(self.get_active_simulation_object().get_active_scenario())
+
+        mapexportdialog.exec_()
+
+    def show_reporting_settings(self):
+        """Launches the report creation dialog window, where the user can select and create reporting options. The
+        settings are saved to the project's options for later use."""
+        reportingdialog = ubdialogs.ReportingDialogLaunch(self.get_active_simulation_object())
+
+        reportingdialog.exec_()
+
+    # Project log
+    def show_project_log(self):
+        """Opens the project log window for the user to review the history of the modelling project."""
+        # Get the active Log object
+        logobject = self.get_active_project_log()
+        projectlog = ubdialogs.ProjectLogLaunch(logobject)
+
+        projectlog.exec_()
+
+    # LEAFLET GRAPHICS VIEW
     def update_data_view(self, maptype):    # [REVAMP]
         """Updates the current leaflet map view to show base map and plot new data.
 
-        :param newdata: The input data map, if the data map is of type SHP or .txt, leaflet will attempt to plot it.
+        :param maptype: The input data map, if the data map is of type SHP or .txt, leaflet will attempt to plot it.
         :return:
         """
         # Data to create map!
@@ -701,96 +607,28 @@ class MainWindow(QtWidgets.QMainWindow):
         self.update_location_collection_table()
         return True
 
-    def initialize_output_console(self):
-        """Resets the Output Console by first clearing its contents and then reprinting the three starting lines"""
-        self.ui.OutputConsole.clear()
-        self.ui.OutputConsole.append("<b>=================================<b>")
-        self.ui.OutputConsole.append("<b>UrbanBEATS OUTPUT CONSOLE<b>")
-        # self.ui.OutputConsole.append("<b>输出控制台<b>")   #CHINESE TRANSLATION - AUTOMATE!
-        self.ui.OutputConsole.append("<b>=================================<b>\n")
+    def reset_data_view_to_default(self):
+        """Resets the leaflet map view to the default location and default style based on when the program was
+        opened"""
+        if self.get_active_simulation_object() == None:
+            coordinates = self.__default_latlong
+        else:
+            coordinates = self.__current_latlong
 
-    def setup_narrative_widget(self, condition):
-        """Sets up the narrative widget based on the condition. If condition == "cler", method resets the scenario
-        narrative widgets. If condition is based on scenario, then information from the scenario object is used
-        to fill in the narrative scenario."""
-        if condition == "clear":
-            self.initialize_output_console()
-            scenviewtext = "<html><head/><body><p><span style=\" font-weight:600;\">Scenario Narrative" \
-                           "</span></p></body></html>"
-            self.ui.ScenarioView_lbl.setText(scenviewtext)
-            self.ui.Project.clear()
-            self.ui.Narrative.clear()
-            self.ui.Log.clear()
-            self.ui.DataSummary.setRowCount(0)
-        elif condition == "scenario":
-            pass    #[TO DO]
+        tileserver = ubglobals.TILESERVERS[self.get_option("mapstyle")]
 
-    def show_add_shape_boundary_dialog(self):
-        """Opens the 'Add Basic Shape Boundary Dialog box."""
-        addshapedialog = geographydialogs.AddShapeDialogLaunch(self, self.get_active_simulation_object())
-        addshapedialog.accepted.connect(self.add_new_shape_boundary)
-        addshapedialog.exec_()
+        leaflet_html = mapping_leaflet.generate_initial_leaflet_map(coordinates, tileserver, UBEATSROOT)
+        f = open(self.app_tempdir+"/default.html", 'w')
+        f.write(leaflet_html)
+        f.close()
+        self.ui.DataView_web.load(QtCore.QUrl.fromLocalFile(self.app_tempdir+"/default.html"))
+        self.__dataview_displaystate = "default"
 
-    def show_add_location_dialog(self):
-        """Opens the 'Add Location' dialog box."""
-        addlocationdialog = geographydialogs.AddLocationDialogLaunch(self, self.get_active_simulation_object())
-        addlocationdialog.accepted.connect(self.update_location_collection)
-        addlocationdialog.exec_()
-
-    def show_add_simulation_boundary_dialog(self):
-        """Launches the add simulation boundary dialog."""
-        addsimboundarydialog = geographydialogs.AddBoundaryDialogLaunch(self, self.get_active_simulation_object())
-        addsimboundarydialog.accepted.connect(self.update_simulation_boundary_collection)
-        addsimboundarydialog.exec_()
-
-    def update_location_collection(self):
-        if self.update_data_view("boundary"):
-            prompt_msg = "Location successfully added!"
-            QtWidgets.QMessageBox.information(self, "Location Added", prompt_msg, QtWidgets.QMessageBox.Ok)
-
-    def delete_simulation_boundary(self):
-        prompt = "Are you sure you want to remove this boundary from the project?" \
-                 "All scenarios using this boundary will be updated and any cached simulations using this boundary" \
-                 "will be removed. Click Yes to confirm!"
-        continue_bool = QtWidgets.QMessageBox.warning(self, "Delete Boundary?", prompt,
-                                                       QtWidgets.QMessageBox.Yes |
-                                                       QtWidgets.QMessageBox.No)
-        if continue_bool == QtWidgets.QMessageBox.No:
-            return True
-
-        boundaryname = self.ui.BoundarySummary.selectedItems()[0].text()    # Get the name of the boundary from table
-        self.get_active_simulation_object().delete_simulation_boundary(boundaryname)
-        self.update_map_display()
-        self.ui.BoundarySummary.removeRow(self.ui.BoundarySummary.currentRow())
-        prompt_msg = "Simulation Boundary deleted!"
-        QtWidgets.QMessageBox.information(self, "Boundary Removed from Project", prompt_msg, QtWidgets.QMessageBox.Ok)
-
-    def delete_location_from_project(self):
-        prompt = "Are you sure you want to remove this location from the project?"
-        continue_bool = QtWidgets.QMessageBox.warning(self, "Delete Location?", prompt,
-                                                      QtWidgets.QMessageBox.Yes |
-                                                      QtWidgets.QMessageBox.No)
-        if continue_bool == QtWidgets.QMessageBox.No:
-            return True
-
-        locationname = self.ui.LocationSummary.selectedItems()[0].text()
-        self.get_active_simulation_object().remove_project_location(locationname)
-        self.update_map_display()
-        self.ui.LocationSummary.removeRow(self.ui.LocationSummary.currentRow())
-        prompt_msg = "Location removed from Project!"
-        QtWidgets.QMessageBox.information(self, "Location removed", prompt_msg, QtWidgets.QMessageBox.Ok)
-
-    def add_new_shape_boundary(self):
-        if self.update_data_view("boundary"):
-            prompt_msg = "Basic Shape Boundary added successfully!"
-            QtWidgets.QMessageBox.information(self, "Boundaries Updated", prompt_msg, QtWidgets.QMessageBox.Ok)
-
-
-    def update_simulation_boundary_collection(self):
-        self.get_active_simulation_object().import_simulation_boundaries()
-        if self.update_data_view("boundary"):
-            prompt_msg = "Simulation Boundaries updated successfully!"
-            QtWidgets.QMessageBox.information(self, "Boundaries Updated", prompt_msg, QtWidgets.QMessageBox.Ok)
+    # NEW PROJECT INSTANCE CREATION
+    def create_new_project(self):
+        """Sets up the main user interface and calls the new project dialog"""
+        self.setup_main_gui()
+        self.show_new_project_dialog(0)
 
     def show_new_project_dialog(self, viewmode):
         """Launches the New Project Dialog. Called either when starting new project, editing project info or
@@ -802,6 +640,27 @@ class MainWindow(QtWidgets.QMainWindow):
         newprojectdialog.rejected.connect(lambda: self.cancel_new_project_creation(viewmode))
         newprojectdialog.accepted.connect(lambda: self.initialize_new_project(viewmode))
         newprojectdialog.exec_()
+
+    def initialize_output_console(self):
+        """Resets the Output Console by first clearing its contents and then reprinting the three starting lines"""
+        self.ui.OutputConsole.clear()
+        self.ui.OutputConsole.append("<b>=================================<b>")
+        self.ui.OutputConsole.append("<b>UrbanBEATS OUTPUT CONSOLE<b>")
+        # self.ui.OutputConsole.append("<b>输出控制台<b>")   #CHINESE TRANSLATION - AUTOMATE!
+        self.ui.OutputConsole.append("<b>=================================<b>\n")
+
+    def setup_narrative_widget(self, condition):
+        """Sets up the narrative widget based on the condition. If condition == "clear", method resets the scenario
+        narrative widgets. If condition is based on scenario, then information from the scenario object is used
+        to fill in the narrative scenario."""
+        if condition == "clear":
+            self.initialize_output_console()
+            self.ui.Project.clear()
+            self.ui.scenario_summarybox.clear()
+            self.ui.Log.clear()
+            self.ui.output_data_summary.setRowCount(0)
+        elif condition == "scenario":
+            pass    #[TO DO]
 
     def close_project(self):
         """Closes the current project and resets the main gui to startup state."""
@@ -830,15 +689,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("UrbanBEATS Planning Support Tool")
         self.__datalibraryexpanded = True
         self.expand_collapse_data_library()  # Collapses the entire data library window
-        self.ui.ScenarioDock_View.collapseAll()  # Collapse the scenario viewer
-
-        self.ui.ScenarioDock_Combo.clear()  # Clear the scenario browser's combo
-        self.ui.ScenarioDock_Combo.addItem("<Select Scenario>")
-        self.ui.ScenarioDock_Combo.setCurrentIndex(0)
 
         self.setup_narrative_widget("clear")  # Clear the narrative widget's information
         self.reset_data_view_to_default()  # Restore the default Leaflet view
-        self.scenario_change_ui_setup()
         self.enable_disable_main_interface("startup")
 
     def setup_main_gui(self):
@@ -847,12 +700,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         :return: None
         """
-        self.ui.ProgressBar.setValue(0)
         self.set_active_simulation_object(None)  # Remove any existing active simulation
         self.reset_data_view_to_default()  # Restore the default Leaflet view
         newsimulation = ubcore.UrbanBeatsSim(UBEATSROOT, self.__global_options, self)  # instantiate new simulation objective
         newsimulation.register_observer(self.consoleobserver)   # Add the observer
-        newsimulation.register_progressbar(self.progressbarobserver)    # Add the progress bar
+        # newsimulation.register_progressbar(self.progressbarobserver)    # Add the progress bar [REVAMP]
         self.set_active_simulation_object(newsimulation)
         self.reset_project_data_library_view()
 
@@ -860,12 +712,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("UrbanBEATS Planning Support Tool")
         self.__datalibraryexpanded = True
         self.expand_collapse_data_library()  # Collapses the entire data library window
-
-        self.ui.ScenarioDock_View.collapseAll()  # Collapse the scenario viewer
-
-        self.ui.ScenarioDock_Combo.clear()  # Clear the scenario combo's items.
-        self.ui.ScenarioDock_Combo.addItem("<Select Scenario>")
-        self.ui.ScenarioDock_Combo.setCurrentIndex(0)
 
         self.setup_narrative_widget("clear")  # Clear the narrative widget's information
         self.enable_disable_main_interface("new")  # Enable and disable elements of the GUI for starting new project
@@ -905,24 +751,23 @@ class MainWindow(QtWidgets.QMainWindow):
                                                                         activesimulation.get_scenario_boundary_info("all"),
                                                                         activesimulation.get_num_scenarios(),
                                                                         activesimulation.get_num_datasets()))
-        self.ui.ScenarioDock_View.expandAll()
         self.update_data_library_view()
 
-        # Scenario View - UNCHECK and DISABLE ALL MODULES
-        if viewmode == 0:
-            moduleTree = self.ui.ScenarioDock_View.topLevelItem(3)
-            moduleCount = moduleTree.childCount()
-            for twi_module in range(moduleCount):
-                moduleTree.child(twi_module).setDisabled(1)
-                moduleTree.child(twi_module).setCheckState(0, False)
-        else:
-            # Prepare Scenario View by simply adding the names based on the active simulation's scenario names
-            scenarionames = activesimulation.get_scenario_names()
-            for n in scenarionames:
-                self.ui.ScenarioDock_Combo.addItem(n)   # Adds the names to the Dock
-                self.ui.ScenarioDock_Combo.setCurrentIndex(0)
-                activesimulation.set_active_scenario(None)
-                activesimulation.set_active_boundary(None)
+        # SCENARIO VIEW TREE WIDGET - Populate with scenarios
+        # if viewmode == 0:
+        #     moduleTree = self.ui.ScenarioDock_View.topLevelItem(3)
+        #     moduleCount = moduleTree.childCount()
+        #     for twi_module in range(moduleCount):
+        #         moduleTree.child(twi_module).setDisabled(1)
+        #         moduleTree.child(twi_module).setCheckState(0, False)
+        # else:
+        #     # Prepare Scenario View by simply adding the names based on the active simulation's scenario names
+        #     scenarionames = activesimulation.get_scenario_names()
+        #     for n in scenarionames:
+        #         self.ui.ScenarioDock_Combo.addItem(n)   # Adds the names to the Dock
+        #         self.ui.ScenarioDock_Combo.setCurrentIndex(0)
+        #         activesimulation.set_active_scenario(None)
+        #         activesimulation.set_active_boundary(None)
 
         # Update Main Window Title
         self.setWindowTitle("UrbanBEATS Planning Support Tool - "+str(self.get_current_project_name()))
@@ -976,6 +821,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_save_project_state(True)   #[TO DO]
         self.printc("Project Save State Updated!")
 
+    def save_as_project(self):
+        """Saves the project's current state to a completely different location. Also modifies its info with
+        the new path information."""
+        self.printc("SAVING AS")    #[TO DO]
+
+    # STARTUP SCREEN FUNCTIONS
     def update_recent_cfg(self, project_name, modeller, project_path):
         """Updates the recent.cfg file with new project information."""
         projects = self.load_recent_cfg()
@@ -1021,11 +872,7 @@ class MainWindow(QtWidgets.QMainWindow):
             recent_projects.append(projectdata)
         return recent_projects
 
-    def save_as_project(self):
-        """Saves the project's current state to a completely different location. Also modifies its info with
-        the new path information."""
-        self.printc("SAVING AS")    #[TO DO]
-
+    # CLOSE EVENT
     def closeEvent(self, event):
         """Shows a message box before closing the program to confirm with the user about quitting.
         Checks the save project state before deciding to post the message or not."""
@@ -1043,30 +890,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         shutil.rmtree(UBEATSTEMP)       # Clean up the temporary directory
 
-    # OUTPUT OPTION GUIS - MAP EXPORT AND REPORT CREATION DIALOGS
-    def show_map_export_settings(self):
-        """Launches the map export options dialog window for the current scenario, where the user can customize
-        the export format and types of spatial data required as output files from the model."""
-        mapexportdialog = ubdialogs.MapExportDialogLaunch(self.get_active_simulation_object().get_active_scenario())
-
-        mapexportdialog.exec_()
-
-    def show_reporting_settings(self):
-        """Launches the report creation dialog window, where the user can select and create reporting options. The
-        settings are saved to the project's options for later use."""
-        reportingdialog = ubdialogs.ReportingDialogLaunch(self.get_active_simulation_object())
-
-        reportingdialog.exec_()
-
-    # PROJECT LOG
-    def show_project_log(self):
-        """Opens the project log window for the user to review the history of the modelling project."""
-        # Get the active Log object
-        logobject = self.get_active_project_log()
-        projectlog = ubdialogs.ProjectLogLaunch(logobject)
-
-        projectlog.exec_()
-
     # DATA LIBRARY METHODS
     def show_add_data_dialog(self):
         """Opens the Add Data Dialog window when the user clicks on any function to add data to
@@ -1082,7 +905,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.reset_project_data_library_view()
 
         # Go through all scenarios and remove all files
-        pass    # [TO DO]
+        pass  # [TO DO]
 
     def reset_project_data_library_view(self):
         """ONLY AFFECTS THE DATA LIBRARY VIEWER
@@ -1132,7 +955,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Adjust the pixmap on the expand/col button
         if sum(expandcol_tli) == len(expandcol_tli) \
-            and sum([len(i) for i in expandcol_twi]) == sum([sum(i) for i in expandcol_twi]):
+                and sum([len(i) for i in expandcol_twi]) == sum([sum(i) for i in expandcol_twi]):
             # If true: then tree widget fully expanded
             self.set_expand_collapse_button_icon("expanded")
         else:
@@ -1173,7 +996,7 @@ class MainWindow(QtWidgets.QMainWindow):
         cur_toplevelitem = self.ui.DataDock_View.topLevelItem(0)
         for dref in datacol:
             dtype = dref.get_metadata("parent")  # Returns overall type (e.g. Land Use, Rainfall, etc.)
-            dtypeindex = ubglobals.SPATIALDATA.index(dtype)    # Get the index in the tree-widget
+            dtypeindex = ubglobals.SPATIALDATA.index(dtype)  # Get the index in the tree-widget
             if cur_toplevelitem.child(dtypeindex).child(0).text(0) == "<no data>":
                 cur_toplevelitem.child(dtypeindex).takeChild(0)
             twi = QtWidgets.QTreeWidgetItem()
@@ -1241,113 +1064,170 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             print("Something Wrong")
 
-    # GETTERS and SETTERS
-    def set_active_simulation_object(self, simobjectfromcore):
-        self.__activeSimulationObject = simobjectfromcore
+    # SCENARIO MANAGEMENT METHODS >> Switching between scenarios
+    def show_scenario_dialog(self, viewmode):
+        """Launches the scenario dialog window, which the user can use to customize and set up a simulation scenario.
 
-    def set_active_data_library(self, libraryfromcore):
-        self.__activeDataLibrary = libraryfromcore
-
-    def set_active_project_log(self, logfromcore):
-        self.__activeProjectLog = logfromcore
-
-    def get_active_simulation_object(self):
-        return self.__activeSimulationObject
-
-    def get_active_data_library(self):
-        return self.__activeDataLibrary
-
-    def get_active_project_log(self):
-        return self.__activeProjectLog
-
-    def set_save_project_state(self, status):
-        """Reverses the state of saveProjectState. Tracks changes made to project settings. Then, changes
-         the Main Window title depending on the save state. If unsaved, appends *, if saved, removes *
-
-        :param status: bool, True = all changes saved, False = changes made and project unsaved
-        :return: None
+        :param viewmode: 0 = new scenario, 1 = edit scenario
         """
-        self.__saveProjectState = status
-        if self.__saveProjectState:  # if saved
-            self.setWindowTitle("UrbanBEATS Planning Support Tool - " + self.__current_project_name + "")
-        else:
-            self.setWindowTitle("UrbanBEATS Planning Support Tool - " + self.__current_project_name + "*")
+        if viewmode == 0:       # Create New Scenario
+            # Instantiate the scenario first, then make sure it is the active one
+            self.get_active_simulation_object().create_new_scenario()
+            newscenariodialog = ubdialogs.CreateScenarioLaunch(self, self.get_active_simulation_object(),
+                                                               self.get_active_data_library(), viewmode)
+            newscenariodialog.accepted.connect(self.setup_scenario)
+            newscenariodialog.exec_()
+        elif viewmode == 1:     # Edit Scenario
+            newscenariodialog = ubdialogs.CreateScenarioLaunch(self, self.get_active_simulation_object(),
+                                                               self.get_active_data_library(), viewmode)
+            newscenariodialog.accepted.connect(self.update_scenario_gui)
+            newscenariodialog.exec_()
 
-    def get_save_project_state(self):
-        return self.__saveProjectState
+    def setup_scenario(self):
+        """Called when the scenario setup dialog box has successfully closed. i.e. signal accepted()"""
+        active_scenario = self.get_active_simulation_object().get_active_scenario()
+        active_scenario.setup_scenario()
+        self.get_active_simulation_object().add_new_scenario(active_scenario)
 
-    def set_current_project_name(self, pname):
-        self.__current_project_name = pname
+        # ADD NEW ITEM TO THE SCENARIO TREE WIDGET AND SET AS ACTIVE [REVAMP]
+        # self.ui.ScenarioDock_Combo.addItem(active_scenario.get_metadata("name"))
+        # self.ui.ScenarioDock_Combo.setCurrentIndex(int(self.ui.ScenarioDock_Combo.count() - 1))
 
-    def get_current_project_name(self):
-        return self.__current_project_name
+    def delete_current_scenario(self):
+        """Deletes the active scenario based on the scenario combobox. This includes removing it from the active
+        simulation as well. The scenario interface is then reset to the default <select scenario> setting."""
+        # Algorithm: (1) Get current scenario data, (2) Reset scenario narrative interface by clearing it
+        # (3) Reset module buttons and control panel buttons, (4) Change current index of scenario combo
+        # (5) Update the scenario description information, (6) Remove the scenario from the combo box,
+        # (7) Remove the scenario from the simulation, (8) Delete the scenario folder from the project
+        active_scenario = self.get_active_simulation_object().get_active_scenario()  # (1)
+        self.get_active_simulation_object().delete_scenario(active_scenario.get_metadata("name"))  # (7), (8)
 
-    # MODULE BAR - LAUNCHING ALL MODULES
-    def launch_influencefunction_gui(self):
-        """Launches the influence function creator GUI, for creating and saving influence functions in the project."""
-        ifunctiongui = InfluenceFunctionGUILaunch(self.get_active_simulation_object(),
-                                                  self.get_active_project_log())
-        ifunctiongui.exec_()
+        # UPDATE SCENARIO TREE WIDGET
+        # self.ui.ScenarioDock_Combo.removeItem(self.ui.ScenarioDock_Combo.currentIndex())
+        # self.ui.ScenarioDock_Combo.setCurrentIndex(0)  # (2), (3), (4), (5), (6)
 
-    def launch_spatialsetup_modulegui(self):
-        """Launches the spatial setup module's user interface and fills in relevant parameters."""
-        delinblocksgui = DelinBlocksGuiLaunch(self, self.get_active_simulation_object(),
-                                              self.get_active_data_library(), self.get_active_project_log())
-        delinblocksgui.exec_()
+    def scenario_change_ui_setup(self):
+        """Modifies the current Main Window Interface to suit the selected scenario. This includes enabling and
+        disabling the module buttons, the control panel and updating the Scenario Narrative Section of the GUI
+        with information on the current scenario. It also includes printing out details into the output console."""
+        # if self.ui.ScenarioDock_Combo.currentIndex() == 0:
+        #     # <Select Scenario> Case - disables everything
+        #     self.scenario_view_reset()
+        #     self.ui.ModuleDock.setEnabled(0)
+        #     self.ui.SimDock.setEnabled(0)
+        # else:
+        self.update_scenario_gui()
+        self.ui.SimDock.setEnabled(1)
 
-    def launch_climatesetup_modulegui(self):
-        """Launches the climate setup module's user interface and fills in relevant parameters."""
-        pass    # [TO DO]
-
-    def launch_urbandev_modulegui(self):
-        """Launches the urban development module's user interface and filles in relevant parameters."""
-        urbandevgui = UrbdevelopGuiLaunch(self, self.get_active_simulation_object(),
-                                          self.get_active_data_library(), self.get_active_project_log())
-        urbandevgui.exec_()
-
-    def launch_urbandynamics_modulegui(self):
-        """Launches the urban dynamics setup module's user interface and fills in relevant parameters."""
-        pass    # [TO DO]
-
-    def launch_urbanplan_modulegui(self):
-        """Launches the urban planning modules user interface and pre-fills all relevant parameters."""
-        urbplanbbgui = UrbplanbbGuiLaunch(self, self.get_active_simulation_object(),
-                                          self.get_active_data_library(), self.get_active_project_log())
-        urbplanbbgui.exec_()
-
-    def launch_spatialmap_modulegui(self):
-        """Launches the spatial mapping module's user interface and fills in relevant parameters."""
-        spatialmappinggui = SpatialMappingGuiLaunch(self, self.get_active_simulation_object(),
-                                                    self.get_active_data_library(), self.get_active_project_log())
-        spatialmappinggui.exec_()
-
-    def launch_infrastructure_modulegui(self):
-        """Launches the infrastructure module's user interface and fills in relevant parameters."""
-        infrastructuregui = InfrastructureGuiLaunch(self, self.get_active_simulation_object(),
-                                                    self.get_active_data_library(), self.get_active_project_log())
-        infrastructuregui.exec_()
-
-    def launch_bluegreen_modulegui(self):
-        """Launches the Regulation module's user interface and fills in relevant parameters."""
-        bluegreengui = BlueGreenGuiLaunch(self, self.get_active_simulation_object(),
-                                          self.get_active_data_library(), self.get_active_project_log())
-
-        bluegreengui.exec_()
-
-    def launch_watercycle_modulegui(self):
-        """Launches the Performance Assessment's user interface and fills in relevant parameters."""
+    def update_scenario_gui(self):
+        """Updates the scenario GUI and narrative section with the current scenario's details."""
+        # if self.ui.ScenarioDock_Combo.count() == 0:
+        #     return
+        # if self.ui.ScenarioDock_Combo.currentIndex() == 0:
+        #     self.get_active_simulation_object().set_active_scenario(None)
+        #     self.get_active_simulation_object().set_active_boundary(None)
+        #     self.scenario_view_reset()
+        #     return
+        # active_scenario_name = self.ui.ScenarioDock_Combo.currentText()
+        # self.get_active_simulation_object().set_active_scenario(active_scenario_name)
+        # self.__activeScenario = self.get_active_simulation_object().get_active_scenario()
+        # self.get_active_simulation_object().set_active_boundary(self.__activeScenario.get_metadata("boundary"))
         pass
+        # Tree Widget Info:
+        # twi = QtWidgets.QTreeWidgetItem()
+        # twi.setText(0, str(self.__activeScenario.get_metadata("narrative")[:100] + "..."))
+        # twi.setToolTip(0, str(self.__activeScenario.get_metadata("narrative")[:100] + "..."))
+        #
+        # # Narrative
+        # self.ui.Narrative.setPlainText(self.__activeScenario.get_metadata("narrative"))
+        #
+        # self.ui.ScenarioDock_View.topLevelItem(0).takeChildren()
+        # self.ui.ScenarioDock_View.topLevelItem(0).addChild(twi)
+        # self.ui.ScenarioDock_View.topLevelItem(1).child(0).setText(0, "Type: " + self.__activeScenario.get_metadata(
+        #     "type"))
+        # self.ui.ScenarioDock_View.topLevelItem(1).child(1).setText(0,
+        #                                                            "Boundary: " + self.__activeScenario.get_metadata(
+        #                                                                "boundary"))
+        # self.ui.ScenarioDock_View.topLevelItem(1).child(2).setText(0, "Status: " + "not simulated")
+        # if self.__activeScenario.get_metadata("type") == "DYNAMIC":
+        #     yeartext = str(self.__activeScenario.get_metadata("startyear")) + " - " + str(
+        #         self.__activeScenario.get_metadata("endyear"))
+        #     dttext = str(self.__activeScenario.get_metadata("dt")) + " year(s)"
+        #     benchtext = "N/A"
+        # elif self.__activeScenario.get_metadata("type") == "BENCHMARK":
+        #     yeartext = str(self.__activeScenario.get_metadata("startyear"))
+        #     dttext = "N/A"
+        #     benchtext = str(self.__activeScenario.get_metadata("benchmarks"))
+        # else:
+        #     yeartext = str(self.__activeScenario.get_metadata("startyear"))
+        #     dttext = "N/A"
+        #     benchtext = "N/A"
+        # self.ui.ScenarioDock_View.topLevelItem(1).child(3).setText(0, "Simulation Year(s): " + yeartext)
+        # self.ui.ScenarioDock_View.topLevelItem(1).child(4).setText(0, "Simulation Time Step: " + dttext)
+        # self.ui.ScenarioDock_View.topLevelItem(1).child(5).setText(0, "Benchmark Iterations: " + benchtext)
+        # self.ui.ScenarioDock_View.topLevelItem(4). \
+        #     child(0).setText(0, "File Naming: " + self.__activeScenario.get_metadata("filename"))
+        # project_path = self.get_active_simulation_object().get_project_path()
+        # self.ui.ScenarioDock_View.topLevelItem(4).child(1).setText(0,
+        #                                                            "Path: " + str(os.path.normpath(project_path)))
+        # self.ui.ScenarioDock_View.topLevelItem(4).child(1).setToolTip(0, str(os.path.normpath(project_path)))
+        #
+        # # LIST OF DATA SETS
+        # datalist = self.__activeScenario.create_dataset_file_list()
+        # self.ui.DataSummary.setRowCount(0)
+        # self.ui.ScenarioDock_View.topLevelItem(2).takeChildren()
+        # self.ui.DataSummary.setRowCount(0)
+        # for entry in datalist:
+        #     twi = QtWidgets.QTreeWidgetItem()
+        #     twi.setText(0, entry[1])
+        #     twi.setToolTip(0, entry[0] + " - " + entry[2])
+        #     self.ui.ScenarioDock_View.topLevelItem(2).addChild(twi)
+        #
+        #     # Update the Data Table Widget.
+        #     rowposition = self.ui.DataSummary.rowCount()
+        #     self.ui.DataSummary.insertRow(rowposition)
+        #     self.ui.DataSummary.setItem(rowposition, 0, QtWidgets.QTableWidgetItem(entry[1]))
+        #     self.ui.DataSummary.setItem(rowposition, 1, QtWidgets.QTableWidgetItem(entry[3]))
+        #     self.ui.DataSummary.setItem(rowposition, 2, QtWidgets.QTableWidgetItem(entry[4]))
+        #     self.ui.DataSummary.resizeColumnsToContents()
+        #
+        # # MODULES
+        # modulebools = []  # Holds 1 and 0 booleans that represent different modules in the module dock
+        # for i in range(len(ubglobals.MODULENAMES)):
+        #     mbool = self.__activeScenario.check_is_module_active(ubglobals.MODULENAMES[i])
+        #     if mbool:
+        #         self.ui.ScenarioDock_View.topLevelItem(3).child(i).setDisabled(0)
+        #         self.ui.ScenarioDock_View.topLevelItem(3).child(i).setCheckState(0, 2)
+        #     else:
+        #         self.ui.ScenarioDock_View.topLevelItem(3).child(i).setDisabled(1)
+        #         self.ui.ScenarioDock_View.topLevelItem(3).child(i).setCheckState(0, 0)
+        #     modulebools.append(int(mbool))
+        # self.enable_disable_module_icons(modulebools)  # enables corresponding module buttons
 
-    def launch_microclimate_modulegui(self):
-        """"""
-        pass
+        # MAP DISPLAY
+        self.update_map_display()
 
-    def launch_flood_modulegui(self):
-        """"""
-        pass
-
-    def launch_economics_modulegui(self):
-        """"""
+    def scenario_view_reset(self):
+        """Resets the scenario view to the default """
+        # self.ui.ScenarioDock_View.topLevelItem(0).takeChildren()
+        # self.ui.ScenarioDock_View.topLevelItem(1).child(0).setText(0, "Type: <N/A>")
+        # self.ui.ScenarioDock_View.topLevelItem(1).child(1).setText(0, "Boundary: <N/A>")
+        # self.ui.ScenarioDock_View.topLevelItem(1).child(2).setText(0, "Status: <none>")
+        # self.ui.ScenarioDock_View.topLevelItem(1).child(3).setText(0, "Simulation Year(s): <year>")
+        # self.ui.ScenarioDock_View.topLevelItem(1).child(4).setText(0, "Simulation Time Step: N/A")
+        # self.ui.ScenarioDock_View.topLevelItem(1).child(5).setText(0, "Benchmark Iterations: N/A")
+        # self.ui.ScenarioDock_View.topLevelItem(2).takeChildren()
+        # for i in range(11):
+        #     self.ui.ScenarioDock_View.topLevelItem(3).child(i).setCheckState(0, 0)
+        #     self.ui.ScenarioDock_View.topLevelItem(3).child(i).setDisabled(1)
+        # self.ui.ScenarioDock_View.topLevelItem(4).child(0).setText(0, "File Naming: <name>")
+        # self.ui.ScenarioDock_View.topLevelItem(4).child(1).setText(0, "Path: <path>")
+        #
+        # self.ui.Narrative.clear()
+        # self.ui.DataSummary.setRowCount(0)
+        # self.enable_disable_module_icons([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        # self.update_map_display()
         pass
 
     # FUNCTIONS TO DO
@@ -1357,9 +1237,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def raise_ub_error_message(self, message):
         pass
 
-    def update_progress_bar_value(self, value):
-        """Updates the progress bar of the Main GUI when the simulation is started/stopped/reset."""
-        self.ui.ProgressBar.setValue(int(value))
+    # def update_progress_bar_value(self, value): # [REVAMP]
+    #     """Updates the progress bar of the Main GUI when the simulation is started/stopped/reset."""
+    #     self.ui.ProgressBar.setValue(int(value))
 
     def call_run_simulation(self):
         """Executes the run function for the current scenario that is active in the Scenario Browser."""
@@ -1382,60 +1262,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def call_run_simulation_perfonly(self):
         pass
 
-    #ENABLERS and DISABLERS
-    def enable_disable_main_interface(self, condition):
-        """Enables and disables certain components of the main interface depending on the condition
-        specified. Note that this is somewhat different from self.__gui_state as that tracks general
-        behaviour throughout the program. The condition here is just what idle state the GUI should be in.
-
-        :param condition: "startup", "new" or "scenario" will determine which buttons are enabled
-        """
-        if condition == "startup":
-            self.ui.DataDock.setEnabled(0)
-            self.ui.ScenarioDock.setEnabled(0)
-            self.ui.SimDock.setEnabled(0)
-            self.ui.ScenarioView_Widget.setEnabled(0)
-            self.ui.DataView_extent.setEnabled(0)
-            self.ui.DataView_meta.setEnabled(0)
-            self.ui.actionView_Full_Project_Log.setEnabled(0)
-            self.ui.actionView_Project_Description.setEnabled(0)
-            self.enable_disable_module_icons([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-        elif condition == "new":
-            self.ui.ModuleDock.setEnabled(1)
-            self.ui.DataDock.setEnabled(1)
-            self.ui.ScenarioDock.setEnabled(1)
-            self.ui.SimDock.setEnabled(1)
-            self.ui.ScenarioView_Widget.setEnabled(1)
-            self.ui.DataView_extent.setEnabled(1)
-            self.ui.DataView_meta.setEnabled(1)
-            self.ui.actionView_Full_Project_Log.setEnabled(1)
-            self.ui.actionView_Project_Description.setEnabled(1)
-            self.enable_disable_module_icons([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-        else:
-            pass
-
-    def enable_disable_module_icons(self, condition):
-        """Enables and disables the module icons based on the conditions given. The input
-        passed to this method is a list of booleans in the order of module buttons on the
-        main interface. Note that this is somewhat different from self.__gui_state as that
-        tracks general behaviour throughout the program. The condition here is just what
-        idle state the GUI should be in.
-
-        :param condition: [ ] list of booleans in order of module buttons on main window
-        """
-        self.ui.ModuleDock_spatialsetup.setEnabled(condition[0])
-        self.ui.ModuleDock_climatesetup.setEnabled(condition[1])
-        self.ui.ModuleDock_urbandev.setEnabled(condition[2])
-        self.ui.ModuleDock_urbandynamics.setEnabled(condition[3])
-        self.ui.ModuleDock_urbanplan.setEnabled(condition[4])
-        self.ui.ModuleDock_spatialmap.setEnabled(condition[5])
-        self.ui.ModuleDock_infrastructure.setEnabled(condition[6])
-        self.ui.ModuleDock_bluegreen.setEnabled(condition[7])
-        self.ui.ModuleDock_watercycle.setEnabled(condition[8])
-        self.ui.ModuleDock_microclimate.setEnabled(condition[9])
-        self.ui.ModuleDock_flood.setEnabled(condition[10])
-        self.ui.ModuleDock_economics.setEnabled(condition[11])
-
 # --- OBSERVERS ---
 class ConsoleObserver(QtCore.QObject):
     """Defines the observer class that will work with the console window in
@@ -1447,17 +1273,17 @@ class ConsoleObserver(QtCore.QObject):
         """Emits <updateConsole> signal"""
         self.updateConsole.emit(textmessage)
 
-
-class ProgressBarObserver(QtCore.QObject):
-    """Defines the observer class that will work with the progress bar in the
-    UrbanBEATS Main Window."""
-
-    updateProgress = QtCore.pyqtSignal(int, name="updateProgressBar")
-
-    def update_progress(self, value):
-        """Emits <updateProgress> signal"""
-        self.updateProgress.emit(value)
-
+# [REVAMP]
+# class ProgressBarObserver(QtCore.QObject):
+#     """Defines the observer class that will work with the progress bar in the
+#     UrbanBEATS Main Window."""
+#
+#     updateProgress = QtCore.pyqtSignal(int, name="updateProgressBar")
+#
+#     def update_progress(self, value):
+#         """Emits <updateProgress> signal"""
+#         self.updateProgress.emit(value)
+# [REVAMP]
 
 # --- START SCREEN LAUNCH ---
 class StartScreenLaunch(QtWidgets.QDialog):
