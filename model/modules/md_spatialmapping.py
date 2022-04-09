@@ -32,7 +32,7 @@ import random
 import math
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-from .ubmodule import *
+from model.ubmodule import *
 import model.progref.ubglobals as ubglobals
 import model.ublibs.ubdatatypes as ubdata
 

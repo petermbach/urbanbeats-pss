@@ -28,13 +28,9 @@ __copyright__ = "Copyright 2012. Peter M. Bach"
 # --- --- --- --- --- ---
 
 # --- PYTHON LIBRARY IMPORTS ---
-import threading
-import os
-import gc
-import tempfile
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-from .ubmodule import *
+from model.ubmodule import *
 
 
 # --- MODULE CLASS DEFINITION ---

@@ -28,17 +28,13 @@ __copyright__ = "Copyright 2012. Peter M. Bach"
 # --- --- --- --- --- ---
 
 # --- PYTHON LIBRARY IMPORTS ---
-import threading
-import os
-import gc
-import tempfile
 import random as rand
 import math
 import numpy as np
-from shapely.geometry import Polygon, Point
+from shapely.geometry import Polygon
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-from .ubmodule import *
+from model.ubmodule import *
 import model.ublibs.ubspatial as ubspatial
 import model.ublibs.ubmethods as ubmethods
 import model.ublibs.ubdatatypes as ubdata

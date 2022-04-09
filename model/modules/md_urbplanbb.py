@@ -28,18 +28,11 @@ __copyright__ = "Copyright 2012. Peter M. Bach"
 # --- --- --- --- --- ---
 
 # --- PYTHON LIBRARY IMPORTS ---
-import threading
-import os
-import gc
-import tempfile
 import random, math
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-from .ubmodule import *
-import model.ublibs.ubspatial as ubspatial
+from model.ubmodule import *
 import model.ublibs.ubmethods as ubmethods
-import model.ublibs.ubdatatypes as ubdata
-import model.progref.ubglobals as ubglobals
 
 
 # --- MODULE CLASS DEFINITION ---

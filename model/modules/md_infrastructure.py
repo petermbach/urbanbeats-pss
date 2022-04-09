@@ -28,25 +28,14 @@ __copyright__ = "Copyright 2012. Peter M. Bach"
 # --- --- --- --- --- ---
 
 # --- PYTHON LIBRARY IMPORTS ---
-import threading
-import os
-import gc
-import tempfile
-import numpy as np
 from math import *
-import sys
 
 # Spatial geometry
-from shapely.geometry import Polygon, LineString, Point
 from random import randint
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-from .ubmodule import *
 from .md_delinblocks import *
-import model.ublibs.ubspatial as ubspatial
-import model.ublibs.ubmethods as ubmethods
 import model.ublibs.ubdatatypes as ubdata
-import model.progref.ubglobals as ubglobals
 
 
 # --- MODULE CLASS DEFINITION ---

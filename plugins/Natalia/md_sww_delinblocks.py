@@ -1,18 +1,8 @@
 
 # --- PYTHON LIBRARY IMPORTS ---
-import threading
-import os
-import gc
-import tempfile
-import math
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-from model.modules.ubmodule import *
 from model.modules.md_delinblocks import *
-import model.ublibs.ubspatial as ubspatial
-import model.ublibs.ubmethods as ubmethods
-import model.ublibs.ubdatatypes as ubdata
-import model.progref.ubglobals as ubglobals
 
 
 # --- MODULE CLASS DEFINITION ---

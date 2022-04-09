@@ -7,7 +7,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1366</width>
+    <width>1368</width>
     <height>715</height>
    </rect>
   </property>
@@ -61,7 +61,7 @@
           </size>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="Project_tab">
           <attribute name="icon">
@@ -548,7 +548,7 @@ p, li { white-space: pre-wrap; }
               <enum>QTabWidget::North</enum>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>2</number>
              </property>
              <widget class="QWidget" name="general">
               <attribute name="icon">
@@ -619,37 +619,8 @@ p, li { white-space: pre-wrap; }
               <attribute name="title">
                <string>Modules</string>
               </attribute>
-              <layout class="QHBoxLayout" name="horizontalLayout_6">
-               <item>
-                <widget class="QTreeWidget" name="module_browser">
-                 <property name="allColumnsShowFocus">
-                  <bool>false</bool>
-                 </property>
-                 <attribute name="headerCascadingSectionResizes">
-                  <bool>false</bool>
-                 </attribute>
-                 <column>
-                  <property name="text">
-                   <string>Active Modules</string>
-                  </property>
-                 </column>
-                 <item>
-                  <property name="text">
-                   <string>Spatial Representation</string>
-                  </property>
-                  <item>
-                   <property name="text">
-                    <string>Create Simulation Grid</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
-                     <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
-                   </property>
-                  </item>
-                 </item>
-                </widget>
-               </item>
-               <item>
+              <layout class="QGridLayout" name="gridLayout_6">
+               <item row="0" column="1">
                 <widget class="QWidget" name="module_controller" native="true">
                  <layout class="QVBoxLayout" name="verticalLayout">
                   <item>
@@ -677,11 +648,22 @@ p, li { white-space: pre-wrap; }
                   <item>
                    <widget class="QPushButton" name="module_properties">
                     <property name="text">
-                     <string>Properties</string>
+                     <string>Details</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
                       <normaloff>:/icons/Info-icon.png</normaloff>:/icons/Info-icon.png</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="scenarioRun_button">
+                    <property name="text">
+                     <string>Run</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                      <normaloff>:/icons/Play-icon.png</normaloff>:/icons/Play-icon.png</iconset>
                     </property>
                    </widget>
                   </item>
@@ -699,6 +681,66 @@ p, li { white-space: pre-wrap; }
                    </spacer>
                   </item>
                  </layout>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QTreeWidget" name="module_browser">
+                 <property name="editTriggers">
+                  <set>QAbstractItemView::NoEditTriggers</set>
+                 </property>
+                 <property name="dragDropMode">
+                  <enum>QAbstractItemView::NoDragDrop</enum>
+                 </property>
+                 <property name="defaultDropAction">
+                  <enum>Qt::IgnoreAction</enum>
+                 </property>
+                 <property name="animated">
+                  <bool>true</bool>
+                 </property>
+                 <property name="allColumnsShowFocus">
+                  <bool>false</bool>
+                 </property>
+                 <attribute name="headerCascadingSectionResizes">
+                  <bool>false</bool>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>Scenario Modules</string>
+                  </property>
+                 </column>
+                 <item>
+                  <property name="text">
+                   <string>Spatial Representation</string>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>Create Simulation Grid</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                     <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
+                   </property>
+                  </item>
+                 </item>
+                </widget>
+               </item>
+               <item row="1" column="0" colspan="2">
+                <widget class="QProgressBar" name="scenario_ProgressBar">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="value">
+                  <number>0</number>
+                 </property>
                 </widget>
                </item>
               </layout>
@@ -934,7 +976,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1366</width>
+     <width>1368</width>
      <height>21</height>
     </rect>
    </property>
@@ -1663,7 +1705,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QDockWidget" name="ToolboxDock">
    <property name="minimumSize">
     <size>
-     <width>195</width>
+     <width>200</width>
      <height>483</height>
     </size>
    </property>
@@ -1713,8 +1755,14 @@ p, li { white-space: pre-wrap; }
        <property name="frameShadow">
         <enum>QFrame::Sunken</enum>
        </property>
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
        <property name="dragDropMode">
-        <enum>QAbstractItemView::DragOnly</enum>
+        <enum>QAbstractItemView::NoDragDrop</enum>
+       </property>
+       <property name="alternatingRowColors">
+        <bool>false</bool>
        </property>
        <property name="indentation">
         <number>15</number>
@@ -1722,10 +1770,16 @@ p, li { white-space: pre-wrap; }
        <property name="uniformRowHeights">
         <bool>false</bool>
        </property>
+       <property name="animated">
+        <bool>true</bool>
+       </property>
        <property name="allColumnsShowFocus">
         <bool>false</bool>
        </property>
        <property name="headerHidden">
+        <bool>true</bool>
+       </property>
+       <property name="expandsOnDoubleClick">
         <bool>true</bool>
        </property>
        <column>
@@ -1756,7 +1810,7 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="font">
           <font>
-           <pointsize>7</pointsize>
+           <pointsize>8</pointsize>
           </font>
          </property>
          <property name="icon">
@@ -1765,34 +1819,6 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="flags">
           <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsEnabled</set>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Define Neighbourhood</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>7</pointsize>
-          </font>
-         </property>
-         <property name="icon">
-          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
-           <normaloff>:/images/images/md_spatial_moore.png</normaloff>:/images/images/md_spatial_moore.png</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Map Topography</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>7</pointsize>
-          </font>
-         </property>
-         <property name="icon">
-          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
-           <normaloff>:/icons/topography.png</normaloff>:/icons/topography.png</iconset>
          </property>
         </item>
         <item>
@@ -1807,6 +1833,20 @@ p, li { white-space: pre-wrap; }
          <property name="icon">
           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
            <normaloff>:/icons/admin_border.png</normaloff>:/icons/admin_border.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Map Topography</string>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>7</pointsize>
+          </font>
+         </property>
+         <property name="icon">
+          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+           <normaloff>:/icons/topography.png</normaloff>:/icons/topography.png</iconset>
          </property>
         </item>
        </item>

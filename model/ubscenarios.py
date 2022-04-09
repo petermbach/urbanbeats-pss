@@ -29,9 +29,7 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 import threading
-import sys
 import gc
-import time
 import xml.etree.ElementTree as ET  # XML parsing for loading scenario files
 import ast  # Used for converting a string of a list into a list e.g. "[1, 2, 3, 4]" --> [1, 2, 3, 4]
 
@@ -208,23 +206,6 @@ class UrbanBeatsScenario(threading.Thread):
         self.__assets = {}
         gc.collect()
 
-    # def get_module_object(self, modulenama, dt_index):
-    #     """Returns the active module instance from self.__modules based on the key 'modulecat' and the index from
-    #     self.__dt_array i.e. the simulation year. In the GUI, this directly corresponds to the combo box index.
-    #
-    #     :param modulecat: module category e.g. SPATIAL, CLIMATE, URBDEV, etc.
-    #     :param index: the list index to look up for the module.
-    #     :return: the instantiated module object e.g. DelinBlocks() or UrbPlanBB()
-    #     """
-    #     try:
-    #         return self.__modules[modulecat][dt_index]
-    #     except KeyError:
-    #         print("Error, cannot find module instance!")
-    #         return None
-    #     except IndexError:
-    #         print(f"No module instances of {modulecat} found for current time step.")
-    #         return None
-
     def setup_scenario(self):
         """Initializes the scenario with the setup data provided by the user."""
         # [POSSIBLE TO DO] CREATE ASSETS SUPERSTRUCTURE
@@ -279,11 +260,8 @@ class UrbanBeatsScenario(threading.Thread):
         root = f.getroot()
 
         # Load metadata of the scenario
-        metadata = {}       # Fill out self.__scenariometadata
         for child in root.find("scenariometa"):
-            metadata[child.tag] = child.text
-
-        self.__scenariometadata = metadata
+            self.__scenariometadata[child.tag] = type(self.__scenariometadata[child.tag])(child.text)
 
         # Collect data from data library, which should have been loaded by now
         for child in root.find("scenariodata"):

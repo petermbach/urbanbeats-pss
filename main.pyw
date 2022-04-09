@@ -65,6 +65,9 @@ import model.ublibs.ubconfigfiles as ubconfigfiles
 
 from gui import mapping_leaflet as mapping_leaflet
 
+# --- MODULE GUI IMPORTS ---
+from gui.modules.mod_simgrid_gui import Ui_Create_SimGrid
+
 # --- MAIN GUI FUNCTION ---
 class MainWindow(QtWidgets.QMainWindow):
     """The class definition for the UrbanBEATS Main Window. The main window
@@ -89,6 +92,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # --- GLOBAL OPTIONS ---
         self.__global_options = {}
+        self.__toolbox = {}
         self.epsg_dict = ubspatial.get_epsg_all(UBEATSROOT)
         self.cities_dict = ubspatial.get_cities_all(UBEATSROOT)
         self.set_options_from_config()
@@ -211,6 +215,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # TOOLBOX DOCK ---
         self.ui.toolboxTree.expandAll()
+        self.ui.toolboxTree.doubleClicked.connect(self.launch_module_from_toolbox)
 
         # CONTROL PANEL INTERFACE
         self.ui.SimDock_projectfolder.clicked.connect(self.open_project_folder)
@@ -1182,16 +1187,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.output_data_summary.setRowCount(0)          # Clear the output data table rows
         self.update_map_display()
 
+    # TOOLBOX
+    def launch_module_from_toolbox(self):
+        """Calls the respective module GUI from the toolbox"""
+        modname = self.ui.toolboxTree.currentItem().text()
+        if
+
     # FUNCTIONS TO DO
     def checks_before_run(self):
         pass
 
     def raise_ub_error_message(self, message):
         pass
-
-    # def update_progress_bar_value(self, value): # [REVAMP]
-    #     """Updates the progress bar of the Main GUI when the simulation is started/stopped/reset."""
-    #     self.ui.ProgressBar.setValue(int(value))
 
     def call_run_simulation(self):
         """Executes the run function for the current scenario that is active in the Scenario Browser."""
@@ -1207,12 +1214,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.get_active_simulation_object().run()
 
     def enable_disable_run_controls(self, state):
-        """Enabels or Disables the run button controls depending on run state."""
+        """Enables or Disables the run button controls depending on run state."""
         self.ui.actionRun.setEnabled(state)
         self.ui.SimDock_run.setEnabled(state)
 
-    def call_run_simulation_perfonly(self):
-        pass
 
 # --- OBSERVERS ---
 class ConsoleObserver(QtCore.QObject):
@@ -1224,18 +1229,6 @@ class ConsoleObserver(QtCore.QObject):
     def update_observer(self, textmessage):
         """Emits <updateConsole> signal"""
         self.updateConsole.emit(textmessage)
-
-# [REVAMP]
-# class ProgressBarObserver(QtCore.QObject):
-#     """Defines the observer class that will work with the progress bar in the
-#     UrbanBEATS Main Window."""
-#
-#     updateProgress = QtCore.pyqtSignal(int, name="updateProgressBar")
-#
-#     def update_progress(self, value):
-#         """Emits <updateProgress> signal"""
-#         self.updateProgress.emit(value)
-# [REVAMP]
 
 # --- START SCREEN LAUNCH ---
 class StartScreenLaunch(QtWidgets.QDialog):
@@ -1352,7 +1345,7 @@ if __name__ == "__main__":
     app.processEvents()
 
     # Simulate something that takes time
-    time.sleep(1)       # "Marvel at the beautiful splash screen!"
+    time.sleep(0.1)       # "Marvel at the beautiful splash screen!"
 
     # --- MAIN WINDOW AND APPLICATION LOOP ---
     # Setup Main Window
@@ -1364,7 +1357,7 @@ if __name__ == "__main__":
     main_window.reset_data_view_to_default()
     main_window.enable_disable_main_interface("startup")
 
-    time.sleep(1)
+    time.sleep(0.1)
 
     start_screen = StartScreenLaunch(main_window)       # Begin the Start Screen Loop
     # Signals for the Main Window and Start Screen Connection
