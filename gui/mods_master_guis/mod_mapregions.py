@@ -296,4 +296,4 @@ class Ui_Map_Regions(object):
         item.setText(_translate("Map_Regions", "Data Set Name"))
         item = self.tableWidget.horizontalHeaderItem(2)
         item.setText(_translate("Map_Regions", "Attribute Label"))
-import ubeats_rc
+from .. import ubeats_rc
