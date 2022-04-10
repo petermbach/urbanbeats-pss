@@ -66,7 +66,12 @@ import model.ublibs.ubconfigfiles as ubconfigfiles
 from gui import mapping_leaflet as mapping_leaflet
 
 # --- MODULE GUI IMPORTS ---
-from gui.modules.mod_simgrid_gui import Ui_Create_SimGrid
+import inspect
+import model.mods_master as ubtoolkit
+import gui.mods_master_guis as ubtoolkitguis
+import model.mods_userdef as usertoolkit
+import gui.mods_userdef_guis as usertoolkitguis
+
 
 # --- MAIN GUI FUNCTION ---
 class MainWindow(QtWidgets.QMainWindow):
@@ -80,6 +85,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.__gui_state = "idle"   # GUI States, allows changing of functionality during runtime
         # The GUI state is introduced such that changes can be made when displaying different GUI elements during
+
+        self.__modules_master = {}      # Holds all references to module classes
+        self.__modules_master_guis = {} # Holds all references to the GUI launchers
+        self.__modules_user = {}        # Holds all references to the user-defined modules
+        self.__modules_user_guis = {}   # Holds all references to the user-defined modules' GUIs
 
         # --- INITIALIZATION ---
         self.setWindowTitle("UrbanBEATS Planning Support Tool")
@@ -214,6 +224,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.DataView_options.clicked.connect(lambda: self.show_options(2))
 
         # TOOLBOX DOCK ---
+        self.setup_toolbox_tree()
         self.ui.toolboxTree.expandAll()
         self.ui.toolboxTree.doubleClicked.connect(self.launch_module_from_toolbox)
 
@@ -1188,10 +1199,56 @@ class MainWindow(QtWidgets.QMainWindow):
         self.update_map_display()
 
     # TOOLBOX
-    def launch_module_from_toolbox(self):
+    def setup_toolbox_tree(self):
         """Calls the respective module GUI from the toolbox"""
-        modname = self.ui.toolboxTree.currentItem().text()
-        if
+        self.ui.toolboxTree.clear()
+
+        # Add master mods_master_guis
+        self.__modules_master = {}  # Reinitialize, just in case
+        self.__modules_master_guis = {} # Reinitialize just in case
+
+        for name, obj in inspect.getmembers(ubtoolkit):     # Get all classes and set up the self.__modules_master
+            if inspect.isclass(obj):
+                self.__modules_master[obj.longname] = obj
+        for name, obj in inspect.getmembers(ubtoolkitguis): # Get all corresponding GUI classes
+            if inspect.isclass(obj):
+                self.__modules_master_guis[obj.longname] = obj
+
+        for i in ubtoolkit.MODULES_CATS:    # Get all mods_master_guis for each CAT and create the treewidget
+            module_collection = []
+            for j in self.__modules_master.keys():      # Create the list of mods_master_guis
+                if self.__modules_master[j].catname == i:
+                    module_collection.append([self.__modules_master[j].catorder, self.__modules_master[j]])
+            module_collection.sort()
+            self.ui.toolboxTree.addTopLevelItem(self.create_toolbox_item_for_treewidget(i, module_collection))
+
+        # Add user-created mods_master_guis
+        pass
+
+    def create_toolbox_item_for_treewidget(self,catname, objs):
+        """Generates the tree  widget item to populate the Toolbox Dock with."""
+        twi = QtWidgets.QTreeWidgetItem()
+        twi.setText(0, str(catname))
+        for i in range(len(objs)):
+            item = QtWidgets.QTreeWidgetItem(twi)
+            item.setText(0, objs[i][1].longname)
+            itemicon = QtGui.QIcon()
+            itemicon.addPixmap(QtGui.QPixmap(objs[i][1].icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            item.setIcon(0, itemicon)
+        return twi
+
+    def launch_module_from_toolbox(self):
+        """ Occurs if a toolbox icon is doubled-clicked from the Toolbox dock."""
+        if self.ui.toolboxTree.currentItem().parent() is not None:
+            module_name = self.ui.toolboxTree.currentItem().text(0)
+
+            # Launch the corresponding GUI of the module clicked
+            modulegui = self.__modules_master_guis[module_name](self,
+                                                                self.get_active_simulation_object(),
+                                                                self.get_active_data_library(),
+                                                                self.get_active_project_log(),
+                                                                0)
+            modulegui.exec_()
 
     # FUNCTIONS TO DO
     def checks_before_run(self):

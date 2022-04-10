@@ -655,4 +655,4 @@ class Ui_Create_SimGrid(object):
         self.raster_neigh_title.setWhatsThis(_translate("Create_SimGrid", "Width of the square cell in the city grid in metres"))
         self.raster_neigh_title.setText(_translate("Create_SimGrid", "NEIGHBOURHOOD"))
         self.raster_neigh_descr.setText(_translate("Create_SimGrid", "<html><head/><body><p>Considering eight adjacent neighbours, varies across different models depending on the context. Orthogonal cells pass through an edge, diagonal neighbours pass through a vertex.</p></body></html>"))
-from . import ubeats_rc
+from .. import ubeats_rc

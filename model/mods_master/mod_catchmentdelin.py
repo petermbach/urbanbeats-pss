@@ -26,17 +26,16 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 # --- PYTHON LIBRARY IMPORTS ---
 from model.ubmodule import *
 
-
-class CreateSimGrid(UBModule):
+class CatchmentDelineation(UBModule):
     """ Generates the simulation grid upon which many assessments will be based. This SimGrid will provide details on
     geometry and also neighbourhood information."""
 
     # MODULE'S BASIC METADATA
     type = "master"
-    catname = "Spatial Representation"
+    catname = "Hydrology"
     catorder = 1
-    longname = "Create Simulation Grid"
-    icon = ":/icons/Data-Grid-icon.png"
+    longname = "Catchment Delineation"
+    icon = ":/icons/cloudy-with-rain-2667018_960_720.png"
 
     def __init__(self, activesim, scenario, datalibrary, projectlog):
         UBModule.__init__(self)
@@ -93,7 +92,7 @@ class CreateSimGrid(UBModule):
 
         :return: True upon successful completion.
         """
-        self.notify("Running SimGrid Creation for "+self.boundaryname)
+        self.notify("Delineating Catchments for "+self.boundaryname)
 
         # --- SECTION 1 - Preparation for creating the simulation grid based on the boundary map
 
