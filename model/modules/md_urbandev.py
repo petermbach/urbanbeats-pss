@@ -980,7 +980,7 @@ class UrbanDevelopment(UBModule):
                     current_cell.add_attribute("Base_POP", int(total_population))
                     map_population += total_population
 
-                if current_cell.get_attribute("Base_LUC") is not "Residential":
+                if current_cell.get_attribute("Base_LUC") != "Residential":
                     discrepancy_pop += current_cell.get_attribute("Base_POP")
                     current_cell.add_attribute("Base_POP", 0)
                     continue
