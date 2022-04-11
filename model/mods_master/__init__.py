@@ -2,23 +2,42 @@
 # --- SPATIAL REPRESENTATION MODULES ---
 from .mod_simgrid import CreateSimGrid      # structure: from .py file, import the UBModule class
 from .mod_regionmap import MapRegionsToSimGrid
+# from .mod_landuse import MapLandUseToSimGrid
+# from .mod_demographics import MapDemographicsToSimGrid
 from .mod_topography import MapTopographyToSimGrid
 
 # --- HYDROLOGY MODULES ---
+# from .mod_mapwater import MapWaterToSimGrid
 from .mod_catchmentdelin import CatchmentDelineation
-#from .mod_rainfallanalyst import RainfallAnalyst
-#from .mod_climatescale import ClimateScaling
+# from .mod_rainfallanalyst import RainfallAnalyst
+# from .mod_climatescale import ClimateScaling
 
-# --- URBAN AND REGIONAL ANALYSIS ---
+# --- URBAN AND REGIONAL ---
 from .mod_cbdanalysis import CalculateCBDDistance
+# from .mod_accessibility import AccessibilityMapping
+# from .mod_neighbourhoodattract import NeighbourhoodInfluence
 
 # --- DEFINE URBAN FORM MODULES ---
-#from .mod_urbanformalgo import GenerateUrbanForm
-#from .mod_urbanformimport import ImportUrbanFormData
+# from .mod_urbanformalgo import GenerateUrbanForm
+# from .mod_urbanformimport import ImportUrbanFormData
+# from .mod_landcoveralgo import GenerateLandCoverFromUrbanForm
+# from .mod_landcoverimport import ImportLandCoverData
 
 # --- URBAN WATER MODULES ---
-#from .mod_waterdemand import WaterDemand
-#from .mod_
+# from .mod_waterdemand import WaterDemand
+# from .mod_floodhazard import FloodHazardAssessment
+# from .mod_pollutiongen import PollutionGeneration
+
+# --- BIODIVERSITY MODULES ---
+#from .mod_sdm import SpeciesDistributionModel
+#from .mod_resistancemap import ResistanceMapping
+#from .mod_circuitscape import Circuitscape
+#from .mod_biodiversitynetwork import AnalyzeBiodiversityNetwork
+
+# --- BGI TECHNOLOGIES MODULES ---
+#from .mod_ssanto import SSANTO
+#from .mod_wsudopportunity import BGIOpportunities
+#from .mod_bgilayoutgen import BGILayoutGeneration
 
 MODULES_CATS = ["Spatial Representation",
                 "Hydrology",

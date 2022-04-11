@@ -50,7 +50,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="reset_button">
+       <widget class="QPushButton" name="ok_button">
         <property name="minimumSize">
          <size>
           <width>90</width>
@@ -1572,7 +1572,7 @@ p, li { white-space: pre-wrap; }
   <include location="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
   <include location="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
   <include location="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
-  <include location="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
+  <include location="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
  </resources>
  <connections>
   <connection>
@@ -1588,6 +1588,38 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>417</x>
      <y>304</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>close_button</sender>
+   <signal>clicked()</signal>
+   <receiver>Create_SimGrid</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>479</x>
+     <y>496</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>314</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ok_button</sender>
+   <signal>clicked()</signal>
+   <receiver>Create_SimGrid</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>383</x>
+     <y>496</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>314</x>
+     <y>258</y>
     </hint>
    </hints>
   </connection>

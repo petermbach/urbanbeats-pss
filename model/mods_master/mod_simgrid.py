@@ -21,17 +21,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 __author__ = "Peter M. Bach"
-__copyright__ = "Copyright 2018. Peter M. Bach"
+__copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 from model.ubmodule import *
-
+import time
 
 class CreateSimGrid(UBModule):
     """ Generates the simulation grid upon which many assessments will be based. This SimGrid will provide details on
     geometry and also neighbourhood information."""
 
-    # MODULE'S BASIC METADATA
+    # --- MODULE'S BASIC METADATA ---
     type = "master"
     catname = "Spatial Representation"
     catorder = 1
@@ -41,7 +41,7 @@ class CreateSimGrid(UBModule):
     def __init__(self, activesim, scenario, datalibrary, projectlog):
         UBModule.__init__(self)
         self.activesim = activesim
-        self.scenario = scenario
+        self.scenario = scenario        # If used as one-off on-the-fly modelling, then scenario is None
         self.datalibrary = datalibrary
         self.projectlog = projectlog
 
@@ -89,11 +89,15 @@ class CreateSimGrid(UBModule):
         # None
 
     def run_module(self):
-        """ The main algorithm for the module, links with the active simulation, its data library and output folders.
-
-        :return: True upon successful completion.
-        """
+        """ The main algorithm for the module, links with the active simulation, its data library and output folders."""
         self.notify("Running SimGrid Creation for "+self.boundaryname)
+        self.notify_progress(0)
+        i = 100
+        while i > 0:
+            self.notify("Hello World "+str(i))
+            self.notify_progress(100-i)
+            i -= 1
+
 
         # --- SECTION 1 - Preparation for creating the simulation grid based on the boundary map
 
@@ -105,7 +109,8 @@ class CreateSimGrid(UBModule):
 
 
         # --- SECTION 4 - Generate maps/shapes
-
+        self.notify("Finished SimGrid Creation")
+        self.notify_progress(100)
         return True
 
     # ==========================================

@@ -37,9 +37,14 @@ import ast
 # --- URBANBEATS LIBRARY IMPORTS ---
 from . import ubdatalibrary
 from . import ubscenarios
+from . import ubruntime
 from .ublibs import ubspatial as ubspatial
 from .ublibs import ubdatatypes as ubdata
 
+# --- URBANBEATS MODULES ---
+import inspect
+import model.mods_master as ubtoolkit
+# import .model.mods_userdef as usertoolkit
 
 # --- URBANBEATS SIMULATION CLASS DEFINITION ---
 class UrbanBeatsSim(object):
@@ -64,6 +69,7 @@ class UrbanBeatsSim(object):
                                             # SP = single scenario, performance only
         self.__runtime_progress = 0         # virtual progress bar
         self.__parent = parent
+        self.__global_assets = {}
 
         #Initialize paths
         self.emptyBlockPath = self.__rootpath+"/ancillary/emptyblockmap.shp"
@@ -114,6 +120,17 @@ class UrbanBeatsSim(object):
         self.__scenarios = {}       # initialize the scenarios
         self.__functions = []       # initialize the list of functions
         self.__activescenario = None
+
+        # Global Modules Collection
+        self.__modules_collection = {}  # A global instance of all modules
+        for name, obj in inspect.getmembers(ubtoolkit):  # Get all classes and set up the self.__modules_master
+            if inspect.isclass(obj):
+                self.__modules_collection[obj.longname] = obj(self, None, self.__datalibrary, self.__projectlog)
+
+        self.__ubruntime = ubruntime.UrbanBeatsRuntime(self, self.__datalibrary, self.__projectlog)
+
+    def get_module_instance(self, longname):
+        return self.__modules_collection[longname]
 
     def add_project_location(self, loc_name, latlng, loc_description, loc_type):
         self.__project_locations[loc_name] = {"loc_name" : loc_name, "latitude": latlng[0], "longitude": latlng[1],
@@ -779,6 +796,21 @@ class UrbanBeatsSim(object):
         for progbar in self.__progressbars:
             progbar.update_progress(int(value))
 
+    def get_runtime(self):
+        return self.__ubruntime
+
+    def execute_runtime(self, module_obj, progressbar_observer):
+        """Runs the UrbanBEATS Runtime based on the active module current in the runtime's run list."""
+        if self.__ubruntime.runstate:
+            self.__ubruntime.reinitialize()
+        self.__ubruntime.define_active_module(module_obj)
+        self.__ubruntime.attach_observers(self.__observers)
+        self.__ubruntime.attach_progressbar(progressbar_observer)
+        print("Active Scenario Thread", self.__ubruntime.ident)
+        self.__ubruntime.start()
+
+
+
     def run(self):
         """Runs the UrbanBEATS Simulation based on the active scenario, data library, project
         info and other information."""
@@ -795,7 +827,6 @@ class UrbanBeatsSim(object):
             self.__parent.enable_disable_run_controls(0)
 
         if self.__runtime_method == "SF":
-            print("Here we go!")
             active_scenario = self.get_active_scenario()        # Get the active scenario
             self.update_runtime_progress(0)                     # Reset progress bar
             if active_scenario.runstate:                        # If active scenario has been run, reinitialize it
@@ -819,9 +850,8 @@ class UrbanBeatsSim(object):
     def on_thread_finished(self):
         """Called when the scenario has finished running. It updates the observes with the scenario finished message.
         and re-enables the run controls."""
-        self.update_observers("Scenario Finished")
-        print ("Scenario Done")
-        self.__parent and self.__parent.enable_disable_run_controls(1)
+        self.update_observers("Finished")
+        # self.__parent and self.__parent.enable_disable_run_controls(1)
 
     def check_runtime_state(self):
         """Returns the current runtime progress value."""

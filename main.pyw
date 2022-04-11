@@ -52,6 +52,7 @@ import model.urbanbeatscore as ubcore
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
+from gui.observers import ConsoleObserver, ProgressBarObserver
 from gui.urbanbeatsmaingui import Ui_MainWindow
 from gui.startscreen import Ui_StartDialog
 from gui import urbanbeatsdialogs as ubdialogs
@@ -96,7 +97,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.setWindowTitle("规划模型")       #Chinese Translation - automate!
         self.initialize_output_console()
         self.consoleobserver = ConsoleObserver()
-        # self.progressbarobserver = ProgressBarObserver()        # [REVAMP]
+        self.progressbarobserver = ProgressBarObserver()
         self.rootfolder = UBEATSROOT
         self.app_tempdir = UBEATSTEMP       # The temp directory defined by tempfile
 
@@ -191,9 +192,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # --- END OF ACTIONS ---- TOP MENU BAR
 
-        # OBSERVER PATTERN - CONSOLE UPDATE
+        # OBSERVER PATTERN - CONSOLE UPDATE - SIGNAL SLOT
         self.consoleobserver.updateConsole[str].connect(self.printc)
-        # self.progressbarobserver.updateProgressBar[int].connect(self.update_progress_bar_value)     # [REVAMP]
+        self.progressbarobserver.updateProgressBar[int].connect(self.update_progress_bar_value)     # [REVAMP]
 
         # --- MAIN INTERFACE BUTTONS --- (all elements in the main window area)
         # PROJECT DATA LIBRARY DOCK ---
@@ -721,7 +722,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.reset_data_view_to_default()  # Restore the default Leaflet view
         newsimulation = ubcore.UrbanBeatsSim(UBEATSROOT, self.__global_options, self)  # instantiate new simulation objective
         newsimulation.register_observer(self.consoleobserver)   # Add the observer
-        # newsimulation.register_progressbar(self.progressbarobserver)    # Add the progress bar [REVAMP]
+        newsimulation.register_progressbar(self.progressbarobserver)    # Add the progress bar [REVAMP]
         self.set_active_simulation_object(newsimulation)
         self.reset_project_data_library_view()
 
@@ -1257,6 +1258,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def raise_ub_error_message(self, message):
         pass
 
+    def update_progress_bar_value(self, value):
+        """Updates the progress bar of the Main GUI when the simulation is started/stopped/reset."""
+        self.ui.scenario_ProgressBar.setValue(int(value))
+
     def call_run_simulation(self):
         """Executes the run function for the current scenario that is active in the Scenario Browser."""
         if self.get_active_simulation_object().get_active_scenario() is None:
@@ -1276,16 +1281,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.SimDock_run.setEnabled(state)
 
 
-# --- OBSERVERS ---
-class ConsoleObserver(QtCore.QObject):
-    """Defines the observer class that will work with the console window in
-    UrbanBEATS' main window."""
-
-    updateConsole = QtCore.pyqtSignal(str, name="updateConsole")
-
-    def update_observer(self, textmessage):
-        """Emits <updateConsole> signal"""
-        self.updateConsole.emit(textmessage)
 
 # --- START SCREEN LAUNCH ---
 class StartScreenLaunch(QtWidgets.QDialog):

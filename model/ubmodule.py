@@ -36,10 +36,11 @@ class UBModule(object):
     core."""
     def __init__(self):
         self.__observers = []       # Holds all observers within the runtime (e.g. console, log)
+        self.__progressbar = None    # Holds all progressbar observers within runtime
         self.__parameters = {}      # Holds all parameter names and type as dictionary
         # Parameter dictionary has key: 'parameter name' and value [type, description]
 
-    def attach(self, observers):
+    def attach_console(self, observers):
         """Attaches an observer object to the list of observers in the module.
 
         :param observers: the observers object that the module should refer to should have updateObserver() method
@@ -50,7 +51,7 @@ class UBModule(object):
                 self.__observers.append(i)
         return True
 
-    def detach(self, observers):
+    def detach_console(self, observers):
         """Detaches an observer from the module by removing its reference from the observer list.
 
         :param observers: The observer object to detach
@@ -74,8 +75,12 @@ class UBModule(object):
         self.__observers[0].update_observer(str(updateMessage))  # [0] is the console observer
         return True
 
+    def attach_progressbar(self, observer):
+        self.__progressbar = observer
+
     def notify_progress(self, value):
-        self.__observers[1].updateObserver(value)
+        if self.__progressbar is not None:
+            self.__progressbar.update_progress(int(value))
 
     def create_parameter(self, name, type, descript):
         """Creates a new parameter and saves its metadata to the list of parameters of the module self.__parameters.

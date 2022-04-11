@@ -35,27 +35,7 @@ import ast  # Used for converting a string of a list into a list e.g. "[1, 2, 3,
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 from .progref import ubglobals
-from .modules import md_climatesetup
-from .modules import md_delinblocks
-from .modules import md_urbandev
-from .modules import md_urbplanbb
-from .modules import md_urbandynamics
-from .modules import md_spatialmapping
-from .modules import md_infrastructure
-from .modules import md_bgsplanning
-from .modules import md_watercycle
-from .modules import md_microclimate
-from .modules import md_floodassessment
-from .modules import md_economics
 from .ublibs import ubspatial
-from .ubexports import blocks as xblocks
-from .ubexports import flowpaths as xflowpaths
-from .ubexports import openspace as xopenspace
-from .ubexports import patches as xpatches
-from .ubexports import regions as xregions
-from .ubexports import urban as xurbanmodel
-from .ubexports import infrastructure as xinfra
-
 
 
 # --- SCENARIO CLASS DEFINITION ---
@@ -407,20 +387,20 @@ class UrbanBeatsScenario(threading.Thread):
         """Assigns an array of observers to the Scenario's self.__observers variable."""
         self.__observers = observers
 
-    # def attach_progressbars(self, progbars):
-    #     """Assigns an array of progressbar observers to the Scenario's self.__progressbar variable."""
-    #     self.__progressbars = progbars
+    def attach_progressbars(self, progbars):
+        """Assigns an array of progressbar observers to the Scenario's self.__progressbar variable."""
+        self.__progressbars = progbars
 
     def update_observers(self, message):
         """Sends the message to all observers contained in the core's observer list."""
         for observer in self.__observers:
             observer.update_observer(str(message))
 
-    # def update_runtime_progress(self, value):
-    #     """Sends the value to the progress bar(s)."""
-    #     print("Updating Progress")
-    #     for progbar in self.__progressbars:
-    #         progbar.update_progress(int(value))
+    def update_runtime_progress(self, value):
+        """Sends the value to the progress bar(s)."""
+        print("Updating Progress")
+        for progbar in self.__progressbars:
+            progbar.update_progress(int(value))
 
     def reinitialize(self):
         """Reinitializes the thread, resets the assets, edges and point lists and runs a garbage collection."""

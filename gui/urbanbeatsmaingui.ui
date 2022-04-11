@@ -61,7 +61,7 @@
           </size>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="Project_tab">
           <attribute name="icon">
@@ -548,7 +548,7 @@ p, li { white-space: pre-wrap; }
               <enum>QTabWidget::North</enum>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="general">
               <attribute name="icon">
