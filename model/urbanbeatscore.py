@@ -69,7 +69,7 @@ class UrbanBeatsSim(object):
                                             # SP = single scenario, performance only
         self.__runtime_progress = 0         # virtual progress bar
         self.__parent = parent
-        self.__global_assets = {}
+        self.__global_collections = {}      # Stores UBCollection Objects
 
         #Initialize paths
         self.emptyBlockPath = self.__rootpath+"/ancillary/emptyblockmap.shp"
@@ -185,6 +185,12 @@ class UrbanBeatsSim(object):
 
     def get_project_boundaries(self):
         return self.__project_boundaries
+
+    def get_project_boundary_by_name(self, boundaryname):
+        try:
+            return self.__project_boundaries[boundaryname]
+        except KeyError:
+            return None
 
     def delete_simulation_boundary(self, boundaryname):
         """Removes the boundary with the name 'boundaryname' from the project."""

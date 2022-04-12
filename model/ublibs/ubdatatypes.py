@@ -30,6 +30,7 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 # --- PYTHON LIBRARY IMPORTS ---
 import ast
 import numpy as np
+import gc
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 
@@ -307,19 +308,76 @@ class UBCollection(object):
     """The UrbanBEATS Collection class structure. A collection stores a whole array of assets
     from the modelling outputs. It ca be used to organise geometric and non-geometric assets based
     on scenarios or other aspects of the spatial environment."""
-    def __init__(self):
+    def __init__(self, identifier):
+        self.__name = identifier
         self.__assetcount = 0
-        self.__assets = []
+        self.__assets = {}
 
-    def append_asset(self, asset):
-        """Adds an asset object to the collection."""
-        self.__assets.append(asset)
+    def add_asset(self, name, asset):
+        """Adds a new asset object to the asset dictionary with the key 'name'."""
+        self.__assets[name] = asset
         return True
 
-    def get_asset_by_attribute(self, attribute, value):
-        """Scans all assets for the attribute and returns the ones with the correct attribute and value."""
-        # TO DO
-        return True
+    def get_asset_with_name(self, name):
+        """Returns the asset within self.__assets with the key 'name'. Returns None if the asset does not exist."""
+        try:
+            return self.__assets[name]
+        except KeyError:
+            return None
+
+    def get_assets_with_identifier(self, idstring, **kwargs):
+        """Scans the complete Asset List and returns all assets with the idstring contained in their name
+        e.g. BlockID contained in the name "BlockID1", "BlockID2", etc.)
+
+        :param idstring: the part of the string to search the asset database for (e.g. "BlockID")
+        :param **kwargs: 'assetcol' = {} custom dictionary of assets
+        """
+        assetcollection = []
+        try:
+            tempassetcol = kwargs["assetcol"]
+        except KeyError:
+            tempassetcol = self.__assets
+        for i in tempassetcol:
+            if idstring in i:
+                assetcollection.append(tempassetcol[i])
+        return assetcollection
+
+    def retrieve_attribute_value_list(self, asset_identifier, attribute_name, asset_ids):
+        """Returns a list [] of the attribute value specified by "attribute_name" for all asset of type "asset_identifier"
+        with the IDs "asset_ids". Note that with asset identifiers, use only the legal identifiers, refer to ubglobals
+
+        :param asset_identifier: str() of the asset identifier e.g. "BlockID" or "PatchID", etc.
+        :param attribute_name: str() name of the attribute to get the data for
+        :param asset_ids: list() of all ID numbers to search for
+        :return: list() object containing all values in the ascending order of asset_ids
+        """
+        assetcol = self.get_assets_with_identifier(asset_identifier)
+        if "ID" in asset_identifier:  # e.g. if someone wrote "BlockID" as the asset identifier...
+            nameid = asset_identifier
+        else:
+            nameid = asset_identifier + "ID"
+
+        attribute_values = [[], []]  # Asset ID, Asset Value
+        for asset in assetcol:
+            if asset.get_attribute(nameid) in asset_ids:
+                attribute_values[0].append(asset.get_attribute(nameid))
+                attribute_values[1].append(asset.get_attribute(attribute_name))
+        return attribute_values  # returned in ascending order of the asset_ids
+
+    def remove_asset_by_name(self, name):
+        """Removes an asset from the collection based on the name specified
+
+        :param name: the key of the asset in the self.__assets dictionary.
+        """
+        try:
+            del self.__assets[name]
+        except KeyError:
+            return True
+
+    def reset_assets(self):
+        """Erases all assets, leaves an empty assets dictionary. Carried out when resetting the simulation."""
+        self.__assets = {}
+        gc.collect()
 
 
 class NeighbourhoodInfluenceFunction(object):
