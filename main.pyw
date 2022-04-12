@@ -128,7 +128,7 @@ class MainWindow(QtWidgets.QMainWindow):
         #                              run_ = executes some form of runtime function
         #                              launch_ = for working with larger module dialog windows
 
-        # === TOP MENU BAR ACTINS ====================================================================
+        # === TOP MENU BAR ACTIONS ====================================================================
         # FILE MENU
         # actionQuit has been implemented through QtDesigner
         self.ui.actionNew_Project.triggered.connect(self.create_new_project)
@@ -218,6 +218,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.boundary_shape_add_button.clicked.connect(self.show_add_shape_boundary_dialog)
         self.ui.boundary_delete_button.clicked.connect(self.delete_simulation_boundary)
         self.ui.geography_combo.currentIndexChanged.connect(self.update_active_geography_table)
+
+        # Asset Collection
+        self.setup_assetcol_tree()
+        self.ui.assetcol_new_button.clicked.connect(self.add_new_ubcollection_to_table)
+        self.ui.assetcol_delete_button.clicked.connect(self.remove_selected_collection_from_project)
+        self.ui.assetcol_export.clicked.connect(self.show_export_assets_dialog)
 
         # MAP AND DATA VIEW SECTION --- (with the map controls)
         self.ui.DataView_extent.clicked.connect(self.update_map_display)
@@ -434,6 +440,20 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             pass
             # Do nothing
+
+    # MAIN WINDOW SPACE >> ASSETS COLLECTIN TAB FUNCTIONS AND TABLE
+    def setup_assetcol_tree(self):
+        self.ui.global_assets_table.clear()
+        # Setup assets from project folder
+
+    def add_new_ubcollection_to_table(self):
+
+
+    def remove_selected_collection_from_project(self):
+        pass
+
+    def show_export_assets_dialog(self):
+        pass
 
     # MAIN WINDOW SPACE >> GEOGRAPHY TAB FUNCTIONS
     def show_add_shape_boundary_dialog(self):

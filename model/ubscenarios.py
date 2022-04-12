@@ -36,6 +36,7 @@ import ast  # Used for converting a string of a list into a list e.g. "[1, 2, 3,
 # --- URBANBEATS LIBRARY IMPORTS ---
 from .progref import ubglobals
 from .ublibs import ubspatial
+from .ublibs.ubdatatypes import UBCollection
 
 
 # --- SCENARIO CLASS DEFINITION ---
@@ -65,12 +66,10 @@ class UrbanBeatsScenario(threading.Thread):
         self.__time_series_data = []   # a list of time series data to be used in the scenario or stored.
         self.__qual_data = []   # a list of qualitative data to be used in the scenario
 
-        self.__assets = {}      # The collection of model assets that are stored for later retrieval
+        self.__assets = None            # UBCollection object with key assets
         self.__global_edge_list = []
         self.__global_point_list = []
         # can include: UBComponents(), Input Data, etc.
-
-        self.__active_assets = None  # Will hold a reference to the active asset dictionary based on current dt
 
         # Calibration history - stores user data on model calibration.
         self.__calibration_history = {
@@ -83,15 +82,28 @@ class UrbanBeatsScenario(threading.Thread):
             "ww": { "Block": None, "Region": None, "Suburb": None, "PlanZone": None, "Total": None}
             }   # Links to calibration files based on the type of parameter and the aggregation level
 
-    def get_calibration_data_file(self, param, aggreg):
-        return self.__calibration_history[param][aggreg]
+    # --- SCENARIO METADATA ---
+    def set_metadata(self, parname, value):
+        """Used to change a parameter in the scenario metadata.
 
-    def set_active_calibration_data_file(self, param, aggreg, fname):
+        :param parname: the metadata parameter name, dictionary key.
+        :param value: value of the parameter
+        """
+        self.__scenariometadata[parname] = value
+
+    def get_metadata(self, parname):
+        """Returns the parameter value from the metadata of the scenario.
+
+        :param parname: parameter name of str type.
+        """
+        if parname == "ALL":
+            return self.__scenariometadata
         try:
-            self.__calibration_history[param][aggreg] = fname
+            return self.__scenariometadata[parname]
         except KeyError:
-            return True
+            return None
 
+    # --- GLOBAL GEOMETRY MANAGEMENT ---
     def append_point(self, pt):
         """ Adds a point tuple (x, y) to the global point list."""
         if pt not in self.__global_point_list:
@@ -120,17 +132,30 @@ class UrbanBeatsScenario(threading.Thread):
             except ValueError:
                 return None
 
+    # --- CALIBRATION SUB-FUNCTIONS ---
+    def get_calibration_data_file(self, param, aggreg):
+        return self.__calibration_history[param][aggreg]
+
+    def set_active_calibration_data_file(self, param, aggreg, fname):
+        try:
+            self.__calibration_history[param][aggreg] = fname
+        except KeyError:
+            return True
+
+    # --- UB COLLECTION MANAGEMENT WITHIN SCENARIO CONTEXT ---
+    # Scenarios will have one unique instance of a UBCollection to store all spatial data generated in the scenario
+    # This UBCollection is reset if the scenario is re-simulated. Following methods adapt the functionality of the
+    # UBCollection instance.
     def add_asset(self, name, asset):
         """Adds a new asset object to the asset dictionary with the key 'name'."""
-        self.__assets[name] = asset
-        return True
+        if self.__assets is not None:
+            self.__assets.add_asset(name, asset)
 
     def get_asset_with_name(self, name):
         """Returns the asset within self.__assets with the key 'name'. Returns None if the asset does not exist."""
-        try:
-            return self.__assets[name]
-        except KeyError:
+        if self.__assets is None:
             return None
+        return self.__assets.get_asset_with_name(name)
 
     def get_assets_with_identifier(self, idstring, **kwargs):
         """Scans the complete Asset List and returns all assets with the idstring contained in their name
@@ -139,15 +164,9 @@ class UrbanBeatsScenario(threading.Thread):
         :param idstring: the part of the string to search the asset database for (e.g. "BlockID")
         :param **kwargs: 'assetcol' = {} custom dictionary of assets
         """
-        assetcollection = []
-        try:
-            tempassetcol = kwargs["assetcol"]
-        except KeyError:
-            tempassetcol = self.__assets
-        for i in tempassetcol:
-            if idstring in i:
-                assetcollection.append(tempassetcol[i])
-        return assetcollection
+        if self.__assets is None:
+            return []
+        return self.__assets.get_assets_with_identifier(self, idstring, kwargs)
 
     def retrieve_attribute_value_list(self, asset_identifier, attribute_name, asset_ids):
         """Returns a list [] of the attribute value specified by "attribute_name" for all asset of type "asset_identifier"
@@ -158,34 +177,25 @@ class UrbanBeatsScenario(threading.Thread):
         :param asset_ids: list() of all ID numbers to search for
         :return: list() object containing all values in the ascending order of asset_ids
         """
-        assetcol = self.get_assets_with_identifier(asset_identifier)
-        if "ID" in asset_identifier:        # e.g. if someone wrote "BlockID" as the asset identifier...
-            nameid = asset_identifier
-        else:
-            nameid = asset_identifier+"ID"
-
-        attribute_values = [[], []]  # Asset ID, Asset Value
-        for asset in assetcol:
-            if asset.get_attribute(nameid) in asset_ids:
-                attribute_values[0].append(asset.get_attribute(nameid))
-                attribute_values[1].append(asset.get_attribute(attribute_name))
-        return attribute_values     # returned in ascending order of the asset_ids
+        if self.__assets is None:
+            return [[], []]
+        return self.__assets.retrieve_attribute_value_list(asset_identifier, attribute_name, asset_ids)
 
     def remove_asset_by_name(self, name):
-        """Removes an asset from the collection based on the name specified
-
-        :param name: the key of the asset in the self.__assets dictionary.
-        """
-        try:
-            del self.__assets[name]
-        except KeyError:
+        """Calls the UBCollections remove_asset_by_name() methods in the Scenario Context."""
+        if self.__assets is None:
             return True
+        self.__assets.remove_asset_by_name(name)
 
     def reset_assets(self):
         """Erases all assets, leaves an empty assets dictionary. Carried out when resetting the simulation."""
-        self.__assets = {}
+        self.__assets = None
         gc.collect()
 
+    def initialize_asset_library(self):
+        self.__assets = UBCollection(self.get_metadata("name"))
+
+    # --- GENERAL SCENARIO DATA MANAGEMENT ---
     def setup_scenario(self):
         """Initializes the scenario with the setup data provided by the user."""
         # [POSSIBLE TO DO] CREATE ASSETS SUPERSTRUCTURE
@@ -271,6 +281,7 @@ class UrbanBeatsScenario(threading.Thread):
         #                 # Currently this does some explicit type casting based on the parameter types defined
         #                 m.set_parameter(child.tag, type(m.get_parameter(child.tag))(child.text))
 
+    # --- SCENARIO DATA SET MANAGEMENT ---
     def add_data_reference(self, dataref):
         """Adds the data reference to the scenario's data store depending on its class."""
         if dataref.get_metadata("class") == "spatial":
@@ -331,26 +342,6 @@ class UrbanBeatsScenario(threading.Thread):
                 datalist.append([dataid, filename, filepath, category, sub])
         return datalist
 
-    def set_metadata(self, parname, value):
-        """Used to change a parameter in the scenario metadata.
-
-        :param parname: the metadata parameter name, dictionary key.
-        :param value: value of the parameter
-        """
-        self.__scenariometadata[parname] = value
-
-    def get_metadata(self, parname):
-        """Returns the parameter value from the metadata of the scenario.
-
-        :param parname: parameter name of str type.
-        """
-        if parname == "ALL":
-            return self.__scenariometadata
-        try:
-            return self.__scenariometadata[parname]
-        except KeyError:
-            return None
-
     def add_data_to_scenario(self, dataclass, dref):
         """Adds a data set from the data library of type UrbanBeatsDataReference() to the current
         list of data sets available to that scenario.
@@ -383,6 +374,8 @@ class UrbanBeatsScenario(threading.Thread):
                     return True
         return False    # Else, return false if all tests fail
 
+    # --- RUNTIME-RELATED FUNCTIONS ---
+    # Includes observers (console and progressbars) and the reinitializing of the scenario.
     def attach_observers(self, observers):
         """Assigns an array of observers to the Scenario's self.__observers variable."""
         self.__observers = observers
@@ -409,7 +402,7 @@ class UrbanBeatsScenario(threading.Thread):
         else:
             pass
         self.reset_assets()
-        return False
+        self.initialize_asset_library()
 
     def run(self):
         """Overrides the thread.run() function, called when thread.start() is used. Determines, which kind of

@@ -25,6 +25,7 @@ __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 from shapely.geometry import Polygon, LineString, Point
+import math
 
 from model.ubmodule import *
 import model.ublibs.ubspatial as ubspatial
@@ -44,10 +45,10 @@ class CreateSimGrid(UBModule):
     longname = "Create Simulation Grid"
     icon = ":/icons/Data-Grid-icon.png"
 
-    def __init__(self, activesim, scenario, datalibrary, projectlog):
+    def __init__(self, activesim, asset_collection, datalibrary, projectlog):
         UBModule.__init__(self)
         self.activesim = activesim
-        self.scenario = scenario        # If used as one-off on-the-fly modelling, then scenario is None
+        self.asset_collection = asset_collection   # If used as one-off on-the-fly modelling, then scenario is None
         self.datalibrary = datalibrary
         self.projectlog = projectlog
 
@@ -147,6 +148,8 @@ class CreateSimGrid(UBModule):
     # ==========================================
     # === SQUARE GRID ===
     def create_square_blocks(self, mapwidth, mapheight, boundarypoly):
+        """Generates the assets representing a Square Grid of Blocks based on the input boundary polygon
+        and parameters."""
         # PREPARATION
         numblocks, blocks_wide, blocks_tall, final_bs = \
             determine_number_of_squares(mapwidth, mapheight, self.blocksize, self.blocksize_auto)
@@ -175,10 +178,10 @@ class CreateSimGrid(UBModule):
 
         self.notify_progress(50)
 
-        # FIND NEIGHBOURHOOD - MOORE NEIGHBOURHOOD
+        # FIND NEIGHBOURHOOD - MOORE NEIGHBOURHOOD (Cardinal and Ordinal Directions)
         directional_factors = [blocks_wide, blocks_wide + 1, 1, -blocks_wide + 1,
                                -blocks_wide, -blocks_wide - 1, -1, blocks_wide - 1]
-        directionnames = ["NHD_N", "NHD_NE", "NHD_E", "NHD_SE", "NHD_S", "NHD_SW", "NHD_W", "NHD_NW"]
+        direction_names = ["NHD_N", "NHD_NE", "NHD_E", "NHD_SE", "NHD_S", "NHD_SW", "NHD_W", "NHD_NW"]
 
         for i in range(len(blockslist)):        # ID and Geometric Scanning for all 8 neighbours
             curblock_id = blockslist[i].get_attribute("BlockID")
@@ -191,14 +194,14 @@ class CreateSimGrid(UBModule):
             else:
                 exceptions = []
 
-            for d in range(len(directionnames)):
-                if directionnames[d] in exceptions:
+            for d in range(len(direction_names)):
+                if direction_names[d] in exceptions:
                     continue
                 nhdID = curblock_id + directional_factors[d]
                 if self.scenario.get_asset_with_name("BlockID"+str(nhdID)) is None:
-                    blockslist[i].add_attribute(directionnames[d], 0)
+                    blockslist[i].add_attribute(direction_names[d], 0)
                 else:
-                    blockslist[i].add_attribute(directionnames[d], nhdID)
+                    blockslist[i].add_attribute(direction_names[d], nhdID)
 
         self.notify_progress(80)
         # END OF FUNCTION
@@ -214,7 +217,6 @@ class CreateSimGrid(UBModule):
     # === RASTER GRID ===
     def create_rastermap(self):
         pass
-
 
 
 # ==========================================

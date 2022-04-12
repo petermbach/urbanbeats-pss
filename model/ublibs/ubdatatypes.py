@@ -304,22 +304,24 @@ class UBVector(UBComponent):
         self.__centroidXY = [(min(xpoints) + max(xpoints))/2.0, (min(ypoints) + max(ypoints))/2.0]
         return True
 
+
 class UBCollection(object):
     """The UrbanBEATS Collection class structure. A collection stores a whole array of assets
     from the modelling outputs. It ca be used to organise geometric and non-geometric assets based
     on scenarios or other aspects of the spatial environment."""
     def __init__(self, identifier):
-        self.__name = identifier
+        self.__containername = identifier
         self.__assetcount = 0
         self.__assets = {}
 
+    def get_container_name(self):
+        return self.__containername
+
     def add_asset(self, name, asset):
-        """Adds a new asset object to the asset dictionary with the key 'name'."""
         self.__assets[name] = asset
         return True
 
     def get_asset_with_name(self, name):
-        """Returns the asset within self.__assets with the key 'name'. Returns None if the asset does not exist."""
         try:
             return self.__assets[name]
         except KeyError:
@@ -366,7 +368,6 @@ class UBCollection(object):
 
     def remove_asset_by_name(self, name):
         """Removes an asset from the collection based on the name specified
-
         :param name: the key of the asset in the self.__assets dictionary.
         """
         try:

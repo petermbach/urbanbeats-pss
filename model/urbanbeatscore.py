@@ -129,6 +129,15 @@ class UrbanBeatsSim(object):
 
         self.__ubruntime = ubruntime.UrbanBeatsRuntime(self, self.__datalibrary, self.__projectlog)
 
+    def add_asset_collection_to_project(self, ubcollection_obj):
+        self.__global_collections[ubcollection_obj.get_container_name()] = ubcollection_obj
+
+    def remove_asset_collection_from_project(self, name):
+        try:
+            del self.__global_collections[name]
+        except KeyError:
+            return True
+
     def get_module_instance(self, longname):
         return self.__modules_collection[longname]
 
@@ -814,8 +823,6 @@ class UrbanBeatsSim(object):
         self.__ubruntime.attach_progressbar(progressbar_observer)
         print("Active Scenario Thread", self.__ubruntime.ident)
         self.__ubruntime.start()
-
-
 
     def run(self):
         """Runs the UrbanBEATS Simulation based on the active scenario, data library, project

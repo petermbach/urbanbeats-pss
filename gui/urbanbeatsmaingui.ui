@@ -98,6 +98,13 @@ p, li { white-space: pre-wrap; }
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_6">
            <item>
+            <widget class="QLabel" name="Locations_Boundaries_title">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Overview of Project Locations and Boundaries&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QComboBox" name="geography_combo">
              <property name="minimumSize">
               <size>
@@ -526,6 +533,198 @@ p, li { white-space: pre-wrap; }
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="assets">
+          <attribute name="icon">
+           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+            <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
+          </attribute>
+          <attribute name="title">
+           <string>Assets</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <widget class="QLabel" name="global_assets_title">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Overview of all Project Asset Collections&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="global_assets_widget" native="true">
+             <layout class="QHBoxLayout" name="horizontalLayout_8">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <spacer name="horizontalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="assetcol_new_button">
+                <property name="text">
+                 <string>New</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                  <normaloff>:/icons/add-icon.png</normaloff>:/icons/add-icon.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="assetcol_delete_button">
+                <property name="text">
+                 <string>Delete</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                  <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="assetcol_export">
+                <property name="text">
+                 <string>Export...</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                  <normaloff>:/icons/export-icon.png</normaloff>:/icons/export-icon.png</iconset>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QTreeWidget" name="global_assets_table">
+             <column>
+              <property name="text">
+               <string>Name</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Type</string>
+              </property>
+             </column>
+             <item>
+              <property name="text">
+               <string>Example_Ad-hoc</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                <normaloff>:/icons/Very-Basic-Design-icon.png</normaloff>:/icons/Very-Basic-Design-icon.png</iconset>
+              </property>
+              <property name="text">
+               <string>None-Scenario</string>
+              </property>
+              <item>
+               <property name="text">
+                <string>Blocks</string>
+               </property>
+               <property name="text">
+                <string>Polygon</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>BlockCentroids</string>
+               </property>
+               <property name="text">
+                <string>Point</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Grid Network</string>
+               </property>
+               <property name="text">
+                <string>Line</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Drainage Flowpaths</string>
+               </property>
+               <property name="text">
+                <string>Line</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Accessibility Map</string>
+               </property>
+               <property name="text">
+                <string>Raster</string>
+               </property>
+              </item>
+             </item>
+             <item>
+              <property name="text">
+               <string>My UrbanBEATS Scenario</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                <normaloff>:/icons/book-open.png</normaloff>:/icons/book-open.png</iconset>
+              </property>
+              <property name="text">
+               <string>Scenario</string>
+              </property>
+              <item>
+               <property name="text">
+                <string>Blocks</string>
+               </property>
+               <property name="text">
+                <string>Polygon</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>BlockCentroids</string>
+               </property>
+               <property name="text">
+                <string>Point</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Grid Network</string>
+               </property>
+               <property name="text">
+                <string>Line</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Drainage Flowpaths</string>
+               </property>
+               <property name="text">
+                <string>Line</string>
+               </property>
+              </item>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="Narrative_tab">
           <attribute name="icon">
            <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
@@ -839,6 +1038,13 @@ p, li { white-space: pre-wrap; }
            <string>Log</string>
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_9">
+           <item>
+            <widget class="QLabel" name="log_title">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Project Log&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
            <item>
             <widget class="QPlainTextEdit" name="Log">
              <property name="readOnly">
