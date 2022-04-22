@@ -92,6 +92,10 @@ class CreateSimGrid(UBModule):
         self.nodatavalue = -9999
         self.generate_fishnet = 0
 
+        # Geometry Type: Geohash Grid
+        self.create_parameter("geohash_lvl", DOUBLE, "Level of resolution for the geohash")
+        self.geohash_lvl = 7
+
         # NON-VISIBLE PARAMETERS (ADVANCED SETTINGS)
         # None
 
