@@ -2,7 +2,7 @@
 # --- SPATIAL REPRESENTATION MODULES ---
 from .mod_simgrid import CreateSimGrid      # structure: from .py file, import the UBModule class
 from .mod_regionmap import MapRegionsToSimGrid
-from .mod_landuse import MapLandUseToSimGrid
+# from .mod_landuse import MapLandUseToSimGrid
 # from .mod_population import MapPopulationToSimGrid
 from .mod_topography import MapTopographyToSimGrid
 

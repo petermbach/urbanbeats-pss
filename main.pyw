@@ -120,14 +120,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__dataview_displaystate = "default"    # The display state of the Leaflet data view, allows tracking
         self.__datalibraryexpanded = 0      # STATE: is the data library browser fully expanded?
 
-
-        # --- GUI SIGNALS AND SLOTS ---
-        # Function naming conventions: show_ = launching dialog windows,
-        #                              get_ / set_ / update_ = modifying existing information
-        #                              reset_ = resets variables to original state
-        #                              run_ = executes some form of runtime function
-        #                              launch_ = for working with larger module dialog windows
-
         # === TOP MENU BAR ACTIONS ====================================================================
         # FILE MENU
         # actionQuit has been implemented through QtDesigner
@@ -447,7 +439,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Setup assets from project folder
 
     def add_new_ubcollection_to_table(self):
-
+        pass
 
     def remove_selected_collection_from_project(self):
         pass
@@ -1267,8 +1259,7 @@ class MainWindow(QtWidgets.QMainWindow):
             modulegui = self.__modules_master_guis[module_name](self,
                                                                 self.get_active_simulation_object(),
                                                                 self.get_active_data_library(),
-                                                                self.get_active_project_log(),
-                                                                0)
+                                                                self.get_active_project_log(), 0)
             modulegui.exec_()
 
     # FUNCTIONS TO DO
@@ -1299,7 +1290,6 @@ class MainWindow(QtWidgets.QMainWindow):
         """Enables or Disables the run button controls depending on run state."""
         self.ui.actionRun.setEnabled(state)
         self.ui.SimDock_run.setEnabled(state)
-
 
 
 # --- START SCREEN LAUNCH ---

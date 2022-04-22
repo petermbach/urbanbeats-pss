@@ -282,7 +282,7 @@ class UrbanBeatsSim(object):
         # Save as Shapefile
         boundarypath = self.get_project_parameter("projectpath") + "/" + self.get_project_parameter("name") \
                        + "/boundaries/"
-        print ("Boundary Data", boundarydata)
+        # print("Boundary Data", boundarydata)
         ubspatial.save_boundary_as_shapefile(boundarydata, boundarypath + boundarydata["filename"])
 
         # Update central core project boundary information
@@ -474,7 +474,7 @@ class UrbanBeatsSim(object):
             bdict = {}
             bname = boundary.attrib["name"]
             for child in boundary:
-                print(child.text)
+                # print(child.text)
                 try:
                     bdict[child.tag] = ast.literal_eval(child.text)
                 except (ValueError, SyntaxError):
@@ -628,7 +628,7 @@ class UrbanBeatsSim(object):
                 fdict[atts.tag] = atts.text
             # Now figure out how to set the function
             if fdict["functiontype"] == "IF":       # INFLUENCE FUNCTION
-                print(fdict)
+                # print(fdict)
                 self.__functions.append(ubdata.NeighbourhoodInfluenceFunction(functiondict=fdict))
         return True
 

@@ -423,7 +423,7 @@ def load_shapefile_details(file):
 
     layer = datasource.GetLayer(0)
     xmin, xmax, ymin, ymax = layer.GetExtent()  # Map extents
-    print(f"{xmin}, {xmax}, {ymin}, {ymax}")
+    # print(f"{xmin}, {xmax}, {ymin}, {ymax}")
 
     spatialref = layer.GetSpatialRef()          # Coordinate system
     inputprojcs = "(none)"
@@ -431,10 +431,10 @@ def load_shapefile_details(file):
     if spatialref is not None:
         inputprojcs = spatialref.GetAttrValue("PROJCS")
         epsg = spatialref.GetAttrValue("PROJCS|AUTHORITY", 1)
-    print(epsg)
+    # print(epsg)
 
     featurecount = layer.GetFeatureCount()      # Total number of features
-    print(featurecount)
+    # print(featurecount)
     if featurecount == 0:
         return "Shapefile has no features!"
 
@@ -443,7 +443,7 @@ def load_shapefile_details(file):
 
     feature = layer.GetFeature(0)               # Get Geometry Type
     geometry = feature.GetGeometryRef()
-    print([geometry.GetGeometryName(), xmin, xmax, ymin, ymax, inputprojcs, epsg, featurecount, attnames])
+    # print([geometry.GetGeometryName(), xmin, xmax, ymin, ymax, inputprojcs, epsg, featurecount, attnames])
     return [geometry.GetGeometryName(), xmin, xmax, ymin, ymax, inputprojcs, epsg, featurecount, attnames]
 
 
