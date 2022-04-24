@@ -30,29 +30,6 @@ URBANBEATSLOGOCOLORHEX = ["#346FAC", "#CF7328", "#8EBA52"]  # BLUE, ORANGE, GREE
 # --- LANGUAGE ---
 LANGUAGECOMBO = ["DE", "EN", "ES", "FR", "PO", "CN", "JP"]      # Abbreviations for foreign languages used
 
-# --- DATA LIBRARY ---
-DATACATEGORIES = ["Spatial Data", "Time Series Data", "Qualitative Data"]       # Naming convention for data categories
-
-SPATIALDATA = ["Boundaries", "Built Infrastructure", "Elevation", "Employment", "Land Use",
-               "Locality Maps", "Overlays", "Population", "Soil", "Water Bodies"]   # Naming conventions for Spatial
-
-SUBDATASETS = {"Boundaries": ["Geopolitical", "Suburban", "Planning Zones"],
-               "Population": ["Count", "Density"],
-               "Soil": ["Classification", "Infiltration Rate"],
-               "Employment": ["Count", "Density"],
-               "Overlays": ["Planning", "Groundwater", "Environmental", "Heritage", "Regulatory"],
-               "Water Bodies": ["Rivers", "Lakes"],
-               "Built Infrastructure": ["Rail Network", "Road Network", "Water Network", "WSUD"]
-               }    # Naming convention for sub-categories of spatial data
-
-TEMPORALDATA = ["Rainfall", "Evapotranspiration", "Solar Radiation", "Temperature"] # Naming convention
-
-# SHAPEFILEEXT
-# If we are dealing with a shapefile, need to copy all possible files across, file formats
-# available at: https://www.loc.gov/preservation/digital/formats/fdd/fdd000280.shtml
-SHAPEFILEEXT = [".shp", ".shx", ".dbf", ".prj", ".sbn", ".sbx", ".fbn", ".fbx", ".ain",
-                                ".aih", ".ixs", ".mxs", ".atx", ".shp.xml", ".cpg", ".qix"]
-
 # --- LOCATION & MAPS ---
 COORDINATESYSTEMS = ["GDA", "UTM", "Other"]     # Short-form abbreviation for key coordinate system types
 
@@ -187,4 +164,3 @@ attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a hre
 subdomains: 'abcd', minZoom: 1, maxZoom: 16, ext: 'jpg'
 });"""
     }
-

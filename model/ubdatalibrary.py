@@ -328,82 +328,6 @@ def load_data_library(path):
         return datalibrary
     return None
 
-    #
-    # def save_library(self):
-    #     """Writes the data library information into the data library folder."""
-    #     f = open(self.__projectdatafolder+"/dataindex.xml", 'w')
-    #     f.write('<URBANBEATSDATALIBRARY creator="Peter M. Bach" version="1.0">\n')
-    #     f.write('\t<datalibmeta>\n')
-    #     f.write('\t\t<data_library_idcount>'+str(self.__data_library_idcount)
-    #             +'</data_library_idcount>\n')
-    #     f.write('\t</datalibmeta>\n')
-    #     f.write('\t<datasets>\n')
-    #     for dset in [self.__spatial_data, self.__time_series_data, self.__qual_data]:
-    #         for d in dset:
-    #             f.write('\t\t<dataref>\n')
-    #             f.write('\t\t\t<dataid>'+str(d.get_data_id())+'</dataid>\n')
-    #             f.write('\t\t\t<dataclass>' + str(d.get_metadata("class")) + '</dataclass>\n')
-    #             f.write('\t\t\t<datafilename>' + str(d.get_metadata("filename")) + '</datafilename>\n')
-    #             f.write('\t\t\t<dataformat>' + str(d.get_metadata("format")) + '</dataformat>\n')
-    #             f.write('\t\t\t<datasubtype>' + str(d.get_metadata("sub")) + '</datasubtype>\n')
-    #             f.write('\t\t\t<datatype>' + str(d.get_metadata("parent")) + '</datatype>\n')
-    #             f.write('\t\t\t<notes>' + str(d.get_metadata("notes")) + '</notes>\n')
-    #             f.write('\t\t\t<originaldatapath>' + str(d.get_original_data_path()) + '</originaldatapath>\n')
-    #             f.write('\t\t\t<scenarionames>\n')
-    #             scenario_list = d.get_scenario_list()
-    #             if len(scenario_list) == 0:
-    #                 f.write('\t\t\t\t<scenario></scenario>\n')
-    #             for s in scenario_list:
-    #                 f.write('\t\t\t\t<scenario>'+ str(s) + '</scenario>\n')
-    #             f.write('\t\t\t</scenarionames>\n')
-    #             f.write('\t\t</dataref>\n')
-    #     f.write('\t</datasets>\n')
-    #     f.write('</URBANBEATSDATALIBRARY>')
-    #     f.close()
-    #     return True
-    #
-    # def setup_library_from_xml(self):
-    #     """Sets up the library from an xml file and restores all data references based on the
-    #     information contained in the .xml file if it exists."""
-    #     if os.path.isfile(self.__projectdatafolder + "/dataindex.xml"):
-    #         dlib = ET.parse(self.__projectdatafolder + "/dataindex.xml")
-    #         root = dlib.getroot()
-    #         metadata = {}
-    #         for child in root.find('datalibmeta'):      # Finding tag <datalibmeta> </datalibmeta>
-    #             metadata[child.tag] = child.text
-    #         self.__data_library_idcount = int(metadata["data_library_idcount"])
-    #
-    #         datasets = []
-    #         for child in root.find('datasets'):     # Finding tag <datasets> </datasets>
-    #             dataref = {}
-    #             for d in child:
-    #                 if d.tag == "scenarionames":
-    #                     scenarios = []
-    #                     for c in d:
-    #                         scenarios.append(c.text)
-    #                     dataref[d.tag] = scenarios
-    #                     continue
-    #                 dataref[d.tag] = d.text
-    #
-    #             # Create the Data Reference and add it to the data library
-    #             datatype = [dataref["dataclass"], dataref["datatype"], dataref["datasubtype"],
-    #                         dataref["dataformat"]]
-    #             new_dref = UrbanBeatsDataReference(datatype,
-    #                                                dataref["originaldatapath"]+"/"+dataref["datafilename"],
-    #                                                self.__projectpath, self.__keepcopy,
-    #                                                dataref["notes"])
-    #             new_dref.assign_id(dataref["dataid"])
-    #             self.add_data_to_library(new_dref, False)
-    #         return True
-    #     else:
-    #         return False
-    #
-    # def import_data(self):
-    #     pass    # [TO DO]
-    #
-    #
-    #
-
 
 # GLOBAL VARIABLES & CONSTANTS
 DATACATEGORIES = ["Spatial Data", "Time Series Data", "Qualitative Data", "Functions"]
@@ -417,12 +341,13 @@ SPATIALDATA_DEFN = {"Boundaries": ["Geopolitical", "Suburban", "Planning Zones"]
                     "Overlays": ["Ecological", "Environmental", "Planning", "Regulatory"],
                     "Topography": [],
                     "Miscellaneous": []
-                    }
+                    }   # Things to note about data format: population.employment (count/density),
+                        # soil (class/infiltration rate)
 
 TEMPORALDATA_DEFN = {"Economic": ["Discount/Inflation", "Growth Rates", "Valuation"],
                      "Hydrological": ["Rainfall", "Evapotranspiration", "Water Table"],
                      "Meteorological": ["Air Pressure", "Relative Humidity", "Solar Radiation", "Temperature"]
-                     }
+                     }  # May revise this eventually, but think about time step... this could be determined upon loading
 
 QUALDATA_DEFN = {"Preference Matrices": ["Sentiment", "Weighting"]
                  }
