@@ -62,9 +62,9 @@ class UrbanBeatsScenario(threading.Thread):
                                    "filename": "(enter a naming convention for outputs)",
                                    "usescenarioname": 0}
 
-        self.__spatial_data = [] # a list of map data to be used, holds the data references.
-        self.__time_series_data = []   # a list of time series data to be used in the scenario or stored.
-        self.__qual_data = []   # a list of qualitative data to be used in the scenario
+        self.__spatial_data = []        # a list of map data to be used, holds the data references.
+        self.__time_series_data = []    # a list of time series data to be used in the scenario or stored.
+        self.__qual_data = []           # a list of qualitative data to be used in the scenario
 
         self.__assets = None            # UBCollection object with key assets
         self.__global_edge_list = []

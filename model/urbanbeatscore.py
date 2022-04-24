@@ -4,7 +4,7 @@ r"""
 @section LICENSE
 
 Urban Biophysical Environments and Technologies Simulator (UrbanBEATS)
-Copyright (C) 2018  Peter M. Bach
+Copyright (C) 2017-2022  Peter M. Bach
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@ import inspect
 import model.mods_master as ubtoolkit
 # import .model.mods_userdef as usertoolkit
 
+
 # --- URBANBEATS SIMULATION CLASS DEFINITION ---
 class UrbanBeatsSim(object):
     """The simulation class for UrbanBEATS, which contains all the information
@@ -65,8 +66,6 @@ class UrbanBeatsSim(object):
         # Initialize variables
         self.__rootpath = rootpath          # the root path for UrbanBEATS' runtime
         self.__global_options = options     # global model options
-        self.__runtime_method = "SF"        # SF = Single Scenario, Full Simulation, AF = All scenarios, full sim,
-                                            # SP = single scenario, performance only
         self.__runtime_progress = 0         # virtual progress bar
         self.__parent = parent
         self.__global_collections = {}      # Stores UBCollection Objects
@@ -108,17 +107,17 @@ class UrbanBeatsSim(object):
         self.__project_centroids = [[], []]  # Tracks ALL centroids loaded to determine 'global_centroid'
         self.__global_centroid = [0, 0]
         self.__global_extents = None  # xmin, xmax, ymin, ymax
-        # self.__project_boundaries_template = { "boundaryshp": "no file selected", "project_coord_sys": self.__global_options["defaultcoordsys"], "project_epsg": self.__global_options["customepsg"]}
 
         # Geography Variables - PERSISTENT INFORMATION
         self.__project_boundaries = {}      # Collects different boundaries
         self.__project_locations = {}
 
         # Major classes that form part of the project
-        self.__datalibrary = None   # initialize the data library
-        self.__projectlog = None    # initialize the project log
-        self.__scenarios = {}       # initialize the scenarios
-        self.__functions = []       # initialize the list of functions
+        self.__datalibrary = None       # initialize the data library
+        self.__projectlog = None        # initialize the project log
+        self.__scenarios = {}           # initialize the scenarios
+        self.__functions = []           # initialize the list of functions
+
         self.__activescenario = None
 
         # Global Modules Collection
@@ -129,6 +128,7 @@ class UrbanBeatsSim(object):
 
         self.__ubruntime = ubruntime.UrbanBeatsRuntime(self, self.__datalibrary, self.__projectlog)
 
+    # ASSET COLLECTIONS RELATING TO THE GLOBAL PROJECT COLLECTIONS
     def add_asset_collection_to_project(self, ubcollection_obj):
         self.__global_collections[ubcollection_obj.get_container_name()] = ubcollection_obj
 
@@ -138,9 +138,11 @@ class UrbanBeatsSim(object):
         except KeyError:
             return True
 
+    # MODULE MANAGEMENT
     def get_module_instance(self, longname):
         return self.__modules_collection[longname]
 
+    # PROJECT LOCATIONS & BOUNDARIES MANAGEMENT
     def add_project_location(self, loc_name, latlng, loc_description, loc_type):
         self.__project_locations[loc_name] = {"loc_name" : loc_name, "latitude": latlng[0], "longitude": latlng[1],
                                               "description": loc_description, "loc_type":loc_type}
@@ -185,7 +187,6 @@ class UrbanBeatsSim(object):
         :return: updates the self.__current_boundar_to_load variable.
         """
         self.__current_boundary_to_load = [filename, multifeatoptions, namingoptions, epsg, inputprojcs]
-        print("Successful", self.__current_boundary_to_load)
         return True
 
     def get_project_boundary_names(self):
@@ -293,10 +294,12 @@ class UrbanBeatsSim(object):
 
     def update_global_centroid_and_extents(self):
         """Updates the global centroid and extents variables."""
-        self.__global_centroid = [sum(self.__project_centroids[0]) / len(self.__project_centroids[0]),
-                                  sum(self.__project_centroids[1]) / len(self.__project_centroids[1])]
-        self.__global_extents = [min(self.__project_extents[0]), max(self.__project_extents[1]),
-                                 min(self.__project_extents[2]), max(self.__project_extents[3])]
+        if len(self.__project_centroids[0]) != 0 or len(self.__project_centroids[1]) != 0:
+            self.__global_centroid = [sum(self.__project_centroids[0]) / len(self.__project_centroids[0]),
+                                      sum(self.__project_centroids[1]) / len(self.__project_centroids[1])]
+        if len(self.__project_extents[0]) != 0 or len(self.__project_extents[2]) != 0:
+            self.__global_extents = [min(self.__project_extents[0]), max(self.__project_extents[1]),
+                                     min(self.__project_extents[2]), max(self.__project_extents[3])]
 
     def import_simulation_boundaries(self):
         """Imports new boundaries into the simulation based on the self.__current_boundary_to_load variable. After
@@ -409,6 +412,10 @@ class UrbanBeatsSim(object):
         return self.__global_extents
 
     # INITIALIZATION METHODS
+    def save_data_library(self):
+        if self.__datalibrary is not None:
+            ubdatalibrary.save_data_library(self.__datalibrary)
+
     def initialize_simulation(self, condition):
         """Performs a full initialization of the project simulation, creates
         a folder for holding relevant data and results.
@@ -430,11 +437,13 @@ class UrbanBeatsSim(object):
             # Folder structure is already present
             self.__projectpath = self.get_project_parameter("projectpath")+"/"+self.get_project_parameter("name")
 
-            # Create new data library
-            datalib = ubdatalibrary.UrbanBeatsDataLibrary(self.__projectpath,
-                                                          self.get_project_parameter("keepcopy"))
-            datalib.setup_library_from_xml()
-            self.set_data_library(datalib)
+            # Open the project's Data Library (datalib.ubdata)
+            self.set_data_library(ubdatalibrary.load_data_library(self.__projectpath))
+
+            # datalib = ubdatalibrary.UrbanBeatsDataLibrary(self.__projectpath,
+            #                                               self.get_project_parameter("keepcopy"))
+            # datalib.setup_library_from_xml()
+            # self.set_data_library(datalib)
 
             # Add simulation boundaries and locations to the project
             self.restore_project_boundaries_and_locations_from_xml(self.__projectpath)
@@ -501,6 +510,7 @@ class UrbanBeatsSim(object):
             self.__project_locations[lname] = ldict
         return True
 
+    # OBSERVER PATTERNS AND PROGRAM MANAGEMENT
     def register_observer(self, observerobj):
         """Adds an observer references by observerobj to the self.__observers array. This uses the Observer design
         pattern."""
@@ -510,10 +520,21 @@ class UrbanBeatsSim(object):
         """Adds a progressbar observer."""
         self.__progressbars.append(progressbarobj)
 
+    def update_observers(self, message):
+        """Sends the message to all observers contained in the core's observer list."""
+        for observer in self.__observers:
+            observer.update_observer(str(message))
+
+    def update_runtime_progress(self, value):
+        """Sends the message to all progress trackers in the progressbar observer list."""
+        for progbar in self.__progressbars:
+            progbar.update_progress(int(value))
+
     def get_program_rootpath(self):
         """Returns the root path of the program."""
         return self.__rootpath
 
+    # LOADING PROJECTS
     def load_project_info_xml(self, projectpath):
         """Loads the project's info.xml file and writes the information into the simulation core."""
         try:
@@ -571,6 +592,7 @@ class UrbanBeatsSim(object):
         self.write_project_info_file()
         self.__projectpath = projectpath+"/"+projectnewname
 
+    # FUNCTION OBJECTS
     def get_all_function_objects_of_type(self, typename):
         """Returns all instances in the self.function list of the given typename."""
         subset = []
@@ -632,6 +654,7 @@ class UrbanBeatsSim(object):
                 self.__functions.append(ubdata.NeighbourhoodInfluenceFunction(functiondict=fdict))
         return True
 
+    # WRITING PROJECT INFO
     def write_project_info_file(self):
         """Writes the info.xml file, which contains the project's metadata to the project folder
         for faster loading and setting up of the interface on the next simulation."""
@@ -648,8 +671,6 @@ class UrbanBeatsSim(object):
         f.write("\t</projectinfo>\n")
         f.write('</URBANBEATSPROJECTCONFIG>')
         f.close()
-
-    # PROJECT PARAMETER SETTINGS
 
     # SCENARIO MANAGEMENT
     def create_new_scenario(self):
@@ -800,16 +821,6 @@ class UrbanBeatsSim(object):
     def get_project_log(self):
         """Returns the active project log of type UrbanBeatsLog()"""
         return self.__projectlog
-
-    def update_observers(self, message):
-        """Sends the message to all observers contained in the core's observer list."""
-        for observer in self.__observers:
-            observer.update_observer(str(message))
-
-    def update_runtime_progress(self, value):
-        """Sends the message to all progress trackers in the progressbar observer list."""
-        for progbar in self.__progressbars:
-            progbar.update_progress(int(value))
 
     def get_runtime(self):
         return self.__ubruntime

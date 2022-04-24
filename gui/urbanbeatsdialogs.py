@@ -110,7 +110,7 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
             dir = self.shortcutpath
 
         if self.ui.spatial_radio.isChecked():
-            datatype = "Spatial Formats (*.txt *shp)"
+            datatype = "Spatial Formats (*.txt *.shp *.tif *.asc)"
         elif self.ui.temporal_radio.isChecked():
             datatype = "Temporal Data (*.txt *.csv *.dat *.nc)"
         else:
@@ -133,7 +133,7 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
             self.ui.datacat_combo.setEnabled(1)
             self.ui.datacat_combo.clear()
             self.ui.datacat_combo.addItem("(undefined)")
-            for i in ubglobals.SPATIALDATA:
+            for i in ubdatalibrary.SPATIALDATA_DEFN.keys():
                 self.ui.datacat_combo.addItem(i)
         elif self.ui.temporal_radio.isChecked():
             if self.currentDataType != "temporal":
@@ -141,14 +141,16 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
             self.ui.datacat_combo.setEnabled(1)
             self.ui.datacat_combo.clear()
             self.ui.datacat_combo.addItem("(undefined)")
-            for i in ubglobals.TEMPORALDATA:
+            for i in ubdatalibrary.TEMPORALDATA_DEFN.keys():
                 self.ui.datacat_combo.addItem(i)
         else:
             if self.currentDataType != "qualitative":
                 self.ui.databox.setText("(none)")
-            self.ui.datacat_combo.setEnabled(0)
+            self.ui.datacat_combo.setEnabled(1)
             self.ui.datacat_combo.clear()
             self.ui.datacat_combo.addItem("(undefined)")
+            for i in ubdatalibrary.QUALDATA_DEFN.keys():
+                self.ui.datacat_combo.addItem(i)
         self.ui.datacat_combo.setCurrentIndex(1)
 
     def update_datacatsub_combo(self):
@@ -156,15 +158,34 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
         data sets."""
         self.ui.datacatsub_combo.clear()
         self.ui.datacatsub_combo.addItem("(undefined)")
-        try:
-            subcategories = ubglobals.SUBDATASETS[str(self.ui.datacat_combo.currentText())]
-        except KeyError:
+        if self.ui.spatial_radio.isChecked():       # SPATIAL DATA
+            try:
+                subcategories = ubdatalibrary.SPATIALDATA_DEFN[str(self.ui.datacat_combo.currentText())]
+            except KeyError:
+                self.ui.datacatsub_combo.setCurrentIndex(0)
+                return True
+        elif self.ui.temporal_radio.isChecked():    # TEMPORAL DATA
+            try:
+                subcategories = ubdatalibrary.TEMPORALDATA_DEFN[str(self.ui.datacat_combo.currentText())]
+            except KeyError:
+                self.ui.datacatsub_combo.setCurrentIndex(0)
+                return True
+        else:       # QUALITATIVE DATA
+            try:
+                subcategories = ubdatalibrary.QUALDATA_DEFN[str(self.ui.datacat_combo.currentText())]
+            except KeyError:
+                self.ui.datacatsub_combo.setCurrentIndex(0)
+                return True
+
+        if len(subcategories) == 0:
             self.ui.datacatsub_combo.setEnabled(0)
             return
-        self.ui.datacatsub_combo.setEnabled(1)
+        else:
+            self.ui.datacatsub_combo.setEnabled(1)
         for i in subcategories:
             self.ui.datacatsub_combo.addItem(i)
         self.ui.datacatsub_combo.setCurrentIndex(0)
+        return
 
     def clear_interface(self):
         """Clears the addData interface by removing the text in the browse box (setting it to (none)),
@@ -177,9 +198,11 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
 
     def add_data_to_project(self):
         """Adds the data to the project based on all the information provided. Checks for the validity
-        of the data file."""
+        of the data file. Function collects the essential infos for the dataref class constructor:
+        datatype, fullfillpath, projectpath, keepcopy, notes_text. Datatype comprises several aspects:
+        [dataclass, type, subtype, format, file_extension]"""
         datafile = self.ui.databox.text()
-        if self.ui.spatial_radio.isChecked():
+        if self.ui.spatial_radio.isChecked():       # datatype[0]
             self.currentDataType = "spatial"
         elif self.ui.temporal_radio.isChecked():
             self.currentDataType = "temporal"
@@ -188,20 +211,30 @@ class AddDataDialogLaunch(QtWidgets.QDialog):
 
         if os.path.isfile(datafile):    # If the file exists
             if self.ui.datacat_combo.currentText() != "(undefined)":    # If the current Text is NOT (undefined)
-                if self.ui.datacatsub_combo.isEnabled() == 0 \
-                        or self.ui.datacatsub_combo.currentIndex() != 0:    # If sub-categorisation is enabled
+                if not self.ui.datacatsub_combo.isEnabled() or self.ui.datacatsub_combo.currentIndex() != 0:    # If sub-categorisation is enabled
                     datatype = []
                     datatype.append(self.currentDataType)   # index 0
                     datatype.append(self.ui.datacat_combo.currentText())    # index 1
                     datatype.append(self.ui.datacatsub_combo.currentText()) # index 2
                     datatype.append(os.path.splitext(datafile)[1])  # index 3
+                    print("File_ext:", datatype[3])     # index 4
+                    # Determine data format...
+                    if datatype[0] == "temporal":
+                        datatype.append("TIMESERIES")
+                    elif datatype[0] == "qualitative":
+                        datatype.append("QUALITATIVE")
+                    elif datatype[3] == ".shp":
+                        datatype.append("VECTOR")
+                    else:
+                        datatype.append("RASTER")
 
-                    dataref = ubdatalibrary.\
-                        UrbanBeatsDataReference(datatype, datafile,
-                                                self.simulation.get_project_parameter("projectpath")+"/"+
-                                                self.simulation.get_project_parameter("name"),
-                                                self.simulation.get_project_parameter("keepcopy"),
-                                                self.ui.notes_box.toPlainText())
+
+                    # Create the Data Reference Object
+                    projectpath = self.simulation.get_project_parameter("projectpath") + "/" +\
+                                  self.simulation.get_project_parameter("name")
+                    keepcopy = self.simulation.get_project_parameter("keepcopy")
+                    notes = self.ui.notes_box.toPlainText()
+                    dataref = ubdatalibrary.UrbanBeatsDataReference(datatype, datafile, projectpath, keepcopy, notes)
                     self.datalibrary.add_data_to_library(dataref, True)
                     self.dataLibraryUpdated.emit()
                     self.clear_interface()

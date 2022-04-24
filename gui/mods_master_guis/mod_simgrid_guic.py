@@ -164,6 +164,9 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
         self.ui.raster_nodata_line.setText(str(self.module.get_parameter("nodatavalue")))
         self.ui.raster_generatefishnet_check.setChecked(int(self.module.get_parameter("generate_fishnet")))
 
+        # GEOHASH GRID REPRESENTATION
+        self.ui.gh_res_spin.setValue(int(self.module.get_parameter("geohash_lvl")))
+
     def get_dataref_array(self, dataclass, datatype, *args):
         """Retrieves a list of data files loaded into the current scenario for display in the GUI
 
@@ -220,6 +223,9 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
         self.module.set_parameter("rastersize", self.ui.raster_resolution_spin.value())
         self.module.set_parameter("nodatavalue", int(self.ui.raster_nodata_line.text()))
         self.module.set_parameter("generate_fishnet", int(self.ui.raster_generatefishnet_check.isChecked()))
+
+        # GEOHASH GRID REPRESENTATION
+        self.module.set_parameter("geohash_lvl", int(self.ui.gh_res_spin.value()))
 
     def update_progress_bar_value(self, value):
         """Updates the progress bar of the Main GUI when the simulation is started/stopped/reset."""

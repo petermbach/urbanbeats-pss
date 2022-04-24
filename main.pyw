@@ -23,8 +23,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2018. Peter M. Bach"
 
-# 8th JANUARY 2020 - URBANBEATS HAS BEEN CONVERTED TO PYTHON 3.7
-
 # --- CODE STRUCTURE --- --- --- --- --- ---
 #       1.) CORE LIBRARY IMPORTS
 #       2.) URBANBEATS LIBRARY IMPORTS
@@ -62,6 +60,7 @@ from gui.urbanbeatscalibrationguic import LaunchCalibrationViewer
 
 import gui.ubgui_reporting as ubreport
 import model.ublibs.ubspatial as ubspatial
+import model.ubdatalibrary as ubdatalibrary
 import model.ublibs.ubconfigfiles as ubconfigfiles
 
 from gui import mapping_leaflet as mapping_leaflet
@@ -87,14 +86,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__gui_state = "idle"   # GUI States, allows changing of functionality during runtime
         # The GUI state is introduced such that changes can be made when displaying different GUI elements during
 
-        self.__modules_master = {}      # Holds all references to module classes
-        self.__modules_master_guis = {} # Holds all references to the GUI launchers
-        self.__modules_user = {}        # Holds all references to the user-defined modules
-        self.__modules_user_guis = {}   # Holds all references to the user-defined modules' GUIs
+        self.__modules_master = {}          # Holds all references to module classes
+        self.__modules_master_guis = {}     # Holds all references to the GUI launchers
+        self.__modules_user = {}            # Holds all references to the user-defined modules
+        self.__modules_user_guis = {}       # Holds all references to the user-defined modules' GUIs
 
         # --- INITIALIZATION ---
         self.setWindowTitle("UrbanBEATS Planning Support Tool")
-        # self.setWindowTitle("规划模型")       #Chinese Translation - automate!
         self.initialize_output_console()
         self.consoleobserver = ConsoleObserver()
         self.progressbarobserver = ProgressBarObserver()
@@ -114,9 +112,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__current_latlong = self.__default_latlong
         self.__saveProjectState = True      # True = unsaved, False = saved - used to track changes in workflow
         self.__activeSimulationObject = None    # The active simulation class instance: urbanbeatscore.UrbanBeatsSim()
-        self.__activeScenario = None            # The active scenario
-        self.__activeDataLibrary = None         # The active simulation's data library
-        self.__activeProjectLog = None          # The active simulation's log file
+        self.__activeDataLibrary = None  # The active simulation's data library
+        self.__activeProjectLog = None  # The active simulation's log file
+
+        self.__activeScenario = None            # The active scenario or urbanBeats runtime
+
         self.__dataview_displaystate = "default"    # The display state of the Leaflet data view, allows tracking
         self.__datalibraryexpanded = 0      # STATE: is the data library browser fully expanded?
 
@@ -167,7 +167,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Variant for calling only the performance assessment
 
         # ADVANCED MENU
-        self.ui.actionModel_Calibration_Viewer.triggered.connect(self.show_calibration_viewer)
+        # self.ui.actionModel_Calibration_Viewer.triggered.connect(self.show_calibration_viewer)
 
         # WINDOW MENU
         # actionMinimize has been implemented through QtDesigner
@@ -433,13 +433,16 @@ class MainWindow(QtWidgets.QMainWindow):
             pass
             # Do nothing
 
-    # MAIN WINDOW SPACE >> ASSETS COLLECTIN TAB FUNCTIONS AND TABLE
+    # MAIN WINDOW SPACE >> ASSETS COLLECTION TAB FUNCTIONS AND TABLE
     def setup_assetcol_tree(self):
         self.ui.global_assets_table.clear()
         # Setup assets from project folder
 
     def add_new_ubcollection_to_table(self):
-        pass
+        asset_name, ok = QtWidgets.QInputDialog.getText(self, 'Asset Collection', 'Enter name:')
+        if ok:
+            twi = QtWidgets.QTreeWidgetItem()
+            self.global_assets_table
 
     def remove_selected_collection_from_project(self):
         pass
@@ -821,8 +824,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Save the active data library
         self.printc("Saving Data Library...")
-        if self.__activeDataLibrary is not None:
-            self.__activeDataLibrary.save_library()
+        self.__activeSimulationObject.save_data_library()
         self.printc("Saving Active Scenario...")
 
         # Save off all scenarios
@@ -934,56 +936,69 @@ class MainWindow(QtWidgets.QMainWindow):
         """ONLY AFFECTS THE DATA LIBRARY VIEWER
         Removes all entries and recreates the base tree. Also retains the expanded and collapsed subitems.
         """
-        expandcol_tli = []
-        expandcol_twi = [[], []]
-        for i in range(self.ui.DataDock_View.topLevelItemCount()):
-            tli = self.ui.DataDock_View.topLevelItem(i)
-            expandcol_tli.append(tli.isExpanded())
-            if i == 2:  # Qualitative data has no children
-                continue
-            for j in range(tli.childCount()):
-                expandcol_twi[i].append(tli.child(j).isExpanded())
+        # expandcol_tli = []            # Old code: retaining the expanded and collapsed subitems... keep?
+        # expandcol_twi = [[], []]
+        # for i in range(self.ui.DataDock_View.topLevelItemCount()):
+        #     tli = self.ui.DataDock_View.topLevelItem(i)
+        #     expandcol_tli.append(tli.isExpanded())
+        #     if i == 3:  # Functions data has no children
+        #         continue
+        #     for j in range(tli.childCount()):
+        #         expandcol_twi[i].append(tli.child(j).isExpanded())
 
         self.ui.DataDock_View.clear()
-        for datacat in ubglobals.DATACATEGORIES:
+        for datacat in ubdatalibrary.DATACATEGORIES:    # Add the main data categories to the view
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, datacat)
             self.ui.DataDock_View.addTopLevelItem(twi)
-        for spdata in ubglobals.SPATIALDATA:
+        for spdata in ubdatalibrary.SPATIALDATA_DEFN.keys():        # Spatial Data Types
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, spdata)
             twi_child = QtWidgets.QTreeWidgetItem()
             twi_child.setText(0, "<no data>")
             twi.addChild(twi_child)
             self.ui.DataDock_View.topLevelItem(0).addChild(twi)
-        for tdata in ubglobals.TEMPORALDATA:
+        for tdata in ubdatalibrary.TEMPORALDATA_DEFN.keys():        # Temporal Data Types
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, tdata)
             twi_child = QtWidgets.QTreeWidgetItem()
             twi_child.setText(0, "<no data>")
             twi.addChild(twi_child)
             self.ui.DataDock_View.topLevelItem(1).addChild(twi)
-        twi = QtWidgets.QTreeWidgetItem()
+        for qdata in ubdatalibrary.QUALDATA_DEFN.keys():            # Qualitative Data Types
+            twi = QtWidgets.QTreeWidgetItem()
+            twi.setText(0, qdata)
+            twi_child = QtWidgets.QTreeWidgetItem()
+            twi_child.setText(0, "<no data>")
+            twi.addChild(twi_child)
+            self.ui.DataDock_View.topLevelItem(2).addChild(twi)
+
+        twi = QtWidgets.QTreeWidgetItem()       # Functions
         twi.setText(0, "<no data>")
-        self.ui.DataDock_View.topLevelItem(2).addChild(twi)
+        self.ui.DataDock_View.topLevelItem(3).addChild(twi)
 
-        # Now reorganise the expanded and contracted menus.
-        for i in range(self.ui.DataDock_View.topLevelItemCount()):
-            tli = self.ui.DataDock_View.topLevelItem(i)
-            tli.setExpanded(expandcol_tli[i])
-            if i == 2:  # Qualitative data has no children
-                continue
-            for j in range(tli.childCount()):
-                tli.child(j).setExpanded(expandcol_twi[i][j])
+        # Now reorganise the expanded and contracted menus. - OLD CODE: Keep?
+        # print("Top Level Item Count", self.ui.DataDock_View.topLevelItemCount())
+        # for i in range(self.ui.DataDock_View.topLevelItemCount()):
+        #     if i == 3:  # Function data has no children
+        #         continue
+        #     tli = self.ui.DataDock_View.topLevelItem(i)
+        #     tli.setExpanded(expandcol_tli[i])
+        #     for j in range(tli.childCount()):
+        #         tli.child(j).setExpanded(expandcol_twi[i][j])
 
-        # Adjust the pixmap on the expand/col button
-        if sum(expandcol_tli) == len(expandcol_tli) \
-                and sum([len(i) for i in expandcol_twi]) == sum([sum(i) for i in expandcol_twi]):
-            # If true: then tree widget fully expanded
-            self.set_expand_collapse_button_icon("expanded")
-        else:
-            # If not fully expanded, then can still be expanded so set the button to the collapsed state.
-            self.set_expand_collapse_button_icon("collapsed")
+        # # Adjust the pixmap on the expand/col button
+        # if sum(expandcol_tli) == len(expandcol_tli) \
+        #         and sum([len(i) for i in expandcol_twi]) == sum([sum(i) for i in expandcol_twi]):
+        #     # If true: then tree widget fully expanded
+        #     self.set_expand_collapse_button_icon("expanded")
+        # else:
+        #     # If not fully expanded, then can still be expanded so set the button to the collapsed state.
+        #     self.set_expand_collapse_button_icon("collapsed")
+        self.ui.DataDock_View.expandAll()
+        self.set_expand_collapse_button_icon("expanded")
+        self.__datalibraryexpanded = True
+
 
     def remove_data_from_library(self):
         """Removes the current selected data set from the data library and the data library view."""
@@ -1018,8 +1033,8 @@ class MainWindow(QtWidgets.QMainWindow):
         datacol = datalib.get_all_data_of_class("spatial")  # Get the list of data
         cur_toplevelitem = self.ui.DataDock_View.topLevelItem(0)
         for dref in datacol:
-            dtype = dref.get_metadata("parent")  # Returns overall type (e.g. Land Use, Rainfall, etc.)
-            dtypeindex = ubglobals.SPATIALDATA.index(dtype)  # Get the index in the tree-widget
+            dtype = dref.get_metadata("type")  # Returns overall type (e.g. Land Use, Rainfall, etc.)
+            dtypeindex = list(ubdatalibrary.SPATIALDATA_DEFN.keys()).index(dtype)  # Get the index in the tree-widget
             if cur_toplevelitem.child(dtypeindex).child(0).text(0) == "<no data>":
                 cur_toplevelitem.child(dtypeindex).takeChild(0)
             twi = QtWidgets.QTreeWidgetItem()
@@ -1031,8 +1046,8 @@ class MainWindow(QtWidgets.QMainWindow):
         datacol = datalib.get_all_data_of_class("temporal")
         cur_toplevelitem = self.ui.DataDock_View.topLevelItem(1)
         for dref in datacol:
-            dtype = dref.get_metadata("parent")
-            dtypeindex = ubglobals.TEMPORALDATA.index(dtype)
+            dtype = dref.get_metadata("type")
+            dtypeindex = list(ubdatalibrary.TEMPORALDATA_DEFN.keys()).index(dtype)
             if cur_toplevelitem.child(dtypeindex).child(0).text(0) == "<no data>":
                 cur_toplevelitem.child(dtypeindex).takeChild(0)
             twi = QtWidgets.QTreeWidgetItem()
@@ -1043,12 +1058,17 @@ class MainWindow(QtWidgets.QMainWindow):
         # Update the Qualitative Data Set
         datacol = datalib.get_all_data_of_class("qualitative")
         for dref in datacol:
-            if self.ui.DataDock_View.topLevelItem(2).child(0).text(0) == "<no data>":
-                self.ui.DataDock_View.topLevelItem(2).takeChild(0)
+            dtype = dref.get_metadata("type")
+            dtypeindex = list(ubdatalibrary.QUALDATA_DEFN.keys()).index(dtype)
+            if cur_toplevelitem.child(dtypeindex).child(0).text(0) == "<no data>":
+                cur_toplevelitem.child(dtypeindex).takeChild(0)
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, dref.get_metadata("filename"))
             twi.setToolTip(0, str(dref.get_data_id()) + " - " + str(dref.get_data_file_path()))
-            self.ui.DataDock_View.topLevelItem(2).addChild(twi)
+            cur_toplevelitem.child(dtypeindex).addChild(twi)
+
+        # Update Functions Data Sets
+        # [TO DO] once function creation implemented!
 
     def show_metadata_dialog(self):
         pass
@@ -1177,7 +1197,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Narrative
         self.ui.ScenarioView_lbl.setText(str(active_scenario_name))
-        self.ui.ScenarioView_Widget.setCurrentIndex(2)
+        self.ui.ScenarioView_Widget.setCurrentIndex(3)
         self.ui.scenarioMgmt_tabview.setCurrentIndex(0)
         self.ui.scenario_summarybox.setPlainText(self.__activeScenario.get_metadata("narrative"))
 
