@@ -387,6 +387,25 @@ class UrbanBeatsSim(object):
         print("Current number of boundaries in the simulation: ", str(len(self.__project_boundaries)))
         return True
 
+    def save_project(self):
+        """Calls all relevant functions to save the simulation project to the project folder."""
+        # (1) SAVE THE DATA LIBRARY
+        self.save_data_library()
+
+        # (2) SAVE ALL PROJECT BOUNDARIES AND LOCATIONS
+        self.save_project_boundaries()
+
+        # (3) SAVE ALL SCENARIOS AS OBJECTS
+        for scen_name in self.get_scenario_names():
+            self.get_scenario_by_name(scen_name).save_scenario()
+
+        # (4) SAVE ANY FUNCTIONS WITHIN THE PROJECT
+        self.save_functions_list()
+
+        # (5) SAVE THE GLOBAL ASSETS COLLECTION FOR LOADING LATER ON
+        pass
+        return True
+
     def save_project_boundaries(self):
         """Saves the simulation boundaries data file to list."""
         projectpath = self.get_project_parameter("projectpath")

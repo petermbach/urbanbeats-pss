@@ -877,20 +877,9 @@ class MainWindow(QtWidgets.QMainWindow):
         operation as UrbanBEATS tracks the status of the project throughout the workflow."""
 
         # Save the active data library
-        self.printc("Saving Data Library...")
-        self.__activeSimulationObject.save_data_library()
+        self.printc("Saving Project...")
+        self.__activeSimulationObject.save_project()
         self.printc("Saving Active Scenario...")
-
-        # Save off all scenarios
-        for scen_name in self.get_active_simulation_object().get_scenario_names():
-            scenario_obj = self.get_active_simulation_object().get_scenario_by_name(scen_name)
-            scenario_obj.save_scenario()
-
-        # Save elements in the simulation core
-        self.printc("Saving Project Functions List")
-        if self.__activeSimulationObject is not None:
-            self.__activeSimulationObject.save_functions_list()
-            self.__activeSimulationObject.save_project_boundaries()
 
         # Add project to the recent.cfg file
         self.update_recent_cfg(self.__activeSimulationObject.get_project_parameter("name"),
@@ -898,7 +887,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                self.__activeSimulationObject.get_project_path())
 
         self.set_save_project_state(True)   #[TO DO]
-        self.printc("Project Save State Updated!")
+        self.printc("Project Saved - State Updated!")
 
     def save_as_project(self):
         """Saves the project's current state to a completely different location. Also modifies its info with
