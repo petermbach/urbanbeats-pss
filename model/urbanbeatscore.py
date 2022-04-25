@@ -33,6 +33,7 @@ import os
 import xml.etree.ElementTree as ET
 import datetime
 import ast
+import pickle
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 from . import ubdatalibrary
@@ -144,8 +145,11 @@ class UrbanBeatsSim(object):
 
     # PROJECT LOCATIONS & BOUNDARIES MANAGEMENT
     def add_project_location(self, loc_name, latlng, loc_description, loc_type):
-        self.__project_locations[loc_name] = {"loc_name" : loc_name, "latitude": latlng[0], "longitude": latlng[1],
-                                              "description": loc_description, "loc_type":loc_type}
+        self.__project_locations[loc_name] = {"loc_name": loc_name, "latitude": latlng[0], "longitude": latlng[1],
+                                              "description": loc_description, "loc_type": loc_type}
+
+    def get_project_locations(self):
+        return self.__project_locations
 
     def get_project_location_names(self):
         return self.__project_locations.keys()
@@ -155,9 +159,6 @@ class UrbanBeatsSim(object):
             return self.__project_locations[locname]
         except KeyError:
             return None
-
-    def get_project_locations(self):
-        return self.__project_locations
 
     def remove_project_location(self, locname):
         try:
@@ -189,12 +190,12 @@ class UrbanBeatsSim(object):
         self.__current_boundary_to_load = [filename, multifeatoptions, namingoptions, epsg, inputprojcs]
         return True
 
+    def get_project_boundaries(self):
+        return self.__project_boundaries
+
     def get_project_boundary_names(self):
         """Returns all names of current boundaries loaded into the project as a list of strings."""
         return self.__project_boundaries.keys()
-
-    def get_project_boundaries(self):
-        return self.__project_boundaries
 
     def get_project_boundary_by_name(self, boundaryname):
         try:
@@ -235,6 +236,7 @@ class UrbanBeatsSim(object):
         self.__project_centroids[0].remove(self.__project_boundaries[boundaryname]["centroid"][0])
         self.__project_centroids[1].remove(self.__project_boundaries[boundaryname]["centroid"][1])
         self.update_global_centroid_and_extents()
+
         # Remove the boundary from the self.__project_boundaries
         try:
             del self.__project_boundaries[boundaryname]
@@ -283,13 +285,12 @@ class UrbanBeatsSim(object):
         # Save as Shapefile
         boundarypath = self.get_project_parameter("projectpath") + "/" + self.get_project_parameter("name") \
                        + "/boundaries/"
-        # print("Boundary Data", boundarydata)
         ubspatial.save_boundary_as_shapefile(boundarydata, boundarypath + boundarydata["filename"])
 
         # Update central core project boundary information
         self.__project_boundaries[boundarynewname] = boundarydata  # Add new project boundary
         self.update_global_centroid_and_extents()
-        print("Current number of boundaries in the simulation: ", str(len(self.__project_boundaries)))
+        # print("Current number of boundaries in the simulation: ", str(len(self.__project_boundaries)))
         return True
 
     def update_global_centroid_and_extents(self):
@@ -384,26 +385,30 @@ class UrbanBeatsSim(object):
         """Saves the simulation boundaries data file to list."""
         projectpath = self.get_project_parameter("projectpath")
         projectname = self.get_project_parameter("name")
-        f = open(projectpath + "/" + projectname + "/boundaries/boundloc.xml", 'w')
-        f.write('<URBANBEATSBOUNDARIESLOCATIONS creator="Peter M. Bach" version="1.0">\n')
-        f.write('\t<project_boundaries>\n')
-        for i in self.__project_boundaries.keys():
-            f.write('\t\t<boundary name="'+str(i)+'">\n')
-            for att in self.__project_boundaries[i].keys():
-                f.write('\t\t\t<'+att+'>'+str(self.__project_boundaries[i][att])+'</'+att+'>\n')
-            f.write('\t\t</boundary>\n')
-        f.write('\t</project_boundaries>\n')
-        f.write('\t<project_locations>\n')
-        for i in self.__project_locations.keys():
-            f.write('\t\t<location name="'+str(i)+'">\n')
-            f.write('\t\t\t<name>'+i+'</name>\n')
-            for att in self.__project_locations[i].keys():
-                f.write('\t\t\t<'+att+'>'+str(self.__project_locations[i][att])+'</'+att+'>\n')
-            f.write('\t\t</location>\n')
-        f.write('\t</project_locations>\n')
-        f.write('</URBANBEATSBOUNDARIESLOCATIONS>\n')
+        f = open(projectpath + "/" + projectname + "/boundloc.ubdata", 'wb')
+        pickle.dump([self.__project_boundaries,
+                     self.__project_locations,
+                     self.__project_extents,
+                     self.__project_centroids], f)
         f.close()
         return True
+
+    def restore_project_boundaries_and_locations(self, projectpath):
+        """Loads the boundloc.ubdata file from the boundaries folder and restores the dictionaries for
+        self.__project_boundaries and self.__project_locations as well as self.__project_extents and
+        self.__project_centroids variables."""
+        try:
+            f = open(projectpath+"/boundloc.ubdata", 'rb')
+            bdata = pickle.load(f)
+            self.__project_boundaries = bdata[0]
+            self.__project_locations = bdata[1]
+            self.__project_extents = bdata[2]
+            self.__project_centroids = bdata[3]
+            self.update_global_centroid_and_extents()  # Once all boundaries have been loaded, update the global values
+            f.close()
+            return True
+        except IOError:
+            return False
 
     def get_global_centroid(self):
         return self.__global_centroid
@@ -440,13 +445,8 @@ class UrbanBeatsSim(object):
             # Open the project's Data Library (datalib.ubdata)
             self.set_data_library(ubdatalibrary.load_data_library(self.__projectpath))
 
-            # datalib = ubdatalibrary.UrbanBeatsDataLibrary(self.__projectpath,
-            #                                               self.get_project_parameter("keepcopy"))
-            # datalib.setup_library_from_xml()
-            # self.set_data_library(datalib)
-
             # Add simulation boundaries and locations to the project
-            self.restore_project_boundaries_and_locations_from_xml(self.__projectpath)
+            self.restore_project_boundaries_and_locations(self.__projectpath)
 
             # Restore the list of functions saved in the project
             self.restore_functions_from_xml(self.__projectpath)
@@ -468,47 +468,6 @@ class UrbanBeatsSim(object):
 
         elif condition == "import": # for importing a project
             pass    # [TO DO]
-
-    def restore_project_boundaries_and_locations_from_xml(self, projectpath):
-        """Loads the boundloc.xml file from the boundaries folder and restores the dictionaries for
-        self.__project_boundaries and self.__project_locations."""
-        try:
-            projboundloc = ET.parse(projectpath+"/boundaries/boundloc.xml")
-        except IOError:
-            return False
-        root = projboundloc.getroot()       # Root = <project_boundaries> and <project_locations>
-
-        # Restore boundaries
-        for boundary in root.find('project_boundaries'):
-            bdict = {}
-            bname = boundary.attrib["name"]
-            for child in boundary:
-                # print(child.text)
-                try:
-                    bdict[child.tag] = ast.literal_eval(child.text)
-                except (ValueError, SyntaxError):
-                    bdict[child.tag] = str(child.text)
-            self.__project_boundaries[bname] = bdict
-
-            # Fill out extents and centroid
-            self.__project_extents[0].append(bdict["xmin"])
-            self.__project_extents[1].append(bdict["xmax"])
-            self.__project_extents[2].append(bdict["ymin"])
-            self.__project_extents[3].append(bdict["ymax"])
-            self.__project_centroids[0].append(bdict["centroid"][0])
-            self.__project_centroids[1].append(bdict["centroid"][1])
-        self.update_global_centroid_and_extents()   # Once all boundaries have been loaded, update the global values
-
-        for location in root.find('project_locations'):
-            ldict = {}
-            lname = location.attrib["name"]
-            for child in location:
-                try:
-                    ldict[child.tag] = ast.literal_eval(child.text)
-                except (ValueError, SyntaxError):
-                    ldict[child.tag] = str(child.text)
-            self.__project_locations[lname] = ldict
-        return True
 
     # OBSERVER PATTERNS AND PROGRAM MANAGEMENT
     def register_observer(self, observerobj):
@@ -535,24 +494,15 @@ class UrbanBeatsSim(object):
         return self.__rootpath
 
     # LOADING PROJECTS
-    def load_project_info_xml(self, projectpath):
-        """Loads the project's info.xml file and writes the information into the simulation core."""
+    def load_project_info_datafile(self, projectpath):
+        """Loads the project's info.ubdata file and writes the information into the simulation core."""
         try:
-            projinfo = ET.parse(projectpath+"/info.xml")
+            f = open(projectpath+"/info.ubdata", 'rb')
+            self.__project_info = pickle.load(f)
+            f.close()
+            return True
         except IOError:
             return False
-        print(projectpath + "/info.xml")
-        root = projinfo.getroot()
-        projdict = {}
-        projdata = root.find('projectinfo')
-        for child in projdata:
-            projdict[child.tag] = child.text
-        for k in projdict.keys():
-            if k == "date":
-                self.set_project_parameter(k, datetime.date.fromisoformat(projdict[k]))
-            else:
-                self.set_project_parameter(k, type(self.get_project_parameter(k))(projdict[k]))
-        return True
 
     def get_scenario_boundary_info(self, param):
         """Retrieves spatial boundary information for the current project from the self.__boundarinfo variable.
@@ -573,8 +523,7 @@ class UrbanBeatsSim(object):
     def setup_project_folder_structure(self):
         """Sets up the base folder structure of the project based on the specified path. The folder
         structure contains several fundamental fodlers including 'datalib' and 'output' and one
-        folder for each scenario in the simulation. It also will contain several .xml files, which
-        are written in separate methods."""
+        folder for each scenario in the simulation."""
         projectpath = self.get_project_parameter("projectpath")
         projectname = self.get_project_parameter("name")
         namecounter = 0
@@ -584,15 +533,15 @@ class UrbanBeatsSim(object):
             projectnewname = projectname+"_"+str(namecounter)
         self.set_project_parameter("name", projectnewname)
         os.makedirs(projectpath+"/"+projectnewname)
-        os.makedirs(projectpath+"/"+projectnewname+"/datalib")
-        os.makedirs(projectpath+"/"+projectnewname+"/scenarios")
-        os.makedirs(projectpath+"/"+projectnewname+"/output")
         os.makedirs(projectpath + "/" + projectnewname + "/boundaries")
-        os.makedirs(projectpath + "/" + projectnewname + "/cache")
+        os.makedirs(projectpath+"/"+projectnewname+"/datalib")
+        os.makedirs(projectpath + "/" + projectnewname + "/collections")
+        os.makedirs(projectpath + "/" + projectnewname + "/output")
+        os.makedirs(projectpath+"/"+projectnewname+"/scenarios")
         self.write_project_info_file()
         self.__projectpath = projectpath+"/"+projectnewname
 
-    # FUNCTION OBJECTS
+    # FUNCTIONS IN THE DATA LIBRARY
     def get_all_function_objects_of_type(self, typename):
         """Returns all instances in the self.function list of the given typename."""
         subset = []
@@ -656,20 +605,12 @@ class UrbanBeatsSim(object):
 
     # WRITING PROJECT INFO
     def write_project_info_file(self):
-        """Writes the info.xml file, which contains the project's metadata to the project folder
+        """Writes the .ubdata file of self.__project_info, which contains the project's metadata to the project folder
         for faster loading and setting up of the interface on the next simulation."""
-        # write project info XML
         projectpath = self.get_project_parameter("projectpath")
         projectname = self.get_project_parameter("name")
-        fullpath = projectpath+"/"+projectname
-        f = open(projectpath+"/"+projectname+"/info.xml", 'w')
-        f.write('<URBANBEATSPROJECTCONFIG creator="Peter M. Bach" version="1.0">\n')
-        f.write('\t<projectinfo>\n')
-        projinfo = self.get_all_project_info()
-        for item in projinfo.keys():
-            f.write("\t\t<"+str(item)+">"+str(projinfo[item])+"</"+str(item)+">\n")
-        f.write("\t</projectinfo>\n")
-        f.write('</URBANBEATSPROJECTCONFIG>')
+        f = open(projectpath+"/"+projectname+"/info.ubdata", 'wb')
+        pickle.dump(self.get_all_project_info(), f)
         f.close()
 
     # SCENARIO MANAGEMENT

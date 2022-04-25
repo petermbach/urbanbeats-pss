@@ -31,22 +31,7 @@ URBANBEATSLOGOCOLORHEX = ["#346FAC", "#CF7328", "#8EBA52"]  # BLUE, ORANGE, GREE
 LANGUAGECOMBO = ["DE", "EN", "ES", "FR", "PO", "CN", "JP"]      # Abbreviations for foreign languages used
 
 # --- LOCATION & MAPS ---
-COORDINATESYSTEMS = ["GDA", "UTM", "Other"]     # Short-form abbreviation for key coordinate system types
-
-CITIES = ["Adelaide", "Brisbane", "Innsbruck", "Melbourne", "Nanjing", "Perth",
-                  "SanFrancisco", "Sydney", "Zurich", "Other"]      # Spelling and naming for cities
 MAPSTYLES = ["CARTODBPOS", "CARTODARK", "ESRI", "OTM", "TONER", "TERRAIN", "WATERCOLOR"]
-
-COORDINATES = {"Adelaide": [-34.9285, 138.6007],
-                "Brisbane": [-27.4698, 153.0251],
-                "Innsbruck": [47.2692, 11.4041],
-                "Melbourne": [-37.8136, 144.9631],
-                "Nanjing": [32.0603, 118.7969],
-                "Perth": [-31.9505, 115.8605],
-                "SanFrancisco": [37.7749, -122.4194],
-                "Sydney": [-33.8688, 151.2093],
-                "Zurich": [47.3769, 8.5417]
-               }
 
 # --- MODEL SETTING ---
 DECISIONS = ["best", "random", "none"]

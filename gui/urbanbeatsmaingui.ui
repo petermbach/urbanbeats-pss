@@ -61,7 +61,7 @@
           </size>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="Project_tab">
           <attribute name="icon">
@@ -1719,6 +1719,16 @@ p, li { white-space: pre-wrap; }
        <item>
         <property name="text">
          <string>Qualitative Data</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>&lt;no data&gt;</string>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Functions</string>
         </property>
         <item>
          <property name="text">

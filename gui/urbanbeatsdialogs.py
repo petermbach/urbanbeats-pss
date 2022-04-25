@@ -33,7 +33,6 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 import os
 import datetime
 import webbrowser
-import xml.etree.ElementTree as ET
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 # --- URBANBEATS LIBRARY IMPORTS ---
@@ -710,14 +709,14 @@ class OpenProjectDialogLaunch(QtWidgets.QDialog):
         # Check whether the project selected is valid.
         if self.Accepted == r:      # Accepting to open the project
             conditions_met = [1]
-            if os.path.isfile(self.ui.projpath_line.text()+"/info.xml"):    # Does the 'info.xml' file exist?
+            if os.path.isfile(self.ui.projpath_line.text()+"/info.ubdata"):    # Does the 'info.ubdata' file exist?
                 pass    # Yes, there is a valid UrbanBEATS file
             else:
                 prompt_msg = "Please select a valid project path!"
                 QtWidgets.QMessageBox.warning(self, 'Invalid Path', prompt_msg, QtWidgets.QMessageBox.Ok)
                 conditions_met[0] = 0
             if sum(conditions_met) == len(conditions_met):
-                self.load_project_info()        # Loads info.xml file and populates self.simulation with info
+                self.load_project_info()        # Loads info.ubdata file and populates self.simulation with info
                 QtWidgets.QDialog.done(self, r)
             else:
                 return
@@ -725,8 +724,8 @@ class OpenProjectDialogLaunch(QtWidgets.QDialog):
             QtWidgets.QDialog.done(self, r)  # Call the parent's method instead of the override.
 
     def load_project_info(self):
-        """ Loads the info.xml file in the project folder and writes the basic information """
-        self.simulation.load_project_info_xml(self.ui.projpath_line.text())
+        """ Loads the info.ubdata file in the project folder and writes the basic information """
+        self.simulation.load_project_info_datafile(self.ui.projpath_line.text())
 
 
 # --- SETUP NEW PROJECT DIALOG ---
@@ -797,7 +796,7 @@ class NewProjectDialogLaunch(QtWidgets.QDialog):
             self.ui.location_combo.setCurrentIndex(citynames.index(cityname)+1)
 
         self.update_coord_combo()
-        self.ui.epsg_line.setText(self.simulation.get_project_parameter("project_epsg"))
+        self.ui.epsg_line.setText(str(self.simulation.get_project_parameter("project_epsg")))
         self.update_combo_from_epsg()
 
         # Enable Pop-up completion for the coordinate system combo box. Note that the combo box has to be editable!
