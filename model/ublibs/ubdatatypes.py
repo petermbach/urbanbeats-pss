@@ -4,7 +4,7 @@ r"""
 @section LICENSE
 
 Urban Biophysical Environments and Technologies Simulator (UrbanBEATS)
-Copyright (C) 2018  Peter M. Bach
+Copyright (C) 2017-2022  Peter M. Bach
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 __author__ = "Peter M. Bach"
-__copyright__ = "Copyright 2018. Peter M. Bach"
+__copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- CODE STRUCTURE ---
 #       (1) ...
@@ -309,16 +309,30 @@ class UBCollection(object):
     """The UrbanBEATS Collection class structure. A collection stores a whole array of assets
     from the modelling outputs. It ca be used to organise geometric and non-geometric assets based
     on scenarios or other aspects of the spatial environment."""
-    def __init__(self, identifier):
+    def __init__(self, identifier, containertype):
         self.__containername = identifier
+        self.__containertype = containertype    # "Scenario", "Standalone", "Other"
+        self.__assettypes = []
         self.__assetcount = 0
         self.__assets = {}
 
+    # General container management
     def get_container_name(self):
         return self.__containername
 
+    def get_container_type(self):
+        return self.__containertype
+
+    def add_asset_type(self, assettype):
+        self.__assettypes.append(assettype)
+
+    def get_asset_types(self):
+        return self.__assettypes
+
+    # Simulation management - asset creation, modification etc.
     def add_asset(self, name, asset):
         self.__assets[name] = asset
+        self.__assetcount += 1
         return True
 
     def get_asset_with_name(self, name):
@@ -372,12 +386,15 @@ class UBCollection(object):
         """
         try:
             del self.__assets[name]
+            self.__assetcount -= 1
         except KeyError:
             return True
 
     def reset_assets(self):
         """Erases all assets, leaves an empty assets dictionary. Carried out when resetting the simulation."""
         self.__assets = {}
+        self.__assettypes = []
+        self.__assetcount = 0
         gc.collect()
 
 
@@ -528,4 +545,3 @@ class NeighbourhoodInfluenceFunction(object):
             else:
                 continue
         return True
-

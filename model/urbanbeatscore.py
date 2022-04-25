@@ -130,6 +130,9 @@ class UrbanBeatsSim(object):
         self.__ubruntime = ubruntime.UrbanBeatsRuntime(self, self.__datalibrary, self.__projectlog)
 
     # ASSET COLLECTIONS RELATING TO THE GLOBAL PROJECT COLLECTIONS
+    def create_new_asset_collection(self, name, collection_type):
+        self.__global_collections[name] = ubdata.UBCollection(name, collection_type)
+
     def add_asset_collection_to_project(self, ubcollection_obj):
         self.__global_collections[ubcollection_obj.get_container_name()] = ubcollection_obj
 
@@ -138,6 +141,9 @@ class UrbanBeatsSim(object):
             del self.__global_collections[name]
         except KeyError:
             return True
+
+    def get_global_asset_collection(self):
+        return self.__global_collections
 
     # MODULE MANAGEMENT
     def get_module_instance(self, longname):
@@ -624,6 +630,10 @@ class UrbanBeatsSim(object):
         it."""
         if scenario_object.get_metadata("name") not in self.__scenarios.keys():
             self.__scenarios[scenario_object.get_metadata("name")] = scenario_object
+            if scenario_object.get_metadata("name") not in self.__global_collections:
+                assetcol = ubdata.UBCollection(scenario_object.get_metadata("name"), "Scenario")
+                self.add_asset_collection_to_project(assetcol)
+            scenario_object.define_asset_collection_container(assetcol)
             return True
         else:
             return False    # Cannot have two scenarios of the same name!

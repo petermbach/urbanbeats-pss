@@ -21,22 +21,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 __author__ = "Peter M. Bach"
-__copyright__ = "Copyright 2018. Peter M. Bach"
-
-# --- CODE STRUCTURE ---
-#       (1) ...
-# --- --- --- --- --- ---
+__copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 import threading
 import gc
 import xml.etree.ElementTree as ET  # XML parsing for loading scenario files
-import ast  # Used for converting a string of a list into a list e.g. "[1, 2, 3, 4]" --> [1, 2, 3, 4]
-
-# --- URBANBEATS LIBRARY IMPORTS ---
-from .progref import ubglobals
-from .ublibs import ubspatial
-from .ublibs.ubdatatypes import UBCollection
+import pickle
 
 
 # --- SCENARIO CLASS DEFINITION ---
@@ -47,14 +38,18 @@ class UrbanBeatsScenario(threading.Thread):
     """
     def __init__(self, simulation, datalibrary, projectlog):
         threading.Thread.__init__(self)
+        self.runstate = False
         self.__observers = []
         self.__progressbars = []
+
+        # REFERENCES TO KEY SIMULATION OBJECTS
         self.simulation = simulation        # The CORE (UrbanBEATSSim)
         self.datalibrary = datalibrary      # The active data library instance
         self.projectlog = projectlog        # The active log
         self.projectpath = simulation.get_project_path()
-        self.runstate = False
+        self.assetscollection = None                  # UBCollection object with key assets
 
+        # SCENARIO DATA
         self.__scenariometadata = {"name": "My UrbanBEATS Scenario",
                                    "boundary": "(select simulation boundary)",
                                    "narrative": "(A description of my scenario)",
@@ -63,24 +58,11 @@ class UrbanBeatsScenario(threading.Thread):
                                    "usescenarioname": 0}
 
         self.__spatial_data = []        # a list of map data to be used, holds the data references.
-        self.__time_series_data = []    # a list of time series data to be used in the scenario or stored.
+        self.__temporal_data = []    # a list of time series data to be used in the scenario or stored.
         self.__qual_data = []           # a list of qualitative data to be used in the scenario
 
-        self.__assets = None            # UBCollection object with key assets
         self.__global_edge_list = []
         self.__global_point_list = []
-        # can include: UBComponents(), Input Data, etc.
-
-        # Calibration history - stores user data on model calibration.
-        self.__calibration_history = {
-            "tia": { "Block": None, "Region": None, "Suburb": None, "PlanZone": None, "Total": None},
-            "tif": { "Block": None, "Region": None, "Suburb": None, "PlanZone": None, "Total": None},
-            "allot": { "Block": None, "Region": None, "Suburb": None, "PlanZone": None, "Total": None},
-            "houses": { "Block": None, "Region": None, "Suburb": None, "PlanZone": None, "Total": None},
-            "roofarea": { "Block": None, "Region": None, "Suburb": None, "PlanZone": None, "Total": None},
-            "demand": { "Block": None, "Region": None, "Suburb": None, "PlanZone": None, "Total": None},
-            "ww": { "Block": None, "Region": None, "Suburb": None, "PlanZone": None, "Total": None}
-            }   # Links to calibration files based on the type of parameter and the aggregation level
 
     # --- SCENARIO METADATA ---
     def set_metadata(self, parname, value):
@@ -132,154 +114,22 @@ class UrbanBeatsScenario(threading.Thread):
             except ValueError:
                 return None
 
-    # --- CALIBRATION SUB-FUNCTIONS ---
-    def get_calibration_data_file(self, param, aggreg):
-        return self.__calibration_history[param][aggreg]
+    # --- ASSET COLLECTION MANAGEMENT ---
+    def define_asset_collection_container(self, assetcol):
+        """Sets the active assetcollection container to the instantiated container created when the scenario is saved
+        to the main simulation object."""
+        self.assetscollection = assetcol
 
-    def set_active_calibration_data_file(self, param, aggreg, fname):
-        try:
-            self.__calibration_history[param][aggreg] = fname
-        except KeyError:
-            return True
-
-    # --- UB COLLECTION MANAGEMENT WITHIN SCENARIO CONTEXT ---
-    # Scenarios will have one unique instance of a UBCollection to store all spatial data generated in the scenario
-    # This UBCollection is reset if the scenario is re-simulated. Following methods adapt the functionality of the
-    # UBCollection instance.
-    def add_asset(self, name, asset):
-        """Adds a new asset object to the asset dictionary with the key 'name'."""
-        if self.__assets is not None:
-            self.__assets.add_asset(name, asset)
-
-    def get_asset_with_name(self, name):
-        """Returns the asset within self.__assets with the key 'name'. Returns None if the asset does not exist."""
-        if self.__assets is None:
-            return None
-        return self.__assets.get_asset_with_name(name)
-
-    def get_assets_with_identifier(self, idstring, **kwargs):
-        """Scans the complete Asset List and returns all assets with the idstring contained in their name
-        e.g. BlockID contained in the name "BlockID1", "BlockID2", etc.)
-
-        :param idstring: the part of the string to search the asset database for (e.g. "BlockID")
-        :param **kwargs: 'assetcol' = {} custom dictionary of assets
-        """
-        if self.__assets is None:
-            return []
-        return self.__assets.get_assets_with_identifier(self, idstring, kwargs)
-
-    def retrieve_attribute_value_list(self, asset_identifier, attribute_name, asset_ids):
-        """Returns a list [] of the attribute value specified by "attribute_name" for all asset of type "asset_identifier"
-        with the IDs "asset_ids". Note that with asset identifiers, use only the legal identifiers, refer to ubglobals
-
-        :param asset_identifier: str() of the asset identifier e.g. "BlockID" or "PatchID", etc.
-        :param attribute_name: str() name of the attribute to get the data for
-        :param asset_ids: list() of all ID numbers to search for
-        :return: list() object containing all values in the ascending order of asset_ids
-        """
-        if self.__assets is None:
-            return [[], []]
-        return self.__assets.retrieve_attribute_value_list(asset_identifier, attribute_name, asset_ids)
-
-    def remove_asset_by_name(self, name):
-        """Calls the UBCollections remove_asset_by_name() methods in the Scenario Context."""
-        if self.__assets is None:
-            return True
-        self.__assets.remove_asset_by_name(name)
+    def get_asset_collection_container(self):
+        return self.assetscollection
 
     def reset_assets(self):
-        """Erases all assets, leaves an empty assets dictionary. Carried out when resetting the simulation."""
-        self.__assets = None
+        """Resets the current asset collection, leaves an empty assets dictionary. Carried out when resetting the
+        simulation for a scenario."""
+        if self.assetscollection is None:
+            return
+        self.assetscollection.reset_assets()
         gc.collect()
-
-    def initialize_asset_library(self):
-        self.__assets = UBCollection(self.get_metadata("name"))
-
-    # --- GENERAL SCENARIO DATA MANAGEMENT ---
-    def setup_scenario(self):
-        """Initializes the scenario with the setup data provided by the user."""
-        # [POSSIBLE TO DO] CREATE ASSETS SUPERSTRUCTURE
-
-    def save_scenario(self):
-        """Creates an updated scenario_name.xml file of the current scenario including all module parameters."""
-        scenario_fname = self.projectpath+"/scenarios/"+self.__scenariometadata["name"].replace(" ", "_")+".xml"
-
-        f = open(scenario_fname, 'w')
-        f.write('<URBANBEATSSCENARIO creator="Peter M. Bach" version="1.0">\n')
-
-        f.write('\t<scenariometa>\n')
-        smeta = self.get_metadata("ALL")
-        for i in smeta.keys():
-            f.write('\t\t<'+str(i)+'>'+str(smeta[i])+'</'+str(i)+'>\n')
-        f.write('\t</scenariometa>\n')
-
-        f.write('\t<scenariodata>\n')
-        for i in [self.__spatial_data, self.__time_series_data, self.__qual_data]:
-            for dref in i:
-                f.write('\t\t<datarefid type="'+str(dref.get_metadata("class"))+'">'+str(dref.get_data_id())+'</datarefid>\n')
-        f.write('\t</scenariodata>\n')
-
-        # f.write('\t<scenariomodules>\n')
-        # for i in self.__modulesbools.keys():
-        #     # Data for all the modules. This includes: active/in-active, number of instances, parameters
-        #     f.write('\t\t<' + str(i) + '>\n')     # <MODULENAME>
-        #     f.write('\t\t\t<active>'+str(self.__modulesbools[i])+'</active>\n')
-        #     f.write('\t\t\t<count>'+str(len(self.__modules[i]))+'</count>\n')
-        #     for j in range(len(self.__modules[i])):     # Loop across keys to get the module objects for parameters
-        #         f.write('\t\t\t<parameters index="'+str(j)+'">\n')
-        #         curmod = self.__modules[i][j]   # The current module object
-        #         parlist = curmod.get_module_parameter_list()
-        #         for par in parlist.keys():
-        #             f.write('\t\t\t\t<'+str(par)+'>'+str(curmod.get_parameter(par))+'</'+str(par)+'>\n')
-        #         f.write('\t\t\t</parameters>\n')
-        #
-        #     f.write('\t\t</' + str(i) + '>\n')
-        # f.write('\t</scenariomodules>\n')
-
-        f.write('</URBANBEATSSCENARIO>')
-        f.close()
-
-        # NOTE TO SELF: when you read from the .xml file, there will be a string list e.g. '[2008, 2009, 2010, ...]'
-        # to convert this to a list, use import ast and then yearlist = ast.literal_eval('[2008, 2009, 2010, ...]')
-
-    def setup_scenario_from_xml(self, filename):
-        """Scans the scenarios folder and restores all scenarios based on the information contained in the .xml
-        files if they exist."""
-        # print self.projectpath + "/scenarios/" + filename
-        f = ET.parse(self.projectpath+"/scenarios/"+filename)
-        root = f.getroot()
-
-        # Load metadata of the scenario
-        for child in root.find("scenariometa"):
-            self.__scenariometadata[child.tag] = type(self.__scenariometadata[child.tag])(child.text)
-
-        # Collect data from data library, which should have been loaded by now
-        for child in root.find("scenariodata"):
-            if child.attrib["type"] == "spatial":
-                self.__spatial_data.append(self.datalibrary.get_data_with_id(child.text))
-            elif child.attrib["type"] == "temporal":
-                self.__time_series_data.append(self.datalibrary.get_data_with_id(child.text))
-            else:
-                self.__qual_data.append(self.datalibrary.get_data_with_id(child.text))
-
-        # # Create modules and fill out the modules with parameters [REVAMP]
-        # mdata = root.find("scenariomodules")
-        # for modname in self.__modulesbools.keys():
-        #     mbool = int(mdata.find(modname).find("active").text)
-        #     self.__modulesbools[modname] = mbool
-        # self.setup_scenario()   # Instantiates all modules
-
-        # # Loop through module information and set parameters
-        # for modname in self.__modules.keys():
-        #     for instance in mdata.find(modname).findall("parameters"):
-        #         m = self.get_module_object(modname, int(instance.attrib["index"]))
-        #         for child in instance:
-        #             print(f"{child.tag}, {child.text}")  # DEBUG WITH THIS IN CASE PROGRAM CRASHES ON LOADING
-        #             if m.get_parameter_type(child.tag) == 'LISTDOUBLE':     # IF IT's a LISTDOUBLE
-        #                 m.set_parameter(child.tag, ast.literal_eval(child.text))    # Use literal eval
-        #             else:
-        #                 # Currently this does some explicit type casting based on the parameter types defined
-        #                 m.set_parameter(child.tag, type(m.get_parameter(child.tag))(child.text))
 
     # --- SCENARIO DATA SET MANAGEMENT ---
     def add_data_reference(self, dataref):
@@ -287,7 +137,7 @@ class UrbanBeatsScenario(threading.Thread):
         if dataref.get_metadata("class") == "spatial":
             self.__spatial_data.append(dataref)
         elif dataref.get_metadata("class") == "temporal":
-            self.__time_series_data.append(dataref)
+            self.__temporal_data.append(dataref)
         else:
             self.__qual_data.append(dataref)
 
@@ -300,7 +150,7 @@ class UrbanBeatsScenario(threading.Thread):
         if dataclass == "spatial":
             return self.__spatial_data
         elif dataclass == "temporal":
-            return self.__time_series_data
+            return self.__temporal_data
         else:
             return self.__qual_data
 
@@ -314,9 +164,9 @@ class UrbanBeatsScenario(threading.Thread):
             if self.__spatial_data[i].get_data_id() == dataID:
                 self.__spatial_data.pop(i)
                 return
-        for i in range(len(self.__time_series_data)):
-            if self.__time_series_data[i].get_data_id() == dataID:
-                self.__time_series_data.pop(i)
+        for i in range(len(self.__temporal_data)):
+            if self.__temporal_data[i].get_data_id() == dataID:
+                self.__temporal_data.pop(i)
                 return
         for i in range(len(self.__qual_data)):
             if self.__qual_data[i].get_data_id() == dataID:
@@ -330,7 +180,7 @@ class UrbanBeatsScenario(threading.Thread):
 
         :return: list type containing metadata of the loaded data files."""
         datalist = []   # [dataID, filename, parent, sub]
-        for dset in [self.__spatial_data, self.__time_series_data, self.__qual_data]:
+        for dset in [self.__spatial_data, self.__temporal_data, self.__qual_data]:
             for dref in dset:
                 dataid = dref.get_data_id()
                 filename = dref.get_metadata("filename")
@@ -356,7 +206,7 @@ class UrbanBeatsScenario(threading.Thread):
             if dataclass == "spatial":
                 self.__spatial_data.append(dref)
             elif dataclass == "temporal":
-                self.__time_series_data.append(dref)
+                self.__temporal_data.append(dref)
             else:
                 self.__qual_data.append(dref)
         return True
@@ -368,7 +218,7 @@ class UrbanBeatsScenario(threading.Thread):
         :param datanumID: the unique identifier ID of the data set being checked.
         :return: True if the data is already in one of the lists, False otherwise.
         """
-        for dataset in [self.__spatial_data, self.__time_series_data, self.__qual_data]:
+        for dataset in [self.__spatial_data, self.__temporal_data, self.__qual_data]:
             for i in range(len(dataset)):
                 if datanumID == dataset[i].get_data_id():
                     return True
@@ -618,12 +468,96 @@ class UrbanBeatsScenario(threading.Thread):
     #     # xregions.export_municipalities_to_gis_shapefile()
     #
     #     self.update_runtime_progress(100)
-    #
-    # def run_benchmark_simulation(self):
-    #     """This function presents the logical module flow for a BENCHMARK simulation."""
-    #     pass
-    #     self.update_runtime_progress(100)
 
+    # --- GENERAL SCENARIO DATA MANAGEMENT ---
+    def save_scenario(self):
+        """Creates an updated scenario_name.xml file of the current scenario including all module parameters."""
+        scenario_fname = self.projectpath+"/scenarios/"+self.__scenariometadata["name"].replace(" ", "_")+".xml"
+
+        f = open(scenario_fname, 'w')
+        f.write('<URBANBEATSSCENARIO creator="Peter M. Bach" version="1.0">\n')
+
+        f.write('\t<scenariometa>\n')
+        smeta = self.get_metadata("ALL")
+        for i in smeta.keys():
+            f.write('\t\t<'+str(i)+'>'+str(smeta[i])+'</'+str(i)+'>\n')
+        f.write('\t</scenariometa>\n')
+
+        f.write('\t<scenariodata>\n')
+        for i in [self.__spatial_data, self.__temporal_data, self.__qual_data]:
+            for dref in i:
+                f.write('\t\t<datarefid type="'+str(dref.get_metadata("class"))+'">'+str(dref.get_data_id())+'</datarefid>\n')
+        f.write('\t</scenariodata>\n')
+
+        # f.write('\t<scenariomodules>\n')
+        # for i in self.__modulesbools.keys():
+        #     # Data for all the modules. This includes: active/in-active, number of instances, parameters
+        #     f.write('\t\t<' + str(i) + '>\n')     # <MODULENAME>
+        #     f.write('\t\t\t<active>'+str(self.__modulesbools[i])+'</active>\n')
+        #     f.write('\t\t\t<count>'+str(len(self.__modules[i]))+'</count>\n')
+        #     for j in range(len(self.__modules[i])):     # Loop across keys to get the module objects for parameters
+        #         f.write('\t\t\t<parameters index="'+str(j)+'">\n')
+        #         curmod = self.__modules[i][j]   # The current module object
+        #         parlist = curmod.get_module_parameter_list()
+        #         for par in parlist.keys():
+        #             f.write('\t\t\t\t<'+str(par)+'>'+str(curmod.get_parameter(par))+'</'+str(par)+'>\n')
+        #         f.write('\t\t\t</parameters>\n')
+        #
+        #     f.write('\t\t</' + str(i) + '>\n')
+        # f.write('\t</scenariomodules>\n')
+
+        f.write('</URBANBEATSSCENARIO>')
+        f.close()
+
+        # NOTE TO SELF: when you read from the .xml file, there will be a string list e.g. '[2008, 2009, 2010, ...]'
+        # to convert this to a list, use import ast and then yearlist = ast.literal_eval('[2008, 2009, 2010, ...]')
+
+    def setup_scenario_from_xml(self, filename):
+        """Scans the scenarios folder and restores all scenarios based on the information contained in the .xml
+        files if they exist."""
+        # print self.projectpath + "/scenarios/" + filename
+        f = ET.parse(self.projectpath+"/scenarios/"+filename)
+        root = f.getroot()
+
+        # Load metadata of the scenario
+        for child in root.find("scenariometa"):
+            self.__scenariometadata[child.tag] = type(self.__scenariometadata[child.tag])(child.text)
+
+        # Collect data from data library, which should have been loaded by now
+        for child in root.find("scenariodata"):
+            if child.attrib["type"] == "spatial":
+                self.__spatial_data.append(self.datalibrary.get_data_with_id(child.text))
+            elif child.attrib["type"] == "temporal":
+                self.__temporal_data.append(self.datalibrary.get_data_with_id(child.text))
+            else:
+                self.__qual_data.append(self.datalibrary.get_data_with_id(child.text))
+
+        # # Create modules and fill out the modules with parameters [REVAMP]
+        # mdata = root.find("scenariomodules")
+        # for modname in self.__modulesbools.keys():
+        #     mbool = int(mdata.find(modname).find("active").text)
+        #     self.__modulesbools[modname] = mbool
+        # self.setup_scenario()   # Instantiates all modules
+
+        # # Loop through module information and set parameters
+        # for modname in self.__modules.keys():
+        #     for instance in mdata.find(modname).findall("parameters"):
+        #         m = self.get_module_object(modname, int(instance.attrib["index"]))
+        #         for child in instance:
+        #             print(f"{child.tag}, {child.text}")  # DEBUG WITH THIS IN CASE PROGRAM CRASHES ON LOADING
+        #             if m.get_parameter_type(child.tag) == 'LISTDOUBLE':     # IF IT's a LISTDOUBLE
+        #                 m.set_parameter(child.tag, ast.literal_eval(child.text))    # Use literal eval
+        #             else:
+        #                 # Currently this does some explicit type casting based on the parameter types defined
+        #                 m.set_parameter(child.tag, type(m.get_parameter(child.tag))(child.text))
+
+def save_scenario_object(scenario_obj):
+    pass
+
+def load_scenario_object(name):
+    pass
+    scenario = None
+    return scenario
 
 
 

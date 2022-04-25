@@ -367,7 +367,7 @@ p, li { white-space: pre-wrap; }
       <item>
        <widget class="QLabel" name="grid_id_2">
         <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Grid Identifier&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Asset Collection&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </item>
@@ -386,30 +386,33 @@ p, li { white-space: pre-wrap; }
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="gridname_lbl">
-           <property name="whatsThis">
-            <string>Width of the square cell in the city grid in metres</string>
-           </property>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="asset_col_combo">
+           <item>
+            <property name="text">
+             <string>(select asset collection)</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QRadioButton" name="asset_col_existing">
            <property name="text">
-            <string>Enter Name:</string>
+            <string>Use Existing:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QRadioButton" name="asset_col_new">
+           <property name="text">
+            <string>Create New:</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="gridname_line">
+          <widget class="QLineEdit" name="asset_col_line">
            <property name="toolTip">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The unique name/identifier of the created simulation grid, will be labelled as such throughout the workspace.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="gridname_lbl_2">
-           <property name="whatsThis">
-            <string>Width of the square cell in the city grid in metres</string>
-           </property>
-           <property name="text">
-            <string>Boundary:</string>
            </property>
           </widget>
          </item>
@@ -420,6 +423,16 @@ p, li { white-space: pre-wrap; }
              <string>(select simulation boundary)</string>
             </property>
            </item>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="gridname_lbl_2">
+           <property name="whatsThis">
+            <string>Width of the square cell in the city grid in metres</string>
+           </property>
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Boundary:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
           </widget>
          </item>
         </layout>
@@ -804,8 +817,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>369</width>
-               <height>283</height>
+               <width>220</width>
+               <height>322</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1173,7 +1186,7 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>369</width>
+               <width>334</width>
                <height>269</height>
               </rect>
              </property>
@@ -1409,8 +1422,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>369</width>
-               <height>229</height>
+               <width>250</width>
+               <height>255</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1624,8 +1637,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>369</width>
-               <height>225</height>
+               <width>273</width>
+               <height>264</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -1845,7 +1858,7 @@ p, li { white-space: pre-wrap; }
  </widget>
  <resources>
   <include location="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
-  <include location="../../../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
+  <include location="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
  </resources>
  <connections>
   <connection>

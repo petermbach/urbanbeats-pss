@@ -354,56 +354,55 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         """Resets the scenario tree widgets back to original before populating it with data."""
         self.ui.scenariodata_tree.clear()
         self.ui.datalibrary_tree.clear()
-        for datacat in ubglobals.DATACATEGORIES:
+        for datacat in ubdatalibrary.DATACATEGORIES:
             dtwi = QtWidgets.QTreeWidgetItem()
             dtwi.setText(0, datacat)
             self.ui.datalibrary_tree.addTopLevelItem(dtwi)
             stwi = QtWidgets.QTreeWidgetItem()
             stwi.setText(0, datacat)
             self.ui.scenariodata_tree.addTopLevelItem(stwi)
-        for spdata in ubglobals.SPATIALDATA:
+        for spdata in ubdatalibrary.SPATIALDATA_DEFN.keys():
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, spdata)
             twi_child = QtWidgets.QTreeWidgetItem()
             twi_child.setText(0, "(no data)")
             twi.addChild(twi_child)
             self.ui.datalibrary_tree.topLevelItem(0).addChild(twi)
-        for tdata in ubglobals.TEMPORALDATA:
+        for tdata in ubdatalibrary.TEMPORALDATA_DEFN.keys():
             twi = QtWidgets.QTreeWidgetItem()
             twi.setText(0, tdata)
             twi_child = QtWidgets.QTreeWidgetItem()
             twi_child.setText(0, "(no data)")
             twi.addChild(twi_child)
             self.ui.datalibrary_tree.topLevelItem(1).addChild(twi)
+        for qdata in ubdatalibrary.QUALDATA_DEFN.keys():
+            twi = QtWidgets.QTreeWidgetItem()
+            twi.setText(0, qdata)
+            twi_child = QtWidgets.QTreeWidgetItem()
+            twi_child.setText(0, "(no data)")
+            twi.addChild(twi_child)
+            self.ui.datalibrary_tree.topLevelItem(2).addChild(twi)
 
     def update_dialog_data_library(self):
         """Just like the main window, this method populates the dialog window's data library
         browser with the info from the project's data library."""
         self.reset_scenario_tree_widgets()  # Redo the data library
-        datacol_classes = ["spatial", "temporal"]
-        ubglobals_refs = [ubglobals.SPATIALDATA, ubglobals.TEMPORALDATA]    # TO DO  - update for qualitative
+        datacol_classes = ["spatial", "temporal", "qualitative"]
+        datalib_refs = [list(ubdatalibrary.SPATIALDATA_DEFN.keys()),
+                          list(ubdatalibrary.TEMPORALDATA_DEFN.keys()),
+                          list(ubdatalibrary.QUALDATA_DEFN.keys())]    # TO DO  - update for qualitative
         for i in range(len(datacol_classes)):
             datacol = self.datalibrary.get_all_data_of_class(datacol_classes[i])    # Get the list of data
             cur_toplevelitem = self.ui.datalibrary_tree.topLevelItem(i)
             for dref in datacol:
-                dtype = dref.get_metadata("parent")
-                dtypeindex = ubglobals_refs[i].index(dtype)
+                dtype = dref.get_metadata("type")
+                dtypeindex = datalib_refs[i].index(dtype)
                 if cur_toplevelitem.child(dtypeindex).child(0).text(0) == "(no data)":
                     cur_toplevelitem.child(dtypeindex).takeChild(0)
                 twi = QtWidgets.QTreeWidgetItem()
                 twi.setText(0, dref.get_metadata("filename"))
                 twi.setToolTip(0, str(dref.get_data_id()) + " :: " + str(dref.get_data_file_path()))
                 cur_toplevelitem.child(dtypeindex).addChild(twi)
-
-        # Update the Qualitative Data Set
-        datacol = self.datalibrary.get_all_data_of_class("qualitative")
-        for dref in datacol:
-            if self.ui.datalibrary_tree.topLevelItem(2).child(0).text(0) == "(no data)":
-                self.ui.datalibrary_tree.topLevelItem(2).takeChild(0)
-            twi = QtWidgets.QTreeWidgetItem()
-            twi.setText(0, dref.get_metadata("filename"))
-            twi.setToolTip(0, str(dref.get_data_id()) + " :: " + str(dref.get_data_file_path()))
-            self.ui.datalibrary_tree.topLevelItem(2).addChild(twi)
 
         self.ui.datalibrary_tree.expandAll()
         self.ui.scenariodata_tree.expandAll()
@@ -449,8 +448,8 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
                 dref.assign_scenario(self.scenario.get_metadata("name"))
             newdatasets.append(dref)
 
-        print(f"Old Data Set Length {len(olddatasets)}")
-        print(f"New Data Set Length {len(newdatasets)}")
+        # print(f"Old Data Set Length {len(olddatasets)}")
+        # print(f"New Data Set Length {len(newdatasets)}")
         data_to_remove = []
         for dref in olddatasets:
             if dref not in newdatasets:
@@ -510,7 +509,6 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         self.scenario.set_metadata("name", str(self.ui.name_box.text()))
         self.scenario.set_metadata("boundary", str(self.ui.boundary_combo.currentText()))
         self.scenario.set_metadata("narrative", str(self.ui.narrative_box.toPlainText()))
-
         self.scenario.set_metadata("startyear", int(self.ui.startyear_spin.value()))
 
         self.update_scenario_datasets()
@@ -628,7 +626,6 @@ class OpenProjectDialogLaunch(QtWidgets.QDialog):
         self.ui.import_button.clicked.connect(self.import_button_activate)
         self.ui.export_button.clicked.connect(self.export_button_activate)
         self.ui.project_table.itemDoubleClicked.connect(self.accept)
-
 
     def enable_disable_buttons(self):
         """Enables and disables the buttons based on what has been clicked on the project table."""

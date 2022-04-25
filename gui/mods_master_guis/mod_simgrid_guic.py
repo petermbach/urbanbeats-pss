@@ -74,15 +74,17 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
         if self.mode == 1:
             self.active_scenario = simulation.get_active_scenario()
             self.module = None  # Initialize the variable to hold the active module object
-            self.ui.gridname_line.setText(self.active_scenario.get_metadata("name"))
-            self.ui.gridname_line.setEnabled(0)
+            self.ui.asset_col_line.setText(self.active_scenario.get_metadata("name"))
+            self.ui.asset_col_line.setEnabled(0)
             self.ui.ok_button.setEnabled(1)     # Disables the run, enables the OK
             self.ui.run_button.setEnabled(0)
             self.ui.progressbar.setEnabled(0)
         else:
             self.active_scenario = None
+            self.ui.asset_col_new.setChecked(1)
+            self.ui.asset_col_combo.setEnabled(0)
             self.module = self.simulation.get_module_instance(self.longname)
-            self.ui.gridname_line.setEnabled(1)
+            self.ui.asset_col_line.setEnabled(1)
             self.ui.ok_button.setEnabled(0)     # Enables the run, disables the OK
             self.ui.run_button.setEnabled(1)
             self.ui.progressbar.setEnabled(1)

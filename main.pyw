@@ -212,7 +212,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.geography_combo.currentIndexChanged.connect(self.update_active_geography_table)
 
         # Asset Collection
-        self.setup_assetcol_tree()
+        self.update_assetcol_tree()
         self.ui.assetcol_new_button.clicked.connect(self.add_new_ubcollection_to_table)
         self.ui.assetcol_delete_button.clicked.connect(self.remove_selected_collection_from_project)
         self.ui.assetcol_export.clicked.connect(self.show_export_assets_dialog)
@@ -434,21 +434,75 @@ class MainWindow(QtWidgets.QMainWindow):
             # Do nothing
 
     # MAIN WINDOW SPACE >> ASSETS COLLECTION TAB FUNCTIONS AND TABLE
-    def setup_assetcol_tree(self):
+    def update_assetcol_tree(self):
         self.ui.global_assets_table.clear()
-        # Setup assets from project folder
+        if self.__activeSimulationObject is None:
+            return
+        assetcol = self.__activeSimulationObject.get_global_asset_collection()
+        for ac in assetcol.keys():
+            if assetcol[ac].get_container_type() == "Other":
+                continue
+            twi = QtWidgets.QTreeWidgetItem()
+            twi.setText(0, assetcol[ac].get_container_name())
+            twi.setText(1, assetcol[ac].get_container_type())
+            twicon = QtGui.QIcon()
+            if assetcol[ac].get_container_type() == "Standalone":
+                pixmap = QtGui.QPixmap(":/icons/Very-Basic-Design-icon.png")
+            else:   #  assetcol[ac].get_container_type() == "scenario":
+                pixmap = QtGui.QPixmap(":/icons/book-open.png")
+            twicon.addPixmap(pixmap, QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            twi.setIcon(0, twicon)
+            assettypes = assetcol[ac].get_asset_types()
+            if len(assettypes) == 0:
+                child_item = QtWidgets.QTreeWidgetItem(twi)
+                child_item.setText(0, "<empty>")
+                child_item.setFlags(QtCore.Qt.NoItemFlags)
+            else:
+                for t in assettypes:
+                    child_item = QtWidgets.QTreeWidgetItem(twi)
+                    child_item.setText(0, assettypes[t])
+                    child_item.setText(1, "Geometry")
+                    child_item.setFlags(QtCore.Qt.NoItemFlags)
+
+            self.ui.global_assets_table.addTopLevelItem(twi)
+            self.ui.global_assets_table.resizeColumnToContents(0)
 
     def add_new_ubcollection_to_table(self):
         asset_name, ok = QtWidgets.QInputDialog.getText(self, 'Asset Collection', 'Enter name:')
         if ok:
-            twi = QtWidgets.QTreeWidgetItem()
-            self.global_assets_table
+            nochars = False
+            for char in ubglobals.NOCHARS:
+                if char in asset_name:
+                    nochars = True
+            if nochars:
+                prompt_msg = "Please enter a valid name without special characters!"
+                QtWidgets.QMessageBox.warning(self, 'Invalid Name', prompt_msg, QtWidgets.QMessageBox.Ok)
+                return True
+        self.__activeSimulationObject.create_new_asset_collection(asset_name, "Standalone")
+        self.update_assetcol_tree()
 
     def remove_selected_collection_from_project(self):
-        pass
+        if self.ui.global_assets_table.currentItem().parent() is None:
+            name_to_delete = self.ui.global_assets_table.currentItem().text(0)
+            containertype = self.ui.global_assets_table.currentItem().text(1)
+        else:
+            name_to_delete = self.ui.global_assets_table.currentItem().parent().text(0)
+            containertype = self.ui.global_assets_table.currentItem().parent().text(1)
+        if containertype == "Scenario":
+            prompt_msg = "Please delete the scenario to remove this asset."
+            QtWidgets.QMessageBox.information(self, "Scenario Asset Collection", prompt_msg, QtWidgets.QMessageBox.Ok)
+        else:
+            prompt_msg = "Are you sure you want to delete this asset collection?"
+            answer = QtWidgets.QMessageBox.warning(self, "Delete Asset Collection", prompt_msg,
+                                                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+            if answer == QtWidgets.QMessageBox.No:
+                return True
+            else:
+                self.__activeSimulationObject.remove_asset_collection_from_project(name_to_delete)
+        self.update_assetcol_tree()
 
     def show_export_assets_dialog(self):
-        pass
+        pass    # [TO DO] With data export dialog.
 
     # MAIN WINDOW SPACE >> GEOGRAPHY TAB FUNCTIONS
     def show_add_shape_boundary_dialog(self):
@@ -1129,7 +1183,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def setup_scenario(self):
         """Called when the scenario setup dialog box has successfully closed. i.e. signal accepted()"""
         self.__activeScenario = self.get_active_simulation_object().get_active_scenario()
-        self.__activeScenario.setup_scenario()
         self.get_active_simulation_object().add_new_scenario(self.__activeScenario)
 
         # ADD NEW ITEM TO THE SCENARIO TREE WIDGET AND SET AS ACTIVE [REVAMP]

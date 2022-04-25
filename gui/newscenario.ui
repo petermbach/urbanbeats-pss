@@ -781,7 +781,7 @@
  <resources>
   <include location="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
   <include location="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
-  <include location="../graphics/ubeats.qrc"/>
+  <include location="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
  </resources>
  <connections>
   <connection>
