@@ -102,33 +102,47 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
         boundarynames = self.simulation.get_project_boundary_names()
         for n in boundarynames:
             self.ui.boundary_combo.addItem(str(n))
-        if self.mode == 1:
+        if self.mode == 1:      # SCENARIO MODE
             scenario_boundaryname = self.active_scenario.get_metadata("boundary")
             if scenario_boundaryname == "(select simulation boundary)":
                 self.ui.boundary_combo.setCurrentIndex(0)
             else:
                 self.ui.boundary_combo.setCurrentIndex(list(boundarynames).index(scenario_boundaryname)+1)
             self.ui.boundary_combo.setEnabled(0)
-        else:
+        else:       # STANDALONE MODE
             self.ui.boundary_combo.setEnabled(1)
 
         # Asset collection combo box
-        self.ui.asset_col_combo.clear()
-        self.ui.boundary_combo.addItem("(select asset collection)")
-        gac = self.simulation.get_global_asset_collection()
-        for a in gac:
-            if a.get_container_type() in ["Scenario", "Other"]:     # Do not include scenario or "Other" collections
-                pass
-            else:
-                self.ui.asset_col_combo.addItem(str(a.get_container_name()))
+        if self.mode == 1:      # SCENARIO MODE
+            self.ui.asset_col_combo.clear()
+            self.ui.asset_col_combo.addItem(self.active_scenario.get_asset_collection_container().get_container_name())
+            self.ui.asset_col_combo.setEnabled(0)
+        else:
+            self.ui.asset_col_combo.clear()
+            self.ui.asset_col_combo.addItem("(select asset collection)")
+            gac = self.simulation.get_global_asset_collection()
+            for a in gac.keys():
+                if gac[a].get_container_type() in ["Scenario", "Other"]:
+                    pass    # Do not include scenario or "Other" collections
+                else:
+                    self.ui.asset_col_combo.addItem(gac[a].get_container_name())
 
         # Patch delineation land use combo
+        self.ui.patch_data_zoneombo.clear()
+        self.ui.patch_data_zoneombo.addItem("(select map for patch-delineation)")
         lumaps = self.get_dataref_array("spatial", "Land Use")  # Obtain the data ref array
         boundarymaps = self.get_dataref_array("spatial", "Boundaries")
         self.patchmaps = lumaps + boundarymaps
         [self.ui.patch_data_zoneombo.addItem(str(self.patchmaps[0][i])) for i in range(len(self.patchmaps[0]))]
 
+        self.ui.parcel_combo.clear()
+        self.ui.parcel_combo.addItem("(select map for parcel delineation)")
+        self.parcelmaps = self.get_dataref_array("spatial", "Miscellaneous") # Obtain the dataref array
+        [self.ui.parcel_combo.addItem(str(self.parcelmaps[0][i])) for i in range(len(self.parcelmaps[0]))]
+
         # --- SIGNALS AND SLOTS ---
+        self.ui.asset_col_new_radio.clicked.connect(self.enable_disable_guis)
+        self.ui.asset_col_existing_radio.clicked.connect(self.enable_disable_guis)
         self.ui.blocksize_auto.clicked.connect(self.enable_disable_guis)
         self.ui.hexsize_auto.clicked.connect(self.enable_disable_guis)
         self.ui.patch_discretize_grid_check.clicked.connect(self.enable_disable_guis)
@@ -145,11 +159,9 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
         """Enables and disables items in the GUI based on conditions."""
         if self.ui.asset_col_new_radio.isChecked():
             self.ui.asset_col_line.setEnabled(1)
-            self.ui.boundary_combo.setEnabled(1)
             self.ui.asset_col_combo.setEnabled(0)
         else:
             self.ui.asset_col_line.setEnabled(0)
-            self.ui.boundary_combo.setEnabled(0)
             self.ui.asset_col_combo.setEnabled(1)
         self.ui.blocksize_spin.setEnabled(not self.ui.blocksize_auto.isChecked())
         self.ui.hexsize_spin.setEnabled(not self.ui.hexsize_auto.isChecked())
@@ -177,7 +189,7 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
         # PATCH REPRESENTATION
         try:    # LAND USE COMBO - retrieve the dataID from module
             self.ui.patch_data_zoneombo.setCurrentIndex(
-                self.patchmaps[1].index(self.module.get_parameter("patchzonemap")))
+                self.patchmaps[1].index(self.module.get_parameter("patchzonemap"))+1)
             # if dataID is available, set the combo box
         except ValueError:
             self.ui.patch_data_zoneombo.setCurrentIndex(0) # else the map must've been removed, set combo to zero index
@@ -193,6 +205,13 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
 
         # GEOHASH GRID REPRESENTATION
         self.ui.gh_res_spin.setValue(int(self.module.get_parameter("geohash_lvl")))
+
+        # PARCEL MAP
+        try:
+            self.ui.parcel_combo.setCurrentIndex(
+                self.parcelmaps[1].index(self.module.get_parameter("parcel_map"))+1)
+        except ValueError:
+            self.ui.parcel_combo.setCurrentIndex(0)
 
     def get_dataref_array(self, dataclass, datatype, *args):
         """Retrieves a list of data files loaded into the current scenario for display in the GUI
@@ -227,6 +246,10 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
             self.module.set_parameter("geometry_type", "VECTORPATCH")
         elif self.ui.geometry_combo.currentIndex() == 3:
             self.module.set_parameter("geometry_type", "RASTER")
+        elif self.ui.geometry_combo.currentIndex() == 4:
+            self.module.set_parameter("geometry_type", "GEOHASH")
+        else:
+            self.module.set_parameter("geometry_type", "PARCEL")
 
         # SQUARE BLOCKS
         self.module.set_parameter("blocksize", self.ui.blocksize_spin.value())
@@ -241,7 +264,7 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
             self.module.set_parameter("hex_orientation", "EW")
 
         # PATCH REPRESENTATION
-        self.module.set_parameter("patchzonemap", self.patchmaps[1][self.ui.patch_data_zoneombo.currentIndex()])
+        self.module.set_parameter("patchzonemap", self.patchmaps[1][self.ui.patch_data_zoneombo.currentIndex()-1])
         self.module.set_parameter("disgrid_use", int(self.ui.patch_discretize_grid_check.isChecked()))
         self.module.set_parameter("disgrid", self.ui.patch_discretize_grid_spin.value())
         self.module.set_parameter("disgrid_auto", int(self.ui.patch_discretize_grid_auto.isChecked()))
@@ -253,6 +276,9 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
 
         # GEOHASH GRID REPRESENTATION
         self.module.set_parameter("geohash_lvl", int(self.ui.gh_res_spin.value()))
+
+        # PARCEL REPRESENTATION
+        self.module.set_parameter("parcel_map", self.parcelmaps[1][self.ui.parcel_combo.currentIndex()-1])
 
     def update_progress_bar_value(self, value):
         """Updates the progress bar of the Main GUI when the simulation is started/stopped/reset."""

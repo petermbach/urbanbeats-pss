@@ -60,13 +60,13 @@ class CreateSimGrid(UBModule):
         self.boundaryname = "(select simulation boundary)"
         self.geometry_type = "SQUARES"  # SQUARES, HEXAGONS, VECTORPATCH, RASTER
 
-        # Geometry Type: Square Blocks
+        # (1) Geometry Type: Square Blocks
         self.create_parameter("blocksize", DOUBLE, "Size of the square blocks")
         self.create_parameter("blocksize_auto", BOOL, "Determine the block size automatically?")
         self.blocksize = 500    # [m]
         self.blocksize_auto = 0
 
-        # Geometry Type: Hexagonal Blocks
+        # (2) Geometry Type: Hexagonal Blocks
         self.create_parameter("hexsize", DOUBLE, "Edge length of a single hexagonal block")
         self.create_parameter("hexsize_auto", BOOL, "Auto-determine the hexagonal edge length?")
         self.create_parameter("hex_orientation", STRING, "Orientation of the hexagonal block")
@@ -74,7 +74,7 @@ class CreateSimGrid(UBModule):
         self.hexsize_auto = 0
         self.hex_orientation = "NS"     # NS = north-south, EW = east-west
 
-        # Geometry Type: Patch/Irregular Block
+        # (3) Geometry Type: Patch/Irregular Block
         self.create_parameter("patchzonemap", STRING, "The zoning map that patch delineation is based on")
         self.create_parameter("disgrid_use", BOOL, "Use a discretization grid for the patch delineatioN?")
         self.create_parameter("disgrid_length", DOUBLE, "Edge length of the discretization grid")
@@ -84,7 +84,7 @@ class CreateSimGrid(UBModule):
         self.disgrid_length = 500   # [m]
         self.disgrid_auto = 0
 
-        # Geometry Type: Raster/Fishnet
+        # (4) Geometry Type: Raster/Fishnet
         self.create_parameter("rastersize", DOUBLE, "Resolution of the raster grid")
         self.create_parameter("nodatavalue", DOUBLE, "Identifier for the NODATAVALUE")
         self.create_parameter("generate_fishnet", BOOL, "Generate a fishnet of the raster?")
@@ -92,9 +92,13 @@ class CreateSimGrid(UBModule):
         self.nodatavalue = -9999
         self.generate_fishnet = 0
 
-        # Geometry Type: Geohash Grid
+        # (5) Geometry Type: Geohash Grid
         self.create_parameter("geohash_lvl", DOUBLE, "Level of resolution for the geohash")
         self.geohash_lvl = 7
+
+        # (6) Geometry Type: Parcels
+        self.create_parameter("parcel_map", STRING, "Parcel Map to base the grid on")
+        self.parcel_map = "(select parcel map)"
 
         # NON-VISIBLE PARAMETERS (ADVANCED SETTINGS)
         # None
