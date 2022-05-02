@@ -39,9 +39,10 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
     # MODULE'S BASIC METADATA
     type = "master"
     catname = "Spatial Representation"
-    catorder = 1
+    catcode = 1
     longname = "Create Simulation Grid"
     icon = ":/icons/Data-Grid-icon.png"
+    prerequisites = []
 
     def __init__(self, main, simulation, datalibrary, simlog, mode, parent=None):
         """ Initialisation of the Block Delineation GUI, takes several input parameters.
@@ -71,23 +72,28 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
         self.progressbarobserver = ProgressBarObserver()        # For single runtime only
 
         # Usage mode: with a scenario or not with a scenario (determines GUI settings and module connection)
-        if self.mode == 1:
+        if self.mode == 1:      # Scenario Mode
             self.active_scenario = simulation.get_active_scenario()
             self.module = None  # Initialize the variable to hold the active module object
-            self.ui.asset_col_line.setText(self.active_scenario.get_metadata("name"))
-            self.ui.asset_col_line.setEnabled(0)
             self.ui.ok_button.setEnabled(1)     # Disables the run, enables the OK
             self.ui.run_button.setEnabled(0)
             self.ui.progressbar.setEnabled(0)
-        else:
+            self.ui.asset_col_line.setEnabled(0)        # Asset collection
+            self.ui.asset_col_line.setText(self.active_scenario.get_metadata("name"))   # Set scenario's name
+            self.ui.asset_col_new_radio.setEnabled(0)   # Do not use radio buttons
+            self.ui.asset_col_existing_radio.setEnabled(0)
+            self.ui.asset_col_existing_radio.setChecked(1)      # Using existing asset collection from scenario
+        else:                    # Standalone Mode
             self.active_scenario = None
-            self.ui.asset_col_new.setChecked(1)
-            self.ui.asset_col_combo.setEnabled(0)
             self.module = self.simulation.get_module_instance(self.longname)
             self.ui.asset_col_line.setEnabled(1)
             self.ui.ok_button.setEnabled(0)     # Enables the run, disables the OK
             self.ui.run_button.setEnabled(1)
             self.ui.progressbar.setEnabled(1)
+            self.ui.asset_col_new_radio.setEnabled(1)   # Asset collection
+            self.ui.asset_col_new_radio.setChecked(1)   # By default, offer a new asset collection
+            self.ui.asset_col_line.setEnabled(1)        # enable the line for the name
+            self.ui.asset_col_existing_radio.setEnabled(1)      # Enable radio buttons
 
         # --- SETUP ALL DYNAMIC COMBO BOXES ---
         # Boundary combo box
@@ -106,6 +112,16 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
         else:
             self.ui.boundary_combo.setEnabled(1)
 
+        # Asset collection combo box
+        self.ui.asset_col_combo.clear()
+        self.ui.boundary_combo.addItem("(select asset collection)")
+        gac = self.simulation.get_global_asset_collection()
+        for a in gac:
+            if a.get_container_type() in ["Scenario", "Other"]:     # Do not include scenario or "Other" collections
+                pass
+            else:
+                self.ui.asset_col_combo.addItem(str(a.get_container_name()))
+
         # Patch delineation land use combo
         lumaps = self.get_dataref_array("spatial", "Land Use")  # Obtain the data ref array
         boundarymaps = self.get_dataref_array("spatial", "Boundaries")
@@ -122,10 +138,19 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
         self.progressbarobserver.updateProgress[int].connect(self.update_progress_bar_value)
 
         # --- SETUP GUI PARAMETERS ---
+        self.enable_disable_guis()
         self.setup_gui_with_parameters()
 
     def enable_disable_guis(self):
         """Enables and disables items in the GUI based on conditions."""
+        if self.ui.asset_col_new_radio.isChecked():
+            self.ui.asset_col_line.setEnabled(1)
+            self.ui.boundary_combo.setEnabled(1)
+            self.ui.asset_col_combo.setEnabled(0)
+        else:
+            self.ui.asset_col_line.setEnabled(0)
+            self.ui.boundary_combo.setEnabled(0)
+            self.ui.asset_col_combo.setEnabled(1)
         self.ui.blocksize_spin.setEnabled(not self.ui.blocksize_auto.isChecked())
         self.ui.hexsize_spin.setEnabled(not self.ui.hexsize_auto.isChecked())
         self.ui.patch_discretize_grid_spin.setEnabled(self.ui.patch_discretize_grid_check.isChecked())

@@ -396,14 +396,14 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QRadioButton" name="asset_col_existing">
+          <widget class="QRadioButton" name="asset_col_existing_radio">
            <property name="text">
             <string>Use Existing:</string>
            </property>
           </widget>
          </item>
          <item row="0" column="0">
-          <widget class="QRadioButton" name="asset_col_new">
+          <widget class="QRadioButton" name="asset_col_new_radio">
            <property name="text">
             <string>Create New:</string>
            </property>
@@ -413,6 +413,9 @@ p, li { white-space: pre-wrap; }
           <widget class="QLineEdit" name="asset_col_line">
            <property name="toolTip">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The unique name/identifier of the created simulation grid, will be labelled as such throughout the workspace.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string>(enter asset collection name)</string>
            </property>
           </widget>
          </item>
@@ -537,6 +540,11 @@ p, li { white-space: pre-wrap; }
             <property name="icon">
              <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
               <normaloff>:/images/images/md_geohash.png</normaloff>:/images/images/md_geohash.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Parcel-based Representation</string>
             </property>
            </item>
           </widget>

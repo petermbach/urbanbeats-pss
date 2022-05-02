@@ -1255,10 +1255,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.DataSummary.resizeColumnsToContents()
 
         # Modules List
-        # COMING SOON [REVAMP]
+        # COMING SOON [REVAMP]        # COMING SOON [REVAMP]
 
         # Outputs List
-        # COMING SOON [REVAMP]
 
         # MAP DISPLAY
         self.update_map_display()
@@ -1300,7 +1299,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Add user-created mods_master_guis
         pass
 
-    def create_toolbox_item_for_treewidget(self,catname, objs):
+    def create_toolbox_item_for_treewidget(self, catname, objs):
         """Generates the tree  widget item to populate the Toolbox Dock with."""
         twi = QtWidgets.QTreeWidgetItem()
         twi.setText(0, str(catname))

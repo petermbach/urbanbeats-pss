@@ -309,7 +309,7 @@ class UBCollection(object):
     """The UrbanBEATS Collection class structure. A collection stores a whole array of assets
     from the modelling outputs. It ca be used to organise geometric and non-geometric assets based
     on scenarios or other aspects of the spatial environment."""
-    def __init__(self, identifier, containertype):
+    def __init__(self, identifier, containertype="Other"):
         self.__containername = identifier
         self.__containertype = containertype    # "Scenario", "Standalone", "Other"
         self.__assettypes = []

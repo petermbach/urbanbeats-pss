@@ -185,8 +185,8 @@ class UrbanBeatsScenario(threading.Thread):
                 dataid = dref.get_data_id()
                 filename = dref.get_metadata("filename")
                 filepath = dref.get_data_file_path()
-                category = dref.get_metadata("parent")
-                sub = dref.get_metadata("sub")
+                category = dref.get_metadata("type")
+                sub = dref.get_metadata("subtype")
                 if sub == "<undefined>":
                     sub = "-"
                 datalist.append([dataid, filename, filepath, category, sub])
