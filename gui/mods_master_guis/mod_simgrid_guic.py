@@ -281,7 +281,8 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
         self.module.set_parameter("parcel_map", self.parcelmaps[1][self.ui.parcel_combo.currentIndex()-1])
 
     def update_progress_bar_value(self, value):
-        """Updates the progress bar of the Main GUI when the simulation is started/stopped/reset."""
+        """Updates the progress bar of the Main GUI when the simulation is started/stopped/reset. Also disables the
+        close button if in 'ad-hoc' mode."""
         self.ui.progressbar.setValue(int(value))
         if self.ui.progressbar.value() not in [0, 100]:
             self.ui.close_button.setEnabled(0)
@@ -289,4 +290,36 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
             self.ui.close_button.setEnabled(1)
 
     def run_module_in_runtime(self):
-        self.simulation.execute_runtime(self.module, self.progressbarobserver)
+        self.save_values()
+        if self.checks_before_runtime():
+            self.simulation.execute_runtime(self.module, self.progressbarobserver)
+
+    def checks_before_runtime(self):
+        """Enter all GUI checks to do before the module is run."""
+        # (1) Do we have a correct asset name or selected asset? (Radio Buttons)
+        if self.ui.asset_col_new_radio.isChecked():
+            for char in ubglobals.NOCHARS:
+                if char in self.ui.asset_col_line.text():
+                    nochars = True
+                else:
+                    nochars = False
+            if nochars:
+                prompt_msg = "Please enter a valid name for the Asset Collection!"
+                QtWidgets.QMessageBox.warning(self, "Invalid Asset Collection Name", prompt_msg,
+                                              QtWidgets.QMessageBox.Ok)
+                return False
+        else:
+            if self.ui.asset_col_combo.currentIndex() == 0:
+                prompt_msg = "Please select a valid Asset Collection for the simulation!"
+                QtWidgets.QMessageBox.warning(self, "No Asset Collection selected", prompt_msg,
+                                              QtWidgets.QMessageBox.Ok)
+                return False
+
+        # (2) Is there a valid boundary?
+        if self.ui.boundary_combo.currentIndex() == 0:
+            prompt_msg = "Please select a valid simulation boundary to use!"
+            QtWidgets.QMessageBox.warning(self, "No valid boundary selected", prompt_msg,
+                                          QtWidgets.QMessageBox.Ok)
+            return False
+
+        return True

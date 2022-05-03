@@ -107,111 +107,112 @@ class CreateSimGrid(UBModule):
         """ The main algorithm for the module, links with the active simulation, its data library and output folders."""
         self.notify("Running SimGrid Creation for "+self.boundaryname)
         self.notify_progress(0)
+        print(self.geometry_type)
+    #     # --- SECTION 1 - Preparation for creating the simulation grid based on the boundary map
+    #     boundarydict = self.activesim.get_project_boundary_by_name(self.boundaryname)
+    #     xmin, xmax, ymin, ymax = boundarydict["xmin"], boundarydict["xmax"], boundarydict["ymin"], boundarydict["ymax"]
+    #     mapwidth = xmax - xmin
+    #     mapheight = ymax - ymin
+    #
+    #     self.notify("Map Width [km] = "+str(mapwidth/1000.0))
+    #     self.notify("Map Height [km] = "+str(mapheight/1000.0))
+    #     self.notify("Extent Area WxH [km2] = "+str(mapwidth * mapheight / 1000000.0))
+    #     self.notify("--- === ---")
+    #
+    #     self.map_attr = ubdata.UBComponent()        # Global Map Attributes if they do not yet exist
+    #     self.map_attr.add_attribute("xllcorner", xmin)
+    #     self.map_attr.add_attribute("yllcorner", ymin)
+    #     self.map_attr.add_attribute("mod_simgrid", 1)
+    #     self.scenario.add_asset("MapAttributes", self.map_attr)
+    #
+    #     # Get boundary shifted to (0,0) origin
+    #     boundarygeom_z0 = []
+    #     for coords in boundarydict["coordinates"]:
+    #         boundarygeom_z0.append((coords[0] - xmin, coords[1] - ymin))
+    #     boundarypoly = Polygon(boundarygeom_z0)
+    #
+    #     # --- SECTION 2 - Create the grid
+    #     self.notify("Creating Simulation Grid")
+    #     self.notify_progress(20)
+    #
+    #     if self.geometry_type == "SQUARES":
+    #         self.create_square_blocks(boundarypoly)
+    #     elif self.geometry_type == "HEXAGONS":
+    #         self.create_hexagonal_blocks()
+    #     elif self.geometry_type == "VECTORPATCH":
+    #         self.create_vectorpatches()
+    #     elif self.geometry_type == "RASTER":
+    #         self.create_rastermap()
+    #     else:
+    #         self.notify("Error, no geometry type specified")
+    #         return True
+    #
+    #     self.notify("Finished SimGrid Creation")
+    #     self.notify_progress(100)
+    #     return True
+    #
+    # # ==========================================
+    # # OTHER MODULE METHODS
+    # # ==========================================
+    # # === SQUARE GRID ===
+    # def create_square_blocks(self, mapwidth, mapheight, boundarypoly):
+    #     """Generates the assets representing a Square Grid of Blocks based on the input boundary polygon
+    #     and parameters."""
+    #     # PREPARATION
+    #     numblocks, blocks_wide, blocks_tall, final_bs = \
+    #         determine_number_of_squares(mapwidth, mapheight, self.blocksize, self.blocksize_auto)
+    #     blockarea = pow(final_bs, 2)
+    #     self.map_attr.add_attribute("Geometry", self.geometry_type)
+    #     self.map_attr.add_attribute("NumBlocks", numblocks)
+    #     self.map_attr.add_attribute("BlocksWide", blocks_wide)
+    #     self.map_attr.add_attribute("BlocksTall", blocks_tall)
+    #     self.map_attr.add_attribute("BlockArea", blockarea)
+    #     self.map_attr.add_attribute("Neigh_Type", "Moore")    # 8-neighbour Moore Neighbourhood
+    #
+    #     self.notify("Map dimensions: W="+str(blocks_wide)+" H="+str(blocks_tall)+" [block elements]")
+    #     self.notify("Total number of Blocks: "+str(numblocks)+" @ "+str(final_bs)+"m")
+    #     self.notify_progress(30)
+    #
+    #     # GENERATE THE BLOCKS MAP
+    #     blockIDcount = 1
+    #     blockslist = []
+    #     for y in range(blocks_tall):
+    #         for x in range(blocks_wide):
+    #             # STEP 1 - Create the Block Geometry
+    #             current_block = create_block_geometry(x, y, final_bs, boundarypoly)
+    #             self.scenario.add_asset("BlockID"+str(blockIDcount), current_block)
+    #             blockslist.append(current_block)
+    #             blockIDcount += 1
+    #
+    #     self.notify_progress(50)
+    #
+    #     # FIND NEIGHBOURHOOD - MOORE NEIGHBOURHOOD (Cardinal and Ordinal Directions)
+    #     directional_factors = [blocks_wide, blocks_wide + 1, 1, -blocks_wide + 1,
+    #                            -blocks_wide, -blocks_wide - 1, -1, blocks_wide - 1]
+    #     direction_names = ["NHD_N", "NHD_NE", "NHD_E", "NHD_SE", "NHD_S", "NHD_SW", "NHD_W", "NHD_NW"]
+    #
+    #     for i in range(len(blockslist)):        # ID and Geometric Scanning for all 8 neighbours
+    #         curblock_id = blockslist[i].get_attribute("BlockID")
+    #         if curblock_id % blocks_wide == 0:   # Right edge
+    #             exceptions = ["NHD_NE", "NHD_E", "NHD_SE"]
+    #             [blockslist[i].add_attribute(exceptions[j], 0) for j in exceptions]  # e.g. add_attribute("NHD_E", 0)
+    #         elif curblock_id % blocks_wide == 1:  # Left edge
+    #             exceptions = ["NHD_NW", "NHD_W", "NHD_SW"]
+    #             [blockslist[i].add_attribute(exceptions[j], 0) for j in exceptions]
+    #         else:
+    #             exceptions = []
+    #
+    #         for d in range(len(direction_names)):
+    #             if direction_names[d] in exceptions:
+    #                 continue
+    #             nhdID = curblock_id + directional_factors[d]
+    #             if self.scenario.get_asset_with_name("BlockID"+str(nhdID)) is None:
+    #                 blockslist[i].add_attribute(direction_names[d], 0)
+    #             else:
+    #                 blockslist[i].add_attribute(direction_names[d], nhdID)
 
-        # --- SECTION 1 - Preparation for creating the simulation grid based on the boundary map
-        boundarydict = self.activesim.get_project_boundary_by_name(self.boundaryname)
-        xmin, xmax, ymin, ymax = boundarydict["xmin"], boundarydict["xmax"], boundarydict["ymin"], boundarydict["ymax"]
-        mapwidth = xmax - xmin
-        mapheight = ymax - ymin
-
-        self.notify("Map Width [km] = "+str(mapwidth/1000.0))
-        self.notify("Map Height [km] = "+str(mapheight/1000.0))
-        self.notify("Extent Area WxH [km2] = "+str(mapwidth * mapheight / 1000000.0))
-        self.notify("--- === ---")
-
-        self.map_attr = ubdata.UBComponent()        # Global Map Attributes if they do not yet exist
-        self.map_attr.add_attribute("xllcorner", xmin)
-        self.map_attr.add_attribute("yllcorner", ymin)
-        self.map_attr.add_attribute("mod_simgrid", 1)
-        self.scenario.add_asset("MapAttributes", self.map_attr)
-
-        # Get boundary shifted to (0,0) origin
-        boundarygeom_z0 = []
-        for coords in boundarydict["coordinates"]:
-            boundarygeom_z0.append((coords[0] - xmin, coords[1] - ymin))
-        boundarypoly = Polygon(boundarygeom_z0)
-
-        # --- SECTION 2 - Create the grid
-        self.notify("Creating Simulation Grid")
-        self.notify_progress(20)
-
-        if self.geometry_type == "SQUARES":
-            self.create_square_blocks(boundarypoly)
-        elif self.geometry_type == "HEXAGONS":
-            self.create_hexagonal_blocks()
-        elif self.geometry_type == "VECTORPATCH":
-            self.create_vectorpatches()
-        elif self.geometry_type == "RASTER":
-            self.create_rastermap()
-        else:
-            self.notify("Error, no geometry type specified")
-            return True
-
-        self.notify("Finished SimGrid Creation")
-        self.notify_progress(100)
-        return True
-
-    # ==========================================
-    # OTHER MODULE METHODS
-    # ==========================================
-    # === SQUARE GRID ===
-    def create_square_blocks(self, mapwidth, mapheight, boundarypoly):
-        """Generates the assets representing a Square Grid of Blocks based on the input boundary polygon
-        and parameters."""
-        # PREPARATION
-        numblocks, blocks_wide, blocks_tall, final_bs = \
-            determine_number_of_squares(mapwidth, mapheight, self.blocksize, self.blocksize_auto)
-        blockarea = pow(final_bs, 2)
-        self.map_attr.add_attribute("Geometry", self.geometry_type)
-        self.map_attr.add_attribute("NumBlocks", numblocks)
-        self.map_attr.add_attribute("BlocksWide", blocks_wide)
-        self.map_attr.add_attribute("BlocksTall", blocks_tall)
-        self.map_attr.add_attribute("BlockArea", blockarea)
-        self.map_attr.add_attribute("Neigh_Type", "Moore")    # 8-neighbour Moore Neighbourhood
-
-        self.notify("Map dimensions: W="+str(blocks_wide)+" H="+str(blocks_tall)+" [block elements]")
-        self.notify("Total number of Blocks: "+str(numblocks)+" @ "+str(final_bs)+"m")
-        self.notify_progress(30)
-
-        # GENERATE THE BLOCKS MAP
-        blockIDcount = 1
-        blockslist = []
-        for y in range(blocks_tall):
-            for x in range(blocks_wide):
-                # STEP 1 - Create the Block Geometry
-                current_block = create_block_geometry(x, y, final_bs, boundarypoly)
-                self.scenario.add_asset("BlockID"+str(blockIDcount), current_block)
-                blockslist.append(current_block)
-                blockIDcount += 1
-
-        self.notify_progress(50)
-
-        # FIND NEIGHBOURHOOD - MOORE NEIGHBOURHOOD (Cardinal and Ordinal Directions)
-        directional_factors = [blocks_wide, blocks_wide + 1, 1, -blocks_wide + 1,
-                               -blocks_wide, -blocks_wide - 1, -1, blocks_wide - 1]
-        direction_names = ["NHD_N", "NHD_NE", "NHD_E", "NHD_SE", "NHD_S", "NHD_SW", "NHD_W", "NHD_NW"]
-
-        for i in range(len(blockslist)):        # ID and Geometric Scanning for all 8 neighbours
-            curblock_id = blockslist[i].get_attribute("BlockID")
-            if curblock_id % blocks_wide == 0:   # Right edge
-                exceptions = ["NHD_NE", "NHD_E", "NHD_SE"]
-                [blockslist[i].add_attribute(exceptions[j], 0) for j in exceptions]  # e.g. add_attribute("NHD_E", 0)
-            elif curblock_id % blocks_wide == 1:  # Left edge
-                exceptions = ["NHD_NW", "NHD_W", "NHD_SW"]
-                [blockslist[i].add_attribute(exceptions[j], 0) for j in exceptions]
-            else:
-                exceptions = []
-
-            for d in range(len(direction_names)):
-                if direction_names[d] in exceptions:
-                    continue
-                nhdID = curblock_id + directional_factors[d]
-                if self.scenario.get_asset_with_name("BlockID"+str(nhdID)) is None:
-                    blockslist[i].add_attribute(direction_names[d], 0)
-                else:
-                    blockslist[i].add_attribute(direction_names[d], nhdID)
-
-        self.notify_progress(80)
+        self.notify_progress(100)   # Important, always make sure the progress bar is at 100% to ensure that the close
+                                    # button reenables.
         # END OF FUNCTION
 
     # === HEXAGONAL GRID ===

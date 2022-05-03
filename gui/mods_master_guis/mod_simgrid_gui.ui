@@ -548,7 +548,7 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="icon">
              <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
-              <normaloff>:/images/images/md_parcel.png</normaloff>:/images/images/md_parcel.png</iconset>
+              <normaloff>:/images/md_parcel.png</normaloff>:/images/md_parcel.png</iconset>
             </property>
            </item>
           </widget>
@@ -829,8 +829,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>369</width>
-               <height>283</height>
+               <width>220</width>
+               <height>322</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1198,7 +1198,7 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>369</width>
+               <width>334</width>
                <height>269</height>
               </rect>
              </property>
@@ -1440,8 +1440,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>369</width>
-               <height>229</height>
+               <width>250</width>
+               <height>255</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1655,8 +1655,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>369</width>
-               <height>225</height>
+               <width>273</width>
+               <height>264</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -1879,8 +1879,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>369</width>
-               <height>216</height>
+               <width>292</width>
+               <height>229</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2110,7 +2110,7 @@ p, li { white-space: pre-wrap; }
  </widget>
  <resources>
   <include location="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
-  <include location="../../../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
+  <include location="../../graphics/ubeats.qrc"/>
  </resources>
  <connections>
   <connection>

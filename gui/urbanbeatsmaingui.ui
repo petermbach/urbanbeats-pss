@@ -61,7 +61,7 @@
           </size>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="Project_tab">
           <attribute name="icon">
@@ -138,7 +138,7 @@ p, li { white-space: pre-wrap; }
            <item>
             <widget class="QStackedWidget" name="geography_stack">
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <widget class="QWidget" name="page_7">
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -1960,193 +1960,193 @@ p, li { white-space: pre-wrap; }
         <property name="bottomMargin">
          <number>0</number>
         </property>
+        <item>
+         <widget class="QTreeWidget" name="toolboxTree">
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Sunken</enum>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="dragDropMode">
+           <enum>QAbstractItemView::NoDragDrop</enum>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>false</bool>
+          </property>
+          <property name="indentation">
+           <number>15</number>
+          </property>
+          <property name="uniformRowHeights">
+           <bool>false</bool>
+          </property>
+          <property name="animated">
+           <bool>true</bool>
+          </property>
+          <property name="allColumnsShowFocus">
+           <bool>false</bool>
+          </property>
+          <property name="headerHidden">
+           <bool>true</bool>
+          </property>
+          <property name="expandsOnDoubleClick">
+           <bool>true</bool>
+          </property>
+          <column>
+           <property name="text">
+            <string>Modules</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
+          </column>
+          <item>
+           <property name="text">
+            <string>Spatial Representation</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
+           <property name="flags">
+            <set>ItemIsEnabled</set>
+           </property>
+           <item>
+            <property name="text">
+             <string>Create Simulation Grid</string>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="icon">
+             <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+              <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
+            </property>
+            <property name="flags">
+             <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsEnabled</set>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Map Regions</string>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="icon">
+             <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+              <normaloff>:/icons/admin_border.png</normaloff>:/icons/admin_border.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Map Topography</string>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="icon">
+             <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+              <normaloff>:/icons/topography.png</normaloff>:/icons/topography.png</iconset>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Catchment Hydrology</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>Catchment Delineation</string>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="icon">
+             <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+              <normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</iconset>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Define Urban Form</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>Import Urban Form Data</string>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="icon">
+             <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+              <normaloff>:/icons/House-icon.png</normaloff>:/icons/House-icon.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Generate Urban Form</string>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="icon">
+             <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+              <normaloff>:/icons/City_icon_(Noun_Project).svg.png</normaloff>:/icons/City_icon_(Noun_Project).svg.png</iconset>
+            </property>
+           </item>
+          </item>
+          <item>
+           <property name="text">
+            <string>Spatial Interaction</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>Green Space Mapping</string>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="icon">
+             <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+              <normaloff>:/icons/Bench-icon.png</normaloff>:/icons/Bench-icon.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Accessibility Mapping</string>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+           </item>
+          </item>
+         </widget>
+        </item>
        </layout>
-      </widget>
-     </item>
-     <item row="0" column="0" colspan="2">
-      <widget class="QTreeWidget" name="toolboxTree">
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Sunken</enum>
-       </property>
-       <property name="editTriggers">
-        <set>QAbstractItemView::NoEditTriggers</set>
-       </property>
-       <property name="dragDropMode">
-        <enum>QAbstractItemView::NoDragDrop</enum>
-       </property>
-       <property name="alternatingRowColors">
-        <bool>false</bool>
-       </property>
-       <property name="indentation">
-        <number>15</number>
-       </property>
-       <property name="uniformRowHeights">
-        <bool>false</bool>
-       </property>
-       <property name="animated">
-        <bool>true</bool>
-       </property>
-       <property name="allColumnsShowFocus">
-        <bool>false</bool>
-       </property>
-       <property name="headerHidden">
-        <bool>true</bool>
-       </property>
-       <property name="expandsOnDoubleClick">
-        <bool>true</bool>
-       </property>
-       <column>
-        <property name="text">
-         <string>Modules</string>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-         </font>
-        </property>
-       </column>
-       <item>
-        <property name="text">
-         <string>Spatial Representation</string>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-         </font>
-        </property>
-        <property name="flags">
-         <set>ItemIsEnabled</set>
-        </property>
-        <item>
-         <property name="text">
-          <string>Create Simulation Grid</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>8</pointsize>
-          </font>
-         </property>
-         <property name="icon">
-          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
-           <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
-         </property>
-         <property name="flags">
-          <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsEnabled</set>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Map Regions</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>7</pointsize>
-          </font>
-         </property>
-         <property name="icon">
-          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
-           <normaloff>:/icons/admin_border.png</normaloff>:/icons/admin_border.png</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Map Topography</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>7</pointsize>
-          </font>
-         </property>
-         <property name="icon">
-          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
-           <normaloff>:/icons/topography.png</normaloff>:/icons/topography.png</iconset>
-         </property>
-        </item>
-       </item>
-       <item>
-        <property name="text">
-         <string>Catchment Hydrology</string>
-        </property>
-        <item>
-         <property name="text">
-          <string>Catchment Delineation</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>7</pointsize>
-          </font>
-         </property>
-         <property name="icon">
-          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
-           <normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</iconset>
-         </property>
-        </item>
-       </item>
-       <item>
-        <property name="text">
-         <string>Define Urban Form</string>
-        </property>
-        <item>
-         <property name="text">
-          <string>Import Urban Form Data</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>7</pointsize>
-          </font>
-         </property>
-         <property name="icon">
-          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
-           <normaloff>:/icons/House-icon.png</normaloff>:/icons/House-icon.png</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Generate Urban Form</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>7</pointsize>
-          </font>
-         </property>
-         <property name="icon">
-          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
-           <normaloff>:/icons/City_icon_(Noun_Project).svg.png</normaloff>:/icons/City_icon_(Noun_Project).svg.png</iconset>
-         </property>
-        </item>
-       </item>
-       <item>
-        <property name="text">
-         <string>Spatial Interaction</string>
-        </property>
-        <item>
-         <property name="text">
-          <string>Green Space Mapping</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>7</pointsize>
-          </font>
-         </property>
-         <property name="icon">
-          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
-           <normaloff>:/icons/Bench-icon.png</normaloff>:/icons/Bench-icon.png</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Accessibility Mapping</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>7</pointsize>
-          </font>
-         </property>
-        </item>
-       </item>
       </widget>
      </item>
     </layout>

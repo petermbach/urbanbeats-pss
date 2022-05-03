@@ -371,7 +371,7 @@ p, li { white-space: pre-wrap; }
             <string>Width of the square cell in the city grid in metres</string>
            </property>
            <property name="text">
-            <string>Grid Identifier:</string>
+            <string>Asset Collection:</string>
            </property>
           </widget>
          </item>
