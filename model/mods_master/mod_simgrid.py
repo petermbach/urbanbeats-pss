@@ -126,6 +126,7 @@ class CreateSimGrid(UBModule):
         self.meta = self.assets.get_asset_with_name("meta")
         if self.meta is None:  # If there is currently no 'meta' object in the asset collection, make one
             self.meta = ubdata.UBComponent()  # Global Map Attributes if they do not yet exist
+            self.assets.add_asset_type("Metadata", "-")
             self.assets.add_asset("meta", self.meta)  # Metadata info will now be stored as 'meta'
         self.meta.add_attribute("mod_simgrid", 1)  # This denotes that the module is going to be run
         return True
@@ -229,6 +230,7 @@ class CreateSimGrid(UBModule):
 
         # GENERATE THE BLOCKS MAP
         self.notify("Creating Block Geometry")
+        self.assets.add_asset_type("Block", "Polygon")
         blockIDcount = 1
         blockslist = []
         for y in range(blocks_tall):
@@ -276,6 +278,8 @@ class CreateSimGrid(UBModule):
 
         # GENERATE CENTROIDS AND NEIGHBOURHOOD NETWORK - NETWORK IS N,S,W,E directions
         self.notify("Generating Block Centroids and Network")
+        self.assets.add_asset_type("Centroid", "Point")
+        self.assets.add_asset_type("Network", "Line")
         # current_block_cp = self.generate_block_centroid(current_block)
         # self.assets.add_asset("CentroidID" + str(blockIDcount), current_block_cp)
 

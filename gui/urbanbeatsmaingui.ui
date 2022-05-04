@@ -625,6 +625,11 @@ p, li { white-space: pre-wrap; }
                <string>Type</string>
               </property>
              </column>
+             <column>
+              <property name="text">
+               <string>Items</string>
+              </property>
+             </column>
              <item>
               <property name="text">
                <string>Example_Ad-hoc</string>
@@ -636,12 +641,18 @@ p, li { white-space: pre-wrap; }
               <property name="text">
                <string>None-Scenario</string>
               </property>
+              <property name="text">
+               <string/>
+              </property>
               <item>
                <property name="text">
                 <string>Blocks</string>
                </property>
                <property name="text">
                 <string>Polygon</string>
+               </property>
+               <property name="text">
+                <string/>
                </property>
               </item>
               <item>
@@ -651,6 +662,9 @@ p, li { white-space: pre-wrap; }
                <property name="text">
                 <string>Point</string>
                </property>
+               <property name="text">
+                <string/>
+               </property>
               </item>
               <item>
                <property name="text">
@@ -658,6 +672,9 @@ p, li { white-space: pre-wrap; }
                </property>
                <property name="text">
                 <string>Line</string>
+               </property>
+               <property name="text">
+                <string/>
                </property>
               </item>
               <item>
@@ -667,6 +684,9 @@ p, li { white-space: pre-wrap; }
                <property name="text">
                 <string>Line</string>
                </property>
+               <property name="text">
+                <string/>
+               </property>
               </item>
               <item>
                <property name="text">
@@ -674,6 +694,9 @@ p, li { white-space: pre-wrap; }
                </property>
                <property name="text">
                 <string>Raster</string>
+               </property>
+               <property name="text">
+                <string/>
                </property>
               </item>
              </item>
@@ -688,12 +711,18 @@ p, li { white-space: pre-wrap; }
               <property name="text">
                <string>Scenario</string>
               </property>
+              <property name="text">
+               <string/>
+              </property>
               <item>
                <property name="text">
                 <string>Blocks</string>
                </property>
                <property name="text">
                 <string>Polygon</string>
+               </property>
+               <property name="text">
+                <string/>
                </property>
               </item>
               <item>
@@ -703,6 +732,9 @@ p, li { white-space: pre-wrap; }
                <property name="text">
                 <string>Point</string>
                </property>
+               <property name="text">
+                <string/>
+               </property>
               </item>
               <item>
                <property name="text">
@@ -711,6 +743,9 @@ p, li { white-space: pre-wrap; }
                <property name="text">
                 <string>Line</string>
                </property>
+               <property name="text">
+                <string/>
+               </property>
               </item>
               <item>
                <property name="text">
@@ -718,6 +753,9 @@ p, li { white-space: pre-wrap; }
                </property>
                <property name="text">
                 <string>Line</string>
+               </property>
+               <property name="text">
+                <string/>
                </property>
               </item>
              </item>

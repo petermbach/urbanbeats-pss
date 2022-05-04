@@ -312,8 +312,8 @@ class UBCollection(object):
     def __init__(self, identifier, containertype="Other"):
         self.__containername = identifier
         self.__containertype = containertype    # "Scenario", "Standalone", "Other"
-        self.__assettypes = []
-        self.__assetcount = 0
+        self.__assettypes = {}      # Type: [AssetGeometry, count]
+        self.__globalassetcount = 0
         self.__assets = {}
 
     # General container management
@@ -323,16 +323,23 @@ class UBCollection(object):
     def get_container_type(self):
         return self.__containertype
 
-    def add_asset_type(self, assettype):
-        self.__assettypes.append(assettype)
+    def add_asset_type(self, assettype, geometry):
+        if assettype not in self.__assettypes.keys():
+            self.__assettypes[assettype] = [geometry, 0]
 
     def get_asset_types(self):
         return self.__assettypes
 
     # Simulation management - asset creation, modification etc.
     def add_asset(self, name, asset):
+        """Adds a new asset with the given 'name' to the asset library and increases the global asset and
+        asset type counters respectively."""
         self.__assets[name] = asset
-        self.__assetcount += 1
+        self.__globalassetcount += 1
+        try:
+            self.__assettypes[name.split("ID")[0]][1] += 1
+        except KeyError:
+            pass
         return True
 
     def get_asset_with_name(self, name):
@@ -386,15 +393,19 @@ class UBCollection(object):
         """
         try:
             del self.__assets[name]
-            self.__assetcount -= 1
+            self.__globalassetcount -= 1
+            try:
+                self.__assettypes[name.split("ID")[0]][1] -= 1
+            except KeyError:
+                pass
         except KeyError:
             return True
 
     def reset_assets(self):
         """Erases all assets, leaves an empty assets dictionary. Carried out when resetting the simulation."""
         self.__assets = {}
-        self.__assettypes = []
-        self.__assetcount = 0
+        self.__assettypes = {}
+        self.__globalassetcount = 0
         gc.collect()
 
 

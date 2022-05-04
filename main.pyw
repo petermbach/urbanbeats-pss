@@ -458,10 +458,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 child_item.setText(0, "<empty>")
                 child_item.setFlags(QtCore.Qt.NoItemFlags)
             else:
-                for t in assettypes:
+                for t in assettypes.keys():
                     child_item = QtWidgets.QTreeWidgetItem(twi)
-                    child_item.setText(0, assettypes[t])
-                    child_item.setText(1, "Geometry")
+                    child_item.setText(0, t)
+                    child_item.setText(1, str(assettypes[t][0]))
+                    child_item.setText(2, str(assettypes[t][1]))
                     child_item.setFlags(QtCore.Qt.NoItemFlags)
 
             self.ui.global_assets_table.addTopLevelItem(twi)
@@ -1321,6 +1322,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                                                 self.get_active_simulation_object(),
                                                                 self.get_active_data_library(),
                                                                 self.get_active_project_log(), 0)
+            modulegui.rejected.connect(self.update_assetcol_tree)
             modulegui.exec_()
 
     # FUNCTIONS TO DO
