@@ -325,7 +325,7 @@ p, li { white-space: pre-wrap; }
       <item>
        <widget class="QLabel" name="grid_id">
         <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Target Simulation Grid&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Target Asset Collection&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </item>
@@ -348,7 +348,7 @@ p, li { white-space: pre-wrap; }
           <widget class="QComboBox" name="grid_combo">
            <item>
             <property name="text">
-             <string>(select simulation boundary)</string>
+             <string>(select asset collection)</string>
             </property>
            </item>
           </widget>
@@ -371,7 +371,7 @@ p, li { white-space: pre-wrap; }
             <string>Width of the square cell in the city grid in metres</string>
            </property>
            <property name="text">
-            <string>Grid Identifier:</string>
+            <string>Select collection:</string>
            </property>
           </widget>
          </item>
