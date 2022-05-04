@@ -121,6 +121,8 @@ class CreateSimGrid(UBModule):
         if self.assets is None:
             self.assets = ubdata.UBCollection(self.gridname, "Standalone")
             self.activesim.add_asset_collection_to_project(self.assets)
+        else:
+            self.assets.reset_assets()
 
         # Metadata check - Any module that creates a new asset collection should do this check
         self.meta = self.assets.get_asset_with_name("meta")
@@ -279,10 +281,12 @@ class CreateSimGrid(UBModule):
         # GENERATE CENTROIDS AND NEIGHBOURHOOD NETWORK - NETWORK IS N,S,W,E directions
         self.notify("Generating Block Centroids and Network")
         self.assets.add_asset_type("Centroid", "Point")
-        self.assets.add_asset_type("Network", "Line")
-        # current_block_cp = self.generate_block_centroid(current_block)
-        # self.assets.add_asset("CentroidID" + str(blockIDcount), current_block_cp)
+        for i in range(len(blockslist)):
+            self.generate_block_centroid(blockslist[i])
 
+        self.notify_progress(90)    # PROGRESS 90%
+        self.assets.add_asset_type("Network", "Line")
+        self.generate_block_network(blockslist)
         return True
 
     def generate_block_geometry(self, x, y, idnum):
@@ -326,13 +330,45 @@ class CreateSimGrid(UBModule):
         else:   # Block not within boundary, do not return anything
             return None
 
-    def generate_block_centroids(self, block_attr):
+    def generate_block_centroid(self, block_attr):
         """Generates the centroid Point() for the block Vector passed to it, returns the UBVector() object."""
+        blockID = block_attr.get_attribute("BlockID")
+        cp = ubdata.UBVector([(block_attr.get_attribute("CentreX"), block_attr.get_attribute("CentreY"))])
+        cp.add_attribute("BlockID", block_attr.get_attribute("BlockID"))
+        cp.add_attribute("CoordX", block_attr.get_attribute("CentreX"))
+        cp.add_attribute("CoordY", block_attr.get_attribute("CentreY"))
+        cp.add_attribute("Status", block_attr.get_attribute("Status"))
+        self.assets.add_asset("CentroidID"+str(blockID), cp)
         return True
 
     def generate_block_network(self, blockslist):
         """Generates the neighbourhood network for the block centroids and saves the links to the asset collection."""
-        pass
+        networklist = []
+        networkIDcount = 1
+        for i in range(len(blockslist)):
+            curblock = blockslist[i]
+            curblockID = curblock.get_attribute("BlockID")
+            for nhd in ["NHD_N", "NHD_E", "NHD_S", "NHD_W"]:        # Only the north-south-east-west neighbours
+                nhd_blockID = curblock.get_attribute(nhd)
+                if nhd_blockID == 0:
+                    continue
+                if str(nhd_blockID)+","+str(curblockID) not in networklist:
+                    p1 = (curblock.get_attribute("CentreX"), curblock.get_attribute("CentreY"))
+                    nhd_block = self.assets.get_asset_with_name("BlockID"+str(nhd_blockID))
+                    p2 = (nhd_block.get_attribute("CentreX"), nhd_block.get_attribute("CentreY"))
+
+                    # Asset creation
+                    line = ubdata.UBVector((p1, p2))
+                    line.add_attribute("NetworkID", networkIDcount)
+                    line.add_attribute("Node1", curblockID)
+                    line.add_attribute("Node2", nhd_blockID)
+                    self.assets.add_asset("NetworkID"+str(networkIDcount), line)
+
+                    networklist.append(str(curblock)+","+str(nhd_blockID))
+                    networkIDcount += 1
+                else:
+                    continue
+        self.notify("Total number of links generated: "+str(len(networklist)))
         return True
 
     def create_hexagon_simgrid(self):
