@@ -125,7 +125,7 @@ class UrbanBeatsSim(object):
         self.__modules_collection = {}  # A global instance of all modules
         for name, obj in inspect.getmembers(ubtoolkit):  # Get all classes and set up the self.__modules_master
             if inspect.isclass(obj):
-                self.__modules_collection[obj.longname] = obj(self, None, self.__datalibrary, self.__projectlog)
+                self.__modules_collection[obj.longname] = obj(self, self.__datalibrary, self.__projectlog)
 
         self.__ubruntime = ubruntime.UrbanBeatsRuntime(self, self.__datalibrary, self.__projectlog)
 
@@ -144,6 +144,12 @@ class UrbanBeatsSim(object):
 
     def get_global_asset_collection(self):
         return self.__global_collections
+
+    def get_asset_collection_by_name(self, name):
+        try:
+            return self.__global_collections[name]
+        except KeyError:
+            return None
 
     # MODULE MANAGEMENT
     def get_module_instance(self, longname):

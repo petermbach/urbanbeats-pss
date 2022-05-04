@@ -37,10 +37,10 @@ class MapTopographyToSimGrid(UBModule):
     longname = "Map Topography"
     icon = ":/icons/topography.png"
 
-    def __init__(self, activesim, scenario, datalibrary, projectlog):
+    def __init__(self, activesim, datalibrary, projectlog):
         UBModule.__init__(self)
         self.activesim = activesim
-        self.scenario = scenario
+        self.scenario = None
         self.datalibrary = datalibrary
         self.projectlog = projectlog
 

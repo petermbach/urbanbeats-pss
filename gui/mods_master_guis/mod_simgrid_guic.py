@@ -237,6 +237,14 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
     def save_values(self):
         """Saves all user-modified values for the module's parameters from the GUI
         into the simulation core. Only called in scenario mode."""
+        # --- ASSET COLLECTION AND BOUNDARY ---
+        if self.ui.asset_col_new_radio.isChecked():
+            self.module.set_parameter("gridname", self.ui.asset_col_line.text())
+        else:
+            self.module.set_parameter("gridname", self.ui.asset_col_combo.currentText())
+
+        self.module.set_parameter("boundaryname", self.ui.boundary_combo.currentText())
+
         # --- SPATIAL GEOMETRY ---
         if self.ui.geometry_combo.currentIndex() == 0:
             self.module.set_parameter("geometry_type", "SQUARES")
