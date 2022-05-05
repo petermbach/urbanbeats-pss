@@ -1294,6 +1294,7 @@ class MainWindow(QtWidgets.QMainWindow):
             for j in self.__modules_master.keys():      # Create the list of mods_master_guis
                 if self.__modules_master[j].catname == i:
                     module_collection.append([self.__modules_master[j].catorder, self.__modules_master[j]])
+            print(module_collection)
             module_collection.sort()
             self.ui.toolboxTree.addTopLevelItem(self.create_toolbox_item_for_treewidget(i, module_collection))
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>630</width>
-    <height>420</height>
+    <height>599</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -400,6 +400,9 @@ p, li { white-space: pre-wrap; }
          <property name="bottomMargin">
           <number>6</number>
          </property>
+         <item row="0" column="1" colspan="2">
+          <widget class="QComboBox" name="lu_combo"/>
+         </item>
          <item row="0" column="0">
           <widget class="QLabel" name="lu_lbl">
            <property name="text">
@@ -407,8 +410,192 @@ p, li { white-space: pre-wrap; }
            </property>
           </widget>
          </item>
-         <item row="0" column="1" colspan="2">
-          <widget class="QComboBox" name="lu_combo"/>
+         <item row="1" column="0">
+          <widget class="QLabel" name="lu_lbl_2">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Attribute:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" colspan="2">
+          <widget class="QComboBox" name="lu_combo_2">
+           <item>
+            <property name="text">
+             <string>(select attribute containing classification)</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lureclass_title">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Land Use Reclassification&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="lureclass_check">
+        <property name="text">
+         <string>Reclassify input map to UrbanBEATS Land Use Classification</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTableWidget" name="lureclass_table">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>150</height>
+         </size>
+        </property>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOn</enum>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>false</bool>
+        </property>
+        <property name="showGrid">
+         <bool>true</bool>
+        </property>
+        <property name="gridStyle">
+         <enum>Qt::SolidLine</enum>
+        </property>
+        <property name="sortingEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="rowCount">
+         <number>16</number>
+        </property>
+        <attribute name="horizontalHeaderVisible">
+         <bool>true</bool>
+        </attribute>
+        <attribute name="horizontalHeaderCascadingSectionResizes">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="horizontalHeaderDefaultSectionSize">
+         <number>190</number>
+        </attribute>
+        <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <row>
+         <property name="text">
+          <string>1</string>
+         </property>
+        </row>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <column>
+         <property name="text">
+          <string>Source Classification</string>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>UrbanBEATS Classification</string>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+        </column>
+        <item row="0" column="1">
+         <property name="text">
+          <string/>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="lureclass_widget" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="lureclass_save_button">
+           <property name="text">
+            <string>Save...</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+             <normaloff>:/icons/Actions-document-save-icon.png</normaloff>:/icons/Actions-document-save-icon.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="lureclass_load_button">
+           <property name="text">
+            <string>Load...</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+             <normaloff>:/icons/folder-open-icon.png</normaloff>:/icons/folder-open-icon.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="lureclass_reset_button">
+           <property name="text">
+            <string>Reset</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+             <normaloff>:/icons/Refresh-icon.png</normaloff>:/icons/Refresh-icon.png</iconset>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -416,7 +603,7 @@ p, li { white-space: pre-wrap; }
       <item>
        <widget class="QLabel" name="luoptions_lbl">
         <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Mapping Options&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Mapping Options (Squares/Hexagons/Geohash Grids only)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </item>
@@ -441,7 +628,7 @@ p, li { white-space: pre-wrap; }
             <string>An automatic algorithm that determines a suitable block size based on the map for computational efficiency.</string>
            </property>
            <property name="text">
-            <string>Use only single land use per grid cell (squares/hexagonal Blocks only)</string>
+            <string>Use only single land use per grid cell (dominant category)</string>
            </property>
           </widget>
          </item>
@@ -451,7 +638,7 @@ p, li { white-space: pre-wrap; }
             <string>An automatic algorithm that determines a suitable block size based on the map for computational efficiency.</string>
            </property>
            <property name="text">
-            <string>Delineate Land Use Patches (for square/hexagonal Blocks only)</string>
+            <string>Delineate Land Use Patches (patch size and approx. centroid)</string>
            </property>
           </widget>
          </item>

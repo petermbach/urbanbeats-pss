@@ -1,5 +1,5 @@
 r"""
-@file   mod_simgrid.py
+@file   mod_population.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 
@@ -21,21 +21,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 __author__ = "Peter M. Bach"
-__copyright__ = "Copyright 2018. Peter M. Bach"
+__copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 from model.ubmodule import *
 
-class MapTopographyToSimGrid(UBModule):
+class MapPopulationToSimGrid(UBModule):
     """ Generates the simulation grid upon which many assessments will be based. This SimGrid will provide details on
     geometry and also neighbourhood information."""
 
     # MODULE'S BASIC METADATA
     type = "master"
     catname = "Spatial Representation"
-    catorder = 5
-    longname = "Map Topography"
-    icon = ":/icons/topography.png"
+    catorder = 4
+    longname = "Map Population"
+    icon = ":/icons/demographics.png"
 
     def __init__(self, activesim, datalibrary, projectlog):
         UBModule.__init__(self)
@@ -92,7 +92,7 @@ class MapTopographyToSimGrid(UBModule):
 
         :return: True upon successful completion.
         """
-        self.notify("Mapping Topography to Simulation for "+self.boundaryname)
+        self.notify("Mapping Regions to Simulation for "+self.boundaryname)
 
         # --- SECTION 1 - Preparation for creating the simulation grid based on the boundary map
 

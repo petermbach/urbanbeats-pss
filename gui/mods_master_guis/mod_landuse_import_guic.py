@@ -1,5 +1,5 @@
 r"""
-@file   mod_topography_guic.py
+@file   mod_landuse_import.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 
@@ -30,17 +30,17 @@ import model.progref.ubglobals as ubglobals
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
-from .mod_topography import Ui_Map_Topography
+from .mod_landuse_import import Ui_Map_Landuse
 
 
 # --- MAIN GUI FUNCTION ---
-class MapTopographyLaunch(QtWidgets.QDialog):
+class MapLanduseLaunch(QtWidgets.QDialog):
     # MODULE'S BASIC METADATA
     type = "master"
     catname = "Spatial Representation"
-    catorder = 5
-    longname = "Map Topography"
-    icon = ":/icons/topography.png"
+    catorder = 3
+    longname = "Land Use Mapping"
+    icon = ":/icons/region.png"
 
     def __init__(self, main, simulation, datalibrary, simlog, mode, parent=None):
         """ Initialisation of the Block Delineation GUI, takes several input parameters.
@@ -53,7 +53,7 @@ class MapTopographyLaunch(QtWidgets.QDialog):
         :param parent: None
         """
         QtWidgets.QDialog.__init__(self, parent)
-        self.ui = Ui_Map_Topography()
+        self.ui = Ui_Map_Landuse()
         self.ui.setupUi(self)
 
         # --- CONNECTIONS WITH CORE AND GUI ---
