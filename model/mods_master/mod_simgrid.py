@@ -62,7 +62,6 @@ class CreateSimGrid(UBModule):
         self.mapheight = None
         self.extents = None
 
-
         # MODULE PARAMETERS
         self.create_parameter("gridname", STRING, "Name of the simulation grid, unique identifier used")
         self.create_parameter("boundaryname", STRING, "Name of the boundary the grid is based upon")
@@ -87,13 +86,15 @@ class CreateSimGrid(UBModule):
 
         # (3) Geometry Type: Patch/Irregular Block
         self.create_parameter("patchzonemap", STRING, "The zoning map that patch delineation is based on")
-        self.create_parameter("disgrid_use", BOOL, "Use a discretization grid for the patch delineatioN?")
+        self.create_parameter("disgrid_type", BOOL, "Use a discretization grid for the patch delineatioN?")
         self.create_parameter("disgrid_length", DOUBLE, "Edge length of the discretization grid")
         self.create_parameter("disgrid_auto", BOOL, "Auto-determine the size of the discretization grid?")
+        self.create_parameter("disgrid_map", STRING, "The map for discretization")
         self.patchzonemap = "(select zoning map for patch delineation)"
-        self.disgrid_use = 0
+        self.disgrid_type = "SQ"
         self.disgrid_length = 500   # [m]
         self.disgrid_auto = 0
+        self.disgrid_map = "(select boundary for discretization)"
 
         # (4) Geometry Type: Raster/Fishnet
         self.create_parameter("rastersize", DOUBLE, "Resolution of the raster grid")
@@ -372,21 +373,35 @@ class CreateSimGrid(UBModule):
         return True
 
     def create_hexagon_simgrid(self):
+        """Creates a simulation grid of hexagonal blocks of user-defined size. Determines the neighbourhood of this grid
+        and creates the network representation of connections based on shared edges."""
         pass
         return True
 
     def create_patch_simgrid(self):
+        """Creates a simulation grid of patches based on an input land use map and a pre-defined discretization grid.
+        Determines the neighbourhood of this grid and creates the network representation of connections based on shared
+        edges, i.e. dirichlet tesselation."""
         pass
         return True
 
     def create_raster_simgrid(self):
+        """Creates a simulation grid of raster cells, represented by points with x,y coordinates, allowing easy export
+        to GeoTiff or ASCII later on. Determines the neighbourhood of this grid and creates the network representation
+        of connections based on shared edges (north, south, east west)."""
         pass
         return True
 
     def create_geohash_simgrid(self):
+        """Creates a simulation grid of geohash cells of user-defined level. Determines the neighbourhood of this grid
+        and creates the network representation of connections based on shared edges. Geohashes are assigned their
+        unique ID rather than a numerical ID."""
         pass
         return True
 
     def create_parcel_simgrid(self):
+        """Creates a simulation grid of parcels by loading in a pre-defined parcel map. Determines the neighbourhood of
+        this delineation and creates the network representation of connections based on shared edges i.e., dirichlet
+        tesselation."""
         pass
         return True

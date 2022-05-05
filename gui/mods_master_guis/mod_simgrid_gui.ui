@@ -829,8 +829,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>220</width>
-               <height>322</height>
+               <width>369</width>
+               <height>283</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1198,8 +1198,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>334</width>
-               <height>269</height>
+               <width>369</width>
+               <height>396</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1234,7 +1234,68 @@ p, li { white-space: pre-wrap; }
                  <property name="bottomMargin">
                   <number>0</number>
                  </property>
-                 <item row="5" column="1">
+                 <item row="1" column="0" colspan="2">
+                  <widget class="QComboBox" name="patch_data_zoneombo">
+                   <item>
+                    <property name="text">
+                     <string>(select map for patch-delineation)</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="0" column="0" colspan="2">
+                  <widget class="QLabel" name="patch_data_lbl">
+                   <property name="enabled">
+                    <bool>true</bool>
+                   </property>
+                   <property name="whatsThis">
+                    <string>Width of the square cell in the city grid in metres</string>
+                   </property>
+                   <property name="text">
+                    <string>Select zone map (land uses or boundaries) to base delineation on:</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="pbb_title_2">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="whatsThis">
+                 <string>Width of the square cell in the city grid in metres</string>
+                </property>
+                <property name="text">
+                 <string>DISCRETIZATION GRID</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="patch_discretize_grid_check">
+                <property name="text">
+                 <string>Use a regular discretization grid to limit maximum patch size?</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="discret_grid_widget" native="true">
+                <layout class="QGridLayout" name="gridLayout_17">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="patch_discretize_grid_lbl">
+                   <property name="enabled">
+                    <bool>true</bool>
+                   </property>
+                   <property name="whatsThis">
+                    <string>Width of the square cell in the city grid in metres</string>
+                   </property>
+                   <property name="text">
+                    <string>Grid Size (Edge Length):</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
                   <widget class="QSpinBox" name="patch_discretize_grid_spin">
                    <property name="enabled">
                     <bool>true</bool>
@@ -1269,7 +1330,7 @@ p, li { white-space: pre-wrap; }
                    </property>
                   </widget>
                  </item>
-                 <item row="6" column="1">
+                 <item row="1" column="1">
                   <widget class="QCheckBox" name="patch_discretize_grid_auto">
                    <property name="enabled">
                     <bool>true</bool>
@@ -1282,49 +1343,52 @@ p, li { white-space: pre-wrap; }
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="0" colspan="2">
-                  <widget class="QComboBox" name="patch_data_zoneombo">
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="patch_discretize_boundary_check">
+                <property name="text">
+                 <string>Use pre-defined boundaries for discretization to limit patch size?</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="discret_boundary_widget" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_3">
+                 <item>
+                  <spacer name="horizontalSpacer_4">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Fixed</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="discret_combo">
                    <item>
                     <property name="text">
-                     <string>(select map for patch-delineation)</string>
+                     <string>(select boundaries to guide discretization)</string>
                     </property>
                    </item>
                   </widget>
                  </item>
-                 <item row="4" column="0" colspan="2">
-                  <widget class="QCheckBox" name="patch_discretize_grid_check">
-                   <property name="text">
-                    <string>Use a discretization grid to limit maximum patch size?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="0">
-                  <widget class="QLabel" name="patch_discretize_grid_lbl">
-                   <property name="enabled">
-                    <bool>true</bool>
-                   </property>
-                   <property name="whatsThis">
-                    <string>Width of the square cell in the city grid in metres</string>
-                   </property>
-                   <property name="text">
-                    <string>Grid Size (Edge Length):</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0" colspan="2">
-                  <widget class="QLabel" name="patch_data_lbl">
-                   <property name="enabled">
-                    <bool>true</bool>
-                   </property>
-                   <property name="whatsThis">
-                    <string>Width of the square cell in the city grid in metres</string>
-                   </property>
-                   <property name="text">
-                    <string>Select zone map (land uses or boundaries) to base delineation on:</string>
-                   </property>
-                  </widget>
-                 </item>
                 </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="patch_discretize_none_check">
+                <property name="text">
+                 <string>Do not discretize</string>
+                </property>
                </widget>
               </item>
               <item>
@@ -1440,8 +1504,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>250</width>
-               <height>255</height>
+               <width>369</width>
+               <height>229</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1655,8 +1719,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>273</width>
-               <height>264</height>
+               <width>369</width>
+               <height>225</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -1879,8 +1943,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>292</width>
-               <height>229</height>
+               <width>369</width>
+               <height>216</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_13">
