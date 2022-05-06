@@ -166,6 +166,25 @@ class UrbanBeatsDataLibrary(object):
         else:
             return self.__functions
 
+    def get_dataref_array(self, dataclass, datatypes, subtypes=None, scenario=None):
+        """Retrieves a list of data files loaded into current scenario, returns as [filename, refID]. If a specific
+        scenario has been specified, focuses only on the data sets of that scenario."""
+        dataref_array = [[], []]
+        datalib = self.get_all_data_of_class(dataclass)
+
+        for dref in datalib:
+            if dref.get_metadata("type") in datatypes:
+                if subtypes is None or dref.get_metadata("subtype") in subtypes:    # None = get all or Filter
+                    if scenario is None:
+                        dataref_array[0].append(dref.get_metadata("filename"))
+                        dataref_array[1].append(dref.get_data_id())
+                    elif scenario in dref.get_scenario_list():
+                        dataref_array[0].append(dref.get_metadata("filename"))
+                        dataref_array[1].append(dref.get_data_id())
+                    else:
+                        pass
+        return dataref_array
+
     def get_data_with_id(self, dataid):
         """Returns the data reference object with the indicated dataID.
 

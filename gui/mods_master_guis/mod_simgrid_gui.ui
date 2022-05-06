@@ -1273,7 +1273,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QRadioButton" name="patch_discretize_grid_check">
+               <widget class="QRadioButton" name="patch_discretize_grid_radio">
                 <property name="text">
                  <string>Use a regular discretization grid to limit maximum patch size?</string>
                 </property>
@@ -1347,7 +1347,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QRadioButton" name="patch_discretize_boundary_check">
+               <widget class="QRadioButton" name="patch_discretize_boundary_radio">
                 <property name="text">
                  <string>Use pre-defined boundaries for discretization to limit patch size?</string>
                 </property>
@@ -1385,7 +1385,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QRadioButton" name="patch_discretize_none_check">
+               <widget class="QRadioButton" name="patch_discretize_none_radio">
                 <property name="text">
                  <string>Do not discretize</string>
                 </property>
@@ -1504,8 +1504,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>369</width>
-               <height>229</height>
+               <width>250</width>
+               <height>255</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1719,8 +1719,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>369</width>
-               <height>225</height>
+               <width>273</width>
+               <height>264</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -1943,8 +1943,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>369</width>
-               <height>216</height>
+               <width>292</width>
+               <height>229</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_13">

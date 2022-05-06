@@ -74,6 +74,7 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
         # Usage mode: with a scenario or not with a scenario (determines GUI settings and module connection)
         if self.mode == 1:      # Scenario Mode
             self.active_scenario = simulation.get_active_scenario()
+            self.active_scenario_name = self.active_scenario.get_metadata("name")
             self.module = None  # Initialize the variable to hold the active module object
             self.ui.ok_button.setEnabled(1)     # Disables the run, enables the OK
             self.ui.run_button.setEnabled(0)
@@ -85,6 +86,7 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
             self.ui.asset_col_existing_radio.setChecked(1)      # Using existing asset collection from scenario
         else:                    # Standalone Mode
             self.active_scenario = None
+            self.active_scenario_name = None
             self.module = self.simulation.get_module_instance(self.longname)
             self.ui.asset_col_line.setEnabled(1)
             self.ui.ok_button.setEnabled(0)     # Enables the run, disables the OK
@@ -129,15 +131,20 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
 
         # Patch delineation land use combo
         self.ui.patch_data_zoneombo.clear()
-        self.ui.patch_data_zoneombo.addItem("(select map for patch-delineation)")
-        lumaps = self.get_dataref_array("spatial", "Land Use")  # Obtain the data ref array
-        boundarymaps = self.get_dataref_array("spatial", "Boundaries")
-        self.patchmaps = lumaps + boundarymaps
-        [self.ui.patch_data_zoneombo.addItem(str(self.patchmaps[0][i])) for i in range(len(self.patchmaps[0]))]
+        self.ui.patch_data_zoneombo.addItem("(select map for patch-delineation)")   # Add the default option
+        self.combomaps = self.datalibrary.get_dataref_array("spatial", ["Boundaries", "Land Use", "Land Cover"],
+                                                            subtypes=None, scenario=self.active_scenario_name)
+        [self.ui.patch_data_zoneombo.addItem(str(self.combomaps[0][i])) for i in range(len(self.combomaps[0]))]
+
+        self.ui.discret_combo.clear()
+        self.ui.discret_combo.addItem("(select boundaries to guide discretization)")
+        self.discretmaps = self.datalibrary.get_dataref_array("spatial", ["Boundaries"], subtypes=None,
+                                                              scenario=self.active_scenario_name)
+        [self.ui.discret_combo.addItem(str(self.discretmaps[0][i])) for i in range(len(self.discretmaps[0]))]
 
         self.ui.parcel_combo.clear()
         self.ui.parcel_combo.addItem("(select map for parcel delineation)")
-        self.parcelmaps = self.get_dataref_array("spatial", "Miscellaneous") # Obtain the dataref array
+        self.parcelmaps = self.datalibrary.get_dataref_array("spatial", ["Miscellaneous"])
         [self.ui.parcel_combo.addItem(str(self.parcelmaps[0][i])) for i in range(len(self.parcelmaps[0]))]
 
         # --- SIGNALS AND SLOTS ---
@@ -145,7 +152,9 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
         self.ui.asset_col_existing_radio.clicked.connect(self.enable_disable_guis)
         self.ui.blocksize_auto.clicked.connect(self.enable_disable_guis)
         self.ui.hexsize_auto.clicked.connect(self.enable_disable_guis)
-        self.ui.patch_discretize_grid_check.clicked.connect(self.enable_disable_guis)
+        self.ui.patch_discretize_grid_radio.clicked.connect(self.enable_disable_guis)
+        self.ui.patch_discretize_boundary_radio.clicked.connect(self.enable_disable_guis)
+        self.ui.patch_discretize_none_radio.clicked.connect(self.enable_disable_guis)
         self.ui.patch_discretize_grid_auto.clicked.connect(self.enable_disable_guis)
         self.accepted.connect(self.save_values)
         self.ui.run_button.clicked.connect(self.run_module_in_runtime)
@@ -165,9 +174,15 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
             self.ui.asset_col_combo.setEnabled(1)
         self.ui.blocksize_spin.setEnabled(not self.ui.blocksize_auto.isChecked())
         self.ui.hexsize_spin.setEnabled(not self.ui.hexsize_auto.isChecked())
-        self.ui.patch_discretize_grid_spin.setEnabled(self.ui.patch_discretize_grid_check.isChecked())
-        self.ui.patch_discretize_grid_auto.setEnabled(self.ui.patch_discretize_grid_check.isChecked())
+        self.ui.patch_discretize_grid_spin.setEnabled(self.ui.patch_discretize_grid_radio.isChecked())
+        self.ui.patch_discretize_grid_auto.setEnabled(self.ui.patch_discretize_grid_radio.isChecked())
         self.ui.patch_discretize_grid_spin.setEnabled(not self.ui.patch_discretize_grid_auto.isChecked())
+        self.ui.discret_combo.setEnabled(self.ui.patch_discretize_boundary_radio.isChecked())
+        if self.ui.patch_discretize_none_radio.isChecked():
+            self.ui.patch_discretize_grid_spin.setEnabled(0)
+            self.ui.patch_discretize_grid_auto.setEnabled(0)
+            self.ui.patch_discretize_grid_spin.setEnabled(0)
+            self.ui.discret_combo.setEnabled(0)
 
     def setup_gui_with_parameters(self):
         """If using as a scenario module - sets up parameters based on the scenario."""
@@ -189,14 +204,26 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
         # PATCH REPRESENTATION
         try:    # LAND USE COMBO - retrieve the dataID from module
             self.ui.patch_data_zoneombo.setCurrentIndex(
-                self.patchmaps[1].index(self.module.get_parameter("patchzonemap"))+1)
+                self.combomaps[1].index(self.module.get_parameter("patchzonemap"))+1)
             # if dataID is available, set the combo box
         except ValueError:
             self.ui.patch_data_zoneombo.setCurrentIndex(0) # else the map must've been removed, set combo to zero index
 
-        self.ui.patch_discretize_grid_check.setChecked(int(self.module.get_parameter("disgrid_use")))
+        if self.module.get_parameter("disgrid_type") == "GRID":
+            self.ui.patch_discretize_grid_radio.setChecked(1)
+        elif self.module.get_parameter("disgrid_type") == "BOUND":
+            self.ui.patch_discretize_boundary_radio.setChecked(1)
+        else:
+            self.ui.patch_discretize_none_radio.setChecked(1)
+
         self.ui.patch_discretize_grid_spin.setValue(self.module.get_parameter("disgrid_length"))
         self.ui.patch_discretize_grid_auto.setChecked(int(self.module.get_parameter("disgrid_auto")))
+
+        try:    # PATCH DISCRETIZATION BOUNDARY MAP COMBO
+            self.ui.discret_combo.setCurrentIndex(
+                self.discretmaps[1].index(self.module.get_parameter("disgrid_map"))+1)
+        except ValueError:
+            self.ui.discret_combo.setCurrentIndex(0)
 
         # RASTER REPRESENTATION
         self.ui.raster_resolution_spin.setValue(self.module.get_parameter("rastersize"))
@@ -213,26 +240,28 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
         except ValueError:
             self.ui.parcel_combo.setCurrentIndex(0)
 
-    def get_dataref_array(self, dataclass, datatype, *args):
-        """Retrieves a list of data files loaded into the current scenario for display in the GUI
-
-        :param dataclass: the data class i.e. spatial, temporal, qualitative
-        :param datatype: the name that goes with the data class e.g. landuse, population, etc.
-        """
-        dataref_array = [["(no map selected)"], [""]]    # index 0:filenames, index 1:object_reference
-        if self.mode == 1:
-            data_lib = self.active_scenario.get_data_reference(dataclass)       # Limit to scenario's data
-        else:
-            data_lib = self.datalibrary.get_all_data_of_class(dataclass)        # Use entire library
-
-        for dref in data_lib:
-            if dref.get_metadata("parent") == datatype:
-                if len(args) > 0 and datatype in ["Boundaries", "Water Bodies", "Built Infrastructure", "Overlays"]:
-                    if dref.get_metadata("sub") != args[0]:
-                        continue
-                dataref_array[0].append(dref.get_metadata("filename"))
-                dataref_array[1].append(dref.get_data_id())
-        return dataref_array
+    # ---- MARKED FOR DELETION
+    # def get_dataref_array(self, dataclass, datatype, *args):
+    #     """Retrieves a list of data files loaded into the current scenario for display in the GUI
+    #
+    #     :param dataclass: the data class i.e. spatial, temporal, qualitative
+    #     :param datatype: the name that goes with the data class e.g. landuse, population, etc.
+    #     """
+    #     dataref_array = [["(no map selected)"], [""]]    # index 0:filenames, index 1:object_reference
+    #     if self.mode == 1:
+    #         data_lib = self.active_scenario.get_data_reference(dataclass)       # Limit to scenario's data
+    #     else:
+    #         data_lib = self.datalibrary.get_all_data_of_class(dataclass)        # Use entire library
+    #
+    #     for dref in data_lib:
+    #         if dref.get_metadata("parent") == datatype:
+    #             if len(args) > 0 and datatype in ["Boundaries", "Water Bodies", "Built Infrastructure", "Overlays"]:
+    #                 if dref.get_metadata("sub") != args[0]:
+    #                     continue
+    #             dataref_array[0].append(dref.get_metadata("filename"))
+    #             dataref_array[1].append(dref.get_data_id())
+    #     return dataref_array
+    # ---- MARKED FOR DELETION
 
     def save_values(self):
         """Saves all user-modified values for the module's parameters from the GUI
@@ -272,10 +301,18 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
             self.module.set_parameter("hex_orientation", "EW")
 
         # PATCH REPRESENTATION
-        self.module.set_parameter("patchzonemap", self.patchmaps[1][self.ui.patch_data_zoneombo.currentIndex()-1])
-        self.module.set_parameter("disgrid_use", int(self.ui.patch_discretize_grid_check.isChecked()))
-        self.module.set_parameter("disgrid", self.ui.patch_discretize_grid_spin.value())
+        self.module.set_parameter("patchzonemap", self.combomaps[1][self.ui.patch_data_zoneombo.currentIndex()-1])
+
+        if self.ui.patch_discretize_grid_radio.isChecked():
+            self.module.set_parameter("disgrid_type", "GRID")
+        elif self.ui.patch_discretize_boundary_radio.isChecked():
+            self.module.set_parameter("disgrid_type", "BOUND")
+        else:
+            self.module.set_parameter("disgrid_type", "NONE")
+
+        self.module.set_parameter("disgrid_length", self.ui.patch_discretize_grid_spin.value())
         self.module.set_parameter("disgrid_auto", int(self.ui.patch_discretize_grid_auto.isChecked()))
+        self.module.set_parameter("disgrid_map", self.discretmaps[1][self.ui.discret_combo.currentIndex()-1])
 
         # RASTER REPRESENTATION
         self.module.set_parameter("rastersize", self.ui.raster_resolution_spin.value())

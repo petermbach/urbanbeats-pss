@@ -91,7 +91,7 @@ class CreateSimGrid(UBModule):
         self.create_parameter("disgrid_auto", BOOL, "Auto-determine the size of the discretization grid?")
         self.create_parameter("disgrid_map", STRING, "The map for discretization")
         self.patchzonemap = "(select zoning map for patch delineation)"
-        self.disgrid_type = "SQ"
+        self.disgrid_type = "GRID"    # GRID, BOUND, NONE
         self.disgrid_length = 500   # [m]
         self.disgrid_auto = 0
         self.disgrid_map = "(select boundary for discretization)"
