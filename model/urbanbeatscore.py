@@ -401,12 +401,14 @@ class UrbanBeatsSim(object):
         # (2) SAVE ALL PROJECT BOUNDARIES AND LOCATIONS
         self.save_project_boundaries()
 
+        # (3) SAVE ANY FUNCTIONS WITHIN THE PROJECT
+        self.save_functions_list()
+
+        # (4)
+
         # (3) SAVE ALL SCENARIOS AS OBJECTS
         for scen_name in self.get_scenario_names():
             self.get_scenario_by_name(scen_name).save_scenario()
-
-        # (4) SAVE ANY FUNCTIONS WITHIN THE PROJECT
-        self.save_functions_list()
 
         # (5) SAVE THE GLOBAL ASSETS COLLECTION FOR LOADING LATER ON
         for item in self.__global_collections.keys():
@@ -475,22 +477,23 @@ class UrbanBeatsSim(object):
             # Folder structure is already present
             self.__projectpath = self.get_project_parameter("projectpath")+"/"+self.get_project_parameter("name")
 
-            # Open the project's Data Library (datalib.ubdata)
+            # (1) OPEN THE PROJECT'S DATA LIBRARY (datalib.ubdata)
             self.set_data_library(ubdatalibrary.load_data_library(self.__projectpath))
 
-            # Add simulation boundaries and locations to the project
+            # (2) ADD SIMULATION BOUNDARIES AND LOCATIONS TO PROJECT
             self.restore_project_boundaries_and_locations(self.__projectpath)
 
-            # Restore the list of functions saved in the project
+            # (3) RESTORE PRE-DEFINED FUNCTIONS IN THE PROJECT
             self.restore_functions_from_xml(self.__projectpath)
 
-            # Create a new project log
+            # (4) RESTORE THE PROJECT LOG
             projectlog = UrbanBeatsLog(self.__projectpath)
             self.set_project_log(projectlog)    # Go through existing project logs and update or add log info [TO DO]
+            # - LOAD THE EXISTING LOGS - # FUTURE TO DO
 
+            # (5) RESTORE SCENARIOS
             # Go through scenarios and add the scenarios to the scenario manager
-            scenariofiles = os.listdir(self.get_project_parameter("projectpath")+"/"+self.get_project_parameter("name")
-                                       + "/scenarios/")
+            scenariofiles = os.listdir(self.__projectpath+ "/scenarios/")
             for sf in scenariofiles:
                 if ".xml" not in sf:
                     continue
@@ -498,6 +501,16 @@ class UrbanBeatsSim(object):
                     self.create_new_scenario()
                     self.__activescenario.setup_scenario_from_xml(sf)
                     self.add_new_scenario(self.__activescenario)
+
+            # (6) RESTORE ASSET COLLECTIONS
+            assetcols = os.listdir(self.__projectpath+"/collections/")
+            print(assetcols)
+            for ac in assetcols:
+                if ".ubcol" not in ac:
+                    continue
+                else:
+                    obj = ubdata.load_asset_collection(self.__projectpath+"/collections/"+ac)
+                    self.__global_collections[obj.get_container_name()] = obj
 
         elif condition == "import": # for importing a project
             pass    # [TO DO]

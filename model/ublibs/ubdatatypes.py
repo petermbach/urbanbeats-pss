@@ -575,11 +575,12 @@ def load_asset_collection(fullpath):
     """Load a serialized asset collection object using pickle from the specified fullpath."""
     if '.ubcol' not in fullpath:        # Add the extension if it doesn't exist
         fullpath = fullpath+".ubcol"
+    print(fullpath)
     if os.path.exists(fullpath):
         f = open(fullpath, 'rb')
         obj = pickle.load(f)
+        print(obj)
         f.close()
         return obj
     else:
         return None
-

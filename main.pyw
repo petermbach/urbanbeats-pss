@@ -848,6 +848,11 @@ class MainWindow(QtWidgets.QMainWindow):
             twi = self.create_scenario_item_for_treewidget(scenario_obj)
             self.ui.ScenarioDock_View.addTopLevelItem(twi)
 
+        # UPDATE GEOGRAPHY VIEW, ASSET VIEW, etc.
+        self.update_active_geography_table()
+        self.update_assetcol_tree()
+        self.ui.scenario_summarybox.setPlainText("(no scenario currently active)")
+
         # Update Main Window Title
         self.setWindowTitle("UrbanBEATS Planning Support Tool - "+str(self.get_current_project_name()))
 
