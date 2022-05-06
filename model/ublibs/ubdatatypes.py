@@ -31,6 +31,8 @@ __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 import ast
 import numpy as np
 import gc
+import pickle
+import os
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 
@@ -556,3 +558,28 @@ class NeighbourhoodInfluenceFunction(object):
             else:
                 continue
         return True
+
+
+def save_asset_collection(fullpath, collection):
+    """Save the asset collection to a serialized object using pickle into the 'collections' folder of the project
+    directory."""
+    filePath = fullpath+"/collections/"+str(collection.get_container_name()+".ubcol")
+    if os.path.exists(filePath):
+        os.remove(filePath)
+    f = open(filePath, 'wb')
+    pickle.dump(collection, f)
+    f.close()
+
+
+def load_asset_collection(fullpath):
+    """Load a serialized asset collection object using pickle from the specified fullpath."""
+    if '.ubcol' not in fullpath:        # Add the extension if it doesn't exist
+        fullpath = fullpath+".ubcol"
+    if os.path.exists(fullpath):
+        f = open(fullpath, 'rb')
+        obj = pickle.load(f)
+        f.close()
+        return obj
+    else:
+        return None
+

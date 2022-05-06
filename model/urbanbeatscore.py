@@ -409,7 +409,9 @@ class UrbanBeatsSim(object):
         self.save_functions_list()
 
         # (5) SAVE THE GLOBAL ASSETS COLLECTION FOR LOADING LATER ON
-        pass
+        for item in self.__global_collections.keys():
+            obj = self.__global_collections[item]
+            ubdata.save_asset_collection(self.__projectpath, obj)
         return True
 
     def save_project_boundaries(self):
