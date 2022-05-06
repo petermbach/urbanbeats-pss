@@ -138,6 +138,8 @@ class UrbanBeatsSim(object):
 
     def remove_asset_collection_from_project(self, name):
         try:
+            if os.path.exists(self.__projectpath+"/collections/"+name+".ubcol"):
+                os.remove(self.__projectpath+"/collections/"+name+".ubcol")
             del self.__global_collections[name]
         except KeyError:
             return True
@@ -718,17 +720,14 @@ class UrbanBeatsSim(object):
         """Removes the scenario with the given scenario name from the simulation core."""
         if self.__activescenario.get_metadata("name") == scenario_name:
             self.__activescenario = None            # Set the active scenario to None
-
         try:
-            self.__scenarios.pop(scenario_name)     # Pop the scenario with the key 'scenario_name'
+            del self.__scenarios[scenario_name]  # Delete scenario with the key "scenario_name"
+            if os.path.exists(self.__projectpath+"/scenarios/"+scenario_name+".xml"):   # Delete xml file
+                os.remove(self.__projectpath+"/scenarios/"+scenario_name+".xml")
+            self.remove_asset_collection_from_project(scenario_name)        # Remove asset collection
         except KeyError:
             pass
         self.__datalibrary.remove_all_reference_to_scenario("name")  # Remove all references to scenario
-        self.delete_scenario_files(scenario_name)
-
-    def delete_scenario_files(self, scenario_name):
-        """Removes the file within the project folder containing the scenario."""
-        pass    # [TO DO]
 
     # GETTERS AND SETTERS
     def get_all_project_info(self):

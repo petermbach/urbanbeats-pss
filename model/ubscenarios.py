@@ -472,7 +472,7 @@ class UrbanBeatsScenario(threading.Thread):
     # --- GENERAL SCENARIO DATA MANAGEMENT ---
     def save_scenario(self):
         """Creates an updated scenario_name.xml file of the current scenario including all module parameters."""
-        scenario_fname = self.projectpath+"/scenarios/"+self.__scenariometadata["name"].replace(" ", "_")+".xml"
+        scenario_fname = self.projectpath+"/scenarios/"+str(self.__scenariometadata["name"])+".xml"
 
         f = open(scenario_fname, 'w')
         f.write('<URBANBEATSSCENARIO creator="Peter M. Bach" version="1.0">\n')

@@ -240,29 +240,6 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
         except ValueError:
             self.ui.parcel_combo.setCurrentIndex(0)
 
-    # ---- MARKED FOR DELETION
-    # def get_dataref_array(self, dataclass, datatype, *args):
-    #     """Retrieves a list of data files loaded into the current scenario for display in the GUI
-    #
-    #     :param dataclass: the data class i.e. spatial, temporal, qualitative
-    #     :param datatype: the name that goes with the data class e.g. landuse, population, etc.
-    #     """
-    #     dataref_array = [["(no map selected)"], [""]]    # index 0:filenames, index 1:object_reference
-    #     if self.mode == 1:
-    #         data_lib = self.active_scenario.get_data_reference(dataclass)       # Limit to scenario's data
-    #     else:
-    #         data_lib = self.datalibrary.get_all_data_of_class(dataclass)        # Use entire library
-    #
-    #     for dref in data_lib:
-    #         if dref.get_metadata("parent") == datatype:
-    #             if len(args) > 0 and datatype in ["Boundaries", "Water Bodies", "Built Infrastructure", "Overlays"]:
-    #                 if dref.get_metadata("sub") != args[0]:
-    #                     continue
-    #             dataref_array[0].append(dref.get_metadata("filename"))
-    #             dataref_array[1].append(dref.get_data_id())
-    #     return dataref_array
-    # ---- MARKED FOR DELETION
-
     def save_values(self):
         """Saves all user-modified values for the module's parameters from the GUI
         into the simulation core. Only called in scenario mode."""
