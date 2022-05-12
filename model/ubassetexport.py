@@ -1,5 +1,5 @@
 r"""
-@file   ubscenarios.py
+@file   ubassetexport.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 
