@@ -39,6 +39,7 @@ import pickle
 from . import ubdatalibrary
 from . import ubscenarios
 from . import ubruntime
+from . import ubassetexport
 from .ublibs import ubspatial as ubspatial
 from .ublibs import ubdatatypes as ubdata
 
@@ -864,6 +865,46 @@ class UrbanBeatsSim(object):
     def export_assets(self, parameters):
         """Exports a set of assets from the current asset collection selected in the keyword arguments"""
         self.update_observers("Exporting Assets")
+        asset_col = self.__global_collections[parameters["assets"]]
+
+        meta = asset_col.get_assets_with_identifier("meta")[0]
+        blocks = asset_col.get_assets_with_identifier("Block")
+        geomtypes = ["POLYGON", "POINT", "LINE"]
+        assettypes = ["Block", "Centroid", "Network"]
+        for i in range(len(assettypes)):
+            assets = asset_col.get_assets_with_identifier(assettypes[i])
+            ubassetexport.export_to_shapefile(assets, meta, parameters["path"], parameters["filename"],
+                                              self.get_project_epsg(), assettypes[i], geomtypes[i])
+
+
+
+        # parameters = {"path": self.export_path, "assets": self.ui.asset_col_combo.currentText()}
+        # typenames = []
+        # for i in range(self.ui.asset_col_list.count()):
+        #     if self.ui.asset_col_list.item(i).checkState() == QtCore.Qt.Checked:
+        #         typenames.append(self.ui.asset_col_list.item(i).text())
+        # parameters["typenames"] = typenames
+        # parameters["filename"] = self.ui.export_filename_line.text()
+        # parameters["metadata"] = int(self.ui.export_metadata_check.isChecked())
+        # parameters["csv"] = int(self.ui.export_csvtable_check.isChecked())
+        # parameters["rasterfmt"] = self.ui.export_rasterfmt_combo.currentText()
+        # parameters["seriesfmt"] = self.ui.export_seriesfmt_combo.currentText()
+        # parameters["opendir"] = int(self.ui.exportdir_open_check.isChecked())
+
+        #
+        #
+        # for item in parameters["typenames"]:
+        #     print(asset_col.get_assets_with_identifier(item))
+        #
+        # blocks = asset_col.get_assets_with_identifier("Block")
+        # print(len(blocks))
+        # print(blocks[0].get_attribute("BlockID"))
+        # print(type(blocks[0].get_attribute("BlockID")))
+        # print(type(blocks[0].get_attribute("CentreX")))
+        # print(blocks[0].get_all_attributes())
+        #
+
+
 
     def on_thread_finished(self):
         """Called when the scenario has finished running. It updates the observes with the scenario finished message.

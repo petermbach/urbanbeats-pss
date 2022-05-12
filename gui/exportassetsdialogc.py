@@ -94,6 +94,8 @@ class AssetExportLaunch(QtWidgets.QDialog):
         asset_collection = self.asset_col[self.ui.asset_col_combo.currentText()]
         asset_types = asset_collection.get_asset_types()
         for at in asset_types.keys():
+            if at == "Metadata":
+                continue
             item = QtWidgets.QListWidgetItem()
             item.setText(at)
             item.setCheckState(QtCore.Qt.Checked)

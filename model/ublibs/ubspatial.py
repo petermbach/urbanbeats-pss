@@ -394,6 +394,7 @@ def get_epsg_all(rootpath):
     f.close()
     return epsg_dict
 
+
 def get_cities_all(rootpath):
     """Returns a dictionary of all cities, countries and their lat longs. Uses the Simplemaps.com database."""
     f = open(rootpath+"/ancillary/cities.cfg", 'r')

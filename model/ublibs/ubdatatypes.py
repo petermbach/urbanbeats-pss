@@ -295,8 +295,10 @@ class UBVector(UBComponent):
             else:
                 self.__dtype = "POLYLINE"
         self.determine_extents()
-
         return True
+
+    def get_geometry_type(self):
+        return self.__dtype
 
     def determine_extents(self):
         """Determines the xmin, xmax, ymin, ymax and centroid"""
