@@ -55,6 +55,7 @@ from gui.urbanbeatsmaingui import Ui_MainWindow
 from gui.startscreen import Ui_StartDialog
 from gui import urbanbeatsdialogs as ubdialogs
 from gui import addgeographydialogs as geographydialogs
+from gui import exportassetsdialogc
 from gui.urbanbeatsresultsguic import LaunchResultsExplorer
 from gui.urbanbeatscalibrationguic import LaunchCalibrationViewer
 
@@ -503,7 +504,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.update_assetcol_tree()
 
     def show_export_assets_dialog(self):
-        pass    # [TO DO] With data export dialog.
+        """Opens the 'Export Assets Dialog' box."""
+        assetdialog = exportassetsdialogc.AssetExportLaunch(self, self.get_active_simulation_object())
+        assetdialog.accepted.connect(self.call_export_assets)
+        assetdialog.exec_()
 
     # MAIN WINDOW SPACE >> GEOGRAPHY TAB FUNCTIONS
     def show_add_shape_boundary_dialog(self):
@@ -1048,7 +1052,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_expand_collapse_button_icon("expanded")
         self.__datalibraryexpanded = True
 
-
     def remove_data_from_library(self):
         """Removes the current selected data set from the data library and the data library view."""
         selection = self.ui.DataDock_View.selectedItems()[0]
@@ -1353,6 +1356,9 @@ class MainWindow(QtWidgets.QMainWindow):
             QtWidgets.QMessageBox.warning(self, 'No Active Boundary', prompt_msg, QtWidgets.QMessageBox.Ok)
             return
         self.get_active_simulation_object().run()
+
+    def call_export_assets(self):
+        pass
 
     def enable_disable_run_controls(self, state):
         """Enables or Disables the run button controls depending on run state."""

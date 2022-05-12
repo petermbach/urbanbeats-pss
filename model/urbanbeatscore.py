@@ -861,6 +861,10 @@ class UrbanBeatsSim(object):
         elif self.__runtime_method == "SP":
             pass    # TO DO - Single Scenario - Performance ONLY
 
+    def export_assets(self, parameters):
+        """Exports a set of assets from the current asset collection selected in the keyword arguments"""
+        self.update_observers("Exporting Assets")
+
     def on_thread_finished(self):
         """Called when the scenario has finished running. It updates the observes with the scenario finished message.
         and re-enables the run controls."""

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>ExportAssetsDialog</class>
+ <widget class="QDialog" name="ExportAssetsDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -36,7 +36,21 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item row="2" column="0">
+      <item row="1" column="0">
+       <widget class="QLabel" name="asset_col_list_title">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Select Assets to export...&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="export_options_title">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Export Options&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
        <widget class="QListWidget" name="asset_col_list">
         <property name="maximumSize">
          <size>
@@ -47,20 +61,6 @@
         <property name="verticalScrollBarPolicy">
          <enum>Qt::ScrollBarAlwaysOn</enum>
         </property>
-        <item>
-         <property name="text">
-          <string>(select all)</string>
-         </property>
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="checkState">
-          <enum>Checked</enum>
-         </property>
-        </item>
         <item>
          <property name="text">
           <string>Blocks</string>
@@ -87,40 +87,29 @@
         </item>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="0" column="0" colspan="2">
+       <widget class="QComboBox" name="asset_col_combo">
+        <item>
+         <property name="text">
+          <string>(select asset collection)</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="select_all_check">
+        <property name="text">
+         <string>select all</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" rowspan="2">
        <widget class="QWidget" name="export_options_widget" native="true">
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="4" column="0">
           <widget class="QLabel" name="export_rasterfmt_lbl">
            <property name="text">
             <string>Default Raster Format:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="1">
-          <widget class="QRadioButton" name="exportdir_project_radio">
-           <property name="text">
-            <string>Project Folder</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="1">
-          <widget class="QLineEdit" name="exportdir_line"/>
-         </item>
-         <item row="2" column="0" colspan="2">
-          <widget class="QCheckBox" name="export_metadata_check">
-           <property name="text">
-            <string>Write metadata file</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" colspan="2">
-          <widget class="QLineEdit" name="export_filename_line"/>
-         </item>
-         <item row="6" column="0" colspan="2">
-          <widget class="Line" name="line">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>
@@ -138,20 +127,7 @@
            </item>
           </widget>
          </item>
-         <item row="12" column="0" colspan="2">
-          <spacer name="verticalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="10" column="0" colspan="2">
+         <item row="11" column="0" colspan="2">
           <widget class="QCheckBox" name="exportdir_open_check">
            <property name="text">
             <string>Open directory after asset export</string>
@@ -162,10 +138,48 @@
            </property>
           </widget>
          </item>
+         <item row="2" column="0" colspan="2">
+          <widget class="QCheckBox" name="export_metadata_check">
+           <property name="text">
+            <string>Write metadata file</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0" colspan="2">
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
          <item row="5" column="0">
           <widget class="QLabel" name="export_seriesfmt_lbl">
            <property name="text">
             <string>Default Series Format:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" colspan="2">
+          <widget class="QLineEdit" name="export_filename_line"/>
+         </item>
+         <item row="0" column="0" colspan="2">
+          <widget class="QLabel" name="export_filename_lbl">
+           <property name="text">
+            <string>File naming convention:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="1">
+          <widget class="QRadioButton" name="exportdir_custom_radio">
+           <property name="text">
+            <string>Custom</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0">
+          <widget class="QLabel" name="exportdir_lbl">
+           <property name="text">
+            <string>Output Directory:</string>
            </property>
           </widget>
          </item>
@@ -183,27 +197,6 @@
            </item>
           </widget>
          </item>
-         <item row="0" column="0" colspan="2">
-          <widget class="QLabel" name="export_filename_lbl">
-           <property name="text">
-            <string>File naming convention:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="0">
-          <widget class="QLabel" name="exportdir_lbl">
-           <property name="text">
-            <string>Output Directory:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="1">
-          <widget class="QRadioButton" name="exportdir_custom_radio">
-           <property name="text">
-            <string>Custom</string>
-           </property>
-          </widget>
-         </item>
          <item row="3" column="0">
           <widget class="QCheckBox" name="export_csvtable_check">
            <property name="text">
@@ -211,30 +204,30 @@
            </property>
           </widget>
          </item>
+         <item row="13" column="0" colspan="2">
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="8" column="0" colspan="2">
+          <widget class="QLineEdit" name="exportdir_line"/>
+         </item>
+         <item row="10" column="0">
+          <widget class="QRadioButton" name="exportdir_project_radio">
+           <property name="text">
+            <string>Project Folder</string>
+           </property>
+          </widget>
+         </item>
         </layout>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="2">
-       <widget class="QComboBox" name="asset_col_combo">
-        <item>
-         <property name="text">
-          <string>(select asset collection)</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="asset_col_list_title">
-        <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Select Assets to export...&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="export_options_title">
-        <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Export Options&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
        </widget>
       </item>
      </layout>
@@ -302,7 +295,7 @@
   <connection>
    <sender>close_button</sender>
    <signal>clicked()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>ExportAssetsDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
