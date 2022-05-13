@@ -61,6 +61,7 @@ class CreateSimGrid(UBModule):
         self.mapwidth = None        # Map Geometry
         self.mapheight = None
         self.extents = None
+        self.hexfactor = math.sqrt(3)
 
         # MODULE PARAMETERS
         self.create_parameter("gridname", STRING, "Name of the simulation grid, unique identifier used")
@@ -375,8 +376,214 @@ class CreateSimGrid(UBModule):
     def create_hexagon_simgrid(self):
         """Creates a simulation grid of hexagonal blocks of user-defined size. Determines the neighbourhood of this grid
         and creates the network representation of connections based on shared edges."""
-        pass
+        # AUTO SIZE HEXAGONS?
+        if self.hexsize_auto:
+            block_limit = 2000
+            ideal_blocksize = math.sqrt(((self.mapwidth * self.mapheight)/float(block_limit))*2.0/(3.0*self.hexfactor))
+            self.notify("Auto-determine Hexes - ideal number: " + str(ideal_blocksize))
+
+            if ideal_blocksize <= 200:
+                final_bs = 200
+            elif ideal_blocksize <= 300:  # If less than 200m, size to 200m x 200m as minimum
+                final_bs = 300
+            elif ideal_blocksize <= 500:
+                final_bs = 500
+            elif ideal_blocksize <= 1000:
+                final_bs = 1000
+            elif ideal_blocksize <= 2000:
+                final_bs = 2000
+            else:
+                final_bs = 5000  # Maximum Block Size will be 5000m x 5000m, we cannot simply afford to go higher
+        else:
+            final_bs = self.hexsize
+
+        # DETERMINE NUMBER OF HEXES
+        if self.hex_orientation == "NS":
+            blocks_wide = int(math.ceil(self.mapwidth / float(1.5 * self.hexsize)))
+            blocks_tall = int(math.ceil(self.mapheight / float(self.hexsize * self.hexfactor)))
+        else:
+            blocks_wide = int(math.ceil(self.mapheight / float(self.hexsize * self.hexfactor)))
+            blocks_tall = int(math.ceil(self.mapwidth / float(1.5 * self.hexsize))) + 1  # +1 based on centroid align
+
+        numhexes = blocks_wide * blocks_tall
+        hexarea = pow(final_bs, 2) * 0.5 * 3 * self.hexfactor
+
+        # Update Metadata
+        self.meta.add_attribute("Geometry", self.geometry_type)
+        self.meta.add_attribute("HexOrient", self.hex_orientation)
+        self.meta.add_attribute("HexSize", final_bs)
+        self.meta.add_attribute("NumHexes", numhexes)
+        self.meta.add_attribute("HexWide", blocks_wide)
+        self.meta.add_attribute("HexTall", blocks_tall)
+        self.meta.add_attribute("HexArea", hexarea)
+
+        self.notify("Map dimensions: W=" + str(blocks_wide) + " H=" + str(blocks_tall) + " [Block elements]")
+        self.notify("Total number of Hexes: " + str(numhexes) + " @ " + str(final_bs) + "m")
+
+        self.notify_progress(40)  # PROGRESS 40%
+
+        # GENERATE THE HEX MAP
+        self.notify("Creating Hex Geometry")
+        self.assets.add_asset_type("Hex", "Polygon")
+        hexIDcount = 1
+        hexlist = []
+        for y in range(blocks_tall):
+            for x in range(blocks_wide):
+                # CREATE THE HEX GEOMETRY
+                self.notify("Current Hex ID: " + str(hexIDcount))
+                if self.hex_orientation == "EW":
+                    current_hex = self.generate_hex_geometry_ew(x, y, hexIDcount)
+                else:
+                    current_hex = self.generate_hex_geometry_ns(x, y, hexIDcount)
+                if current_hex is None:
+                    hexIDcount += 1
+                    continue
+
+                self.assets.add_asset("HexID" + str(hexIDcount), current_hex)
+                hexlist.append(current_hex)
+                hexIDcount += 1
+
+        self.notify_progress(60)  # PROGRESS 60%
+
+        # FIND NEIGHBOURHOOD - HEX ISOTROPIC NEIGHBOURHOOD (six directions)
+        self.notify("Identifying Hex Neighbourhood")
+
         return True
+
+    def generate_hex_geometry_ew(self, x, y, hexidnum, boundary):
+        """ Creates the hexagonal Block Face in east-west direction, the polygon of the Hex as a UBVector
+
+        :param x: starting x-coordinate (0,0 origin)
+        :param y: starting y-coordinate (0,0 origin)
+        :param hexidnum: the current ID number to be assigned to the Hex Block
+        :return: UBVector object containing BLockID, attributes and geometry
+        """
+        # Define Hex Points     First point is the anchor point - the centroid of the bottom
+        #     / 6 \             left hex is anchored to the global origin
+        #    1     5
+        #    |  *  |
+        #    2     4
+        #     \ 3 /
+
+        hs = self.meta.get_attribute("HexSize")
+
+        h_factor = float('%.5f' % (self.hexfactor * hs))
+        shift_factor = float('%.5f' % (0.5 * h_factor * (y % 2)))
+        anchorX = x * h_factor - 0.5 * h_factor + shift_factor
+        anchorY = y * 1.5 * hs + 0.5 * hs
+        h1 = (anchorX, anchorY, 0)
+        h2 = (h1[0], h1[1] - hs, 0)
+        h3 = (h1[0] + 0.5 * h_factor, h1[1] - 1.5 * hs, 0)
+        h4 = (h1[0] + h_factor, h1[1] - hs, 0)
+        h5 = (h1[0] + h_factor, h1[1], 0)
+        h6 = (h1[0] + 0.5 * h_factor, h1[1] + 0.5 * hs, 0)
+
+        # Create the Shapely Polygon and test against the boundary to determine active/inactive
+        blockpoly = Polygon((h1[:2], h2[:2], h3[:2], h4[:2], h5[:2], h6[:2]))
+        if Polygon.intersects(boundary, blockpoly):
+            # Define edges (as integers down to the nearest [m])
+            e1 = ((int(h2[0]), int(h2[1]), 0), (int(h1[0]), int(h1[1]), 0))  # Left edge (2, 1)
+            e2 = ((int(h2[0]), int(h2[1]), 0), (int(h3[0]), int(h3[1]), 0))  # Left bottom (2, 3)
+            e3 = ((int(h3[0]), int(h3[1]), 0), (int(h4[0]), int(h4[1]), 0))  # Right bottom (3, 4)
+            e4 = ((int(h4[0]), int(h4[1]), 0), (int(h5[0]), int(h5[1]), 0))  # Right edge (4, 5)
+            e5 = ((int(h6[0]), int(h6[1]), 0), (int(h5[0]), int(h5[1]), 0))  # Right top (6, 5)
+            e6 = ((int(h1[0]), int(h1[1]), 0), (int(h6[0]), int(h6[1]), 0))  # Left top (1, 6)
+
+            # Define the UrbanBEATS Vector Asset
+            hex_attr = ubdata.UBVector((h1, h2, h3, h4, h5, h6, h1), (e1, e2, e3, e4, e5, e6))
+            hex_attr.add_attribute("HexID", int(hexidnum))  # ATTRIBUTE: Block identification
+
+            xcentre = anchorX + 0.5 * h_factor
+            ycentre = anchorY - 0.5 * hs
+
+            xorigin = x * h_factor - 0.5 * h_factor + shift_factor  # Lower left extent X
+            yorigin = y * 1.5 * hs - hs  # lower left extent Y
+
+            hex_attr.add_attribute("CentreX", xcentre)  # ATTRIBUTE: geographic information
+            hex_attr.add_attribute("CentreY", ycentre)
+            hex_attr.add_attribute("OriginX", xorigin)
+            hex_attr.add_attribute("OriginY", yorigin)
+            hex_attr.add_attribute("Status", 1)  # Start with Status = 1 by default
+
+            return hex_attr
+        else:
+            return None     # Hex not within boundary, do not return anything
+
+    def generate_hex_geometry_ns(self, x, y, hexidnum):
+        """ Creates the Hexagonal Block Face in north-south direction, the polygon of the Block as a UBVector
+
+        :param x: starting x-coordinate (0,0 origin)
+        :param y: starting y-coordinate (0,0 origin)
+        :param hexidnum: the current ID number to be assigned to the Hex Block
+        :return: UBVector object containing BLockID, attributes and geometry
+        """
+        # Define Hex Points     First point is the anchor point - slightly lower than
+        #        ___            global origin (0,0) shift of y by global map shift
+        #      /5   4\
+        #     6   *   3
+        #      \1___2/
+
+        hs = self.meta.get_attribute("HexSize")
+        hex_tall = self.meta.get_attribute("HexTall")
+
+        v_factor = float('%.5f' % (self.hexfactor * hs))  # distance between parallel edges in a hex (=sqrt(3) x d)
+        shift_factor = float(
+            '%.5f' % (0.5 * v_factor * (x % 2)))  # in odd column numbers, shift has to be accounted for
+        anchorX = x * 1.5 * hs
+        anchorY = y * v_factor + (self.mapheight - hex_tall * v_factor) + shift_factor
+        h1 = (anchorX, anchorY, 0)
+        h2 = (h1[0] + hs, h1[1], 0)
+        h3 = (h1[0] + 1.5 * hs, h1[1] + 0.5 * v_factor, 0)
+        h4 = (h1[0] + hs, h1[1] + v_factor, 0)
+        h5 = (h1[0], h1[1] + v_factor, 0)
+        h6 = (h1[0] - 0.5 * hs, h1[1] + 0.5 * v_factor, 0)
+
+        # Create the Shapely Polygon and test against the boundary to determine active/inactive
+        hexpoly = Polygon((h1[:2], h2[:2], h3[:2], h4[:2], h5[:2], h6[:2]))
+        if Polygon.intersects(self.boundarypoly, hexpoly):
+            # Define edges
+            e1 = ((int(h1[0]), int(h1[1]), 0), (int(h2[0]), int(h2[1]), 0))  # Bottom edge (1, 2)
+            e2 = ((int(h2[0]), int(h2[1]), 0), (int(h3[0]), int(h3[1]), 0))  # Bottom right (2, 3)
+            e3 = ((int(h4[0]), int(h4[1]), 0), (int(h3[0]), int(h3[1]), 0))  # Top right (4, 3)
+            e4 = ((int(h5[0]), int(h5[1]), 0), (int(h4[0]), int(h4[1]), 0))  # Top edge (5, 4)
+            e5 = ((int(h6[0]), int(h6[1]), 0), (int(h5[0]), int(h5[1]), 0))  # Top left (6, 5)
+            e6 = ((int(h6[0]), int(h6[1]), 0), (int(h1[0]), int(h1[1]), 0))  # Bottom left (6, 1)
+
+            # Define the UrbanBEATS Vector Asset
+            hex_attr = ubdata.UBVector((h1, h2, h3, h4, h5, h6, h1), (e1, e2, e3, e4, e5, e6))
+            hex_attr.add_attribute("HexID", int(hexidnum))  # ATTRIBUTE: Block identification
+
+            xcentre = anchorX + 0.5 * hs
+            ycentre = anchorY + 0.5 * v_factor
+
+            xorigin = anchorX - 0.5 * hs
+            yorigin = anchorY
+
+            hex_attr.add_attribute("CentreX", xcentre)  # ATTRIBUTE: geographic information
+            hex_attr.add_attribute("CentreY", ycentre)
+            hex_attr.add_attribute("OriginX", xorigin)
+            hex_attr.add_attribute("OriginY", yorigin)
+            hex_attr.add_attribute("Status", 1)  # Start with Status = 1 by default
+
+            return hex_attr
+        else:
+            return None     # Hex not within boundary, do not return anything
+
+    def generate_hex_centroid(self, hex_attr):
+        """Generates the centroid Point() for the hex Vector passed to it, returns the UBVector() object."""
+        hexID = hex_attr.get_attribute("HexID")
+        cp = ubdata.UBVector([(hex_attr.get_attribute("CentreX"), hex_attr.get_attribute("CentreY"))])
+        cp.add_attribute("HexID", hex_attr.get_attribute("HexID"))
+        cp.add_attribute("CoordX", hex_attr.get_attribute("CentreX"))
+        cp.add_attribute("CoordY", hex_attr.get_attribute("CentreY"))
+        cp.add_attribute("Status", hex_attr.get_attribute("Status"))
+        self.assets.add_asset("CentroidID" + str(hexID), cp)
+        return True
+
+    def generate_hex_network(self):
+        """Generates the neighbourhood network for the hex centroids and saves the links to the asset
+        collection."""
+        pass
 
     def create_patch_simgrid(self):
         """Creates a simulation grid of patches based on an input land use map and a pre-defined discretization grid.
