@@ -103,7 +103,11 @@ def export_to_shapefile(asset_col, metadata, filepath, filename, epsg, asset_typ
         feature.SetFID(0)
         attlist = current_asset.get_all_attributes()
         for att in attlist.keys():
-            feature.SetField(att, current_asset.get_attribute(att))
+            if isinstance(current_asset.get_attribute(att), list):      # If we are dealing with a list()
+                data = ",".join(str(d) for d in current_asset.get_attribute(att))
+            else:
+                data = current_asset.get_attribute(att)
+            feature.SetField(att, data)
 
         layer.CreateFeature(feature)
     shapefile.Destroy()

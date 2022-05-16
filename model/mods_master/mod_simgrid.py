@@ -61,6 +61,7 @@ class CreateSimGrid(UBModule):
         self.mapwidth = None        # Map Geometry
         self.mapheight = None
         self.extents = None
+        self.assetident = ""
         self.hexfactor = math.sqrt(3)
 
         # MODULE PARAMETERS
@@ -170,22 +171,29 @@ class CreateSimGrid(UBModule):
         self.notify_progress(20)
 
         if self.geometry_type == "SQUARES":
+            self.assetident = "BlockID"
             self.create_square_simgrid()
         elif self.geometry_type == "HEXAGONS":
+            self.assetident = "HexID"
             self.create_hexagon_simgrid()
         elif self.geometry_type == "VECTORPATCH":
+            self.assetident = "PatchID"
             self.create_patch_simgrid()
         elif self.geometry_type == "RASTER":
+            self.assetident = "CellID"
             self.create_raster_simgrid()
         elif self.geometry_type == "GEOHASH":
+            self.assetident = "GeohashID"
             self.create_geohash_simgrid()
         elif self.geometry_type == "PARCEL":
+            self.assetident = "ParcelID"
             self.create_parcel_simgrid()
         else:
             self.notify("Error, no geometry type specified")    # Should technically NEVER GET TO HERE
             return True
 
         self.notify("Finished SimGrid Creation")
+        self.meta.add_attribute("AssetIdent", self.assetident)  # Write the final identifier to the metadata
         self.notify_progress(100)    # Must notify of 100% progress if the 'close' button is to be renabled.
         return True
 
@@ -259,6 +267,7 @@ class CreateSimGrid(UBModule):
         direction_names = ["NHD_N", "NHD_NE", "NHD_E", "NHD_SE", "NHD_S", "NHD_SW", "NHD_W", "NHD_NW"]
 
         for i in range(len(blockslist)):        # ID and Geometric Scanning for all 8 neighbours
+            neighbourhood_ids = []
             curblock_id = blockslist[i].get_attribute("BlockID")
             if curblock_id % blocks_wide == 0:   # Right edge
                 exceptions = ["NHD_NE", "NHD_E", "NHD_SE"]
@@ -277,6 +286,10 @@ class CreateSimGrid(UBModule):
                     blockslist[i].add_attribute(direction_names[d], 0)
                 else:
                     blockslist[i].add_attribute(direction_names[d], nhd_id)
+                    neighbourhood_ids.append(nhd_id)
+
+            blockslist[i].add_attribute("Neighbours", neighbourhood_ids)
+            blockslist[i].add_attribute("Neighb_num", len(neighbourhood_ids))
 
         self.notify_progress(80)    # PROGRESS 80%
 
@@ -284,7 +297,7 @@ class CreateSimGrid(UBModule):
         self.notify("Generating Block Centroids and Network")
         self.assets.add_asset_type("Centroid", "Point")
         for i in range(len(blockslist)):
-            self.generate_block_centroid(blockslist[i])
+            self.generate_centroid(blockslist[i])
 
         self.notify_progress(90)    # PROGRESS 90%
         self.assets.add_asset_type("Network", "Line")
@@ -332,17 +345,6 @@ class CreateSimGrid(UBModule):
         else:   # Block not within boundary, do not return anything
             return None
 
-    def generate_block_centroid(self, block_attr):
-        """Generates the centroid Point() for the block Vector passed to it, returns the UBVector() object."""
-        blockID = block_attr.get_attribute("BlockID")
-        cp = ubdata.UBVector([(block_attr.get_attribute("CentreX"), block_attr.get_attribute("CentreY"))])
-        cp.add_attribute("BlockID", block_attr.get_attribute("BlockID"))
-        cp.add_attribute("CoordX", block_attr.get_attribute("CentreX"))
-        cp.add_attribute("CoordY", block_attr.get_attribute("CentreY"))
-        cp.add_attribute("Status", block_attr.get_attribute("Status"))
-        self.assets.add_asset("CentroidID"+str(blockID), cp)
-        return True
-
     def generate_block_network(self, blockslist):
         """Generates the neighbourhood network for the block centroids and saves the links to the asset collection."""
         networklist = []
@@ -354,7 +356,7 @@ class CreateSimGrid(UBModule):
                 nhd_blockID = curblock.get_attribute(nhd)
                 if nhd_blockID == 0:
                     continue
-                if str(nhd_blockID)+","+str(curblockID) not in networklist:
+                if str(int(nhd_blockID))+","+str(int(curblockID)) not in networklist:
                     p1 = (curblock.get_attribute("CentreX"), curblock.get_attribute("CentreY"))
                     nhd_block = self.assets.get_asset_with_name("BlockID"+str(nhd_blockID))
                     p2 = (nhd_block.get_attribute("CentreX"), nhd_block.get_attribute("CentreY"))
@@ -366,7 +368,7 @@ class CreateSimGrid(UBModule):
                     line.add_attribute("Node2", nhd_blockID)
                     self.assets.add_asset("NetworkID"+str(networkIDcount), line)
 
-                    networklist.append(str(curblock)+","+str(nhd_blockID))
+                    networklist.append(str(int(curblockID))+","+str(int(nhd_blockID)))
                     networkIDcount += 1
                 else:
                     continue
@@ -402,8 +404,8 @@ class CreateSimGrid(UBModule):
             blocks_wide = int(math.ceil(self.mapwidth / float(1.5 * self.hexsize)))
             blocks_tall = int(math.ceil(self.mapheight / float(self.hexsize * self.hexfactor)))
         else:
-            blocks_wide = int(math.ceil(self.mapheight / float(self.hexsize * self.hexfactor)))
-            blocks_tall = int(math.ceil(self.mapwidth / float(1.5 * self.hexsize))) + 1  # +1 based on centroid align
+            blocks_wide = int(math.ceil(self.mapwidth / float(self.hexsize * self.hexfactor)))
+            blocks_tall = int(math.ceil(self.mapheight / float(1.5 * self.hexsize))) + 1  # +1 based on centroid align
 
         numhexes = blocks_wide * blocks_tall
         hexarea = pow(final_bs, 2) * 0.5 * 3 * self.hexfactor
@@ -447,10 +449,34 @@ class CreateSimGrid(UBModule):
 
         # FIND NEIGHBOURHOOD - HEX ISOTROPIC NEIGHBOURHOOD (six directions)
         self.notify("Identifying Hex Neighbourhood")
+        directions = [+1, -1, blocks_wide, -blocks_wide, blocks_wide+1, -blocks_wide+1, blocks_wide-1, -blocks_wide-1]    # Need geometry checking
 
+        for i in range(len(hexlist)):
+            neighbourhood_ids = []      # Holds all nhd_ids
+            curhex_id = hexlist[i].get_attribute("HexID")
+            # Get neighbours that always apply
+            for j in range(len(directions)):   # For IDs that might be neighbours, check geometry
+                check_id = int(curhex_id + directions[j])
+                if self.assets.get_asset_with_name("HexID" + str(check_id)) is None:
+                    continue
+                if hexlist[i].shares_geometry(self.assets.get_asset_with_name("HexID"+str(check_id)), "edges", "all"):
+                    neighbourhood_ids.append(check_id)
+
+            hexlist[i].add_attribute("Neighbours", neighbourhood_ids)
+            hexlist[i].add_attribute("Neighb_num", len(neighbourhood_ids))
+
+        # GENERATE HEX CENTROIDS AND NEIGHBOURHOOD NETWORK - Network is isotropic in 6 directions
+        self.notify("Generating Hex Centroids and Network")
+        self.assets.add_asset_type("Centroid", "Point")
+        for i in range(len(hexlist)):
+            self.generate_centroid(hexlist[i])
+
+        self.notify_progress(90)    # PROGRESS 90%
+        self.assets.add_asset_type("Network", "Line")
+        self.generate_shared_edge_network(hexlist)
         return True
 
-    def generate_hex_geometry_ew(self, x, y, hexidnum, boundary):
+    def generate_hex_geometry_ew(self, x, y, hexidnum):
         """ Creates the hexagonal Block Face in east-west direction, the polygon of the Hex as a UBVector
 
         :param x: starting x-coordinate (0,0 origin)
@@ -480,7 +506,7 @@ class CreateSimGrid(UBModule):
 
         # Create the Shapely Polygon and test against the boundary to determine active/inactive
         blockpoly = Polygon((h1[:2], h2[:2], h3[:2], h4[:2], h5[:2], h6[:2]))
-        if Polygon.intersects(boundary, blockpoly):
+        if Polygon.intersects(self.boundarypoly, blockpoly):
             # Define edges (as integers down to the nearest [m])
             e1 = ((int(h2[0]), int(h2[1]), 0), (int(h1[0]), int(h1[1]), 0))  # Left edge (2, 1)
             e2 = ((int(h2[0]), int(h2[1]), 0), (int(h3[0]), int(h3[1]), 0))  # Left bottom (2, 3)
@@ -569,21 +595,54 @@ class CreateSimGrid(UBModule):
         else:
             return None     # Hex not within boundary, do not return anything
 
-    def generate_hex_centroid(self, hex_attr):
-        """Generates the centroid Point() for the hex Vector passed to it, returns the UBVector() object."""
-        hexID = hex_attr.get_attribute("HexID")
-        cp = ubdata.UBVector([(hex_attr.get_attribute("CentreX"), hex_attr.get_attribute("CentreY"))])
-        cp.add_attribute("HexID", hex_attr.get_attribute("HexID"))
-        cp.add_attribute("CoordX", hex_attr.get_attribute("CentreX"))
-        cp.add_attribute("CoordY", hex_attr.get_attribute("CentreY"))
-        cp.add_attribute("Status", hex_attr.get_attribute("Status"))
-        self.assets.add_asset("CentroidID" + str(hexID), cp)
+    def generate_centroid(self, asset_attr):
+        asset_id = asset_attr.get_attribute(self.assetident)
+        cp = ubdata.UBVector([(asset_attr.get_attribute("CentreX"), asset_attr.get_attribute("CentreY"))])
+        cp.add_attribute(self.assetident, asset_attr.get_attribute(self.assetident))
+        cp.add_attribute("CoordX", asset_attr.get_attribute("CentreX"))
+        cp.add_attribute("CoordY", asset_attr.get_attribute("CentreY"))
+        cp.add_attribute("Status", asset_attr.get_attribute("Status"))
+        self.assets.add_asset("CentroidID" + str(asset_id), cp)
         return True
 
-    def generate_hex_network(self):
-        """Generates the neighbourhood network for the hex centroids and saves the links to the asset
-        collection."""
-        pass
+    def generate_shared_edge_network(self, assets):
+        """Generates a network based on the shared edges. This applies to hexes, patches and parcels as their
+        neighbourhood information is contained in a list of IDs that are confirmed to have shared edges."""
+        networklist = []
+        networkIDcount = 1
+        for i in range(len(assets)):
+            curasset = assets[i]
+            curassetID = curasset.get_attribute(self.assetident)
+            for nhd in curasset.get_attribute("Neighbours"):
+                if str(nhd)+","+str(curassetID) not in networklist:
+                    p1 = (curasset.get_attribute("CentreX"), curasset.get_attribute("CentreY"))
+                    nhd_asset = self.assets.get_asset_with_name(self.assetident+str(nhd))
+                    p2 = (nhd_asset.get_attribute("CentreX"), nhd_asset.get_attribute("CentreY"))
+
+                    # Asset creation
+                    line = ubdata.UBVector((p1, p2))
+                    line.add_attribute("NetworkID", networkIDcount)
+                    line.add_attribute("Node1", curassetID)
+                    line.add_attribute("Node2", nhd)
+                    self.assets.add_asset("NetworkID"+str(networkIDcount), line)
+                    networklist.append(str(curassetID)+","+str(nhd))
+                    networkIDcount += 1
+                else:
+                    continue
+        self.notify("Total number of links generated: "+str(len(networklist)))
+        return True
+
+    def find_neighbours_by_geometry(self, curasset, assetlist, assetident, ref_geom, selection):
+        """Performs the neighbourhood scan based on shared edges or points."""
+        nhd = []
+        for i in range(len(assetlist)):
+            comp_id = assetlist[i].get_attribute(assetident)
+            cur_id = curasset.get_attribute(assetident)
+            if cur_id == comp_id or assetlist[i].get_attribute("Status") == 0:
+                continue    # Identical IDs or no status? Skip
+            if curasset.shares_geometry(assetlist[i], ref_geom, selection):
+                nhd.append(comp_id)
+        return nhd
 
     def create_patch_simgrid(self):
         """Creates a simulation grid of patches based on an input land use map and a pre-defined discretization grid.
