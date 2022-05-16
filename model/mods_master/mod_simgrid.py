@@ -25,6 +25,8 @@ __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 from shapely.geometry import Polygon, LineString, Point
+from osgeo import ogr, osr
+from geolib import geohash as gh
 import math
 
 from model.ubmodule import *
@@ -741,8 +743,61 @@ class CreateSimGrid(UBModule):
         """Creates a simulation grid of geohash cells of user-defined level. Determines the neighbourhood of this grid
         and creates the network representation of connections based on shared edges. Geohashes are assigned their
         unique ID rather than a numerical ID."""
-        pass
+
+        # Get the boundary as WGS1984 EPSG4326 - in Shapely Polygon format
+        to_gcs = ubspatial.create_coordtrans(self.activesim.get_project_epsg(), 4326)
+        boundaryring = ogr.Geometry(ogr.wkbLinearRing)
+        for coords in self.boundarydata["coordinates"]:     # 'coordinates are in X and Y order' (projected)
+            boundaryring.AddPoint(coords[0], coords[1])     # the ring is also created x and y
+        boundarypoly = ogr.Geometry(ogr.wkbPolygon)
+        boundarypoly.AddGeometry(boundaryring)
+        boundarypoly.Transform(to_gcs)                      # becomes Lat, Long (y, x)
+        boundaryring = boundarypoly.GetGeometryRef(0)
+        points = boundaryring.GetPointCount()
+        coordinates = []
+        for i in range(points):
+            coordinates.append((boundaryring.GetX(i), boundaryring.GetY(i)))        # x represents 'lat'
+        geohash_boundary = Polygon(coordinates)
+        rep_point = geohash_boundary.representative_point()
+        print(rep_point)
+        start_geohash = gh.encode(rep_point.x, rep_point.y, int(self.geohash_lvl))
+
+        # Set up stacks
+        checked_geohashes = set()
+        checked_geohashes.add(start_geohash)
+        geohash_stack = set()
+        geohash_stack.add(start_geohash)
+        geohashlist = []
+        geohashlist.append(start_geohash)
+
+        while len(geohash_stack) > 0:
+            current_gh = geohash_stack.pop()
+            self.notify("Current Geohash: "+str(current_gh))
+            nhd = gh.neighbours(current_gh)
+            for n in nhd:
+                point = Point(gh.decode(n))
+                poly = self.get_geohash_polygon(n)
+                if n not in checked_geohashes and geohash_boundary.intersects(poly):
+                    geohashlist.append(n)
+                    geohash_stack.add(n)
+                    checked_geohashes.add(n)
+
+        self.notify("Total geohashes found: "+str(len(geohashlist)))
+
         return True
+
+    def get_geohash_polygon(self, geohash_id):
+        """Returns the geohash polygon for the specified ID."""
+        bounds = gh.bounds(geohash_id)
+        p1 = (bounds.sw.lat, bounds.sw.lon)
+        p2 = (bounds.ne.lat, bounds.sw.lon)
+        p3 = (bounds.ne.lat, bounds.ne.lon)
+        p4 = (bounds.sw.lat, bounds.ne.lon)
+        e1 = (p1, p2)
+        e2 = (p2, p3)
+        e3 = (p3, p4)
+        e4 = (p4, p1)
+        return Polygon([p1, p2, p3, p4, p1])
 
     def create_parcel_simgrid(self):
         """Creates a simulation grid of parcels by loading in a pre-defined parcel map. Determines the neighbourhood of
