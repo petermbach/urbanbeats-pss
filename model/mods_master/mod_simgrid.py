@@ -655,8 +655,87 @@ class CreateSimGrid(UBModule):
         """Creates a simulation grid of raster cells, represented by points with x,y coordinates, allowing easy export
         to GeoTiff or ASCII later on. Determines the neighbourhood of this grid and creates the network representation
         of connections based on shared edges (north, south, east west)."""
-        pass
+        # PARAMETERS
+        # self.rastersize = 30  # [m]
+        # self.nodatavalue = -9999
+        # self.generate_fishnet = 0
+
+        blocks_wide = int(math.ceil(self.mapwidth / float(self.rastersize)))
+        blocks_tall = int(math.ceil(self.mapheight / float(self.rastersize)))
+        numcells = blocks_wide * blocks_tall
+        cellarea = pow(self.rastersize, 2)
+
+        # Update Metadata
+        self.meta.add_attribute("Geometry", self.geometry_type)
+        self.meta.add_attribute("Cellsize", self.rastersize)
+        self.meta.add_attribute("NumCells", numcells)
+        self.meta.add_attribute("Columns", blocks_wide)
+        self.meta.add_attribute("Rows", blocks_tall)
+        self.meta.add_attribute("Cellarea", cellarea)
+        self.meta.add_attribute("HasFishnet", self.generate_fishnet)
+
+        self.notify("Map dimensions: W=" + str(blocks_wide) + " H=" + str(blocks_tall) + " [Raster elements]")
+        self.notify("Total number of Blocks: " + str(numcells) + " @ " + str(self.rastersize) + "m")
+
+        self.notify_progress(40)  # PROGRESS 40%
+
+        # GENERATE RASTER CELLS
+        self.notify("Creating raster points")
+        self.assets.add_asset_type("Cell", "Point")
+        if self.generate_fishnet:
+            self.assets.add_asset_type("Fish", "Polygon")
+        cellIDcount = 1
+        cellslist = []
+
+        for y in range(blocks_tall):
+            self.notify("Row #"+str(y))
+            for x in range(blocks_wide):
+                cell, fish = self.generate_raster_cell(x, y, cellIDcount)
+                self.assets.add_asset("CellID"+str(cellIDcount), cell)
+                if fish is not None:
+                    self.assets.add_asset("FishID"+str(cellIDcount), fish)
+                cellIDcount += 1
+
+        self.notify_progress(95)
+        # RASTER NEIGHBOURHOOD IS DONE ON THE FLY
         return True
+
+    def generate_raster_cell(self, x, y, idnum):
+        """Generates the centroid of the raster cell, if fishnet is active, also generates the fishnet."""
+        res = self.rastersize
+        cellX = x * res + 0.5 * res
+        cellY = y * res + 0.5 * res
+
+        attr = ubdata.UBVector([(cellX, cellY)])
+        attr.add_attribute("CellID", int(idnum))
+        attr.add_attribute("Row", y)
+        attr.add_attribute("Col", x)
+        attr.add_attribute("X", cellX)
+        attr.add_attribute("Y", cellY)
+        attr.add_attribute("Status", 1)
+        if Point(cellX, cellY).within(self.boundarypoly):
+            attr.add_attribute("NoData", 0)
+        else:
+            attr.add_attribute("NoData", self.nodatavalue)
+
+        if self.generate_fishnet:
+            n1 = (x * res, y * res)          # same as for square blocks
+            n2 = ((x+1) * res, y * res)
+            n3 = ((x+1) * res, (y+1) * res)
+            n4 = (x * res, (y+1) * res)
+
+            fish_attr = ubdata.UBVector((n1, n2, n3, n4, n1),
+                                        ((n1, n2), (n2, n3), (n3, n4), (n4, n1)))
+            fish_attr.add_attribute("FishID", int(idnum))
+            attr.add_attribute("Row", y)
+            attr.add_attribute("Col", x)
+            fish_attr.add_attribute("X", cellX)
+            fish_attr.add_attribute("Y", cellY)
+            fish_attr.add_attribute("Status", 1)
+            fish_attr.add_attribute("NoData", attr.get_attribute("NoData"))
+        else:
+            fish_attr = None
+        return attr, fish_attr
 
     def create_geohash_simgrid(self):
         """Creates a simulation grid of geohash cells of user-defined level. Determines the neighbourhood of this grid

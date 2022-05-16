@@ -864,11 +864,10 @@ class UrbanBeatsSim(object):
 
     def export_assets(self, parameters):
         """Exports a set of assets from the current asset collection selected in the keyword arguments"""
-        self.update_observers("Exporting Assets")
         asset_col = self.__global_collections[parameters["assets"]]     # Grab the correct asset collection
         meta = asset_col.get_assets_with_identifier("meta")[0]          # And its metadata
 
-        typename_geoms = {"Block": "POLYGON", "Hex": "POLYGON",
+        typename_geoms = {"Block": "POLYGON", "Hex": "POLYGON", "Cell": "POINT", "Fish": "POLYGON",
                           "Centroid": "POINT", "Network": "LINE"}
 
         # Now identify which assets to export and loop through these
@@ -877,6 +876,7 @@ class UrbanBeatsSim(object):
             assets = asset_col.get_assets_with_identifier(parameters["typenames"][i])
             ubassetexport.export_to_shapefile(assets, meta, parameters["path"], parameters["filename"],
                                               self.get_project_epsg(), assettype, typename_geoms[assettype])
+        self.update_observers("Selected assets exported successfully")
         return True
 
     def on_thread_finished(self):
