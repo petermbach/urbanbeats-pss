@@ -186,7 +186,7 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
 
     def setup_gui_with_parameters(self):
         """If using as a scenario module - sets up parameters based on the scenario."""
-        spatial_ref = ["SQUARES", "HEXAGONS", "VECTORPATCH", "RASTER"]
+        spatial_ref = ["SQUARES", "HEXAGONS", "VECTORPATCH", "RASTER", "GEOHASH", "PARCEL"]
         self.ui.geometry_combo.setCurrentIndex(spatial_ref.index(self.module.get_parameter("geometry_type")))
 
         # SQUARE BLOCKS

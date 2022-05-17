@@ -353,14 +353,14 @@ class CreateSimGrid(UBModule):
         networkIDcount = 1
         for i in range(len(blockslist)):
             curblock = blockslist[i]
-            curblockID = curblock.get_attribute("BlockID")
+            curblockID = curblock.get_attribute(self.assetident)
             for nhd in ["NHD_N", "NHD_E", "NHD_S", "NHD_W"]:        # Only the north-south-east-west neighbours
                 nhd_blockID = curblock.get_attribute(nhd)
                 if nhd_blockID == 0:
                     continue
-                if str(int(nhd_blockID))+","+str(int(curblockID)) not in networklist:
+                if str(nhd_blockID)+","+str(curblockID) not in networklist:
                     p1 = (curblock.get_attribute("CentreX"), curblock.get_attribute("CentreY"))
-                    nhd_block = self.assets.get_asset_with_name("BlockID"+str(nhd_blockID))
+                    nhd_block = self.assets.get_asset_with_name(self.assetident+str(nhd_blockID))
                     p2 = (nhd_block.get_attribute("CentreX"), nhd_block.get_attribute("CentreY"))
 
                     # Asset creation
@@ -370,7 +370,7 @@ class CreateSimGrid(UBModule):
                     line.add_attribute("Node2", nhd_blockID)
                     self.assets.add_asset("NetworkID"+str(networkIDcount), line)
 
-                    networklist.append(str(int(curblockID))+","+str(int(nhd_blockID)))
+                    networklist.append(str(curblockID)+","+str(nhd_blockID))
                     networkIDcount += 1
                 else:
                     continue
@@ -744,8 +744,10 @@ class CreateSimGrid(UBModule):
         and creates the network representation of connections based on shared edges. Geohashes are assigned their
         unique ID rather than a numerical ID."""
 
-        # Get the boundary as WGS1984 EPSG4326 - in Shapely Polygon format
+        # Geohashes work with EPSG 4326, so need to project on the fly...
         to_gcs = ubspatial.create_coordtrans(self.activesim.get_project_epsg(), 4326)
+
+        # Get the boundary as WGS1984 EPSG4326 - in Shapely Polygon format
         boundaryring = ogr.Geometry(ogr.wkbLinearRing)
         for coords in self.boundarydata["coordinates"]:     # 'coordinates are in X and Y order' (projected)
             boundaryring.AddPoint(coords[0], coords[1])     # the ring is also created x and y
@@ -762,6 +764,8 @@ class CreateSimGrid(UBModule):
         print(rep_point)
         start_geohash = gh.encode(rep_point.x, rep_point.y, int(self.geohash_lvl))
 
+        self.notify_progress(40)    # PROGRESS 40%
+
         # Set up stacks
         checked_geohashes = set()
         checked_geohashes.add(start_geohash)
@@ -770,6 +774,25 @@ class CreateSimGrid(UBModule):
         geohashlist = []
         geohashlist.append(start_geohash)
 
+        # Update Metadata
+        self.meta.add_attribute("Geometry", self.geometry_type)
+        self.meta.add_attribute("GeohashLvl", self.geohash_lvl)
+        self.meta.add_attribute("GeohashXres", GEOHASH_RES[self.geohash_lvl][0])
+        self.meta.add_attribute("GeohashYres", GEOHASH_RES[self.geohash_lvl][1])
+        self.meta.add_attribute("GeohashArea", GEOHASH_RES[self.geohash_lvl][0] * GEOHASH_RES[self.geohash_lvl][1])
+        self.meta.add_attribute("CentroidGH", start_geohash)
+
+        # Add the centroid GH as a UBVector to the Assets
+        self.notify_progress(50)  # PROGRESS 50%
+        self.assets.add_asset_type("Geohash", "Polygon")        # We do polygons and centroid simultaneously
+        self.assets.add_asset_type("Centroid", "Point")
+
+        point = Point(gh.decode(start_geohash))
+        ubpoint, ubpoly = self.convert_gh_to_ubvector(point, start_geohash)
+        self.assets.add_asset("CentroidID"+start_geohash, ubpoint)
+        self.assets.add_asset("GeohashID"+start_geohash, ubpoly)
+
+        # Now scan for all geohashes within the boundary, creating UBVectors as we go
         while len(geohash_stack) > 0:
             current_gh = geohash_stack.pop()
             self.notify("Current Geohash: "+str(current_gh))
@@ -782,9 +805,79 @@ class CreateSimGrid(UBModule):
                     geohash_stack.add(n)
                     checked_geohashes.add(n)
 
-        self.notify("Total geohashes found: "+str(len(geohashlist)))
+                    ubpoint, ubpoly = self.convert_gh_to_ubvector(point, n)
+                    self.assets.add_asset("CentroidID" + n, ubpoint)
+                    self.assets.add_asset("GeohashID" + n, ubpoly)
 
+        self.meta.add_attribute("NumGeohashes", len(geohashlist))
+        self.notify("Total Geohashes found: "+str(len(geohashlist)))
+        self.notify_progress(70)    # PROGRESS 70%
+
+        # GRAB GEOHASH NEIGHBOURS
+        nhd_directions = ['n', 'ne', 'e', 'se', 's', 'sw', 'se', 'nw']
+        for g in geohashlist:
+            hasdir = []
+            neighbours = []
+            gh_attr = self.assets.get_asset_with_name("GeohashID"+g)
+            nhd = gh.neighbours(g)._asdict()
+            for n in nhd.keys():
+                if self.assets.get_asset_with_name("GeohashID"+nhd[n]) is None:
+                    gh_attr.add_attribute("NHD_"+n.upper(), 0)
+                    continue
+                else:
+                    gh_attr.add_attribute("NHD_"+n.upper(), nhd[n])
+                    hasdir.append(n)
+                    neighbours.append(nhd[n])
+            # for dir in nhd_directions:
+            #     if dir in hasdir:
+            #         continue
+            #     else:
+            #         gh_attr.add_attribute("NHD_"+dir.upper(), 0)
+            gh_attr.add_attribute("Neighbours", neighbours)
+            gh_attr.add_attribute("Neighb_num", len(neighbours))
+
+        # DRAW GEOHASH NETWORK
+        self.notify_progress(90)
+        ubgeohashlist = self.assets.get_assets_with_identifier("GeohashID")
+        self.assets.add_asset_type("Network", "Line")
+        self.generate_block_network(ubgeohashlist)
         return True
+
+    def convert_gh_to_ubvector(self, geom, geohash_id):
+        """Converts a decoded geohash coordinate array to the UBVector() object by first reprojecting it from
+        EPSG 4326 to the project's EPSG and then creating the UBVector geometry."""
+        to_projectepsg = ubspatial.create_coordtrans(4326, self.activesim.get_project_epsg())
+
+        # Set up the point UBVector() of type Centroid
+        pt = ogr.Geometry(ogr.wkbPoint)
+        pt.AddPoint(geom.x, geom.y)
+        pt.Transform(to_projectepsg)
+        ubpoint = ubdata.UBVector([(pt.GetX() - self.extents[0], pt.GetY() - self.extents[2])])
+        ubpoint.add_attribute("GeohashID", geohash_id)
+        ubpoint.add_attribute("Status", 1)
+        ubpoint.add_attribute("CentreX", pt.GetX() - self.extents[0])
+        ubpoint.add_attribute("CentreY", pt.GetY() - self.extents[2])
+
+        # Set up the UBVector() of type Geohash
+        ring = ogr.Geometry(ogr.wkbLinearRing)
+        poly = ogr.Geometry(ogr.wkbPolygon)
+        coords = self.get_geohash_polygon(geohash_id).exterior.coords.xy
+
+        for i in range(len(coords[0])):
+            ring.AddPoint(coords[0][i], coords[1][i])
+        poly.AddGeometry(ring)
+        poly.Transform(to_projectepsg)
+        ring = poly.GetGeometryRef(0)
+        coordinates = []
+        for p in range(ring.GetPointCount()):
+            coordinates.append((ring.GetPoint(p)[0] - self.extents[0], ring.GetPoint(p)[1] - self.extents[2]))
+        edges = [(coordinates[i], coordinates[i+1]) for i in range(4)]
+        ubpoly = ubdata.UBVector(coordinates, edges)
+        ubpoly.add_attribute("GeohashID", geohash_id)
+        ubpoly.add_attribute("Status", 1)
+        ubpoly.add_attribute("CentreX", pt.GetX() - self.extents[0])
+        ubpoly.add_attribute("CentreY", pt.GetY() - self.extents[2])
+        return ubpoint, ubpoly
 
     def get_geohash_polygon(self, geohash_id):
         """Returns the geohash polygon for the specified ID."""
@@ -793,10 +886,6 @@ class CreateSimGrid(UBModule):
         p2 = (bounds.ne.lat, bounds.sw.lon)
         p3 = (bounds.ne.lat, bounds.ne.lon)
         p4 = (bounds.sw.lat, bounds.ne.lon)
-        e1 = (p1, p2)
-        e2 = (p2, p3)
-        e3 = (p3, p4)
-        e4 = (p4, p1)
         return Polygon([p1, p2, p3, p4, p1])
 
     def create_parcel_simgrid(self):
@@ -805,3 +894,8 @@ class CreateSimGrid(UBModule):
         tesselation."""
         pass
         return True
+
+
+# GEOHASH RESOLUTION: Different x and y resolutions based on levels 5 to 8 - coarse than 5 or finer than 8 not possible
+# Source: elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-geohashgrid-aggregation.html
+GEOHASH_RES = {5: (4900.0, 4900.0), 6: (1200, 609.4), 7: (152.9, 152.4), 8: (38.2, 19)}
