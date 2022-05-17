@@ -87,6 +87,9 @@ class MapLandUseToSimGrid(UBModule):
         # NON-VISIBLE PARAMETERS (ADVANCED SETTINGS)
         # None
 
+    def set_module_data_library(self, datalib):
+        self.datalibrary = datalib
+
     def run_module(self):
         """ The main algorithm for the module, links with the active simulation, its data library and output folders.
 

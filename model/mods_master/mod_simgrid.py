@@ -116,6 +116,9 @@ class CreateSimGrid(UBModule):
         self.create_parameter("parcel_map", STRING, "Parcel Map to base the grid on")
         self.parcel_map = "(select parcel map)"
 
+    def set_module_data_library(self, datalib):
+        self.datalibrary = datalib
+
     def initialize_runstate(self):
         """Initializes the key global variables so that the program knows what the current asset collection is to write
         to and what the active simulation boundary is. This is done the first thing the model starts."""
@@ -892,9 +895,27 @@ class CreateSimGrid(UBModule):
         """Creates a simulation grid of parcels by loading in a pre-defined parcel map. Determines the neighbourhood of
         this delineation and creates the network representation of connections based on shared edges i.e., dirichlet
         tesselation."""
-        pass
-        return True
+        # Open the parcels data set and grab features controlled to (0,0 origin).
+        parcelmap = self.datalibrary.get_data_with_id(self.parcel_map)
+        fullpath = parcelmap.get_data_file_path() + parcelmap.get_metadata("filename")
+        parcels = ubspatial.import_polygonal_map(fullpath, "native", "Parcels", (self.meta.get_attribute("xllcorner"),
+                                                                                 self.meta.get_attribute("yllcorner")))
 
+        self.notify_progress(40)
+        # For each parcel in the map...
+        for i in range(len(parcels)):
+            print(parcels[i])
+
+            # Check if it intersects the boundary polygon
+            # Yes --> Assign ID, grab 'representative point' and save Centroid and Poly
+            # No --> Skip
+
+        # Grab neighbours of all parcels by shared edges
+
+        # Draw the dirichlet network
+
+
+        return True
 
 # GEOHASH RESOLUTION: Different x and y resolutions based on levels 5 to 8 - coarse than 5 or finer than 8 not possible
 # Source: elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-geohashgrid-aggregation.html

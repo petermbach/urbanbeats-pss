@@ -472,6 +472,8 @@ class UrbanBeatsSim(object):
             datalib = ubdatalibrary.UrbanBeatsDataLibrary(self.__projectpath,
                                                           self.get_project_parameter("keepcopy"))
             self.set_data_library(datalib)
+            for m in self.__modules_collection.keys():
+                self.__modules_collection[m].set_module_data_library(datalib)
 
             # Create a new project log
             projectlog = UrbanBeatsLog(self.__projectpath)
@@ -482,6 +484,8 @@ class UrbanBeatsSim(object):
 
             # (1) OPEN THE PROJECT'S DATA LIBRARY (datalib.ubdata)
             self.set_data_library(ubdatalibrary.load_data_library(self.__projectpath))
+            for m in self.__modules_collection.keys():
+                self.__modules_collection[m].set_module_data_library(self.get_data_library())
 
             # (2) ADD SIMULATION BOUNDARIES AND LOCATIONS TO PROJECT
             self.restore_project_boundaries_and_locations(self.__projectpath)
