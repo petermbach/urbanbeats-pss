@@ -547,8 +547,8 @@ p, li { white-space: pre-wrap; }
              <string>Parcel-based Representation</string>
             </property>
             <property name="icon">
-             <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
-              <normaloff>:/images/md_parcel.png</normaloff>:/images/md_parcel.png</iconset>
+             <iconset resource="../../graphics/ubeats.qrc">
+              <normaloff>:/images/images/md_parcel.png</normaloff>:/images/images/md_parcel.png</iconset>
             </property>
            </item>
           </widget>
@@ -1504,8 +1504,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>250</width>
-               <height>255</height>
+               <width>369</width>
+               <height>229</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1719,8 +1719,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>273</width>
-               <height>264</height>
+               <width>369</width>
+               <height>225</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -1800,7 +1800,7 @@ p, li { white-space: pre-wrap; }
                     <number>5</number>
                    </property>
                    <property name="maximum">
-                    <number>9</number>
+                    <number>8</number>
                    </property>
                    <property name="singleStep">
                     <number>1</number>
@@ -1943,8 +1943,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>292</width>
-               <height>229</height>
+               <width>369</width>
+               <height>216</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_13">
