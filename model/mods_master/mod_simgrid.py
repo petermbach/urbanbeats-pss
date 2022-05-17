@@ -637,15 +637,16 @@ class CreateSimGrid(UBModule):
         self.notify("Total number of links generated: "+str(len(networklist)))
         return True
 
-    def find_neighbours_by_geometry(self, curasset, assetlist, assetident, ref_geom, selection):
+    def find_neighbours_by_geometry(self, curasset, assetlist):
         """Performs the neighbourhood scan based on shared edges or points."""
         nhd = []
         for i in range(len(assetlist)):
-            comp_id = assetlist[i].get_attribute(assetident)
-            cur_id = curasset.get_attribute(assetident)
+            cur_id = curasset.get_attribute(self.assetident)
+            comp_id = assetlist[i].get_attribute(self.assetident)
             if cur_id == comp_id or assetlist[i].get_attribute("Status") == 0:
                 continue    # Identical IDs or no status? Skip
-            if curasset.shares_geometry(assetlist[i], ref_geom, selection):
+            if Polygon.intersection(Polygon(curasset.get_points()), Polygon(assetlist[i].get_points())).length > 0.0:
+                # If the length of the intersection is not 0 (i.e. shared edges)
                 nhd.append(comp_id)
         return nhd
 
@@ -660,11 +661,6 @@ class CreateSimGrid(UBModule):
         """Creates a simulation grid of raster cells, represented by points with x,y coordinates, allowing easy export
         to GeoTiff or ASCII later on. Determines the neighbourhood of this grid and creates the network representation
         of connections based on shared edges (north, south, east west)."""
-        # PARAMETERS
-        # self.rastersize = 30  # [m]
-        # self.nodatavalue = -9999
-        # self.generate_fishnet = 0
-
         blocks_wide = int(math.ceil(self.mapwidth / float(self.rastersize)))
         blocks_tall = int(math.ceil(self.mapheight / float(self.rastersize)))
         numcells = blocks_wide * blocks_tall
@@ -831,11 +827,6 @@ class CreateSimGrid(UBModule):
                     gh_attr.add_attribute("NHD_"+n.upper(), nhd[n])
                     hasdir.append(n)
                     neighbours.append(nhd[n])
-            # for dir in nhd_directions:
-            #     if dir in hasdir:
-            #         continue
-            #     else:
-            #         gh_attr.add_attribute("NHD_"+dir.upper(), 0)
             gh_attr.add_attribute("Neighbours", neighbours)
             gh_attr.add_attribute("Neighb_num", len(neighbours))
 
@@ -902,19 +893,59 @@ class CreateSimGrid(UBModule):
                                                                                  self.meta.get_attribute("yllcorner")))
 
         self.notify_progress(40)
-        # For each parcel in the map...
+
+        # For each parcel in the map... check if within the boundary polygon, if yes, assign ID and data, save
+        parcellist = []
+        parcelIDcount = 1
+        self.assets.add_asset_type("Parcel", "Polygon")
+        self.assets.add_asset_type("Centroid", "Point")
+
         for i in range(len(parcels)):
-            print(parcels[i])
+            points = parcels[i].get_points()
+            # print(points)
+            parcelpoly = Polygon(points)
+            if Polygon.intersects(self.boundarypoly, parcelpoly):
+                self.notify("Current ParcelID"+str(parcelIDcount))
+                # Make a Clean UBVector Polygon ParcelID
+                edges = [(points[i], points[i+1]) for i in range(len(points)-1)]
+                rp = parcelpoly.representative_point()
 
-            # Check if it intersects the boundary polygon
-            # Yes --> Assign ID, grab 'representative point' and save Centroid and Poly
-            # No --> Skip
+                parcel_attr = ubdata.UBVector(parcels[i].get_points(), edges)
+                parcel_attr.add_attribute("ParcelID", parcelIDcount)
+                parcel_attr.add_attribute("CentreX", rp.x)
+                parcel_attr.add_attribute("CentreY", rp.y)
+                parcel_attr.add_attribute("Area", parcelpoly.area)
+                parcel_attr.add_attribute("Status", 1)
+                self.assets.add_asset("ParcelID"+str(parcelIDcount), parcel_attr)
 
-        # Grab neighbours of all parcels by shared edges
+                # Make the UBVector Point CentroidID
+                cen_attr = ubdata.UBVector([(rp.x, rp.y)])
+                cen_attr.add_attribute("ParcelID", parcelIDcount)
+                cen_attr.add_attribute("CentreX", rp.x)
+                cen_attr.add_attribute("CentreY", rp.y)
+                cen_attr.add_attribute("Area", parcelpoly.area)
+                cen_attr.add_attribute("Status", 1)
+                self.assets.add_asset("CentroidID" + str(parcelIDcount), cen_attr)
 
-        # Draw the dirichlet network
+                parcelIDcount += 1
+                parcellist.append(parcel_attr)
+            else:
+                print("No intersect, continuing")
 
+        # DETERMINE NEIGHBOURS OF PARCELS BY SHARED EDGES
+        self.notify_progress(60)
+        self.notify("Determining neighbourhoods")
+        for i in range(len(parcellist)):
+            self.notify("Scanning Neighbourhood for ParcelID"+str(parcellist[i].get_attribute("ParcelID")))
+            nhd = self.find_neighbours_by_geometry(parcellist[i], parcellist)
+            parcellist[i].add_attribute("Neighbours", nhd)
+            parcellist[i].add_attribute("Neighb_num", len(nhd))
 
+        # DRAW THE DIRICHLET NETWORK
+        self.notify_progress(80)
+        self.notify("Constructing Dirichlet Network")
+        self.assets.add_asset_type("Network", "Line")
+        self.generate_shared_edge_network(parcellist)
         return True
 
 # GEOHASH RESOLUTION: Different x and y resolutions based on levels 5 to 8 - coarse than 5 or finer than 8 not possible

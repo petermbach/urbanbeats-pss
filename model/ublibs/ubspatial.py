@@ -91,7 +91,7 @@ def import_polygonal_map(filepath, option, naming, global_offsets, **kwargs):
                     if the option is "RINGPOINTS", returns simply a points list of all ring points
     :param naming: naming convention of type str() to be used.
     :param global_offsets: (x, y) coordinates that are used to offset the map's coordinates to 0,0 system
-    :param **kwargs: "useEPSG:int()" - use a custom EPSG code
+    :param **kwargs: "useEPSG:int()" - use a custom EPSG code, "geomonly:False" - only returns geometry
     """
     driver = ogr.GetDriverByName('ESRI Shapefile')  # Load the shapefile driver and data source
     datasource = driver.Open(filepath)
