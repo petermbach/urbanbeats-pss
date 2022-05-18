@@ -123,7 +123,7 @@ class UrbanBeatsDataLibrary(object):
                 return
         for i in range(len(self.__temporal_data)):
             if self.__temporal_data[i].get_data_id() == dataID:
-                self.delete_data_from_project_folder(self.__time_series_data[i])
+                self.delete_data_from_project_folder(self.__temporal_data[i])
                 self.__temporal_data.pop(i)
                 return
         for i in range(len(self.__qual_data)):

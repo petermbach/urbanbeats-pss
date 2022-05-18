@@ -132,7 +132,7 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
         # Patch delineation land use combo
         self.ui.patch_data_zoneombo.clear()
         self.ui.patch_data_zoneombo.addItem("(select map for patch-delineation)")   # Add the default option
-        self.combomaps = self.datalibrary.get_dataref_array("spatial", ["Boundaries", "Land Use", "Land Cover"],
+        self.combomaps = self.datalibrary.get_dataref_array("spatial", ["Boundaries", "Land Use/Cover"],
                                                             subtypes=None, scenario=self.active_scenario_name)
         [self.ui.patch_data_zoneombo.addItem(str(self.combomaps[0][i])) for i in range(len(self.combomaps[0]))]
 
@@ -253,54 +253,40 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
 
         # --- SPATIAL GEOMETRY ---
         if self.ui.geometry_combo.currentIndex() == 0:
-            self.module.set_parameter("geometry_type", "SQUARES")
+            self.module.set_parameter("geometry_type", "SQUARES")       # SQUARE BLOCKS
+            self.module.set_parameter("blocksize", self.ui.blocksize_spin.value())
+            self.module.set_parameter("blocksize_auto", int(self.ui.blocksize_auto.isChecked()))
         elif self.ui.geometry_combo.currentIndex() == 1:
-            self.module.set_parameter("geometry_type", "HEXAGONS")
+            self.module.set_parameter("geometry_type", "HEXAGONS")      # HEXAGONS BLOCKS
+            self.module.set_parameter("hexsize", self.ui.hexsize_spin.value())
+            self.module.set_parameter("hexsize_auto", int(self.ui.hexsize_auto.isChecked()))
+            if self.ui.radio_hexoNS.isChecked():
+                self.module.set_parameter("hex_orientation", "NS")
+            else:
+                self.module.set_parameter("hex_orientation", "EW")
         elif self.ui.geometry_combo.currentIndex() == 2:
-            self.module.set_parameter("geometry_type", "VECTORPATCH")
+            self.module.set_parameter("geometry_type", "VECTORPATCH")       # PATCH REPRESENTATION
+            self.module.set_parameter("patchzonemap", self.combomaps[1][self.ui.patch_data_zoneombo.currentIndex() - 1])
+            if self.ui.patch_discretize_grid_radio.isChecked():
+                self.module.set_parameter("disgrid_type", "GRID")
+            elif self.ui.patch_discretize_boundary_radio.isChecked():
+                self.module.set_parameter("disgrid_type", "BOUND")
+            else:
+                self.module.set_parameter("disgrid_type", "NONE")
+            self.module.set_parameter("disgrid_length", self.ui.patch_discretize_grid_spin.value())
+            self.module.set_parameter("disgrid_auto", int(self.ui.patch_discretize_grid_auto.isChecked()))
+            self.module.set_parameter("disgrid_map", self.discretmaps[1][self.ui.discret_combo.currentIndex() - 1])
         elif self.ui.geometry_combo.currentIndex() == 3:
-            self.module.set_parameter("geometry_type", "RASTER")
+            self.module.set_parameter("geometry_type", "RASTER")        # RASTER REPRESENTATION
+            self.module.set_parameter("rastersize", self.ui.raster_resolution_spin.value())
+            self.module.set_parameter("nodatavalue", int(self.ui.raster_nodata_line.text()))
+            self.module.set_parameter("generate_fishnet", int(self.ui.raster_generatefishnet_check.isChecked()))
         elif self.ui.geometry_combo.currentIndex() == 4:
-            self.module.set_parameter("geometry_type", "GEOHASH")
+            self.module.set_parameter("geometry_type", "GEOHASH")       # GEOHASH GRID REPRESENTATION
+            self.module.set_parameter("geohash_lvl", int(self.ui.gh_res_spin.value()))
         else:
-            self.module.set_parameter("geometry_type", "PARCEL")
-
-        # SQUARE BLOCKS
-        self.module.set_parameter("blocksize", self.ui.blocksize_spin.value())
-        self.module.set_parameter("blocksize_auto", int(self.ui.blocksize_auto.isChecked()))
-
-        # HEXAGONS BLOCKS
-        self.module.set_parameter("hexsize", self.ui.hexsize_spin.value())
-        self.module.set_parameter("hexsize_auto", int(self.ui.hexsize_auto.isChecked()))
-        if self.ui.radio_hexoNS.isChecked():
-            self.module.set_parameter("hex_orientation", "NS")
-        else:
-            self.module.set_parameter("hex_orientation", "EW")
-
-        # PATCH REPRESENTATION
-        self.module.set_parameter("patchzonemap", self.combomaps[1][self.ui.patch_data_zoneombo.currentIndex()-1])
-
-        if self.ui.patch_discretize_grid_radio.isChecked():
-            self.module.set_parameter("disgrid_type", "GRID")
-        elif self.ui.patch_discretize_boundary_radio.isChecked():
-            self.module.set_parameter("disgrid_type", "BOUND")
-        else:
-            self.module.set_parameter("disgrid_type", "NONE")
-
-        self.module.set_parameter("disgrid_length", self.ui.patch_discretize_grid_spin.value())
-        self.module.set_parameter("disgrid_auto", int(self.ui.patch_discretize_grid_auto.isChecked()))
-        self.module.set_parameter("disgrid_map", self.discretmaps[1][self.ui.discret_combo.currentIndex()-1])
-
-        # RASTER REPRESENTATION
-        self.module.set_parameter("rastersize", self.ui.raster_resolution_spin.value())
-        self.module.set_parameter("nodatavalue", int(self.ui.raster_nodata_line.text()))
-        self.module.set_parameter("generate_fishnet", int(self.ui.raster_generatefishnet_check.isChecked()))
-
-        # GEOHASH GRID REPRESENTATION
-        self.module.set_parameter("geohash_lvl", int(self.ui.gh_res_spin.value()))
-
-        # PARCEL REPRESENTATION
-        self.module.set_parameter("parcel_map", self.parcelmaps[1][self.ui.parcel_combo.currentIndex()-1])
+            self.module.set_parameter("geometry_type", "PARCEL")        # PARCEL REPRESENTATION
+            self.module.set_parameter("parcel_map", self.parcelmaps[1][self.ui.parcel_combo.currentIndex() - 1])
 
     def update_progress_bar_value(self, value):
         """Updates the progress bar of the Main GUI when the simulation is started/stopped/reset. Also disables the

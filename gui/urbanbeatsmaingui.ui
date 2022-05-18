@@ -281,7 +281,7 @@ p, li { white-space: pre-wrap; }
                      <string>Spatial Delineation</string>
                     </property>
                     <property name="text">
-                     <string>Focus</string>
+                     <string>Update</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
@@ -386,9 +386,9 @@ p, li { white-space: pre-wrap; }
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QPushButton" name="geography_focus_button_bound">
+                   <widget class="QPushButton" name="geography_update_button">
                     <property name="enabled">
-                     <bool>false</bool>
+                     <bool>true</bool>
                     </property>
                     <property name="minimumSize">
                      <size>
@@ -406,7 +406,7 @@ p, li { white-space: pre-wrap; }
                      <string>Spatial Delineation</string>
                     </property>
                     <property name="text">
-                     <string>Focus</string>
+                     <string>Update </string>
                     </property>
                     <property name="icon">
                      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
@@ -607,6 +607,20 @@ p, li { white-space: pre-wrap; }
                 <property name="icon">
                  <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
                   <normaloff>:/icons/export-icon.png</normaloff>:/icons/export-icon.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="asset_display">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="text">
+                 <string> Display</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                  <normaloff>:/icons/eye-2387853_960_720.png</normaloff>:/icons/eye-2387853_960_720.png</iconset>
                 </property>
                </widget>
               </item>
