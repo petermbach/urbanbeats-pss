@@ -692,7 +692,81 @@ class CreateSimGrid(UBModule):
         return True
 
     def delineate_patches_by_grid(self, raw_patches):
-        pass
+        # Generate the grid
+        self.notify('Generating discretization grid')
+        bs = self.disgrid_length
+        blocks_wide = int(math.ceil(self.mapwidth / float(bs)))
+        blocks_tall = int(math.ceil(self.mapheight / float(bs)))
+        grid_cells = []
+
+        for y in range(blocks_tall):
+            for x in range(blocks_wide):
+                # CREATE BLOCK GEOMETRY
+                n1 = (x * bs, y * bs)
+                n2 = ((x + 1) * bs, y * bs)
+                n3 = ((x + 1) * bs, (y + 1) * bs)
+                n4 = (x * bs, (y+1) * bs)
+                grid_cells.append(Polygon([n1, n2, n3, n4, n1]))
+
+        self.notify("Total cells in the discretization grid: "+str(len(grid_cells)))
+        self.notify_progress(40)
+
+        # Intersect the bounds with the active simulation boundary map - filters out only the bound polygons within the
+        # project simulation boundary
+        bound_isects = []
+        for i in range(len(grid_cells)):
+            poly = grid_cells[i]
+            isect = Polygon.intersection(poly, self.boundarypoly)
+            if isect.area > 0:
+                if isect.geom_type == "Polygon":
+                    bound_isects.append(isect)
+                elif isect.geom_type == "MultiPolygon":
+                    [bound_isects.append(p) for p in isect.geoms]
+
+        self.notify("Total number of intersections: " + str(len(bound_isects)))
+        self.notify_progress(50)  # Progress 50%
+
+        # Now intersect each item in the patch collection with each bound_intersect
+        patchlist = []
+        patchIDcount = 1
+        for i in range(len(bound_isects)):
+            self.notify("Bounds #" + str(i + 1) + " of " + str(len(bound_isects)))
+            for j in range(len(raw_patches)):
+                patches_to_scan = []
+                intersection = Polygon.intersection(bound_isects[i], Polygon(raw_patches[j].get_points()))
+                if intersection.area == 0:
+                    continue
+                else:  # Found a patch, create UBVector
+                    if intersection.geom_type == "MultiPolygon":
+                        [patches_to_scan.append(item) for item in intersection.geoms]
+                    elif intersection.geom_type == "Polygon":
+                        patches_to_scan.append(intersection)
+                    for curpatch in patches_to_scan:
+                        self.notify("   Current PatchID " + str(patchIDcount))
+                        coords = curpatch.exterior.coords.xy
+                        points = [(coords[0][p], coords[1][p]) for p in range(len(coords[0]))]
+                        edges = [(points[p], points[p + 1]) for p in range(len(points) - 1)]
+                        rp = curpatch.representative_point()
+                        patch_attr = ubdata.UBVector(points, edges)
+                        patch_attr.add_attribute("PatchID", patchIDcount)
+                        patch_attr.add_attribute("CentreX", rp.x)
+                        patch_attr.add_attribute("CentreY", rp.y)
+                        patch_attr.add_attribute("Area", curpatch.area)
+                        patch_attr.add_attribute("Status", 1)
+                        self.assets.add_asset("PatchID" + str(patchIDcount), patch_attr)
+
+                        cen_attr = ubdata.UBVector([(rp.x, rp.y)])
+                        cen_attr.add_attribute("CentroidID", patchIDcount)
+                        cen_attr.add_attribute("CentreX", rp.x)
+                        cen_attr.add_attribute("CentreY", rp.y)
+                        cen_attr.add_attribute("Area", curpatch.area)
+                        cen_attr.add_attribute("Status", 1)
+                        self.assets.add_asset("CentroidID" + str(patchIDcount), cen_attr)
+
+                        patchIDcount += 1
+                        patchlist.append(patch_attr)
+        return patchlist
+
 
     def delineate_patches_by_bounds(self, raw_patches):
         boundmap = self.datalibrary.get_data_with_id(self.disgrid_map)
@@ -757,7 +831,36 @@ class CreateSimGrid(UBModule):
         return patchlist
 
     def delineate_patches_as_raw(self, raw_patches):
-        pass
+        patchlist = []
+        patchIDcount = 1
+        for i in range(len(raw_patches)):
+            points = raw_patches[i].get_points()
+            poly = Polygon(points)
+            if Polygon.intersects(self.boundarypoly, poly):
+                self.notify("Current Patch ID: "+str(patchIDcount))
+                edges = [(points[i], points[i+1]) for i in range(len(points)-1)]
+                rp = poly.representative_point()
+
+                patch_attr = ubdata.UBVector(points, edges)
+                patch_attr.add_attribute("PatchID", patchIDcount)
+                patch_attr.add_attribute("CentreX", rp.x)
+                patch_attr.add_attribute("CentreY", rp.y)
+                patch_attr.add_attribute("Area", poly.area)
+                patch_attr.add_attribute("Status", 1)
+                self.assets.add_asset("PatchID"+str(patchIDcount), patch_attr)
+
+                # Centroid
+                cen_attr = ubdata.UBVector([(rp.x, rp.y)])
+                cen_attr.add_attribute("ParcelID", patchIDcount)
+                cen_attr.add_attribute("CentreX", rp.x)
+                cen_attr.add_attribute("CentreY", rp.y)
+                cen_attr.add_attribute("Area", poly.area)
+                cen_attr.add_attribute("Status", 1)
+                self.assets.add_asset("CentroidID" + str(patchIDcount), cen_attr)
+
+                patchIDcount += 1
+                patchlist.append(patch_attr)
+        return patchlist
 
     def create_raster_simgrid(self):
         """Creates a simulation grid of raster cells, represented by points with x,y coordinates, allowing easy export
