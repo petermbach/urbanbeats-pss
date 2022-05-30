@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 __author__ = "Peter M. Bach"
-__copyright__ = "Copyright 2018. Peter M. Bach"
+__copyright__ = "Copyright 2022. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 from model.ubmodule import *
@@ -44,70 +44,70 @@ class MapTopographyToSimGrid(UBModule):
         self.datalibrary = datalibrary
         self.projectlog = projectlog
 
+        # KEY GUIDING VARIABLES HOLDING IMPORTANT REFERENCES TO SIMULATION - SET AT INITIALIZATION
+        self.assets = None  # If used as one-off on-the-fly modelling, then scenario is None
+        self.meta = None  # Simulation metadata contained in assets, this variable will hold it
+        self.assetident = ""
+
         # MODULE PARAMETERS
-        self.create_parameter("gridname", STRING, "Name of the simulation grid, unique identifier used")
-        self.create_parameter("boundaryname", STRING, "Name of the boundary the grid is based upon")
-        self.create_parameter("geometry_type", STRING, "name of the geometry type the grid should use")
-        self.gridname = "My_urbanbeats_grid"
-        self.boundaryname = "(select simulation boundary)"
-        self.geometry_type = "SQUARES"  # SQUARES, HEXAGONS, VECTORPATCH, RASTER
+        self.create_parameter("assetcolname", STRING, "Name of the asset collection to use")
+        self.create_parameter("elevmapname", STRING, "Name of the elevation map to load for mapping")
+        self.assetcolname = "(select asset collection)"
+        self.elevmapname = "(no elevation maps in project)"
 
-        # Geometry Type: Square Blocks
-        self.create_parameter("blocksize", DOUBLE, "Size of the square blocks")
-        self.create_parameter("blocksize_auto", BOOL, "Determine the block size automatically?")
-        self.blocksize = 500    # [m]
-        self.blocksize_auto = 0
+        self.create_parameter("demsmooth", BOOL, "Perform smoothing on the DEM?")
+        self.create_parameter("dempasses", DOUBLE, "Number of passes to perform smoothing for")
+        self.demsmooth = 0
+        self.dempasses = 1
 
-        # Geometry Type: Hexagonal Blocks
-        self.create_parameter("hexsize", DOUBLE, "Edge length of a single hexagonal block")
-        self.create_parameter("hexsize_auto", BOOL, "Auto-determine the hexagonal edge length?")
-        self.create_parameter("hex_orientation", STRING, "Orientation of the hexagonal block")
-        self.hexsize = 300  # [m]
-        self.hexsize_auto = 0
-        self.hex_orientation = "NS"     # NS = north-south, EW = east-west
-
-        # Geometry Type: Patch/Irregular Block
-        self.create_parameter("patchzonemap", STRING, "The zoning map that patch delineation is based on")
-        self.create_parameter("disgrid_use", BOOL, "Use a discretization grid for the patch delineatioN?")
-        self.create_parameter("disgrid_length", DOUBLE, "Edge length of the discretization grid")
-        self.create_parameter("disgrid_auto", BOOL, "Auto-determine the size of the discretization grid?")
-        self.patchzonemap = "(select zoning map for patch delineation)"
-        self.disgrid_use = 0
-        self.disgrid_length = 500   # [m]
-        self.disgrid_auto = 0
-
-        # Geometry Type: Raster/Fishnet
-        self.create_parameter("rastersize", DOUBLE, "Resolution of the raster grid")
-        self.create_parameter("nodatavalue", DOUBLE, "Identifier for the NODATAVALUE")
-        self.create_parameter("generate_fishnet", BOOL, "Generate a fishnet of the raster?")
-        self.rastersize = 30    # [m]
-        self.nodatavalue = -9999
-        self.generate_fishnet = 0
-
-        # NON-VISIBLE PARAMETERS (ADVANCED SETTINGS)
-        # None
+        self.create_parameter("demstats", BOOL, "Calculate statistics for coarse grid DEMs?")
+        self.create_parameter("demminmax", BOOL, "Indicate lowest elevation point on the map?")
+        self.create_parameter("slope", BOOL, "Calculate slope?")
+        self.create_parameter("aspect", BOOL, "Calculate aspect?")
+        self.demstats = 0
+        self.demminmax = 0
+        self.slope = 0
+        self.aspect = 0
 
     def set_module_data_library(self, datalib):
         self.datalibrary = datalib
 
+    def initialize_runstate(self):
+        """Initializes the key global variables so that the program knows what the current asset collection is to write
+        to and what the active simulation boundary is. This is done the first thing the model starts."""
+        self.assets = self.activesim.get_asset_collection_by_name(self.assetcolname)
+        if self.assets is None:
+            self.notify("Fatal Error! Missing Asset Collection!")
+
+        # Metadata Check - need to make sure we have access to the metadata
+        self.meta = self.assets.get_asset_with_name("meta")
+        if self.meta is None:
+            self.notify("Fatal Error! Asset Collection Missing Metadata")
+        self.meta.add_attribute("mod_topography", 1)    # This denotes that the module will be run
+        self.assetident = self.meta.get_attribute("AssetIdent")     # Get the geometry type before starting!
+
     def run_module(self):
-        """ The main algorithm for the module, links with the active simulation, its data library and output folders.
+        """ The main algorithm for the module, links with the active simulation, its data library and output folders."""
+        self.initialize_runstate()
 
-        :return: True upon successful completion.
-        """
-        self.notify("Mapping Topography to Simulation for "+self.boundaryname)
+        self.notify("Mapping Topography data to Simulation")
+        self.notify("--- === ---")
+        self.notify_progress(0)
 
-        # --- SECTION 1 - Preparation for creating the simulation grid based on the boundary map
-
-
-        # --- SECTION 2 - Create the grid
+        # --- SECTION 1 - Get the elevation map data to be mapped
 
 
-        # --- SECTION 3 - Identify neighbours
+        # --- SECTION 2 - Begin mapping the data based on geometry type - calculate relevant stats if needed
 
 
-        # --- SECTION 4 - Generate maps/shapes
+        # --- SECTION 3 - Perform DEM Smoothing if requested
 
+
+        # --- SECTION 4 - Calculate slope and aspect
+
+
+        self.notify("Finished SimGrid Creation")
+        self.notify_progress(100)  # Must notify of 100% progress if the 'close' button is to be renabled.
         return True
 
     # ==========================================

@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Map_Topography(object):
     def setupUi(self, Map_Topography):
         Map_Topography.setObjectName("Map_Topography")
-        Map_Topography.resize(630, 420)
+        Map_Topography.resize(630, 460)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/topography.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Map_Topography.setWindowIcon(icon)
@@ -28,13 +28,13 @@ class Ui_Map_Topography(object):
         self.horizontalLayout.setObjectName("horizontalLayout")
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.reset_button = QtWidgets.QPushButton(self.buttons_widget)
-        self.reset_button.setMinimumSize(QtCore.QSize(90, 0))
+        self.ok_button = QtWidgets.QPushButton(self.buttons_widget)
+        self.ok_button.setMinimumSize(QtCore.QSize(90, 0))
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap(":/icons/check.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.reset_button.setIcon(icon1)
-        self.reset_button.setObjectName("reset_button")
-        self.horizontalLayout.addWidget(self.reset_button)
+        self.ok_button.setIcon(icon1)
+        self.ok_button.setObjectName("ok_button")
+        self.horizontalLayout.addWidget(self.ok_button)
         self.close_button = QtWidgets.QPushButton(self.buttons_widget)
         self.close_button.setMinimumSize(QtCore.QSize(90, 0))
         icon2 = QtGui.QIcon()
@@ -120,82 +120,105 @@ class Ui_Map_Topography(object):
         self.title = QtWidgets.QLabel(self.parameters)
         self.title.setObjectName("title")
         self.verticalLayout.addWidget(self.title)
-        self.grid_id = QtWidgets.QLabel(self.parameters)
-        self.grid_id.setObjectName("grid_id")
-        self.verticalLayout.addWidget(self.grid_id)
-        self.gridname_box = QtWidgets.QWidget(self.parameters)
-        self.gridname_box.setObjectName("gridname_box")
-        self.gridLayout_7 = QtWidgets.QGridLayout(self.gridname_box)
+        self.asset_col_title = QtWidgets.QLabel(self.parameters)
+        self.asset_col_title.setObjectName("asset_col_title")
+        self.verticalLayout.addWidget(self.asset_col_title)
+        self.gridname_widget = QtWidgets.QWidget(self.parameters)
+        self.gridname_widget.setObjectName("gridname_widget")
+        self.gridLayout_7 = QtWidgets.QGridLayout(self.gridname_widget)
         self.gridLayout_7.setContentsMargins(6, 6, 6, 6)
         self.gridLayout_7.setObjectName("gridLayout_7")
-        self.boundary_combo = QtWidgets.QComboBox(self.gridname_box)
-        self.boundary_combo.setObjectName("boundary_combo")
-        self.boundary_combo.addItem("")
-        self.gridLayout_7.addWidget(self.boundary_combo, 0, 1, 1, 1)
-        self.gridname_lbl_2 = QtWidgets.QLabel(self.gridname_box)
-        self.gridname_lbl_2.setMinimumSize(QtCore.QSize(100, 0))
-        self.gridname_lbl_2.setMaximumSize(QtCore.QSize(100, 16777215))
-        self.gridname_lbl_2.setObjectName("gridname_lbl_2")
-        self.gridLayout_7.addWidget(self.gridname_lbl_2, 0, 0, 1, 1)
-        self.verticalLayout.addWidget(self.gridname_box)
-        self.grid_props = QtWidgets.QLabel(self.parameters)
-        self.grid_props.setObjectName("grid_props")
-        self.verticalLayout.addWidget(self.grid_props)
-        self.gridname_lbl_5 = QtWidgets.QLabel(self.parameters)
-        self.gridname_lbl_5.setMinimumSize(QtCore.QSize(0, 0))
-        self.gridname_lbl_5.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.gridname_lbl_5.setObjectName("gridname_lbl_5")
-        self.verticalLayout.addWidget(self.gridname_lbl_5)
+        self.assetcol_combo = QtWidgets.QComboBox(self.gridname_widget)
+        self.assetcol_combo.setObjectName("assetcol_combo")
+        self.assetcol_combo.addItem("")
+        self.gridLayout_7.addWidget(self.assetcol_combo, 0, 1, 1, 1)
+        self.gridname_lbl = QtWidgets.QLabel(self.gridname_widget)
+        self.gridname_lbl.setMinimumSize(QtCore.QSize(100, 0))
+        self.gridname_lbl.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.gridname_lbl.setObjectName("gridname_lbl")
+        self.gridLayout_7.addWidget(self.gridname_lbl, 0, 0, 1, 1)
+        self.verticalLayout.addWidget(self.gridname_widget)
+        self.elevmap_title = QtWidgets.QLabel(self.parameters)
+        self.elevmap_title.setObjectName("elevmap_title")
+        self.verticalLayout.addWidget(self.elevmap_title)
+        self.elevmap_descr = QtWidgets.QLabel(self.parameters)
+        self.elevmap_descr.setMinimumSize(QtCore.QSize(0, 0))
+        self.elevmap_descr.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        self.elevmap_descr.setObjectName("elevmap_descr")
+        self.verticalLayout.addWidget(self.elevmap_descr)
         self.gridname_box_2 = QtWidgets.QWidget(self.parameters)
         self.gridname_box_2.setObjectName("gridname_box_2")
         self.gridLayout_8 = QtWidgets.QGridLayout(self.gridname_box_2)
-        self.gridLayout_8.setContentsMargins(6, 6, 6, 6)
+        self.gridLayout_8.setContentsMargins(0, 6, 0, 6)
         self.gridLayout_8.setObjectName("gridLayout_8")
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_8.addItem(spacerItem1, 2, 2, 1, 1)
         self.elev_combo = QtWidgets.QComboBox(self.gridname_box_2)
         self.elev_combo.setObjectName("elev_combo")
         self.gridLayout_8.addWidget(self.elev_combo, 0, 1, 1, 2)
-        self.gridname_lbl_6 = QtWidgets.QLabel(self.gridname_box_2)
-        self.gridname_lbl_6.setMinimumSize(QtCore.QSize(100, 0))
-        self.gridname_lbl_6.setMaximumSize(QtCore.QSize(100, 16777215))
-        self.gridname_lbl_6.setObjectName("gridname_lbl_6")
-        self.gridLayout_8.addWidget(self.gridname_lbl_6, 1, 0, 1, 1)
-        self.gridname_lbl_4 = QtWidgets.QLabel(self.gridname_box_2)
-        self.gridname_lbl_4.setMinimumSize(QtCore.QSize(100, 0))
-        self.gridname_lbl_4.setMaximumSize(QtCore.QSize(100, 16777215))
-        self.gridname_lbl_4.setObjectName("gridname_lbl_4")
-        self.gridLayout_8.addWidget(self.gridname_lbl_4, 0, 0, 1, 1)
-        self.demsmooth_spin = QtWidgets.QSpinBox(self.gridname_box_2)
+        self.elevmap_lbl = QtWidgets.QLabel(self.gridname_box_2)
+        self.elevmap_lbl.setMinimumSize(QtCore.QSize(100, 0))
+        self.elevmap_lbl.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.elevmap_lbl.setObjectName("elevmap_lbl")
+        self.gridLayout_8.addWidget(self.elevmap_lbl, 0, 0, 1, 1)
+        self.verticalLayout.addWidget(self.gridname_box_2)
+        self.furtheroptions_title = QtWidgets.QLabel(self.parameters)
+        self.furtheroptions_title.setObjectName("furtheroptions_title")
+        self.verticalLayout.addWidget(self.furtheroptions_title)
+        self.smoothing_widget = QtWidgets.QWidget(self.parameters)
+        self.smoothing_widget.setObjectName("smoothing_widget")
+        self.gridLayout_2 = QtWidgets.QGridLayout(self.smoothing_widget)
+        self.gridLayout_2.setContentsMargins(0, 6, 0, 6)
+        self.gridLayout_2.setObjectName("gridLayout_2")
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_2.addItem(spacerItem1, 1, 2, 1, 1)
+        self.demsmooth_check = QtWidgets.QCheckBox(self.smoothing_widget)
+        self.demsmooth_check.setObjectName("demsmooth_check")
+        self.gridLayout_2.addWidget(self.demsmooth_check, 0, 1, 1, 2)
+        self.demsmooth_spin = QtWidgets.QSpinBox(self.smoothing_widget)
         self.demsmooth_spin.setMinimumSize(QtCore.QSize(100, 0))
         self.demsmooth_spin.setMinimum(1)
         self.demsmooth_spin.setMaximum(2)
         self.demsmooth_spin.setObjectName("demsmooth_spin")
-        self.gridLayout_8.addWidget(self.demsmooth_spin, 2, 1, 1, 1)
-        self.demsmooth_check = QtWidgets.QCheckBox(self.gridname_box_2)
-        self.demsmooth_check.setObjectName("demsmooth_check")
-        self.gridLayout_8.addWidget(self.demsmooth_check, 1, 1, 1, 2)
-        self.verticalLayout.addWidget(self.gridname_box_2)
-        self.grid_props_2 = QtWidgets.QLabel(self.parameters)
-        self.grid_props_2.setObjectName("grid_props_2")
-        self.verticalLayout.addWidget(self.grid_props_2)
+        self.gridLayout_2.addWidget(self.demsmooth_spin, 1, 1, 1, 1)
+        self.smoothing_lbl = QtWidgets.QLabel(self.smoothing_widget)
+        self.smoothing_lbl.setMinimumSize(QtCore.QSize(100, 0))
+        self.smoothing_lbl.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.smoothing_lbl.setObjectName("smoothing_lbl")
+        self.gridLayout_2.addWidget(self.smoothing_lbl, 0, 0, 1, 1)
+        self.verticalLayout.addWidget(self.smoothing_widget)
         self.gridname_box_3 = QtWidgets.QWidget(self.parameters)
         self.gridname_box_3.setObjectName("gridname_box_3")
         self.gridLayout_10 = QtWidgets.QGridLayout(self.gridname_box_3)
-        self.gridLayout_10.setContentsMargins(6, 6, 6, 6)
+        self.gridLayout_10.setContentsMargins(0, 6, 0, 6)
         self.gridLayout_10.setObjectName("gridLayout_10")
-        self.gridname_lbl_11 = QtWidgets.QLabel(self.gridname_box_3)
-        self.gridname_lbl_11.setMinimumSize(QtCore.QSize(100, 0))
-        self.gridname_lbl_11.setMaximumSize(QtCore.QSize(100, 16777215))
-        self.gridname_lbl_11.setObjectName("gridname_lbl_11")
-        self.gridLayout_10.addWidget(self.gridname_lbl_11, 0, 0, 1, 1)
-        self.demsmooth_check_9 = QtWidgets.QCheckBox(self.gridname_box_3)
-        self.demsmooth_check_9.setObjectName("demsmooth_check_9")
-        self.gridLayout_10.addWidget(self.demsmooth_check_9, 1, 1, 1, 1)
-        self.demsmooth_check_8 = QtWidgets.QCheckBox(self.gridname_box_3)
-        self.demsmooth_check_8.setObjectName("demsmooth_check_8")
-        self.gridLayout_10.addWidget(self.demsmooth_check_8, 0, 1, 1, 2)
+        self.insights_lbl = QtWidgets.QLabel(self.gridname_box_3)
+        self.insights_lbl.setMinimumSize(QtCore.QSize(100, 0))
+        self.insights_lbl.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.insights_lbl.setObjectName("insights_lbl")
+        self.gridLayout_10.addWidget(self.insights_lbl, 0, 0, 1, 1)
+        self.topo_lowest_check = QtWidgets.QCheckBox(self.gridname_box_3)
+        self.topo_lowest_check.setObjectName("topo_lowest_check")
+        self.gridLayout_10.addWidget(self.topo_lowest_check, 1, 1, 1, 1)
+        self.topo_stats_check = QtWidgets.QCheckBox(self.gridname_box_3)
+        self.topo_stats_check.setObjectName("topo_stats_check")
+        self.gridLayout_10.addWidget(self.topo_stats_check, 0, 1, 1, 2)
         self.verticalLayout.addWidget(self.gridname_box_3)
+        self.gridname_box_4 = QtWidgets.QWidget(self.parameters)
+        self.gridname_box_4.setObjectName("gridname_box_4")
+        self.gridLayout_11 = QtWidgets.QGridLayout(self.gridname_box_4)
+        self.gridLayout_11.setContentsMargins(0, 6, 0, 6)
+        self.gridLayout_11.setObjectName("gridLayout_11")
+        self.calculate_lbl = QtWidgets.QLabel(self.gridname_box_4)
+        self.calculate_lbl.setMinimumSize(QtCore.QSize(100, 0))
+        self.calculate_lbl.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.calculate_lbl.setObjectName("calculate_lbl")
+        self.gridLayout_11.addWidget(self.calculate_lbl, 0, 0, 1, 1)
+        self.aspect_check = QtWidgets.QCheckBox(self.gridname_box_4)
+        self.aspect_check.setObjectName("aspect_check")
+        self.gridLayout_11.addWidget(self.aspect_check, 1, 1, 1, 1)
+        self.slope_check = QtWidgets.QCheckBox(self.gridname_box_4)
+        self.slope_check.setObjectName("slope_check")
+        self.gridLayout_11.addWidget(self.slope_check, 0, 1, 1, 2)
+        self.verticalLayout.addWidget(self.gridname_box_4)
         spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem2)
         self.line = QtWidgets.QFrame(self.parameters)
@@ -211,13 +234,14 @@ class Ui_Map_Topography(object):
         self.gridLayout.addWidget(self.line_3, 3, 0, 1, 2)
 
         self.retranslateUi(Map_Topography)
+        self.close_button.clicked.connect(Map_Topography.reject)
         QtCore.QMetaObject.connectSlotsByName(Map_Topography)
 
     def retranslateUi(self, Map_Topography):
         _translate = QtCore.QCoreApplication.translate
         Map_Topography.setWindowTitle(_translate("Map_Topography", "Map Topography to Simulation"))
-        self.reset_button.setWhatsThis(_translate("Map_Topography", "<html><head/><body><p>Resets all parameters of this module in the current \'scenario time step\' to the default values.</p></body></html>"))
-        self.reset_button.setText(_translate("Map_Topography", "OK"))
+        self.ok_button.setWhatsThis(_translate("Map_Topography", "<html><head/><body><p>Resets all parameters of this module in the current \'scenario time step\' to the default values.</p></body></html>"))
+        self.ok_button.setText(_translate("Map_Topography", "OK"))
         self.close_button.setText(_translate("Map_Topography", "Close"))
         self.help_button.setText(_translate("Map_Topography", "Help"))
         self.description.setHtml(_translate("Map_Topography", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
@@ -231,18 +255,16 @@ class Ui_Map_Topography(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Pre-requisites: A pre-defined Simulation Grid</span></p></body></html>"))
         self.run_button.setText(_translate("Map_Topography", "Run"))
         self.title.setText(_translate("Map_Topography", "<html><head/><body><p><span style=\" font-size:9pt; font-weight:600;\">SETTINGS</span></p></body></html>"))
-        self.grid_id.setText(_translate("Map_Topography", "<html><head/><body><p><span style=\" font-weight:600; font-style:italic;\">Target Simulation Grid</span></p></body></html>"))
-        self.boundary_combo.setItemText(0, _translate("Map_Topography", "(select simulation boundary)"))
-        self.gridname_lbl_2.setWhatsThis(_translate("Map_Topography", "Width of the square cell in the city grid in metres"))
-        self.gridname_lbl_2.setText(_translate("Map_Topography", "Grid Identifier:"))
-        self.grid_props.setText(_translate("Map_Topography", "<html><head/><body><p><span style=\" font-weight:600; font-style:italic;\">Select Topographic Map (Digital Elevation Model)</span></p></body></html>"))
-        self.gridname_lbl_5.setWhatsThis(_translate("Map_Topography", "Width of the square cell in the city grid in metres"))
-        self.gridname_lbl_5.setText(_translate("Map_Topography", "Select and adjust settings for input elevation map"))
-        self.gridname_lbl_6.setWhatsThis(_translate("Map_Topography", "Width of the square cell in the city grid in metres"))
-        self.gridname_lbl_6.setText(_translate("Map_Topography", "Smoothing Option:"))
-        self.gridname_lbl_4.setWhatsThis(_translate("Map_Topography", "Width of the square cell in the city grid in metres"))
-        self.gridname_lbl_4.setText(_translate("Map_Topography", "Elevation Map:"))
-        self.demsmooth_spin.setToolTip(_translate("Map_Topography", "Select the number of times the smoothing algorithm should be applied. A higher number will lead to a much smoother map, but can result in possible issues with finding flow paths."))
+        self.asset_col_title.setText(_translate("Map_Topography", "<html><head/><body><p><span style=\" font-weight:600; font-style:italic;\">Target Asset Collection</span></p></body></html>"))
+        self.assetcol_combo.setItemText(0, _translate("Map_Topography", "(select asset collection)"))
+        self.gridname_lbl.setWhatsThis(_translate("Map_Topography", "Width of the square cell in the city grid in metres"))
+        self.gridname_lbl.setText(_translate("Map_Topography", "Select collection:"))
+        self.elevmap_title.setText(_translate("Map_Topography", "<html><head/><body><p><span style=\" font-weight:600; font-style:italic;\">Select Topographic Map (Digital Elevation Model)</span></p></body></html>"))
+        self.elevmap_descr.setWhatsThis(_translate("Map_Topography", "Width of the square cell in the city grid in metres"))
+        self.elevmap_descr.setText(_translate("Map_Topography", "Select and adjust settings for input elevation map"))
+        self.elevmap_lbl.setWhatsThis(_translate("Map_Topography", "Width of the square cell in the city grid in metres"))
+        self.elevmap_lbl.setText(_translate("Map_Topography", "Elevation Map:"))
+        self.furtheroptions_title.setText(_translate("Map_Topography", "<html><head/><body><p><span style=\" font-weight:600; font-style:italic;\">Further Options</span></p></body></html>"))
         self.demsmooth_check.setToolTip(_translate("Map_Topography", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -258,37 +280,55 @@ class Ui_Map_Topography(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Applies a weighted average smoothing filter over the DEM layer. </span></p></body></html>"))
         self.demsmooth_check.setText(_translate("Map_Topography", "Perform DEM Smoothing (select no. of passes)"))
-        self.grid_props_2.setText(_translate("Map_Topography", "<html><head/><body><p><span style=\" font-weight:600; font-style:italic;\">Other Options</span></p></body></html>"))
-        self.gridname_lbl_11.setWhatsThis(_translate("Map_Topography", "Width of the square cell in the city grid in metres"))
-        self.gridname_lbl_11.setText(_translate("Map_Topography", "Insights:"))
-        self.demsmooth_check_9.setToolTip(_translate("Map_Topography", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.demsmooth_spin.setToolTip(_translate("Map_Topography", "Select the number of times the smoothing algorithm should be applied. A higher number will lead to a much smoother map, but can result in possible issues with finding flow paths."))
+        self.smoothing_lbl.setWhatsThis(_translate("Map_Topography", "Width of the square cell in the city grid in metres"))
+        self.smoothing_lbl.setText(_translate("Map_Topography", "Smoothing Option:"))
+        self.insights_lbl.setWhatsThis(_translate("Map_Topography", "Width of the square cell in the city grid in metres"))
+        self.insights_lbl.setText(_translate("Map_Topography", "Insights:"))
+        self.topo_lowest_check.setToolTip(_translate("Map_Topography", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM\'s accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Correction proceeds as follows:</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If tolerance limit is not met, cell\'s water is routed directly to catchment outlet.</span></p></body></html>"))
-        self.demsmooth_check_9.setWhatsThis(_translate("Map_Topography", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt;\"><br /></p></body></html>"))
+        self.topo_lowest_check.setWhatsThis(_translate("Map_Topography", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Applies a weighted average smoothing filter over the DEM layer. </span></p></body></html>"))
-        self.demsmooth_check_9.setText(_translate("Map_Topography", "Mark lowest elevation point on map"))
-        self.demsmooth_check_8.setToolTip(_translate("Map_Topography", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt;\"><br /></p></body></html>"))
+        self.topo_lowest_check.setText(_translate("Map_Topography", "Mark extremes (min/max elevations) on map"))
+        self.topo_stats_check.setToolTip(_translate("Map_Topography", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Check if you want to avoid localised ponds forming in the region. If this is of particular interest because the DEM\'s accuracy has been assured and the purpose of the simulation is to assess these problem spots, then leave this box unchecked.</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Correction proceeds as follows:</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If tolerance limit is not met, cell\'s water is routed directly to catchment outlet.</span></p></body></html>"))
-        self.demsmooth_check_8.setWhatsThis(_translate("Map_Topography", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt;\"><br /></p></body></html>"))
+        self.topo_stats_check.setWhatsThis(_translate("Map_Topography", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Applies a weighted average smoothing filter over the DEM layer. </span></p></body></html>"))
-        self.demsmooth_check_8.setText(_translate("Map_Topography", "Add topographic statistics for coarse grid"))
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt;\"><br /></p></body></html>"))
+        self.topo_stats_check.setText(_translate("Map_Topography", "Add topographic statistics for coarse grid"))
+        self.calculate_lbl.setWhatsThis(_translate("Map_Topography", "Width of the square cell in the city grid in metres"))
+        self.calculate_lbl.setText(_translate("Map_Topography", "Calculate:"))
+        self.aspect_check.setToolTip(_translate("Map_Topography", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt;\"><br /></p></body></html>"))
+        self.aspect_check.setWhatsThis(_translate("Map_Topography", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt;\"><br /></p></body></html>"))
+        self.aspect_check.setText(_translate("Map_Topography", "Determine Aspect"))
+        self.slope_check.setToolTip(_translate("Map_Topography", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt;\"><br /></p></body></html>"))
+        self.slope_check.setWhatsThis(_translate("Map_Topography", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt;\"><br /></p></body></html>"))
+        self.slope_check.setText(_translate("Map_Topography", "Determine Slope"))
 from .. import ubeats_rc
