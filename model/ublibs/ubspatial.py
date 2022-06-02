@@ -26,60 +26,73 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 import osgeo.osr as osr
 import osgeo.ogr as ogr
 import numpy as np
+import rasterio as rio
 import os, math
 
 # URBANBEATS IMPORT
 from . import ubdatatypes as ubdata
 
+def import_raster(filename):
+    return rasterio.open(filename)
 
-def import_ascii_raster(filepath, naming):
-    """ Imports an ESRI ASCII format raster, i.e. text file format (different file extensions if created with ArcMap
-    or QGIS, but internal data structure is the same. Returns an output UBRasterData() object
+#
+# def import_raster(filepath, naming):
+#     """Imports a raster data format (either ASCII or GeoTiff) and returns a UBRaster Object"""
+#     name, extension = os.path.splitext(filepath)
+#     if extension in [".txt", ".asc"]:   # ASCII RASTER
+#         return import_ascii_raster(filepath, naming)
+#     elif extension in [".tif", ".tiff", ".geotiff"]:
+#         return import_geotiff_raster(filepath, naming)
+#
+#
+# def import_ascii_raster(filepath, naming):
+#     """ Imports an ESRI ASCII format raster, i.e. text file format (different file extensions if created with ArcMap
+#     or QGIS, but internal data structure is the same. Returns an output UBRasterData() object
+#
+#     The raster data loaded from this function is flipped to ensure that it conincides with the x and y. The indexing
+#     of the raster data, however, starts from zero! So n_cols and n_rows indices should be subtracted by 1 if the
+#     value is to be called from the file.
+#
+#     Specification:
+#     http://resources.esri.com/help/9.3/arcgisdesktop/com/gp_toolref/spatial_analyst_tools/esri_ascii_raster_format.htm
+#     NODATA_value is listed as 'optional', this function requires the NODATA value to be listed!
+#
+#     :param filepath: The full filepath to the ASCII raster data file
+#     :return: UBRasterData() type
+#     """
+#     f = open(filepath, 'r')
+#     metadata = {}
+#     for i in range(6):
+#         metadata_line = f.readline().split()
+#         metadata[str(metadata_line[0]).lower()] = float(metadata_line[1])
+#
+#     try:    # Attempt to create the numpy array to store the data
+#         dataarray = np.empty([int(metadata["nrows"]), int(metadata["ncols"])])
+#         # Numpy Array is created by specifying the "ROWS" first then "COLUMNS"
+#     except KeyError:
+#         print("Error, ASCII data not correctly labelled")
+#         return 0
+#
+#     irow = 0     # To track the rows - i-th row and j-th column below
+#     for lines in f:
+#         a = lines.split()
+#         for jcol in range(len(a)):
+#             dataarray[irow, jcol] = a[jcol]
+#         irow += 1
+#     f.close()
+#
+#     # Flip the raster data
+#     dataarray = np.flip(dataarray, 0)
+#
+#     # Create the UBRasterData() data type
+#     rasterdata = ubdata.UBRasterData(metadata, dataarray, False)     # Create the object as read-only
+#     rasterdata.set_name(naming)
+#     rasterdata.set_filepath(filepath)
+#     return rasterdata
 
-    The raster data loaded from this function is flipped to ensure that it conincides with the x and y. The indexing
-    of the raster data, however, starts from zero! So n_cols and n_rows indices should be subtracted by 1 if the
-    value is to be called from the file.
-
-    Specification:
-    http://resources.esri.com/help/9.3/arcgisdesktop/com/gp_toolref/spatial_analyst_tools/esri_ascii_raster_format.htm
-    NODATA_value is listed as 'optional', this function requires the NODATA value to be listed!
-
-    :param filepath: The full filepath to the ASCII raster data file
-    :return: UBRasterData() type
-    """
-    f = open(filepath, 'r')
-    metadata = {}
-    for i in range(6):
-        metadata_line = f.readline().split()
-        metadata[str(metadata_line[0]).lower()] = float(metadata_line[1])
-
-    try:    # Attempt to create the numpy array to store the data
-        dataarray = np.empty([int(metadata["nrows"]), int(metadata["ncols"])])
-        # Numpy Array is created by specifying the "ROWS" first then "COLUMNS"
-    except KeyError:
-        print("Error, ASCII data not correctly labelled")
-        return 0
-
-    irow = 0     # To track the rows - i-th row and j-th column below
-    for lines in f:
-        a = lines.split()
-        for jcol in range(len(a)):
-            dataarray[irow, jcol] = a[jcol]
-        irow += 1
-    f.close()
-
-    # Flip the raster data
-    dataarray = np.flip(dataarray, 0)
-
-    # Create the UBRasterData() data type
-    rasterdata = ubdata.UBRasterData(metadata, dataarray, False)     # Create the object as read-only
-    rasterdata.set_name(naming)
-    rasterdata.set_filepath(filepath)
-    return rasterdata
-
-
-def import_geotiff_raster():    # [TO DO]
-    return True
+#
+# def import_geotiff_raster():    # [TO DO]
+#     return True
 
 
 def import_polygonal_map(filepath, option, naming, global_offsets, **kwargs):

@@ -24,7 +24,19 @@ __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2022. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
+import sys
+from shapely.geometry import Polygon
+import rasterio
+import rasterio.features
+import numpy as np
+
 from model.ubmodule import *
+import model.ublibs.ubspatial as ubspatial
+import model.ublibs.ubdatatypes as ubdata
+
+# --- LIBRARY SETTINGS ---
+np.set_printoptions(threshold=sys.maxsize, linewidth=5000)      # Numpy Print Options -- FOR DEBUG
+
 
 class MapTopographyToSimGrid(UBModule):
     """ Generates the simulation grid upon which many assessments will be based. This SimGrid will provide details on
@@ -47,13 +59,19 @@ class MapTopographyToSimGrid(UBModule):
         # KEY GUIDING VARIABLES HOLDING IMPORTANT REFERENCES TO SIMULATION - SET AT INITIALIZATION
         self.assets = None  # If used as one-off on-the-fly modelling, then scenario is None
         self.meta = None  # Simulation metadata contained in assets, this variable will hold it
+        self.xllcorner = None
+        self.yllcorner = None
         self.assetident = ""
+        self.elevationmap = None
+        self.cellsize = None        # (x, y)
+        self.bounds = None      # (left, bottom, right, top)
+        self.nodata = None
 
         # MODULE PARAMETERS
         self.create_parameter("assetcolname", STRING, "Name of the asset collection to use")
-        self.create_parameter("elevmapname", STRING, "Name of the elevation map to load for mapping")
+        self.create_parameter("elevmapdataid", STRING, "Name of the elevation map to load for mapping")
         self.assetcolname = "(select asset collection)"
-        self.elevmapname = "(no elevation maps in project)"
+        self.elevmapdataid = "(no elevation maps in project)"
 
         self.create_parameter("demsmooth", BOOL, "Perform smoothing on the DEM?")
         self.create_parameter("dempasses", DOUBLE, "Number of passes to perform smoothing for")
@@ -86,19 +104,86 @@ class MapTopographyToSimGrid(UBModule):
         self.meta.add_attribute("mod_topography", 1)    # This denotes that the module will be run
         self.assetident = self.meta.get_attribute("AssetIdent")     # Get the geometry type before starting!
 
+        self.xllcorner = self.meta.get_attribute("xllcorner")
+        self.yllcorner = self.meta.get_attribute("yllcorner")
+
     def run_module(self):
         """ The main algorithm for the module, links with the active simulation, its data library and output folders."""
         self.initialize_runstate()
 
         self.notify("Mapping Topography data to Simulation")
         self.notify("--- === ---")
+        self.notify("Geometry Type: " + self.assetident)
         self.notify_progress(0)
 
         # --- SECTION 1 - Get the elevation map data to be mapped
-
+        elevmap = self.datalibrary.get_data_with_id(self.elevmapdataid)
+        fullpath = elevmap.get_data_file_path() + elevmap.get_metadata("filename")
+        self.notify("Loading Elevation Map: "+str(elevmap.get_metadata("filename")))
+        self.elevationmap = rasterio.open(fullpath)
+        self.cellsize = self.elevationmap.res
+        self.bounds = self.elevationmap.bounds
+        self.nodata = self.elevationmap.nodata
+        self.notify("Raster Shape: "+str(self.elevationmap.shape))
+        self.notify(str(self.bounds))
+        self.notify("Nodata Value: "+str(self.nodata))
+        self.notify("Raster Resolution: "+str(self.cellsize))
+        self.notify_progress(20)
 
         # --- SECTION 2 - Begin mapping the data based on geometry type - calculate relevant stats if needed
+        self.notify("Mapping elevation data to simulation grid")
+        griditems = self.assets.get_assets_with_identifier(self.assetident)
+        self.notify("Total assets to map data to: "+str(len(griditems)))
 
+        for i in range(len(griditems)):
+            # Get the asset object
+            asset = griditems[i]
+            assetid = asset.get_attribute(self.assetident)
+            self.notify("Currently Mapping: " + str(self.assetident) + str(assetid))
+
+            assetpts = asset.get_points()       # Get its geometry at (0,0) origin
+            assetpoly = Polygon(assetpts)       # Make a shapely polygon to figure out bounds
+            maskoffsets = [assetpoly.bounds[0], assetpoly.bounds[1]]    # Offsets for the local mask
+            assetbounds = [assetpoly.bounds[0]+self.xllcorner, assetpoly.bounds[1]+self.yllcorner,
+                           assetpoly.bounds[2]+self.xllcorner, assetpoly.bounds[3]+self.yllcorner]  # Spatial bounds
+
+            # Identify the raster extents and extract the data matrix
+            llindex = self.elevationmap.index(assetbounds[0], assetbounds[1])
+            urindex = self.elevationmap.index(assetbounds[2], assetbounds[3])
+            datamatrix = self.elevationmap.read(1)[
+                         min(llindex[0], urindex[0]):max(llindex[0], urindex[0])+1,
+                         min(llindex[1], urindex[1]):max(llindex[1], urindex[1])+1]     # max index + 1 (inclusive)
+
+            if 0 in datamatrix.shape:
+                self.notify(self.assetident+str(assetid)+" does not fall within the bounds of the raster, skipping.")
+                asset.add_attribute("Elev_Avg", float(self.nodata))
+                asset.add_attribute("Elev_Min", float(self.nodata))
+                asset.add_attribute("Elev_Max", float(self.nodata))
+                continue
+
+            # Create the mask polygon that will be used to mask over the raster extract
+            # Offset from 0,0 origin is always the first point
+            maskpts = []
+            for pt in range(len(assetpts)):
+                x = assetpts[pt][0]
+                y = assetpts[pt][1]
+                maskpts.append((float((x - maskoffsets[0]) / self.cellsize[0]),
+                               float((y - maskoffsets[1]) / self.cellsize[1])))
+            maskrio = rasterio.features.rasterize([Polygon(maskpts)], out_shape=datamatrix.shape)
+            maskrio = np.flip(maskrio, 0)       # Flip the shape
+            maskeddata = np.ma.masked_array(datamatrix, mask=1-maskrio)
+            extractdata = maskeddata.compressed()
+            extractdata = np.delete(extractdata, np.where(extractdata == self.nodata))
+
+            if len(extractdata) == 0:
+                asset.add_attribute("Elev_Avg", self.nodata)
+                asset.add_attribute("Elev_Min", self.nodata)
+                asset.add_attribute("Elev_Max", self.nodata)
+            else:
+                # Calculate metrics and transfer elevation to asset
+                asset.add_attribute("Elev_Avg", float(extractdata.mean()))
+                asset.add_attribute("Elev_Min", float(extractdata.mean()))
+                asset.add_attribute("Elev_Max", float(extractdata.mean()))
 
         # --- SECTION 3 - Perform DEM Smoothing if requested
 
@@ -106,7 +191,7 @@ class MapTopographyToSimGrid(UBModule):
         # --- SECTION 4 - Calculate slope and aspect
 
 
-        self.notify("Finished SimGrid Creation")
+        self.notify("Mapping of elevation data to simulation grid complete")
         self.notify_progress(100)  # Must notify of 100% progress if the 'close' button is to be renabled.
         return True
 
