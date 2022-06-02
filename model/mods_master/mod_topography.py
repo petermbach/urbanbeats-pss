@@ -63,7 +63,7 @@ class MapTopographyToSimGrid(UBModule):
         self.yllcorner = None
         self.assetident = ""
         self.elevationmap = None
-        self.cellsize = None        # (x, y)
+        self.cellsize = None    # (x, y)
         self.bounds = None      # (left, bottom, right, top)
         self.nodata = None
 
@@ -72,6 +72,9 @@ class MapTopographyToSimGrid(UBModule):
         self.create_parameter("elevmapdataid", STRING, "Name of the elevation map to load for mapping")
         self.assetcolname = "(select asset collection)"
         self.elevmapdataid = "(no elevation maps in project)"
+
+        self.create_parameter("nodatatask", STRING, "What should be done if nodata value mapped?")
+        self.nodatatask = "STATUS"      # STATUS = Set status to zero, INTERP = interpolate
 
         self.create_parameter("demsmooth", BOOL, "Perform smoothing on the DEM?")
         self.create_parameter("dempasses", DOUBLE, "Number of passes to perform smoothing for")
@@ -107,6 +110,9 @@ class MapTopographyToSimGrid(UBModule):
         self.xllcorner = self.meta.get_attribute("xllcorner")
         self.yllcorner = self.meta.get_attribute("yllcorner")
 
+        # If the asset collection does not yet have a localities asset, create one...
+
+
     def run_module(self):
         """ The main algorithm for the module, links with the active simulation, its data library and output folders."""
         self.initialize_runstate()
@@ -135,12 +141,19 @@ class MapTopographyToSimGrid(UBModule):
         griditems = self.assets.get_assets_with_identifier(self.assetident)
         self.notify("Total assets to map data to: "+str(len(griditems)))
 
-        for i in range(len(griditems)):
+        # TRACKER VARIABLES
+        if self.demminmax:
+            lowest_elev = -9999         # Tracking the lowest and highest elevation points
+            highest_elev = -9999
+            # Create the asset collection Localities...
+
+        for i in range(len(griditems)):     # Loop across all polygon assets
             # Get the asset object
             asset = griditems[i]
             assetid = asset.get_attribute(self.assetident)
             self.notify("Currently Mapping: " + str(self.assetident) + str(assetid))
 
+            # Get two bounds: one for the local bounds of the polygon and one for indexing the raster data in the PRJCS
             assetpts = asset.get_points()       # Get its geometry at (0,0) origin
             assetpoly = Polygon(assetpts)       # Make a shapely polygon to figure out bounds
             maskoffsets = [assetpoly.bounds[0], assetpoly.bounds[1]]    # Offsets for the local mask
@@ -154,7 +167,7 @@ class MapTopographyToSimGrid(UBModule):
                          min(llindex[0], urindex[0]):max(llindex[0], urindex[0])+1,
                          min(llindex[1], urindex[1]):max(llindex[1], urindex[1])+1]     # max index + 1 (inclusive)
 
-            if 0 in datamatrix.shape:
+            if 0 in datamatrix.shape:       # If the raster matrix has neither height nor width, skip
                 self.notify(self.assetident+str(assetid)+" does not fall within the bounds of the raster, skipping.")
                 asset.add_attribute("Elev_Avg", float(self.nodata))
                 asset.add_attribute("Elev_Min", float(self.nodata))
@@ -163,30 +176,35 @@ class MapTopographyToSimGrid(UBModule):
 
             # Create the mask polygon that will be used to mask over the raster extract
             # Offset from 0,0 origin is always the first point
-            maskpts = []
+            maskpts = []   # Create maskpts... this is done as fully written out for loop because the UBVector has Z
             for pt in range(len(assetpts)):
                 x = assetpts[pt][0]
                 y = assetpts[pt][1]
                 maskpts.append((float((x - maskoffsets[0]) / self.cellsize[0]),
                                float((y - maskoffsets[1]) / self.cellsize[1])))
-            maskrio = rasterio.features.rasterize([Polygon(maskpts)], out_shape=datamatrix.shape)
-            maskrio = np.flip(maskrio, 0)       # Flip the shape
-            maskeddata = np.ma.masked_array(datamatrix, mask=1-maskrio)
-            extractdata = maskeddata.compressed()
-            extractdata = np.delete(extractdata, np.where(extractdata == self.nodata))
 
-            if len(extractdata) == 0:
+            # Rasterize the polygon to the datamatrix shape
+            maskrio = rasterio.features.rasterize([Polygon(maskpts)], out_shape=datamatrix.shape)
+            maskrio = np.flip(maskrio, 0)       # Flip the shape because row/col read from top left, not bottom left
+            maskeddata = np.ma.masked_array(datamatrix, mask=1-maskrio)     # Apply the mask: 1-maskrio flips booleans
+            extractdata = maskeddata.compressed()   # Compress the 2D array to a 1D list
+            extractdata = np.delete(extractdata, np.where(extractdata == self.nodata))  # Remove nodata values
+
+            if len(extractdata) == 0:       # If no data leftover, assign cells as self.nodata
                 asset.add_attribute("Elev_Avg", self.nodata)
                 asset.add_attribute("Elev_Min", self.nodata)
                 asset.add_attribute("Elev_Max", self.nodata)
-            else:
-                # Calculate metrics and transfer elevation to asset
+            else:       # Calculate metrics and transfer elevation to asset
                 asset.add_attribute("Elev_Avg", float(extractdata.mean()))
                 asset.add_attribute("Elev_Min", float(extractdata.mean()))
                 asset.add_attribute("Elev_Max", float(extractdata.mean()))
 
+        self.notify_progress(80)
+
         # --- SECTION 3 - Perform DEM Smoothing if requested
 
+
+        self.notify_progress(90)
 
         # --- SECTION 4 - Calculate slope and aspect
 

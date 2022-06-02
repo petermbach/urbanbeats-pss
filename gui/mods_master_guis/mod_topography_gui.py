@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\mod_topography.ui'
+# Form implementation generated from reading ui file '.\mod_topography_gui.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Map_Topography(object):
     def setupUi(self, Map_Topography):
         Map_Topography.setObjectName("Map_Topography")
-        Map_Topography.resize(630, 460)
+        Map_Topography.resize(630, 470)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/topography.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Map_Topography.setWindowIcon(icon)
@@ -163,10 +163,27 @@ class Ui_Map_Topography(object):
         self.furtheroptions_title = QtWidgets.QLabel(self.parameters)
         self.furtheroptions_title.setObjectName("furtheroptions_title")
         self.verticalLayout.addWidget(self.furtheroptions_title)
+        self.nodata_widget = QtWidgets.QWidget(self.parameters)
+        self.nodata_widget.setObjectName("nodata_widget")
+        self.gridLayout_3 = QtWidgets.QGridLayout(self.nodata_widget)
+        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_3.setObjectName("gridLayout_3")
+        self.nodata_lbl = QtWidgets.QLabel(self.nodata_widget)
+        self.nodata_lbl.setMinimumSize(QtCore.QSize(100, 0))
+        self.nodata_lbl.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.nodata_lbl.setObjectName("nodata_lbl")
+        self.gridLayout_3.addWidget(self.nodata_lbl, 0, 0, 1, 1)
+        self.nodata_remove_radio = QtWidgets.QRadioButton(self.nodata_widget)
+        self.nodata_remove_radio.setObjectName("nodata_remove_radio")
+        self.gridLayout_3.addWidget(self.nodata_remove_radio, 0, 1, 1, 1)
+        self.nodata_interpolate_radio = QtWidgets.QRadioButton(self.nodata_widget)
+        self.nodata_interpolate_radio.setObjectName("nodata_interpolate_radio")
+        self.gridLayout_3.addWidget(self.nodata_interpolate_radio, 1, 1, 1, 1)
+        self.verticalLayout.addWidget(self.nodata_widget)
         self.smoothing_widget = QtWidgets.QWidget(self.parameters)
         self.smoothing_widget.setObjectName("smoothing_widget")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.smoothing_widget)
-        self.gridLayout_2.setContentsMargins(0, 6, 0, 6)
+        self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_2.setObjectName("gridLayout_2")
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_2.addItem(spacerItem1, 1, 2, 1, 1)
@@ -188,7 +205,7 @@ class Ui_Map_Topography(object):
         self.gridname_box_3 = QtWidgets.QWidget(self.parameters)
         self.gridname_box_3.setObjectName("gridname_box_3")
         self.gridLayout_10 = QtWidgets.QGridLayout(self.gridname_box_3)
-        self.gridLayout_10.setContentsMargins(0, 6, 0, 6)
+        self.gridLayout_10.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_10.setObjectName("gridLayout_10")
         self.insights_lbl = QtWidgets.QLabel(self.gridname_box_3)
         self.insights_lbl.setMinimumSize(QtCore.QSize(100, 0))
@@ -205,7 +222,7 @@ class Ui_Map_Topography(object):
         self.gridname_box_4 = QtWidgets.QWidget(self.parameters)
         self.gridname_box_4.setObjectName("gridname_box_4")
         self.gridLayout_11 = QtWidgets.QGridLayout(self.gridname_box_4)
-        self.gridLayout_11.setContentsMargins(0, 6, 0, 6)
+        self.gridLayout_11.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_11.setObjectName("gridLayout_11")
         self.calculate_lbl = QtWidgets.QLabel(self.gridname_box_4)
         self.calculate_lbl.setMinimumSize(QtCore.QSize(100, 0))
@@ -265,6 +282,10 @@ class Ui_Map_Topography(object):
         self.elevmap_lbl.setWhatsThis(_translate("Map_Topography", "Width of the square cell in the city grid in metres"))
         self.elevmap_lbl.setText(_translate("Map_Topography", "Elevation Map:"))
         self.furtheroptions_title.setText(_translate("Map_Topography", "<html><head/><body><p><span style=\" font-weight:600; font-style:italic;\">Further Options</span></p></body></html>"))
+        self.nodata_lbl.setWhatsThis(_translate("Map_Topography", "Width of the square cell in the city grid in metres"))
+        self.nodata_lbl.setText(_translate("Map_Topography", "No Data Assets:"))
+        self.nodata_remove_radio.setText(_translate("Map_Topography", "Remove Asset from Simulation (Setting Status = 0)"))
+        self.nodata_interpolate_radio.setText(_translate("Map_Topography", "Interpolate Elevation from neighbours"))
         self.demsmooth_check.setToolTip(_translate("Map_Topography", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -300,7 +321,7 @@ class Ui_Map_Topography(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt;\"><br /></p></body></html>"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8.25pt;\">Other than mean elevation, will include min/max, variance</span></p></body></html>"))
         self.topo_stats_check.setWhatsThis(_translate("Map_Topography", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"

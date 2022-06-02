@@ -31,7 +31,7 @@ import model.progref.ubglobals as ubglobals
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
 from gui.observers import ProgressBarObserver
-from .mod_topography import Ui_Map_Topography
+from .mod_topography_gui import Ui_Map_Topography
 
 
 # --- MAIN GUI FUNCTION ---
@@ -144,6 +144,11 @@ class MapTopographyLaunch(QtWidgets.QDialog):
         except ValueError:
             self.ui.elev_combo.setCurrentIndex(0)   # Else no map exists, default to the 0 index ("no map loaded")
 
+        if self.module.get_parameter("nodatatask") == "STATUS":
+            self.ui.nodata_remove_radio.setChecked(1)
+        else:
+            self.ui.nodata_interpolate_radio.setChecked(1)
+
         self.ui.demsmooth_check.setChecked(int(self.module.get_parameter("demsmooth")))
         self.ui.demsmooth_spin.setValue(int(self.module.get_parameter("dempasses")))
 
@@ -173,6 +178,12 @@ class MapTopographyLaunch(QtWidgets.QDialog):
         into the simulation core."""
         self.module.set_parameter("assetcolname", self.ui.assetcol_combo.currentText())
         self.module.set_parameter("elevmapdataid", self.elevmaps[1][self.ui.elev_combo.currentIndex()])
+
+        if self.ui.nodata_remove_radio.isChecked():
+            self.module.set_parameter("nodatatask", "STATUS")
+        else:
+            self.module.set_parameter("nodatatask", "INTERP")
+
         self.module.set_parameter("demsmooth", int(self.ui.demsmooth_check.isChecked()))
         self.module.set_parameter("dempasses", float(self.ui.demsmooth_spin.value()))
         self.module.set_parameter("demstats", int(self.ui.topo_stats_check.isChecked()))
