@@ -138,6 +138,12 @@ class MapTopographyLaunch(QtWidgets.QDialog):
 
     def setup_gui_with_parameters(self):
         """Sets all parameters in the GUI based on the current year."""
+        try:    # ELEVATION DATA COMBO
+            self.ui.elev_combo.setCurrentIndex(
+                self.elevmaps[1].index(self.module.get_parameter("elevmapdataid")))
+        except ValueError:
+            self.ui.elev_combo.setCurrentIndex(0)   # Else no map exists, default to the 0 index ("no map loaded")
+
         self.ui.demsmooth_check.setChecked(int(self.module.get_parameter("demsmooth")))
         self.ui.demsmooth_spin.setValue(int(self.module.get_parameter("dempasses")))
 
@@ -166,7 +172,7 @@ class MapTopographyLaunch(QtWidgets.QDialog):
         """Saves all user-modified values for the module's parameters from the GUI
         into the simulation core."""
         self.module.set_parameter("assetcolname", self.ui.assetcol_combo.currentText())
-        self.module.set_parameter("elevmapname", self.ui.elev_combo.currentText())
+        self.module.set_parameter("elevmapdataid", self.elevmaps[1][self.ui.elev_combo.currentIndex()])
         self.module.set_parameter("demsmooth", int(self.ui.demsmooth_check.isChecked()))
         self.module.set_parameter("dempasses", float(self.ui.demsmooth_spin.value()))
         self.module.set_parameter("demstats", int(self.ui.topo_stats_check.isChecked()))

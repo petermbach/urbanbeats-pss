@@ -50,7 +50,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="reset_button">
+       <widget class="QPushButton" name="ok_button">
         <property name="minimumSize">
          <size>
           <width>90</width>
@@ -347,7 +347,7 @@ p, li { white-space: pre-wrap; }
           <number>6</number>
          </property>
          <item row="0" column="1">
-          <widget class="QComboBox" name="boundary_combo">
+          <widget class="QComboBox" name="assetcol_combo">
            <item>
             <property name="text">
              <string>(select asset collection)</string>
@@ -356,7 +356,7 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item row="0" column="0">
-          <widget class="QLabel" name="gridname_lbl_2">
+          <widget class="QLabel" name="assetcol_name">
            <property name="minimumSize">
             <size>
              <width>100</width>
@@ -381,14 +381,14 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="grid_props">
+       <widget class="QLabel" name="boundarydata_title">
         <property name="text">
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Select Boundary Data Sets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="gridname_lbl_5">
+       <widget class="QLabel" name="boundarydata_descr">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -410,7 +410,7 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="gridname_box_2" native="true">
+       <widget class="QWidget" name="boundarydata_widget" native="true">
         <layout class="QGridLayout" name="gridLayout_8">
          <property name="leftMargin">
           <number>6</number>
@@ -425,7 +425,7 @@ p, li { white-space: pre-wrap; }
           <number>6</number>
          </property>
          <item row="0" column="0">
-          <widget class="QLabel" name="gridname_lbl_4">
+          <widget class="QLabel" name="boundarycat_lbl">
            <property name="minimumSize">
             <size>
              <width>100</width>
@@ -447,14 +447,14 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QLabel" name="geopolitical_lbl_2">
+          <widget class="QLabel" name="boundaryatt_lbl">
            <property name="text">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Attribute Label Name:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QComboBox" name="boundary_combo_4">
+          <widget class="QComboBox" name="boundaryatt_combo">
            <item>
             <property name="text">
              <string>(select Attribute Name for Labelling)</string>
@@ -463,7 +463,7 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QComboBox" name="boundary_combo_2">
+          <widget class="QComboBox" name="boundary_combo">
            <item>
             <property name="text">
              <string>(select Map)</string>
@@ -472,7 +472,7 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QComboBox" name="boundary_combo_3">
+          <widget class="QComboBox" name="boundarycat_combo">
            <item>
             <property name="text">
              <string>(select Boundary category)</string>
@@ -508,7 +508,7 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="gridname_lbl_3">
+          <widget class="QLabel" name="boundarydataname_lbl">
            <property name="minimumSize">
             <size>
              <width>100</width>
@@ -561,7 +561,7 @@ p, li { white-space: pre-wrap; }
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="add">
            <property name="toolTip">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add boundary to the list&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
@@ -575,7 +575,7 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_2">
+          <widget class="QPushButton" name="remove">
            <property name="toolTip">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Remove selected table entry from the list&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
@@ -589,7 +589,7 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_4">
+          <widget class="QPushButton" name="up">
            <property name="maximumSize">
             <size>
              <width>25</width>
@@ -609,7 +609,7 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_3">
+          <widget class="QPushButton" name="down">
            <property name="maximumSize">
             <size>
              <width>25</width>
@@ -632,7 +632,7 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item>
-       <widget class="QTableWidget" name="tableWidget">
+       <widget class="QTableWidget" name="boundarytable">
         <column>
          <property name="text">
           <string>Category</string>
