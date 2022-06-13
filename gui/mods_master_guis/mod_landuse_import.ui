@@ -648,7 +648,7 @@ p, li { white-space: pre-wrap; }
             <string>An automatic algorithm that determines a suitable block size based on the map for computational efficiency.</string>
            </property>
            <property name="text">
-            <string>Calculate Spatial Indices (e.g. richness, diversity, dominance)</string>
+            <string>Calculate Spatial Indices per spatial unit (e.g. Shannon Metrics)</string>
            </property>
           </widget>
          </item>

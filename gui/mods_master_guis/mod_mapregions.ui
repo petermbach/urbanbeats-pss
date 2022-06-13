@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>630</width>
-    <height>508</height>
+    <height>546</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -446,22 +446,6 @@ p, li { white-space: pre-wrap; }
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="boundaryatt_lbl">
-           <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Attribute Label Name:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QComboBox" name="boundaryatt_combo">
-           <item>
-            <property name="text">
-             <string>(select Attribute Name for Labelling)</string>
-            </property>
-           </item>
-          </widget>
-         </item>
          <item row="1" column="1">
           <widget class="QComboBox" name="boundary_combo">
            <item>
@@ -469,6 +453,13 @@ p, li { white-space: pre-wrap; }
              <string>(select Map)</string>
             </property>
            </item>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="boundaryatt_lbl">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Attribute Label Name:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
           </widget>
          </item>
          <item row="0" column="1">
@@ -526,6 +517,29 @@ p, li { white-space: pre-wrap; }
            </property>
            <property name="text">
             <string>Data Set Name:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="boundaryatt_combo">
+           <item>
+            <property name="text">
+             <string>(select Attribute Name for Labelling)</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="boundaryatt_lbl_2">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Simulation Grid Label:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="lineEdit">
+           <property name="text">
+            <string/>
            </property>
           </widget>
          </item>

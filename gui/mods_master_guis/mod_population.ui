@@ -453,7 +453,7 @@ p, li { white-space: pre-wrap; }
       <item>
        <widget class="QCheckBox" name="popspatial_landuse_check">
         <property name="text">
-         <string>Locate Population data to land use map?</string>
+         <string>Remap Population data based on land use map?</string>
         </property>
        </widget>
       </item>
