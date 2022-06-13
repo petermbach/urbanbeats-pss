@@ -63,9 +63,8 @@ class MapTopographyToSimGrid(UBModule):
         self.yllcorner = None
         self.assetident = ""
         self.elevationmap = None
-        self.cellsize = None    # (x, y)
-        self.bounds = None      # (left, bottom, right, top)
         self.nodata = None
+        self.maxiter = 5    # The maximum number of iterations a while loop will take to course correct assets
 
         # MODULE PARAMETERS
         self.create_parameter("assetcolname", STRING, "Name of the asset collection to use")
@@ -112,7 +111,6 @@ class MapTopographyToSimGrid(UBModule):
 
         # If the asset collection does not yet have a localities asset, create one...
 
-
     def run_module(self):
         """ The main algorithm for the module, links with the active simulation, its data library and output folders."""
         self.initialize_runstate()
@@ -126,14 +124,15 @@ class MapTopographyToSimGrid(UBModule):
         elevmap = self.datalibrary.get_data_with_id(self.elevmapdataid)
         fullpath = elevmap.get_data_file_path() + elevmap.get_metadata("filename")
         self.notify("Loading Elevation Map: "+str(elevmap.get_metadata("filename")))
-        self.elevationmap = rasterio.open(fullpath)
-        self.cellsize = self.elevationmap.res
-        self.bounds = self.elevationmap.bounds
+
+        self.elevationmap = rasterio.open(fullpath)     # Variable assignment
         self.nodata = self.elevationmap.nodata
+
+        # Program Notifications
         self.notify("Raster Shape: "+str(self.elevationmap.shape))
-        self.notify(str(self.bounds))
+        self.notify(str(self.elevationmap.bounds))
         self.notify("Nodata Value: "+str(self.nodata))
-        self.notify("Raster Resolution: "+str(self.cellsize))
+        self.notify("Raster Resolution: "+str(self.elevationmap.res))
         self.notify_progress(20)
 
         # --- SECTION 2 - Begin mapping the data based on geometry type - calculate relevant stats if needed
@@ -143,66 +142,60 @@ class MapTopographyToSimGrid(UBModule):
 
         # TRACKER VARIABLES
         if self.demminmax:
-            lowest_elev = -9999         # Tracking the lowest and highest elevation points
-            highest_elev = -9999
+            lowest_elev = [-9999, 0]         # Tracking the lowest and highest elevation points [elev, ID]
+            highest_elev = [-9999, 0]
             # Create the asset collection Localities...
 
+        exceptions = []     # To hold asset exceptions where no data was found
         for i in range(len(griditems)):     # Loop across all polygon assets
             # Get the asset object
             asset = griditems[i]
             assetid = asset.get_attribute(self.assetident)
             self.notify("Currently Mapping: " + str(self.assetident) + str(assetid))
 
-            # Get two bounds: one for the local bounds of the polygon and one for indexing the raster data in the PRJCS
-            assetpts = asset.get_points()       # Get its geometry at (0,0) origin
-            assetpoly = Polygon(assetpts)       # Make a shapely polygon to figure out bounds
-            maskoffsets = [assetpoly.bounds[0], assetpoly.bounds[1]]    # Offsets for the local mask
-            assetbounds = [assetpoly.bounds[0]+self.xllcorner, assetpoly.bounds[1]+self.yllcorner,
-                           assetpoly.bounds[2]+self.xllcorner, assetpoly.bounds[3]+self.yllcorner]  # Spatial bounds
-
-            # Identify the raster extents and extract the data matrix
-            llindex = self.elevationmap.index(assetbounds[0], assetbounds[1])
-            urindex = self.elevationmap.index(assetbounds[2], assetbounds[3])
-            datamatrix = self.elevationmap.read(1)[
-                         min(llindex[0], urindex[0]):max(llindex[0], urindex[0])+1,
-                         min(llindex[1], urindex[1]):max(llindex[1], urindex[1])+1]     # max index + 1 (inclusive)
-
-            if 0 in datamatrix.shape:       # If the raster matrix has neither height nor width, skip
-                self.notify(self.assetident+str(assetid)+" does not fall within the bounds of the raster, skipping.")
+            mdata = ubspatial.retrieve_raster_data_from_mask(self.elevationmap, asset, self.xllcorner, self.yllcorner)
+            if mdata is None:
+                self.notify(self.assetident + str(assetid) + " does not fall within the bounds, skipping.")
                 asset.add_attribute("Elev_Avg", float(self.nodata))
                 asset.add_attribute("Elev_Min", float(self.nodata))
                 asset.add_attribute("Elev_Max", float(self.nodata))
+                if self.nodatatask == "STATUS":
+                    asset.add_attribute("Status", 0)
+                else:
+                    exceptions.append(asset)
                 continue
 
-            # Create the mask polygon that will be used to mask over the raster extract
-            # Offset from 0,0 origin is always the first point
-            maskpts = []   # Create maskpts... this is done as fully written out for loop because the UBVector has Z
-            for pt in range(len(assetpts)):
-                x = assetpts[pt][0]
-                y = assetpts[pt][1]
-                maskpts.append((float((x - maskoffsets[0]) / self.cellsize[0]),
-                               float((y - maskoffsets[1]) / self.cellsize[1])))
-
-            # Rasterize the polygon to the datamatrix shape
-            maskrio = rasterio.features.rasterize([Polygon(maskpts)], out_shape=datamatrix.shape)
-            maskrio = np.flip(maskrio, 0)       # Flip the shape because row/col read from top left, not bottom left
-            maskeddata = np.ma.masked_array(datamatrix, mask=1-maskrio)     # Apply the mask: 1-maskrio flips booleans
-            extractdata = maskeddata.compressed()   # Compress the 2D array to a 1D list
-            extractdata = np.delete(extractdata, np.where(extractdata == self.nodata))  # Remove nodata values
-
-            if len(extractdata) == 0:       # If no data leftover, assign cells as self.nodata
+            # Write the basic extracted data to the attributes list
+            if len(mdata) == 0:       # If no data leftover, assign cells as self.nodata
                 asset.add_attribute("Elev_Avg", self.nodata)
                 asset.add_attribute("Elev_Min", self.nodata)
                 asset.add_attribute("Elev_Max", self.nodata)
             else:       # Calculate metrics and transfer elevation to asset
-                asset.add_attribute("Elev_Avg", float(extractdata.mean()))
-                asset.add_attribute("Elev_Min", float(extractdata.mean()))
-                asset.add_attribute("Elev_Max", float(extractdata.mean()))
+                asset.add_attribute("Elev_Avg", float(mdata.mean()))
+                asset.add_attribute("Elev_Min", float(mdata.min()))
+                asset.add_attribute("Elev_Max", float(mdata.max()))
+
+            # Work out some map-wide stats
+            if self.demminmax:
+                if mdata.mean() < lowest_elev[0]:
+                    lowest_elev = [mdata.mean(), assetid]
+                if mdata.mean() > highest_elev[0]:
+                    highest_elev = [mdata.mean(), assetid]
+
+        if self.demminmax:
+            self.notify("Lowest elevation in ID"+str(lowest_elev[1])+": "+str(lowest_elev[0])+"m")
+            self.notify("Highest elevation in ID" + str(highest_elev[1]) + ": " + str(highest_elev[0]) + "m")
 
         self.notify_progress(80)
 
-        # --- SECTION 3 - Perform DEM Smoothing if requested
+        # Interpolate missing items
+        if self.nodatatask == "INTERP":
+            self.interpolate_missing_elevations(exceptions)
 
+        # --- SECTION 3 - Perform DEM Smoothing if requested
+        if self.demsmooth:
+            for i in range(self.dempasses):
+                self.perform_dem_smoothing(griditems)
 
         self.notify_progress(90)
 
@@ -216,5 +209,25 @@ class MapTopographyToSimGrid(UBModule):
     # ==========================================
     # OTHER MODULE METHODS
     # ==========================================
-    def method_example(self):
+    def interpolate_missing_elevations(self, exceptions):
+        iterations = 0
+        while iterations < self.maxiter:
+            for a in exceptions:
+                nhd = a.get_attribute("Neighbours")
+                avg, min, max = self.get_neighbourhood_elevations(nhd)
+
+            iterations += 1
+
+    def get_neighbourhood_elevations(self, nhd):
+        elev_avg = []
+        elev_min = []
+        elev_max = []
+        for i in range(len(nhd)):
+            asset = self.assets.get_asset_with_name(self.assetident+str(id))
+            elev_avg.append(asset.get_attribute("Elev_Avg"))
+            elev_min.append(asset.get_attribute("Elev_Min"))
+            elev_max.append(asset.get_attribute("Elev_Max"))
+        return elev_avg, elev_min, elev_max
+
+    def perform_dem_smoothing(self, assets):
         pass

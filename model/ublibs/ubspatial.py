@@ -26,14 +26,63 @@ __copyright__ = "Copyright 2018. Peter M. Bach"
 import osgeo.osr as osr
 import osgeo.ogr as ogr
 import numpy as np
-import rasterio as rio
+from shapely.geometry import Polygon
+import rasterio
+import rasterio.features
 import os, math
 
 # URBANBEATS IMPORT
 from . import ubdatatypes as ubdata
 
-def import_raster(filename):
-    return rasterio.open(filename)
+def retrieve_raster_data_from_mask(rastermap, asset, xllcorner, yllcorner):
+    """ Extracts data points from a raster map based on a polygon mask. Function returns a single-dimensional array of
+    all data points representing the masked data, which can be analysed or tallied depending on the function.
+
+    :param rastermap: the loaded rasterio object representing the raster map to mask the polygon onto
+    :param asset: the UrbanBEATS asset object, Polygonal
+    :param xllcorner: the global xllcorner of the simulation map
+    :param yllcorner: the global yllcorner of the simulation map
+    return: A list of data points within the mask area, None if there is no data within the mask.
+    """
+    cellsize = rastermap.res  # Some basic raster properties
+    nodata = rastermap.nodata
+
+    # Get two bounds: one for the local bounds of the polygon and the one for indexing the raster data in the PRJCS
+
+    assetpts = asset.get_points()
+    assetpoly = Polygon(assetpts)
+    maskoffsets = [assetpoly.bounds[0], assetpoly.bounds[1]]  # Offsets for the local mask
+    assetbounds = [assetpoly.bounds[0] + xllcorner, assetpoly.bounds[1] + yllcorner,
+                   assetpoly.bounds[2] + xllcorner, assetpoly.bounds[3] + yllcorner]  # Spatial bounds
+
+    # Identify the raster extents and extract the data matrix
+    llindex = rastermap.index(assetbounds[0], assetbounds[1])
+    urindex = rastermap.index(assetbounds[2], assetbounds[3])
+    datamatrix = rastermap.read(1)[
+                 min(llindex[0], urindex[0]):max(llindex[0], urindex[0]) + 1,
+                 min(llindex[1], urindex[1]):max(llindex[1], urindex[1]) + 1]  # max index + 1 (inclusive)
+
+    if 0 in datamatrix.shape:  # If the raster matrix has neither height nor width, skip
+        return None
+
+    # Create the mask polygon that will be used to mask over the raster extract
+    # Offset from 0,0 origin is always the first point
+    maskpts = []  # Create maskpts... this is done as fully written out for loop because the UBVector has Z
+    for pt in range(len(assetpts)):
+        x = assetpts[pt][0]
+        y = assetpts[pt][1]
+        maskpts.append((float((x - maskoffsets[0]) / cellsize[0]),
+                        float((y - maskoffsets[1]) / cellsize[1])))
+
+    # Rasterize the polygon to the datamatrix shape
+    maskrio = rasterio.features.rasterize([Polygon(maskpts)], out_shape=datamatrix.shape)
+    maskrio = np.flip(maskrio, 0)  # Flip the shape because row/col read from top left, not bottom left
+    maskeddata = np.ma.masked_array(datamatrix, mask=1 - maskrio)  # Apply the mask: 1-maskrio flips booleans
+    extractdata = maskeddata.compressed()  # Compress the 2D array to a 1D list
+    extractdata = np.delete(extractdata, np.where(extractdata == nodata))  # Remove nodata values
+
+    return extractdata
+
 
 #
 # def import_raster(filepath, naming):
