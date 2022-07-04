@@ -27,6 +27,7 @@ __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 import model.progref.ubglobals as ubglobals
+import model.ublibs.ubspatial as ubspatial
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -122,9 +123,12 @@ class PopulationLaunch(QtWidgets.QDialog):
 
         # --- SIGNALS AND SLOTS ---
         self.ui.assetcol_combo.currentIndexChanged.connect(self.update_asset_col_metadata)
+        self.ui.pop_combo.currentIndexChanged.connect(self.update_pop_attributes_combo)
+        self.ui.lumap_combo.currentIndexChanged.connect(self.update_lu_attributes_combo)
         self.ui.pop_correct_check.clicked.connect(self.enable_disable_guis)
         self.ui.pop_correct_auto.clicked.connect(self.enable_disable_guis)
         self.ui.popspatial_landuse_check.clicked.connect(self.enable_disable_guis)
+        self.ui.popspatial_landuse_check.clicked.connect(self.update_lu_attributes_combo)
 
         # --- RUNTIME SIGNALS AND SLOTS ---
         self.accepted.connect(self.save_values)
@@ -132,8 +136,10 @@ class PopulationLaunch(QtWidgets.QDialog):
         self.progressbarobserver.updateProgress[int].connect(self.update_progress_bar_value)
 
         # --- SETUP GUI PARAMETERS ---
-        self.enable_disable_guis()
+        self.update_pop_attributes_combo()
+        self.update_lu_attributes_combo()
         self.setup_gui_with_parameters()
+        self.enable_disable_guis()
 
     def update_asset_col_metadata(self):
         """Whenever the asset collection name is changed, then update the current metadata info"""
@@ -143,6 +149,42 @@ class PopulationLaunch(QtWidgets.QDialog):
         else:
             self.metadata = assetcol.get_asset_with_name("meta")
 
+    def update_pop_attributes_combo(self):
+        """Updates the attributes combo box with the attributes in the shapefile if the combobox map selected is a
+        shapefile format, otherwise leaves disabled."""
+        self.ui.popattr_combo.clear()
+        if ".shp" in self.ui.pop_combo.currentText():
+            dataref = self.datalibrary.get_data_with_id(self.popmaps[1][self.ui.pop_combo.currentIndex()])
+            filepath = dataref.get_data_file_path() + self.ui.pop_combo.currentText()
+            fileprops = ubspatial.load_shapefile_details(filepath)
+            self.ui.popattr_combo.addItem("(attribute name)")
+            for i in fileprops[8]:
+                self.ui.popattr_combo.addItem(i)
+            self.ui.popattr_combo.setCurrentIndex(0)
+            self.ui.popattr_combo.setEnabled(1)
+        else:
+            self.ui.popattr_combo.addItem("(not a shapefile)")
+            self.ui.popattr_combo.setCurrentIndex(0)
+            self.ui.popattr_combo.setEnabled(0)
+
+    def update_lu_attributes_combo(self):
+        """Updates the attributes combo box with the attributes in the shapefile if the combobox map selected is a
+        shapefile format, otherwise leaves disabled."""
+        self.ui.lumap_attr_combo.clear()
+        if ".shp" in self.ui.lumap_combo.currentText():
+            dataref = self.datalibrary.get_data_with_id(self.lumaps[1][self.ui.lumap_combo.currentIndex()])
+            filepath = dataref.get_data_file_path() + self.ui.lumap_combo.currentText()
+            fileprops = ubspatial.load_shapefile_details(filepath)
+            self.ui.lumap_attr_combo.addItem("(attribute name)")
+            for i in fileprops[8]:
+                self.ui.lumap_attr_combo.addItem(i)
+            self.ui.lumap_attr_combo.setCurrentIndex(0)
+            self.ui.lumap_attr_combo.setEnabled(1)
+        else:
+            self.ui.lumap_attr_combo.addItem("(not a shapefile)")
+            self.ui.lumap_attr_combo.setCurrentIndex(0)
+            self.ui.lumap_attr_combo.setEnabled(0)
+
     def enable_disable_guis(self):
         """Enables and disables items in the GUI based on conditions."""
         if self.ui.pop_correct_check.isChecked():
@@ -151,7 +193,12 @@ class PopulationLaunch(QtWidgets.QDialog):
         else:
             self.ui.pop_correct_spin.setEnabled(0)
             self.ui.pop_correct_auto.setEnabled(0)
-        self.ui.lumap_combo.setEnabled(self.ui.popspatial_landuse_check.isChecked())
+        if self.ui.popspatial_landuse_check.isChecked():
+            self.ui.lumap_combo.setEnabled(1)
+            self.update_lu_attributes_combo()
+        else:
+            self.ui.lumap_combo.setEnabled(0)
+            self.ui.lumap_attr_combo.setEnabled(0)
 
     def setup_gui_with_parameters(self):
         """Sets all parameters in the GUI based on the current year."""
@@ -160,6 +207,8 @@ class PopulationLaunch(QtWidgets.QDialog):
                 self.popmaps[1].index(self.module.get_parameter("popmapdataid")))
         except ValueError:
             self.ui.pop_combo.setCurrentIndex(0)
+
+        # Attributes Combobox
 
         if self.module.get_parameter("popdataformat") == "DEN":
             self.ui.popdata_densityradio.setChecked(1)
@@ -177,27 +226,14 @@ class PopulationLaunch(QtWidgets.QDialog):
         except ValueError:
             self.ui.lumap_combo.setCurrentIndex(0)
 
-    def get_dataref_array(self, dataclass, datatype, *args):
-        """Retrieves a list of data files loaded into the current scenario for display in the GUI
-
-        :param dataclass: the data class i.e. spatial, temporal, qualitative
-        :param datatype: the name that goes with the data class e.g. landuse, population, etc.
-        """
-        dataref_array = [["(no map selected)"], [""]]    # index 0:filenames, index 1:object_reference
-        for dref in self.active_scenario.get_data_reference(dataclass):
-            if dref.get_metadata("parent") == datatype:
-                if len(args) > 0 and datatype in ["Boundaries", "Water Bodies", "Built Infrastructure", "Overlays"]:
-                    if dref.get_metadata("sub") != args[0]:
-                        continue
-                dataref_array[0].append(dref.get_metadata("filename"))
-                dataref_array[1].append(dref.get_data_id())
-        return dataref_array
+        # Attributes Combo box
 
     def save_values(self):
         """Saves all user-modified values for the module's parameters from the GUI
         into the simulation core."""
         self.module.set_parameter("assetcolname", self.ui.assetcol_combo.currentText())
         self.module.set_parameter("popmapdataid", self.popmaps[1][self.ui.pop_combo.currentIndex()])
+        self.module.set_parameter("popdataattr", self.ui.popattr_combo.currentText())
 
         if self.ui.popdata_densityradio.isChecked():
             self.module.set_parameter("popdataformat", "DEN")
@@ -210,6 +246,7 @@ class PopulationLaunch(QtWidgets.QDialog):
         self.module.set_parameter("mappoptolanduse", int(self.ui.popspatial_landuse_check.isChecked()))
 
         self.module.set_parameter("landusemapdataid", self.lumaps[1][self.ui.lumap_combo.currentIndex()])
+        self.module.set_parameter("landuseattr", self.ui.lumap_attr_combo.currentText())
 
     def update_progress_bar_value(self, value):
         """Updates the progress bar of the Main GUI when the simulation is started/stopped/reset. Also disables the
@@ -246,4 +283,22 @@ class PopulationLaunch(QtWidgets.QDialog):
                          "mapping!"
             QtWidgets.QMessageBox.warning(self, "Missing Land Use Map", prompt_msg, QtWidgets.QMessageBox.Ok)
             return False
+
+        # (4) Population attribute selected
+        if ".shp" in self.ui.pop_combo.currentText() and self.ui.popattr_combo.currentIndex() == 0:
+            prompt_msg = "Your population map is a shapefile with attributes, please select the attribute that" \
+                         "UrbanBEATS should use for population data."
+            QtWidgets.QMessageBox.warning(self, "No attribute selected for Population Data",
+                                          prompt_msg, QtWidgets.QMessageBox.Ok)
+            return False
+
+        # (5) If Land use included, a correctly selected attribute
+        if self.ui.popspatial_landuse_check.isChecked() and ".shp" in self.ui.lumap_combo.currentText() and (
+                self.ui.lumap_attr_combo.currentIndex() == 0):
+            prompt_msg = "You are using a land use map of shapefile format to guide population mapping. It requires " \
+                         "that you select an attribute containing the land use classification."
+            QtWidgets.QMessageBox.warning(self, "No Land Use Map attribute selected.",
+                                          prompt_msg, QtWidgets.QMessageBox.Ok)
+            return False
+        # If all tests pass, then the module can be run.
         return True

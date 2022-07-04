@@ -56,8 +56,10 @@ class MapPopulationToSimGrid(UBModule):
         # MODULE PARAMETERS
         self.create_parameter("assetcolname", STRING, "Name of the asset collection to use")
         self.create_parameter("popmapdataid", STRING, "Name of the population map to load for mapping")
+        self.create_parameter("popdataattr", STRING, "Attribute name to use if population file is .shp")
         self.assetcolname = "(select asset collection)"
         self.popmapdataid = "(no population maps in project)"
+        self.popdataattr = "(attribute name)"
 
         self.create_parameter("popdataformat", STRING, "Format of the population data, density or totals")
         self.create_parameter("applypopcorrect", BOOL, "Apply a population correction factor?")
@@ -70,8 +72,10 @@ class MapPopulationToSimGrid(UBModule):
 
         self.create_parameter("mappoptolanduse", BOOL, "Map Population to land use?")
         self.create_parameter("landusemapdataid", STRING, "Name of the land use map to map population against")
+        self.create_parameter("landuseattr", STRING, "Attribute name to use if land use file is .shp")
         self.mappoptolanduse = 0
         self.landusemapdataid = "(select land use map)"
+        self.landuseattr = "(attribute name)"
 
     def set_module_data_library(self, datalib):
         self.datalibrary = datalib

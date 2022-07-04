@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>630</width>
-    <height>530</height>
+    <height>561</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -465,7 +465,7 @@ p, li { white-space: pre-wrap; }
             </size>
            </property>
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select attribute:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Attribute Name:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>
@@ -546,10 +546,17 @@ p, li { white-space: pre-wrap; }
          <property name="bottomMargin">
           <number>6</number>
          </property>
-         <item row="1" column="1" colspan="2">
+         <item row="2" column="1" colspan="2">
           <widget class="QComboBox" name="lumap_combo"/>
          </item>
-         <item row="1" column="0">
+         <item row="0" column="0" colspan="3">
+          <widget class="QCheckBox" name="popspatial_landuse_check">
+           <property name="text">
+            <string>Remap Population data based on land use map?</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
           <widget class="QLabel" name="lu_lbl">
            <property name="maximumSize">
             <size>
@@ -562,12 +569,21 @@ p, li { white-space: pre-wrap; }
            </property>
           </widget>
          </item>
-         <item row="0" column="0" colspan="3">
-          <widget class="QCheckBox" name="popspatial_landuse_check">
+         <item row="3" column="1">
+          <widget class="QLabel" name="lumap_attribute_lbl">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
            <property name="text">
-            <string>Remap Population data based on land use map?</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Attribute Name:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
+         </item>
+         <item row="3" column="2">
+          <widget class="QComboBox" name="lumap_attr_combo"/>
          </item>
         </layout>
        </widget>

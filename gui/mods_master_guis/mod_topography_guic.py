@@ -157,22 +157,6 @@ class MapTopographyLaunch(QtWidgets.QDialog):
         self.ui.slope_check.setChecked(int(self.module.get_parameter("slope")))
         self.ui.aspect_check.setChecked(int(self.module.get_parameter("aspect")))
 
-    def get_dataref_array(self, dataclass, datatype, *args):
-        """Retrieves a list of data files loaded into the current scenario for display in the GUI
-
-        :param dataclass: the data class i.e. spatial, temporal, qualitative
-        :param datatype: the name that goes with the data class e.g. landuse, population, etc.
-        """
-        dataref_array = [["(no map selected)"], [""]]    # index 0:filenames, index 1:object_reference
-        for dref in self.active_scenario.get_data_reference(dataclass):
-            if dref.get_metadata("parent") == datatype:
-                if len(args) > 0 and datatype in ["Boundaries", "Water Bodies", "Built Infrastructure", "Overlays"]:
-                    if dref.get_metadata("sub") != args[0]:
-                        continue
-                dataref_array[0].append(dref.get_metadata("filename"))
-                dataref_array[1].append(dref.get_data_id())
-        return dataref_array
-
     def save_values(self):
         """Saves all user-modified values for the module's parameters from the GUI
         into the simulation core."""
