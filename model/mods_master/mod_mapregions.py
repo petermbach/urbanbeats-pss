@@ -84,7 +84,7 @@ class MapRegionsToSimGrid(UBModule):
         self.meta = self.assets.get_asset_with_name("meta")
         if self.meta is None:
             self.notify("Fatal Error! Asset Collection missing Metadata")
-        self.meta.add_attribute("mod_population", 1)
+        self.meta.add_attribute("mod_mapregions", 1)
         self.assetident = self.meta.get_attribute("AssetIdent")
 
         self.xllcorner = self.meta.get_attribute("xllcorner")

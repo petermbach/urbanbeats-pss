@@ -54,8 +54,24 @@ class MapLandUseToSimGrid(UBModule):
         self.nodata = None
 
         # MODULE PARAMETERS
-        # self.create_parameter("name", STRING/DOUBLE/BOOL, "description")
-        # self.name = ""
+        self.create_parameter("assetcolname", STRING, "Name of the asset collection to use")
+        self.create_parameter("landusemapid", STRING, "Name of the land use map to load for mapping")
+        self.create_parameter("landuseattr", STRING, "Attribute containing the classification if .shp")
+        self.assetcolname = "(select asset collection)"
+        self.landusemapid = "(no land use map in the project)"
+        self.landuseattr = "(attribute name)"
+
+        self.create_parameter("lureclass", BOOL, "Reclassify the land use map?")
+        self.create_parameter("lureclasssystem", LIST, "List of dictionaries to do the reclassification")
+        self.lureclass = 0
+        self.lureclasssystem = []
+
+        self.create_parameter("singlelu", BOOL, "Use only a single land use per grid unit?")
+        self.create_parameter("patchdelin", BOOL, "Delineate Land Use Patches?")
+        self.create_parameter("spatialmetrics", BOOL, "Calculate spatial metrics?")
+        self.singlelu = 0
+        self.patchdelin = 0
+        self.spatialmetrics = 0
 
     def set_module_data_library(self, datalib):
         self.datalibrary = datalib
@@ -71,7 +87,7 @@ class MapLandUseToSimGrid(UBModule):
         self.meta = self.assets.get_asset_with_name("meta")
         if self.meta is None:
             self.notify("Fatal Error! Asset Collection missing Metadata")
-        self.meta.add_attribute("mod_population", 1)
+        self.meta.add_attribute("mod_landuse_import", 1)
         self.assetident = self.meta.get_attribute("AssetIdent")
 
         self.xllcorner = self.meta.get_attribute("xllcorner")
@@ -83,7 +99,7 @@ class MapLandUseToSimGrid(UBModule):
 
         self.notify("Mapping Land Use to Simulation")
         self.notify("--- === ---")
-        self.notify("Geometry Type: " +self.assetident)
+        self.notify("Geometry Type: " + self.assetident)
         self.notify_progress(0)
 
         # --- SECTION 1 - (description)

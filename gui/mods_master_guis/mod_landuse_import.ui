@@ -411,14 +411,14 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="lu_lbl_2">
+          <widget class="QLabel" name="luattr_lbl">
            <property name="text">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Attribute:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1" colspan="2">
-          <widget class="QComboBox" name="lu_combo_2">
+          <widget class="QComboBox" name="luattr_combo">
            <item>
             <property name="text">
              <string>(select attribute containing classification)</string>
