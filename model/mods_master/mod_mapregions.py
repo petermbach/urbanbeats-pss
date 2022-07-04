@@ -1,5 +1,5 @@
 r"""
-@file   mod_regionmap.py
+@file   mod_mapregions.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 
@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 __author__ = "Peter M. Bach"
-__copyright__ = "Copyright 2018. Peter M. Bach"
+__copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 from model.ubmodule import *
@@ -54,8 +54,21 @@ class MapRegionsToSimGrid(UBModule):
         self.nodata = None
 
         # MODULE PARAMETERS
-        # self.create_parameter("name", STRING / DOUBLE / BOOL, "description")
-        # self.name = ""
+        self.create_parameter("assetcolname", STRING, "Name of the asset collection to use")
+        self.assetcolname = "(select asset collection)"
+
+        self.create_parameter("boundaries_to_map", LIST, "Collection of boundaries to map.")
+        self.boundaries_to_map = []
+
+    def add_boundary_to_map(self, label, dset, attname, stakeholder):
+        """Adds details for a simulation boundary to map to the simulation grid. Creates a dictionary object based on
+        the key few tables: category (classifier of the boundary), dset (the data set ID from the datalibrary),
+        attname (the attribute name from which to obtain the names) and label (the unique label used to distinguish)."""
+        self.boundaries_to_map.append({"label":label, "datafile": dset, "attname": attname, "stakeholder": stakeholder})
+        return True
+
+    def reset_boundaries_to_map(self):
+        self.boundaries_to_map = []
 
     def set_module_data_library(self, datalib):
         self.datalibrary = datalib
@@ -81,16 +94,18 @@ class MapRegionsToSimGrid(UBModule):
         """ The main algorithm for the module, links with the active simulation, its data library and output folders."""
         self.initialize_runstate()
 
-        self.notify("Mapping Land Use to Simulation")
+        self.notify("Mapping Regions to the Simulation Grid")
         self.notify("--- === ---")
         self.notify("Geometry Type: " + self.assetident)
         self.notify_progress(0)
+
+        print(self.boundaries_to_map)
 
         # --- SECTION 1 - (description)
         # --- SECTION 2 - (description)
         # --- SECTION 3 - (description)
 
-        self.notify("Mapping of land use data to simulation grid complete")
+        self.notify("Mapping of regions to simulation grid complete")
         self.notify_progress(100)
         return True
 

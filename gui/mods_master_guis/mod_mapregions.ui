@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>630</width>
-    <height>546</height>
+    <width>693</width>
+    <height>560</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -424,6 +424,42 @@ p, li { white-space: pre-wrap; }
          <property name="bottomMargin">
           <number>6</number>
          </property>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="simgrid_label_line">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="boundarydataname_lbl">
+           <property name="minimumSize">
+            <size>
+             <width>100</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="whatsThis">
+            <string>Width of the square cell in the city grid in metres</string>
+           </property>
+           <property name="text">
+            <string>Data Set Name:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="boundaryatt_lbl">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Attribute Label Name:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
          <item row="0" column="0">
           <widget class="QLabel" name="boundarycat_lbl">
            <property name="minimumSize">
@@ -446,20 +482,13 @@ p, li { white-space: pre-wrap; }
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QComboBox" name="boundary_combo">
+         <item row="2" column="1">
+          <widget class="QComboBox" name="boundaryatt_combo">
            <item>
             <property name="text">
-             <string>(select Map)</string>
+             <string>(select Attribute Name for Labelling)</string>
             </property>
            </item>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="boundaryatt_lbl">
-           <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Attribute Label Name:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
           </widget>
          </item>
          <item row="0" column="1">
@@ -498,48 +527,26 @@ p, li { white-space: pre-wrap; }
            </item>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="boundarydataname_lbl">
-           <property name="minimumSize">
-            <size>
-             <width>100</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="whatsThis">
-            <string>Width of the square cell in the city grid in metres</string>
-           </property>
-           <property name="text">
-            <string>Data Set Name:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QComboBox" name="boundaryatt_combo">
-           <item>
-            <property name="text">
-             <string>(select Attribute Name for Labelling)</string>
-            </property>
-           </item>
-          </widget>
-         </item>
          <item row="3" column="0">
-          <widget class="QLabel" name="boundaryatt_lbl_2">
+          <widget class="QLabel" name="simgrid_label_lbl">
            <property name="text">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Simulation Grid Label:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
-          <widget class="QLineEdit" name="lineEdit">
+         <item row="1" column="1">
+          <widget class="QComboBox" name="boundary_combo">
+           <item>
+            <property name="text">
+             <string>(select Map)</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QCheckBox" name="stakeholder_check">
            <property name="text">
-            <string/>
+            <string>Designate as Project Stakeholders?</string>
            </property>
           </widget>
          </item>
@@ -580,7 +587,7 @@ p, li { white-space: pre-wrap; }
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add boundary to the list&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="text">
-            <string/>
+            <string>Add</string>
            </property>
            <property name="icon">
             <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
@@ -594,7 +601,7 @@ p, li { white-space: pre-wrap; }
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Remove selected table entry from the list&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="text">
-            <string/>
+            <string>Remove</string>
            </property>
            <property name="icon">
             <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
@@ -603,42 +610,16 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="up">
-           <property name="maximumSize">
-            <size>
-             <width>25</width>
-             <height>16777215</height>
-            </size>
-           </property>
+          <widget class="QPushButton" name="reset">
            <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Change order of boundaries in list, move up&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Remove selected table entry from the list&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="text">
-            <string/>
+            <string>Reset</string>
            </property>
            <property name="icon">
             <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
-             <normaloff>:/icons/up_arrow.png</normaloff>:/icons/up_arrow.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="down">
-           <property name="maximumSize">
-            <size>
-             <width>25</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Change order of boundaries in list, move down&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
-             <normaloff>:/icons/down-arrow.png</normaloff>:/icons/down-arrow.png</iconset>
+             <normaloff>:/icons/Refresh-icon.png</normaloff>:/icons/Refresh-icon.png</iconset>
            </property>
           </widget>
          </item>
@@ -647,9 +628,69 @@ p, li { white-space: pre-wrap; }
       </item>
       <item>
        <widget class="QTableWidget" name="boundarytable">
+        <property name="frameShape">
+         <enum>QFrame::Box</enum>
+        </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="showDropIndicator" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="dragDropOverwriteMode">
+         <bool>false</bool>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>false</bool>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="sortingEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="rowCount">
+         <number>3</number>
+        </property>
+        <attribute name="horizontalHeaderVisible">
+         <bool>true</bool>
+        </attribute>
+        <attribute name="horizontalHeaderCascadingSectionResizes">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="horizontalHeaderMinimumSectionSize">
+         <number>50</number>
+        </attribute>
+        <attribute name="horizontalHeaderDefaultSectionSize">
+         <number>120</number>
+        </attribute>
+        <attribute name="horizontalHeaderHighlightSections">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <row>
+         <property name="text">
+          <string/>
+         </property>
+        </row>
+        <row/>
+        <row/>
         <column>
          <property name="text">
-          <string>Category</string>
+          <string>Category Label</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Stakeholder</string>
          </property>
         </column>
         <column>
@@ -659,9 +700,28 @@ p, li { white-space: pre-wrap; }
         </column>
         <column>
          <property name="text">
-          <string>Attribute Label</string>
+          <string>Attribute</string>
          </property>
         </column>
+        <item row="0" column="0">
+         <property name="text">
+          <string>Label</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+           <normaloff>:/icons/man.png</normaloff>:/icons/man.png</iconset>
+         </property>
+        </item>
+        <item row="0" column="2">
+         <property name="text">
+          <string>BLabla.txt</string>
+         </property>
+        </item>
+        <item row="0" column="3">
+         <property name="text">
+          <string>Name</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item>
