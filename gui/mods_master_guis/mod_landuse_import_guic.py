@@ -30,6 +30,7 @@ import model.progref.ubglobals as ubglobals
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
+from gui.observers import ProgressBarObserver
 from .mod_landuse_import import Ui_Map_Landuse
 
 
