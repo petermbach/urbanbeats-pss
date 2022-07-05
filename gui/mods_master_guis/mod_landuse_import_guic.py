@@ -24,6 +24,7 @@ __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
+import pickle
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 import model.progref.ubglobals as ubglobals
@@ -186,20 +187,55 @@ class MapLanduseLaunch(QtWidgets.QDialog):
             twi.setText(str(cat))
             self.ui.lureclass_table.setItem(self.ui.lureclass_table.rowCount()-1, 0, twi)
             combo = QtWidgets.QComboBox()
+            combo.addItem("(select class)")
             for lu in mod_landuse_import.UBLANDUSENAMES:
                 combo.addItem(str(lu))
             self.ui.lureclass_table.setCellWidget(self.ui.lureclass_table.rowCount()-1, 1, combo)
         self.ui.lureclass_table.resizeColumnsToContents()
 
     def save_current_reclassification(self):
-        reclass = []
+        """Saves the current state of the reclassification table to a .ublcl file."""
+        dir = self.simulation.get_project_path()
+        message = "Save Reclassification Scheme"
+        filename, fmt = QtWidgets.QFileDialog.getSaveFileName(self, message, dir, "UB Reclass (*.ublcl)")
+        if filename:
+            reclass = self.generate_reclassification_dict()
+            f = open(filename, 'wb')
+            pickle.dump(reclass, f)
+            f.close()
+            prompt_msg = "Reclassification file saved successfully!"
+            QtWidgets.QMessageBox.information(self, "Reclassification saved", prompt_msg, QtWidgets.QMessageBox.Ok)
+        else:
+            prompt_msg = "No valid filename specified, reclassification not saved!"
+            QtWidgets.QMessageBox.warning(self, "Reclassification not saved", prompt_msg, QtWidgets.QMessageBox.Ok)
+
+    def generate_reclassification_dict(self):
+        """Generates a dictionary object of the reclassification scheme."""
+        reclass = {}  # of dictionary key pairs
         for i in range(self.ui.lureclass_table.rowCount()):
-            reclass.append({
-                self.ui.lureclass_table.item(i, 0).text():self.ui.lureclass_table.cellWidget(i, 1).currentText()})
-        print(reclass)
+            class_raw = self.ui.lureclass_table.item(i, 0).text()
+            reclass[class_raw] = self.ui.lureclass_table.cellWidget(i, 1).currentText()
+        return reclass
 
     def load_reclassification(self):
-        pass
+        """Loads a .ublcl file and attempts to apply the reclassification as best to the table."""
+        dir = self.simulation.get_project_path()
+        message = "Load existing Reclassification Scheme"
+        filename, fmt = QtWidgets.QFileDialog.getOpenFileName(self, message, dir, "UB Reclass (*.ublcl)")
+        if filename:
+            f = open(filename, 'rb')
+            reclass = pickle.load(f)
+
+            for i in range(self.ui.lureclass_table.rowCount()):
+                try:
+                    ubclass = reclass[self.ui.lureclass_table.item(i, 0).text()]
+                    if ubclass == "(select class)":
+                        ubclassindex = 0
+                    else:
+                        ubclassindex = mod_landuse_import.UBLANDUSENAMES.index(ubclass) + 1
+                    self.ui.lureclass_table.cellWidget(i, 1).setCurrentIndex(ubclassindex)
+                except KeyError:
+                    self.ui.lureclass_table.cellWidget(i, 1).setCurrentIndex(0)
 
     def reset_reclassification(self):
         prompt_msg = "Do you wish to reset the curren reclassification?"
@@ -223,6 +259,7 @@ class MapLanduseLaunch(QtWidgets.QDialog):
         except:
             self.ui.lu_combo.setCurrentIndex(0)
 
+
         # try:
         #     self.ui.luattr_combo.setCurrentIndex(
         #
@@ -244,12 +281,12 @@ class MapLanduseLaunch(QtWidgets.QDialog):
         self.module.set_parameter("landuseattr", self.ui.luattr_combo.currentText())
 
         self.module.set_parameter("lureclass", int(self.ui.lureclass_check.isChecked()))
+
         # Reclassification scheme
         if self.ui.lureclass_check.isChecked():
-            # Reclassification transfer
-            pass
+            self.module.set_parameter("lureclasssystem", self.generate_reclassification_dict())
         else:
-            self.module.set_parameter("lureclasssystem", [])
+            self.module.set_parameter("lureclasssystem", {})
 
         self.module.set_parameter("singlelu", int(self.ui.single_landuse_check.isChecked()))
         self.module.set_parameter("patchdelin", int(self.ui.patchdelin_check.isChecked()))
@@ -284,8 +321,9 @@ class MapLanduseLaunch(QtWidgets.QDialog):
             return False
 
         # (3) Check reclassification boxes
-        if self.ui.lureclass_check.isChecked() and self.module.get_parameter("lureclasssystem") == []:
-            prompt_msg = "No reclassification system defined"
-            QtWidgets.QMessageBox.warning(self, "No Land Use Map selected", prompt_msg, QtWidgets.QMessageBox.Ok)
+        if self.ui.lureclass_check.isChecked() and self.module.get_parameter("lureclasssystem") == {}:
+            prompt_msg = "No reclassification system defined, please define a reclassification or load a " \
+                         "pre-classified land use map into the simulation."
+            QtWidgets.QMessageBox.warning(self, "No reclassification system defined", prompt_msg, QtWidgets.QMessageBox.Ok)
             return False
         return True

@@ -143,3 +143,4 @@ BOOL = 'BOOL'
 STRING = 'STRING'
 LISTDOUBLE = 'LISTDOUBLE'
 LIST = 'LIST'       # Can be a generic list of anything... e.g. dictionaries...
+DICT = 'DICT'       # Dictionary

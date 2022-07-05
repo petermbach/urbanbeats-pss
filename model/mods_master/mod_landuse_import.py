@@ -62,9 +62,9 @@ class MapLandUseToSimGrid(UBModule):
         self.landuseattr = "(attribute name)"
 
         self.create_parameter("lureclass", BOOL, "Reclassify the land use map?")
-        self.create_parameter("lureclasssystem", LIST, "List of dictionaries to do the reclassification")
+        self.create_parameter("lureclasssystem", DICT, "List of dictionaries to do the reclassification")
         self.lureclass = 0
-        self.lureclasssystem = []
+        self.lureclasssystem = {}
 
         self.create_parameter("singlelu", BOOL, "Use only a single land use per grid unit?")
         self.create_parameter("patchdelin", BOOL, "Delineate Land Use Patches?")
