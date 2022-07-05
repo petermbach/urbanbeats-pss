@@ -225,17 +225,8 @@ class MapLanduseLaunch(QtWidgets.QDialog):
         if filename:
             f = open(filename, 'rb')
             reclass = pickle.load(f)
-
-            for i in range(self.ui.lureclass_table.rowCount()):
-                try:
-                    ubclass = reclass[self.ui.lureclass_table.item(i, 0).text()]
-                    if ubclass == "(select class)":
-                        ubclassindex = 0
-                    else:
-                        ubclassindex = mod_landuse_import.UBLANDUSENAMES.index(ubclass) + 1
-                    self.ui.lureclass_table.cellWidget(i, 1).setCurrentIndex(ubclassindex)
-                except KeyError:
-                    self.ui.lureclass_table.cellWidget(i, 1).setCurrentIndex(0)
+            self.classify_table(reclass)
+        return True
 
     def reset_reclassification(self):
         prompt_msg = "Do you wish to reset the curren reclassification?"
@@ -244,6 +235,21 @@ class MapLanduseLaunch(QtWidgets.QDialog):
         if answer == QtWidgets.QMessageBox.Yes:
             self.ui.lureclass_table.setRowCount(0)
             self.refresh_lu_reclassification_widgets()
+        return True
+
+    def classify_table(self, reclass):
+        """Fills in data from the reclass dictionary into the classification table based on current info."""
+        for i in range(self.ui.lureclass_table.rowCount()):
+            try:
+                ubclass = reclass[self.ui.lureclass_table.item(i, 0).text()]
+                if ubclass == "(select class)":
+                    ubclassindex = 0
+                else:
+                    ubclassindex = mod_landuse_import.UBLANDUSENAMES.index(ubclass) + 1
+                self.ui.lureclass_table.cellWidget(i, 1).setCurrentIndex(ubclassindex)
+            except KeyError:
+                self.ui.lureclass_table.cellWidget(i, 1).setCurrentIndex(0)
+        return True
 
     def enable_disable_guis(self):
         self.ui.lureclass_table.setEnabled(self.ui.lureclass_check.isChecked())
@@ -253,21 +259,29 @@ class MapLanduseLaunch(QtWidgets.QDialog):
 
     def setup_gui_with_parameters(self):
         """Sets all parameters in the GUI based on the current year."""
+        # Combo Boxes
         try:
             self.ui.lu_combo.setCurrentIndex(
                 self.lumaps[1].index(self.module.get_parameter("landusemapid")))
         except:
             self.ui.lu_combo.setCurrentIndex(0)
 
+        self.ui.luattr_combo.setCurrentIndex(0)
+        if self.ui.lu_combo.currentIndex() != 0:
+            attname = self.module.get_parameter("landuseattr")
+            for i in range(self.ui.luattr_combo.count()):
+                if self.ui.luattr_combo.itemText(i) == attname:
+                    self.ui.luattr_combo.setCurrentIndex(i)
+        else:
+            self.ui.lureclass_table.setRowCount(0)
 
-        # try:
-        #     self.ui.luattr_combo.setCurrentIndex(
-        #
-        #     )
-
+        # Reclassification Table
         self.ui.lureclass_check.setChecked(self.module.get_parameter("lureclass"))
-
-        # Populate Table with reclassification system...
+        if self.ui.lureclass_check.isChecked() and self.ui.luattr_combo.currentIndex() != 0:
+            # Populate Table with reclassification system...
+            self.refresh_lu_reclassification_widgets()
+            reclass = self.module.get_parameter("lureclasssystem")
+            self.classify_table(reclass)
 
         self.ui.single_landuse_check.setChecked(self.module.get_parameter("singlelu"))
         self.ui.patchdelin_check.setChecked(self.module.get_parameter("patchdelin"))

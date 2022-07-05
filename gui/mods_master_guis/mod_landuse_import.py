@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Map_Landuse(object):
     def setupUi(self, Map_Landuse):
         Map_Landuse.setObjectName("Map_Landuse")
-        Map_Landuse.resize(801, 599)
+        Map_Landuse.resize(741, 599)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/region.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Map_Landuse.setWindowIcon(icon)
