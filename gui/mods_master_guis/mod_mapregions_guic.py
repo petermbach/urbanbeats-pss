@@ -213,8 +213,8 @@ class MapRegionsLaunch(QtWidgets.QDialog):
         add button."""
         if stakeholder == 1:
             sh = "Yes"
-            pixmaps = [":/icons/man.png", ":/icons/woman.png"]
-            icon = pixmaps[random.randint(0, 1)]
+            pixmaps = [":/icons/man.png", ":/icons/woman.png", ":/icons/owl.png"]
+            icon = pixmaps[random.randint(0, 2)]
             twiicon = QtGui.QIcon()
             twiicon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         else:
