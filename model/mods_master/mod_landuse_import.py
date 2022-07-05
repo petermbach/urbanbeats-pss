@@ -115,3 +115,11 @@ class MapLandUseToSimGrid(UBModule):
     # ==========================================
     def method_example(self):
         pass
+
+
+# GLOBAL VARIABLES TIED TO THIS MODULE
+UBLANDUSENAMES = ["Residential", "Commercial", "Mixed Offices & Res", "Light Industry", "Heavy Industry", "Civic",
+                  "Services & Utility", "Road", "Transport", "Parks & Garden", "Reserves & Floodway", "Undeveloped",
+                  "Unclassified", "Water", "Forest", "Agriculture"]
+UBLANDUSEABBR = ["RES", "COM", "ORC", "LI", "HI", "CIV", "SVU", "RD", "TR", "PG", "REF", "UND",
+                 "UNC", "WAT", "FOR", "AGR"]

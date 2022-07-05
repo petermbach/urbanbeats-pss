@@ -30,6 +30,7 @@ from shapely.geometry import Polygon
 import rasterio
 import rasterio.features
 import os, math
+import geopandas as gpd
 
 # URBANBEATS IMPORT
 from . import ubdatatypes as ubdata
@@ -508,6 +509,15 @@ def load_shapefile_details(file):
     geometry = feature.GetGeometryRef()
     # print([geometry.GetGeometryName(), xmin, xmax, ymin, ymax, inputprojcs, epsg, featurecount, attnames])
     return [geometry.GetGeometryName(), xmin, xmax, ymin, ymax, inputprojcs, epsg, featurecount, attnames]
+
+
+def get_uniques_from_shapefile_attribute(filename, attname):
+    """Returns all unique values from a shapefile attribute field."""
+    df = gpd.read_file(filename)
+    # print(df.head())
+    cats = df[attname].unique()
+    df = None
+    return cats.tolist()
 
 
 def save_boundary_as_shapefile(data, filename):

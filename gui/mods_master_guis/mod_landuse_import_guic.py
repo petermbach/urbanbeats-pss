@@ -27,12 +27,13 @@ __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 import model.progref.ubglobals as ubglobals
+import model.ublibs.ubspatial as ubspatial
+import model.mods_master.mod_landuse_import as mod_landuse_import
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
 from gui.observers import ProgressBarObserver
 from .mod_landuse_import import Ui_Map_Landuse
-
 
 # --- MAIN GUI FUNCTION ---
 class MapLanduseLaunch(QtWidgets.QDialog):
@@ -40,7 +41,7 @@ class MapLanduseLaunch(QtWidgets.QDialog):
     type = "master"
     catname = "Spatial Representation"
     catorder = 3
-    longname = "Land Use Mapping"
+    longname = "Map Land Use"
     icon = ":/icons/region.png"
 
     def __init__(self, main, simulation, datalibrary, simlog, mode, parent=None):
@@ -58,29 +59,233 @@ class MapLanduseLaunch(QtWidgets.QDialog):
         self.ui.setupUi(self)
 
         # --- CONNECTIONS WITH CORE AND GUI ---
-        self.maingui = main     # the main runtime
-        self.simulation = simulation    # the active object in the scenario manager
+        self.maingui = main  # the main runtime
+        self.simulation = simulation  # the active object in the scenario manager
         self.datalibrary = datalibrary
         self.log = simlog
+        self.metadata = None
+        self.active_lufile = None
+
+        # --- PROGRESSBAR OBSERVER ---
+        # In the GUIc, we instantiate an observer instance of the types we want and write their corresponding GUI
+        # response signals and slots.
+        self.ui.progressbar.setValue(0)  # Set the bar to zero
+        self.progressbarobserver = ProgressBarObserver()  # For single runtime only
 
         # Usage mode: with a scenario or not with a scenario (determines GUI settings)
         if mode == 1:
             self.active_scenario = simulation.get_active_scenario()
-            # The active scenario is already set when the GUI is launched because the user could only click it if
-            # a scenario is active. This active scenario will inform the rest of the GUI.
+            self.active_scenario_name = self.active_scenario.get_metadata("name")
+            self.module = None
+            self.ui.ok_button.setEnabled(1)
+            self.ui.run_button.setEnabled(0)
+            self.ui.progressbar.setEnabled(0)
         else:
             self.active_scenario = None
-        self.module = None  # Initialize the variable to hold the active module object
+            self.active_scenario_name = None
+            self.module = self.simulation.get_module_instance(self.longname)
+            self.ui.ok_button.setEnabled(0)
+            self.ui.run_button.setEnabled(1)
+            self.ui.progressbar.setEnabled(1)
 
         # --- SETUP ALL DYNAMIC COMBO BOXES ---
+        self.ui.assetcol_combo.clear()
+        self.ui.assetcol_combo.addItem("(select asset collection)")
+        simgrids = self.simulation.get_global_asset_collection()
+        for n in simgrids.keys():
+            if mode != 1:   # If we are running standalone mode
+                if simgrids[n].get_container_type() == "Standalone":
+                    self.ui.assetcol_combo.addItem(str(n))
+                self.ui.assetcol_combo.setEnabled(1)
+            else:
+                self.ui.assetcol_combo.addItem(
+                    self.active_scenario.get_asset_collection_container().get_container_name())
+                self.ui.assetcol_combo.setEnabled(0)
+        self.update_asset_col_metadata()
 
+        # Land use combo box
+        self.ui.lu_combo.clear()
+        self.lumaps = self.datalibrary.get_dataref_array("spatial", ["Land Use/Cover"], subtypes="Land Use",
+                                                         scenario=self.active_scenario_name)
+        if len(self.lumaps) == 0:
+            self.ui.lu_combo.addItem(str("(no land use maps in project)"))
+        else:
+            self.ui.lu_combo.addItem("(select land use map)")
+            [self.ui.lu_combo.addItem(str(self.lumaps[0][i])) for i in range(len(self.lumaps[0]))]
+
+        # --- SIGNALS AND SLOTS ---
+        self.ui.lu_combo.currentIndexChanged.connect(self.update_land_use_attributes)
+        self.ui.lureclass_check.clicked.connect(self.refresh_lu_reclassification_widgets)
+        self.ui.lureclass_save_button.clicked.connect(self.save_current_reclassification)
+        self.ui.lureclass_load_button.clicked.connect(self.load_reclassification)
+        self.ui.lureclass_reset_button.clicked.connect(self.reset_reclassification)
+        self.ui.single_landuse_check.clicked.connect(self.enable_disable_guis)
+
+        # --- RUNTIME SIGNALS AND SLOTS ---
+        self.accepted.connect(self.save_values)
+        self.ui.run_button.clicked.connect(self.run_module_in_runtime)
+        self.progressbarobserver.updateProgress[int].connect(self.update_progress_bar_value)
+
+        # --- SETUP GUI PARAMETERS ---
+        self.ui.lureclass_table.setRowCount(0)
+        self.setup_gui_with_parameters()
+        self.enable_disable_guis()
+
+    def update_asset_col_metadata(self):
+        """Whenever the asset collection name is changed, then update the current metadata info"""
+        assetcol = self.simulation.get_asset_collection_by_name(self.ui.assetcol_combo.currentText())
+        if assetcol is None:
+            self.metadata = None
+        else:
+            self.metadata = assetcol.get_asset_with_name("meta")
+
+    def update_land_use_attributes(self):
+        """Updates the land use classification attributes combo with info."""
+        self.ui.luattr_combo.clear()
+        if ".shp" in self.ui.lu_combo.currentText():
+            dataref = self.datalibrary.get_data_with_id(self.lumaps[1][self.ui.lu_combo.currentIndex()])
+            self.active_lufile = dataref.get_data_file_path() + self.ui.lu_combo.currentText()
+            fileprops = ubspatial.load_shapefile_details(self.active_lufile)
+            self.ui.luattr_combo.addItem("(attribute name)")
+            for i in fileprops[8]:
+                self.ui.luattr_combo.addItem(i)
+            self.ui.luattr_combo.setCurrentIndex(0)
+            self.ui.luattr_combo.setEnabled(1)
+        else:
+            self.active_lufile = None
+            self.ui.luattr_combo.addItem("(not a shapefile)")
+            self.ui.luattr_combo.setCurrentIndex(0)
+            self.ui.luattr_combo.setEnabled(0)
+            self.ui.lureclass_check.setChecked(0)
+            self.reset_reclassification()
+            self.enable_disable_guis()
+
+    def refresh_lu_reclassification_widgets(self):
+        """Activates the reclassification widget, populates the left column, gives the right column options."""
+        if self.ui.luattr_combo.currentIndex() == 0:    # If there is a valid shapefile
+            prompt_msg = "Reclassification requires reference to an attribute in the data file"
+            QtWidgets.QMessageBox.warning(self, "No data to reclassify", prompt_msg, QtWidgets.QMessageBox.Ok)
+            self.ui.lureclass_check.setChecked(0)
+            self.enable_disable_guis()
+            return True
+
+        # Prevent the attributes combo from being modified during reclassification
+        if self.ui.lureclass_check.isChecked():
+            self.ui.luattr_combo.setEnabled(0)
+        else:
+            self.ui.luattr_combo.setEnabled(1)
+        self.enable_disable_guis()
+
+        # Update Table
+        self.ui.lureclass_table.setRowCount(0)
+        categories = ubspatial.get_uniques_from_shapefile_attribute(self.active_lufile,
+                                                                    self.ui.luattr_combo.currentText())
+        for cat in categories:
+            self.ui.lureclass_table.insertRow(self.ui.lureclass_table.rowCount())
+            twi = QtWidgets.QTableWidgetItem()
+            twi.setText(str(cat))
+            self.ui.lureclass_table.setItem(self.ui.lureclass_table.rowCount()-1, 0, twi)
+            combo = QtWidgets.QComboBox()
+            for lu in mod_landuse_import.UBLANDUSENAMES:
+                combo.addItem(str(lu))
+            self.ui.lureclass_table.setCellWidget(self.ui.lureclass_table.rowCount()-1, 1, combo)
+        self.ui.lureclass_table.resizeColumnsToContents()
+
+    def save_current_reclassification(self):
+        reclass = []
+        for i in range(self.ui.lureclass_table.rowCount()):
+            reclass.append({
+                self.ui.lureclass_table.item(i, 0).text():self.ui.lureclass_table.cellWidget(i, 1).currentText()})
+        print(reclass)
+
+    def load_reclassification(self):
+        pass
+
+    def reset_reclassification(self):
+        prompt_msg = "Do you wish to reset the curren reclassification?"
+        answer = QtWidgets.QMessageBox.question(self, "Reset Reclassification?", prompt_msg,
+                                                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+        if answer == QtWidgets.QMessageBox.Yes:
+            self.ui.lureclass_table.setRowCount(0)
+            self.refresh_lu_reclassification_widgets()
+
+    def enable_disable_guis(self):
+        self.ui.lureclass_table.setEnabled(self.ui.lureclass_check.isChecked())
+        self.ui.lureclass_widget.setEnabled(self.ui.lureclass_check.isChecked())
+        self.ui.patchdelin_check.setEnabled(not self.ui.single_landuse_check.isChecked())
+        self.ui.spatialmetrics_check.setEnabled(not self.ui.single_landuse_check.isChecked())
 
     def setup_gui_with_parameters(self):
         """Sets all parameters in the GUI based on the current year."""
-        pass
+        try:
+            self.ui.lu_combo.setCurrentIndex(
+                self.lumaps[1].index(self.module.get_parameter("landusemapid")))
+        except:
+            self.ui.lu_combo.setCurrentIndex(0)
 
+        # try:
+        #     self.ui.luattr_combo.setCurrentIndex(
+        #
+        #     )
+
+        self.ui.lureclass_check.setChecked(self.module.get_parameter("lureclass"))
+
+        # Populate Table with reclassification system...
+
+        self.ui.single_landuse_check.setChecked(self.module.get_parameter("singlelu"))
+        self.ui.patchdelin_check.setChecked(self.module.get_parameter("patchdelin"))
+        self.ui.spatialmetrics_check.setChecked(self.module.get_parameter("spatialmetrics"))
 
     def save_values(self):
         """Saves all user-modified values for the module's parameters from the GUI
         into the simulation core."""
-        pass
+        self.module.set_parameter("assetcolname", self.ui.assetcol_combo.currentText())
+        self.module.set_parameter("landusemapid", self.lumaps[1][self.ui.lu_combo.currentIndex()])
+        self.module.set_parameter("landuseattr", self.ui.luattr_combo.currentText())
+
+        self.module.set_parameter("lureclass", int(self.ui.lureclass_check.isChecked()))
+        # Reclassification scheme
+        if self.ui.lureclass_check.isChecked():
+            # Reclassification transfer
+            pass
+        else:
+            self.module.set_parameter("lureclasssystem", [])
+
+        self.module.set_parameter("singlelu", int(self.ui.single_landuse_check.isChecked()))
+        self.module.set_parameter("patchdelin", int(self.ui.patchdelin_check.isChecked()))
+        self.module.set_parameter("spatialmetrics", int(self.ui.spatialmetrics_check.isChecked()))
+
+    def update_progress_bar_value(self, value):
+        """Updates the progress bar of the Main GUI when the simulation is started/stopped/reset. Also disables the
+        close button if in 'ad-hoc' mode."""
+        self.ui.progressbar.setValue(int(value))
+        if self.ui.progressbar.value() not in [0, 100]:
+            self.ui.close_button.setEnabled(0)
+        else:
+            self.ui.close_button.setEnabled(1)
+
+    def run_module_in_runtime(self):
+        self.save_values()
+        if self.checks_before_runtime():
+            self.simulation.execute_runtime(self.module, self.progressbarobserver)
+
+    def checks_before_runtime(self):
+        """Enter all GUI checks to do before the module is run."""
+        # (1) Is an asset collection selected?
+        if self.ui.assetcol_combo.currentIndex() == 0:
+            prompt_msg = "Please select an Asset Collection to use for this simulation!"
+            QtWidgets.QMessageBox.warning(self, "No Asset Collection selected", prompt_msg, QtWidgets.QMessageBox.Ok)
+            return False
+
+        # (2) Check that a land use map has been selected
+        if self.ui.lu_combo.currentIndex() == 0:
+            prompt_msg = "Please select a valid land use map to use in the simulation."
+            QtWidgets.QMessageBox.warning(self, "No Land Use Map selected", prompt_msg, QtWidgets.QMessageBox.Ok)
+            return False
+
+        # (3) Check reclassification boxes
+        if self.ui.lureclass_check.isChecked() and self.module.get_parameter("lureclasssystem") == []:
+            prompt_msg = "No reclassification system defined"
+            QtWidgets.QMessageBox.warning(self, "No Land Use Map selected", prompt_msg, QtWidgets.QMessageBox.Ok)
+            return False
+        return True
