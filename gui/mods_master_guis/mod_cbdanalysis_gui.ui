@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>TemplateGUI</class>
- <widget class="QDialog" name="TemplateGUI">
+ <class>UrbanCentralityGui</class>
+ <widget class="QDialog" name="UrbanCentralityGui">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -864,7 +864,7 @@ Correction proceeds as follows:
   <connection>
    <sender>close_button</sender>
    <signal>clicked()</signal>
-   <receiver>TemplateGUI</receiver>
+   <receiver>UrbanCentralityGui</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

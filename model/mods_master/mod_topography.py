@@ -80,11 +80,9 @@ class MapTopographyToSimGrid(UBModule):
         self.demsmooth = 0
         self.dempasses = 1
 
-        self.create_parameter("demstats", BOOL, "Calculate statistics for coarse grid DEMs?")
         self.create_parameter("demminmax", BOOL, "Indicate lowest elevation point on the map?")
         self.create_parameter("slope", BOOL, "Calculate slope?")
         self.create_parameter("aspect", BOOL, "Calculate aspect?")
-        self.demstats = 0
         self.demminmax = 0
         self.slope = 0
         self.aspect = 0

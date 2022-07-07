@@ -1,5 +1,5 @@
 r"""
-@file   mod_rainfallanalyst.py
+@file   mod_planningoverlays.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 
@@ -26,16 +26,16 @@ __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 # --- PYTHON LIBRARY IMPORTS ---
 from model.ubmodule import *
 
-class RainfallDataAnalyst(UBModule):
-    """ Analyses an input rainfall data set for several rainfall characteristics including separation into events,
-    peak intensities, dry periods, durations, total volumes, annual statistics, etc."""
+class DefinePlanningOverlays(UBModule):
+    """ Generates the simulation grid upon which many assessments will be based. This SimGrid will provide details on
+    geometry and also neighbourhood information."""
 
     # MODULE'S BASIC METADATA
     type = "master"
-    catname = "Urban Hydrology"
+    catname = "Spatial Planning"
     catorder = 1
-    longname = "Rainfall Data Analyst"
-    icon = ":/icons/cloudy-with-rain-2667018_960_720.png"
+    longname = "Define Planning Overlays"
+    icon = ":/icons/overlays.png"
 
     def __init__(self, activesim, datalibrary, projectlog):
         UBModule.__init__(self)

@@ -1,5 +1,5 @@
 r"""
-@file   mod_topography_guic.py
+@file   mod_cbdanalysis_guic.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 
@@ -24,24 +24,25 @@ __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
+import pickle
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 import model.progref.ubglobals as ubglobals
+import model.ublibs.ubspatial as ubspatial
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
 from gui.observers import ProgressBarObserver
-from .mod_topography_gui import Ui_Map_Topography
-
+from .mod_cbdanalysis_gui import Ui_UrbanCentralityGui
 
 # --- MAIN GUI FUNCTION ---
-class MapTopographyLaunch(QtWidgets.QDialog):
+class UrbanCentralityAnalysisLaunch(QtWidgets.QDialog):
     # MODULE'S BASIC METADATA
     type = "master"
-    catname = "Spatial Representation"
-    catorder = 5
-    longname = "Map Topography"
-    icon = ":/icons/topography.png"
+    catname = "Urban Regional Analysis"
+    catorder = 1
+    longname = "Urban Centrality Analysis"
+    icon = ":/icons/City_icon_(Noun_Project).svg.png"
 
     def __init__(self, main, simulation, datalibrary, simlog, mode, parent=None):
         """ Initialisation of the Block Delineation GUI, takes several input parameters.
@@ -54,17 +55,17 @@ class MapTopographyLaunch(QtWidgets.QDialog):
         :param parent: None
         """
         QtWidgets.QDialog.__init__(self, parent)
-        self.ui = Ui_Map_Topography()
+        self.ui = Ui_UrbanCentralityGui()
         self.ui.setupUi(self)
 
         # --- CONNECTIONS WITH CORE AND GUI ---
-        self.maingui = main     # the main runtime
-        self.simulation = simulation    # the active object in the scenario manager
+        self.maingui = main  # the main runtime
+        self.simulation = simulation  # the active object in the scenario manager
         self.datalibrary = datalibrary
         self.log = simlog
         self.metadata = None
 
-        # --- PROGRESSBAR  OBSERVER ---
+        # --- PROGRESSBAR OBSERVER ---
         # In the GUIc, we instantiate an observer instance of the types we want and write their corresponding GUI
         # response signals and slots.
         self.ui.progressbar.setValue(0)  # Set the bar to zero
@@ -87,12 +88,11 @@ class MapTopographyLaunch(QtWidgets.QDialog):
             self.ui.progressbar.setEnabled(1)
 
         # --- SETUP ALL DYNAMIC COMBO BOXES ---
-        # Boundary combo box
         self.ui.assetcol_combo.clear()
-        self.ui.assetcol_combo.addItem("(select simulation grid)")
+        self.ui.assetcol_combo.addItem("(select asset collection)")
         simgrids = self.simulation.get_global_asset_collection()
         for n in simgrids.keys():
-            if mode != 1:       # If we are running standalone mode
+            if mode != 1:   # If we are running standalone mode
                 if simgrids[n].get_container_type() == "Standalone":
                     self.ui.assetcol_combo.addItem(str(n))
                 self.ui.assetcol_combo.setEnabled(1)
@@ -102,27 +102,24 @@ class MapTopographyLaunch(QtWidgets.QDialog):
                 self.ui.assetcol_combo.setEnabled(0)
         self.update_asset_col_metadata()
 
-        # Elevation Combo Box
-        self.ui.elev_combo.clear()
-        self.elevmaps = self.datalibrary.get_dataref_array("spatial", ["Topography"],
-                                                           subtypes=None, scenario=self.active_scenario_name)
-        if len(self.elevmaps) == 0:
-            self.ui.elev_combo.addItem(str("(no elevation maps in project)"))
-        else:
-            [self.ui.elev_combo.addItem(str(self.elevmaps[0][i])) for i in range(len(self.elevmaps[0]))]
 
         # --- SIGNALS AND SLOTS ---
-        self.ui.assetcol_combo.currentIndexChanged.connect(self.update_asset_col_metadata)
-        self.ui.demsmooth_check.clicked.connect(self.enable_disable_guis)
+        # self.ui.lu_combo.currentIndexChanged.connect(self.update_land_use_attributes)
+        # self.ui.lureclass_check.clicked.connect(self.refresh_lu_reclassification_widgets)
+        # self.ui.lureclass_save_button.clicked.connect(self.save_current_reclassification)
+        # self.ui.lureclass_load_button.clicked.connect(self.load_reclassification)
+        # self.ui.lureclass_reset_button.clicked.connect(self.reset_reclassification)
+        # self.ui.single_landuse_check.clicked.connect(self.enable_disable_guis)
 
         # --- RUNTIME SIGNALS AND SLOTS ---
-        self.accepted.connect(self.save_values)
-        self.ui.run_button.clicked.connect(self.run_module_in_runtime)
-        self.progressbarobserver.updateProgress[int].connect(self.update_progress_bar_value)
+        # self.accepted.connect(self.save_values)
+        # self.ui.run_button.clicked.connect(self.run_module_in_runtime)
+        # self.progressbarobserver.updateProgress[int].connect(self.update_progress_bar_value)
 
         # --- SETUP GUI PARAMETERS ---
-        self.enable_disable_guis()
-        self.setup_gui_with_parameters()
+        # self.ui.lureclass_table.setRowCount(0)
+        # self.setup_gui_with_parameters()
+        # self.enable_disable_guis()
 
     def update_asset_col_metadata(self):
         """Whenever the asset collection name is changed, then update the current metadata info"""
@@ -132,46 +129,63 @@ class MapTopographyLaunch(QtWidgets.QDialog):
         else:
             self.metadata = assetcol.get_asset_with_name("meta")
 
+
+
     def enable_disable_guis(self):
-        """Enables and disables items in the GUI based on conditions."""
-        self.ui.demsmooth_spin.setEnabled(self.ui.demsmooth_check.isChecked())
+        self.ui.lureclass_table.setEnabled(self.ui.lureclass_check.isChecked())
+        self.ui.lureclass_widget.setEnabled(self.ui.lureclass_check.isChecked())
+        self.ui.patchdelin_check.setEnabled(not self.ui.single_landuse_check.isChecked())
+        self.ui.spatialmetrics_check.setEnabled(not self.ui.single_landuse_check.isChecked())
 
     def setup_gui_with_parameters(self):
         """Sets all parameters in the GUI based on the current year."""
-        try:    # ELEVATION DATA COMBO
-            self.ui.elev_combo.setCurrentIndex(
-                self.elevmaps[1].index(self.module.get_parameter("elevmapdataid")))
-        except ValueError:
-            self.ui.elev_combo.setCurrentIndex(0)   # Else no map exists, default to the 0 index ("no map loaded")
-
-        if self.module.get_parameter("nodatatask") == "STATUS":
-            self.ui.nodata_remove_radio.setChecked(1)
-        else:
-            self.ui.nodata_interpolate_radio.setChecked(1)
-
-        self.ui.demsmooth_check.setChecked(int(self.module.get_parameter("demsmooth")))
-        self.ui.demsmooth_spin.setValue(int(self.module.get_parameter("dempasses")))
-
-        self.ui.topo_lowest_check.setChecked(int(self.module.get_parameter("demminmax")))
-        self.ui.slope_check.setChecked(int(self.module.get_parameter("slope")))
-        self.ui.aspect_check.setChecked(int(self.module.get_parameter("aspect")))
+        # Combo Boxes
+        # try:
+        #     self.ui.lu_combo.setCurrentIndex(
+        #         self.lumaps[1].index(self.module.get_parameter("landusemapid")))
+        # except:
+        #     self.ui.lu_combo.setCurrentIndex(0)
+        #
+        # self.ui.luattr_combo.setCurrentIndex(0)
+        # if self.ui.lu_combo.currentIndex() != 0:
+        #     attname = self.module.get_parameter("landuseattr")
+        #     for i in range(self.ui.luattr_combo.count()):
+        #         if self.ui.luattr_combo.itemText(i) == attname:
+        #             self.ui.luattr_combo.setCurrentIndex(i)
+        # else:
+        #     self.ui.lureclass_table.setRowCount(0)
+        #
+        # # Reclassification Table
+        # self.ui.lureclass_check.setChecked(self.module.get_parameter("lureclass"))
+        # if self.ui.lureclass_check.isChecked() and self.ui.luattr_combo.currentIndex() != 0:
+        #     # Populate Table with reclassification system...
+        #     self.refresh_lu_reclassification_widgets()
+        #     reclass = self.module.get_parameter("lureclasssystem")
+        #     self.classify_table(reclass)
+        #
+        # self.ui.single_landuse_check.setChecked(self.module.get_parameter("singlelu"))
+        # self.ui.patchdelin_check.setChecked(self.module.get_parameter("patchdelin"))
+        # self.ui.spatialmetrics_check.setChecked(self.module.get_parameter("spatialmetrics"))
 
     def save_values(self):
         """Saves all user-modified values for the module's parameters from the GUI
         into the simulation core."""
-        self.module.set_parameter("assetcolname", self.ui.assetcol_combo.currentText())
-        self.module.set_parameter("elevmapdataid", self.elevmaps[1][self.ui.elev_combo.currentIndex()])
-
-        if self.ui.nodata_remove_radio.isChecked():
-            self.module.set_parameter("nodatatask", "STATUS")
-        else:
-            self.module.set_parameter("nodatatask", "INTERP")
-
-        self.module.set_parameter("demsmooth", int(self.ui.demsmooth_check.isChecked()))
-        self.module.set_parameter("dempasses", float(self.ui.demsmooth_spin.value()))
-        self.module.set_parameter("demminmax", int(self.ui.topo_lowest_check.isChecked()))
-        self.module.set_parameter("slope", int(self.ui.slope_check.isChecked()))
-        self.module.set_parameter("aspect", int(self.ui.aspect_check.isChecked()))
+        pass
+        # self.module.set_parameter("assetcolname", self.ui.assetcol_combo.currentText())
+        # self.module.set_parameter("landusemapid", self.lumaps[1][self.ui.lu_combo.currentIndex()])
+        # self.module.set_parameter("landuseattr", self.ui.luattr_combo.currentText())
+        #
+        # self.module.set_parameter("lureclass", int(self.ui.lureclass_check.isChecked()))
+        #
+        # # Reclassification scheme
+        # if self.ui.lureclass_check.isChecked():
+        #     self.module.set_parameter("lureclasssystem", self.generate_reclassification_dict())
+        # else:
+        #     self.module.set_parameter("lureclasssystem", {})
+        #
+        # self.module.set_parameter("singlelu", int(self.ui.single_landuse_check.isChecked()))
+        # self.module.set_parameter("patchdelin", int(self.ui.patchdelin_check.isChecked()))
+        # self.module.set_parameter("spatialmetrics", int(self.ui.spatialmetrics_check.isChecked()))
 
     def update_progress_bar_value(self, value):
         """Updates the progress bar of the Main GUI when the simulation is started/stopped/reset. Also disables the
@@ -195,10 +209,5 @@ class MapTopographyLaunch(QtWidgets.QDialog):
             QtWidgets.QMessageBox.warning(self, "No Asset Collection selected", prompt_msg, QtWidgets.QMessageBox.Ok)
             return False
 
-        # (2) Elevation map not selected
-        if self.ui.elev_combo.currentText() == "(no elevation maps in project)":
-            prompt_msg = "Please load an elevation map into the project to be mapped!"
-            QtWidgets.QMessageBox.warning(self, "Missing Elevation Map", prompt_msg, QtWidgets.QMessageBox.Ok)
-            return False
 
         return True

@@ -35,7 +35,7 @@ class NeighbourhoodAttractionMapping(UBModule):
     catname = "Urban Regional Analysis"
     catorder = 3
     longname = "Neighbourhood Interaction"
-    icon = ":/icons/neighbourhood-interact.png"
+    icon = ":/icons/neighbourhood_influence.png"
 
     def __init__(self, activesim, datalibrary, projectlog):
         UBModule.__init__(self)

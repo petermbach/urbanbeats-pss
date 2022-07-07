@@ -11,16 +11,16 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_CatchmentDelin(object):
-    def setupUi(self, CatchmentDelin):
-        CatchmentDelin.setObjectName("CatchmentDelin")
-        CatchmentDelin.resize(627, 474)
+class Ui_CatchmentDelinGui(object):
+    def setupUi(self, CatchmentDelinGui):
+        CatchmentDelinGui.setObjectName("CatchmentDelinGui")
+        CatchmentDelinGui.resize(627, 474)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/river_flow.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        CatchmentDelin.setWindowIcon(icon)
-        self.gridLayout = QtWidgets.QGridLayout(CatchmentDelin)
+        CatchmentDelinGui.setWindowIcon(icon)
+        self.gridLayout = QtWidgets.QGridLayout(CatchmentDelinGui)
         self.gridLayout.setObjectName("gridLayout")
-        self.buttons_widget = QtWidgets.QWidget(CatchmentDelin)
+        self.buttons_widget = QtWidgets.QWidget(CatchmentDelinGui)
         self.buttons_widget.setObjectName("buttons_widget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.buttons_widget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
@@ -50,7 +50,7 @@ class Ui_CatchmentDelin(object):
         self.help_button.setObjectName("help_button")
         self.horizontalLayout.addWidget(self.help_button)
         self.gridLayout.addWidget(self.buttons_widget, 4, 0, 1, 2)
-        self.frame = QtWidgets.QFrame(CatchmentDelin)
+        self.frame = QtWidgets.QFrame(CatchmentDelinGui)
         self.frame.setMinimumSize(QtCore.QSize(200, 0))
         self.frame.setMaximumSize(QtCore.QSize(200, 16777215))
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -81,12 +81,12 @@ class Ui_CatchmentDelin(object):
         self.img.setObjectName("img")
         self.verticalLayout_6.addWidget(self.img)
         self.gridLayout.addWidget(self.frame, 0, 0, 1, 1)
-        self.line_2 = QtWidgets.QFrame(CatchmentDelin)
+        self.line_2 = QtWidgets.QFrame(CatchmentDelinGui)
         self.line_2.setFrameShadow(QtWidgets.QFrame.Raised)
         self.line_2.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_2.setObjectName("line_2")
         self.gridLayout.addWidget(self.line_2, 1, 0, 1, 2)
-        self.widget = QtWidgets.QWidget(CatchmentDelin)
+        self.widget = QtWidgets.QWidget(CatchmentDelinGui)
         self.widget.setMinimumSize(QtCore.QSize(0, 0))
         self.widget.setObjectName("widget")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.widget)
@@ -111,7 +111,7 @@ class Ui_CatchmentDelin(object):
         self.run_button.setObjectName("run_button")
         self.horizontalLayout_2.addWidget(self.run_button)
         self.gridLayout.addWidget(self.widget, 2, 0, 1, 2)
-        self.parameters = QtWidgets.QWidget(CatchmentDelin)
+        self.parameters = QtWidgets.QWidget(CatchmentDelinGui)
         self.parameters.setObjectName("parameters")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.parameters)
         self.verticalLayout.setContentsMargins(3, 3, 3, 3)
@@ -211,25 +211,25 @@ class Ui_CatchmentDelin(object):
         self.line.setObjectName("line")
         self.verticalLayout.addWidget(self.line)
         self.gridLayout.addWidget(self.parameters, 0, 1, 1, 1)
-        self.line_3 = QtWidgets.QFrame(CatchmentDelin)
+        self.line_3 = QtWidgets.QFrame(CatchmentDelinGui)
         self.line_3.setFrameShadow(QtWidgets.QFrame.Raised)
         self.line_3.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_3.setObjectName("line_3")
         self.gridLayout.addWidget(self.line_3, 3, 0, 1, 2)
 
-        self.retranslateUi(CatchmentDelin)
+        self.retranslateUi(CatchmentDelinGui)
         self.flowpath_combo.setCurrentIndex(0)
-        self.close_button.clicked.connect(CatchmentDelin.reject)
-        QtCore.QMetaObject.connectSlotsByName(CatchmentDelin)
+        self.close_button.clicked.connect(CatchmentDelinGui.reject)
+        QtCore.QMetaObject.connectSlotsByName(CatchmentDelinGui)
 
-    def retranslateUi(self, CatchmentDelin):
+    def retranslateUi(self, CatchmentDelinGui):
         _translate = QtCore.QCoreApplication.translate
-        CatchmentDelin.setWindowTitle(_translate("CatchmentDelin", "Delineate Water Flow and Sub-Catchments"))
-        self.ok_button.setWhatsThis(_translate("CatchmentDelin", "<html><head/><body><p>Resets all parameters of this module in the current \'scenario time step\' to the default values.</p></body></html>"))
-        self.ok_button.setText(_translate("CatchmentDelin", "OK"))
-        self.close_button.setText(_translate("CatchmentDelin", "Close"))
-        self.help_button.setText(_translate("CatchmentDelin", "Help"))
-        self.description.setHtml(_translate("CatchmentDelin", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        CatchmentDelinGui.setWindowTitle(_translate("CatchmentDelinGui", "Delineate Water Flow and Sub-Catchments"))
+        self.ok_button.setWhatsThis(_translate("CatchmentDelinGui", "<html><head/><body><p>Resets all parameters of this module in the current \'scenario time step\' to the default values.</p></body></html>"))
+        self.ok_button.setText(_translate("CatchmentDelinGui", "OK"))
+        self.close_button.setText(_translate("CatchmentDelinGui", "Close"))
+        self.help_button.setText(_translate("CatchmentDelinGui", "Help"))
+        self.description.setHtml(_translate("CatchmentDelinGui", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
@@ -238,25 +238,25 @@ class Ui_CatchmentDelin(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Creates a water flow path network based on topography, natural features and other assisted data sets.</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Pre-requisites: Simulation grid, topographical mapping, natural features (optional)</span></p></body></html>"))
-        self.run_button.setText(_translate("CatchmentDelin", "Run"))
-        self.title.setText(_translate("CatchmentDelin", "<html><head/><body><p><span style=\" font-size:9pt; font-weight:600;\">SETTINGS</span></p></body></html>"))
-        self.asset_col_title.setText(_translate("CatchmentDelin", "<html><head/><body><p><span style=\" font-weight:600; font-style:italic;\">Target Asset Collection</span></p></body></html>"))
-        self.assetcol_combo.setItemText(0, _translate("CatchmentDelin", "(select asset collection)"))
-        self.gridname_lbl.setWhatsThis(_translate("CatchmentDelin", "Width of the square cell in the city grid in metres"))
-        self.gridname_lbl.setText(_translate("CatchmentDelin", "Select collection:"))
-        self.title_2.setText(_translate("CatchmentDelin", "<html><head/><body><p><span style=\" font-weight:600; font-style:italic;\">Drainage Flow Paths</span></p></body></html>"))
-        self.descr.setWhatsThis(_translate("CatchmentDelin", "Width of the square cell in the city grid in metres"))
-        self.descr.setText(_translate("CatchmentDelin", "Delineate water drainage flow paths"))
-        self.flowpath_lbl.setWhatsThis(_translate("CatchmentDelin", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.run_button.setText(_translate("CatchmentDelinGui", "Run"))
+        self.title.setText(_translate("CatchmentDelinGui", "<html><head/><body><p><span style=\" font-size:9pt; font-weight:600;\">SETTINGS</span></p></body></html>"))
+        self.asset_col_title.setText(_translate("CatchmentDelinGui", "<html><head/><body><p><span style=\" font-weight:600; font-style:italic;\">Target Asset Collection</span></p></body></html>"))
+        self.assetcol_combo.setItemText(0, _translate("CatchmentDelinGui", "(select asset collection)"))
+        self.gridname_lbl.setWhatsThis(_translate("CatchmentDelinGui", "Width of the square cell in the city grid in metres"))
+        self.gridname_lbl.setText(_translate("CatchmentDelinGui", "Select collection:"))
+        self.title_2.setText(_translate("CatchmentDelinGui", "<html><head/><body><p><span style=\" font-weight:600; font-style:italic;\">Drainage Flow Paths</span></p></body></html>"))
+        self.descr.setWhatsThis(_translate("CatchmentDelinGui", "Width of the square cell in the city grid in metres"))
+        self.descr.setText(_translate("CatchmentDelinGui", "Delineate water drainage flow paths"))
+        self.flowpath_lbl.setWhatsThis(_translate("CatchmentDelinGui", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">How many blocks to consider when determining drainage fluxes (the greater the number, the greater the computational burden).</span></p></body></html>"))
-        self.flowpath_lbl.setText(_translate("CatchmentDelin", "<html><head/><body><p><span style=\" font-weight:600;\">Flowpath Method:</span></p></body></html>"))
-        self.flowpath_combo.setItemText(0, _translate("CatchmentDelin", "Planar - Adapted D-infinity (Tarboton, 1997)"))
-        self.flowpath_combo.setItemText(1, _translate("CatchmentDelin", "Directional - D8 (O\'Callaghan & Mark, 1984)"))
-        self.flowpath_combo.setItemText(2, _translate("CatchmentDelin", "Minimum Spanning Tree Method"))
-        self.infrastructure_check.setToolTip(_translate("CatchmentDelin", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.flowpath_lbl.setText(_translate("CatchmentDelinGui", "<html><head/><body><p><span style=\" font-weight:600;\">Flowpath Method:</span></p></body></html>"))
+        self.flowpath_combo.setItemText(0, _translate("CatchmentDelinGui", "Planar - Adapted D-infinity (Tarboton, 1997)"))
+        self.flowpath_combo.setItemText(1, _translate("CatchmentDelinGui", "Directional - D8 (O\'Callaghan & Mark, 1984)"))
+        self.flowpath_combo.setItemText(2, _translate("CatchmentDelinGui", "Minimum Spanning Tree Method"))
+        self.infrastructure_check.setToolTip(_translate("CatchmentDelinGui", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
@@ -265,13 +265,13 @@ class Ui_CatchmentDelin(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Correction proceeds as follows:</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If tolerance limit is not met, cell\'s water is routed directly to catchment outlet.</span></p></body></html>"))
-        self.infrastructure_check.setWhatsThis(_translate("CatchmentDelin", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.infrastructure_check.setWhatsThis(_translate("CatchmentDelinGui", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">If available, then the program will bias the flow directions towards Blocks with built stormwater draingae infrastructure e.g. channelized drains and pipe network. This will only happen if the above option to include stormwater infrastruture has been enabled and a map has been specified.</p></body></html>"))
-        self.infrastructure_check.setText(_translate("CatchmentDelin", "Use stormwater drainage infrastructure as a guide for flow path delineation"))
-        self.natfeature_check.setToolTip(_translate("CatchmentDelin", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.infrastructure_check.setText(_translate("CatchmentDelinGui", "Use stormwater drainage infrastructure as a guide for flow path delineation"))
+        self.natfeature_check.setToolTip(_translate("CatchmentDelinGui", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
@@ -280,21 +280,21 @@ class Ui_CatchmentDelin(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Correction proceeds as follows:</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If tolerance limit is not met, cell\'s water is routed directly to catchment outlet.</span></p></body></html>"))
-        self.natfeature_check.setWhatsThis(_translate("CatchmentDelin", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.natfeature_check.setWhatsThis(_translate("CatchmentDelinGui", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">If available, then the program will bias the flow directions towards Blocks with natural features e.g. a river, creek or lake. This will only happen if the above option to include a river or lake feature has been enabled and a map has been specified.</p></body></html>"))
-        self.natfeature_check.setText(_translate("CatchmentDelin", "Use natural water features as a guide for flow path delineation"))
-        self.flowpath_lbl2.setWhatsThis(_translate("CatchmentDelin", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.natfeature_check.setText(_translate("CatchmentDelinGui", "Use natural water features as a guide for flow path delineation"))
+        self.flowpath_lbl2.setWhatsThis(_translate("CatchmentDelinGui", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">How many blocks to consider when determining drainage fluxes (the greater the number, the greater the computational burden).</span></p></body></html>"))
-        self.flowpath_lbl2.setText(_translate("CatchmentDelin", "<html><head/><body><p><span style=\" font-weight:600; font-style:italic;\">Delineation Options</span></p></body></html>"))
-        self.storm_combo.setItemText(0, _translate("CatchmentDelin", "(none)"))
-        self.title_3.setText(_translate("CatchmentDelin", "<html><head/><body><p><span style=\" font-weight:600; font-style:italic;\">Sub-Catchment Delineation</span></p></body></html>"))
-        self.ignore_rivers_check.setToolTip(_translate("CatchmentDelin", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.flowpath_lbl2.setText(_translate("CatchmentDelinGui", "<html><head/><body><p><span style=\" font-weight:600; font-style:italic;\">Delineation Options</span></p></body></html>"))
+        self.storm_combo.setItemText(0, _translate("CatchmentDelinGui", "(none)"))
+        self.title_3.setText(_translate("CatchmentDelinGui", "<html><head/><body><p><span style=\" font-weight:600; font-style:italic;\">Sub-Catchment Delineation</span></p></body></html>"))
+        self.ignore_rivers_check.setToolTip(_translate("CatchmentDelinGui", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
@@ -303,13 +303,13 @@ class Ui_CatchmentDelin(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Correction proceeds as follows:</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If tolerance limit is not met, cell\'s water is routed directly to catchment outlet.</span></p></body></html>"))
-        self.ignore_rivers_check.setWhatsThis(_translate("CatchmentDelin", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.ignore_rivers_check.setWhatsThis(_translate("CatchmentDelinGui", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Ignores river features in the landscape. This means that delineation continues until the lowest elevation point has been detected. Select this option if your river features do not directly determine the catchment e.g. you are including a creek in the catchment, but do not want to subdivide the catchment based on inflow points to the creek.</p></body></html>"))
-        self.ignore_rivers_check.setText(_translate("CatchmentDelin", "Ignore River features when determining catchment outlets"))
-        self.ignore_lakes_check.setToolTip(_translate("CatchmentDelin", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.ignore_rivers_check.setText(_translate("CatchmentDelinGui", "Ignore River features when determining catchment outlets"))
+        self.ignore_lakes_check.setToolTip(_translate("CatchmentDelinGui", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
@@ -318,10 +318,10 @@ class Ui_CatchmentDelin(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Correction proceeds as follows:</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If cell cannot transfer water downhill, but there is an adjacent cell with identical elevation within tolerance limit, it will transfer the water into this.</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">- If tolerance limit is not met, cell\'s water is routed directly to catchment outlet.</span></p></body></html>"))
-        self.ignore_lakes_check.setWhatsThis(_translate("CatchmentDelin", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.ignore_lakes_check.setWhatsThis(_translate("CatchmentDelinGui", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Ignores lake features in the landscape. This means that delineation continues until the lowest elevation point has been detected. Select this option if the lakes you have included are not major drainage outlets e.g. a large lake vs. a retarding basin. If the lake features regularly spill downstream, then check this option to ensure that the catchment delineation continues beyond the lake.</p></body></html>"))
-        self.ignore_lakes_check.setText(_translate("CatchmentDelin", "Ignore Lake features when determining catchment outlets"))
+        self.ignore_lakes_check.setText(_translate("CatchmentDelinGui", "Ignore Lake features when determining catchment outlets"))
 from .. import ubeats_rc

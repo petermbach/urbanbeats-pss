@@ -33,7 +33,7 @@ class DelineateFlowSubCatchments(UBModule):
 
     # MODULE'S BASIC METADATA
     type = "master"
-    catname = "Hydrology"
+    catname = "Urban Hydrology"
     catorder = 2
     longname = "Flow Paths & Sub-catchments"
     icon = ":/icons/river_flow.png"

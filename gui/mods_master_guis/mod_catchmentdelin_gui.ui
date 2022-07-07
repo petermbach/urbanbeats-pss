@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CatchmentDelin</class>
- <widget class="QDialog" name="CatchmentDelin">
+ <class>CatchmentDelinGui</class>
+ <widget class="QDialog" name="CatchmentDelinGui">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -694,7 +694,7 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>close_button</sender>
    <signal>clicked()</signal>
-   <receiver>CatchmentDelin</receiver>
+   <receiver>CatchmentDelinGui</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

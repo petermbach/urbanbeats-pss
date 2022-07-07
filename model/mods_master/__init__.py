@@ -23,6 +23,11 @@ from .mod_urbanformabstraction import UrbanFormAbstraction
 # from .mod_landcoveralgo import GenerateLandCoverFromUrbanForm
 # from .mod_landcoverimport import ImportLandCoverData
 
+# --- DEFINE SPATIAL PLANNING MODULES ---
+from .mod_planningoverlays import DefinePlanningOverlays
+from .mod_zoningmap import CreateZoningMap
+from .mod_ugsanalysis import UrbanGreenSpaceAnalysis
+
 # --- URBAN WATER MODULES ---
 from .mod_wateruse import WaterDemandMapping
 # from .mod_floodhazard import FloodHazardAssessment
@@ -40,12 +45,15 @@ from .mod_wateruse import WaterDemandMapping
 #from .mod_bgilayoutgen import BGILayoutGeneration
 
 MODULES_CATS = ["Spatial Representation",
-                "Hydrology",
                 "Urban Regional Analysis",
                 "Urban Form",
                 "Spatial Planning",
+                "Urban Hydrology",
                 "Urban Water Management",
-                "Technology Planning"]
+                "Urban Climatology",
+                "Urban Ecology",
+                "Technology Planning",
+                "Social Analysis"]
 
 # For main code:
 # import model.mods_master as UBToolkit
