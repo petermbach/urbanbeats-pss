@@ -1,5 +1,5 @@
 r"""
-@file   mod_landuse_import.py
+@file   mod_landuse_import_gui.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 

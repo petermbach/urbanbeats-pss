@@ -1,5 +1,5 @@
 r"""
-@file   mod_mapregions.py
+@file   mod_mapregions_gui.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 

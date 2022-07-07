@@ -77,7 +77,7 @@ class Ui_Map_Topography(object):
         self.img.setMinimumSize(QtCore.QSize(200, 120))
         self.img.setMaximumSize(QtCore.QSize(200, 120))
         self.img.setText("")
-        self.img.setPixmap(QtGui.QPixmap(":/mod_imgs/module_imgs/mod_topography.jpg"))
+        self.img.setPixmap(QtGui.QPixmap(":/mod_imgs/module_imgs/mod_topo.jpg"))
         self.img.setObjectName("img")
         self.verticalLayout_6.addWidget(self.img)
         self.gridLayout.addWidget(self.frame, 0, 0, 1, 1)
@@ -214,10 +214,7 @@ class Ui_Map_Topography(object):
         self.gridLayout_10.addWidget(self.insights_lbl, 0, 0, 1, 1)
         self.topo_lowest_check = QtWidgets.QCheckBox(self.gridname_box_3)
         self.topo_lowest_check.setObjectName("topo_lowest_check")
-        self.gridLayout_10.addWidget(self.topo_lowest_check, 1, 1, 1, 1)
-        self.topo_stats_check = QtWidgets.QCheckBox(self.gridname_box_3)
-        self.topo_stats_check.setObjectName("topo_stats_check")
-        self.gridLayout_10.addWidget(self.topo_stats_check, 0, 1, 1, 2)
+        self.gridLayout_10.addWidget(self.topo_lowest_check, 0, 1, 1, 1)
         self.verticalLayout.addWidget(self.gridname_box_3)
         self.gridname_box_4 = QtWidgets.QWidget(self.parameters)
         self.gridname_box_4.setObjectName("gridname_box_4")
@@ -317,17 +314,6 @@ class Ui_Map_Topography(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt;\"><br /></p></body></html>"))
         self.topo_lowest_check.setText(_translate("Map_Topography", "Mark extremes (min/max elevations) on map"))
-        self.topo_stats_check.setToolTip(_translate("Map_Topography", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8.25pt;\">Other than mean elevation, will include min/max, variance</span></p></body></html>"))
-        self.topo_stats_check.setWhatsThis(_translate("Map_Topography", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt;\"><br /></p></body></html>"))
-        self.topo_stats_check.setText(_translate("Map_Topography", "Add topographic statistics for coarse grid"))
         self.calculate_lbl.setWhatsThis(_translate("Map_Topography", "Width of the square cell in the city grid in metres"))
         self.calculate_lbl.setText(_translate("Map_Topography", "Calculate:"))
         self.aspect_check.setToolTip(_translate("Map_Topography", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"

@@ -1,5 +1,5 @@
 r"""
-@file   mod_landuse_import.py
+@file   mod_landuse_import_gui.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 
@@ -34,7 +34,7 @@ import model.mods_master.mod_landuse_import as mod_landuse_import
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
 from gui.observers import ProgressBarObserver
-from .mod_landuse_import import Ui_Map_Landuse
+from .mod_landuse_import_gui import Ui_Map_Landuse
 
 # --- MAIN GUI FUNCTION ---
 class MapLanduseLaunch(QtWidgets.QDialog):

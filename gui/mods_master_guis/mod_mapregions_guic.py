@@ -33,7 +33,7 @@ import model.ublibs.ubspatial as ubspatial
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
 from gui.observers import ProgressBarObserver
-from .mod_mapregions import Ui_Map_Regions
+from .mod_mapregions_gui import Ui_Map_Regions
 
 
 # --- MAIN GUI FUNCTION ---

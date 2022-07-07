@@ -1,5 +1,5 @@
 r"""
-@file   mod_population.py
+@file   mod_population_gui.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 

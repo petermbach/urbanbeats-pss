@@ -1,5 +1,5 @@
 r"""
-@file   mod_population.py
+@file   mod_population_gui.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 
@@ -32,7 +32,7 @@ import model.ublibs.ubspatial as ubspatial
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
 from gui.observers import ProgressBarObserver
-from .mod_population import Ui_Map_Population
+from .mod_population_gui import Ui_Map_Population
 
 
 # --- MAIN GUI FUNCTION ---
