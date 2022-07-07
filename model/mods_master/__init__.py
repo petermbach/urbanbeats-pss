@@ -15,7 +15,7 @@ from .mod_catchmentdelin import DelineateFlowSubCatchments
 # --- URBAN AND REGIONAL ---
 from .mod_cbdanalysis import UrbanCentralityAnalysis
 from .mod_accessibility import AccessibilityAnalysis
-# from .mod_neighbourhoodattract import NeighbourhoodInfluence
+from .mod_neighbourattract import NeighbourhoodAttractionMapping
 
 # --- DEFINE URBAN FORM MODULES ---
 from .mod_urbanformabstraction import UrbanFormAbstraction
@@ -24,7 +24,7 @@ from .mod_urbanformabstraction import UrbanFormAbstraction
 # from .mod_landcoverimport import ImportLandCoverData
 
 # --- URBAN WATER MODULES ---
-# from .mod_waterdemand import WaterDemand
+from .mod_wateruse import WaterDemandMapping
 # from .mod_floodhazard import FloodHazardAssessment
 # from .mod_pollutiongen import PollutionGeneration
 
