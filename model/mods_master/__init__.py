@@ -5,20 +5,20 @@ from .mod_mapregions import MapRegionsToSimGrid
 from .mod_landuse_import import MapLandUseToSimGrid
 from .mod_population import MapPopulationToSimGrid
 from .mod_topography import MapTopographyToSimGrid
+from .mod_natural_features import MapNaturalFeaturesToSimGrid
 
 # --- HYDROLOGY MODULES ---
-# from .mod_mapwater import MapWaterToSimGrid
-from .mod_catchmentdelin import CatchmentDelineation
-# from .mod_rainfallanalyst import RainfallAnalyst
+from .mod_rainfallanalyst import RainfallDataAnalyst
+from .mod_catchmentdelin import DelineateFlowSubCatchments
 # from .mod_climatescale import ClimateScaling
 
 # --- URBAN AND REGIONAL ---
-from .mod_cbdanalysis import CalculateCBDDistance
-# from .mod_accessibility import AccessibilityMapping
+from .mod_cbdanalysis import UrbanCentralityAnalysis
+from .mod_accessibility import AccessibilityAnalysis
 # from .mod_neighbourhoodattract import NeighbourhoodInfluence
 
 # --- DEFINE URBAN FORM MODULES ---
-# from .mod_urbanformalgo import GenerateUrbanForm
+from .mod_urbanformabstraction import UrbanFormAbstraction
 # from .mod_urbanformimport import ImportUrbanFormData
 # from .mod_landcoveralgo import GenerateLandCoverFromUrbanForm
 # from .mod_landcoverimport import ImportLandCoverData
@@ -42,7 +42,7 @@ from .mod_cbdanalysis import CalculateCBDDistance
 MODULES_CATS = ["Spatial Representation",
                 "Hydrology",
                 "Urban Regional Analysis",
-                "Define Urban Form",
+                "Urban Form",
                 "Spatial Planning",
                 "Urban Water Management",
                 "Technology Planning"]

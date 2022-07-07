@@ -39,8 +39,8 @@ np.set_printoptions(threshold=sys.maxsize, linewidth=5000)      # Numpy Print Op
 
 
 class MapTopographyToSimGrid(UBModule):
-    """ Generates the simulation grid upon which many assessments will be based. This SimGrid will provide details on
-    geometry and also neighbourhood information."""
+    """ Maps topographical information from a digital elevation model onto the simulation grid. Also has options to
+    smooth the DEM data or calculate slope/aspect information."""
 
     # MODULE'S BASIC METADATA
     type = "master"

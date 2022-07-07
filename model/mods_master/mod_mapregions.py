@@ -1,5 +1,5 @@
 r"""
-@file   mod_mapregions_gui.py
+@file   mod_mapregions.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 
@@ -27,8 +27,8 @@ __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 from model.ubmodule import *
 
 class MapRegionsToSimGrid(UBModule):
-    """ Generates the simulation grid upon which many assessments will be based. This SimGrid will provide details on
-    geometry and also neighbourhood information."""
+    """ Imports and maps a land use map onto the simulation grid. Allows reclassification of the input land use to the
+    UrbanBEATS classification system."""
 
     # MODULE'S BASIC METADATA
     type = "master"

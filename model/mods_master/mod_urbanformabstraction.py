@@ -1,5 +1,5 @@
 r"""
-@file   mod_landuse_import.py
+@file   mod_urbanformabstraction.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 
@@ -26,16 +26,16 @@ __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 # --- PYTHON LIBRARY IMPORTS ---
 from model.ubmodule import *
 
-class MapLandUseToSimGrid(UBModule):
+class UrbanFormAbstraction(UBModule):
     """ Generates the simulation grid upon which many assessments will be based. This SimGrid will provide details on
     geometry and also neighbourhood information."""
 
     # MODULE'S BASIC METADATA
     type = "master"
-    catname = "Spatial Representation"
-    catorder = 3
-    longname = "Map Land Use"
-    icon = ":/icons/region.png"
+    catname = "Urban Form"
+    catorder = 0
+    longname = "Abstract Urban Form"
+    icon = ":/icons/urban_street.png"
 
     def __init__(self, activesim, datalibrary, projectlog):
         UBModule.__init__(self)
@@ -55,23 +55,8 @@ class MapLandUseToSimGrid(UBModule):
 
         # MODULE PARAMETERS
         self.create_parameter("assetcolname", STRING, "Name of the asset collection to use")
-        self.create_parameter("landusemapid", STRING, "Name of the land use map to load for mapping")
-        self.create_parameter("landuseattr", STRING, "Attribute containing the classification if .shp")
         self.assetcolname = "(select asset collection)"
-        self.landusemapid = "(no land use map in the project)"
-        self.landuseattr = "(attribute name)"
 
-        self.create_parameter("lureclass", BOOL, "Reclassify the land use map?")
-        self.create_parameter("lureclasssystem", DICT, "List of dictionaries to do the reclassification")
-        self.lureclass = 0
-        self.lureclasssystem = {}
-
-        self.create_parameter("singlelu", BOOL, "Use only a single land use per grid unit?")
-        self.create_parameter("patchdelin", BOOL, "Delineate Land Use Patches?")
-        self.create_parameter("spatialmetrics", BOOL, "Calculate spatial metrics?")
-        self.singlelu = 0
-        self.patchdelin = 0
-        self.spatialmetrics = 0
 
     def set_module_data_library(self, datalib):
         self.datalibrary = datalib
@@ -87,7 +72,7 @@ class MapLandUseToSimGrid(UBModule):
         self.meta = self.assets.get_asset_with_name("meta")
         if self.meta is None:
             self.notify("Fatal Error! Asset Collection missing Metadata")
-        self.meta.add_attribute("mod_landuse_import", 1)
+        self.meta.add_attribute("mod_mapregions", 1)
         self.assetident = self.meta.get_attribute("AssetIdent")
 
         self.xllcorner = self.meta.get_attribute("xllcorner")
@@ -97,16 +82,18 @@ class MapLandUseToSimGrid(UBModule):
         """ The main algorithm for the module, links with the active simulation, its data library and output folders."""
         self.initialize_runstate()
 
-        self.notify("Mapping Land Use to Simulation")
+        self.notify("Mapping Regions to the Simulation Grid")
         self.notify("--- === ---")
         self.notify("Geometry Type: " + self.assetident)
         self.notify_progress(0)
+
+        print(self.boundaries_to_map)
 
         # --- SECTION 1 - (description)
         # --- SECTION 2 - (description)
         # --- SECTION 3 - (description)
 
-        self.notify("Mapping of land use data to simulation grid complete")
+        self.notify("Mapping of regions to simulation grid complete")
         self.notify_progress(100)
         return True
 
@@ -115,11 +102,3 @@ class MapLandUseToSimGrid(UBModule):
     # ==========================================
     def method_example(self):
         pass
-
-
-# GLOBAL VARIABLES TIED TO THIS MODULE
-UBLANDUSENAMES = ["Residential", "Commercial", "Mixed Offices & Res", "Light Industry", "Heavy Industry", "Civic",
-                  "Services & Utility", "Road", "Transport", "Parks & Garden", "Reserves & Floodway", "Undeveloped",
-                  "Unclassified", "Water", "Forest", "Agriculture"]
-UBLANDUSEABBR = ["RES", "COM", "ORC", "LI", "HI", "CIV", "SVU", "RD", "TR", "PG", "REF", "UND",
-                 "UNC", "WAT", "FOR", "AGR"]

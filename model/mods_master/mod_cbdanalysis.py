@@ -1,5 +1,5 @@
 r"""
-@file   mod_simgrid.py
+@file   mod_cbdanalysis.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 
@@ -21,20 +21,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 __author__ = "Peter M. Bach"
-__copyright__ = "Copyright 2018. Peter M. Bach"
+__copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 from model.ubmodule import *
 
-class CalculateCBDDistance(UBModule):
-    """ Generates the simulation grid upon which many assessments will be based. This SimGrid will provide details on
-    geometry and also neighbourhood information."""
+class UrbanCentralityAnalysis(UBModule):
+    """ Conducts an urban regional analysis of the simulation grid and its population data, identifyingg which regions
+    are within proximity of key urban activity centres/CBDs defined as individual cities or user-input."""
 
     # MODULE'S BASIC METADATA
     type = "master"
     catname = "Urban Regional Analysis"
     catorder = 1
-    longname = "CBD Distance"
+    longname = "Urban Centrality Analysis"
     icon = ":/icons/City_icon_(Noun_Project).svg.png"
 
     def __init__(self, activesim, datalibrary, projectlog):
@@ -44,70 +44,57 @@ class CalculateCBDDistance(UBModule):
         self.datalibrary = datalibrary
         self.projectlog = projectlog
 
+        # KEY GUIDING VARIABLES
+        self.assets = None
+        self.meta = None
+        self.xllcorner = None
+        self.yllcorner = None
+        self.assetident = ""
+        self.populationmap = None
+        self.nodata = None
+
         # MODULE PARAMETERS
-        self.create_parameter("gridname", STRING, "Name of the simulation grid, unique identifier used")
-        self.create_parameter("boundaryname", STRING, "Name of the boundary the grid is based upon")
-        self.create_parameter("geometry_type", STRING, "name of the geometry type the grid should use")
-        self.gridname = "My_urbanbeats_grid"
-        self.boundaryname = "(select simulation boundary)"
-        self.geometry_type = "SQUARES"  # SQUARES, HEXAGONS, VECTORPATCH, RASTER
+        self.create_parameter("assetcolname", STRING, "Name of the asset collection to use")
+        self.assetcolname = "(select asset collection)"
 
-        # Geometry Type: Square Blocks
-        self.create_parameter("blocksize", DOUBLE, "Size of the square blocks")
-        self.create_parameter("blocksize_auto", BOOL, "Determine the block size automatically?")
-        self.blocksize = 500    # [m]
-        self.blocksize_auto = 0
-
-        # Geometry Type: Hexagonal Blocks
-        self.create_parameter("hexsize", DOUBLE, "Edge length of a single hexagonal block")
-        self.create_parameter("hexsize_auto", BOOL, "Auto-determine the hexagonal edge length?")
-        self.create_parameter("hex_orientation", STRING, "Orientation of the hexagonal block")
-        self.hexsize = 300  # [m]
-        self.hexsize_auto = 0
-        self.hex_orientation = "NS"     # NS = north-south, EW = east-west
-
-        # Geometry Type: Patch/Irregular Block
-        self.create_parameter("patchzonemap", STRING, "The zoning map that patch delineation is based on")
-        self.create_parameter("disgrid_use", BOOL, "Use a discretization grid for the patch delineatioN?")
-        self.create_parameter("disgrid_length", DOUBLE, "Edge length of the discretization grid")
-        self.create_parameter("disgrid_auto", BOOL, "Auto-determine the size of the discretization grid?")
-        self.patchzonemap = "(select zoning map for patch delineation)"
-        self.disgrid_use = 0
-        self.disgrid_length = 500   # [m]
-        self.disgrid_auto = 0
-
-        # Geometry Type: Raster/Fishnet
-        self.create_parameter("rastersize", DOUBLE, "Resolution of the raster grid")
-        self.create_parameter("nodatavalue", DOUBLE, "Identifier for the NODATAVALUE")
-        self.create_parameter("generate_fishnet", BOOL, "Generate a fishnet of the raster?")
-        self.rastersize = 30    # [m]
-        self.nodatavalue = -9999
-        self.generate_fishnet = 0
-
-        # NON-VISIBLE PARAMETERS (ADVANCED SETTINGS)
-        # None
 
     def set_module_data_library(self, datalib):
         self.datalibrary = datalib
 
+    def initialize_runstate(self):
+        """Initializes the key global variables so that the program knows what the current asset collection is to write
+        to and what the active simulation boundary is. This is done the first thing the model starts."""
+        self.assets = self.activesim.get_asset_collection_by_name(self.assetcolname)
+        if self.assets is None:
+            self.notify("Fatal Error Missing Asset Collection")
+
+        # Metadata Check - need to make sure we have access to the metadata
+        self.meta = self.assets.get_asset_with_name("meta")
+        if self.meta is None:
+            self.notify("Fatal Error! Asset Collection missing Metadata")
+        self.meta.add_attribute("mod_mapregions", 1)
+        self.assetident = self.meta.get_attribute("AssetIdent")
+
+        self.xllcorner = self.meta.get_attribute("xllcorner")
+        self.yllcorner = self.meta.get_attribute("yllcorner")
+
     def run_module(self):
-        """ The main algorithm for the module, links with the active simulation, its data library and output folders.
+        """ The main algorithm for the module, links with the active simulation, its data library and output folders."""
+        self.initialize_runstate()
 
-        :return: True upon successful completion.
-        """
-        self.notify("Calculating CBD Distance for "+self.boundaryname)
+        self.notify("Mapping Regions to the Simulation Grid")
+        self.notify("--- === ---")
+        self.notify("Geometry Type: " + self.assetident)
+        self.notify_progress(0)
 
-        # --- SECTION 1 - Preparation for creating the simulation grid based on the boundary map
+        print(self.boundaries_to_map)
 
+        # --- SECTION 1 - (description)
+        # --- SECTION 2 - (description)
+        # --- SECTION 3 - (description)
 
-        # --- SECTION 2 - Create the grid
-
-
-        # --- SECTION 3 - Identify neighbours
-
-
-        # --- SECTION 4 - Generate maps/shapes
-
+        self.notify("Mapping of regions to simulation grid complete")
+        self.notify_progress(100)
         return True
 
     # ==========================================

@@ -1,5 +1,5 @@
 r"""
-@file   mod_population_gui.py
+@file   mod_population.py
 @author Peter M Bach <peterbach@gmail.com>
 @section LICENSE
 
@@ -27,8 +27,9 @@ __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 from model.ubmodule import *
 
 class MapPopulationToSimGrid(UBModule):
-    """ Generates the simulation grid upon which many assessments will be based. This SimGrid will provide details on
-    geometry and also neighbourhood information."""
+    """ Maps population data to the simulation grid, using data from a raster or shapefile based population data set.
+    Several additional options allow for correction of the population data depenidng on the mapping process where
+    errors may emerge."""
 
     # MODULE'S BASIC METADATA
     type = "master"
