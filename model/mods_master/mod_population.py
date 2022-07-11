@@ -123,8 +123,14 @@ class MapPopulationToSimGrid(UBModule):
         # Determine data format... (1) Vector vs. (2) Raster and then (1.1) Points/Polygons vs. (2.1) Tiff/ASCII
         if ".shp" in filename:
             # VECTOR FORMAT
+            self.populationmap = ubspatial.import_polygonal_map(fullpath, "native", "Population", (self.xllcorner,
+                                                                self.yllcorner))
             popfmt = "VECTOR"
 
+            # Metadata
+            self.notify("Polygon Features: "+str(len(self.populationmap)))
+            self.notify_progress(30)
+            print(self.populationmap)
         else:
             # RASTER FORMAT - OPEN THE FILE
             self.populationmap = rasterio.open(fullpath)
@@ -173,6 +179,8 @@ class MapPopulationToSimGrid(UBModule):
         griditems = self.assets.get_assets_with_identifier(self.assetident)
         self.notify("Total assets to map data to: "+str(len(griditems)))
 
+        map_population = 0
+
         for i in range(len(griditems)):
             if griditems[i].get_attribute("Status") == 0:
                 continue    # Skip if status is zero, could have resulted from another module switching it off.
@@ -206,9 +214,45 @@ class MapPopulationToSimGrid(UBModule):
                     totalpop = mdata.sum() * self.popcorrectfact    # CORRECTION?
 
                 asset.add_attribute("Population", round(totalpop))
+                map_population += totalpop
+        self.meta.add_attribute("Population", map_population)
+        self.notify("Total Population mapped within boundary: " + str(int(map_population)))
+        return True
 
     def map_polygonal_population_to_simgrid(self):
         """Maps a polygon map of population data to the simgrid depending on the intersection of polygon with the
         simgrid."""
-        pass
+        griditems = self.assets.get_assets_with_identifier(self.assetident)
+        self.notify("Total assets to map data to: " + str(len(griditems)))
 
+        map_population = 0
+
+        for i in range(len(griditems)):
+            if griditems[i].get_attribute("Status") == 0:
+                continue
+
+            asset = griditems[i]
+            assetpts = asset.get_points()
+            assetpoly = Polygon([c[:2] for c in assetpts])
+
+            totalpop = 0   # Total population tally for this feature
+
+            for p in self.populationmap:                # For each population map feature
+                feat = Polygon(p.get_points())
+                if not feat.intersects(assetpoly):      # No intersect - continue
+                    continue
+                isectionarea = feat.intersection(assetpoly).area
+
+                # Add total population to the tally for this block
+                data = float(p.get_attribute(self.popdataattr))
+                if self.popdataformat == "DEN":
+                    totalpop += (data * isectionarea/10000)    # [people/ha]
+                else:
+                    totalpop += data*(isectionarea/feat.area)  # area-weighted
+
+            totalpop = totalpop * self.popcorrectfact
+            asset.add_attribute("Population", totalpop)
+            map_population += totalpop
+        self.meta.add_attribute("Population", map_population)
+        self.notify("Total Population mapped within boundary: "+str(int(map_population)))
+        return True

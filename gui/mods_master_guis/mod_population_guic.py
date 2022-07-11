@@ -107,7 +107,7 @@ class PopulationLaunch(QtWidgets.QDialog):
         self.ui.pop_combo.clear()
         self.popmaps = self.datalibrary.get_dataref_array("spatial", ["Demographic"],
                                                           subtypes="Population", scenario=self.active_scenario_name)
-        if len(self.popmaps) == 0:
+        if len(self.popmaps[0]) == 0:
             self.ui.pop_combo.addItem(str("(no population maps in project)"))
         else:
             [self.ui.pop_combo.addItem(str(self.popmaps[0][i])) for i in range(len(self.popmaps[0]))]
@@ -116,7 +116,8 @@ class PopulationLaunch(QtWidgets.QDialog):
         self.ui.lumap_combo.clear()
         self.lumaps = self.datalibrary.get_dataref_array("spatial", ["Land Use/Cover"],
                                                          subtypes="Land Use", scenario=self.active_scenario_name)
-        if len(self.lumaps) == 0:
+
+        if len(self.lumaps[0]) == 0:
             self.ui.lumap_combo.addItem(str("(no land use maps in project)"))
         else:
             [self.ui.lumap_combo.addItem(str(self.lumaps[0][i])) for i in range(len(self.lumaps[0]))]
@@ -245,7 +246,10 @@ class PopulationLaunch(QtWidgets.QDialog):
         self.module.set_parameter("popcorrectauto", int(self.ui.pop_correct_auto.isChecked()))
         self.module.set_parameter("mappoptolanduse", int(self.ui.popspatial_landuse_check.isChecked()))
 
-        self.module.set_parameter("landusemapdataid", self.lumaps[1][self.ui.lumap_combo.currentIndex()])
+        if self.ui.lumap_combo.currentText() == "(no land use maps in project)":
+            self.module.set_parameter("landusemapdataid", "")
+        else:
+            self.module.set_parameter("landusemapdataid", self.lumaps[1][self.ui.lumap_combo.currentIndex()])
         self.module.set_parameter("landuseattr", self.ui.lumap_attr_combo.currentText())
 
     def update_progress_bar_value(self, value):

@@ -209,7 +209,7 @@ class UBVector(UBComponent):
         self.__centroidXY = []
         self.__nativeEPSG = None
         # self.__edges has None type if the data type is a point otherwise a tuple array of edges
-        # of format ( ( (x1, y1, 0), (x2, y2, 0) ), ( ... ),  ... )
+        # of format ( ( (x1, y1), (x2, y2) ), ( ... ),  ... )
 
         self.determine_geometry(self.__points)
 
