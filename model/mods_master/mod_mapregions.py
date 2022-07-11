@@ -24,7 +24,10 @@ __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
+from shapely.geometry import Polygon
+
 from model.ubmodule import *
+import model.ublibs.ubspatial as ubspatial
 
 class MapRegionsToSimGrid(UBModule):
     """ Imports and maps a land use map onto the simulation grid. Allows reclassification of the input land use to the
@@ -99,18 +102,63 @@ class MapRegionsToSimGrid(UBModule):
         self.notify("Geometry Type: " + self.assetident)
         self.notify_progress(0)
 
-        print(self.boundaries_to_map)
+        boundary_datarefs = self.datalibrary.get_dataref_array("spatial", ["Boundaries"])
 
-        # --- SECTION 1 - (description)
-        # --- SECTION 2 - (description)
-        # --- SECTION 3 - (description)
+        # LOOP ACROSS DICTIONARIES, LOAD THE SHAPEFILE AND MAP TO THE SIMULATION GRID
+        griditems = self.assets.get_assets_with_identifier(self.assetident)
+
+        # METADATA
+        self.notify("Total assets to map data to: "+str(len(griditems)))
+        self.notify_progress(10)    # 20 to 100% progress spaced out depending on number of boundaries...
+        current_progress = 10
+        progress_increment = 80.0 / float(len(self.boundaries_to_map))
+
+        for i in range(len(self.boundaries_to_map)):
+            boundary = self.boundaries_to_map[i]
+            self.notify("Mapping current boundary: "+str(boundary["label"]))
+
+
+            dataidindex = boundary_datarefs[0].index(boundary['datafile'])       # Get the Data Library ID
+            dataid = boundary_datarefs[1][dataidindex]
+            dataref = self.datalibrary.get_data_with_id(dataid)             # Get the Data reference
+            fullpath = dataref.get_data_file_path() + dataref.get_metadata("filename")
+
+            boundaryfeats = ubspatial.import_polygonal_map(fullpath, "native", "Boundary",
+                                                           (self.xllcorner, self.yllcorner))
+
+            self.notify("Total features in "+str(boundary["datafile"])+": "+str(len(boundaryfeats)))
+
+            for a in range(len(griditems)):
+                if griditems[a].get_attribute("Status") == 0:
+                    continue
+
+                cur_asset = griditems[a]
+                assetpts = cur_asset.get_points()
+                assetpoly = Polygon([c[:2] for c in assetpts])
+
+                intersectarea = 0
+                intersectname = ""
+                for b in boundaryfeats:
+                    feat = Polygon(b.get_points())
+                    if not feat.intersects(assetpoly):
+                        continue
+                    newisectarea = feat.intersection(assetpoly).area
+                    if newisectarea > intersectarea:
+                        intersectarea = newisectarea
+                        intersectname = b.get_attribute(boundary["attname"])
+
+                if intersectname != "" and intersectarea > 0:
+                    cur_asset.add_attribute(boundary["label"], intersectname)
+                else:
+                    cur_asset.add_attribute(boundary["label"], "Unassigned")
+
+            # Close the loop with PROGRESS UPDATE
+            self.notify("Completed Mapping: " + str(boundary["label"]))
+            current_progress += progress_increment
+            self.notify_progress(int(current_progress))
 
         self.notify("Mapping of regions to simulation grid complete")
         self.notify_progress(100)
         return True
 
-    # ==========================================
-    # OTHER MODULE METHODS
-    # ==========================================
-    def method_example(self):
-        pass
+# TO DO SOON - STAKEHOLDERS
