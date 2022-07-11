@@ -238,7 +238,7 @@ class CreateSimGrid(UBModule):
         self.meta.add_attribute("NumBlocks", numblocks)
         self.meta.add_attribute("BlocksWide", blocks_wide)
         self.meta.add_attribute("BlocksTall", blocks_tall)
-        self.meta.add_attribute("BlockArea", blockarea)
+        self.meta.add_attribute("Area", blockarea)
 
         self.notify("Map dimensions: W="+str(blocks_wide)+" H="+str(blocks_tall)+" [Block elements]")
         self.notify("Total number of Blocks: "+str(numblocks)+" @ "+str(final_bs)+"m")
@@ -345,6 +345,7 @@ class CreateSimGrid(UBModule):
             block_attr.add_attribute("CentreY", ycentre)
             block_attr.add_attribute("OriginX", n1[0])
             block_attr.add_attribute("OriginY", n1[1])
+            block_attr.add_attribute("Area", self.meta.get_attribute("Area"))
             block_attr.add_attribute("Status", 1)  # Start with Status = 1 by default
             return block_attr
         else:   # Block not within boundary, do not return anything
@@ -422,7 +423,7 @@ class CreateSimGrid(UBModule):
         self.meta.add_attribute("NumHexes", numhexes)
         self.meta.add_attribute("HexWide", blocks_wide)
         self.meta.add_attribute("HexTall", blocks_tall)
-        self.meta.add_attribute("HexArea", hexarea)
+        self.meta.add_attribute("Area", hexarea)
 
         self.notify("Map dimensions: W=" + str(blocks_wide) + " H=" + str(blocks_tall) + " [Block elements]")
         self.notify("Total number of Hexes: " + str(numhexes) + " @ " + str(final_bs) + "m")
@@ -534,6 +535,7 @@ class CreateSimGrid(UBModule):
             hex_attr.add_attribute("CentreY", ycentre)
             hex_attr.add_attribute("OriginX", xorigin)
             hex_attr.add_attribute("OriginY", yorigin)
+            hex_attr.add_attribute("Area", self.meta.get_attribute("Area"))
             hex_attr.add_attribute("Status", 1)  # Start with Status = 1 by default
 
             return hex_attr
@@ -594,6 +596,7 @@ class CreateSimGrid(UBModule):
             hex_attr.add_attribute("CentreY", ycentre)
             hex_attr.add_attribute("OriginX", xorigin)
             hex_attr.add_attribute("OriginY", yorigin)
+            hex_attr.add_attribute("Area", self.meta.get_attribute("Area"))
             hex_attr.add_attribute("Status", 1)  # Start with Status = 1 by default
 
             return hex_attr
@@ -877,7 +880,7 @@ class CreateSimGrid(UBModule):
         self.meta.add_attribute("NumCells", numcells)
         self.meta.add_attribute("Columns", blocks_wide)
         self.meta.add_attribute("Rows", blocks_tall)
-        self.meta.add_attribute("Cellarea", cellarea)
+        self.meta.add_attribute("Area", cellarea)
         self.meta.add_attribute("HasFishnet", self.generate_fishnet)
 
         self.notify("Map dimensions: W=" + str(blocks_wide) + " H=" + str(blocks_tall) + " [Raster elements]")
@@ -918,6 +921,7 @@ class CreateSimGrid(UBModule):
         attr.add_attribute("Col", x)
         attr.add_attribute("X", cellX)
         attr.add_attribute("Y", cellY)
+        attr.add_attribute("Area", self.meta.get_attribute("Area"))
         attr.add_attribute("Status", 1)
         if Point(cellX, cellY).within(self.boundarypoly):
             attr.add_attribute("NoData", 0)
@@ -983,7 +987,7 @@ class CreateSimGrid(UBModule):
         self.meta.add_attribute("GeohashLvl", self.geohash_lvl)
         self.meta.add_attribute("GeohashXres", GEOHASH_RES[self.geohash_lvl][0])
         self.meta.add_attribute("GeohashYres", GEOHASH_RES[self.geohash_lvl][1])
-        self.meta.add_attribute("GeohashArea", GEOHASH_RES[self.geohash_lvl][0] * GEOHASH_RES[self.geohash_lvl][1])
+        self.meta.add_attribute("Area", GEOHASH_RES[self.geohash_lvl][0] * GEOHASH_RES[self.geohash_lvl][1])
         self.meta.add_attribute("CentroidGH", start_geohash)
 
         # Add the centroid GH as a UBVector to the Assets
@@ -1074,6 +1078,7 @@ class CreateSimGrid(UBModule):
         ubpoly = ubdata.UBVector(coordinates, edges)
         ubpoly.add_attribute("GeohashID", geohash_id)
         ubpoly.add_attribute("Status", 1)
+        ubpoly.add_attribute("Area", self.meta.get_attribute("Area"))
         ubpoly.add_attribute("CentreX", pt.GetX() - self.extents[0])
         ubpoly.add_attribute("CentreY", pt.GetY() - self.extents[2])
         return ubpoint, ubpoly
