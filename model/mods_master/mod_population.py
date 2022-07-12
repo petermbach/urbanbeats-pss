@@ -118,9 +118,9 @@ class MapPopulationToSimGrid(UBModule):
         popmap = self.datalibrary.get_data_with_id(self.popmapdataid)
         filename = popmap.get_metadata("filename")
         fullpath = popmap.get_data_file_path() + filename
-        self.notify("Loading Population Map: "+str(popmap.get_metadata("filename")))
+        self.notify("Loading Population Map: "+str(filename))
 
-        # Determine data format... (1) Vector vs. (2) Raster and then (1.1) Points/Polygons vs. (2.1) Tiff/ASCII
+        # Determine data format... (1) Vector vs. (2) Raster
         if ".shp" in filename:
             # VECTOR FORMAT
             self.populationmap = ubspatial.import_polygonal_map(fullpath, "native", "Population", (self.xllcorner,

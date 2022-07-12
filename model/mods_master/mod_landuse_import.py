@@ -24,7 +24,13 @@ __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
+from shapely.geometry import Polygon, Point
+import rasterio
+import rasterio.features
+import numpy as np
+
 from model.ubmodule import *
+import model.ublibs.ubspatial as ubspatial
 
 class MapLandUseToSimGrid(UBModule):
     """ Generates the simulation grid upon which many assessments will be based. This SimGrid will provide details on
@@ -50,7 +56,7 @@ class MapLandUseToSimGrid(UBModule):
         self.xllcorner = None
         self.yllcorner = None
         self.assetident = ""
-        self.populationmap = None
+        self.landusemap = None
         self.nodata = None
 
         # MODULE PARAMETERS
@@ -102,9 +108,40 @@ class MapLandUseToSimGrid(UBModule):
         self.notify("Geometry Type: " + self.assetident)
         self.notify_progress(0)
 
-        # --- SECTION 1 - (description)
-        # --- SECTION 2 - (description)
-        # --- SECTION 3 - (description)
+        # --- SECTION 1 - LOAD LAND USE MAP
+        lumap = self.datalibrary.get_data_with_id(self.landusemapid)
+        filename = lumap.get_metadata("filename")
+        fullpath = lumap.get_data_file_path() + filename
+        self.notify("Loading Land Use Map: "+str(filename))
+
+        # DETERMINE DATA FORMAT (1) Vector or (2) Raster
+        if ".shp" in filename:
+            # VECTOR FORMAT
+            self.landusemap = ubspatial.import_polygonal_map(fullpath, "native", "LandUse",
+                                                             (self.xllcorner, self.yllcorner))
+            lufmt = "VECTOR"
+
+            # Metadata
+            self.notify("Polygon Features: "+str(len(self.landusemap)))
+        else:
+            # RASTER FORMAT - OPEN THE FILE
+            self.landusemap = rasterio.open(fullpath)
+            self.nodata = self.landusemap.nodata
+            lufmt = "RASTER"
+
+            # Metadata
+            self.notify("Raster Shape: " + str(self.landusemap.shape))
+            self.notify(str(self.landusemap.bounds))
+            self.notify("Nodata Value: " + str(self.nodata))
+            self.notify("Raster Resolution: " + str(self.landusemap.res))
+            self.notify_progress(30)
+
+        # --- SECTION 2 - MAP LAND USE TO SIM GRID - RECLASSIFY IF NECESSARY
+        self.notify("Mapping land use to simulation grid")
+        if lufmt == "VECTOR":
+            self.map_polygonal_landuse_to_simgrid()
+        else:
+            self.map_raster_landuse_to_simgrid()
 
         self.notify("Mapping of land use data to simulation grid complete")
         self.notify_progress(100)
@@ -113,7 +150,10 @@ class MapLandUseToSimGrid(UBModule):
     # ==========================================
     # OTHER MODULE METHODS
     # ==========================================
-    def method_example(self):
+    def map_polygonal_landuse_to_simgrid(self):
+        pass
+
+    def map_raster_landuse_to_simgrid(self):
         pass
 
 
