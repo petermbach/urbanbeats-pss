@@ -24,7 +24,7 @@ __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
-from shapely.geometry import Polygon, Point
+from shapely.geometry import Polygon, LineString
 
 from model.ubmodule import *
 import model.ublibs.ubspatial as ubspatial
@@ -135,8 +135,36 @@ class MapNaturalFeaturesToSimGrid(UBModule):
         self.notify("Total River Features to check: "+str(len(riverfeats)))
         self.notify_progress(20)
 
-        
+        griditems = self.assets.get_assets_with_identifier(self.assetident)
+        for i in range(len(griditems)):
+            if griditems[i].get_attribute("Status") == 0:
+                continue
 
+            curasset = griditems[i]
+            assetpts = curasset.get_points()
+            assetpoly = Polygon([c[:2] for c in assetpts])
+
+            hasriver = 0
+            rivernames = []
+            for j in range(len(riverfeats)):
+                path = LineString(riverfeats[j].get_points())
+                if not path.intersects(assetpoly):
+                    continue
+                rivername = riverfeats[j].get_attribute(self.rivermapattr)
+                if rivername in ["", None, " "] and not self.riverignorenoname:
+                    continue
+                if rivername not in rivernames:
+                    rivernames.append(rivername)
+                hasriver = 1
+
+            if hasriver:
+                curasset.add_attribute("HasRiver", 1)
+                curasset.add_attribute("RiverNames", rivernames)
+            else:
+                curasset.add_attribute("HasRiver", 0)
+                curasset.add_attribute("RiverNames", [])
+
+        self.notify("Mapping of rivers completed!")
         self.notify_progress(50)
         return True
 
@@ -145,12 +173,40 @@ class MapNaturalFeaturesToSimGrid(UBModule):
         lakemap = self.datalibrary.get_data_with_id(self.lakemapdataid)
         filename = lakemap.get_metadata("filename")
         fullpath = lakemap.get_data_file_path() + filename
-        self.notify("Loading River Map: " + str(filename))
+        self.notify("Loading Lake Map: " + str(filename))
 
         lakefeats = ubspatial.import_polygonal_map(fullpath, "native", "Lakes", (self.xllcorner, self.yllcorner))
         self.notify("Polygon features in lakes map: "+str(len(lakefeats)))
         self.notify_progress(70)
 
+        griditems = self.assets.get_assets_with_identifier(self.assetident)
+        for i in range(len(griditems)):
+            if griditems[i].get_attribute("Status") == 0:
+                continue
+            curasset = griditems[i]
+            assetpts = curasset.get_points()
+            assetpoly = Polygon([c[:2] for c in assetpts])
 
+            haslake = 0
+            lakenames = []
+            for j in range(len(lakefeats)):
+                poly = Polygon(lakefeats[j].get_points())
+                if (not poly.intersects(assetpoly)) or (poly.intersection(assetpoly).area == 0):
+                    continue    # Continue if no intersection or if the intersection area is 0 (i.e. boundary intersect)
+                lakename = lakefeats[j].get_attribute(self.lakemapattr)
+                if lakename in ["", None, " "] and not self.lakeignorenoname:
+                    continue
+                if lakename not in lakenames:
+                    lakenames.append(lakename)
+                haslake = 1
+
+            if haslake:
+                curasset.add_attribute("HasLake", 1)
+                curasset.add_attribute("Lakenames", lakenames)
+            else:
+                curasset.add_attribute("HasLake", 0)
+                curasset.add_attribute("Lakenames", [])
+
+        self.notify("Mapping of lakes completed!")
         self.notify_progress(90)
         return True

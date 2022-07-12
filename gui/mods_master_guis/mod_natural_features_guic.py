@@ -211,6 +211,9 @@ class MapNaturalFeaturesLaunch(QtWidgets.QDialog):
     def save_values(self):
         """Saves all user-modified values for the module's parameters from the GUI
         into the simulation core."""
+        self.module.set_parameter("assetcolname", self.ui.assetcol_combo.currentText())
+
+        # RIVERS
         if self.ui.riverdata_combo.currentIndex() == 0:
             self.module.set_parameter("rivermapdataid", "")
         else:
@@ -219,10 +222,11 @@ class MapNaturalFeaturesLaunch(QtWidgets.QDialog):
         self.module.set_parameter("rivermapattr", self.ui.riverattr_combo.currentText())
         self.module.set_parameter("riverignorenoname", int(self.ui.riverattr_ignore_check.isChecked()))
 
+        # LAKES
         if self.ui.lakedata_combo.currentIndex() == 0:
             self.module.set_parameter("lakemapdataid", "")
         else:
-            self.module.set_parameter("lakemapdataid", self.rivermaps[1][self.ui.riverdata_combo.currentIndex()-1])
+            self.module.set_parameter("lakemapdataid", self.lakemaps[1][self.ui.lakedata_combo.currentIndex()-1])
 
         self.module.set_parameter("lakemapattr", self.ui.lakeattr_combo.currentText())
         self.module.set_parameter("lakeignorenoname", int(self.ui.lakeattr_ignore_check.isChecked()))
@@ -248,4 +252,19 @@ class MapNaturalFeaturesLaunch(QtWidgets.QDialog):
             prompt_msg = "Please select an Asset Collection to use for this simulation!"
             QtWidgets.QMessageBox.warning(self, "No Asset Collection selected", prompt_msg, QtWidgets.QMessageBox.Ok)
             return False
+
+        # (2) If a river map is selected but attribute combo box is still index 0, need to select attribute
+        if self.ui.riverdata_combo.currentIndex() > 0 and self.ui.riverattr_combo.currentIndex() == 0:
+            prompt_msg = "Please select which attribute to use as an identifier for mapped river locations in the" \
+                         "simulation grid."
+            QtWidgets.QMessageBox.warning(self, "No river map attribute selected", prompt_msg, QtWidgets.QMessageBox.Ok)
+            return False
+
+        # (3) If a lake map is selected but attribute combo box is still index 0, need to select attribute
+        if self.ui.lakedata_combo.currentIndex() > 0 and self.ui.lakeattr_combo.currentIndex() == 0:
+            prompt_msg = "Please select which attribute to use as an identifier for mapped lake locations in the" \
+                         "simulation grid."
+            QtWidgets.QMessageBox.warning(self, "No lake map attribute selected", prompt_msg, QtWidgets.QMessageBox.Ok)
+            return False
+
         return True
