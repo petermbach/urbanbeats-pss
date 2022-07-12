@@ -54,7 +54,6 @@ class MapRegionsToSimGrid(UBModule):
         self.xllcorner = None
         self.yllcorner = None
         self.assetident = ""
-        self.populationmap = None
         self.nodata = None
 
         # MODULE PARAMETERS
