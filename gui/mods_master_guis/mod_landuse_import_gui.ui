@@ -693,6 +693,24 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>description</tabstop>
+  <tabstop>assetcol_combo</tabstop>
+  <tabstop>lu_combo</tabstop>
+  <tabstop>luattr_combo</tabstop>
+  <tabstop>lureclass_check</tabstop>
+  <tabstop>lureclass_table</tabstop>
+  <tabstop>lureclass_save_button</tabstop>
+  <tabstop>lureclass_load_button</tabstop>
+  <tabstop>lureclass_reset_button</tabstop>
+  <tabstop>single_landuse_check</tabstop>
+  <tabstop>patchdelin_check</tabstop>
+  <tabstop>spatialmetrics_check</tabstop>
+  <tabstop>run_button</tabstop>
+  <tabstop>ok_button</tabstop>
+  <tabstop>close_button</tabstop>
+  <tabstop>help_button</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
  </resources>

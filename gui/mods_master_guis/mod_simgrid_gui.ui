@@ -578,7 +578,7 @@ p, li { white-space: pre-wrap; }
          </sizepolicy>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="page">
          <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -829,8 +829,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>220</width>
-               <height>322</height>
+               <width>369</width>
+               <height>283</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1197,8 +1197,8 @@ p, li { white-space: pre-wrap; }
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
-               <width>347</width>
+               <y>-100</y>
+               <width>369</width>
                <height>396</height>
               </rect>
              </property>
@@ -1504,8 +1504,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>250</width>
-               <height>255</height>
+               <width>369</width>
+               <height>229</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1719,8 +1719,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>273</width>
-               <height>264</height>
+               <width>369</width>
+               <height>225</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -1943,8 +1943,8 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>292</width>
-               <height>229</height>
+               <width>369</width>
+               <height>216</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2172,6 +2172,43 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>description</tabstop>
+  <tabstop>asset_col_new_radio</tabstop>
+  <tabstop>asset_col_line</tabstop>
+  <tabstop>boundary_combo</tabstop>
+  <tabstop>asset_col_existing_radio</tabstop>
+  <tabstop>asset_col_combo</tabstop>
+  <tabstop>geometry_combo</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>blocksize_spin</tabstop>
+  <tabstop>blocksize_auto</tabstop>
+  <tabstop>scrollArea_2</tabstop>
+  <tabstop>hexsize_spin</tabstop>
+  <tabstop>hexsize_auto</tabstop>
+  <tabstop>radio_hexoNS</tabstop>
+  <tabstop>radio_hexoEW</tabstop>
+  <tabstop>scrollArea_3</tabstop>
+  <tabstop>patch_data_zoneombo</tabstop>
+  <tabstop>patch_discretize_grid_radio</tabstop>
+  <tabstop>patch_discretize_grid_spin</tabstop>
+  <tabstop>patch_discretize_grid_auto</tabstop>
+  <tabstop>patch_discretize_boundary_radio</tabstop>
+  <tabstop>close_button</tabstop>
+  <tabstop>parcel_combo</tabstop>
+  <tabstop>ok_button</tabstop>
+  <tabstop>discret_combo</tabstop>
+  <tabstop>patch_discretize_none_radio</tabstop>
+  <tabstop>scrollArea_4</tabstop>
+  <tabstop>raster_generatefishnet_check</tabstop>
+  <tabstop>raster_resolution_spin</tabstop>
+  <tabstop>raster_nodata_line</tabstop>
+  <tabstop>gh_widget</tabstop>
+  <tabstop>gh_res_spin</tabstop>
+  <tabstop>parcel_widget</tabstop>
+  <tabstop>help_button</tabstop>
+  <tabstop>run_button</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
   <include location="../../graphics/ubeats.qrc"/>

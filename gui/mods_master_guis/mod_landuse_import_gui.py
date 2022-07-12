@@ -259,6 +259,21 @@ class Ui_Map_Landuse(object):
         self.retranslateUi(Map_Landuse)
         self.close_button.clicked.connect(Map_Landuse.reject)
         QtCore.QMetaObject.connectSlotsByName(Map_Landuse)
+        Map_Landuse.setTabOrder(self.description, self.assetcol_combo)
+        Map_Landuse.setTabOrder(self.assetcol_combo, self.lu_combo)
+        Map_Landuse.setTabOrder(self.lu_combo, self.luattr_combo)
+        Map_Landuse.setTabOrder(self.luattr_combo, self.lureclass_check)
+        Map_Landuse.setTabOrder(self.lureclass_check, self.lureclass_table)
+        Map_Landuse.setTabOrder(self.lureclass_table, self.lureclass_save_button)
+        Map_Landuse.setTabOrder(self.lureclass_save_button, self.lureclass_load_button)
+        Map_Landuse.setTabOrder(self.lureclass_load_button, self.lureclass_reset_button)
+        Map_Landuse.setTabOrder(self.lureclass_reset_button, self.single_landuse_check)
+        Map_Landuse.setTabOrder(self.single_landuse_check, self.patchdelin_check)
+        Map_Landuse.setTabOrder(self.patchdelin_check, self.spatialmetrics_check)
+        Map_Landuse.setTabOrder(self.spatialmetrics_check, self.run_button)
+        Map_Landuse.setTabOrder(self.run_button, self.ok_button)
+        Map_Landuse.setTabOrder(self.ok_button, self.close_button)
+        Map_Landuse.setTabOrder(self.close_button, self.help_button)
 
     def retranslateUi(self, Map_Landuse):
         _translate = QtCore.QCoreApplication.translate

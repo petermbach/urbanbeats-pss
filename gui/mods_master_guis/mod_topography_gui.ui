@@ -789,6 +789,22 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>description</tabstop>
+  <tabstop>assetcol_combo</tabstop>
+  <tabstop>elev_combo</tabstop>
+  <tabstop>nodata_remove_radio</tabstop>
+  <tabstop>nodata_interpolate_radio</tabstop>
+  <tabstop>demsmooth_check</tabstop>
+  <tabstop>demsmooth_spin</tabstop>
+  <tabstop>topo_lowest_check</tabstop>
+  <tabstop>slope_check</tabstop>
+  <tabstop>aspect_check</tabstop>
+  <tabstop>run_button</tabstop>
+  <tabstop>ok_button</tabstop>
+  <tabstop>close_button</tabstop>
+  <tabstop>help_button</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
  </resources>

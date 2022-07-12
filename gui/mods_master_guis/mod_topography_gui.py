@@ -250,6 +250,19 @@ class Ui_Map_Topography(object):
         self.retranslateUi(Map_Topography)
         self.close_button.clicked.connect(Map_Topography.reject)
         QtCore.QMetaObject.connectSlotsByName(Map_Topography)
+        Map_Topography.setTabOrder(self.description, self.assetcol_combo)
+        Map_Topography.setTabOrder(self.assetcol_combo, self.elev_combo)
+        Map_Topography.setTabOrder(self.elev_combo, self.nodata_remove_radio)
+        Map_Topography.setTabOrder(self.nodata_remove_radio, self.nodata_interpolate_radio)
+        Map_Topography.setTabOrder(self.nodata_interpolate_radio, self.demsmooth_check)
+        Map_Topography.setTabOrder(self.demsmooth_check, self.demsmooth_spin)
+        Map_Topography.setTabOrder(self.demsmooth_spin, self.topo_lowest_check)
+        Map_Topography.setTabOrder(self.topo_lowest_check, self.slope_check)
+        Map_Topography.setTabOrder(self.slope_check, self.aspect_check)
+        Map_Topography.setTabOrder(self.aspect_check, self.run_button)
+        Map_Topography.setTabOrder(self.run_button, self.ok_button)
+        Map_Topography.setTabOrder(self.ok_button, self.close_button)
+        Map_Topography.setTabOrder(self.close_button, self.help_button)
 
     def retranslateUi(self, Map_Topography):
         _translate = QtCore.QCoreApplication.translate

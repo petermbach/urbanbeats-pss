@@ -242,6 +242,17 @@ class Ui_Map_NaturalFeatures(object):
         self.retranslateUi(Map_NaturalFeatures)
         self.close_button.clicked.connect(Map_NaturalFeatures.reject)
         QtCore.QMetaObject.connectSlotsByName(Map_NaturalFeatures)
+        Map_NaturalFeatures.setTabOrder(self.description, self.assetcol_combo)
+        Map_NaturalFeatures.setTabOrder(self.assetcol_combo, self.riverdata_combo)
+        Map_NaturalFeatures.setTabOrder(self.riverdata_combo, self.riverattr_combo)
+        Map_NaturalFeatures.setTabOrder(self.riverattr_combo, self.riverattr_ignore_check)
+        Map_NaturalFeatures.setTabOrder(self.riverattr_ignore_check, self.lakedata_combo)
+        Map_NaturalFeatures.setTabOrder(self.lakedata_combo, self.lakeattr_combo)
+        Map_NaturalFeatures.setTabOrder(self.lakeattr_combo, self.lakeattr_ignore_check)
+        Map_NaturalFeatures.setTabOrder(self.lakeattr_ignore_check, self.run_button)
+        Map_NaturalFeatures.setTabOrder(self.run_button, self.ok_button)
+        Map_NaturalFeatures.setTabOrder(self.ok_button, self.close_button)
+        Map_NaturalFeatures.setTabOrder(self.close_button, self.help_button)
 
     def retranslateUi(self, Map_NaturalFeatures):
         _translate = QtCore.QCoreApplication.translate

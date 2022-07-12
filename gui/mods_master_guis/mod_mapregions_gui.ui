@@ -749,6 +749,23 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>description</tabstop>
+  <tabstop>assetcol_combo</tabstop>
+  <tabstop>boundarycat_combo</tabstop>
+  <tabstop>boundary_combo</tabstop>
+  <tabstop>boundaryatt_combo</tabstop>
+  <tabstop>simgrid_label_line</tabstop>
+  <tabstop>stakeholder_check</tabstop>
+  <tabstop>add</tabstop>
+  <tabstop>remove</tabstop>
+  <tabstop>reset</tabstop>
+  <tabstop>boundarytable</tabstop>
+  <tabstop>run_button</tabstop>
+  <tabstop>ok_button</tabstop>
+  <tabstop>close_button</tabstop>
+  <tabstop>help_button</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
  </resources>
