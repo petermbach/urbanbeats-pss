@@ -28,6 +28,7 @@ from shapely.geometry import Polygon
 
 from model.ubmodule import *
 import model.ublibs.ubspatial as ubspatial
+import model.ublibs.ubdatatypes as ubdata
 
 class MapRegionsToSimGrid(UBModule):
     """ Imports and maps a land use map onto the simulation grid. Allows reclassification of the input land use to the
@@ -113,7 +114,11 @@ class MapRegionsToSimGrid(UBModule):
         current_progress = 10
         progress_increment = 80.0 / float(len(self.boundaries_to_map))
 
+        stakeholders = self.assets.get_assets_with_identifier("Stakeholder")
+        stakeholderIDcount = len(stakeholders)+1      # Start the stakeholder ID count
+
         for i in range(len(self.boundaries_to_map)):
+            stakeholderlist = []
             boundary = self.boundaries_to_map[i]
             self.notify("Mapping current boundary: "+str(boundary["label"]))
 
@@ -149,8 +154,27 @@ class MapRegionsToSimGrid(UBModule):
 
                 if intersectname != "" and intersectarea > 0:
                     cur_asset.add_attribute(boundary["label"], intersectname)
+                    if intersectname not in stakeholderlist:
+                        stakeholderlist.append(intersectname)
                 else:
                     cur_asset.add_attribute(boundary["label"], "Unassigned")
+
+            # Create Stakeholders if yes - generate the UBStakeholder() objects and save to asset collection
+            if boundary["stakeholder"]:
+                if boundary["label"][:2] == "J_":       # Figure out stakeholder type
+                    stype = "Jurisdictional"
+                elif boundary["label"][:2] == "S_":
+                    stype = "Suburban"
+                else:
+                    stype = "Other"
+
+                for b in boundaryfeats:
+                    if b.get_attribute(boundary["attname"]) in stakeholderlist:
+                        sh_object = ubdata.UBStakeholder(b.get_attribute(boundary["attname"]),
+                                                         type=stype, location=Polygon(b.get_points()))
+                        stakeholderlist.pop(stakeholderlist.index(b.get_attribute(boundary["attname"])))
+                self.assets.add_asset("StakeholderID"+str(stakeholderIDcount), sh_object)
+                stakeholderIDcount += 1
 
             # Close the loop with PROGRESS UPDATE
             self.notify("Completed Mapping: " + str(boundary["label"]))

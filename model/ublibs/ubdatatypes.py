@@ -33,6 +33,7 @@ import numpy as np
 import gc
 import pickle
 import os
+from shapely.geometry import Polygon, Point
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 
@@ -195,6 +196,28 @@ class UBComponent(object):
     def get_all_attributes(self):
         """Returns the entire dictionary, use sparingly or primarily for exporting data."""
         return self.__attributes
+
+class UBStakeholder(UBComponent):
+    """UrbanBEATS Stakeholder Data Format, inherited from UBComponent, it stores stakeholder based information and also
+    location data if this is present. The location data is stored as a shapely geometry for quick processing of geo-
+    graphic information."""
+    def __init__(self, name, type="", location=None):
+        UBComponent.__init__(self)
+        self.__name = name
+        self.__location = location
+        self.__type = type
+
+    def add_location(self, geometry):
+        self.__location = geometry
+
+    def get_location(self):
+        return self.__location
+
+    def get_name(self):
+        return self.__name
+
+    def get_type(self):
+        return self.__type
 
 
 class UBVector(UBComponent):
