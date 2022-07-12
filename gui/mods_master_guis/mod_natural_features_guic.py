@@ -102,6 +102,11 @@ class MapNaturalFeaturesLaunch(QtWidgets.QDialog):
                 self.ui.assetcol_combo.setEnabled(0)
         self.update_asset_col_metadata()
 
+        # River Combo Box
+
+
+        # Lakes Combo Box
+
 
         # --- SIGNALS AND SLOTS ---
         # self.ui.lu_combo.currentIndexChanged.connect(self.update_land_use_attributes)
@@ -112,14 +117,14 @@ class MapNaturalFeaturesLaunch(QtWidgets.QDialog):
         # self.ui.single_landuse_check.clicked.connect(self.enable_disable_guis)
 
         # --- RUNTIME SIGNALS AND SLOTS ---
-        # self.accepted.connect(self.save_values)
-        # self.ui.run_button.clicked.connect(self.run_module_in_runtime)
-        # self.progressbarobserver.updateProgress[int].connect(self.update_progress_bar_value)
+        self.accepted.connect(self.save_values)
+        self.ui.run_button.clicked.connect(self.run_module_in_runtime)
+        self.progressbarobserver.updateProgress[int].connect(self.update_progress_bar_value)
 
         # --- SETUP GUI PARAMETERS ---
-        # self.ui.lureclass_table.setRowCount(0)
-        # self.setup_gui_with_parameters()
-        # self.enable_disable_guis()
+
+        self.setup_gui_with_parameters()
+        self.enable_disable_guis()
 
     def update_asset_col_metadata(self):
         """Whenever the asset collection name is changed, then update the current metadata info"""
@@ -128,8 +133,6 @@ class MapNaturalFeaturesLaunch(QtWidgets.QDialog):
             self.metadata = None
         else:
             self.metadata = assetcol.get_asset_with_name("meta")
-
-
 
     def enable_disable_guis(self):
         self.ui.lureclass_table.setEnabled(self.ui.lureclass_check.isChecked())

@@ -50,13 +50,28 @@ class MapNaturalFeaturesToSimGrid(UBModule):
         self.xllcorner = None
         self.yllcorner = None
         self.assetident = ""
-        self.populationmap = None
-        self.nodata = None
+        self.rivermap = None
+        self.lakemap = None
 
         # MODULE PARAMETERS
         self.create_parameter("assetcolname", STRING, "Name of the asset collection to use")
         self.assetcolname = "(select asset collection)"
 
+        # RIVERS
+        self.create_parameter("rivermapdataid", STRING, "DataID of the river map to use in mapping")
+        self.create_parameter("rivermapattr", STRING, "Attribute name containing identifiers for the river data")
+        self.create_parameter("riverignorenoname", BOOL, "Ignore features with blank attributes")
+        self.rivermapdataid = ""
+        self.rivermapattr = ""
+        self.riverignorenoname = 0
+
+        # LAKES
+        self.create_parameter("lakemapdataid", STRING, "DataID of the river map to use in mapping")
+        self.create_parameter("lakemapattr", STRING, "Attribute name containing identifiers for the river data")
+        self.create_parameter("lakeignorenoname", BOOL, "Ignore features with blank attributes")
+        self.lakemapdataid = ""
+        self.lakemapattr = ""
+        self.lakeignorenoname = 0
 
     def set_module_data_library(self, datalib):
         self.datalibrary = datalib
@@ -72,7 +87,7 @@ class MapNaturalFeaturesToSimGrid(UBModule):
         self.meta = self.assets.get_asset_with_name("meta")
         if self.meta is None:
             self.notify("Fatal Error! Asset Collection missing Metadata")
-        self.meta.add_attribute("mod_mapregions", 1)
+        self.meta.add_attribute("mod_natural_features", 1)
         self.assetident = self.meta.get_attribute("AssetIdent")
 
         self.xllcorner = self.meta.get_attribute("xllcorner")
