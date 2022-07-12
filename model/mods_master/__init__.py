@@ -44,6 +44,10 @@ from .mod_wateruse import WaterDemandMapping
 #from .mod_wsudopportunity import BGIOpportunities
 #from .mod_bgilayoutgen import BGILayoutGeneration
 
+# --- SOCIAL ANALYSIS ---
+from .mod_define_stakeholders import DefineStakeholders
+from .mod_stakeholder_network import StakeholderNetworkAnalysis
+
 MODULES_CATS = ["Spatial Representation",
                 "Urban Regional Analysis",
                 "Urban Form",
