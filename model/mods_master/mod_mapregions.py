@@ -94,6 +94,12 @@ class MapRegionsToSimGrid(UBModule):
         self.xllcorner = self.meta.get_attribute("xllcorner")
         self.yllcorner = self.meta.get_attribute("yllcorner")
 
+        add_stakeholder_data_type = 0
+        for d in self.boundaries_to_map:
+            if d["stakeholder"]:
+                self.assets.add_asset_type("Stakeholder", "Social")
+                break       # If at least one boundary to map will also be mapped for stakeholders, add this data type
+
     def run_module(self):
         """ The main algorithm for the module, links with the active simulation, its data library and output folders."""
         self.initialize_runstate()
@@ -121,7 +127,6 @@ class MapRegionsToSimGrid(UBModule):
             stakeholderlist = []
             boundary = self.boundaries_to_map[i]
             self.notify("Mapping current boundary: "+str(boundary["label"]))
-
 
             dataidindex = boundary_datarefs[0].index(boundary['datafile'])       # Get the Data Library ID
             dataid = boundary_datarefs[1][dataidindex]
@@ -173,8 +178,8 @@ class MapRegionsToSimGrid(UBModule):
                         sh_object = ubdata.UBStakeholder(b.get_attribute(boundary["attname"]),
                                                          type=stype, location=Polygon(b.get_points()))
                         stakeholderlist.pop(stakeholderlist.index(b.get_attribute(boundary["attname"])))
-                self.assets.add_asset("StakeholderID"+str(stakeholderIDcount), sh_object)
-                stakeholderIDcount += 1
+                    self.assets.add_asset("StakeholderID"+str(stakeholderIDcount), sh_object)
+                    stakeholderIDcount += 1
 
             # Close the loop with PROGRESS UPDATE
             self.notify("Completed Mapping: " + str(boundary["label"]))
@@ -184,5 +189,3 @@ class MapRegionsToSimGrid(UBModule):
         self.notify("Mapping of regions to simulation grid complete")
         self.notify_progress(100)
         return True
-
-# TO DO SOON - STAKEHOLDERS
