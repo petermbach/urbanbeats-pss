@@ -24,7 +24,10 @@ __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
+from shapely.geometry import Polygon, Point
+
 from model.ubmodule import *
+import model.ublibs.ubspatial as ubspatial
 
 class MapNaturalFeaturesToSimGrid(UBModule):
     """ Maps river and lake features to a pre-defined simulation grid, labelling them based on an attribute of the
@@ -97,16 +100,22 @@ class MapNaturalFeaturesToSimGrid(UBModule):
         """ The main algorithm for the module, links with the active simulation, its data library and output folders."""
         self.initialize_runstate()
 
-        self.notify("Mapping Regions to the Simulation Grid")
+        self.notify("Mapping Natural Features to the Simulation Grid")
         self.notify("--- === ---")
         self.notify("Geometry Type: " + self.assetident)
         self.notify_progress(0)
 
-        print(self.boundaries_to_map)
+        # --- SECTION 1 - MAPPING RIVERS
+        if self.rivermapdataid == "":
+            self.notify("No rivers selected, skipping")
+        else:
+            self.map_rivers()
 
-        # --- SECTION 1 - (description)
-        # --- SECTION 2 - (description)
-        # --- SECTION 3 - (description)
+        # --- SECTION 2 - MAPPING LAKES
+        if self.lakemapdataid == "":
+            self.notify("No lakes and water bodies selected, skipping.")
+        else:
+            self.map_lakes()
 
         self.notify("Mapping of regions to simulation grid complete")
         self.notify_progress(100)
@@ -115,5 +124,33 @@ class MapNaturalFeaturesToSimGrid(UBModule):
     # ==========================================
     # OTHER MODULE METHODS
     # ==========================================
-    def method_example(self):
-        pass
+    def map_rivers(self):
+        """Maps the selected river or waterways map to the simulation grid."""
+        rivermap = self.datalibrary.get_data_with_id(self.rivermapdataid)
+        filename = rivermap.get_metadata("filename")
+        fullpath = rivermap.get_data_file_path() + filename
+        self.notify("Loading River Map: "+str(filename))
+
+        riverfeats = ubspatial.import_linear_network(fullpath, "LINES", (self.xllcorner, self.yllcorner))
+        self.notify("Total River Features to check: "+str(len(riverfeats)))
+        self.notify_progress(20)
+
+        
+
+        self.notify_progress(50)
+        return True
+
+    def map_lakes(self):
+        """Maps the selected lakes and water bodies map to the simulation grid."""
+        lakemap = self.datalibrary.get_data_with_id(self.lakemapdataid)
+        filename = lakemap.get_metadata("filename")
+        fullpath = lakemap.get_data_file_path() + filename
+        self.notify("Loading River Map: " + str(filename))
+
+        lakefeats = ubspatial.import_polygonal_map(fullpath, "native", "Lakes", (self.xllcorner, self.yllcorner))
+        self.notify("Polygon features in lakes map: "+str(len(lakefeats)))
+        self.notify_progress(70)
+
+
+        self.notify_progress(90)
+        return True

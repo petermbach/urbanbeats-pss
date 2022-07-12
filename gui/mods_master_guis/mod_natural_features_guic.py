@@ -103,18 +103,34 @@ class MapNaturalFeaturesLaunch(QtWidgets.QDialog):
         self.update_asset_col_metadata()
 
         # River Combo Box
+        self.ui.riverdata_combo.clear()
+        self.rivermaps = self.datalibrary.get_dataref_array("spatial", ["Natural Features"], subtypes="Rivers",
+                                                            scenario=self.active_scenario_name)
+        self.ui.riverdata_combo.addItem("(select river/waterways map)")
+        if len(self.rivermaps[0]) == 0:
+            pass
+        else:
+            [self.ui.riverdata_combo.addItem(str(self.rivermaps[0][i])) for i in range(len(self.rivermaps[0]))]
 
+        self.ui.riverattr_combo.clear()
+        self.ui.riverattr_combo.addItem("(select attribute for identifier)")
 
         # Lakes Combo Box
+        self.ui.lakedata_combo.clear()
+        self.lakemaps = self.datalibrary.get_dataref_array("spatial", ["Natural Features"], subtypes="Lakes",
+                                                           scenario=self.active_scenario_name)
+        self.ui.lakedata_combo.addItem("(select lake/water body map)")
+        if len(self.lakemaps[0]) == 0:
+            pass
+        else:
+            [self.ui.lakedata_combo.addItem(str(self.lakemaps[0][i])) for i in range(len(self.lakemaps[0]))]
 
+        self.ui.lakeattr_combo.clear()
+        self.ui.lakeattr_combo.addItem("(select attribute for identifier)")
 
         # --- SIGNALS AND SLOTS ---
-        # self.ui.lu_combo.currentIndexChanged.connect(self.update_land_use_attributes)
-        # self.ui.lureclass_check.clicked.connect(self.refresh_lu_reclassification_widgets)
-        # self.ui.lureclass_save_button.clicked.connect(self.save_current_reclassification)
-        # self.ui.lureclass_load_button.clicked.connect(self.load_reclassification)
-        # self.ui.lureclass_reset_button.clicked.connect(self.reset_reclassification)
-        # self.ui.single_landuse_check.clicked.connect(self.enable_disable_guis)
+        self.ui.riverdata_combo.currentIndexChanged.connect(self.update_river_attributes)
+        self.ui.lakedata_combo.currentIndexChanged.connect(self.update_lake_attributes)
 
         # --- RUNTIME SIGNALS AND SLOTS ---
         self.accepted.connect(self.save_values)
@@ -122,7 +138,6 @@ class MapNaturalFeaturesLaunch(QtWidgets.QDialog):
         self.progressbarobserver.updateProgress[int].connect(self.update_progress_bar_value)
 
         # --- SETUP GUI PARAMETERS ---
-
         self.setup_gui_with_parameters()
         self.enable_disable_guis()
 
@@ -134,61 +149,83 @@ class MapNaturalFeaturesLaunch(QtWidgets.QDialog):
         else:
             self.metadata = assetcol.get_asset_with_name("meta")
 
+    def update_river_attributes(self):
+        self.ui.riverattr_combo.clear()
+        self.ui.riverattr_combo.addItem("(select attribute for identifier)")
+
+        dataref = self.datalibrary.get_data_with_id(self.rivermaps[1][self.ui.riverdata_combo.currentIndex()-1])
+        filepath = dataref.get_data_file_path() + self.ui.riverdata_combo.currentText()
+        fileprops = ubspatial.load_shapefile_details(filepath)
+        for i in fileprops[8]:
+            self.ui.riverattr_combo.addItem(i)
+        self.enable_disable_guis()
+
+    def update_lake_attributes(self):
+        self.ui.lakeattr_combo.clear()
+        self.ui.lakeattr_combo.addItem("(select attribute for identifier)")
+
+        dataref = self.datalibrary.get_data_with_id(self.lakemaps[1][self.ui.lakedata_combo.currentIndex()-1])
+        filepath = dataref.get_data_file_path() + self.ui.lakedata_combo.currentText()
+        fileprops = ubspatial.load_shapefile_details(filepath)
+        for i in fileprops[8]:
+            self.ui.lakeattr_combo.addItem(i)
+        self.enable_disable_guis()
+
     def enable_disable_guis(self):
-        self.ui.lureclass_table.setEnabled(self.ui.lureclass_check.isChecked())
-        self.ui.lureclass_widget.setEnabled(self.ui.lureclass_check.isChecked())
-        self.ui.patchdelin_check.setEnabled(not self.ui.single_landuse_check.isChecked())
-        self.ui.spatialmetrics_check.setEnabled(not self.ui.single_landuse_check.isChecked())
+        if self.ui.riverdata_combo.currentIndex() == 0:
+            self.ui.riverattr_combo.setEnabled(0)
+            self.ui.riverattr_ignore_check.setEnabled(0)
+        else:
+            self.ui.riverattr_combo.setEnabled(1)
+            self.ui.riverattr_ignore_check.setEnabled(1)
+        if self.ui.lakedata_combo.currentIndex() == 0:
+            self.ui.lakeattr_combo.setEnabled(0)
+            self.ui.lakeattr_ignore_check.setEnabled(0)
+        else:
+            self.ui.lakeattr_combo.setEnabled(1)
+            self.ui.lakeattr_ignore_check.setEnabled(1)
 
     def setup_gui_with_parameters(self):
         """Sets all parameters in the GUI based on the current year."""
-        # Combo Boxes
-        # try:
-        #     self.ui.lu_combo.setCurrentIndex(
-        #         self.lumaps[1].index(self.module.get_parameter("landusemapid")))
-        # except:
-        #     self.ui.lu_combo.setCurrentIndex(0)
-        #
-        # self.ui.luattr_combo.setCurrentIndex(0)
-        # if self.ui.lu_combo.currentIndex() != 0:
-        #     attname = self.module.get_parameter("landuseattr")
-        #     for i in range(self.ui.luattr_combo.count()):
-        #         if self.ui.luattr_combo.itemText(i) == attname:
-        #             self.ui.luattr_combo.setCurrentIndex(i)
-        # else:
-        #     self.ui.lureclass_table.setRowCount(0)
-        #
-        # # Reclassification Table
-        # self.ui.lureclass_check.setChecked(self.module.get_parameter("lureclass"))
-        # if self.ui.lureclass_check.isChecked() and self.ui.luattr_combo.currentIndex() != 0:
-        #     # Populate Table with reclassification system...
-        #     self.refresh_lu_reclassification_widgets()
-        #     reclass = self.module.get_parameter("lureclasssystem")
-        #     self.classify_table(reclass)
-        #
-        # self.ui.single_landuse_check.setChecked(self.module.get_parameter("singlelu"))
-        # self.ui.patchdelin_check.setChecked(self.module.get_parameter("patchdelin"))
-        # self.ui.spatialmetrics_check.setChecked(self.module.get_parameter("spatialmetrics"))
+        # Combo boxes
+        try:
+            self.ui.riverdata_combo.setCurrentIndex(self.rivermaps[1].index(
+                self.module.get_parameter("rivermapdataid"))+1)
+        except:
+            self.ui.riverdata_combo.setCurrentIndex(0)
+
+        # Attribute Combos
+
+        try:
+            self.ui.lakedata_combo.setCurrentIndex(self.lakemaps[1].index(
+                self.module.get_parameter("lakemapdataid"))+1)
+        except:
+            self.ui.lakedata_combo.setCurrentIndex(0)
+
+        # Attribute Combos
+
+        # Check boxes
+        self.ui.riverattr_ignore_check.setChecked(self.module.get_parameter("riverignorenoname"))
+        self.ui.lakeattr_ignore_check.setChecked(self.module.get_parameter("lakeignorenoname"))
 
     def save_values(self):
         """Saves all user-modified values for the module's parameters from the GUI
         into the simulation core."""
-        pass
-        # self.module.set_parameter("assetcolname", self.ui.assetcol_combo.currentText())
-        # self.module.set_parameter("landusemapid", self.lumaps[1][self.ui.lu_combo.currentIndex()])
-        # self.module.set_parameter("landuseattr", self.ui.luattr_combo.currentText())
-        #
-        # self.module.set_parameter("lureclass", int(self.ui.lureclass_check.isChecked()))
-        #
-        # # Reclassification scheme
-        # if self.ui.lureclass_check.isChecked():
-        #     self.module.set_parameter("lureclasssystem", self.generate_reclassification_dict())
-        # else:
-        #     self.module.set_parameter("lureclasssystem", {})
-        #
-        # self.module.set_parameter("singlelu", int(self.ui.single_landuse_check.isChecked()))
-        # self.module.set_parameter("patchdelin", int(self.ui.patchdelin_check.isChecked()))
-        # self.module.set_parameter("spatialmetrics", int(self.ui.spatialmetrics_check.isChecked()))
+        if self.ui.riverdata_combo.currentIndex() == 0:
+            self.module.set_parameter("rivermapdataid", "")
+        else:
+            self.module.set_parameter("rivermapdataid", self.rivermaps[1][self.ui.riverdata_combo.currentIndex()-1])
+
+        self.module.set_parameter("rivermapattr", self.ui.riverattr_combo.currentText())
+        self.module.set_parameter("riverignorenoname", int(self.ui.riverattr_ignore_check.isChecked()))
+
+        if self.ui.lakedata_combo.currentIndex() == 0:
+            self.module.set_parameter("lakemapdataid", "")
+        else:
+            self.module.set_parameter("lakemapdataid", self.rivermaps[1][self.ui.riverdata_combo.currentIndex()-1])
+
+        self.module.set_parameter("lakemapattr", self.ui.lakeattr_combo.currentText())
+        self.module.set_parameter("lakeignorenoname", int(self.ui.lakeattr_ignore_check.isChecked()))
 
     def update_progress_bar_value(self, value):
         """Updates the progress bar of the Main GUI when the simulation is started/stopped/reset. Also disables the
@@ -211,6 +248,4 @@ class MapNaturalFeaturesLaunch(QtWidgets.QDialog):
             prompt_msg = "Please select an Asset Collection to use for this simulation!"
             QtWidgets.QMessageBox.warning(self, "No Asset Collection selected", prompt_msg, QtWidgets.QMessageBox.Ok)
             return False
-
-
         return True
