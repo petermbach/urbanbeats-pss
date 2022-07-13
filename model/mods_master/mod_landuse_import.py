@@ -297,18 +297,22 @@ class MapLandUseToSimGrid(UBModule):
     def calculate_spatial_metrics(self, asset, masklist, areavector=None):
         """Calculates the Richness, Shannon Dominance, Evenness and Diversity indices for the specified asset given
         its masklist. If the areavector is specified, then the items in the masklist do not have uniform area."""
+        lucprops = self.count_luc_data(masklist, areavector)
+        sumluc = sum(lucprops)
+        for i in range(len(lucprops)):
+            lucprops[i] = lucprops[i] / sumluc
+
         # Richness Index
         # The total number of unique categories in the asset
-        luccounts = self.count_luc_data(masklist, areavector)
         richness = 0
-        for i in luccounts:
+        for i in lucprops:
             if i != 0:
                 richness += 1
 
         # Shannon Diversity Index - measures diversity in categorical data, the information entropy of
-        # the distribution: H = -sum(pi ln(pi))
+        # the distribution: H = -sum(pi ln(pi)) - where pi is the proportion of land use i
         shandiv = 0
-        for sdiv in luccounts:
+        for sdiv in lucprops:
             if sdiv != 0:
                 shandiv += sdiv * math.log(sdiv)
         shandiv *= -1
