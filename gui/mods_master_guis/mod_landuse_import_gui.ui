@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>741</width>
-    <height>599</height>
+    <height>626</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -448,7 +448,7 @@ p, li { white-space: pre-wrap; }
         <property name="minimumSize">
          <size>
           <width>0</width>
-          <height>150</height>
+          <height>200</height>
          </size>
         </property>
         <property name="verticalScrollBarPolicy">
@@ -628,21 +628,11 @@ p, li { white-space: pre-wrap; }
             <string>An automatic algorithm that determines a suitable block size based on the map for computational efficiency.</string>
            </property>
            <property name="text">
-            <string>Use only single land use per grid cell (dominant category)</string>
+            <string>Use only the single, dominant  land use per grid cell</string>
            </property>
           </widget>
          </item>
          <item row="3" column="0" colspan="2">
-          <widget class="QCheckBox" name="patchdelin_check">
-           <property name="toolTip">
-            <string>An automatic algorithm that determines a suitable block size based on the map for computational efficiency.</string>
-           </property>
-           <property name="text">
-            <string>Delineate Land Use Patches (patch size and approx. centroid)</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0" colspan="2">
           <widget class="QCheckBox" name="spatialmetrics_check">
            <property name="toolTip">
             <string>An automatic algorithm that determines a suitable block size based on the map for computational efficiency.</string>
@@ -704,7 +694,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>lureclass_load_button</tabstop>
   <tabstop>lureclass_reset_button</tabstop>
   <tabstop>single_landuse_check</tabstop>
-  <tabstop>patchdelin_check</tabstop>
   <tabstop>spatialmetrics_check</tabstop>
   <tabstop>run_button</tabstop>
   <tabstop>ok_button</tabstop>

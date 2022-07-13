@@ -200,6 +200,7 @@ class MapPopulationToSimGrid(UBModule):
                 asset.add_attribute("Population", 0)
                 continue
             else:       # Work out metric
+                self.notify(self.assetident + str(assetid) + " in progress!")
                 if self.popdataformat == "DEN":     # DENSITY
                     # People per ha, get the resolution
                     resarea = self.populationmap.res[0] * self.populationmap.res[1] / 10000.0   # [ha]

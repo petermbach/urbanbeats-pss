@@ -254,7 +254,6 @@ class MapLanduseLaunch(QtWidgets.QDialog):
     def enable_disable_guis(self):
         self.ui.lureclass_table.setEnabled(self.ui.lureclass_check.isChecked())
         self.ui.lureclass_widget.setEnabled(self.ui.lureclass_check.isChecked())
-        self.ui.patchdelin_check.setEnabled(not self.ui.single_landuse_check.isChecked())
         self.ui.spatialmetrics_check.setEnabled(not self.ui.single_landuse_check.isChecked())
 
     def setup_gui_with_parameters(self):
@@ -284,14 +283,13 @@ class MapLanduseLaunch(QtWidgets.QDialog):
             self.classify_table(reclass)
 
         self.ui.single_landuse_check.setChecked(self.module.get_parameter("singlelu"))
-        self.ui.patchdelin_check.setChecked(self.module.get_parameter("patchdelin"))
         self.ui.spatialmetrics_check.setChecked(self.module.get_parameter("spatialmetrics"))
 
     def save_values(self):
         """Saves all user-modified values for the module's parameters from the GUI
         into the simulation core."""
         self.module.set_parameter("assetcolname", self.ui.assetcol_combo.currentText())
-        self.module.set_parameter("landusemapid", self.lumaps[1][self.ui.lu_combo.currentIndex()])
+        self.module.set_parameter("landusemapid", self.lumaps[1][self.ui.lu_combo.currentIndex()-1])
         self.module.set_parameter("landuseattr", self.ui.luattr_combo.currentText())
 
         self.module.set_parameter("lureclass", int(self.ui.lureclass_check.isChecked()))
@@ -303,7 +301,6 @@ class MapLanduseLaunch(QtWidgets.QDialog):
             self.module.set_parameter("lureclasssystem", {})
 
         self.module.set_parameter("singlelu", int(self.ui.single_landuse_check.isChecked()))
-        self.module.set_parameter("patchdelin", int(self.ui.patchdelin_check.isChecked()))
         self.module.set_parameter("spatialmetrics", int(self.ui.spatialmetrics_check.isChecked()))
 
     def update_progress_bar_value(self, value):
