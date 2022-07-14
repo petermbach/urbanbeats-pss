@@ -55,14 +55,14 @@ def retrieve_raster_data_from_mask(rastermap, asset, xllcorner, yllcorner, debug
     assetpoly = Polygon(assetpts)
 
     if assetpoly.area < cellarea:       # If the polygon is smaller than the cell, locate a single value in the raster
-        print("Smaller than raster size")
+        if debug: print("Smaller than raster size")
         reppoint = assetpoly.representative_point()
         xpoint = reppoint.x + xllcorner
         ypoint = reppoint.y + yllcorner
         loc = rastermap.index(xpoint, ypoint)
-        print(reppoint, xpoint, ypoint, loc)
+        if debug: print(reppoint, xpoint, ypoint, loc)
         datapoint = rastermap.read(1)[loc[0], loc[1]]
-        print(datapoint)
+        if debug: print(datapoint)
         if datapoint == rastermap.nodata:
             return []
         else:
@@ -116,6 +116,21 @@ def retrieve_raster_data_from_mask(rastermap, asset, xllcorner, yllcorner, debug
     if debug: print(extractdata)
     extractdata = np.delete(extractdata, np.where(extractdata == nodata))  # Remove nodata values
     if debug: print(extractdata)
+
+    if len(extractdata) == 0:       # Make one last ditch attempt to get a measurement from the map
+        if debug: print("No mask, trying to get a single value")
+        reppoint = assetpoly.representative_point()
+        xpoint = reppoint.x + xllcorner
+        ypoint = reppoint.y + yllcorner
+        loc = rastermap.index(xpoint, ypoint)
+        if debug: print(reppoint, xpoint, ypoint, loc)
+        datapoint = rastermap.read(1)[loc[0], loc[1]]
+        if debug: print(datapoint)
+        if datapoint == rastermap.nodata:
+            return []
+        else:
+            return [datapoint]
+
     return extractdata
 
 
