@@ -35,7 +35,7 @@ import geopandas as gpd
 # URBANBEATS IMPORT
 from . import ubdatatypes as ubdata
 
-def retrieve_raster_data_from_mask(rastermap, asset, xllcorner, yllcorner):
+def retrieve_raster_data_from_mask(rastermap, asset, xllcorner, yllcorner, debug=False):
     """ Extracts data points from a raster map based on a polygon mask. Function returns a single-dimensional array of
     all data points representing the masked data, which can be analysed or tallied depending on the function.
 
@@ -46,22 +46,51 @@ def retrieve_raster_data_from_mask(rastermap, asset, xllcorner, yllcorner):
     return: A list of data points within the mask area, None if there is no data within the mask.
     """
     cellsize = rastermap.res  # Some basic raster properties
+    cellarea = cellsize[0] * cellsize[1]
     nodata = rastermap.nodata
 
     # Get two bounds: one for the local bounds of the polygon and the one for indexing the raster data in the PRJCS
 
     assetpts = asset.get_points()
     assetpoly = Polygon(assetpts)
+
+    if assetpoly.area < cellarea:       # If the polygon is smaller than the cell, locate a single value in the raster
+        print("Smaller than raster size")
+        reppoint = assetpoly.representative_point()
+        xpoint = reppoint.x + xllcorner
+        ypoint = reppoint.y + yllcorner
+        loc = rastermap.index(xpoint, ypoint)
+        print(reppoint, xpoint, ypoint, loc)
+        datapoint = rastermap.read(1)[loc[0], loc[1]]
+        print(datapoint)
+        if datapoint == rastermap.nodata:
+            return []
+        else:
+            return [datapoint]
+
+
     maskoffsets = [assetpoly.bounds[0], assetpoly.bounds[1]]  # Offsets for the local mask
     assetbounds = [assetpoly.bounds[0] + xllcorner, assetpoly.bounds[1] + yllcorner,
                    assetpoly.bounds[2] + xllcorner, assetpoly.bounds[3] + yllcorner]  # Spatial bounds
 
+    if debug:
+        print("DEBUG")
+        print(cellsize, nodata, maskoffsets, assetbounds)
+
     # Identify the raster extents and extract the data matrix
     llindex = rastermap.index(assetbounds[0], assetbounds[1])
     urindex = rastermap.index(assetbounds[2], assetbounds[3])
+
+    # Readjust index in ll and ur indices if -ve to 0
     datamatrix = rastermap.read(1)[
-                 min(llindex[0], urindex[0]):max(llindex[0], urindex[0]) + 1,
-                 min(llindex[1], urindex[1]):max(llindex[1], urindex[1]) + 1]  # max index + 1 (inclusive)
+                 min(max(llindex[0], 0), max(urindex[0], 0)):max(max(llindex[0], 0), max(urindex[0], 0)) + 1,
+                 min(max(llindex[1], 0), max(urindex[1], 0)):max(max(llindex[1], 0), max(urindex[1], 0)) + 1]
+                # max index + 1 (inclusive)
+    # datamatrix = np.flip(datamatrix, 0)     # Flip the raster upside down
+
+    if debug:
+        print(llindex, urindex)
+        print(datamatrix)
 
     if 0 in datamatrix.shape:  # If the raster matrix has neither height nor width, skip
         return None
@@ -74,14 +103,19 @@ def retrieve_raster_data_from_mask(rastermap, asset, xllcorner, yllcorner):
         y = assetpts[pt][1]
         maskpts.append((float((x - maskoffsets[0]) / cellsize[0]),
                         float((y - maskoffsets[1]) / cellsize[1])))
-
+    if debug: print("maskedpts", maskpts)
     # Rasterize the polygon to the datamatrix shape
     maskrio = rasterio.features.rasterize([Polygon(maskpts)], out_shape=datamatrix.shape)
+    if debug: print("Original", maskrio)
     maskrio = np.flip(maskrio, 0)  # Flip the shape because row/col read from top left, not bottom left
+    maskrio = np.roll(maskrio, -1, axis=0)
+    if debug: print("Flipped", maskrio)
     maskeddata = np.ma.masked_array(datamatrix, mask=1 - maskrio)  # Apply the mask: 1-maskrio flips booleans
+    if debug: print("Masked", maskeddata)
     extractdata = maskeddata.compressed()  # Compress the 2D array to a 1D list
+    if debug: print(extractdata)
     extractdata = np.delete(extractdata, np.where(extractdata == nodata))  # Remove nodata values
-
+    if debug: print(extractdata)
     return extractdata
 
 
