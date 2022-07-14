@@ -55,14 +55,14 @@ def retrieve_raster_data_from_mask(rastermap, asset, xllcorner, yllcorner, debug
     assetpoly = Polygon(assetpts)
 
     if assetpoly.area < cellarea:       # If the polygon is smaller than the cell, locate a single value in the raster
-        if debug: print("Smaller than raster size")
+        # if debug: print("Smaller than raster size")
         reppoint = assetpoly.representative_point()
         xpoint = reppoint.x + xllcorner
         ypoint = reppoint.y + yllcorner
         loc = rastermap.index(xpoint, ypoint)
-        if debug: print(reppoint, xpoint, ypoint, loc)
+        # if debug: print(reppoint, xpoint, ypoint, loc)
         datapoint = rastermap.read(1)[loc[0], loc[1]]
-        if debug: print(datapoint)
+        # if debug: print(datapoint)
         if datapoint == rastermap.nodata:
             return []
         else:
@@ -73,9 +73,9 @@ def retrieve_raster_data_from_mask(rastermap, asset, xllcorner, yllcorner, debug
     assetbounds = [assetpoly.bounds[0] + xllcorner, assetpoly.bounds[1] + yllcorner,
                    assetpoly.bounds[2] + xllcorner, assetpoly.bounds[3] + yllcorner]  # Spatial bounds
 
-    if debug:
-        print("DEBUG")
-        print(cellsize, nodata, maskoffsets, assetbounds)
+    # if debug:
+    #     print("DEBUG")
+    #     print(cellsize, nodata, maskoffsets, assetbounds)
 
     # Identify the raster extents and extract the data matrix
     llindex = rastermap.index(assetbounds[0], assetbounds[1])
@@ -88,9 +88,9 @@ def retrieve_raster_data_from_mask(rastermap, asset, xllcorner, yllcorner, debug
                 # max index + 1 (inclusive)
     # datamatrix = np.flip(datamatrix, 0)     # Flip the raster upside down
 
-    if debug:
-        print(llindex, urindex)
-        print(datamatrix)
+    # if debug:
+    #     print(llindex, urindex)
+    #     print(datamatrix)
 
     if 0 in datamatrix.shape:  # If the raster matrix has neither height nor width, skip
         return None
@@ -103,34 +103,34 @@ def retrieve_raster_data_from_mask(rastermap, asset, xllcorner, yllcorner, debug
         y = assetpts[pt][1]
         maskpts.append((float((x - maskoffsets[0]) / cellsize[0]),
                         float((y - maskoffsets[1]) / cellsize[1])))
-    if debug: print("maskedpts", maskpts)
+    # if debug: print("maskedpts", maskpts)
+
     # Rasterize the polygon to the datamatrix shape
     maskrio = rasterio.features.rasterize([Polygon(maskpts)], out_shape=datamatrix.shape)
-    if debug: print("Original", maskrio)
+    # if debug: print("Original", maskrio)
     maskrio = np.flip(maskrio, 0)  # Flip the shape because row/col read from top left, not bottom left
     maskrio = np.roll(maskrio, -1, axis=0)
-    if debug: print("Flipped", maskrio)
+    # if debug: print("Flipped", maskrio)
     maskeddata = np.ma.masked_array(datamatrix, mask=1 - maskrio)  # Apply the mask: 1-maskrio flips booleans
-    if debug: print("Masked", maskeddata)
+    # if debug: print("Masked", maskeddata)
     extractdata = maskeddata.compressed()  # Compress the 2D array to a 1D list
-    if debug: print(extractdata)
+    # if debug: print(extractdata)
     extractdata = np.delete(extractdata, np.where(extractdata == nodata))  # Remove nodata values
-    if debug: print(extractdata)
+    # if debug: print(extractdata)
 
     if len(extractdata) == 0:       # Make one last ditch attempt to get a measurement from the map
-        if debug: print("No mask, trying to get a single value")
+        # if debug: print("No mask, trying to get a single value")
         reppoint = assetpoly.representative_point()
         xpoint = reppoint.x + xllcorner
         ypoint = reppoint.y + yllcorner
         loc = rastermap.index(xpoint, ypoint)
-        if debug: print(reppoint, xpoint, ypoint, loc)
+        # if debug: print(reppoint, xpoint, ypoint, loc)
         datapoint = rastermap.read(1)[loc[0], loc[1]]
-        if debug: print(datapoint)
+        # if debug: print(datapoint)
         if datapoint == rastermap.nodata:
             return []
         else:
             return [datapoint]
-
     return extractdata
 
 

@@ -216,14 +216,14 @@ class MapLandUseToSimGrid(UBModule):
             curassetpts = curasset.get_points()
             curassetpoly = Polygon([c[:2] for c in curassetpts])
 
-            # DEBUG
-            if curassetid in [1, 2, 13, 17, 80, 111, 196, 745, 804, 812, 830]:
-                debug = True
-                print("Current ID", curassetid)
-            else:
-                debug = False
+            # # DEBUG
+            # if curassetid in [1]:
+            #     debug = True
+            #     print("Current ID", curassetid)
+            # else:
+            #     debug = False
 
-            mdata = ubspatial.retrieve_raster_data_from_mask(self.landusemap, curasset, self.xllcorner, self.yllcorner, debug)
+            mdata = ubspatial.retrieve_raster_data_from_mask(self.landusemap, curasset, self.xllcorner, self.yllcorner)
 
             if mdata is None or len(mdata) == 0:
                 self.notify(self.assetident + str(curassetid) + " not within bounds or has no land use data, skipping!")
