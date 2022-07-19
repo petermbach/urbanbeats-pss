@@ -24,7 +24,7 @@ __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
-from shapely.geometry import Polygon, Point
+from shapely.geometry import Polygon, shape
 import rasterio
 import rasterio.features
 import math
@@ -253,6 +253,9 @@ class MapLandUseToSimGrid(UBModule):
     def polygonize_raster_data(self):
         """Polygonizes the entire raster data set loaded into the simulation and creates an array of Polygon() objects
         for later use in intersection with the simulation grid."""
+        # [FUTURE] correct holes in the geometry using the shapely.geometry.shape() function - see more info:
+        # https://gis.stackexchange.com/questions/431918/vectorizing-a-raster-containing-holes-using-rasterio
+        # Need to figure out the transform component of it to scale and shift the coordinates to the correct axis
         lumap = self.landusemap.read(1)
         polygondata = rasterio.features.shapes(np.flip(lumap, axis=0))
         resx = self.landusemap.res[0]
