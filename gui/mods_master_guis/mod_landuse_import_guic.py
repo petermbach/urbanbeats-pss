@@ -152,20 +152,30 @@ class MapLanduseLaunch(QtWidgets.QDialog):
                 self.ui.luattr_combo.addItem(i)
             self.ui.luattr_combo.setCurrentIndex(0)
             self.ui.luattr_combo.setEnabled(1)
+            self.ui.rastermapping_mask_radio.setEnabled(0)
+            self.ui.rastermapping_polygon_radio.setEnabled(0)
         else:
             self.active_lufile = None
             self.ui.luattr_combo.addItem("(not a shapefile)")
             self.ui.luattr_combo.setCurrentIndex(0)
             self.ui.luattr_combo.setEnabled(0)
             self.ui.lureclass_check.setChecked(0)
+            self.ui.rastermapping_mask_radio.setEnabled(1)
+            self.ui.rastermapping_polygon_radio.setEnabled(1)
             self.reset_reclassification()
             self.enable_disable_guis()
 
     def refresh_lu_reclassification_widgets(self):
         """Activates the reclassification widget, populates the left column, gives the right column options."""
+        if ".shp" not in self.ui.lu_combo.currentText():
+            prompt_msg = "Reclassification only possible on shapefiles. Select a shapefile and attribute to reclassify."
+            QtWidgets.QMessageBox.warning(self, "Only .shp files", prompt_msg, QtWidgets.QMessageBox.Ok)
+            self.ui.lureclass_check.setChecked(0)
+            self.enable_disable_guis()
+
         if self.ui.luattr_combo.currentIndex() == 0:    # If there is a valid shapefile
             prompt_msg = "Reclassification requires reference to an attribute in the data file"
-            QtWidgets.QMessageBox.warning(self, "No data to reclassify", prompt_msg, QtWidgets.QMessageBox.Ok)
+            QtWidgets.QMessageBox.warning(self, "No attribute to reclassify", prompt_msg, QtWidgets.QMessageBox.Ok)
             self.ui.lureclass_check.setChecked(0)
             self.enable_disable_guis()
             return True
@@ -229,12 +239,13 @@ class MapLanduseLaunch(QtWidgets.QDialog):
         return True
 
     def reset_reclassification(self):
-        prompt_msg = "Do you wish to reset the curren reclassification?"
-        answer = QtWidgets.QMessageBox.question(self, "Reset Reclassification?", prompt_msg,
-                                                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
-        if answer == QtWidgets.QMessageBox.Yes:
-            self.ui.lureclass_table.setRowCount(0)
-            self.refresh_lu_reclassification_widgets()
+        if self.ui.lureclass_check.isChecked():
+            prompt_msg = "Do you wish to reset the curren reclassification?"
+            answer = QtWidgets.QMessageBox.question(self, "Reset Reclassification?", prompt_msg,
+                                                    QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+            if answer == QtWidgets.QMessageBox.Yes:
+                self.ui.lureclass_table.setRowCount(0)
+                self.refresh_lu_reclassification_widgets()
         return True
 
     def classify_table(self, reclass):
@@ -274,6 +285,11 @@ class MapLanduseLaunch(QtWidgets.QDialog):
         else:
             self.ui.lureclass_table.setRowCount(0)
 
+        if self.module.get_parameter("rastermaptech") == "MASK":
+            self.ui.rastermapping_mask_radio.setChecked(1)
+        else:
+            self.ui.rastermapping_polygon_radio.setChecked(1)
+
         # Reclassification Table
         self.ui.lureclass_check.setChecked(self.module.get_parameter("lureclass"))
         if self.ui.lureclass_check.isChecked() and self.ui.luattr_combo.currentIndex() != 0:
@@ -293,6 +309,11 @@ class MapLanduseLaunch(QtWidgets.QDialog):
         self.module.set_parameter("landuseattr", self.ui.luattr_combo.currentText())
 
         self.module.set_parameter("lureclass", int(self.ui.lureclass_check.isChecked()))
+
+        if self.ui.rastermapping_mask_radio.isChecked():
+            self.module.set_parameter("rastermaptech", "MASK")
+        else:
+            self.module.set_parameter("rastermaptech", "POLY")
 
         # Reclassification scheme
         if self.ui.lureclass_check.isChecked():

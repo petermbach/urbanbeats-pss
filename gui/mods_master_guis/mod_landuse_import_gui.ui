@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>741</width>
-    <height>626</height>
+    <height>649</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -400,6 +400,22 @@ p, li { white-space: pre-wrap; }
          <property name="bottomMargin">
           <number>6</number>
          </property>
+         <item row="1" column="1" colspan="2">
+          <widget class="QComboBox" name="luattr_combo">
+           <item>
+            <property name="text">
+             <string>(select attribute containing classification)</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="luattr_lbl">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Attribute:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
          <item row="0" column="1" colspan="2">
           <widget class="QComboBox" name="lu_combo"/>
          </item>
@@ -410,20 +426,25 @@ p, li { white-space: pre-wrap; }
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="luattr_lbl">
+         <item row="2" column="0">
+          <widget class="QLabel" name="rastermapping_lbl">
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Attribute:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mapping Technique (raster only):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="1" colspan="2">
-          <widget class="QComboBox" name="luattr_combo">
-           <item>
-            <property name="text">
-             <string>(select attribute containing classification)</string>
-            </property>
-           </item>
+         <item row="2" column="1">
+          <widget class="QRadioButton" name="rastermapping_mask_radio">
+           <property name="text">
+            <string>Raster Mask</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QRadioButton" name="rastermapping_polygon_radio">
+           <property name="text">
+            <string>Polygonize input raster</string>
+           </property>
           </widget>
          </item>
         </layout>

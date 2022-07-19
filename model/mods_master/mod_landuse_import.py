@@ -29,6 +29,8 @@ import rasterio
 import rasterio.features
 import math
 import numpy as np
+import osgeo.osr as osr
+import osgeo.ogr as ogr
 
 from model.ubmodule import *
 import model.ublibs.ubspatial as ubspatial
@@ -64,9 +66,11 @@ class MapLandUseToSimGrid(UBModule):
         self.create_parameter("assetcolname", STRING, "Name of the asset collection to use")
         self.create_parameter("landusemapid", STRING, "Name of the land use map to load for mapping")
         self.create_parameter("landuseattr", STRING, "Attribute containing the classification if .shp")
+        self.create_parameter("rastermaptech", STRING, "Raster data mapping technique")
         self.assetcolname = "(select asset collection)"
         self.landusemapid = "(no land use map in the project)"
         self.landuseattr = "(attribute name)"
+        self.rastermaptech = "MASK"     # MASK = masking from the original raster, POLY = polygonizing raster beforehand
 
         self.create_parameter("lureclass", BOOL, "Reclassify the land use map?")
         self.create_parameter("lureclasssystem", DICT, "List of dictionaries to do the reclassification")
@@ -144,7 +148,11 @@ class MapLandUseToSimGrid(UBModule):
         if lufmt == "VECTOR":
             self.map_polygonal_landuse_to_simgrid()
         else:
-            self.map_raster_landuse_to_simgrid()
+            if self.rastermaptech == "MASK":
+                self.map_raster_landuse_to_simgrid()
+            else:
+                ludata = self.polygonize_raster_data()
+                self.map_polygonized_raster_to_simgrid(ludata)
 
         self.notify("Mapping of land use data to simulation grid complete")
         self.notify_progress(100)
@@ -162,6 +170,7 @@ class MapLandUseToSimGrid(UBModule):
 
             # Get the current asset's UBVector() Object and Geometry
             curasset = griditems[i]
+            curassetid = curasset.get_attribute(self.assetident)
             curassetpts = curasset.get_points()
             curassetpoly = Polygon([c[:2] for c in curassetpts])
 
@@ -191,6 +200,11 @@ class MapLandUseToSimGrid(UBModule):
                     mdata.append(luccat)
                     areavector.append(isectionarea)
 
+            if len(mdata) == 0 or mdata is None:
+                self.notify(self.assetident+ str(curassetid) + " not within bounds or has no land use data, skipping!")
+                self.set_landuse_to_none(curasset)
+                continue
+
             if self.singlelu:
                 luc, activity = self.find_dominant_luc(mdata, curassetpoly.area, areavector)
                 curasset.add_attribute("Activity", activity)
@@ -216,13 +230,6 @@ class MapLandUseToSimGrid(UBModule):
             curassetpts = curasset.get_points()
             curassetpoly = Polygon([c[:2] for c in curassetpts])
 
-            # # DEBUG
-            # if curassetid in [1]:
-            #     debug = True
-            #     print("Current ID", curassetid)
-            # else:
-            #     debug = False
-
             mdata = ubspatial.retrieve_raster_data_from_mask(self.landusemap, curasset, self.xllcorner, self.yllcorner)
 
             if mdata is None or len(mdata) == 0:
@@ -241,6 +248,75 @@ class MapLandUseToSimGrid(UBModule):
                 self.write_lu_prop_attributes(curasset, luc)
                 if self.spatialmetrics:
                     self.calculate_spatial_metrics(curasset, mdata)
+        return True
+
+    def polygonize_raster_data(self):
+        """Polygonizes the entire raster data set loaded into the simulation and creates an array of Polygon() objects
+        for later use in intersection with the simulation grid."""
+        lumap = self.landusemap.read(1)
+        polygondata = rasterio.features.shapes(np.flip(lumap, axis=0))
+        resx = self.landusemap.res[0]
+        resy = self.landusemap.res[1]
+        xlloffset = self.landusemap.bounds[0] - self.xllcorner  # project to raster coordinates, back to simgrid coords
+        ylloffset = self.landusemap.bounds[1] - self.yllcorner
+        self.notify("Offset of raster map: "+str(xlloffset)+" , "+str(ylloffset))
+        luinputs = []
+        for shape, value in polygondata:
+            if value == self.landusemap.nodata:     # Skip nodata values
+                continue
+            pts = shape['coordinates'][0]
+            pts = [(pts[i][0]*float(resx)+xlloffset, pts[i][1]*float(resy)+ylloffset) for i in range(len(pts))]
+            luinputs.append([int(value), Polygon(pts)])
+        return luinputs
+
+    def map_polygonized_raster_to_simgrid(self, lupolygons):
+        griditems = self.assets.get_assets_with_identifier(self.assetident)
+
+        for i in range(len(griditems)):
+            if griditems[i].get_attribute("Status") == 0:
+                continue
+
+            curasset = griditems[i]
+            curassetid = curasset.get_attribute(self.assetident)
+            curassetpts = curasset.get_points()
+            curassetpoly = Polygon([c[:2] for c in curassetpts])
+
+            mdata = []
+            areavector = []
+
+            lutracker = []
+            for j in lupolygons:
+                feat = j[1]
+                if not feat.intersects(curassetpoly):
+                    continue
+
+                isectionarea = feat.intersection(curassetpoly).area
+                if isectionarea != 0:
+                    # Add information to land use tally, get the class
+                    mdata.append(j[0])
+                    areavector.append(isectionarea)
+                    if j[1].area == isectionarea:  # If the polygon is fully within the feature...
+                        lutracker.append(j)    # Add to the list of items to remove at the end of the loop
+
+            if len(mdata) == 0 or mdata is None:
+                self.notify(self.assetident+ str(curassetid) + " not within bounds or has no land use data, skipping!")
+                self.set_landuse_to_none(curasset)
+                continue
+
+            if self.singlelu:
+                luc, activity = self.find_dominant_luc(mdata, curassetpoly.area, areavector)
+                curasset.add_attribute("Activity", activity)
+                curasset.add_attribute("LandUse", UBLANDUSENAMES[luc-1])
+            else:
+                luc, activity = self.tally_lu_frequency(mdata, curassetpoly.area, areavector)
+                curasset.add_attribute("Activity", activity)
+                self.write_lu_prop_attributes(curasset, luc)
+                if self.spatialmetrics:
+                    self.calculate_spatial_metrics(curasset, mdata, areavector)
+
+            # Before end of loop, remove scanned LU items that will not intersect with future polygons
+            for item in lutracker:
+                lupolygons.pop(lupolygons.index(item))
         return True
 
     def set_landuse_to_none(self, asset):
@@ -339,6 +415,36 @@ class MapLandUseToSimGrid(UBModule):
         asset.add_attribute("Dominance", shandom)
         asset.add_attribute("Evenness", shaneven)
         return True
+
+    # DEBUG FUNCTION - EXPORTS THE POLYGONIZED MAP TO A SHAPEFILE
+    # def export_preprocessed_lumap(self, ludata):
+    #     """Exports the pre-processed land use data to the project folder as a shapefile."""
+    #     xmin = self.xllcorner
+    #     ymin = self.yllcorner
+    #     fullpath = ""
+    #     EPSG = 2056
+    #     spatialref = osr.SpatialReference()
+    #     spatialref.ImportFromEPSG(EPSG)
+    #
+    #     driver = ogr.GetDriverByName("ESRI Shapefile")
+    #     shapefile = driver.CreateDataSource(fullpath)
+    #     layer = shapefile.CreateLayer('layer1', spatialref, ogr.wkbPolygon)
+    #     defn = layer.GetLayerDefn()
+    #     layer.CreateField(ogr.FieldDefn("Landuse", ogr.OFTString))
+    #     for i in range(len(ludata)):
+    #         feat_geom = ogr.Geometry(ogr.wkbPolygon)
+    #         ring = ogr.Geometry(ogr.wkbLinearRing)
+    #         nl = ludata[i][1]
+    #         for pt in nl:
+    #             ring.AddPoint(pt[0]+self.xllcorner, pt[1]+self.yllcorner)
+    #         feat_geom.AddGeometry(ring)
+    #         feature = ogr.Feature(defn)
+    #         feature.SetGeometry(feat_geom)
+    #         feature.SetFID(0)
+    #         feature.SetField("Landuse", UBLANDUSENAMES[int(ludata[i][0])-1])
+    #         layer.CreateFeature(feature)
+    #     shapefile.Destroy()
+
 
 # GLOBAL VARIABLES TIED TO THIS MODULE
 UBLANDUSENAMES = ["Residential", "Commercial", "Mixed Offices & Res", "Light Industry", "Heavy Industry", "Civic",
