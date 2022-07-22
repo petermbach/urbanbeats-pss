@@ -102,24 +102,42 @@ class UrbanCentralityAnalysisLaunch(QtWidgets.QDialog):
                 self.ui.assetcol_combo.setEnabled(0)
         self.update_asset_col_metadata()
 
+        # Country Combo box
+        self.ui.country_combo.clear()
+        self.ui.country_combo.addItem("(select country)")
+        countrynames = list(self.maingui.cities_dict.keys())
+        countrynames.sort()
+        [self.ui.country_combo.addItem(i) for i in countrynames]
+        self.ui.country_combo.setCurrentIndex(0)
+
+        countryname = self.simulation.get_project_parameter("country")
+        if countryname == "(select country)":
+            self.ui.country_combo.setCurrentIndex(0)
+        else:
+            self.ui.country_combo.setCurrentIndex(countrynames.index(countryname)+1)
+
+        # City Combo
+        self.update_city_combo()
 
         # --- SIGNALS AND SLOTS ---
-        # self.ui.lu_combo.currentIndexChanged.connect(self.update_land_use_attributes)
-        # self.ui.lureclass_check.clicked.connect(self.refresh_lu_reclassification_widgets)
-        # self.ui.lureclass_save_button.clicked.connect(self.save_current_reclassification)
-        # self.ui.lureclass_load_button.clicked.connect(self.load_reclassification)
-        # self.ui.lureclass_reset_button.clicked.connect(self.reset_reclassification)
-        # self.ui.single_landuse_check.clicked.connect(self.enable_disable_guis)
+        self.ui.country_combo.currentIndexChanged.connect(self.update_city_combo)
+        self.ui.cbdknown_radio.clicked.connect(self.enable_disable_guis)
+        self.ui.cbdmanual_radio.clicked.connect(self.enable_disable_guis)
+        self.ui.add.clicked.connect(self.add_to_cbd_table)
+        self.ui.remove.clicked.connect(self.remove_from_cbd_table)
+        self.ui.reset.clicked.connect(self.reset_cbd_table)
+        self.ui.ignore_distance_check.clicked.connect(self.enable_disable_guis)
 
         # --- RUNTIME SIGNALS AND SLOTS ---
-        # self.accepted.connect(self.save_values)
-        # self.ui.run_button.clicked.connect(self.run_module_in_runtime)
-        # self.progressbarobserver.updateProgress[int].connect(self.update_progress_bar_value)
+        self.accepted.connect(self.save_values)
+        self.ui.run_button.clicked.connect(self.run_module_in_runtime)
+        self.progressbarobserver.updateProgress[int].connect(self.update_progress_bar_value)
 
         # --- SETUP GUI PARAMETERS ---
-        # self.ui.lureclass_table.setRowCount(0)
-        # self.setup_gui_with_parameters()
-        # self.enable_disable_guis()
+        self.ui.cbdknown_radio.setChecked(1)
+        self.ui.urbanareas_table.setRowCount(0)
+        self.setup_gui_with_parameters()
+        self.enable_disable_guis()
 
     def update_asset_col_metadata(self):
         """Whenever the asset collection name is changed, then update the current metadata info"""
@@ -129,13 +147,47 @@ class UrbanCentralityAnalysisLaunch(QtWidgets.QDialog):
         else:
             self.metadata = assetcol.get_asset_with_name("meta")
 
+    def add_to_cbd_table(self):
+        """Adds the current entry to the urban centres table, updating the information"""
+        pass
 
+    def remove_from_cbd_table(self):
+        """Removes the currently selected row from the urban centres table."""
+        pass
+
+    def reset_cbd_table(self):
+        """Resets the table completely."""
+        pass
+
+    def update_city_combo(self):
+        """Updates the city combo, called upon opening the GUI but also when the country combo is updated."""
+        self.ui.city_combo.clear()
+        self.ui.city_combo.addItem("(select city)")
+        countryname = self.ui.country_combo.currentText()
+        if countryname == "(select country)":
+            self.ui.city_combo.setCurrentIndex(0)
+        else:
+            citynames = list(self.maingui.cities_dict[countryname].keys())
+            citynames.sort()
+            [self.ui.city_combo.addItem(i) for i in citynames]
+            self.ui.city_combo.setCurrentIndex(0)
+        return True
 
     def enable_disable_guis(self):
-        self.ui.lureclass_table.setEnabled(self.ui.lureclass_check.isChecked())
-        self.ui.lureclass_widget.setEnabled(self.ui.lureclass_check.isChecked())
-        self.ui.patchdelin_check.setEnabled(not self.ui.single_landuse_check.isChecked())
-        self.ui.spatialmetrics_check.setEnabled(not self.ui.single_landuse_check.isChecked())
+        """Enables and disables elements of the GUI depending on conditions."""
+        if self.ui.cbdknown_radio.isChecked():
+            self.ui.country_combo.setEnabled(1)
+            self.ui.city_combo.setEnabled(1)
+            self.ui.cbdname_line.setEnabled(0)
+            self.ui.cbdlat_box.setEnabled(0)
+            self.ui.cbdlong_box.setEnabled(0)
+        else:
+            self.ui.country_combo.setEnabled(0)
+            self.ui.city_combo.setEnabled(0)
+            self.ui.cbdname_line.setEnabled(1)
+            self.ui.cbdlat_box.setEnabled(1)
+            self.ui.cbdlong_box.setEnabled(1)
+        self.ui.ignore_distance_spin.setEnabled(self.ui.ignore_distance_check.isChecked())
 
     def setup_gui_with_parameters(self):
         """Sets all parameters in the GUI based on the current year."""

@@ -57,6 +57,17 @@ class UrbanCentralityAnalysis(UBModule):
         self.create_parameter("assetcolname", STRING, "Name of the asset collection to use")
         self.assetcolname = "(select asset collection)"
 
+        self.create_parameter("cbdlist", LIST, "List of CBD names to use")
+        self.cbdlist = []
+
+        self.create_parameter("ignorebeyond", BOOL, "Ignore areas beyond a specific distance from an urban centre")
+        self.create_parameter("ignoredist", DOUBLE, "Ignore distance in km")
+        self.create_parameter("popgradient", BOOL, "Construct urban-rural population gradient?")
+        self.create_parameter("proximitymap", BOOL, "Generate proximity map of urban centres?")
+        self.ignorebeyond = False
+        self.ignoredist = 50.0
+        self.popgradient = True
+        self.proximitymap = True
 
     def set_module_data_library(self, datalib):
         self.datalibrary = datalib
