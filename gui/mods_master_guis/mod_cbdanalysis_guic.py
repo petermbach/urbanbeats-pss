@@ -125,7 +125,7 @@ class UrbanCentralityAnalysisLaunch(QtWidgets.QDialog):
         self.ui.cbdmanual_radio.clicked.connect(self.enable_disable_guis)
         self.ui.add.clicked.connect(self.add_to_cbd_table)
         self.ui.remove.clicked.connect(self.remove_from_cbd_table)
-        self.ui.reset.clicked.connect(self.reset_cbd_table)
+        self.ui.reset.clicked.connect(self.reset_button_action)
         self.ui.ignore_distance_check.clicked.connect(self.enable_disable_guis)
 
         # --- RUNTIME SIGNALS AND SLOTS ---
@@ -134,8 +134,6 @@ class UrbanCentralityAnalysisLaunch(QtWidgets.QDialog):
         self.progressbarobserver.updateProgress[int].connect(self.update_progress_bar_value)
 
         # --- SETUP GUI PARAMETERS ---
-        self.ui.cbdknown_radio.setChecked(1)
-        self.ui.urbanareas_table.setRowCount(0)
         self.setup_gui_with_parameters()
         self.enable_disable_guis()
 
@@ -149,15 +147,57 @@ class UrbanCentralityAnalysisLaunch(QtWidgets.QDialog):
 
     def add_to_cbd_table(self):
         """Adds the current entry to the urban centres table, updating the information"""
-        pass
+        if self.ui.cbdknown_radio.isChecked() and self.ui.city_combo.currentText != "(select city)":
+            country = self.ui.country_combo.currentText()
+            cityname = self.ui.city_combo.currentText()
+            coords = self.maingui.cities_dict[country][cityname]
+        elif self.ui.cbdmanual_radio.isChecked() and self.ui.cbdlat_box != "" and self.ui.cbdlong_box != "":
+            cityname = self.ui.cbdname_line.text()
+            coords = (self.ui.cbdlat_box.text(), self.ui.cbdlong_box.text())
+        else:
+            prompt_msg = "Please enter a valid city, either through the dropdown menus or with correct lat/long info."
+            QtWidgets.QMessageBox.warning(self, "No urban area specified", prompt_msg, QtWidgets.QMessageBox.Ok)
+            return True
+
+        # Check for duplicates
+        for row in range(self.ui.urbanareas_table.rowCount()):
+            if self.ui.urbanareas_table.item(row, 0).text() == cityname:
+                prompt_msg = "A city with the same name already exists in the list, please select another city."
+                QtWidgets.QMessageBox.warning(self, "Duplicate city name", prompt_msg, QtWidgets.QMessageBox.Ok)
+                return True
+
+        self.ui.urbanareas_table.insertRow(self.ui.urbanareas_table.rowCount())
+        metadata = [cityname, coords[0], coords[1]]
+        for i in range(len(metadata)):
+            twi = QtWidgets.QTableWidgetItem()
+            twi.setText(str(metadata[i]))
+            self.ui.urbanareas_table.setItem(self.ui.urbanareas_table.rowCount()-1, i, twi)
+        self.ui.urbanareas_table.resizeColumnsToContents()
+        self.ui.urbanareas_table.verticalHeader().stretchLastSection()
+
+        # Reset GUI elements
+        self.ui.city_combo.setCurrentIndex(0)
+        self.ui.cbdname_line.clear()
+        self.ui.cbdlat_box.clear()
+        self.ui.cbdlong_box.clear()
+        return True
 
     def remove_from_cbd_table(self):
         """Removes the currently selected row from the urban centres table."""
-        pass
+        self.ui.urbanareas_table.removeRow(self.ui.urbanareas_table.currentRow())
+
+    def reset_button_action(self):
+        """Called when the reset button is pressed to reset the urban areas table."""
+        prompt_msg = "Do you wish to reset the table of urban areas?"
+        answer = QtWidgets.QMessageBox.question(self, "Reset Table?", prompt_msg,
+                                                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+        if answer == QtWidgets.QMessageBox.Yes:
+            self.reset_cbd_table()
+        return True
 
     def reset_cbd_table(self):
         """Resets the table completely."""
-        pass
+        self.ui.urbanareas_table.setRowCount(0)
 
     def update_city_combo(self):
         """Updates the city combo, called upon opening the GUI but also when the country combo is updated."""
@@ -191,53 +231,39 @@ class UrbanCentralityAnalysisLaunch(QtWidgets.QDialog):
 
     def setup_gui_with_parameters(self):
         """Sets all parameters in the GUI based on the current year."""
-        # Combo Boxes
-        # try:
-        #     self.ui.lu_combo.setCurrentIndex(
-        #         self.lumaps[1].index(self.module.get_parameter("landusemapid")))
-        # except:
-        #     self.ui.lu_combo.setCurrentIndex(0)
-        #
-        # self.ui.luattr_combo.setCurrentIndex(0)
-        # if self.ui.lu_combo.currentIndex() != 0:
-        #     attname = self.module.get_parameter("landuseattr")
-        #     for i in range(self.ui.luattr_combo.count()):
-        #         if self.ui.luattr_combo.itemText(i) == attname:
-        #             self.ui.luattr_combo.setCurrentIndex(i)
-        # else:
-        #     self.ui.lureclass_table.setRowCount(0)
-        #
-        # # Reclassification Table
-        # self.ui.lureclass_check.setChecked(self.module.get_parameter("lureclass"))
-        # if self.ui.lureclass_check.isChecked() and self.ui.luattr_combo.currentIndex() != 0:
-        #     # Populate Table with reclassification system...
-        #     self.refresh_lu_reclassification_widgets()
-        #     reclass = self.module.get_parameter("lureclasssystem")
-        #     self.classify_table(reclass)
-        #
-        # self.ui.single_landuse_check.setChecked(self.module.get_parameter("singlelu"))
-        # self.ui.patchdelin_check.setChecked(self.module.get_parameter("patchdelin"))
-        # self.ui.spatialmetrics_check.setChecked(self.module.get_parameter("spatialmetrics"))
+        self.ui.cbdknown_radio.setChecked(1)        # Always set default for use to select from dropdown
+
+        cbdlist = self.module.get_parameter("cbdlist")
+        self.ui.urbanareas_table.setRowCount(0)
+        for i in range(len(cbdlist)):
+            self.ui.urbanareas_table.insertRow(self.ui.urbanareas_table.rowCount())
+            for j in cbdlist[i]:
+                twi = QtWidgets.QTableWidgetItem()
+                twi.setText(cbdlist[i][j])
+                self.ui.urbanareas_table.setItem(self.ui.urbanareas_table.rowCount() - 1, j, twi)
+
+        self.ui.ignore_distance_check.setChecked(int(self.module.get_parameter("ignorebeyond")))
+        self.ui.ignore_distance_spin.setValue(float(self.module.get_parameter("ignoredist")))
+        self.ui.construct_gradient_check.setChecked(int(self.module.get_parameter("popgradient")))
+        self.ui.generate_map_check.setChecked(int(self.module.get_parameter("proximitymap")))
 
     def save_values(self):
         """Saves all user-modified values for the module's parameters from the GUI
         into the simulation core."""
-        pass
-        # self.module.set_parameter("assetcolname", self.ui.assetcol_combo.currentText())
-        # self.module.set_parameter("landusemapid", self.lumaps[1][self.ui.lu_combo.currentIndex()])
-        # self.module.set_parameter("landuseattr", self.ui.luattr_combo.currentText())
-        #
-        # self.module.set_parameter("lureclass", int(self.ui.lureclass_check.isChecked()))
-        #
-        # # Reclassification scheme
-        # if self.ui.lureclass_check.isChecked():
-        #     self.module.set_parameter("lureclasssystem", self.generate_reclassification_dict())
-        # else:
-        #     self.module.set_parameter("lureclasssystem", {})
-        #
-        # self.module.set_parameter("singlelu", int(self.ui.single_landuse_check.isChecked()))
-        # self.module.set_parameter("patchdelin", int(self.ui.patchdelin_check.isChecked()))
-        # self.module.set_parameter("spatialmetrics", int(self.ui.spatialmetrics_check.isChecked()))
+        self.module.set_parameter("assetcolname", self.ui.assetcol_combo.currentText())
+
+        cbdlist = []
+        for i in range(self.ui.urbanareas_table.rowCount()):
+            cityname = self.ui.urbanareas_table.item(i, 0).text()
+            lat = self.ui.urbanareas_table.item(i, 1).text()
+            long = self.ui.urbanareas_table.item(i, 2).text()
+            cbdlist.append([cityname, lat, long])
+        self.module.set_parameter("cbdlist", cbdlist)
+
+        self.module.set_parameter("ignorebeyond", int(self.ui.ignore_distance_check.isChecked()))
+        self.module.set_parameter("ignoredist", float(self.ui.ignore_distance_spin.value()))
+        self.module.set_parameter("popgradient", int(self.ui.construct_gradient_check.isChecked()))
+        self.module.set_parameter("proximitymap", int(self.ui.generate_map_check.isChecked()))
 
     def update_progress_bar_value(self, value):
         """Updates the progress bar of the Main GUI when the simulation is started/stopped/reset. Also disables the
@@ -261,5 +287,9 @@ class UrbanCentralityAnalysisLaunch(QtWidgets.QDialog):
             QtWidgets.QMessageBox.warning(self, "No Asset Collection selected", prompt_msg, QtWidgets.QMessageBox.Ok)
             return False
 
+        # (2) If there are no urban areas to conduct the analysis on, then the module will not run.
+        if self.ui.urbanareas_table.rowCount() == 0:
+            prompt_msg = "No urban areas defined, module will not run!"
+            QtWidgets.QMessageBox.warning(self, "No urban areas defined", prompt_msg, QtWidgets.QMessageBox.Ok)
 
         return True

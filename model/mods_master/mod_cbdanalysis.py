@@ -83,7 +83,7 @@ class UrbanCentralityAnalysis(UBModule):
         self.meta = self.assets.get_asset_with_name("meta")
         if self.meta is None:
             self.notify("Fatal Error! Asset Collection missing Metadata")
-        self.meta.add_attribute("mod_mapregions", 1)
+        self.meta.add_attribute("mod_cbdanalysis", 1)
         self.assetident = self.meta.get_attribute("AssetIdent")
 
         self.xllcorner = self.meta.get_attribute("xllcorner")
@@ -98,7 +98,7 @@ class UrbanCentralityAnalysis(UBModule):
         self.notify("Geometry Type: " + self.assetident)
         self.notify_progress(0)
 
-        print(self.boundaries_to_map)
+        print(self.cbdlist)
 
         # --- SECTION 1 - (description)
         # --- SECTION 2 - (description)

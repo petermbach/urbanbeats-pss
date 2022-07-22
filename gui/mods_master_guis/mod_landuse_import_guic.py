@@ -240,7 +240,7 @@ class MapLanduseLaunch(QtWidgets.QDialog):
 
     def reset_reclassification(self):
         if self.ui.lureclass_check.isChecked():
-            prompt_msg = "Do you wish to reset the curren reclassification?"
+            prompt_msg = "Do you wish to reset the current reclassification?"
             answer = QtWidgets.QMessageBox.question(self, "Reset Reclassification?", prompt_msg,
                                                     QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
             if answer == QtWidgets.QMessageBox.Yes:
