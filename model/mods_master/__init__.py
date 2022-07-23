@@ -18,7 +18,7 @@ from .mod_accessibility import AccessibilityAnalysis
 from .mod_neighbourattract import NeighbourhoodAttractionMapping
 
 # --- DEFINE URBAN FORM MODULES ---
-from .mod_urbanformabstraction import UrbanFormAbstraction
+from .mod_urbanformgen import UrbanFormAbstraction
 # from .mod_urbanformimport import ImportUrbanFormData
 # from .mod_landcoveralgo import GenerateLandCoverFromUrbanForm
 # from .mod_landcoverimport import ImportLandCoverData

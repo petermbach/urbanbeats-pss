@@ -475,7 +475,7 @@ p, li { white-space: pre-wrap; }
            </item>
            <item>
             <property name="text">
-             <string>Minimum Spanning Tree Method</string>
+             <string>Graph-theoretical Delineation</string>
             </property>
            </item>
           </widget>

@@ -1,5 +1,6 @@
 __all__ = ["mod_simgrid_guic", "mod_mapregions_guic", "mod_topography_guic", "mod_landuse_import_guic",
            "mod_population_guic", "mod_natural_features_guic", "mod_catchmentdelin_guic", "mod_cbdanalysis_guic",
+           "mod_urbanformgen_guic"
            ]
 
 # --- SPATIAL REPRESENTATION MODULES ---
@@ -15,3 +16,7 @@ from .mod_catchmentdelin_guic import CatchmentDelineationLaunch
 
 # --- URBAN REGIONAL ANALYSIS MODULES ---
 from .mod_cbdanalysis_guic import UrbanCentralityAnalysisLaunch
+
+# --- DEFINE URBAN FORM MODULES ---
+from .mod_urbanformgen_guic import UrbanFormGenLaunch
+
