@@ -102,3 +102,35 @@ class WaterDemandMapping(UBModule):
     # ==========================================
     def method_example(self):
         pass
+
+
+
+
+# WATER-RELATED ELEMENTS
+RESSTANDARDS = ["AS6400", "Others..."]
+FFP = ["PO", "NP", "RW", "SW", "GW"]    # Fit for purpose water qualities
+DPS = ["SDD", "CDP", "OHT", "AHC", "USER"]    # Types of diurnal patterns
+
+# Diurnal Patterns
+# SDD = STANDARD DAILY DIURNAL PATTERN SCALING FACTORS
+SDD = [0.3, 0.3, 0.3, 0.3, 0.5, 1.0, 1.5, 1.5, 1.3, 1.0, 1.0, 1.5, 1.5, 1.2, 1.0, 1.0, 1.0, 1.3, 1.3, 0.8,
+       0.8, 0.5, 0.5, 0.5]
+
+# CDP = CONSTANT DAILY DIURNAL PATTERN SCALING FACTORS
+CDP = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+       1.0, 1.0, 1.0, 1.0]
+
+# OHT = OFFICE HOURS TRAPEZOIDAL DIURNAL PATTERN SCALING FACTORS
+OHT = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.0, 3.0, 2.5, 2.0, 1.5, 1.0, 0.5,
+       0.0, 0.0, 0.0, 0.0]
+
+# AHC = AFTER HOURS CONSTANT DIURNAL PATTERN
+AHC = [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0,
+       2.0, 2.0, 2.0, 2.0]
+
+DIURNAL_CATS = ["res_kitchen", "res_shower", "res_toilet", "res_laundry", "res_dishwasher", "res_outdoor",
+                "res_dailyindoor", "com", "ind", "nonres_landscape", "pos_irrigation"]
+
+DIURNAL_LABELS = ["Kitchen", "Shower", "Toilet", "Laundry", "Dishwasher", "Garden",
+                  "Residential Indoor", "Commercial and Offices", "Industries", "Non-residential Outdoor",
+                  "Public Irrigation"]
