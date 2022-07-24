@@ -1955,3 +1955,7 @@ class UrbanFormAbstraction(UBModule):
             for c in range(len(cols)):
                 self.resLUIdict[str(cols[c])].append(float(data[i][c]))  # The i-th row and c-th column
         return True
+
+
+# GLOBAL VARIABLES TIED TO THIS MODULE
+PLANNINGTEMPLATES = ["Victorian Planning Provisions (AU)", "EU Planning", "Custom..."]

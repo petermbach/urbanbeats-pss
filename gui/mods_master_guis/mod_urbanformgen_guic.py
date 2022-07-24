@@ -27,6 +27,7 @@ __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- URBANBEATS LIBRARY IMPORTS ---
 import model.progref.ubglobals as ubglobals
+import model.mods_master.mod_urbanformgen as mod_urbanformgen
 
 # --- GUI IMPORTS ---
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -87,7 +88,7 @@ class UrbanFormGenLaunch(QtWidgets.QDialog):
             self.ui.progressbar.setEnabled(1)
 
         # --- SETUP ALL DYNAMIC COMBO BOXES ---
-        # Boundary combo box
+        # Asset Collection Combo Box
         self.ui.assetcol_combo.clear()
         self.ui.assetcol_combo.addItem("(select simulation grid)")
         simgrids = self.simulation.get_global_asset_collection()
@@ -102,8 +103,124 @@ class UrbanFormGenLaunch(QtWidgets.QDialog):
                 self.ui.assetcol_combo.setEnabled(0)
         self.update_asset_col_metadata()
 
-        # --- SIGNALS AND SLOTS ---
+        # Planning Template Combo Box
+        self.ui.plan_params_citycombo.clear()
+        self.ui.plan_params_citycombo.addItem("(select a Planning Template)")
+        for n in mod_urbanformgen.PLANNINGTEMPLATES:
+            self.ui.plan_params_citycombo.addItem(n)
 
+        # Employee Data Combo Boxes
+        self.ui.employment_combo.clear()
+        self.employmaps = self.datalibrary.get_dataref_array("spatial", ["Demographic"], subtypes="Employment",
+                                                             scenario=self.active_scenario_name)
+        if len(self.employmaps[0]) == 0:
+            self.ui.employment_combo.addItem(str("(no employment maps in project)"))
+        else:
+            self.ui.employment_combo.addItem(str("(select employment map)"))
+            [self.ui.employment_combo.addItem(str(self.employmaps[0][i])) for i in range(len(self.employmaps[0]))]
+        self.ui.employmentattr_combo.clear()
+        self.ui.employmentattr_combo.addItem("(select attribute)")
+
+        # Locality Combo Box 1
+        self.ui.locality_combo.clear()
+        self.ui.locality_combo2.clear()
+        self.localitymaps = self.datalibrary.get_dataref_array("spatial", ["Features"], subtypes="Locality Map",
+                                                             scenario=self.active_scenario_name)
+        if len(self.localitymaps[0]) == 0:
+            self.ui.locality_combo.addItem(str("(no locality maps in project)"))
+            self.ui.locality_combo2.addItem(str("(no locality maps in project)"))
+        else:
+            self.ui.locality_combo.addItem(str("(select locality map)"))
+            self.ui.locality_combo2.addItem(str("(select locality map)"))
+            [self.ui.locality_combo.addItem(str(self.localitymaps[0][i])) for i in range(len(self.localitymaps[0]))]
+            [self.ui.locality_combo2.addItem(str(self.localitymaps[0][i])) for i in range(len(self.localitymaps[0]))]
+
+        self.ui.locality_attribute.clear()
+        self.ui.locality_attribute2.clear()
+        self.ui.locality_attribute.addItem("(select attribute)")
+        self.ui.locality_attribute2.addItem("(select attribute)")
+
+        # Road Combo Box
+        self.ui.roadnet_combo.clear()
+        self.roadmaps = self.datalibrary.get_dataref_array("spatial", ["Built Environment"], subtypes="Roads",
+                                                           scenario=self.active_scenario_name)
+        if len(self.roadmaps[0]) == 0:
+            self.ui.roadnet_combo.addItem(str("(no road maps in project)"))
+        else:
+            self.ui.roadnet_combo.addItem(str("(select road network map"))
+            [self.ui.roadnet_combo.addItem(str(self.roadmaps[0][i])) for i in range(len(self.roadmaps[0]))]
+
+        self.ui.roadattr_combo.clear()
+        self.ui.roadattr_combo.addItem("(select attribute)")
+
+        # --- SIGNALS AND SLOTS ---
+        # Tab 1 - General
+        self.ui.plan_params_preload.clicked.connect(self.enable_disable_devchecks)
+        self.ui.plan_params_predef.clicked.connect(self.enable_disable_devchecks)
+        self.ui.plan_params_citycombo.currentIndexChanged.connect(self.pre_fill_parameters)
+        self.ui.plan_params_filebox.textChanged.connect(self.pre_fill_parameters)
+        self.ui.lucredevelop_check.clicked.connect(self.enable_disable_devchecks)
+        self.ui.popredevelop_check.clicked.connect(self.enable_disable_devchecks)
+        self.ui.noredevelop_check.clicked.connect(self.enable_disable_devchecks)
+
+        # Tab 2 - Residential
+        self.ui.allot_depth_check.clicked.connect(self.enable_disable_residential)
+        self.ui.drainage_rule_check.clicked.connect(self.enable_disable_residential)
+        self.ui.roof_connected_radiodirect.clicked.connect(self.enable_disable_residential)
+        self.ui.roof_connected_radiodisc.clicked.connect(self.enable_disable_residential)
+        self.ui.roof_connected_radiovary.clicked.connect(self.enable_disable_residential)
+
+        # Tab 3 - Non-Residential
+        self.ui.employment_combo.currentIndexChanged.connect(self.update_employment_attr)
+        self.ui.jobs_direct_radio.clicked.connect(self.enable_disable_nonres)
+        self.ui.jobs_dist_radio.clicked.connect(self.enable_disable_nonres)
+        self.ui.jobs_total_radio.clicked.connect(self.enable_disable_nonres)
+        self.ui.nres_setback_auto.clicked.connect(self.enable_disable_nonres)
+        self.ui.nres_maxfloors_nolimit.clicked.connect(self.enable_disable_nonres)
+        self.ui.plotratio_ind_slider.valueChanged.connect(self.set_nonres_plotratio_boxupdate)
+        self.ui.plotratio_com_slider.valueChanged.connect(self.set_nonres_plotratio_boxupdate)
+        self.ui.civ_consider_check.clicked.connect(self.enable_disable_civic)
+        self.ui.locality_combo.currentIndexChanged.connect(self.update_localityattr1)
+        self.ui.civ_customise.clicked.connect(self.launch_civ_customisation_gui)
+
+        # Tab 4 - Roads and Transport
+        self.ui.roadclass_define.clicked.connect(self.enable_disable_roadclass)
+        self.ui.roadnet_combo.currentIndexChanged.connect(self.update_roadnet_guis)
+        self.ui.ma_buffer_check.clicked.connect(self.enable_disable_majorarterials)
+        self.ui.ma_fpath_check.clicked.connect(self.enable_disable_majorarterials)
+        self.ui.ma_nstrip_check.clicked.connect(self.enable_disable_majorarterials)
+        self.ui.ma_sidestreet_check.clicked.connect(self.enable_disable_majorarterials)
+        self.ui.ma_bicycle_check.clicked.connect(self.enable_disable_majorarterials)
+        self.ui.ma_travellane_check.clicked.connect(self.enable_disable_majorarterials)
+        self.ui.ma_centralbuffer_check.clicked.connect(self.enable_disable_majorarterials)
+        self.ui.pt_centralbuffer.clicked.connect(self.enable_disable_majorarterials)
+        self.ui.hwy_different_check.clicked.connect(self.enable_disable_highways)
+        self.ui.hwy_verge_check.clicked.connect(self.enable_disable_highways)
+        self.ui.hwy_service_check.clicked.connect(self.enable_disable_highways)
+        self.ui.hwy_travellane_check.clicked.connect(self.enable_disable_highways)
+        self.ui.hwy_centralbuffer_check.clicked.connect(self.enable_disable_highways)
+        self.ui.consider_transport.clicked.connect(self.enable_disable_transport)
+        self.ui.locality_combo2.currentIndexChanged.connect(self.update_localityattr2)
+        self.ui.trans_customise.clicked.connect(self.launch_civ_customisation_gui)
+
+        # Tab 5 - Open Spaces
+        self.ui.pg_ggratio_slide.valueChanged.connect(self.set_greengreyratio_boxupdate)
+        self.ui.svu_slider.valueChanged.connect(self.set_svu_waternonwater_boxupdate)
+        self.ui.ref_usable_check.clicked.connect(self.enable_disable_openspaces)
+        self.ui.svu_supply_check.clicked.connect(self.enable_disable_openspaces)
+        self.ui.svu_waste_check.clicked.connect(self.enable_disable_openspaces)
+        self.ui.svu_storm_check.clicked.connect(self.enable_disable_openspaces)
+
+        # Tab 6 - Other Uses
+        self.ui.unc_merge_check.clicked.connect(self.enable_disable_others)
+        self.ui.unc_merge2pg_check.clicked.connect(self.enable_disable_others)
+        self.ui.unc_merge2ref_check.clicked.connect(self.enable_disable_others)
+        self.ui.unc_merge2trans_check.clicked.connect(self.enable_disable_others)
+        self.ui.unc_custom_check.clicked.connect(self.enable_disable_others)
+        self.ui.und_statemanual_radio.clicked.connect(self.enable_disable_others)
+        self.ui.und_stateauto_radio.clicked.connect(self.enable_disable_others)
+        self.ui.agg_allocateres_check.clicked.connect(self.enable_disable_others)
+        self.ui.agg_allocatenonres_check.clicked.connect(self.enable_disable_others)
 
         # --- RUNTIME SIGNALS AND SLOTS ---
         self.accepted.connect(self.save_values)
@@ -163,6 +280,24 @@ class UrbanFormGenLaunch(QtWidgets.QDialog):
             self.ui.pt_centralbuffer.setEnabled(0)
             self.ui.pt_impervious.setEnabled(0)
         return True
+
+    def pre_fill_parameters(self):
+        pass
+
+    def update_employment_attr(self):
+        pass
+
+    def update_localityattr1(self):
+        pass
+
+    def update_localityattr2(self):
+        pass
+
+    def update_roadnet_guis(self):
+        pass
+
+    def launch_civ_customisation_gui(self):
+        pass
 
     def setup_gui_with_parameters(self):
         """Sets all parameters in the GUI based on the current year."""
@@ -499,6 +634,7 @@ class UrbanFormGenLaunch(QtWidgets.QDialog):
 
     def enable_disable_devchecks(self):
         """Enables or disables the Block redevelopment features based on the state of the checkboxes. General Tab."""
+        self.ui.plan_params_citycombo.setEnabled(self.ui.plan_params_predef.isChecked())
         self.ui.plan_params_filebox.setEnabled(self.ui.plan_params_preload.isChecked())
         self.ui.plan_params_filebrowse.setEnabled(self.ui.plan_params_preload.isChecked())
         if self.ui.noredevelop_check.isChecked():
@@ -608,6 +744,8 @@ class UrbanFormGenLaunch(QtWidgets.QDialog):
 
     def enable_disable_transport(self):
         """Enables and disables the check boxes under TRANSPORTATION FACILITIES SUB-CATEGORY."""
+        self.ui.locality_combo2.setEnabled(self.ui.consider_transport.isChecked())
+        self.ui.locality_attribute2.setEnabled(self.ui.consider_transport.isChecked())
         self.ui.trans_airport.setEnabled(self.ui.consider_transport.isChecked())
         self.ui.trans_seaport.setEnabled(self.ui.consider_transport.isChecked())
         self.ui.trans_busdepot.setEnabled(self.ui.consider_transport.isChecked())
@@ -641,6 +779,8 @@ class UrbanFormGenLaunch(QtWidgets.QDialog):
             self.ui.unc_areathresh_spin.setEnabled(0)
             self.ui.unc_customimp_spin.setEnabled(0)
             self.ui.unc_customirrigate_check.setEnabled(0)
+        self.ui.agg_allocateres_spin.setEnabled(self.ui.agg_allocateres_check.isChecked())
+        self.ui.agg_allocatenonres_spin.setEnabled(self.ui.agg_allocatenonres_check.isChecked())
 
     def enable_disable_openspaces(self):
         """Enables and disables the open spaces GUI elements based on conditions defined by the user parameters."""
@@ -695,6 +835,8 @@ class UrbanFormGenLaunch(QtWidgets.QDialog):
     def enable_disable_civic(self):
         """Enables and disables the civic facilities features in the GUI based on whether the user wants to consider
         these explicitly in the modelling."""
+        self.ui.locality_combo.setEnabled(self.ui.civ_consider_check.isChecked())
+        self.ui.locality_attribute.setEnabled(self.ui.civ_consider_check.isChecked())
         self.ui.civ_cemetery.setEnabled(self.ui.civ_consider_check.isChecked())
         self.ui.civ_cityhall.setEnabled(self.ui.civ_consider_check.isChecked())
         self.ui.civ_clinic.setEnabled(self.ui.civ_consider_check.isChecked())
@@ -712,6 +854,7 @@ class UrbanFormGenLaunch(QtWidgets.QDialog):
         self.ui.civ_university.setEnabled(self.ui.civ_consider_check.isChecked())
         self.ui.civ_worship.setEnabled(self.ui.civ_consider_check.isChecked())
         self.ui.civ_zoo.setEnabled(self.ui.civ_consider_check.isChecked())
+        self.ui.civ_customise.setEnabled(0)     # Currently no customization option [TO DO]
         return True
 
     def save_values(self):
