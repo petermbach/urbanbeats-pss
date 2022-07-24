@@ -29,7 +29,7 @@ from .mod_zoningmap import CreateZoningMap
 from .mod_ugsanalysis import UrbanGreenSpaceAnalysis
 
 # --- URBAN WATER MODULES ---
-from .mod_wateruse import WaterDemandMapping
+from .mod_waterdemand import WaterDemandMapping
 # from .mod_floodhazard import FloodHazardAssessment
 # from .mod_pollutiongen import PollutionGeneration
 

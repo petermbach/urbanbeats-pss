@@ -1324,7 +1324,7 @@ class MainWindow(QtWidgets.QMainWindow):
         """ Occurs if a toolbox icon is doubled-clicked from the Toolbox dock."""
         if self.ui.toolboxTree.currentItem().parent() is not None:
             module_name = self.ui.toolboxTree.currentItem().text(0)
-            
+
             # Launch the corresponding GUI of the module clicked
             modulegui = self.__modules_master_guis[module_name](self,
                                                                 self.get_active_simulation_object(),
