@@ -258,6 +258,7 @@ class MapRegionsLaunch(QtWidgets.QDialog):
         into the simulation core."""
         self.module.set_parameter("assetcolname", self.ui.assetcol_combo.currentText())
 
+        self.module.reset_boundaries_to_map()
         for i in range(self.ui.boundarytable.rowCount()):
             metadata = []
             for j in range(self.ui.boundarytable.columnCount()):

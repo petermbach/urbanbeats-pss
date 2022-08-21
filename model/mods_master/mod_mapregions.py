@@ -67,7 +67,8 @@ class MapRegionsToSimGrid(UBModule):
         """Adds details for a simulation boundary to map to the simulation grid. Creates a dictionary object based on
         the key few tables: category (classifier of the boundary), dset (the data set ID from the datalibrary),
         attname (the attribute name from which to obtain the names) and label (the unique label used to distinguish)."""
-        self.boundaries_to_map.append({"label":label, "datafile": dset, "attname": attname, "stakeholder": stakeholder})
+        self.boundaries_to_map.append({"label": label, "datafile": dset,
+                                       "attname": attname, "stakeholder": stakeholder})
         return True
 
     def reset_boundaries_to_map(self):
@@ -154,7 +155,7 @@ class MapRegionsToSimGrid(UBModule):
                     newisectarea = feat.intersection(assetpoly).area
                     if newisectarea > intersectarea:
                         intersectarea = newisectarea
-                        intersectname = b.get_attribute(boundary["attname"])
+                        intersectname = str(b.get_attribute(boundary["attname"]))
 
                 if intersectname != "" and intersectarea > 0:
                     cur_asset.add_attribute(boundary["label"], intersectname)
