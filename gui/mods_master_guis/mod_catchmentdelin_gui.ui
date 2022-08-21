@@ -439,21 +439,11 @@ p, li { white-space: pre-wrap; }
            </property>
           </widget>
          </item>
-         <item row="1" column="2">
-          <spacer name="horizontalSpacer_9">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
          <item row="1" column="1">
           <widget class="QComboBox" name="flowpath_combo">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -465,7 +455,7 @@ p, li { white-space: pre-wrap; }
            </property>
            <item>
             <property name="text">
-             <string>Planar - Adapted D-infinity (Tarboton, 1997)</string>
+             <string>(no method)</string>
             </property>
            </item>
            <item>
@@ -476,6 +466,11 @@ p, li { white-space: pre-wrap; }
            <item>
             <property name="text">
              <string>Graph-theoretical Delineation</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Flow Field Delineation</string>
             </property>
            </item>
           </widget>

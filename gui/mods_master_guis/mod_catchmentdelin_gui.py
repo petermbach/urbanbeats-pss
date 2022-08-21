@@ -158,12 +158,14 @@ class Ui_CatchmentDelinGui(object):
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_11.addItem(spacerItem1, 1, 2, 1, 1)
         self.flowpath_combo = QtWidgets.QComboBox(self.flowpath_widget)
+        self.flowpath_combo.setEnabled(False)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.flowpath_combo.sizePolicy().hasHeightForWidth())
         self.flowpath_combo.setSizePolicy(sizePolicy)
         self.flowpath_combo.setObjectName("flowpath_combo")
+        self.flowpath_combo.addItem("")
         self.flowpath_combo.addItem("")
         self.flowpath_combo.addItem("")
         self.flowpath_combo.addItem("")
@@ -253,9 +255,10 @@ class Ui_CatchmentDelinGui(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">How many blocks to consider when determining drainage fluxes (the greater the number, the greater the computational burden).</span></p></body></html>"))
         self.flowpath_lbl.setText(_translate("CatchmentDelinGui", "<html><head/><body><p><span style=\" font-weight:600;\">Flowpath Method:</span></p></body></html>"))
-        self.flowpath_combo.setItemText(0, _translate("CatchmentDelinGui", "Planar - Adapted D-infinity (Tarboton, 1997)"))
+        self.flowpath_combo.setItemText(0, _translate("CatchmentDelinGui", "(no method)"))
         self.flowpath_combo.setItemText(1, _translate("CatchmentDelinGui", "Directional - D8 (O\'Callaghan & Mark, 1984)"))
-        self.flowpath_combo.setItemText(2, _translate("CatchmentDelinGui", "Minimum Spanning Tree Method"))
+        self.flowpath_combo.setItemText(2, _translate("CatchmentDelinGui", "Graph-theoretical Delineation"))
+        self.flowpath_combo.setItemText(3, _translate("CatchmentDelinGui", "Flow Field Delineation"))
         self.infrastructure_check.setToolTip(_translate("CatchmentDelinGui", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"

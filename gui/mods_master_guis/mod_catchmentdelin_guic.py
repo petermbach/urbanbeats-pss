@@ -64,6 +64,7 @@ class CatchmentDelineationLaunch(QtWidgets.QDialog):
         self.datalibrary = datalibrary
         self.log = simlog
         self.metadata = None
+        self.geomtype = None    # The active asset collection's geometry type
 
         # --- PROGRESSBAR OBSERVER ---
         # In the GUIc, we instantiate an observer instance of the types we want and write their corresponding GUI
@@ -88,6 +89,7 @@ class CatchmentDelineationLaunch(QtWidgets.QDialog):
             self.ui.progressbar.setEnabled(1)
 
         # --- SETUP ALL DYNAMIC COMBO BOXES ---
+        # Asset Collection
         self.ui.assetcol_combo.clear()
         self.ui.assetcol_combo.addItem("(select asset collection)")
         simgrids = self.simulation.get_global_asset_collection()
@@ -102,24 +104,50 @@ class CatchmentDelineationLaunch(QtWidgets.QDialog):
                 self.ui.assetcol_combo.setEnabled(0)
         self.update_asset_col_metadata()
 
+        # Built Infrastructure Combo Box
+        self.ui.storm_combo.clear()
+        self.stormmaps = self.datalibrary.get_dataref_array("spatial", ["Built Environment"],
+                                                            subtypes="Water Infrastructure",
+                                                            scenario=self.active_scenario_name)
+        if len(self.stormmaps[0]) == 0:
+            self.ui.storm_combo.addItem(str("(no infrastructure maps in project"))
+        else:
+            self.ui.storm_combo.addItem(str("(select infrastructure map)"))
+            [self.ui.storm_combo.addItem(str(self.stormmaps[0][i])) for i in range(len(self.stormmaps[0]))]
 
         # --- SIGNALS AND SLOTS ---
-        # self.ui.lu_combo.currentIndexChanged.connect(self.update_land_use_attributes)
-        # self.ui.lureclass_check.clicked.connect(self.refresh_lu_reclassification_widgets)
-        # self.ui.lureclass_save_button.clicked.connect(self.save_current_reclassification)
-        # self.ui.lureclass_load_button.clicked.connect(self.load_reclassification)
-        # self.ui.lureclass_reset_button.clicked.connect(self.reset_reclassification)
-        # self.ui.single_landuse_check.clicked.connect(self.enable_disable_guis)
+        self.ui.assetcol_combo.currentIndexChanged.connect(self.update_method_combo)
+        self.ui.infrastructure_check.clicked.connect(self.enable_disable_guis)
+        self.ui.natfeature_check.clicked.connect(self.enable_disable_guis)
 
         # --- RUNTIME SIGNALS AND SLOTS ---
-        # self.accepted.connect(self.save_values)
-        # self.ui.run_button.clicked.connect(self.run_module_in_runtime)
-        # self.progressbarobserver.updateProgress[int].connect(self.update_progress_bar_value)
+        self.accepted.connect(self.save_values)
+        self.ui.run_button.clicked.connect(self.run_module_in_runtime)
+        self.progressbarobserver.updateProgress[int].connect(self.update_progress_bar_value)
 
         # --- SETUP GUI PARAMETERS ---
-        # self.ui.lureclass_table.setRowCount(0)
-        # self.setup_gui_with_parameters()
-        # self.enable_disable_guis()
+        self.setup_gui_with_parameters()
+        self.enable_disable_guis()
+
+    def update_method_combo(self):
+        if self.ui.assetcol_combo.currentIndex() == 0:      # If there is no active asset collection...
+            self.geomtype = None
+            self.update_asset_col_metadata()
+            self.ui.flowpath_combo.setCurrentIndex(0)
+            return True
+        else:
+            self.update_asset_col_metadata()
+            if self.metadata is None:
+                self.ui.flowpath_combo.setCurrentIndex(0)
+            else:
+                self.geomtype = self.metadata.get_attribute("AssetIdent")
+                if self.geomtype in ["BlockID", "HexID", "GeohashID"]:
+                    self.ui.flowpath_combo.setCurrentIndex(1)
+                elif self.geomtype in ["PatchID", "ParcelID"]:
+                    self.ui.flowpath_combo.setCurrentIndex(2)
+                else:
+                    self.ui.flowpath_combo.setCurrentIndex(3)
+            return True
 
     def update_asset_col_metadata(self):
         """Whenever the asset collection name is changed, then update the current metadata info"""
@@ -129,63 +157,34 @@ class CatchmentDelineationLaunch(QtWidgets.QDialog):
         else:
             self.metadata = assetcol.get_asset_with_name("meta")
 
-
-
     def enable_disable_guis(self):
-        self.ui.lureclass_table.setEnabled(self.ui.lureclass_check.isChecked())
-        self.ui.lureclass_widget.setEnabled(self.ui.lureclass_check.isChecked())
-        self.ui.patchdelin_check.setEnabled(not self.ui.single_landuse_check.isChecked())
-        self.ui.spatialmetrics_check.setEnabled(not self.ui.single_landuse_check.isChecked())
+        self.ui.storm_combo.setEnabled(self.ui.infrastructure_check.isChecked())
+        self.ui.ignore_lakes_check.setEnabled(self.ui.natfeature_check.isChecked())
+        self.ui.ignore_lakes_check.setEnabled(self.ui.natfeature_check.isChecked())
 
     def setup_gui_with_parameters(self):
         """Sets all parameters in the GUI based on the current year."""
-        # Combo Boxes
-        # try:
-        #     self.ui.lu_combo.setCurrentIndex(
-        #         self.lumaps[1].index(self.module.get_parameter("landusemapid")))
-        # except:
-        #     self.ui.lu_combo.setCurrentIndex(0)
-        #
-        # self.ui.luattr_combo.setCurrentIndex(0)
-        # if self.ui.lu_combo.currentIndex() != 0:
-        #     attname = self.module.get_parameter("landuseattr")
-        #     for i in range(self.ui.luattr_combo.count()):
-        #         if self.ui.luattr_combo.itemText(i) == attname:
-        #             self.ui.luattr_combo.setCurrentIndex(i)
-        # else:
-        #     self.ui.lureclass_table.setRowCount(0)
-        #
-        # # Reclassification Table
-        # self.ui.lureclass_check.setChecked(self.module.get_parameter("lureclass"))
-        # if self.ui.lureclass_check.isChecked() and self.ui.luattr_combo.currentIndex() != 0:
-        #     # Populate Table with reclassification system...
-        #     self.refresh_lu_reclassification_widgets()
-        #     reclass = self.module.get_parameter("lureclasssystem")
-        #     self.classify_table(reclass)
-        #
-        # self.ui.single_landuse_check.setChecked(self.module.get_parameter("singlelu"))
-        # self.ui.patchdelin_check.setChecked(self.module.get_parameter("patchdelin"))
-        # self.ui.spatialmetrics_check.setChecked(self.module.get_parameter("spatialmetrics"))
+        # Check boxes
+        self.ui.natfeature_check.setChecked(int(self.module.get_parameter("guide_natural")))
+        self.ui.infrastructure_check.setChecked(int(self.module.get_parameter("guide_built")))
+
+        # Built-infrastructure combo box
+        try:
+            self.ui.storm_combo.setCurrentIndex(self.stormmaps[1].index(self.module.get_parameter("built_map")))
+        except:
+            self.ui.storm_combo.setCurrentIndex(0)
+
+        self.ui.ignore_rivers_check.setChecked(int(self.module.get_parameter("ignore_rivers")))
+        self.ui.ignore_lakes_check.setChecked(int(self.module.get_parameter("ignore_lakes")))
 
     def save_values(self):
         """Saves all user-modified values for the module's parameters from the GUI
         into the simulation core."""
-        pass
-        # self.module.set_parameter("assetcolname", self.ui.assetcol_combo.currentText())
-        # self.module.set_parameter("landusemapid", self.lumaps[1][self.ui.lu_combo.currentIndex()])
-        # self.module.set_parameter("landuseattr", self.ui.luattr_combo.currentText())
-        #
-        # self.module.set_parameter("lureclass", int(self.ui.lureclass_check.isChecked()))
-        #
-        # # Reclassification scheme
-        # if self.ui.lureclass_check.isChecked():
-        #     self.module.set_parameter("lureclasssystem", self.generate_reclassification_dict())
-        # else:
-        #     self.module.set_parameter("lureclasssystem", {})
-        #
-        # self.module.set_parameter("singlelu", int(self.ui.single_landuse_check.isChecked()))
-        # self.module.set_parameter("patchdelin", int(self.ui.patchdelin_check.isChecked()))
-        # self.module.set_parameter("spatialmetrics", int(self.ui.spatialmetrics_check.isChecked()))
+        self.module.set_parameter("guide_natural", int(self.ui.natfeature_check.isChecked()))
+        self.module.set_parameter("guide_built", int(self.ui.infrastructure_check.isChecked()))
+        self.module.set_parameter("built_map", self.stormmaps[1][self.ui.storm_combo.currentIndex() - 1])
+        self.module.set_parameter("ignore_rivers", int(self.ui.ignore_rivers_check.isChecked()))
+        self.module.set_parameter("ignore_lakes", int(self.ui.ignore_lakes_check.isChecked()))
 
     def update_progress_bar_value(self, value):
         """Updates the progress bar of the Main GUI when the simulation is started/stopped/reset. Also disables the
@@ -209,5 +208,9 @@ class CatchmentDelineationLaunch(QtWidgets.QDialog):
             QtWidgets.QMessageBox.warning(self, "No Asset Collection selected", prompt_msg, QtWidgets.QMessageBox.Ok)
             return False
 
-
+        # (2) If a drainage network is to be used as guidance, has one been selected or not?
+        if self.ui.infrastructure_check.isChecked() and self.ui.storm_combo.currentIndex() == 0:
+            prompt_msg = "You opted to use a drainage layer to aid delineation, but none has been selected! Please" \
+                         "select a valid drainage map!"
+            QtWidgets.QMessageBox.warning(self, "No Drainage layer selected", prompt_msg, QtWidgets.QMessageBox.Ok)
         return True

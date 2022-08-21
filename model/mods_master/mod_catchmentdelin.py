@@ -51,13 +51,24 @@ class DelineateFlowSubCatchments(UBModule):
         self.xllcorner = None
         self.yllcorner = None
         self.assetident = ""
-        self.populationmap = None
         self.nodata = None
 
         # MODULE PARAMETERS
         self.create_parameter("assetcolname", STRING, "Name of the asset collection to use")
         self.assetcolname = "(select asset collection)"
 
+        self.create_parameter("flowpath_method", STRING, "flowpath method to use")
+        self.create_parameter("guide_natural", BOOL, "Use natural features to guide delineation")
+        self.create_parameter("guide_built", BOOL, "Use built drainage features to guide delineation")
+        self.create_parameter("built_map", STRING, "DataID for the built infrastructure map to use as guide")
+        self.create_parameter("ignore_rivers", BOOL, "Ignore rivers in delineation of outlets")
+        self.create_parameter("ignore_lakes", BOOL, "Ignore lake features in the delineation of outlets")
+        self.flowpath_method = "D8"     # D-inf, D8, LCP
+        self.guide_natural = 0
+        self.guide_built = 0
+        self.built_map = "(select built infrastructure map)"
+        self.ignore_rivers = 0
+        self.ignore_lakes = 0
 
     def set_module_data_library(self, datalib):
         self.datalibrary = datalib
@@ -68,33 +79,58 @@ class DelineateFlowSubCatchments(UBModule):
         self.assets = self.activesim.get_asset_collection_by_name(self.assetcolname)
         if self.assets is None:
             self.notify("Fatal Error Missing Asset Collection")
+            return False
 
         # Metadata Check - need to make sure we have access to the metadata
         self.meta = self.assets.get_asset_with_name("meta")
         if self.meta is None:
             self.notify("Fatal Error! Asset Collection missing Metadata")
-        self.meta.add_attribute("mod_mapregions", 1)
-        self.assetident = self.meta.get_attribute("AssetIdent")
+            return False
 
+        # Pre-requisite - needs to have at least the elevation mapping done
+        if self.meta.get_attribute("mod_topography") != 1:
+            self.notify("Cannot start module! No elevation data. Please run the Map Topography module first")
+            return False
+
+        self.meta.add_attribute("mod_catchmentdelin", 1)
+        self.assetident = self.meta.get_attribute("AssetIdent")
         self.xllcorner = self.meta.get_attribute("xllcorner")
         self.yllcorner = self.meta.get_attribute("yllcorner")
+        return True
 
     def run_module(self):
         """ The main algorithm for the module, links with the active simulation, its data library and output folders."""
-        self.initialize_runstate()
+        if not self.initialize_runstate():
+            self.notify("Module run terminated!")
+            return True
 
-        self.notify("Mapping Regions to the Simulation Grid")
+        self.notify("Delineating flow paths and sub-catchments")
         self.notify("--- === ---")
         self.notify("Geometry Type: " + self.assetident)
         self.notify_progress(0)
 
-        print(self.boundaries_to_map)
+        # --- SECTION 0 - Grab asset information
+        griditems = self.assets.get_assets_with_identifier(self.assetident)
+        self.notify("Total assets within the map: "+str(len(griditems)))
+        self.notify_progress(10)
 
-        # --- SECTION 1 - (description)
-        # --- SECTION 2 - (description)
-        # --- SECTION 3 - (description)
+        # --- SECTION 1 - Flowpath Delineation
+        if self.assetident in ["BlockID", "HexID", "GeohashID"]:        # REGULAR GRID
+            pass    # Regular Grid Flowpath Delineation
+        elif self.assetident in ["PatchID", "ParcelID"]:        # IRREGULAR GRID
+            pass    # Irregular Grid Flowpath Delineation
+        else:
+            pass    # Raster map, quite different...
 
-        self.notify("Mapping of regions to simulation grid complete")
+
+
+        self.notify_progress(50)
+
+        # --- SECTION 2 - Sub-catchment Delineation
+
+
+
+        self.notify("Flowpath and catchment delineation complete")
         self.notify_progress(100)
         return True
 
