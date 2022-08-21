@@ -144,7 +144,8 @@ class MapLanduseLaunch(QtWidgets.QDialog):
         """Updates the land use classification attributes combo with info."""
         self.ui.luattr_combo.clear()
         if ".shp" in self.ui.lu_combo.currentText():
-            dataref = self.datalibrary.get_data_with_id(self.lumaps[1][self.ui.lu_combo.currentIndex()])
+            print(self.lumaps)
+            dataref = self.datalibrary.get_data_with_id(self.lumaps[1][self.ui.lu_combo.currentIndex()-1])
             self.active_lufile = dataref.get_data_file_path() + self.ui.lu_combo.currentText()
             fileprops = ubspatial.load_shapefile_details(self.active_lufile)
             self.ui.luattr_combo.addItem("(attribute name)")

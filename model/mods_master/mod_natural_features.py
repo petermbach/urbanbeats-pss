@@ -151,10 +151,13 @@ class MapNaturalFeaturesToSimGrid(UBModule):
                 if not path.intersects(assetpoly):
                     continue
                 rivername = riverfeats[j].get_attribute(self.rivermapattr)
-                if rivername in ["", None, " "] and not self.riverignorenoname:
+                if rivername in ["", None, " "] and self.riverignorenoname:
                     continue
                 if rivername not in rivernames:
-                    rivernames.append(rivername)
+                    if rivername in ["", None, " "]:
+                        rivernames.append("Unknown")
+                    else:
+                        rivernames.append(rivername)
                 hasriver = 1
 
             if hasriver:
@@ -194,10 +197,13 @@ class MapNaturalFeaturesToSimGrid(UBModule):
                 if (not poly.intersects(assetpoly)) or (poly.intersection(assetpoly).area == 0):
                     continue    # Continue if no intersection or if the intersection area is 0 (i.e. boundary intersect)
                 lakename = lakefeats[j].get_attribute(self.lakemapattr)
-                if lakename in ["", None, " "] and not self.lakeignorenoname:
+                if lakename in ["", None, " "] and self.lakeignorenoname:
                     continue
                 if lakename not in lakenames:
-                    lakenames.append(lakename)
+                    if lakename is ["", None, " "]:
+                        lakenames.append("Unknown")
+                    else:
+                        lakenames.append(lakename)
                 haslake = 1
 
             if haslake:

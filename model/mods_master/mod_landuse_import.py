@@ -116,6 +116,7 @@ class MapLandUseToSimGrid(UBModule):
         filename = lumap.get_metadata("filename")
         fullpath = lumap.get_data_file_path() + filename
         self.notify("Loading Land Use Map: "+str(filename))
+        self.notify_progress(10)
 
         # DETERMINE DATA FORMAT (1) Vector or (2) Raster
         if ".shp" in filename:
@@ -126,6 +127,7 @@ class MapLandUseToSimGrid(UBModule):
 
             # Metadata
             self.notify("Polygon Features: "+str(len(self.landusemap)))
+            self.notify_progress(30)
         else:
             # RASTER FORMAT - OPEN THE FILE
             self.landusemap = rasterio.open(fullpath)
@@ -141,6 +143,7 @@ class MapLandUseToSimGrid(UBModule):
 
         # --- SECTION 2 - MAP LAND USE TO SIM GRID - RECLASSIFY IF NECESSARY
         self.notify("Mapping land use to simulation grid")
+        self.notify_progress(50)
 
         if self.assetident not in ["BlockID", "HexID", "GeohashID"]:
             self.singlelu = 1       # If the asset type is not a Block, Hexagon or Geohash, then always use single class
