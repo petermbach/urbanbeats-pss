@@ -106,17 +106,16 @@ class MapTopographyToSimGrid(UBModule):
 
         self.xllcorner = self.meta.get_attribute("xllcorner")
         self.yllcorner = self.meta.get_attribute("yllcorner")
-
         # If the asset collection does not yet have a localities asset, create one...
 
     def run_module(self):
         """ The main algorithm for the module, links with the active simulation, its data library and output folders."""
+        self.notify_progress(0)
         self.initialize_runstate()
 
         self.notify("Mapping Topography data to Simulation")
         self.notify("--- === ---")
         self.notify("Geometry Type: " + self.assetident)
-        self.notify_progress(0)
 
         # --- SECTION 1 - Get the elevation map data to be mapped
         elevmap = self.datalibrary.get_data_with_id(self.elevmapdataid)

@@ -102,12 +102,12 @@ class MapRegionsToSimGrid(UBModule):
 
     def run_module(self):
         """ The main algorithm for the module, links with the active simulation, its data library and output folders."""
+        self.notify_progress(0)
         self.initialize_runstate()
 
         self.notify("Mapping Regions to the Simulation Grid")
         self.notify("--- === ---")
         self.notify("Geometry Type: " + self.assetident)
-        self.notify_progress(0)
 
         boundary_datarefs = self.datalibrary.get_dataref_array("spatial", ["Boundaries"])
 

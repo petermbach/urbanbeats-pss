@@ -180,9 +180,16 @@ class CatchmentDelineationLaunch(QtWidgets.QDialog):
     def save_values(self):
         """Saves all user-modified values for the module's parameters from the GUI
         into the simulation core."""
+        self.module.set_parameter("assetcolname", self.ui.assetcol_combo.currentText())
+
         self.module.set_parameter("guide_natural", int(self.ui.natfeature_check.isChecked()))
         self.module.set_parameter("guide_built", int(self.ui.infrastructure_check.isChecked()))
-        self.module.set_parameter("built_map", self.stormmaps[1][self.ui.storm_combo.currentIndex() - 1])
+
+        if self.ui.storm_combo.currentIndex() == 0:
+            self.module.set_parameter("built_map", "")
+        else:
+            self.module.set_parameter("built_map", self.stormmaps[1][self.ui.storm_combo.currentIndex() - 1])
+
         self.module.set_parameter("ignore_rivers", int(self.ui.ignore_rivers_check.isChecked()))
         self.module.set_parameter("ignore_lakes", int(self.ui.ignore_lakes_check.isChecked()))
 
@@ -208,7 +215,14 @@ class CatchmentDelineationLaunch(QtWidgets.QDialog):
             QtWidgets.QMessageBox.warning(self, "No Asset Collection selected", prompt_msg, QtWidgets.QMessageBox.Ok)
             return False
 
-        # (2) If a drainage network is to be used as guidance, has one been selected or not?
+        # (2) Selected asset collection does not have elevation data
+        self.update_asset_col_metadata()
+        if self.metadata.get_attribute("mod_topography") != 1:
+            prompt_msg = "The current asset collection selected does not contain elevation data for this module " \
+                         "to run. Please run the Map Topography Module on this asset collection first."
+            QtWidgets.QMessageBox.warning(self, "Pre-requisite Modules required", prompt_msg, QtWidgets.QMessageBox.Ok)
+
+        # (3) If a drainage network is to be used as guidance, has one been selected or not?
         if self.ui.infrastructure_check.isChecked() and self.ui.storm_combo.currentIndex() == 0:
             prompt_msg = "You opted to use a drainage layer to aid delineation, but none has been selected! Please" \
                          "select a valid drainage map!"
