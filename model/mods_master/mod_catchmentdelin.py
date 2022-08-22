@@ -26,8 +26,10 @@ __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 # --- PYTHON LIBRARY IMPORTS ---
 from model.ubmodule import *
 import model.ublibs.ubdatatypes as ubdata
+import model.ublibs.ubspatial as ubspatial
 
 import numpy as np
+from shapely.geometry import Polygon, LineString
 
 class DelineateFlowSubCatchments(UBModule):
     """ Delineates water flow paths and sub-catchments across the simulation grid. These flowpaths are topogrpahically
@@ -56,6 +58,7 @@ class DelineateFlowSubCatchments(UBModule):
         self.yllcorner = None
         self.assetident = ""
         self.nodata = None
+        self.asset_drain_map = []
 
         # MODULE PARAMETERS
         self.create_parameter("assetcolname", STRING, "Name of the asset collection to use")
@@ -105,7 +108,8 @@ class DelineateFlowSubCatchments(UBModule):
         self.notify("Removed "+str(flowpath_count)+" flowpath assets.")
 
         # CLEAN THE ATTRIBUTES LIST
-        att_schema = ["Outlet", "BasinID", "DownstrIDs", "UpstrIDs", "h_pond", "avg_slope", "max_dz", "downID"]
+        att_schema = ["Outlet", "BasinID", "DownstrIDs", "UpstrIDs", "h_pond", "avg_slope", "max_dz", "downID",
+                      "HasDrain"]
         grid_assets = self.assets.get_assets_with_identifier(self.assetident)
         att_reset_count = 0
         for i in range(len(grid_assets)):
@@ -137,8 +141,8 @@ class DelineateFlowSubCatchments(UBModule):
         self.notify_progress(10)
 
         # --- SECTION 2 - If built-infrastructure is included to guide the delineation, grab this information first
-        # [TO DO]
-
+        if self.guide_built:
+            self.find_stormdrains_in_assets()       # Adds the "HasDrain" attribute
         self.notify_progress(40)
 
         # --- SECTION 3 - Flowpath Delineation
@@ -172,6 +176,37 @@ class DelineateFlowSubCatchments(UBModule):
     # ==========================================
     # OTHER MODULE METHODS
     # ==========================================
+    def find_stormdrains_in_assets(self):
+        """Intersects all Blocks with all loaded infrastructure data and collates a list of simgrid items that contain
+        a stormwater/wastewater drainage network that will aid the delineation of flowpaths and sub-catchments."""
+        drainmap = self.datalibrary.get_data_with_id(self.built_map)
+        filename = drainmap.get_metadata("filename")
+        fullpath = drainmap.get_data_file_path() + filename
+        self.notify("Loading Drainage Map: "+str(filename))
+
+        drainfeats = ubspatial.import_linear_network(fullpath, "LINES", (self.xllcorner, self.yllcorner))
+        self.notify("Total Drainage Features to check: "+str(len(drainfeats)))
+
+        assets_with_drainage_data = []
+        for i in range(len(self.griditems)):
+            curasset = self.griditems[i]
+            curassetid = curasset.get_attribute(self.assetident)
+            if curasset.get_attribute("Status") == 0:
+                continue
+            coordinates = curasset.get_points()
+            gridpoly = Polygon([(c[0], c[1]) for c in coordinates])
+
+            hasdrain = 0
+            for j in range(len(drainfeats)):
+                path = LineString(drainfeats[j].get_points())
+                if not path.intersects(gridpoly):
+                    continue
+                else:
+                    hasdrain = 1
+                    break       # As soon as one drainage line has been identified, continue
+            curasset.add_attribute("HasDrain", hasdrain)
+        return True
+
     def regular_grid_flowpath_delineation(self):
         """Delineates the flow paths according to the chosen method and saves the information to the blocks.
 
@@ -492,3 +527,94 @@ class DelineateFlowSubCatchments(UBModule):
             hash_table[0].append(curassetid)
             hash_table[1].append(curasset.get_attribute("downID"))    # [ID or -2]
         return hash_table
+
+    # FUTURE - [TO DO] - D-inf Code
+    def find_downstream_dinf(self, z, nhd_z):
+        """Adapted D-infinity method to only direct water in one direction based on the steepest slope
+        of the 8 triangular facets surrounding a Block's neighbourhood and a probabilistic choice weighted
+        by the propotioning of flow. This is the stochastic option of flowpath delineation for UrbanBEATS
+        and ONLY works with the Moore neighbourhood.
+
+        :param z: elevation of the current central Block
+        :param nhd_z: :param nhd_z: elevation of all its neighbours and corresponding IDs [[IDs], [Z-values]]
+        :return:
+        """
+        pass    # [TO DO]
+        # FROM LEGACY CODE
+        # facetdict = {}  # Stores all the information about the 8 facets
+        # facetdict["e1"] = ["E", "N", "N", "W", "W", "S", "S", "E"]
+        # facetdict["e2"] = ["NE", "NE", "NW", "NW", "SW", "SW", "SE", "SE"]
+        # facetdict["ac"] = [0, 1, 1, 2, 2, 3, 3, 4]
+        # facetdict["af"] = [1, -1, 1, -1, 1, -1, 1, -1]
+        # cardin = {"E": 0, "NE": 1, "N": 2, "NW": 3, "W": 4, "SW": 5, "S": 6, "SE": 7}
+        #
+        # e0 = currentZ  # CONSTANT PARAMETERS (because of constant block grid and centre point)
+        # d1 = blocksize
+        # d2 = d1
+        # facetangles = [0, math.pi / 4, math.pi / 2, 3 * math.pi / 4, math.pi, 5 * math.pi / 4, 3 * math.pi / 2,
+        #                7 * math.pi / 4]
+        #
+        # # Re-sort the neighbours matrix based on polar angle
+        # sortedneighb = [neighboursZ[3], neighboursZ[4], neighboursZ[0], neighboursZ[5], neighboursZ[2], neighboursZ[7],
+        #                 neighboursZ[1], neighboursZ[6]]
+        # rmatrix = []
+        # smatrix = []
+        #
+        # for i in range(len(sortedneighb)):  # Calculate slopes of all 8 facets
+        #     currentfacet = i
+        #
+        #     e1 = sortedneighb[
+        #         cardin[facetdict["e1"][currentfacet]]]  # e1 elevation:  (1) get cardinal direction from dictionary,
+        #     #               (2) get the index from cardin and
+        #     e2 = sortedneighb[cardin[facetdict["e2"][currentfacet]]]  # (3) get the value from neighbz
+        #
+        #     ac = facetdict["ac"][currentfacet]
+        #     af = facetdict["af"][currentfacet]
+        #
+        #     s1 = (e0 - e1) / d1
+        #     s2 = (e1 - e2) / d2
+        #     r = math.atan(s2 / s1)
+        #     s = math.sqrt(math.pow(s1, 2) + math.pow(s2, 2))
+        #
+        #     if r < 0:
+        #         r = 0
+        #         s = s1
+        #     elif r > math.atan(d2 / d1):
+        #         r = math.atan(d2 / d1)
+        #         s = (e0 - e2) / math.sqrt(math.pow(d1, 2) + math.pow(d2, 2))
+        #
+        #     rmatrix.append(r)
+        #     smatrix.append(s)
+        #
+        # # Find the maximum slope and get the angle
+        # rmax = max(rmatrix)
+        # rg = af * rmax + ac * math.pi / 2.0
+        #
+        # # Find the facet
+        # for i in range(len(facetangles)):
+        #     if rg > facetangles[i]:
+        #         continue
+        #     else:
+        #         facet = i - 1
+        #         theta1 = facetangles[i - 1]
+        #         theta2 = facetangles[i]
+        # # Adjust angles based on rg to get proportions
+        # alpha1 = rg - theta1
+        # alpha2 = theta2 - rg
+        # p1 = alpha1 / (alpha1 + alpha2)
+        # p2 = alpha2 / (alpha2 + alpha1)
+        #
+        # print(f"Proportioned Flows: {p1}, {p2}")
+        #
+        # if rand.random() < p1:
+        #     choice = p1
+        #     directionfacet = int(theta1 / (math.pi / 4))
+        # else:
+        #     choice = p2
+        #     directionfacet = int(theta2 / (math.pi / 4))
+        #
+        # print(f"Choice: {choice}")
+        #
+        # direction = neighboursZ.index(sortedneighb[directionfacet - 1])
+        # return direction, max_Zdrop
+        return True
