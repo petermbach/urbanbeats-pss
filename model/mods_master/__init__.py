@@ -39,10 +39,10 @@ from .mod_waterdemand import WaterDemandMapping
 #from .mod_circuitscape import Circuitscape
 #from .mod_biodiversitynetwork import AnalyzeBiodiversityNetwork
 
-# --- BGI TECHNOLOGIES MODULES ---
-#from .mod_ssanto import SSANTO
-#from .mod_wsudopportunity import BGIOpportunities
-#from .mod_bgilayoutgen import BGILayoutGeneration
+# --- NbS PLANNING AND DESIGN MODULES ---
+from .mod_nbssuitabilitymap import NbSSuitabilityMapping
+from .mod_nbsdesigntoolbox import NbSDesignToolboxSetup
+from .mod_nbslayoutgen import NbSLayoutGeneration
 
 # --- SOCIAL ANALYSIS ---
 from .mod_define_stakeholders import DefineStakeholders
@@ -57,6 +57,7 @@ MODULES_CATS = ["Spatial Representation",
                 "Urban Climatology",
                 "Urban Ecology",
                 "Technology Planning",
+                "NbS Planning and Design",
                 "Social Analysis"]
 
 # For main code:

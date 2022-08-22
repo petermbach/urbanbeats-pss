@@ -1,6 +1,7 @@
 __all__ = ["mod_simgrid_guic", "mod_mapregions_guic", "mod_topography_guic", "mod_landuse_import_guic",
            "mod_population_guic", "mod_natural_features_guic", "mod_catchmentdelin_guic", "mod_cbdanalysis_guic",
-           "mod_urbanformgen_guic", "mod_waterdemand_guic"
+           "mod_urbanformgen_guic", "mod_waterdemand_guic", "mod_nbsdesigntoolbox_guic", "mod_nbslayoutgen_guic",
+           "mod_nbssuitability_guic"
            ]
 
 # --- SPATIAL REPRESENTATION MODULES ---
@@ -43,10 +44,10 @@ from .mod_waterdemand_guic import WaterDemandLaunch
 # from .mod_circuitscape_guic import CircuitscapeLaunch
 # from .mod_biodiversitynetwork_guic import AnalyzeBiodiversityNetworkLaunch
 
-# --- BGI TECHNOLOGIES MODULES ---
-#from .mod_ssanto_guic import SSANTOLaunch
-#from .mod_wsudopportunity_guic import BGIOpportunitiesLaunch
-#from .mod_bgilayoutgen_guic import BGILayoutGenerationLaunch
+# --- NbS TECHNOLOGIES MODULES ---
+from .mod_nbssuitability_guic import NbSSuitabilityAssessmentLaunch
+from .mod_nbsdesigntoolbox_guic import NbSDesignToolboxSetupLaunch
+from .mod_nbslayoutgen_guic import NbSLayoutGenerationLaunch
 
 # --- SOCIAL ANALYSIS ---
 # from .mod_define_stakeholders_guic import DefineStakeholdersLaunch
