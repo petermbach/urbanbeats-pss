@@ -159,7 +159,7 @@ class CatchmentDelineationLaunch(QtWidgets.QDialog):
 
     def enable_disable_guis(self):
         self.ui.storm_combo.setEnabled(self.ui.infrastructure_check.isChecked())
-        self.ui.ignore_lakes_check.setEnabled(self.ui.natfeature_check.isChecked())
+        self.ui.ignore_rivers_check.setEnabled(self.ui.natfeature_check.isChecked())
         self.ui.ignore_lakes_check.setEnabled(self.ui.natfeature_check.isChecked())
 
     def setup_gui_with_parameters(self):
@@ -190,8 +190,12 @@ class CatchmentDelineationLaunch(QtWidgets.QDialog):
         else:
             self.module.set_parameter("built_map", self.stormmaps[1][self.ui.storm_combo.currentIndex() - 1])
 
-        self.module.set_parameter("ignore_rivers", int(self.ui.ignore_rivers_check.isChecked()))
-        self.module.set_parameter("ignore_lakes", int(self.ui.ignore_lakes_check.isChecked()))
+        if not self.ui.natfeature_check.isChecked():    # if the use natural features checkbox is unchecked
+            self.module.set_parameter("ignore_rivers", 1)       # Ignore these features by default!
+            self.module.set_parameter("ignore_lakes", 1)
+        else:       # Otherwise set them based on what has been set
+            self.module.set_parameter("ignore_rivers", int(self.ui.ignore_rivers_check.isChecked()))
+            self.module.set_parameter("ignore_lakes", int(self.ui.ignore_lakes_check.isChecked()))
 
     def update_progress_bar_value(self, value):
         """Updates the progress bar of the Main GUI when the simulation is started/stopped/reset. Also disables the

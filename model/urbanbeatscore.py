@@ -872,7 +872,7 @@ class UrbanBeatsSim(object):
         meta = asset_col.get_assets_with_identifier("meta")[0]          # And its metadata
 
         typename_geoms = {"Block": "POLYGON", "Hex": "POLYGON", "Fish": "POLYGON", "Geohash": "POLYGON",
-                          "Patch": "POLYGON", "Parcel": "POLYGON", "Cell": "POINT",
+                          "Patch": "POLYGON", "Parcel": "POLYGON", "Cell": "POINT", "Flowpath": "LINE",
                           "Centroid": "POINT", "Network": "LINE"}
 
         # Now identify which assets to export and loop through these

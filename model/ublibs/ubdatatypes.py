@@ -197,6 +197,15 @@ class UBComponent(object):
         """Returns the entire dictionary, use sparingly or primarily for exporting data."""
         return self.__attributes
 
+    def remove_attribute(self, name):
+        """Removes the attribute from the attributes list with the given 'name'."""
+        try:
+            self.__attributes.pop(name)
+            return True
+        except KeyError:
+            return False
+
+
 class UBStakeholder(UBComponent):
     """UrbanBEATS Stakeholder Data Format, inherited from UBComponent, it stores stakeholder based information and also
     location data if this is present. The location data is stored as a shapely geometry for quick processing of geo-

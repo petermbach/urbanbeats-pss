@@ -96,6 +96,24 @@ class DelineateFlowSubCatchments(UBModule):
             self.notify("Cannot start module! No elevation data. Please run the Map Topography module first")
             return False
 
+        # Check if the asset collection already has Flowpath Assets, if yes, remove them
+        flowpath_count = 0
+        flowpath_assets = self.assets.get_assets_with_identifier("FlowpathID")
+        for i in range(len(flowpath_assets)):
+            self.assets.remove_asset_by_name(flowpath_assets[i].get_attribute("FlowpathID"))
+            flowpath_count += 1
+        self.notify("Removed "+str(flowpath_count)+" flowpath assets.")
+
+        # CLEAN THE ATTRIBUTES LIST
+        att_schema = ["Outlet", "BasinID", "DownstrIDs", "UpstrIDs", "h_pond", "avg_slope", "max_dz", "downID"]
+        grid_assets = self.assets.get_assets_with_identifier(self.assetident)
+        att_reset_count = 0
+        for i in range(len(grid_assets)):
+            for att in att_schema:
+                if grid_assets[i].remove_attribute(att):
+                    att_reset_count += 1
+        self.notify("Removed "+str(att_reset_count)+" attribute entries.")
+
         self.meta.add_attribute("mod_catchmentdelin", 1)
         self.assetident = self.meta.get_attribute("AssetIdent")
         self.xllcorner = self.meta.get_attribute("xllcorner")
@@ -126,6 +144,7 @@ class DelineateFlowSubCatchments(UBModule):
         # --- SECTION 3 - Flowpath Delineation
         if self.assetident in ["BlockID", "HexID", "GeohashID"]:        # REGULAR GRID
             self.notify("Regular Grid, running D8/D6 Flowpath Delineation")
+            self.assets.add_asset_type("Flowpath", "Line")
             self.regular_grid_flowpath_delineation()
         elif self.assetident in ["PatchID", "ParcelID"]:        # IRREGULAR GRID
             self.notify("Irregular Grid, running graph-based Flowpath Delineation")
@@ -191,7 +210,7 @@ class DelineateFlowSubCatchments(UBModule):
                 lake_ids.append(curasset)
                 continue
 
-            z = curasset.get_attribute("AvgElev")
+            z = curasset.get_attribute("Elev_Avg")
 
             # Get the neighbouring elevations. This is either the full neighbourhood if we are not using natural or
             # built features as a guide, or the full neighbourhood if neither features are in adjacent neighbour blocks.
@@ -200,11 +219,11 @@ class DelineateFlowSubCatchments(UBModule):
             if self.guide_natural or self.guide_built:      # If we use natural or built features as a guide, then...
                 neighbours_z = self.get_modified_neighbours_z(curasset) # ret. [[ID], [Elevation]]
                 if neighbours_z is None:        # If the current asset has no natural or built features adjacent...
-                    neighbours_z = self.scenario.retrieve_attribute_value_list(self.assetident, "AvgElev",
+                    neighbours_z = self.assets.retrieve_attribute_value_list(self.assetident, "Elev_Avg",
                                                                                curasset.get_attribute(
                                                                                    "Neighbours"))
             else:
-                neighbours_z = self.scenario.retrieve_attribute_value_list(self.assetident, "AvgElev",
+                neighbours_z = self.assets.retrieve_attribute_value_list(self.assetident, "Elev_Avg",
                                                                            curasset.get_attribute("Neighbours"))
             print(f"Neighbour Z: {neighbours_z}")
 
@@ -213,7 +232,7 @@ class DelineateFlowSubCatchments(UBModule):
             flow_id, max_zdrop = self.find_downstream_d8(z, neighbours_z)
 
             if flow_id == -9999:  # if no flowpath has been found
-                sink_ids.append(curasset)
+                sink_ids.append(curassetid)
                 downstream_id = -1  # Block is a possible sink. if -2 --> block is a catchment outlet
             else:
                 downstream_id = flow_id
@@ -222,7 +241,7 @@ class DelineateFlowSubCatchments(UBModule):
             if flow_id == -9999:
                 avg_slope = 0
             else:
-                down_block = self.scenario.get_asset_with_name(self.assetident + str(downstream_id))
+                down_block = self.assets.get_asset_with_name(self.assetident + str(downstream_id))
                 dx = curasset.get_attribute("CentreX") - down_block.get_attribute("CentreX")
                 dy = curasset.get_attribute("CentreY") - down_block.get_attribute("CentreY")
                 dist = float(np.sqrt((dx * dx) + (dy * dy)))
@@ -236,8 +255,8 @@ class DelineateFlowSubCatchments(UBModule):
 
             # Draw Networks
             if downstream_id != -1 and downstream_id != 0:
-                network_link = self.draw_flow_path(curasset, 1, "Centre")
-                self.scenario.add_asset("FlowpathID" + str(curassetid), network_link)
+                network_link = self.draw_flow_path(curasset, "Draining", "Centre")
+                self.assets.add_asset("FlowpathID" + str(curassetid), network_link)
 
         # Unblock the Sinks
         self.unblock_sinks(sink_ids, "Centre")
@@ -257,15 +276,15 @@ class DelineateFlowSubCatchments(UBModule):
         nhd_z = [[], []]
         # Scan neighbourhood for Blocks with Rivers/Lakes
         for n in nhd:
-            nblock = self.scenario.get_asset_with_name(self.assetident + str(n))
+            nblock = self.assets.get_asset_with_name(self.assetident + str(n))
             if self.guide_natural:
                 if nblock.get_attribute("HasRiver") or nblock.get_attribute("HasLake"):
                     nhd_z[0].append(n)
-                    nhd_z[1].append(nblock.get_attribute("AvgElev"))
+                    nhd_z[1].append(nblock.get_attribute("Elev_Avg"))
             if self.guide_built:
                 if nblock.get_attribute("HasDrain") and n not in nhd_z[0]:
                     nhd_z[0].append(n)
-                    nhd_z[1].append(nblock.get_attribute("AvgElev"))
+                    nhd_z[1].append(nblock.get_attribute("Elev_Avg"))
         if len(nhd_z[0]) == 0:
             return None
         else:
@@ -291,31 +310,32 @@ class DelineateFlowSubCatchments(UBModule):
         :param sink_ids: a list of BlockIDs where a sink is believe to exist based on the flowpath method.
         :return: adds new assets to the scenario if a flowpath has been found for the sinks
         """
+        print("Sink IDs", sink_ids)
         for i in range(len(sink_ids)):
             current_sinkid = sink_ids[i]
             self.notify("Attemtping to unblock flow from "+ self.assetident + str(current_sinkid))
-            curasset = self.scenario.get_asset_with_name(self.assetident+str(current_sinkid))
+            curasset = self.assets.get_asset_with_name(self.assetident + str(current_sinkid))
 
             if curasset.get_attribute("HasRiver") or curasset.get_attribute("HasLake"):
                 # If the Block is a river or lake block, do not attempt to unblock it
                 curasset.set_attribute("downID", -2)  # signifies that Block is an outlet
                 continue
 
-            z = curasset.get_attribute("AvgElev")
+            z = curasset.get_attribute("Elev_Avg")
             nhd = curasset.get_attribute("Neighbours")
             possible_id_drains = []
             possible_id_z = []
             possibility = 0
 
             for j in nhd:
-                nhd_blk = self.scenario.get_asset_with_name(self.assetident+str(j))
+                nhd_blk = self.assets.get_asset_with_name(self.assetident+str(j))
                 if nhd_blk.get_attribute("Status") == 0:
                     continue    # Continue if nhd block has zero status
 
                 nhd_downid = nhd_blk.get_attribute("downID")
                 if nhd_downid not in [current_sinkid, -1] and nhd_downid not in nhd:
                     possible_id_drains.append(j)
-                    possible_id_z.append(nhd_blk.get_attribute("AvgElev") - z)
+                    possible_id_z.append(nhd_blk.get_attribute("Elev_Avg") - z)
                     possibility += 1
 
             if possibility > 0:
@@ -325,7 +345,7 @@ class DelineateFlowSubCatchments(UBModule):
                 curasset.set_attribute("downID", sink_to_id)   # Overwrite -1 to new ID
                 curasset.set_attribute("h_pond", sink_path)    # If ponding depth > 0, then there was a sink
                 network_link = self.draw_flow_path(curasset, "Ponded", pt_attribute)
-                self.scenario.add_asset("FlowpathID" + str(curasset.get_attribute(self.assetident)), network_link)
+                self.assets.add_asset("FlowpathID" + str(curasset.get_attribute(self.assetident)), network_link)
             else:
                 curasset.set_attribute("downID", -2)   # signifies that Block is an outlet
         return True
@@ -340,16 +360,16 @@ class DelineateFlowSubCatchments(UBModule):
         """
         current_id = curasset.get_attribute(self.assetident)
         downstream_id = curasset.get_attribute("downID")
-        down_block = self.scenario.get_asset_with_name(self.assetident+str(downstream_id))
+        down_block = self.assets.get_asset_with_name(self.assetident+str(downstream_id))
 
         x_up = curasset.get_attribute(pt_attribute+"X")
         y_up = curasset.get_attribute(pt_attribute+"Y")
-        z_up = curasset.get_attribute("AvgElev")
+        z_up = curasset.get_attribute("Elev_Avg")
         up_point = (x_up, y_up, z_up)
 
         x_down = down_block.get_attribute(pt_attribute+"X")
         y_down = down_block.get_attribute(pt_attribute+"Y")
-        z_down = down_block.get_attribute("AvgElev")
+        z_down = down_block.get_attribute("Elev_Avg")
         down_point = (x_down, y_down, z_down)
 
         network_link = ubdata.UBVector((up_point, down_point))
@@ -384,5 +404,91 @@ class DelineateFlowSubCatchments(UBModule):
         return down_id, min(dz)
 
     def delineate_basin_structures(self):
-        pass
-        return True
+        """Delineates sub-basins across the entire blocksmap specified by the collection of blocks in 'blockslist'.
+        Returns the number of sub-basins in the map, but also writes BasinID information to each Block. Delineation is
+        carried out by creating a hash table of BlockID and downstream ID.
+
+        Each block is scanned and all its upstream and downstream Block IDs identified, each is also assigned a
+        BasinID.
+
+        :param blocklist: the list [] of UBVector() instances that represent Blocks
+        :return: number of total basins. Also writes the "BasinID" attribute to each Block.
+        """
+        hash_table = self.create_flowpath_hashtable()  # Start by creating a hash tables
+        basin_id = 0  # Set Basin ID to zero, it will start counting up as soon as basins are found
+
+        for i in range(len(self.griditems)):  # Loop  across all Blocks
+            curasset = self.griditems[i]
+            if curasset.get_attribute("Status") == 0:
+                continue  # Skip if Status = 0
+
+            # Check if the Block is a single-basin Block
+            curassetid = curasset.get_attribute(self.assetident)
+            if curassetid not in hash_table[1]:  # If the current Block not downstream of something...
+                curasset.add_attribute("UpstrIDs", [])  # ...then it has NO upstream IDs (empty list)
+                if curassetid in hash_table[0]:  # ... if it is in the first column of the hash table
+                    if hash_table[1][hash_table[0].index(curassetid)] == -2:  # if its second column is -2
+                        self.notify("Found a single unit basin at "+ self.assetident + str(curassetid))
+                        basin_id += 1  # Then we have found a single-block Basin
+                        curasset.add_attribute("BasinID", basin_id)
+                        curasset.add_attribute("DownstrIDs", [])
+                        curasset.add_attribute("Outlet", 1)
+                        continue
+
+            # Search the current Block for its upstream IDs
+            upstream_ids = [curassetid]  # Otherwise current ID DOES have upstream blocks
+            for uid in upstream_ids:  # Begin scanning! Note that upstream_ids will grow in length!
+                for j in range(len(hash_table[1])):
+                    if uid == hash_table[1][j]:
+                        if hash_table[0][j] not in upstream_ids:  # Only want unique upstream_ids!
+                            upstream_ids.append(hash_table[0][j])  # Slowly append more IDs to the hash_table
+
+            # Once scan is complete, remove the current Block's ID from the list as it is NOT upstream of itself.
+            upstream_ids.remove(curassetid)
+            self.notify(self.assetident + str(curassetid) + " Upstream: " + str(upstream_ids))
+            curasset.add_attribute("UpstrIDs", upstream_ids)
+
+            # Repeat the whole process now for the downstream IDs
+            downstream_ids = [curassetid]
+            for uid in downstream_ids:
+                for j in range(len(hash_table[0])):
+                    if uid == hash_table[0][j]:
+                        if hash_table[1][j] not in downstream_ids:
+                            downstream_ids.append(hash_table[1][j])
+
+            # Once scan is complete, remove the current Block's ID from the list as it is NOT downstream of itself.
+            downstream_ids.remove(curassetid)
+            # downstream_ids.remove(-2)   # Also remove the -2, which is specified if the Outlet Block is found
+            self.notify(self.assetident + str(curassetid) + " DownstreamL " + str(downstream_ids))
+            curasset.add_attribute("DownstrIDs", downstream_ids)
+
+            # Now assign Basin IDs, do this if the current Block has downstream ID -2
+            if hash_table[1][hash_table[0].index(curassetid)] == -2:  # If the block is an outlet
+                self.notify("Found a basin outlet at " + self.assetident + str(curassetid))
+                basin_id += 1
+                curasset.add_attribute("BasinID", basin_id)  # Set the current Basin ID
+                curasset.add_attribute("Outlet", 1)  # Outlet = TRUE at current Block
+                for j in upstream_ids:
+                    upblock = self.assets.get_asset_with_name(self.assetident + str(j))
+                    upblock.add_attribute("BasinID", basin_id)  # Assign basin ID to all upstream blocks
+                    upblock.add_attribute("Outlet", 0)  # Upstream blocks are NOT outlets!
+
+        self.notify("Total Basins in the Case Study: " + str(basin_id))
+        print(f"Total Basins in the Case Study: {basin_id}")
+        return basin_id  # The final count indicates how many basins were found
+
+    def create_flowpath_hashtable(self):
+        """Creates a hash table of AssetIDs for quick lookup, this allows the basin delineation algorithm to rapidly
+        delineate the sub-catchment
+
+        :return: a 2D list [ [upstreamID], [downstreamID] ]
+        """
+        hash_table = [[], []]     # COL#1: ID (upstream), COL#2: ID (downstream)
+        for i in range(len(self.griditems)):
+            curasset = self.griditems[i]
+            curassetid = curasset.get_attribute(self.assetident)
+            if curasset.get_attribute("Status") == 0:
+                continue
+            hash_table[0].append(curassetid)
+            hash_table[1].append(curasset.get_attribute("downID"))    # [ID or -2]
+        return hash_table
