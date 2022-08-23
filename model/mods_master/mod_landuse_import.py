@@ -203,7 +203,7 @@ class MapLandUseToSimGrid(UBModule):
                     mdata.append(luccat)
                     areavector.append(isectionarea)
 
-            if len(mdata) == 0 or mdata is None:
+            if mdata.size == 0 or mdata is None:
                 self.notify(self.assetident+ str(curassetid) + " not within bounds or has no land use data, skipping!")
                 self.set_landuse_to_none(curasset)
                 continue
@@ -235,7 +235,7 @@ class MapLandUseToSimGrid(UBModule):
 
             mdata = ubspatial.retrieve_raster_data_from_mask(self.landusemap, curasset, self.xllcorner, self.yllcorner)
 
-            if mdata is None or len(mdata) == 0:
+            if mdata is None or mdata.size == 0:
                 self.notify(self.assetident + str(curassetid) + " not within bounds or has no land use data, skipping!")
                 self.set_landuse_to_none(curasset)
                 continue
@@ -304,7 +304,7 @@ class MapLandUseToSimGrid(UBModule):
                     if j[1].area == isectionarea:  # If the polygon is fully within the feature...
                         lutracker.append(j)    # Add to the list of items to remove at the end of the loop
 
-            if len(mdata) == 0 or mdata is None:
+            if mdata.size == 0 or mdata is None:
                 self.notify(self.assetident+ str(curassetid) + " not within bounds or has no land use data, skipping!")
                 self.set_landuse_to_none(curasset)
                 continue

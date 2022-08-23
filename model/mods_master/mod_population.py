@@ -196,7 +196,7 @@ class MapPopulationToSimGrid(UBModule):
                 asset.add_attribute("Population", 0)
                 continue
 
-            if len(mdata) == 0:
+            if mdata.size == 0:
                 asset.add_attribute("Population", 0)
                 continue
             else:       # Work out metric
