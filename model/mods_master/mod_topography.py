@@ -163,7 +163,7 @@ class MapTopographyToSimGrid(UBModule):
                 continue
 
             # Write the basic extracted data to the attributes list
-            if len(mdata) == 0:       # If no data leftover, assign cells as self.nodata
+            if mdata.size == 0:       # If no data leftover, assign cells as self.nodata
                 asset.add_attribute("Elev_Avg", self.nodata)
                 asset.add_attribute("Elev_Min", self.nodata)
                 asset.add_attribute("Elev_Max", self.nodata)

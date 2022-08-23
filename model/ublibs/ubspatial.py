@@ -31,6 +31,7 @@ import rasterio
 import rasterio.features
 import os, math
 import geopandas as gpd
+import numpy as np
 
 # URBANBEATS IMPORT
 from . import ubdatatypes as ubdata
@@ -64,9 +65,9 @@ def retrieve_raster_data_from_mask(rastermap, asset, xllcorner, yllcorner, debug
         datapoint = rastermap.read(1)[loc[0], loc[1]]
         # if debug: print(datapoint)
         if datapoint == rastermap.nodata:
-            return []
+            return np.array([])
         else:
-            return [datapoint]
+            return np.array([datapoint])
 
 
     maskoffsets = [assetpoly.bounds[0], assetpoly.bounds[1]]  # Offsets for the local mask
@@ -128,9 +129,9 @@ def retrieve_raster_data_from_mask(rastermap, asset, xllcorner, yllcorner, debug
         datapoint = rastermap.read(1)[loc[0], loc[1]]
         # if debug: print(datapoint)
         if datapoint == rastermap.nodata:
-            return []
+            return np.array([])
         else:
-            return [datapoint]
+            return np.array([datapoint])
     return extractdata
 
 
