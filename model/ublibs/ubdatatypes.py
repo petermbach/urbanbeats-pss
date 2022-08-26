@@ -231,11 +231,17 @@ class UBStakeholder(UBComponent):
 
 class UBVector(UBComponent):
     """UrbanBEATS Vector Data Format, inherited from UBComponent, it stores geometric information
-    for polygons, lines and points along with the ability to hold attributes."""
-    def __init__(self, points, edges=None):
+    for polygons, lines and points along with the ability to hold attributes.
+
+    :param points: A tuple list of points belonging to the Vector Component
+    :param edges: A list of edges belonging to the Vector Component
+    :param interior: A list of polygon coordinates if the feature is a Polygon with a hole (i.e., a donut)
+    """
+    def __init__(self, points, edges=None, interiors=None):
         UBComponent.__init__(self)
         self.__dtype = ""
         self.__points = points     # Required to draw the geometry
+        self.__interiors = interiors
         self.__edges = edges
         self.__extents = []
         self.__centroidXY = []
@@ -243,7 +249,7 @@ class UBVector(UBComponent):
         # self.__edges has None type if the data type is a point otherwise a tuple array of edges
         # of format ( ( (x1, y1), (x2, y2) ), ( ... ),  ... )
 
-        self.determine_geometry(self.__points)
+        self.determine_geometry()
 
     def set_epsg(self, epsg):
         """Sets the native EPSG coordinate system code of the UBVector"""
@@ -262,12 +268,15 @@ class UBVector(UBComponent):
         if currentgeometry != self.__dtype:
             print("WARNING: GEOMETRY TYPE HAS CHANGED!")
 
-    def get_points(self):
+    def get_points(self, option=None):
         """Returns an array of points (tuples), each having (x, y, z) sets of
         coordinates"""
         if len(self.__points) == 1:     # If the feature is simply a POINT features, then just return the x, y as tuple
             return self.__points[0]     # This catches the exception in scripts with points.
-        return self.__points
+        if option is None:
+            return self.__points
+        if option == "all":
+            return self.__points, self.__interiors
 
     def get_edges(self):
         """Returns an array of edges (tuples), each having two pts with (x, y, z) sets of coordinates."""
@@ -314,15 +323,15 @@ class UBVector(UBComponent):
             pass
         return False
 
-    def determine_geometry(self, coordinates):
+    def determine_geometry(self):
         """Determines what kind of geometry the current instance is and stores the type in
         the self.__dtype attribute."""
-        if len(coordinates) == 1:
+        if len(self.__points) == 1:
             self.__dtype = "POINT"
-        elif len(coordinates) == 2:
+        elif len(self.__points) == 2:
             self.__dtype = "LINE"
-        elif len(coordinates) > 2:
-            if coordinates[0] == coordinates[len(coordinates) - 1]:
+        elif len(self.__points) > 2:
+            if self.__points[0] == self.__points[len(self.__points) - 1]:
                 self.__dtype = "FACE"
             else:
                 self.__dtype = "POLYLINE"

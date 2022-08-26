@@ -321,13 +321,13 @@ class CreateSimGrid(UBModule):
         bs = self.meta.get_attribute("BlockSize")
 
         # Define points
-        n1 = (x * bs, y * bs, 0)  # Bottom left (x, y, z)
-        n2 = ((x + 1) * bs, y * bs, 0)  # Bottom right
-        n3 = ((x + 1) * bs, (y + 1) * bs, 0)  # Top right
-        n4 = (x * bs, (y + 1) * bs, 0)  # Top left
+        n1 = (x * bs, y * bs)  # Bottom left (x, y, z)
+        n2 = ((x + 1) * bs, y * bs)  # Bottom right
+        n3 = ((x + 1) * bs, (y + 1) * bs)  # Top right
+        n4 = (x * bs, (y + 1) * bs)  # Top left
 
         # Create the Shapely Polygon and test against the boundary to determine active/inactive.
-        blockpoly = Polygon((n1[:2], n2[:2], n3[:2], n4[:2]))
+        blockpoly = Polygon((n1, n2, n3, n4))
         if Polygon.intersects(self.boundarypoly, blockpoly):    # Define edges
             e1 = (n1, n2)  # Bottom left to bottom right
             e2 = (n2, n3)  # Bottom right to top right
@@ -335,7 +335,7 @@ class CreateSimGrid(UBModule):
             e4 = (n1, n4)  # Top left to bottom left
 
             # Define the UrbanBEATS Vector Asset
-            block_attr = ubdata.UBVector((n1, n2, n3, n4, n1), (e1, e2, e3, e4))
+            block_attr = ubdata.UBVector((n1, n2, n3, n4, n1), (e1, e2, e3, e4), interiors=None)
             block_attr.add_attribute("BlockID", int(idnum))  # ATTRIBUTE: Block Identification
 
             xcentre = x * bs + 0.5 * bs
@@ -503,26 +503,26 @@ class CreateSimGrid(UBModule):
         shift_factor = float('%.5f' % (0.5 * h_factor * (y % 2)))
         anchorX = x * h_factor - 0.5 * h_factor + shift_factor
         anchorY = y * 1.5 * hs + 0.5 * hs
-        h1 = (anchorX, anchorY, 0)
-        h2 = (h1[0], h1[1] - hs, 0)
-        h3 = (h1[0] + 0.5 * h_factor, h1[1] - 1.5 * hs, 0)
-        h4 = (h1[0] + h_factor, h1[1] - hs, 0)
-        h5 = (h1[0] + h_factor, h1[1], 0)
-        h6 = (h1[0] + 0.5 * h_factor, h1[1] + 0.5 * hs, 0)
+        h1 = (anchorX, anchorY)
+        h2 = (h1[0], h1[1] - hs)
+        h3 = (h1[0] + 0.5 * h_factor, h1[1] - 1.5 * hs)
+        h4 = (h1[0] + h_factor, h1[1] - hs)
+        h5 = (h1[0] + h_factor, h1[1])
+        h6 = (h1[0] + 0.5 * h_factor, h1[1] + 0.5 * hs)
 
         # Create the Shapely Polygon and test against the boundary to determine active/inactive
-        blockpoly = Polygon((h1[:2], h2[:2], h3[:2], h4[:2], h5[:2], h6[:2]))
+        blockpoly = Polygon((h1, h2, h3, h4, h5, h6))
         if Polygon.intersects(self.boundarypoly, blockpoly):
             # Define edges (as integers down to the nearest [m])
-            e1 = ((int(h2[0]), int(h2[1]), 0), (int(h1[0]), int(h1[1]), 0))  # Left edge (2, 1)
-            e2 = ((int(h2[0]), int(h2[1]), 0), (int(h3[0]), int(h3[1]), 0))  # Left bottom (2, 3)
-            e3 = ((int(h3[0]), int(h3[1]), 0), (int(h4[0]), int(h4[1]), 0))  # Right bottom (3, 4)
-            e4 = ((int(h4[0]), int(h4[1]), 0), (int(h5[0]), int(h5[1]), 0))  # Right edge (4, 5)
-            e5 = ((int(h6[0]), int(h6[1]), 0), (int(h5[0]), int(h5[1]), 0))  # Right top (6, 5)
-            e6 = ((int(h1[0]), int(h1[1]), 0), (int(h6[0]), int(h6[1]), 0))  # Left top (1, 6)
+            e1 = ((int(h2[0]), int(h2[1])), (int(h1[0]), int(h1[1])))  # Left edge (2, 1)
+            e2 = ((int(h2[0]), int(h2[1])), (int(h3[0]), int(h3[1])))  # Left bottom (2, 3)
+            e3 = ((int(h3[0]), int(h3[1])), (int(h4[0]), int(h4[1])))  # Right bottom (3, 4)
+            e4 = ((int(h4[0]), int(h4[1])), (int(h5[0]), int(h5[1])))  # Right edge (4, 5)
+            e5 = ((int(h6[0]), int(h6[1])), (int(h5[0]), int(h5[1])))  # Right top (6, 5)
+            e6 = ((int(h1[0]), int(h1[1])), (int(h6[0]), int(h6[1])))  # Left top (1, 6)
 
             # Define the UrbanBEATS Vector Asset
-            hex_attr = ubdata.UBVector((h1, h2, h3, h4, h5, h6, h1), (e1, e2, e3, e4, e5, e6))
+            hex_attr = ubdata.UBVector((h1, h2, h3, h4, h5, h6, h1), (e1, e2, e3, e4, e5, e6), interiors=None)
             hex_attr.add_attribute("HexID", int(hexidnum))  # ATTRIBUTE: Block identification
 
             xcentre = anchorX + 0.5 * h_factor
@@ -564,26 +564,26 @@ class CreateSimGrid(UBModule):
             '%.5f' % (0.5 * v_factor * (x % 2)))  # in odd column numbers, shift has to be accounted for
         anchorX = x * 1.5 * hs
         anchorY = y * v_factor + (self.mapheight - hex_tall * v_factor) + shift_factor
-        h1 = (anchorX, anchorY, 0)
-        h2 = (h1[0] + hs, h1[1], 0)
-        h3 = (h1[0] + 1.5 * hs, h1[1] + 0.5 * v_factor, 0)
-        h4 = (h1[0] + hs, h1[1] + v_factor, 0)
-        h5 = (h1[0], h1[1] + v_factor, 0)
-        h6 = (h1[0] - 0.5 * hs, h1[1] + 0.5 * v_factor, 0)
+        h1 = (anchorX, anchorY)
+        h2 = (h1[0] + hs, h1[1])
+        h3 = (h1[0] + 1.5 * hs, h1[1] + 0.5 * v_factor)
+        h4 = (h1[0] + hs, h1[1] + v_factor)
+        h5 = (h1[0], h1[1] + v_factor)
+        h6 = (h1[0] - 0.5 * hs, h1[1] + 0.5 * v_factor)
 
         # Create the Shapely Polygon and test against the boundary to determine active/inactive
-        hexpoly = Polygon((h1[:2], h2[:2], h3[:2], h4[:2], h5[:2], h6[:2]))
+        hexpoly = Polygon((h1, h2, h3, h4, h5, h6))
         if Polygon.intersects(self.boundarypoly, hexpoly):
             # Define edges
-            e1 = ((int(h1[0]), int(h1[1]), 0), (int(h2[0]), int(h2[1]), 0))  # Bottom edge (1, 2)
-            e2 = ((int(h2[0]), int(h2[1]), 0), (int(h3[0]), int(h3[1]), 0))  # Bottom right (2, 3)
-            e3 = ((int(h4[0]), int(h4[1]), 0), (int(h3[0]), int(h3[1]), 0))  # Top right (4, 3)
-            e4 = ((int(h5[0]), int(h5[1]), 0), (int(h4[0]), int(h4[1]), 0))  # Top edge (5, 4)
-            e5 = ((int(h6[0]), int(h6[1]), 0), (int(h5[0]), int(h5[1]), 0))  # Top left (6, 5)
-            e6 = ((int(h6[0]), int(h6[1]), 0), (int(h1[0]), int(h1[1]), 0))  # Bottom left (6, 1)
+            e1 = ((int(h1[0]), int(h1[1])), (int(h2[0]), int(h2[1])))  # Bottom edge (1, 2)
+            e2 = ((int(h2[0]), int(h2[1])), (int(h3[0]), int(h3[1])))  # Bottom right (2, 3)
+            e3 = ((int(h4[0]), int(h4[1])), (int(h3[0]), int(h3[1])))  # Top right (4, 3)
+            e4 = ((int(h5[0]), int(h5[1])), (int(h4[0]), int(h4[1])))  # Top edge (5, 4)
+            e5 = ((int(h6[0]), int(h6[1])), (int(h5[0]), int(h5[1])))  # Top left (6, 5)
+            e6 = ((int(h6[0]), int(h6[1])), (int(h1[0]), int(h1[1])))  # Bottom left (6, 1)
 
             # Define the UrbanBEATS Vector Asset
-            hex_attr = ubdata.UBVector((h1, h2, h3, h4, h5, h6, h1), (e1, e2, e3, e4, e5, e6))
+            hex_attr = ubdata.UBVector((h1, h2, h3, h4, h5, h6, h1), (e1, e2, e3, e4, e5, e6), interiors=None)
             hex_attr.add_attribute("HexID", int(hexidnum))  # ATTRIBUTE: Block identification
 
             xcentre = anchorX + 0.5 * hs
@@ -769,7 +769,6 @@ class CreateSimGrid(UBModule):
                         patchIDcount += 1
                         patchlist.append(patch_attr)
         return patchlist
-
 
     def delineate_patches_by_bounds(self, raw_patches):
         boundmap = self.datalibrary.get_data_with_id(self.disgrid_map)

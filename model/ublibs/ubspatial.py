@@ -171,8 +171,8 @@ def import_polygonal_map(filepath, option, naming, global_offsets, **kwargs):
 
     geometry_collection = []
     featurecount = layer.GetFeatureCount()
-    # print(f"Feature Count in Map: {featurecount}")  # For Debugging
-    # print(attnames)    # For Debugging
+    print(f"Feature Count in Map: {featurecount}")  # For Debugging
+    print(attnames)    # For Debugging
 
     for i in range(featurecount):
         feature = layer.GetFeature(i)
@@ -183,43 +183,59 @@ def import_polygonal_map(filepath, option, naming, global_offsets, **kwargs):
         # print(geom)
 
         if geom.GetGeometryName() == "MULTIPOLYGON":
-            for g in geom:
-                ring = g.GetGeometryRef(0)
-                points = ring.GetPointCount()
-                coordinates = []
-                for j in range(points):
-                    coordinates.append((ring.GetX(j) - global_offsets[0], ring.GetY(j) - global_offsets[1]))
-                if option == "RINGPOINTS":
-                    for c in coordinates:
-                        geometry_collection.append(c)
-                elif option == "RINGS":
-                    geometry_collection.append(coordinates)
-                else:
-                    polygon = ubdata.UBVector(coordinates)
-                    polygon.determine_geometry(coordinates)
+            for g in geom:      # For each polygon in the MULTIPOLYGON
+                outer_coords = []   # Holds the main outer ring
+                inner_coords = []   # Holds all inner rings
+                for r in range(g.GetGeometryCount()):     # For each ring in the geometry
+                    ring = g.GetGeometryRef(r)      # If r == 0 --> outer, else inner
+                    points = ring.GetPointCount()
+                    coordinates = []
+                    for j in range(points):
+                        coordinates.append((ring.GetX(j) - global_offsets[0], ring.GetY(j) - global_offsets[1]))
+                    if option == "RINGPOINTS":          # Just all coordinates of polygon vertices
+                        for c in coordinates:
+                            geometry_collection.append(c)       # Just all coordinate sets of rings
+                    elif option == "RINGS":
+                        geometry_collection.append(coordinates)
+                    else:
+                        if r == 0:  # zero-th index = outer ring
+                            outer_coords = coordinates
+                        else:
+                            inner_coords.append(coordinates)
+                if option not in ["RINGPOINTS", "RINGS"]:
+                    polygon = ubdata.UBVector(outer_coords, interiors=inner_coords)
+                    # polygon.determine_geometry(coordinates)
                     polygon.add_attribute("Map_Naming", str(naming)+"_ID"+str(i+1)+"-"+str(j+1))
                     polygon.add_attribute("Area_sqkm", area)
                     for n in attnames:      # Assign all attribute data to the UBVector() instance
                         polygon.add_attribute(str(n), feature.GetFieldAsString(n))
                     geometry_collection.append(polygon)
         else:
-            ring = geom.GetGeometryRef(0)
-            if ring.GetGeometryType() == -2147483645:   # POLYGON25D
-                ring.FlattenTo2D()
-                ring = ring.GetGeometryRef(0)
+            outer_coords = []
+            inner_coords = []
+            for r in range(geom.GetGeometryCount()):
+                ring = geom.GetGeometryRef(r)
+                if ring.GetGeometryType() == -2147483645:   # POLYGON25D
+                    ring.FlattenTo2D()
+                    ring = ring.GetGeometryRef(0)
 
-            points = ring.GetPointCount()
-            coordinates = []
-            for j in range(points):
-                coordinates.append((ring.GetX(j) - global_offsets[0], ring.GetY(j) - global_offsets[1]))
-            if option == "RINGPOINTS":      # Just want a map of points
-                for c in coordinates:
-                    geometry_collection.append(c)
-            elif option == "RINGS":
-                geometry_collection.append(coordinates)
-            else:
-                polygon = ubdata.UBVector(coordinates)
-                polygon.determine_geometry(coordinates)
+                points = ring.GetPointCount()
+                coordinates = []
+                for j in range(points):
+                    coordinates.append((ring.GetX(j) - global_offsets[0], ring.GetY(j) - global_offsets[1]))
+                if option == "RINGPOINTS":      # Just want a map of points
+                    for c in coordinates:
+                        geometry_collection.append(c)
+                elif option == "RINGS":
+                    geometry_collection.append(coordinates)
+                else:
+                    if r == 0:
+                        outer_coords = coordinates
+                    else:
+                        inner_coords.append(coordinates)
+
+            if option not in ["RINGPOINTS", "RINGS"]:
+                polygon = ubdata.UBVector(outer_coords, interiors=inner_coords)
                 polygon.add_attribute("Map_Naming", str(naming)+"_ID"+str(i+1))
                 polygon.add_attribute("Area_sqkm", area)
                 if "useEPSG" in kwargs.keys():
