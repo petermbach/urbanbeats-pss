@@ -237,7 +237,7 @@ class UBVector(UBComponent):
     :param edges: A list of edges belonging to the Vector Component
     :param interior: A list of polygon coordinates if the feature is a Polygon with a hole (i.e., a donut)
     """
-    def __init__(self, points, edges=None, interiors=None):
+    def __init__(self, points, edges=None, interiors=[]):
         UBComponent.__init__(self)
         self.__dtype = ""
         self.__points = points     # Required to draw the geometry
@@ -275,8 +275,34 @@ class UBVector(UBComponent):
             return self.__points[0]     # This catches the exception in scripts with points.
         if option is None:
             return self.__points
-        if option == "all":
-            return self.__points, self.__interiors
+        if option == "all":     # Exterior and interior coordinates
+            points = []
+            [points.append(i) for i in self.__points]
+            for i in range(len(self.__interiors)):
+                for pt in self.__interiors[i]:
+                    points.append(pt)
+            return points
+
+    def get_interiors(self):
+        return self.__interiors
+
+    def get_geometry_as_shapely_polygon(self):
+        """Returns the UBVector geometry as a Shapely polygon only if it is of dtype FACE, else returns None"""
+        if self.__dtype == "FACE":
+            return Polygon(self.__points, self.__interiors)
+        else:
+            return None
+
+    def get_geometry_as_ogr_spec(self):
+        """Returns the UBVector geometry as a list of coordinates for use with osgeo OGR library if dtype is FACE,
+        returns None otherwise."""
+        if self.__dtype == "FACE":
+            coordinates = [self.__points]
+            for coordset in self.__interiors:
+                coordinates.append(coordset)
+            return coordinates
+        else:
+            return None
 
     def get_edges(self):
         """Returns an array of edges (tuples), each having two pts with (x, y, z) sets of coordinates."""

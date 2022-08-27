@@ -736,7 +736,7 @@ class CreateSimGrid(UBModule):
             self.notify("Bounds #" + str(i + 1) + " of " + str(len(bound_isects)))
             for j in range(len(raw_patches)):
                 patches_to_scan = []
-                intersection = Polygon.intersection(bound_isects[i], Polygon(raw_patches[j].get_points()))
+                intersection = Polygon.intersection(bound_isects[i], raw_patches[j].get_geometry_as_shapely_polygon())
                 if intersection.area == 0:
                     continue
                 else:  # Found a patch, create UBVector
@@ -745,12 +745,26 @@ class CreateSimGrid(UBModule):
                     elif intersection.geom_type == "Polygon":
                         patches_to_scan.append(intersection)
                     for curpatch in patches_to_scan:
-                        self.notify("   Current PatchID " + str(patchIDcount))
-                        coords = curpatch.exterior.coords.xy
-                        points = [(coords[0][p], coords[1][p]) for p in range(len(coords[0]))]
-                        edges = [(points[p], points[p + 1]) for p in range(len(points) - 1)]
+                        self.notify("Current PatchID " + str(patchIDcount))
+                        ext_coords = curpatch.exterior.coords.xy
+                        ext_points = [(ext_coords[0][p], ext_coords[1][p]) for p in range(len(ext_coords[0]))]
+
+                        interiors = []
+                        for inner in curpatch.interiors:            # [ (poly1), (poly2) ... ]
+                            interiors.append(inner.coords.xy)       # extract individual interior polygons
+                        int_sets = []
+                        for cset in range(len(interiors)):          # convert the shapely spec to a tuple list
+                            int_coords = interiors[cset]
+                            int_sets.append([(int_coords[0][p], int_coords[1][p]) for p in range(len(int_coords[0]))])
+
+                        edges = [(ext_points[p], ext_points[p + 1]) for p in range(len(ext_points) - 1)]
+                        for cset in range(len(int_sets)):
+                            int_points = int_sets[cset]
+                            for p in range(len(int_points)-1):
+                                edges.append((int_points[p], int_points[p+1]))
+
                         rp = curpatch.representative_point()
-                        patch_attr = ubdata.UBVector(points, edges)
+                        patch_attr = ubdata.UBVector(ext_points, edges, interiors=int_sets)
                         patch_attr.add_attribute("PatchID", patchIDcount)
                         patch_attr.add_attribute("CentreX", rp.x)
                         patch_attr.add_attribute("CentreY", rp.y)
@@ -780,7 +794,7 @@ class CreateSimGrid(UBModule):
         # project simulation boundary
         bound_isects = []
         for i in range(len(bounddata)):
-            poly = Polygon(bounddata[i].get_points())
+            poly = bounddata[i].get_geometry_as_shapely_polygon()
             isect = Polygon.intersection(poly, self.boundarypoly)
             if isect.area > 0:
                 if isect.geom_type == "Polygon":
@@ -798,7 +812,7 @@ class CreateSimGrid(UBModule):
             self.notify("Bounds #"+str(i+1)+" of "+str(len(bound_isects)))
             for j in range(len(raw_patches)):
                 patches_to_scan = []
-                intersection = Polygon.intersection(bound_isects[i], Polygon(raw_patches[j].get_points()))
+                intersection = Polygon.intersection(bound_isects[i], raw_patches[j].get_geometry_as_shapely_polygon())
                 if intersection.area == 0:
                     continue
                 else:   # Found a patch, create UBVector
@@ -807,12 +821,25 @@ class CreateSimGrid(UBModule):
                     elif intersection.geom_type == "Polygon":
                         patches_to_scan.append(intersection)
                     for curpatch in patches_to_scan:
-                        self.notify("   Current PatchID "+str(patchIDcount))
-                        coords = curpatch.exterior.coords.xy
-                        points = [(coords[0][p], coords[1][p]) for p in range(len(coords[0]))]
-                        edges = [(points[p], points[p+1]) for p in range(len(points)-1)]
+                        self.notify("Current PatchID "+str(patchIDcount))
+                        ext_coords = curpatch.exterior.coords.xy
+                        interiors = []
+                        for inner in curpatch.interiors:
+                            interiors.append(inner.coords.xy)
+                        ext_points = [(ext_coords[0][p], ext_coords[1][p]) for p in range(len(ext_coords[0]))]
+                        int_sets = []
+                        for cset in range(len(interiors)):
+                            int_coords = interiors[cset]
+                            int_sets.append([(int_coords[0][p], int_coords[1][p]) for p in range(len(int_coords[0]))])
+
+                        edges = [(ext_points[p], ext_points[p+1]) for p in range(len(ext_points)-1)]
+                        for cset in range(len(int_sets)):
+                            int_points = int_sets[cset]
+                            for p in range(len(int_points)-1):
+                                edges.append((int_points[p], int_points[p+1]))
+
                         rp = curpatch.representative_point()
-                        patch_attr = ubdata.UBVector(points, edges)
+                        patch_attr = ubdata.UBVector(ext_points, edges, interiors=int_sets)
                         patch_attr.add_attribute("PatchID", patchIDcount)
                         patch_attr.add_attribute("CentreX", rp.x)
                         patch_attr.add_attribute("CentreY", rp.y)
@@ -836,14 +863,16 @@ class CreateSimGrid(UBModule):
         patchlist = []
         patchIDcount = 1
         for i in range(len(raw_patches)):
-            points = raw_patches[i].get_points()
-            poly = Polygon(points)
+            poly = raw_patches[i].get_geometry_as_shapely_polygon()
             if Polygon.intersects(self.boundarypoly, poly):
-                self.notify("Current Patch ID: "+str(patchIDcount))
+                self.notify("Current Patch ID: " + str(patchIDcount))
+                points = raw_patches[i].get_points(option="all")
                 edges = [(points[i], points[i+1]) for i in range(len(points)-1)]
                 rp = poly.representative_point()
 
-                patch_attr = ubdata.UBVector(points, edges)
+                # Patch Polygon
+                patch_attr = ubdata.UBVector(raw_patches[i].get_points(), edges,
+                                             interiors=raw_patches[i].get_interiors())
                 patch_attr.add_attribute("PatchID", patchIDcount)
                 patch_attr.add_attribute("CentreX", rp.x)
                 patch_attr.add_attribute("CentreY", rp.y)
@@ -853,7 +882,7 @@ class CreateSimGrid(UBModule):
 
                 # Centroid
                 cen_attr = ubdata.UBVector([(rp.x, rp.y)])
-                cen_attr.add_attribute("ParcelID", patchIDcount)
+                cen_attr.add_attribute("CentroidID", patchIDcount)
                 cen_attr.add_attribute("CentreX", rp.x)
                 cen_attr.add_attribute("CentreY", rp.y)
                 cen_attr.add_attribute("Area", poly.area)
@@ -1110,16 +1139,15 @@ class CreateSimGrid(UBModule):
         self.assets.add_asset_type("Centroid", "Point")
 
         for i in range(len(parcels)):
-            points = parcels[i].get_points()
-            # print(points)
-            parcelpoly = Polygon(points)
+            parcelpoly = parcels[i].get_geometry_as_shapely_polygon()
             if Polygon.intersects(self.boundarypoly, parcelpoly):
                 self.notify("Current ParcelID"+str(parcelIDcount))
                 # Make a Clean UBVector Polygon ParcelID
+                points = parcels[i].get_points(option="all")
                 edges = [(points[i], points[i+1]) for i in range(len(points)-1)]
                 rp = parcelpoly.representative_point()
 
-                parcel_attr = ubdata.UBVector(parcels[i].get_points(), edges)
+                parcel_attr = ubdata.UBVector(parcels[i].get_points(), edges, interiors=parcels[i].get_interiors())
                 parcel_attr.add_attribute("ParcelID", parcelIDcount)
                 parcel_attr.add_attribute("CentreX", rp.x)
                 parcel_attr.add_attribute("CentreY", rp.y)
@@ -1139,7 +1167,8 @@ class CreateSimGrid(UBModule):
                 parcelIDcount += 1
                 parcellist.append(parcel_attr)
             else:
-                print("No intersect, continuing")
+                # print("No intersect, continuing")
+                pass
 
         # DETERMINE NEIGHBOURS OF PARCELS BY SHARED EDGES
         self.notify_progress(60)

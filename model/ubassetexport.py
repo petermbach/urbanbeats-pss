@@ -80,11 +80,13 @@ def export_to_shapefile(asset_col, metadata, filepath, filename, epsg, asset_typ
         # Draw Geometry
         if geom_type == "POLYGON":
             feat_geom = ogr.Geometry(ogr.wkbPolygon)
-            ring = ogr.Geometry(ogr.wkbLinearRing)
-            nl = current_asset.get_points()
-            for point in nl:
-                ring.AddPoint(point[0]+xmin, point[1]+ymin)
-            feat_geom.AddGeometry(ring)
+
+            coords = current_asset.get_geometry_as_ogr_spec()
+            for cset in coords:
+                ring = ogr.Geometry(ogr.wkbLinearRing)
+                for point in cset:
+                    ring.AddPoint(point[0]+xmin, point[1]+ymin)
+                feat_geom.AddGeometry(ring)
 
         elif geom_type == "LINE":
             nl = current_asset.get_points()

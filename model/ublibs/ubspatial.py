@@ -171,21 +171,22 @@ def import_polygonal_map(filepath, option, naming, global_offsets, **kwargs):
 
     geometry_collection = []
     featurecount = layer.GetFeatureCount()
-    print(f"Feature Count in Map: {featurecount}")  # For Debugging
-    print(attnames)    # For Debugging
+    # print(f"Feature Count in Map: {featurecount}")  # For Debugging
+    # print(attnames)    # For Debugging
 
     for i in range(featurecount):
         feature = layer.GetFeature(i)
         geom = feature.GetGeometryRef()
-        area = geom.GetArea() / 1000000.0   # Conversion to km2
         # print(f"Name {str(naming)}_ID{str(i + 1)}")    # For Debugging
-        # print(f"Area: {area}")  # For Debugging
         # print(geom)
 
         if geom.GetGeometryName() == "MULTIPOLYGON":
             for g in geom:      # For each polygon in the MULTIPOLYGON
                 outer_coords = []   # Holds the main outer ring
                 inner_coords = []   # Holds all inner rings
+                area = g.GetArea() / 1000000.0  # Conversion to km2
+                # print(f"Area: {area}")  # For Debugging
+
                 for r in range(g.GetGeometryCount()):     # For each ring in the geometry
                     ring = g.GetGeometryRef(r)      # If r == 0 --> outer, else inner
                     points = ring.GetPointCount()
@@ -213,6 +214,7 @@ def import_polygonal_map(filepath, option, naming, global_offsets, **kwargs):
         else:
             outer_coords = []
             inner_coords = []
+            area = geom.GetArea() / 1000000.0  # Conversion to km2
             for r in range(geom.GetGeometryCount()):
                 ring = geom.GetGeometryRef(r)
                 if ring.GetGeometryType() == -2147483645:   # POLYGON25D
