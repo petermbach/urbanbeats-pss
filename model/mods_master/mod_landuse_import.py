@@ -174,14 +174,13 @@ class MapLandUseToSimGrid(UBModule):
             # Get the current asset's UBVector() Object and Geometry
             curasset = griditems[i]
             curassetid = curasset.get_attribute(self.assetident)
-            curassetpts = curasset.get_points()
-            curassetpoly = Polygon([c[:2] for c in curassetpts])
+            curassetpoly = curasset.get_geometry_as_shapely_polygon()
 
             mdata = []          # Trackers of land use within the asset
             areavector = []
 
             for j in self.landusemap:           # Loop across the land use map
-                feat = Polygon(j.get_points())
+                feat = j.get_geometry_as_shapely_polygon()
                 if not feat.intersects(curassetpoly):
                     continue
                 isectionarea = feat.intersection(curassetpoly).area
@@ -203,7 +202,7 @@ class MapLandUseToSimGrid(UBModule):
                     mdata.append(luccat)
                     areavector.append(isectionarea)
 
-            if mdata.size == 0 or mdata is None:
+            if len(mdata) == 0 or mdata is None:
                 self.notify(self.assetident+ str(curassetid) + " not within bounds or has no land use data, skipping!")
                 self.set_landuse_to_none(curasset)
                 continue
@@ -230,12 +229,11 @@ class MapLandUseToSimGrid(UBModule):
 
             curasset = griditems[i]
             curassetid = curasset.get_attribute(self.assetident)
-            curassetpts = curasset.get_points()
-            curassetpoly = Polygon([c[:2] for c in curassetpts])
+            curassetpoly = curasset.get_geometry_as_shapely_polygon()
 
             mdata = ubspatial.retrieve_raster_data_from_mask(self.landusemap, curasset, self.xllcorner, self.yllcorner)
 
-            if mdata is None or mdata.size == 0:
+            if mdata is None or len(mdata) == 0:
                 self.notify(self.assetident + str(curassetid) + " not within bounds or has no land use data, skipping!")
                 self.set_landuse_to_none(curasset)
                 continue
@@ -256,11 +254,14 @@ class MapLandUseToSimGrid(UBModule):
     def polygonize_raster_data(self):
         """Polygonizes the entire raster data set loaded into the simulation and creates an array of Polygon() objects
         for later use in intersection with the simulation grid."""
-        # [FUTURE] correct holes in the geometry using the shapely.geometry.shape() function - see more info:
+        lumap = self.landusemap.read(1)
+
+        polygondata = rasterio.features.shapes(np.flip(lumap, axis=0))
+        # Returns Data format: {'type': 'Polygon', 'coordinates': [[(x, y), (x, y)], [(x, y), (x, y)]]}
+        # correct holes in the geometry using the shapely.geometry.shape() function - see more info:
         # https://gis.stackexchange.com/questions/431918/vectorizing-a-raster-containing-holes-using-rasterio
         # Need to figure out the transform component of it to scale and shift the coordinates to the correct axis
-        lumap = self.landusemap.read(1)
-        polygondata = rasterio.features.shapes(np.flip(lumap, axis=0))
+
         resx = self.landusemap.res[0]
         resy = self.landusemap.res[1]
         xlloffset = self.landusemap.bounds[0] - self.xllcorner  # project to raster coordinates, back to simgrid coords
@@ -270,9 +271,19 @@ class MapLandUseToSimGrid(UBModule):
         for shape, value in polygondata:
             if value == self.landusemap.nodata:     # Skip nodata values
                 continue
-            pts = shape['coordinates'][0]
-            pts = [(pts[i][0]*float(resx)+xlloffset, pts[i][1]*float(resy)+ylloffset) for i in range(len(pts))]
-            luinputs.append([int(value), Polygon(pts)])
+            coord_data = shape['coordinates']
+            outer = []
+            inners = []
+            for cset in range(len(coord_data)):
+                pts = coord_data[cset]
+                pts = [(pts[i][0]*float(resx)+xlloffset, pts[i][1]*float(resy)+ylloffset) for i in range(len(pts))]
+                if cset == 0:
+                    outer = pts
+                else:
+                    inners.append(pts)
+
+            # This row will be needed for implementing the holes in the raster...
+            luinputs.append([int(value), Polygon(outer, inners)])
         return luinputs
 
     def map_polygonized_raster_to_simgrid(self, lupolygons):
@@ -284,8 +295,7 @@ class MapLandUseToSimGrid(UBModule):
 
             curasset = griditems[i]
             curassetid = curasset.get_attribute(self.assetident)
-            curassetpts = curasset.get_points()
-            curassetpoly = Polygon([c[:2] for c in curassetpts])
+            curassetpoly = curasset.get_geometry_as_shapely_polygon()
 
             mdata = []
             areavector = []
@@ -304,7 +314,7 @@ class MapLandUseToSimGrid(UBModule):
                     if j[1].area == isectionarea:  # If the polygon is fully within the feature...
                         lutracker.append(j)    # Add to the list of items to remove at the end of the loop
 
-            if mdata.size == 0 or mdata is None:
+            if len(mdata) == 0 or mdata is None:
                 self.notify(self.assetident+ str(curassetid) + " not within bounds or has no land use data, skipping!")
                 self.set_landuse_to_none(curasset)
                 continue

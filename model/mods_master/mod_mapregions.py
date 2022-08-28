@@ -143,13 +143,11 @@ class MapRegionsToSimGrid(UBModule):
                     continue
 
                 cur_asset = griditems[a]
-                assetpts = cur_asset.get_points()
-                assetpoly = Polygon([c[:2] for c in assetpts])
-
+                assetpoly = cur_asset.get_geometry_as_shapely_polygon()
                 intersectarea = 0
                 intersectname = ""
                 for b in boundaryfeats:
-                    feat = Polygon(b.get_points())
+                    feat = b.get_geometry_as_shapely_polygon()
                     if not feat.intersects(assetpoly):
                         continue
                     newisectarea = feat.intersection(assetpoly).area
@@ -176,7 +174,7 @@ class MapRegionsToSimGrid(UBModule):
                 for b in boundaryfeats:
                     if b.get_attribute(boundary["attname"]) in stakeholderlist:
                         sh_object = ubdata.UBStakeholder(b.get_attribute(boundary["attname"]),
-                                                         type=stype, location=Polygon(b.get_points()))
+                                                         type=stype, location=b.get_geometry_as_shapely_polygon())
                         stakeholderlist.pop(stakeholderlist.index(b.get_attribute(boundary["attname"])))
                     self.assets.add_asset("StakeholderID"+str(stakeholderIDcount), sh_object)
                     stakeholderIDcount += 1

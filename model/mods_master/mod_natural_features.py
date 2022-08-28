@@ -187,13 +187,12 @@ class MapNaturalFeaturesToSimGrid(UBModule):
             if griditems[i].get_attribute("Status") == 0:
                 continue
             curasset = griditems[i]
-            assetpts = curasset.get_points()
-            assetpoly = Polygon([c[:2] for c in assetpts])
+            assetpoly = curasset.get_geometry_as_shapely_polygon()
 
             haslake = 0
             lakenames = []
             for j in range(len(lakefeats)):
-                poly = Polygon(lakefeats[j].get_points())
+                poly = lakefeats[j].get_geometry_as_shapely_polygon()
                 if (not poly.intersects(assetpoly)) or (poly.intersection(assetpoly).area == 0):
                     continue    # Continue if no intersection or if the intersection area is 0 (i.e. boundary intersect)
                 lakename = lakefeats[j].get_attribute(self.lakemapattr)

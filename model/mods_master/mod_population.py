@@ -233,13 +233,12 @@ class MapPopulationToSimGrid(UBModule):
                 continue
 
             asset = griditems[i]
-            assetpts = asset.get_points()
-            assetpoly = Polygon([c[:2] for c in assetpts])
+            assetpoly = asset.get_geometry_as_shapely_polygon()
 
             totalpop = 0   # Total population tally for this feature
 
             for p in self.populationmap:                # For each population map feature
-                feat = Polygon(p.get_points())
+                feat = p.get_geometry_as_shapely_polygon()
                 if not feat.intersects(assetpoly):      # No intersect - continue
                     continue
                 isectionarea = feat.intersection(assetpoly).area

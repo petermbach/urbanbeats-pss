@@ -52,8 +52,8 @@ def retrieve_raster_data_from_mask(rastermap, asset, xllcorner, yllcorner, debug
 
     # Get two bounds: one for the local bounds of the polygon and the one for indexing the raster data in the PRJCS
 
-    assetpts = asset.get_points()
-    assetpoly = Polygon(assetpts)
+    # assetpoly = Polygon(assetpts)
+    assetpoly = asset.get_geometry_as_shapely_polygon()
 
     if assetpoly.area < cellarea:       # If the polygon is smaller than the cell, locate a single value in the raster
         # if debug: print("Smaller than raster size")
@@ -68,7 +68,6 @@ def retrieve_raster_data_from_mask(rastermap, asset, xllcorner, yllcorner, debug
             return np.array([])
         else:
             return np.array([datapoint])
-
 
     maskoffsets = [assetpoly.bounds[0], assetpoly.bounds[1]]  # Offsets for the local mask
     assetbounds = [assetpoly.bounds[0] + xllcorner, assetpoly.bounds[1] + yllcorner,
@@ -99,15 +98,29 @@ def retrieve_raster_data_from_mask(rastermap, asset, xllcorner, yllcorner, debug
     # Create the mask polygon that will be used to mask over the raster extract
     # Offset from 0,0 origin is always the first point
     maskpts = []  # Create maskpts... this is done as fully written out for loop because the UBVector has Z
+    assetpts = asset.get_points()
+    assetinteriors = asset.get_interiors()
     for pt in range(len(assetpts)):
         x = assetpts[pt][0]
         y = assetpts[pt][1]
         maskpts.append((float((x - maskoffsets[0]) / cellsize[0]),
                         float((y - maskoffsets[1]) / cellsize[1])))
+
+    # Offset all interior polygons (i.e., the holes)
+    maskinteriors = []
+    for grp in range(len(assetinteriors)):
+        maskint_set = []
+        for pt in range(len(assetinteriors[grp])):
+            x = assetinteriors[grp][pt][0]
+            y = assetinteriors[grp][pt][0]
+            maskint_set.append((float((x - maskoffsets[0]) / cellsize[0]),
+                               float((y - maskoffsets[1]) / cellsize[1])))
+        maskinteriors.append(maskint_set)
+
     # if debug: print("maskedpts", maskpts)
 
     # Rasterize the polygon to the datamatrix shape
-    maskrio = rasterio.features.rasterize([Polygon(maskpts)], out_shape=datamatrix.shape)
+    maskrio = rasterio.features.rasterize([Polygon(maskpts, maskinteriors)], out_shape=datamatrix.shape)
     # if debug: print("Original", maskrio)
     maskrio = np.flip(maskrio, 0)  # Flip the shape because row/col read from top left, not bottom left
     maskrio = np.roll(maskrio, -1, axis=0)
