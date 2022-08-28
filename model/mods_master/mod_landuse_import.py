@@ -378,7 +378,7 @@ class MapLandUseToSimGrid(UBModule):
         """Determines the amount of the cell for which data is available, max of 1.0"""
         if areavector is None:  # RASTER - COUNT * RESOLUTION / ASSET AREA
             cellarea = self.landusemap.res[0] * self.landusemap.res[1]
-            activity = min((len(masklist) * cellarea) / assetarea, 1.0)  # N * Acell / Assetarea
+            activity = min((float(len(masklist)) * cellarea) / assetarea, 1.0)  # N * Acell / Assetarea
         else:  # VECTOR - AREAS DIVIDED BY EACH OTHER
             activity = min(sum(areavector) / assetarea, 1.0)  # Sum of the area vector
         return activity
