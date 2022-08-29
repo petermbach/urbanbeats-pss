@@ -33,9 +33,9 @@ class MapRasterDataSets(UBModule):
     # MODULE'S BASIC METADATA
     type = "master"
     catname = "Spatial Representation"
-    catorder = 1
+    catorder = 7
     longname = "Map Numerical Raster Data"
-    icon = ":/icons/GISLayers.png"
+    icon = ":/icons/raster.png"
 
     def __init__(self, activesim, datalibrary, projectlog):
         UBModule.__init__(self)

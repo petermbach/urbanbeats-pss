@@ -1,17 +1,18 @@
 __all__ = ["mod_simgrid_guic", "mod_mapregions_guic", "mod_topography_guic", "mod_landuse_import_guic",
            "mod_population_guic", "mod_natural_features_guic", "mod_catchmentdelin_guic", "mod_cbdanalysis_guic",
            "mod_urbanformgen_guic", "mod_waterdemand_guic", "mod_nbsdesigntoolbox_guic", "mod_nbslayoutgen_guic",
-           "mod_nbssuitability_guic", "mod_mapraster_guic"
+           "mod_nbssuitability_guic", "mod_mapraster_guic", "mod_mapvector_guic"
            ]
 
 # --- SPATIAL REPRESENTATION MODULES ---
 from .mod_simgrid_guic import CreateSimGridLaunch
-from .mod_mapraster_guic import MapRasterDataLaunch
 from .mod_mapregions_guic import MapRegionsLaunch
 from .mod_topography_guic import MapTopographyLaunch
 from .mod_landuse_import_guic import MapLanduseLaunch
 from .mod_population_guic import PopulationLaunch
 from .mod_natural_features_guic import MapNaturalFeaturesLaunch
+from .mod_mapraster_guic import MapRasterDataLaunch
+from .mod_mapvector_guic import MapVectorDataLaunch
 
 # --- URBAN HYDROLOGY MODULES ---
 # from .mod_rainfallanalyst_guic import RainfallDataAnalystLaunch

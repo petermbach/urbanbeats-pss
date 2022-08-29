@@ -39,9 +39,9 @@ class MapRasterDataLaunch(QtWidgets.QDialog):         # >>> MODULE NAME
     # MODULE'S BASIC METADATA
     type = "master"
     catname = "Spatial Representation"
-    catorder = 1
+    catorder = 7
     longname = "Map Numerical Raster Data"
-    icon = ":/icons/GISLayers.png"
+    icon = ":/icons/raster.png"
 
     def __init__(self, main, simulation, datalibrary, simlog, mode, parent=None):
         """ Initialisation of the Block Delineation GUI, takes several input parameters.

@@ -16,7 +16,7 @@ class Ui_MapRasterDataGui(object):
         MapRasterDataGui.setObjectName("MapRasterDataGui")
         MapRasterDataGui.resize(743, 552)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/icons/GISLayers.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/icons/raster.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MapRasterDataGui.setWindowIcon(icon)
         self.gridLayout = QtWidgets.QGridLayout(MapRasterDataGui)
         self.gridLayout.setObjectName("gridLayout")

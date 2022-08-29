@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
-    <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
+    <normaloff>:/icons/raster.png</normaloff>:/icons/raster.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="4" column="0" colspan="2">

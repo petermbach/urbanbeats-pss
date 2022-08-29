@@ -43,7 +43,7 @@ class CreateSimGrid(UBModule):
     # --- MODULE'S BASIC METADATA ---
     type = "master"
     catname = "Spatial Representation"
-    catorder = 0
+    catorder = 1
     longname = "Create Simulation Grid"
     icon = ":/icons/Data-Grid-icon.png"
     prerequisites = []
