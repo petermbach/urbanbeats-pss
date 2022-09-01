@@ -335,7 +335,7 @@ class CreateSimGrid(UBModule):
             e4 = (n1, n4)  # Top left to bottom left
 
             # Define the UrbanBEATS Vector Asset
-            block_attr = ubdata.UBVector((n1, n2, n3, n4, n1), (e1, e2, e3, e4), interiors=None)
+            block_attr = ubdata.UBVector((n1, n2, n3, n4, n1), (e1, e2, e3, e4), interiors=[])
             block_attr.add_attribute("BlockID", int(idnum))  # ATTRIBUTE: Block Identification
 
             xcentre = x * bs + 0.5 * bs
@@ -522,7 +522,7 @@ class CreateSimGrid(UBModule):
             e6 = ((int(h1[0]), int(h1[1])), (int(h6[0]), int(h6[1])))  # Left top (1, 6)
 
             # Define the UrbanBEATS Vector Asset
-            hex_attr = ubdata.UBVector((h1, h2, h3, h4, h5, h6, h1), (e1, e2, e3, e4, e5, e6), interiors=None)
+            hex_attr = ubdata.UBVector((h1, h2, h3, h4, h5, h6, h1), (e1, e2, e3, e4, e5, e6), interiors=[])
             hex_attr.add_attribute("HexID", int(hexidnum))  # ATTRIBUTE: Block identification
 
             xcentre = anchorX + 0.5 * h_factor
@@ -583,7 +583,7 @@ class CreateSimGrid(UBModule):
             e6 = ((int(h6[0]), int(h6[1])), (int(h1[0]), int(h1[1])))  # Bottom left (6, 1)
 
             # Define the UrbanBEATS Vector Asset
-            hex_attr = ubdata.UBVector((h1, h2, h3, h4, h5, h6, h1), (e1, e2, e3, e4, e5, e6), interiors=None)
+            hex_attr = ubdata.UBVector((h1, h2, h3, h4, h5, h6, h1), (e1, e2, e3, e4, e5, e6), interiors=[])
             hex_attr.add_attribute("HexID", int(hexidnum))  # ATTRIBUTE: Block identification
 
             xcentre = anchorX + 0.5 * hs
@@ -789,7 +789,7 @@ class CreateSimGrid(UBModule):
         fullpath = boundmap.get_data_file_path() + boundmap.get_metadata("filename")
         bounddata = ubspatial.import_polygonal_map(fullpath, "native", "Bounds", (self.meta.get_attribute("xllcorner"),
                                                                                   self.meta.get_attribute("yllcorner")))
-
+        print(bounddata)
         # Intersect the bounds with the active simulation boundary map - filters out only the bound polygons within the
         # project simulation boundary
         bound_isects = []

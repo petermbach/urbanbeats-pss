@@ -298,7 +298,8 @@ class UBVector(UBComponent):
         returns None otherwise."""
         if self.__dtype == "FACE":
             coordinates = [self.__points]
-            for coordset in self.__interiors:
+            for i in range(len(self.__interiors)):
+                coordset = self.__interiors[i]
                 coordinates.append(coordset)
             return coordinates
         else:

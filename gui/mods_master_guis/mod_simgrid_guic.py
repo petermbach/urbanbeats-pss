@@ -269,13 +269,13 @@ class CreateSimGridLaunch(QtWidgets.QDialog):
             self.module.set_parameter("patchzonemap", self.combomaps[1][self.ui.patch_data_zoneombo.currentIndex() - 1])
             if self.ui.patch_discretize_grid_radio.isChecked():
                 self.module.set_parameter("disgrid_type", "GRID")
+                self.module.set_parameter("disgrid_length", self.ui.patch_discretize_grid_spin.value())
+                self.module.set_parameter("disgrid_auto", int(self.ui.patch_discretize_grid_auto.isChecked()))
             elif self.ui.patch_discretize_boundary_radio.isChecked():
                 self.module.set_parameter("disgrid_type", "BOUND")
+                self.module.set_parameter("disgrid_map", self.discretmaps[1][self.ui.discret_combo.currentIndex() - 1])
             else:
                 self.module.set_parameter("disgrid_type", "NONE")
-            self.module.set_parameter("disgrid_length", self.ui.patch_discretize_grid_spin.value())
-            self.module.set_parameter("disgrid_auto", int(self.ui.patch_discretize_grid_auto.isChecked()))
-            self.module.set_parameter("disgrid_map", self.discretmaps[1][self.ui.discret_combo.currentIndex() - 1])
         elif self.ui.geometry_combo.currentIndex() == 3:
             self.module.set_parameter("geometry_type", "RASTER")        # RASTER REPRESENTATION
             self.module.set_parameter("rastersize", self.ui.raster_resolution_spin.value())
