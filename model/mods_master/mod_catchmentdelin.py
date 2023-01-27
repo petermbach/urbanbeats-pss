@@ -408,7 +408,7 @@ class DelineateFlowSubCatchments(UBModule):
         down_point = (x_down, y_down, z_down)
 
         network_link = ubdata.UBVector((up_point, down_point))
-        network_link.determine_geometry((up_point, down_point))
+        network_link.determine_geometry()
         network_link.add_attribute("FlowpathID", current_id)
         network_link.add_attribute(self.assetident, current_id)
         network_link.add_attribute("DownID", downstream_id)
