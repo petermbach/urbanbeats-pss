@@ -44,6 +44,11 @@ import xml.etree.ElementTree as ET
 import shutil
 import tempfile
 
+# --- BUILD PATH TO GDAL LIBRARIES ---
+GDALPATH = "Library\\share\\"
+os.environ['PROJ_LIB'] = os.path.join(os.path.dirname(sys.executable), GDALPATH, "proj")
+os.environ['GDAL_DATA'] = os.path.join(os.path.dirname(sys.executable), GDALPATH)
+
 # --- URBANBEATS LIBRARY IMPORTS ---
 import model.progref.ubglobals as ubglobals
 import model.urbanbeatscore as ubcore
