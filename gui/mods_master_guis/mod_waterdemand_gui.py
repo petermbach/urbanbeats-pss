@@ -741,7 +741,7 @@ class Ui_WaterDemandGui(object):
         self.res_direct_scroll.setWidgetResizable(True)
         self.res_direct_scroll.setObjectName("res_direct_scroll")
         self.scrollAreaWidgetContents_2 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 532, 428))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 447, 428))
         self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
         self.verticalLayout_29 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout_29.setObjectName("verticalLayout_29")
@@ -995,7 +995,7 @@ class Ui_WaterDemandGui(object):
         self.nres_unit_widget.setWidgetResizable(True)
         self.nres_unit_widget.setObjectName("nres_unit_widget")
         self.scrollAreaWidgetContents_3 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_3.setGeometry(QtCore.QRect(0, 0, 550, 569))
+        self.scrollAreaWidgetContents_3.setGeometry(QtCore.QRect(0, -214, 550, 569))
         self.scrollAreaWidgetContents_3.setObjectName("scrollAreaWidgetContents_3")
         self.verticalLayout_27 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_3)
         self.verticalLayout_27.setObjectName("verticalLayout_27")
@@ -1740,7 +1740,7 @@ class Ui_WaterDemandGui(object):
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-weight:600;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Map out spatio-temporal water demand for the simulation grid based on end-use analysis and temporal downscaling of daily demand data. The module considers demands based on different land use types and applies the corresponding end uses. The level of detail varies according to land use, but generally considers indoor and outdoor uses of water.</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">Pre-requisites:</span><span style=\" font-size:8pt;\"> Simulation Grid, Land use information, population data, urban form information</span></p></body></html>"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">Pre-requisites:</span><span style=\" font-size:8pt;\"> Simulation Grid, urban form information</span></p></body></html>"))
         self.run_button.setText(_translate("WaterDemandGui", "Run"))
         self.title.setText(_translate("WaterDemandGui", "<html><head/><body><p><span style=\" font-size:9pt; font-weight:600;\">SETTINGS</span></p></body></html>"))
         self.asset_col_title.setText(_translate("WaterDemandGui", "<html><head/><body><p><span style=\" font-weight:600; font-style:italic;\">Target Asset Collection</span></p></body></html>"))
@@ -2290,4 +2290,4 @@ class Ui_WaterDemandGui(object):
         self.seasonal_scaledata_lbl.setText(_translate("WaterDemandGui", "Scale Daily Demand using:"))
         self.seasonal_scaledata_combo.setItemText(0, _translate("WaterDemandGui", "<none>"))
         self.wateruse_master_widget.setTabText(self.wateruse_master_widget.indexOf(self.temporal), _translate("WaterDemandGui", "Temporal"))
-from .. import ubeats_rc
+# import ubeats_rc

@@ -1153,5 +1153,5 @@ class UrbanFormGenLaunch(QtWidgets.QDialog):
                          "Please run the Map Landuse or Map Population Module(s) on this asset collection first."
             QtWidgets.QMessageBox.warning(self, "Pre-requisite Modules required", prompt_msg,
                                           QtWidgets.QMessageBox.Ok)
-            return True
+            return False
         return True

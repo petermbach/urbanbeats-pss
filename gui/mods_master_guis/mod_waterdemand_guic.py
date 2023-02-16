@@ -34,6 +34,7 @@ from gui.observers import ProgressBarObserver
 from .mod_waterdemand_gui import Ui_WaterDemandGui
 from .subguis.md_subgui_dp import Ui_CustomPatternDialog
 
+
 # --- MAIN GUI FUNCTION ---
 class WaterDemandLaunch(QtWidgets.QDialog):
     # MODULE'S BASIC METADATA
@@ -58,8 +59,8 @@ class WaterDemandLaunch(QtWidgets.QDialog):
         self.ui.setupUi(self)
 
         # --- CONNECTIONS WITH CORE AND GUI ---
-        self.maingui = main     # the main runtime
-        self.simulation = simulation    # the active object in the scenario manager
+        self.maingui = main  # the main runtime
+        self.simulation = simulation  # the active object in the scenario manager
         self.datalibrary = datalibrary
         self.log = simlog
         self.metadata = None
@@ -92,7 +93,7 @@ class WaterDemandLaunch(QtWidgets.QDialog):
         self.ui.assetcol_combo.addItem("(select simulation grid)")
         simgrids = self.simulation.get_global_asset_collection()
         for n in simgrids.keys():
-            if mode != 1:       # If we are running standalone mode
+            if mode != 1:  # If we are running standalone mode
                 if simgrids[n].get_container_type() == "Standalone":
                     self.ui.assetcol_combo.addItem(str(n))
                 self.ui.assetcol_combo.setEnabled(1)
@@ -252,7 +253,8 @@ class WaterDemandLaunch(QtWidgets.QDialog):
             self.ui.dish_greyradio.setChecked(1)
 
         self.ui.res_irrigate_vol.setValue(float(self.module.get_parameter("res_outdoor_vol")))
-        self.ui.res_irrigate_ffp.setCurrentIndex(mod_waterdemand.FFP.index(self.module.get_parameter("res_outdoor_ffp")))
+        self.ui.res_irrigate_ffp.setCurrentIndex(
+            mod_waterdemand.FFP.index(self.module.get_parameter("res_outdoor_ffp")))
         self.ui.res_irrigate_dp.setCurrentIndex(mod_waterdemand.DPS.index(self.module.get_parameter("res_outdoor_pat")))
 
         self.ui.res_direct_vol.setValue(float(self.module.get_parameter("res_dailyindoor_vol")))
@@ -364,7 +366,7 @@ class WaterDemandLaunch(QtWidgets.QDialog):
 
     def show_res_standard_details(self):
         """"""
-        pass    # [TO DO]
+        pass  # [TO DO]
 
     def show_res_enduse_summary(self):
         """Calculates an average per capita water use and displays it in the box beneath the end use analysis
@@ -375,7 +377,11 @@ class WaterDemandLaunch(QtWidgets.QDialog):
             self.ui.res_enduse_summarybox.setText("Total: (undefined) L/person/day)")
             return True
 
-        # OMFG.... I need an average occupancy from another GUI element... urrgh.
+        # Get the current asset selected and calculate. If the asset has no urban form info, good to remind user
+        # - if no mod_urbanformgen --> Display message and (undefined)
+        # - else: get self.meta(Occupancy) and calculate
+        # [TO DO] if used in a scenario, grab the occupancy from the module info
+
         avg_occupancy = self.simulation.get_active_scenario().get_module_object("URBPLAN", 0).get_parameter("occup_avg")
 
         avg_use = self.ui.kitchen_freq.value() * self.ui.kitchen_dur.value() * \
@@ -390,22 +396,22 @@ class WaterDemandLaunch(QtWidgets.QDialog):
                   standard_dict["Dishwasher"][int(self.ui.res_standard_eff.currentIndex())] / float(avg_occupancy)
 
         self.ui.res_enduse_summarybox.setText("Total: " + str(round(avg_use, 1)) + " L/person/day (Occupancy: " +
-                                              str(avg_occupancy)+")")   # OMG it actually worked...
+                                              str(avg_occupancy) + ")")  # OMG it actually worked...
         return True
 
     def view_civic_wateruse_presets(self):
         """"""
-        pass    # [TO DO]
+        pass  # [TO DO]
 
     def slider_res_value_update(self):
         """Updates the residential blackwater/greywater slider value boxes to reflect the current slider's value."""
-        self.ui.res_direct_wwboxgrey.setText(str(int((self.ui.res_direct_ww_slider.value()*-1+100)/2))+"%")
-        self.ui.res_direct_wwboxblack.setText(str(int((self.ui.res_direct_ww_slider.value()+100)/2))+"%")
+        self.ui.res_direct_wwboxgrey.setText(str(int((self.ui.res_direct_ww_slider.value() * -1 + 100) / 2)) + "%")
+        self.ui.res_direct_wwboxblack.setText(str(int((self.ui.res_direct_ww_slider.value() + 100) / 2)) + "%")
         return True
 
     def slider_nres_com_update(self):
         """Updates the non-residential slider for commercial wastewater volumes"""
-        self.ui.nres_ww_com_greybox.setText(str(int((self.ui.nres_ww_com_slider.value()*-1+100)/2))+"%")
+        self.ui.nres_ww_com_greybox.setText(str(int((self.ui.nres_ww_com_slider.value() * -1 + 100) / 2)) + "%")
         self.ui.nres_ww_com_blackbox.setText(str(int((self.ui.nres_ww_com_slider.value() + 100) / 2)) + "%")
         return True
 
@@ -437,7 +443,8 @@ class WaterDemandLaunch(QtWidgets.QDialog):
         else:
             self.module.set_parameter("residential_method", "DQI")
 
-        self.module.set_parameter("res_standard", mod_waterdemand.RESSTANDARDS[self.ui.res_standard_combo.currentIndex()])
+        self.module.set_parameter("res_standard",
+                                  mod_waterdemand.RESSTANDARDS[self.ui.res_standard_combo.currentIndex()])
         self.module.set_parameter("res_baseefficiency", float(self.ui.res_standard_eff.currentIndex()))
 
         self.module.set_parameter("res_kitchen_fq", float(self.ui.kitchen_freq.value()))
@@ -498,7 +505,8 @@ class WaterDemandLaunch(QtWidgets.QDialog):
             self.module.set_parameter("res_outdoor_pat", mod_waterdemand.DPS[self.ui.res_irrigate_dp.currentIndex()])
         else:
             self.module.set_parameter("res_outdoor_vol", float(self.ui.res_direct_irrigate.value()))
-            self.module.set_parameter("res_outdoor_ffp", mod_waterdemand.FFP[self.ui.res_direct_irrigate_ffp.currentIndex()])
+            self.module.set_parameter("res_outdoor_ffp",
+                                      mod_waterdemand.FFP[self.ui.res_direct_irrigate_ffp.currentIndex()])
             self.module.set_parameter("res_outdoor_pat", mod_waterdemand.DPS[self.ui.outdoor_dp.currentIndex()])
 
         self.module.set_parameter("res_dailyindoor_vol", float(self.ui.res_direct_vol.value()))
@@ -609,14 +617,21 @@ class WaterDemandLaunch(QtWidgets.QDialog):
             QtWidgets.QMessageBox.warning(self, "No Asset Collection selected", prompt_msg, QtWidgets.QMessageBox.Ok)
             return False
 
-
+        # (2) Selected asset collection does not have urban form data
+        self.update_asset_col_metadata()
+        if self.metadata.get_attribute("mod_urbanformgen") != 1 or self.metadata.get_attribute("mod_urbanformcon") != 1:
+            prompt_msg = "The current asset collection selected does not contain urban form information to calculate" \
+                         "water demands. Please run the Abstract Urban Form Module on this asset collection first."
+            QtWidgets.QMessageBox.warning(self, "Pre-requisite Modules required", prompt_msg, QtWidgets.QMessageBox.Ok)
+            return False
         return True
 
 
 class CustomPatternLaunch(QtWidgets.QDialog):
     """The class definition for the sub-GUI for setting custom diurnal patterns. This sub-gui launches if the custom
     button is clicked on any of the diurnal patterns within the Spatial Mapping Module."""
-    def __init__(self, module, enduse, parent = None):
+
+    def __init__(self, module, enduse, parent=None):
         """Initialization of the subGUI for entering custom diurnal patterns. This sub-gui is launched and filled with
         the current custom pattern selected.
 
@@ -635,7 +650,7 @@ class CustomPatternLaunch(QtWidgets.QDialog):
         self.pattern = self.module.get_wateruse_custompattern(self.enduse)
         self.ui.avg_box.setText(str(round(sum(self.pattern) / len(self.pattern), 3)))
 
-        for i in range(24):     # Populate the table
+        for i in range(24):  # Populate the table
             self.ui.tableWidget.item(i, 0).setText(str(self.pattern[i]))
 
         self.ui.tableWidget.itemChanged.connect(self.recalculate_avg)
@@ -649,7 +664,7 @@ class CustomPatternLaunch(QtWidgets.QDialog):
                 subpattern.append(float(self.ui.tableWidget.item(i, 0).text()))
             self.ui.avg_box.setText(str(round(sum(subpattern) / len(subpattern), 3)))
         except ValueError or TypeError:
-            self.ui.avg_box.setText("ERROR")    # If a user enters text instead of a proper number!
+            self.ui.avg_box.setText("ERROR")  # If a user enters text instead of a proper number!
 
     def save_values(self):
         """Creates a new pattern vector and saves this to the module."""
