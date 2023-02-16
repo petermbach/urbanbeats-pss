@@ -14,7 +14,7 @@
    <string>Generate Urban Form Abstraction</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+   <iconset resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
     <normaloff>:/icons/urban_street.png</normaloff>:/icons/urban_street.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -64,7 +64,7 @@
          <string>OK</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+         <iconset resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
           <normaloff>:/icons/check.png</normaloff>:/icons/check.png</iconset>
         </property>
        </widget>
@@ -81,7 +81,7 @@
          <string>Close</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+         <iconset resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
           <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
         </property>
        </widget>
@@ -98,7 +98,7 @@
          <string>Help</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+         <iconset resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
           <normaloff>:/icons/Help-icon.png</normaloff>:/icons/Help-icon.png</iconset>
         </property>
        </widget>
@@ -206,7 +206,7 @@ p, li { white-space: pre-wrap; }
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">:/mod_imgs/module_imgs/mod_urbanformgen.jpg</pixmap>
+         <pixmap resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">:/mod_imgs/module_imgs/mod_urbanformgen.jpg</pixmap>
         </property>
        </widget>
       </item>
@@ -293,7 +293,7 @@ p, li { white-space: pre-wrap; }
          <string>Run</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+         <iconset resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
           <normaloff>:/icons/Play-icon.png</normaloff>:/icons/Play-icon.png</iconset>
         </property>
        </widget>
@@ -443,7 +443,7 @@ p, li { white-space: pre-wrap; }
         </property>
         <widget class="QWidget" name="general">
          <attribute name="icon">
-          <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+          <iconset resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
            <normaloff>:/icons/mockup.png</normaloff>:/icons/mockup.png</iconset>
          </attribute>
          <attribute name="title">
@@ -579,7 +579,7 @@ p, li { white-space: pre-wrap; }
                     <string>Export Current Parameter Set...</string>
                    </property>
                    <property name="icon">
-                    <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                    <iconset resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                      <normaloff>:/icons/export-icon.png</normaloff>:/icons/export-icon.png</iconset>
                    </property>
                   </widget>
@@ -877,7 +877,7 @@ p, li { white-space: pre-wrap; }
         </widget>
         <widget class="QWidget" name="planrules">
          <attribute name="icon">
-          <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+          <iconset resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
            <normaloff>:/icons/pages-brown-icon.png</normaloff>:/icons/pages-brown-icon.png</iconset>
          </attribute>
          <attribute name="title">
@@ -891,7 +891,7 @@ p, li { white-space: pre-wrap; }
             </property>
             <widget class="QWidget" name="geometry_tab">
              <attribute name="icon">
-              <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+              <iconset resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                <normaloff>:/icons/House-icon.png</normaloff>:/icons/House-icon.png</iconset>
              </attribute>
              <attribute name="title">
@@ -907,9 +907,9 @@ p, li { white-space: pre-wrap; }
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>0</y>
+                   <y>-715</y>
                    <width>589</width>
-                   <height>1085</height>
+                   <height>1066</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -1814,7 +1814,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;SITE FRONTAGE CHARACTERISTICS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;SITE STREET AND FRONTAGE CHARACTERISTICS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                    </widget>
                   </item>
@@ -1822,35 +1822,6 @@ p, li { white-space: pre-wrap; }
                    <widget class="Line" name="line_10">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_17">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>13</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>13</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>16777215</width>
-                      <height>13</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Frontage and Local Streets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                    </widget>
                   </item>
@@ -1879,7 +1850,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Customise the appearance and width of frontage.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Customise the typical appearance and width of site frontage (footpath, nature strip, street).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -2053,7 +2024,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;SITE DRAINAGE&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;SITE DRAINAGE CHARACTERISTICS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                    </widget>
                   </item>
@@ -2267,7 +2238,7 @@ p, li { white-space: pre-wrap; }
             </widget>
             <widget class="QWidget" name="geography_tab">
              <attribute name="icon">
-              <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+              <iconset resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                <normaloff>:/icons/office-building-icon.png</normaloff>:/icons/office-building-icon.png</iconset>
              </attribute>
              <attribute name="title">
@@ -3482,7 +3453,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Frontage and Local Streets&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Frontage and Local Street Characteristics&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                    </widget>
                   </item>
@@ -4046,7 +4017,7 @@ p, li { white-space: pre-wrap; }
             </widget>
             <widget class="QWidget" name="tab">
              <attribute name="icon">
-              <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+              <iconset resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                <normaloff>:/icons/cargo-truck.png</normaloff>:/icons/cargo-truck.png</iconset>
              </attribute>
              <attribute name="title">
@@ -4062,7 +4033,7 @@ p, li { white-space: pre-wrap; }
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>0</y>
+                   <y>-944</y>
                    <width>589</width>
                    <height>1295</height>
                   </rect>
@@ -5694,7 +5665,7 @@ p, li { white-space: pre-wrap; }
             </widget>
             <widget class="QWidget" name="connectivity_tab">
              <attribute name="icon">
-              <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+              <iconset resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                <normaloff>:/icons/Bench-icon.png</normaloff>:/icons/Bench-icon.png</iconset>
              </attribute>
              <attribute name="title">
@@ -5710,7 +5681,7 @@ p, li { white-space: pre-wrap; }
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>0</y>
+                   <y>-234</y>
                    <width>589</width>
                    <height>585</height>
                   </rect>
@@ -6317,7 +6288,7 @@ p, li { white-space: pre-wrap; }
             </widget>
             <widget class="QWidget" name="tab_2">
              <attribute name="icon">
-              <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+              <iconset resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                <normaloff>:/icons/meadow.png</normaloff>:/icons/meadow.png</iconset>
              </attribute>
              <attribute name="title">
@@ -6333,7 +6304,7 @@ p, li { white-space: pre-wrap; }
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>0</y>
+                   <y>-97</y>
                    <width>589</width>
                    <height>583</height>
                   </rect>
@@ -6943,7 +6914,7 @@ p, li { white-space: pre-wrap; }
         </widget>
         <widget class="QWidget" name="advanced">
          <attribute name="icon">
-          <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+          <iconset resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
            <normaloff>:/icons/Settings-icon.png</normaloff>:/icons/Settings-icon.png</iconset>
          </attribute>
          <attribute name="title">
@@ -7225,6 +7196,7 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <resources>
+  <include location="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
   <include location="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
  </resources>
  <connections>

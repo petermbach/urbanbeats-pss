@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\mod_urbanformgen_gui.ui'
+# Form implementation generated from reading ui file 'mod_urbanformgen_gui.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -316,7 +316,7 @@ class Ui_UrbanFormGenGui(object):
         self.inputs_scrollArea_2.setWidgetResizable(True)
         self.inputs_scrollArea_2.setObjectName("inputs_scrollArea_2")
         self.inputs_contents_2 = QtWidgets.QWidget()
-        self.inputs_contents_2.setGeometry(QtCore.QRect(0, 0, 589, 1085))
+        self.inputs_contents_2.setGeometry(QtCore.QRect(0, -715, 589, 1066))
         self.inputs_contents_2.setObjectName("inputs_contents_2")
         self.verticalLayout_19 = QtWidgets.QVBoxLayout(self.inputs_contents_2)
         self.verticalLayout_19.setObjectName("verticalLayout_19")
@@ -690,16 +690,6 @@ class Ui_UrbanFormGenGui(object):
         self.line_10.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_10.setObjectName("line_10")
         self.verticalLayout_19.addWidget(self.line_10)
-        self.label_17 = QtWidgets.QLabel(self.inputs_contents_2)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(13)
-        sizePolicy.setHeightForWidth(self.label_17.sizePolicy().hasHeightForWidth())
-        self.label_17.setSizePolicy(sizePolicy)
-        self.label_17.setMinimumSize(QtCore.QSize(0, 13))
-        self.label_17.setMaximumSize(QtCore.QSize(16777215, 13))
-        self.label_17.setObjectName("label_17")
-        self.verticalLayout_19.addWidget(self.label_17)
         self.label_22 = QtWidgets.QLabel(self.inputs_contents_2)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -1448,7 +1438,7 @@ class Ui_UrbanFormGenGui(object):
         self.inputs_scrollArea_5.setWidgetResizable(True)
         self.inputs_scrollArea_5.setObjectName("inputs_scrollArea_5")
         self.inputs_contents_5 = QtWidgets.QWidget()
-        self.inputs_contents_5.setGeometry(QtCore.QRect(0, 0, 589, 1295))
+        self.inputs_contents_5.setGeometry(QtCore.QRect(0, -944, 589, 1295))
         self.inputs_contents_5.setObjectName("inputs_contents_5")
         self.verticalLayout_15 = QtWidgets.QVBoxLayout(self.inputs_contents_5)
         self.verticalLayout_15.setObjectName("verticalLayout_15")
@@ -2047,7 +2037,7 @@ class Ui_UrbanFormGenGui(object):
         self.inputs_scrollArea_4.setWidgetResizable(True)
         self.inputs_scrollArea_4.setObjectName("inputs_scrollArea_4")
         self.inputs_contents_4 = QtWidgets.QWidget()
-        self.inputs_contents_4.setGeometry(QtCore.QRect(0, 0, 589, 585))
+        self.inputs_contents_4.setGeometry(QtCore.QRect(0, -234, 589, 585))
         self.inputs_contents_4.setObjectName("inputs_contents_4")
         self.verticalLayout_23 = QtWidgets.QVBoxLayout(self.inputs_contents_4)
         self.verticalLayout_23.setObjectName("verticalLayout_23")
@@ -2735,17 +2725,12 @@ class Ui_UrbanFormGenGui(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">SITE FRONTAGE CHARACTERISTICS</span></p></body></html>"))
-        self.label_17.setText(_translate("UrbanFormGenGui", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600; font-style:italic;\">Frontage and Local Streets</span></p></body></html>"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">SITE STREET AND FRONTAGE CHARACTERISTICS</span></p></body></html>"))
         self.label_22.setText(_translate("UrbanFormGenGui", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Customise the appearance and width of frontage.</p></body></html>"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Customise the typical appearance and width of site frontage (footpath, nature strip, street).</p></body></html>"))
         self.w_resnaturestrip_lbl2.setText(_translate("UrbanFormGenGui", "to"))
         self.w_resfootpath_med_check.setText(_translate("UrbanFormGenGui", "Use median"))
         self.w_resnaturestrip_lbl.setText(_translate("UrbanFormGenGui", "Nature strip width (range) [m]"))
@@ -2759,7 +2744,7 @@ class Ui_UrbanFormGenGui(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">SITE DRAINAGE</span></p></body></html>"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">SITE DRAINAGE CHARACTERISTICS</span></p></body></html>"))
         self.roof_connected_lbl.setText(_translate("UrbanFormGenGui", "Configure roof and surface drainage connection (affects effective imperviousness)?"))
         self.drainage_rule_check.setText(_translate("UrbanFormGenGui", "Define a spatial rule for allotment stormwater drainage properties"))
         self.avg_imp_dced_spin.setSuffix(_translate("UrbanFormGenGui", "%"))
@@ -2974,7 +2959,7 @@ class Ui_UrbanFormGenGui(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600; font-style:italic;\">Frontage and Local Streets</span></p></body></html>"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600; font-style:italic;\">Frontage and Local Street Characteristics</span></p></body></html>"))
         self.label_27.setText(_translate("UrbanFormGenGui", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -3235,4 +3220,4 @@ class Ui_UrbanFormGenGui(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">DEFAULT URBAN FORM TYPOLOGY</span></p></body></html>"))
         self.und_state_lbl_2.setText(_translate("UrbanFormGenGui", "UrbanBEATS subdivides the land based on pre-defined \'typical\' typologies, you can modify these here."))
         self.highlevel_tabwidget.setTabText(self.highlevel_tabwidget.indexOf(self.advanced), _translate("UrbanFormGenGui", "Advanced"))
-from .. import ubeats_rc
+# from . import ubeats_rc

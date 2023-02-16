@@ -26,6 +26,7 @@ __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 # --- PYTHON LIBRARY IMPORTS ---
 from model.ubmodule import *
 import model.ublibs.ubmethods as ubmethods
+import random, math
 
 
 class UrbanFormAbstraction(UBModule):
@@ -48,10 +49,12 @@ class UrbanFormAbstraction(UBModule):
 
         # KEY GUIDING VARIABLES
         self.assets = None
+        self.griditems = None
         self.meta = None
         self.xllcorner = None
         self.yllcorner = None
         self.assetident = ""
+        self.nodata = None
         self.populationmap = None
         self.nodata = None
 
@@ -562,49 +565,78 @@ class UrbanFormAbstraction(UBModule):
         self.assets = self.activesim.get_asset_collection_by_name(self.assetcolname)
         if self.assets is None:
             self.notify("Fatal Error Missing Asset Collection")
+            return False
 
-        # Metadata Check - need to make sure we have access to the metadata
+        # METADATA CHECK - need to make sure we have access to the metadata
         self.meta = self.assets.get_asset_with_name("meta")
         if self.meta is None:
             self.notify("Fatal Error! Asset Collection missing Metadata")
+
+        # PRE-REQUISITES CHECK - needs to have a few modules run
+        if self.meta.get_attribute("mod_landuse_import") != 1:
+            self.notify("Cannot start module! Data on Land Use missing, please run Map Land Use module first")
+            return False
+        elif self.meta.get_attribute("mod_population") != 1:
+            self.notify("Cannot start module! Data on Population, please run Map Population module first")
+            return False
+
+        # CLEARN THE ATTRIBUTES LIST
+        att_schema = ["MiscAtot", "MiscAimp", "MiscAirr", "MiscThresh", "UND_Type", "UND_av", "OpenSpace", "AGreenOS",
+                      "ASquare", "PG_av", "REF_av", "ANonW_Util", "SVU_avWS", "SVU_avWW", "SVU_avSW", "SVU_avOTH",
+                      "RoadTIA", "ParkBuffer", "RD_av", "HasRes", "HasHouses", "ResARoad", "ResANstrip", "ResAFpath",
+                      "HouseOccup", "ResParcels", "ResFrontT", "avSt_RES", "WResNstrip", "ResAllots", "ResDWpLot",
+                      "ResHouses", "ResLotArea", "ResRoof", "avLt_RES", "ResHFloors", "ResLotTIA", "ResLotEIA",
+                      "ResGarden", "ResRoofCon", "ResLotALS", "ResLotARS", "HasFlats", "avSt_RES", "HDRFlats",
+                      "HDRRoofA", "HDROccup", "HDR_TIA", "HDR_EIA", "HDRFloors", "av_HDRes", "HDRGarden", "HDRCarPark",
+                      "Has_LI", "LIjobs", "LIestates", "LIAeRoad", "LIAeNstrip", "LIAeFpath", "LIAestate", "avSt_LI",
+                      "LIAfront", "LIAfrEIA", "LIAestate", "LIAeBldg", "LIFloors", "LIAeLoad", "LIAeCPark", "avLt_LI",
+                      "LIAeLgrey", "LIAeEIA", "LIAeTIA", "Has_HI", "HIjobs", "HIestates", "HIAeRoad", "HIAeNstrip",
+                      "HIAeFpath", "HIAestate", "avSt_HI", "HIAfront", "HIAfrEIA", "HIAestate", "HIAeBldg", "HIFloors",
+                      "HIAeLoad", "HIAeCPark", "avLt_HI", "HIAeLgrey", "HIAeEIA", "HIAeTIA", "Has_COM", "COMjobs",
+                      "COMestates", "COMAeRoad", "COMAeNstrip", "COMAeFpath", "COMAestate", "avSt_COM", "COMAfront",
+                      "COMAfrEIA", "COMAestate", "COMAeBldg", "COMFloors", "COMAeLoad", "COMAeCPark", "avLt_COM",
+                      "COMAeLgrey", "COMAeEIA", "COMAeTIA", "Has_ORC", "ORCjobs", "ORCestates", "ORCAeRoad",
+                      "ORCAeNstrip", "ORCAeFpath", "ORCAestate", "avSt_ORC", "ORCAfront", "ORCAfrEIA", "ORCAestate",
+                      "ORCAeBldg", "ORCFloors", "ORCAeLoad", "ORCAeCPark", "avLt_ORC", "ORCAeLgrey", "ORCAeEIA",
+                      "ORCAeTIA", "Blk_TIA", "Blk_EIA", "Blk_EIF", "Blk_TIF", "Blk_RoofsA"]
+        grid_assets = self.assets.get_assets_with_identifier(self.assetident)
+        att_reset_count = 0
+        for i in range(len(grid_assets)):
+            for att in att_schema:
+                if grid_assets[i].remove_attribute(att):
+                    att_reset_count += 1
+        self.notify("Removed "+str(att_reset_count)+" attribute entries")
+
         self.meta.add_attribute("mod_urbanformgen", 1)
         self.assetident = self.meta.get_attribute("AssetIdent")
-
         self.xllcorner = self.meta.get_attribute("xllcorner")
         self.yllcorner = self.meta.get_attribute("yllcorner")
+        return True
 
     def run_module(self):
         """ The main algorithm for the module, links with the active simulation, its data library and output folders."""
-        self.initialize_runstate()
+        self.notify_progress(0)
+        if not self.initialize_runstate():
+            self.notify("Module run terminated!")
+            return True
 
         self.notify("Generating an Abstraction of the Urban Form")
         self.notify("--- === ---")
         self.notify("Geometry Type: " + self.assetident)
         self.notify_progress(0)
 
-        # PREMATURE MODULE END  - remove after redevelopment
-        self.notify_progress(100)
-        return True
+        # --- SECTION 1 - Grab asset information
+        self.griditems = self.assets.get_assets_with_identifier(self.assetident)
+        self.notify("Total assets within the map: "+str(len(self.griditems)))
+        total_assets = len(self.griditems)
+        progress_counter = 0
+        self.notify_progress(10)
 
-        # [TO DO] START OF OLD CODE
-        map_attr = self.scenario.get_asset_with_name("MapAttributes")
+        # --- SECTION 2 - Grab Map attributes and prepare sampling parameter ranges
+        block_size = self.meta.get_attribute("BlockSize")  # size of blocks
+        Atblock = self.meta.get_attribute("Area")  # Total area of one block
+        geomtype = self.meta.get_attribute("Geometry")  # Square, Hex, VectorPatches
 
-        # MAIN RUN CONDITION: CHECK THAT ALL PRIOR DATA ARE INCLUDED
-        truth_matrix = []
-        truth_matrix.append(bool(map_attr.get_attribute("HasLUC")))
-        truth_matrix.append(bool(map_attr.get_attribute("HasPOP")))
-        if False in truth_matrix:
-            map_attr.change_attribute("HasURBANFORM", 0)    # Change the condition for urban planning
-            self.notify("Urban Planning Terminating Prematurely: Not enough data!")
-            return  # Break the module pre-maturely
-
-        # SECTION 1 - Get all global map attributes and prepare parameters
-        # 1.1 MAP ATTRIBUTES
-        block_size = map_attr.get_attribute("BlockSize")    # size of blocks
-        Atblock = map_attr.get_attribute("BlockArea")       # Total area of one block
-        geomtype = map_attr.get_attribute("GeometryType")   # Square, Hex, VectorPatches
-
-        # 1.2 PREPARE SAMPLING PARAMETERS RANGES
         # If parameter range median boxes were checked, adjust these parameters to reflect that
         # Residential/Non-residential setbacks and local streets
         self.setback_f = ubmethods.adjust_sample_range(self.setback_f_min, self.setback_f_max, self.setback_f_med)
@@ -635,27 +667,38 @@ class UrbanFormAbstraction(UBModule):
                                                        self.hwy_travellane_median)
         hwy_centralbuffer = ubmethods.adjust_sample_range(self.hwy_centralbuffer_wmin, self.hwy_centralbuffer_wmax,
                                                           self.hwy_centralbuffer_median)
+
         # Initialize residential planning dictionary
         self.initialize_lui_dictionary()
 
         self.notify("Begin Urban Planning!")
-        blockslist = self.scenario.get_assets_with_identifier("BlockID")
+        self.notify_progress(20)
 
-        # SECTION 2 - LOOP ACROSS BLOCKS AND APPLY URBAN PLANNING RULES
-        for i in range(len(blockslist)):
+        # SECTION 3 - LOOP ACROSS BLOCKS AND APPLY URBAN PLANNING RULES
+        for i in range(len(self.griditems)):
+
+            # PROGRESS NOTIFIER
+            progress_counter += 1
+            if progress_counter > total_assets / 4:
+                self.notify_progress(40)
+            elif progress_counter > total_assets / 2:
+                self.notify_progress(60)
+            elif progress_counter > total_assets / 4 * 3:
+                self.notify_progress(80)
+
             # Initialize tally variables for the Block
             blk_tia = 0  # Total Block Impervious Area
             blk_roof = 0  # Total Block Roof Area
             blk_eia = 0  # Total Block effective impervious area
             blk_avspace = 0  # Total available space for decentralised water infrastructure
 
-            block_attr = blockslist[i]
+            block_attr = self.griditems[i]
             currentID = block_attr.get_attribute("BlockID")
 
             self.notify("Now Developing BlockID" + str(currentID))
 
             # Skip Condition 1: Block is not active
-            if block_attr.get_attribute("Status") == 0:
+            if block_attr.get_attribute("Status") == 0:         # Either because Status is zero
                 # block_attr.add_attribute("TOTALjobs", 0)
                 # block_attr.add_attribute("Blk_TIA", -9999)      # Default no-data value
                 # block_attr.add_attribute("Blk_EIF", -9999)
@@ -663,7 +706,7 @@ class UrbanFormAbstraction(UBModule):
                 # block_attr.add_attribute("Blk_RoofsA", -9999)
                 continue
 
-            if block_attr.get_attribute("Active") == 0:
+            if block_attr.get_attribute("Activity") == 0:         # Or because activity is zero
                 self.notify("BlockID" + str(currentID) + " is not active, moving to next ID")
                 block_attr.change_attribute("Status", 0)
                 block_attr.add_attribute("TOTALjobs", 0)
@@ -673,74 +716,74 @@ class UrbanFormAbstraction(UBModule):
                 block_attr.add_attribute("Blk_RoofsA", -9999)
                 nhd = block_attr.get_attribute("Neighbours")
                 for n in nhd:
-                    ubmethods.remove_neighbour_from_block(self.scenario.get_asset_with_name("BlockID"+str(n)),
+                    ubmethods.remove_neighbour_from_block(self.assets.get_asset_with_name("BlockID"+str(n)),
                                                           currentID)
                 continue
 
-            # Determine whether to update the Block at all using Dynamics Parameters
+            # DETERMINE WHETHER TO UPDATE BLOCK USING DYNAMIC PARAMETER
             # if int(prev_map_attr.getAttribute("Impl_cycle")) == 0:    #Is this implementation cycle?
             #     prevAttList = self.activesim.getAssetWithName("PrevID"+str(currentID))
             #     if self.keepBlockDataCheck(block_attr, prevAttList):        #NO = check block for update
             #         self.notify("Changes in Block are below threshold levels, transferring data")
             #         self.transferBlockAttributes(block_attr, prevAttList)
             #         continue        #If Block does not need to be developed, skip it
-            # COPIED OVER FROM LEGACY VERSION [DYNAMICS TO DO]
+            # COPIED OVER FROM LEGACY VERSION [DYNAMICS [TO DO]]
 
             # Get Active Area
-            activity = block_attr.get_attribute("Active")
+            activity = block_attr.get_attribute("Activity")
             Aactive = activity * Atblock
 
-            # 2.1 - UNCLASSIFIED LAND ---------------------
+            # 3.1 - UNCLASSIFIED LAND --------------------------------------------------------
             # Allocate unclassified area to the rest of the Block's LUC distribution
-            A_unc = block_attr.get_attribute("pLU_NA") * Aactive
+            A_unc = block_attr.get_attribute("pLU_UNC") * Aactive
             A_park = block_attr.get_attribute("pLU_PG") * Aactive
             A_ref = block_attr.get_attribute("pLU_REF") * Aactive
             A_rd = block_attr.get_attribute("pLU_RD") * Aactive
 
-            if A_unc != 0:      # If there is unclassified area in the Block, then....
+            if A_unc != 0:  # If there is unclassified area in the Block, then....
                 unc_area_subdivide = self.plan_unclassified(A_unc, A_park, A_ref, A_rd, Atblock)
                 undevextra, pgextra, refextra, rdextra, otherarea, otherimp, irrigateextra = unc_area_subdivide
-            else:       # Otherwise just set extra areas to zero
+            else:  # Otherwise just set extra areas to zero
                 undevextra, pgextra, refextra, rdextra, otherarea, otherimp, irrigateextra = 0, 0, 0, 0, 0, 0, 0
 
-            block_attr.add_attribute("MiscAtot", otherarea)
-            block_attr.add_attribute("MiscAimp", otherimp)
-            block_attr.add_attribute("MiscAirr", irrigateextra)
+            block_attr.add_attribute("MiscAtot", otherarea)     # Total Unc area of relevance
+            block_attr.add_attribute("MiscAimp", otherimp)      # Total impervious area contribution from UNC
+            block_attr.add_attribute("MiscAirr", irrigateextra) # Total irrigation area from UNC
 
-            if self.unc_custom:     # Using a custom threshold?
+            if self.unc_custom:  # Using a custom threshold?
                 block_attr.add_attribute("MiscThresh", self.unc_customthresh)
             else:
-                block_attr.add_attribute("MiscThresh", 999.9)   # If not, make unrealistically high
+                block_attr.add_attribute("MiscThresh", 999.9)  # If not, make unrealistically high
 
-            blk_tia += otherimp     # Add areas to cumulative variables
+            blk_tia += otherimp  # ADD AREAS TO CUMULATIVE VARIABLES
             blk_eia += otherimp
             blk_roof += 0
             blk_avspace += 0
 
-            # 2.2 - UNDEVELOPED LAND ---------------------
+            # 3.2 - UNDEVELOPED LAND --------------------------------------------------------
             # Determine the state of the area's undeveloped land if possible
-            considerCBD = map_attr.get_attribute("considerCBD")
+            considerCBD = self.meta.get_attribute("mod_cbdanalysis")
             A_und = block_attr.get_attribute("pLU_UND") * Aactive + undevextra
 
             if A_und != 0:
                 undtype = self.determine_undev_type(block_attr, considerCBD)
             else:
-                undtype = str("NA")     # If no undeveloped land
+                undtype = str("NA")  # If no undeveloped land
 
             block_attr.add_attribute("UND_Type", undtype)
-            block_attr.add_attribute("UND_av", float(A_und*self.und_allowdev))
+            block_attr.add_attribute("UND_av", float(A_und * self.und_allowdev))
 
-            blk_tia += 0            # Update cumulative variables
+            blk_tia += 0  # ADD AREAS TO CUMULATIVE VARIABLES
             blk_eia += 0
             blk_roof += 0
-            blk_avspace += float(A_und*self.und_allowdev)
+            blk_avspace += float(A_und * self.und_allowdev)
 
-            # 2.3 - OPEN SPACES ---------------------
-            A_park += pgextra       # Add the extra park and reserve areas from unclassified land
+            # 3.3 - OPEN SPACES --------------------------------------------------------
+            A_park += pgextra  # Add the extra park and reserve areas from unclassified land
             A_ref += refextra
             A_svu = block_attr.get_attribute("pLU_SVU") * Aactive
 
-            # 2.3.1 - Parks & Gardens or Squares
+            # 3.3.1 - Parks & Gardens or Squares
             parkratio = float(self.pg_greengrey_ratio + 10.0) / 20.0
             sqratio = 1 - parkratio
             sqarea = A_park * sqratio
@@ -752,23 +795,23 @@ class UrbanFormAbstraction(UBModule):
             block_attr.add_attribute("ASquare", sqarea)
             block_attr.add_attribute("PG_av", avail_space)
 
-            blk_tia += sqarea           # Update cumulative variables
+            blk_tia += sqarea  # ADD AREAS TO CUMULATIVE VARIABLES
             blk_eia += sqarea
             blk_roof += 0
             blk_avspace += avail_space
 
             # [TO DO] There are parameters for different park facilities, include this in future.
 
-            # 2.3.2 - Reserves & Floodways
+            # 3.3.2 - Reserves & Floodway
             avail_ref = A_ref * self.ref_usable_percent / 100.0
             block_attr.add_attribute("REF_av", avail_ref)
 
-            blk_tia += 0                # Update cumulative variables
+            blk_tia += 0  # ADD AREAS TO CUMULATIVE VARIABLES
             blk_eia += 0
             blk_roof += 0
             blk_avspace += avail_ref
 
-            # 2.3.3 - Services & Utilities
+            # 3.3.3 - Services & Utilities
             Asvu_water = float(A_svu) * float(self.svu_water) / 100.0
             Asvu_others = A_svu - Asvu_water
 
@@ -778,7 +821,7 @@ class UrbanFormAbstraction(UBModule):
 
             if sum(svu_props) > 100:
                 # If for some reason the sums of percentages does not equal 100, normalize!
-                svu_props = [svu/sum(svu_props) for svu in svu_props]
+                svu_props = [svu / sum(svu_props) for svu in svu_props]
             else:
                 svu_props = [svu / 100.0 for svu in svu_props]  # Otherwise just divide by 100
 
@@ -790,13 +833,13 @@ class UrbanFormAbstraction(UBModule):
             # Attributes includes available space (av) for water supply (WS), wastewater (WW), stormwater (SW) or
             # miscellaneous water-related applications (OTH)
 
-            blk_tia += 0
+            blk_tia += 0    # ADD AREAS TO CUMULATIVE VARIABLES
             blk_eia += 0
             blk_roof += 0
             blk_avspace += Asvu_water
 
-            # 2.4 - ROADS ---------------------
-            A_rd += rdextra     # Add the extra road from unclassified land to total road area
+            # 3.4 - ROADS --------------------------------------------------------
+            A_rd += rdextra  # Add the extra road from unclassified land to total road area
 
             # [TO DO] Work out proportion of roads in each Block and use this to determine area proportion for
             # Major arterials and highway typologies
@@ -820,10 +863,10 @@ class UrbanFormAbstraction(UBModule):
                          int(self.ma_bicycle) * self.ma_bicycle_lanes
 
             # Determine the total width of bicycle and sidestreet lanes
-            if self.ma_bicycle_shared:      # If the bicycle and side street share the same space...
-                rd_street_edge = max(rd_sidestreet, rd_bicycle)     # The larger of the two
-            else:                           # else...
-                rd_street_edge = rd_sidestreet + rd_bicycle         # The sum of the two
+            if self.ma_bicycle_shared:  # If the bicycle and side street share the same space...
+                rd_street_edge = max(rd_sidestreet, rd_bicycle)  # The larger of the two
+            else:  # else...
+                rd_street_edge = rd_sidestreet + rd_bicycle  # The sum of the two
 
             # Travel Lane - sample and multiply by boolean and number of lanes
             rd_travellane = round(random.uniform(float(ma_travellane[0]), float(ma_travellane[1])), 1) * \
@@ -836,14 +879,14 @@ class UrbanFormAbstraction(UBModule):
             arterial_imp = [rd_fpath, rd_street_edge, rd_travellane]
             arterial_perv = [rd_buffer, rd_nstrip]
 
-            if self.pt_centralbuffer:       # Is there at-grade public transport in the central buffer?
+            if self.pt_centralbuffer:  # Is there at-grade public transport in the central buffer?
                 arterial_imp.append(self.pt_impervious / 100.0 * rd_centralbuff)
                 arterial_perv.append((1 - self.pt_impervious / 100.0) * rd_centralbuff)
 
             # Incorporate open spaces as buffers
-            park_buffer = 0     # By default: Use the buffer area defined for the roads
+            park_buffer = 0  # By default: Use the buffer area defined for the roads
             if self.ma_openspacebuffer:
-                if (A_park + A_ref) >= 0.5 * A_rd:      # if total open space is greater than half the road area
+                if (A_park + A_ref) >= 0.5 * A_rd:  # if total open space is greater than half the road area
                     # Then the rd_buffer parameter is set to zero because the parks are used instead
                     park_buffer = 1
                     arterial_perv[0] = 0
@@ -852,7 +895,7 @@ class UrbanFormAbstraction(UBModule):
             Aimp_rd = float(sum(arterial_imp) * 2.0 / total_width) * A_rd
 
             if self.ma_median_reserved:
-                av_spRD = float(sum(arterial_perv[:len(arterial_perv)-1]) * 2.0 / total_width) * A_rd
+                av_spRD = float(sum(arterial_perv[:len(arterial_perv) - 1]) * 2.0 / total_width) * A_rd
             else:
                 av_spRD = float(sum(arterial_perv) * 2.0 / total_width) * A_rd
 
@@ -862,19 +905,18 @@ class UrbanFormAbstraction(UBModule):
             block_attr.add_attribute("ParkBuffer", park_buffer)
             block_attr.add_attribute("RD_av", av_spRD)
 
-            # Add to cumulative area variables
-            blk_tia += Aimp_rd
+            blk_tia += Aimp_rd  # ADD AREAS TO CUMULATIVE VARIABLES
             blk_eia += Aimp_rd
             blk_roof += 0
             blk_avspace += av_spRD
 
-            # 2.5 - RESIDENTIAL AREAS  ---------------------
-            map_attr.add_attribute("AvgOccup", self.occup_avg)      # Used in later modules! Needs a baseline
-            ResPop = block_attr.get_attribute("Population")          # Retrieve population count
-            A_res = block_attr.get_attribute("pLU_RES") * Aactive    # Retrieve active area
-            minHouse = self.person_space * self.occup_avg * 4       # Work out the minimum house size
+            # 3.5 - RESIDENTIAL AREAS  --------------------------------------------------------
+            self.meta.add_attribute("AvgOccup", self.occup_avg)  # Used in later modules! Needs a baseline
+            ResPop = block_attr.get_attribute("Population")  # Retrieve population count
+            A_res = block_attr.get_attribute("pLU_RES") * Aactive  # Retrieve active area
+            minHouse = self.person_space * self.occup_avg * 4  # Work out the minimum house size
             if A_res >= minHouse and ResPop > self.occup_flat_avg:
-                resdict = self.build_residential(block_attr, map_attr, A_res)
+                resdict = self.build_residential(block_attr, A_res)
 
                 # Transfer res_dict attributes to output vector
                 block_attr.add_attribute("HasRes", 1)
@@ -908,7 +950,7 @@ class UrbanFormAbstraction(UBModule):
                     else:
                         frontageTIF = 1 - (resdict["avSt_RES"] / resdict["TotalFrontage"])
 
-                    # Add to cumulative area variables
+                    # ADD AREAS TO CUMULATIVE VARIABLES
                     blk_tia += (resdict["ResLotTIA"] * resdict["ResAllots"]) + \
                                frontageTIF * resdict["TotalFrontage"]
                     blk_eia += (resdict["ResLotEIA"] * resdict["ResAllots"]) + \
@@ -929,25 +971,25 @@ class UrbanFormAbstraction(UBModule):
                     block_attr.add_attribute("HDRGarden", resdict["HDRGarden"])
                     block_attr.add_attribute("HDRCarPark", resdict["HDRCarPark"])
 
-                    # Add to cumulative area variables
+                    # ADD AREAS TO CUMULATIVE VARIABLES
                     blk_tia += resdict["HDR_TIA"]
                     blk_eia += resdict["HDR_EIA"]
                     blk_roof += resdict["HDRRoofA"]
                     blk_avspace += resdict["av_HDRes"]
 
             else:
-                block_attr.add_attribute("HasRes", 1)       # There IS residential space,BUT
-                block_attr.add_attribute("HasHouses", 0)    # No houses
-                block_attr.add_attribute("HasFlats", 0)     # No flats
+                block_attr.add_attribute("HasRes", 1)  # There IS residential space,BUT
+                block_attr.add_attribute("HasHouses", 0)  # No houses
+                block_attr.add_attribute("HasFlats", 0)  # No flats
                 block_attr.add_attribute("avSt_RES", A_res)  # becomes street-scape area available
 
-                # Add to cumulative area variables
+                # ADD AREAS TO CUMULATIVE VARIABLES
                 blk_tia += 0
                 blk_eia += 0
                 blk_roof += 0
                 blk_avspace += A_res
 
-            # 2.6 - NON-RESIDENTIAL AREAS  ---------------------
+            # 3.6 - NON-RESIDENTIAL AREAS  ---------------------
             A_civ = block_attr.get_attribute("pLU_CIV") * Aactive
             A_tr = block_attr.get_attribute("pLU_TR") * Aactive
             extraCom = 0  # Additional commercial land area (if facilities are not to be considered)
@@ -967,7 +1009,7 @@ class UrbanFormAbstraction(UBModule):
             totalblockemployed = 0
 
             if A_li != 0:
-                indLI_dict = self.build_nonres_area(block_attr, map_attr, A_li, "LI", frontage)
+                indLI_dict = self.build_nonres_area(block_attr, A_li, "LI", frontage)
                 if indLI_dict["Has_LI"] == 1:
                     block_attr.add_attribute("Has_LI", 1)
                     # Transfer attributes from indLI dictionary
@@ -984,22 +1026,24 @@ class UrbanFormAbstraction(UBModule):
                     block_attr.add_attribute("LIAeBldg", indLI_dict["EstateBuildingArea"])
                     block_attr.add_attribute("LIFloors", indLI_dict["Floors"])
                     block_attr.add_attribute("LIAeLoad", indLI_dict["Outdoorloadbay"])
-                    block_attr.add_attribute("LIAeCPark", indLI_dict["Outdoorcarpark"])  # TOTAL OUTDOOR VISIBLE CARPARK
+                    block_attr.add_attribute("LIAeCPark",
+                                             indLI_dict["Outdoorcarpark"])  # TOTAL OUTDOOR VISIBLE CARPARK
                     block_attr.add_attribute("avLt_LI", indLI_dict["EstateGreenArea"])
                     block_attr.add_attribute("LIAeLgrey", indLI_dict["Alandscape"] - indLI_dict["EstateGreenArea"])
                     block_attr.add_attribute("LIAeEIA", indLI_dict["EstateEffectiveImpervious"])
                     block_attr.add_attribute("LIAeTIA", indLI_dict["EstateImperviousArea"])
 
-                    # Add to cumulative area variables
+                    # ADD AREAS TO CUMULATIVE VARIABLES
                     totalblockemployed += indLI_dict["TotalBlockEmployed"]
-                    blk_tia += indLI_dict["Estates"] * (indLI_dict["EstateImperviousArea"] + indLI_dict["FrontageEIA"])
+                    blk_tia += indLI_dict["Estates"] * (
+                                indLI_dict["EstateImperviousArea"] + indLI_dict["FrontageEIA"])
                     blk_eia += indLI_dict["Estates"] * (
-                                indLI_dict["EstateEffectiveImpervious"] + 0.9 * indLI_dict["FrontageEIA"])
+                            indLI_dict["EstateEffectiveImpervious"] + 0.9 * indLI_dict["FrontageEIA"])
                     blk_roof += indLI_dict["Estates"] * indLI_dict["EstateBuildingArea"]
                     blk_avspace += indLI_dict["Estates"] * (indLI_dict["EstateGreenArea"] + indLI_dict["av_St"])
 
             if A_hi != 0:
-                indHI_dict = self.build_nonres_area(block_attr, map_attr, A_hi, "HI", frontage)
+                indHI_dict = self.build_nonres_area(block_attr, A_hi, "HI", frontage)
                 if indHI_dict["Has_HI"] == 1:
                     block_attr.add_attribute("Has_HI", 1)
                     # Transfer attributes from indHI dictionary
@@ -1016,22 +1060,24 @@ class UrbanFormAbstraction(UBModule):
                     block_attr.add_attribute("HIAeBldg", indHI_dict["EstateBuildingArea"])
                     block_attr.add_attribute("HIFloors", indHI_dict["Floors"])
                     block_attr.add_attribute("HIAeLoad", indHI_dict["Outdoorloadbay"])
-                    block_attr.add_attribute("HIAeCPark", indHI_dict["Outdoorcarpark"])  # TOTAL OUTDOOR VISIBLE CARPARK
+                    block_attr.add_attribute("HIAeCPark",
+                                             indHI_dict["Outdoorcarpark"])  # TOTAL OUTDOOR VISIBLE CARPARK
                     block_attr.add_attribute("avLt_HI", indHI_dict["EstateGreenArea"])
                     block_attr.add_attribute("HIAeLgrey", indHI_dict["Alandscape"] - indHI_dict["EstateGreenArea"])
                     block_attr.add_attribute("HIAeEIA", indHI_dict["EstateEffectiveImpervious"])
                     block_attr.add_attribute("HIAeTIA", indHI_dict["EstateImperviousArea"])
 
-                    # Add to cumulative area variables
+                    # ADD AREAS TO CUMULATIVE VARIABLES
                     totalblockemployed += indHI_dict["TotalBlockEmployed"]
-                    blk_tia += indHI_dict["Estates"] * (indHI_dict["EstateImperviousArea"] + indHI_dict["FrontageEIA"])
+                    blk_tia += indHI_dict["Estates"] * (
+                                indHI_dict["EstateImperviousArea"] + indHI_dict["FrontageEIA"])
                     blk_eia += indHI_dict["Estates"] * (
-                                indHI_dict["EstateEffectiveImpervious"] + 0.9 * indHI_dict["FrontageEIA"])
+                            indHI_dict["EstateEffectiveImpervious"] + 0.9 * indHI_dict["FrontageEIA"])
                     blk_roof += indHI_dict["Estates"] * indHI_dict["EstateBuildingArea"]
                     blk_avspace += indHI_dict["Estates"] * (indHI_dict["EstateGreenArea"] + indHI_dict["av_St"])
 
             if A_com != 0:
-                com_dict = self.build_nonres_area(block_attr, map_attr, A_com, "COM", frontage)
+                com_dict = self.build_nonres_area(block_attr, A_com, "COM", frontage)
                 if com_dict["Has_COM"] == 1:
                     block_attr.add_attribute("Has_COM", 1)
                     # Transfer attributes from COM dictionary
@@ -1048,22 +1094,23 @@ class UrbanFormAbstraction(UBModule):
                     block_attr.add_attribute("COMAeBldg", com_dict["EstateBuildingArea"])
                     block_attr.add_attribute("COMFloors", com_dict["Floors"])
                     block_attr.add_attribute("COMAeLoad", com_dict["Outdoorloadbay"])
-                    block_attr.add_attribute("COMAeCPark", com_dict["Outdoorcarpark"])  # TOTAL OUTDOOR VISIBLE CARPARK
+                    block_attr.add_attribute("COMAeCPark",
+                                             com_dict["Outdoorcarpark"])  # TOTAL OUTDOOR VISIBLE CARPARK
                     block_attr.add_attribute("avLt_COM", com_dict["EstateGreenArea"])
                     block_attr.add_attribute("COMAeLgrey", com_dict["Alandscape"] - com_dict["EstateGreenArea"])
                     block_attr.add_attribute("COMAeEIA", com_dict["EstateEffectiveImpervious"])
                     block_attr.add_attribute("COMAeTIA", com_dict["EstateImperviousArea"])
 
-                    # Add to cumulative area variables
+                    # ADD AREAS TO CUMULATIVE VARIABLES
                     totalblockemployed += com_dict["TotalBlockEmployed"]
                     blk_tia += com_dict["Estates"] * (com_dict["EstateImperviousArea"] + com_dict["FrontageEIA"])
                     blk_eia += com_dict["Estates"] * (
-                                com_dict["EstateEffectiveImpervious"] + 0.9 * com_dict["FrontageEIA"])
+                            com_dict["EstateEffectiveImpervious"] + 0.9 * com_dict["FrontageEIA"])
                     blk_roof += com_dict["Estates"] * com_dict["EstateBuildingArea"]
                     blk_avspace += com_dict["Estates"] * (com_dict["EstateGreenArea"] + com_dict["av_St"])
 
             if A_orc != 0:
-                orc_dict = self.build_nonres_area(block_attr, map_attr, A_orc, "ORC", frontage)
+                orc_dict = self.build_nonres_area(block_attr, A_orc, "ORC", frontage)
                 if orc_dict["Has_ORC"] == 1:
                     block_attr.add_attribute("Has_ORC", 1)
                     # Transfer attributes from Offices dictionary
@@ -1080,17 +1127,18 @@ class UrbanFormAbstraction(UBModule):
                     block_attr.add_attribute("ORCAeBldg", orc_dict["EstateBuildingArea"])
                     block_attr.add_attribute("ORCFloors", orc_dict["Floors"])
                     block_attr.add_attribute("ORCAeLoad", orc_dict["Outdoorloadbay"])
-                    block_attr.add_attribute("ORCAeCPark", orc_dict["Outdoorcarpark"])  # TOTAL OUTDOOR VISIBLE CARPARK
+                    block_attr.add_attribute("ORCAeCPark",
+                                             orc_dict["Outdoorcarpark"])  # TOTAL OUTDOOR VISIBLE CARPARK
                     block_attr.add_attribute("avLt_ORC", orc_dict["EstateGreenArea"])
                     block_attr.add_attribute("ORCAeLgrey", orc_dict["Alandscape"] - orc_dict["EstateGreenArea"])
                     block_attr.add_attribute("ORCAeEIA", orc_dict["EstateEffectiveImpervious"])
                     block_attr.add_attribute("ORCAeTIA", orc_dict["EstateImperviousArea"])
 
-                    # Add to cumulative area variables
+                    # ADD AREAS TO CUMULATIVE VARIABLES
                     totalblockemployed += orc_dict["TotalBlockEmployed"]
                     blk_tia += orc_dict["Estates"] * (orc_dict["EstateImperviousArea"] + orc_dict["FrontageEIA"])
                     blk_eia += orc_dict["Estates"] * (
-                                orc_dict["EstateEffectiveImpervious"] + 0.9 * orc_dict["FrontageEIA"])
+                            orc_dict["EstateEffectiveImpervious"] + 0.9 * orc_dict["FrontageEIA"])
                     blk_roof += orc_dict["Estates"] * orc_dict["EstateBuildingArea"]
                     blk_avspace += orc_dict["Estates"] * (orc_dict["EstateGreenArea"] + orc_dict["av_St"])
 
@@ -1108,13 +1156,15 @@ class UrbanFormAbstraction(UBModule):
             block_attr.add_attribute("Blk_RoofsA", blk_roof)
             # END OF BLOCK LOOP
 
+        self.notify_progress(90)
+
         # Add new attributes to Map Attributes for later use
-        map_attr.add_attribute("UndevAllow", self.und_allowdev)
-        # map_attr.add_attribute("")  # All the road median restrictions
+        self.meta.add_attribute("UndevAllow", self.und_allowdev)
+        # self.meta.add_attribute("")  # All the road median restrictions
 
-        # [TO DO ] END OF OLD CODE
-
-        self.notify("Urban Form Abstraction complete")
+        # PREMATURE MODULE END  - remove after redevelopment
+        self.notify("------")
+        self.notify("Urban form generated for asset collection")
         self.notify_progress(100)
         return True
 
@@ -1182,37 +1232,39 @@ class UrbanFormAbstraction(UBModule):
         if self.und_state == "M":  # If the user manually determined this...
             return self.und_type_manual
         elif considerCBD == 0:  # If the CBD was not considered, then sprawl distance cannot be calculated
+            self.notify("Note: no CBD information, please run Urban Centrality Analysis Module")
             return self.undtypeDefault
-        else:  # Otherwise, figure out based on CBD location
-            distCBD = current_attributes.get_attribute("CBDdist") / 1000  # convert to km
+        else:  # Otherwise, figure out based on CBD location    [TO DO] once CBD Analysis programmed
+            undtype = self.undtypeDefault
+            pass # [TO DO] once CBD Analysis module done
+            # distCBD = current_attributes.get_attribute("CBDdist") / 1000  # convert to km
 
-            if self.cityarchetype == "MC":  # Monocentric City Case
-                BFdist = float(self.und_BFtoGF) / 100 * float(self.citysprawl)  # from 0 to BFdist --> BF
-                GFdist = float(self.und_BFtoAG) / 100 * float(self.citysprawl)  # from BFdist to GFdist --> GF
-                # >GFdist --> AG
-            else:  # Polycentric City Case - MAD = Main Activity District (10km), CBD = Central Business District
-                MAD_sprawl = self.citysprawl - self.CBD_MAD_dist
-                BFdist = self.CBD_MAD_dist + MAD_sprawl * self.und_BFtoGF / 100
-                GFdist = self.CBD_MAD_dist + MAD_sprawl * self.und_BFtoAG / 100
-
-            if distCBD <= BFdist:  # Brownfield
-                undtype = "BF"
-            elif distCBD <= GFdist and self.considerGF:  # Greenfield
-                undtype = "GF"
-            elif distCBD > GFdist and self.considerAG:  # Agriculture
-                undtype = "AG"
-            elif distCBD > GFdist and self.considerGF:  # Greenfield because AG not considered
-                undtype = "GF"
-            else:
-                undtype = "BF"  # Brownfield because GF and AG not considered
+            # if self.cityarchetype == "MC":  # Monocentric City Case
+            #     BFdist = float(self.und_BFtoGF) / 100 * float(self.citysprawl)  # from 0 to BFdist --> BF
+            #     GFdist = float(self.und_BFtoAG) / 100 * float(self.citysprawl)  # from BFdist to GFdist --> GF
+            #     # >GFdist --> AG
+            # else:  # Polycentric City Case - MAD = Main Activity District (10km), CBD = Central Business District
+            #     MAD_sprawl = self.citysprawl - self.CBD_MAD_dist
+            #     BFdist = self.CBD_MAD_dist + MAD_sprawl * self.und_BFtoGF / 100
+            #     GFdist = self.CBD_MAD_dist + MAD_sprawl * self.und_BFtoAG / 100
+            #
+            # if distCBD <= BFdist:  # Brownfield
+            #     undtype = "BF"
+            # elif distCBD <= GFdist and self.considerGF:  # Greenfield
+            #     undtype = "GF"
+            # elif distCBD > GFdist and self.considerAG:  # Agriculture
+            #     undtype = "AG"
+            # elif distCBD > GFdist and self.considerGF:  # Greenfield because AG not considered
+            #     undtype = "GF"
+            # else:
+            #     undtype = "BF"  # Brownfield because GF and AG not considered
         return undtype
 
-    def build_residential(self, block_attr, map_attr, A_res):
+    def build_residential(self, block_attr, A_res):
         """Builds residential urban form - either houses or apartments depending on the
         density of the population on the land available.
 
         :param block_attr: the UBVector() containing all Block attributes of the current block
-        :param map_attr: the global map attributes UBVector()
         :param A_res: The area of residentail land to build on
         :return: a dictionary containing all residential parameters for that block.
         """
@@ -1236,7 +1288,7 @@ class UrbanFormAbstraction(UBModule):
             resdict = self.design_residential_houses(A_res, popBlock)
             resdict["TypeApt"] = 0
         elif "Apartment" in restype or "HighRise" in restype:  # Design apartments
-            resdict = self.design_residential_apartments(block_attr, map_attr, A_res, popBlock, blockratios, Afloor)
+            resdict = self.design_residential_apartments(block_attr, A_res, popBlock, blockratios, Afloor)
             resdict["TypeHouse"] = 0
         else:
             resdict = {}
@@ -1450,7 +1502,7 @@ class UrbanFormAbstraction(UBModule):
         resdict["ResLotARS"] = Ars
         return resdict
 
-    def design_residential_apartments(self, block_attr, map_attr, A_res, pop, ratios, Afloor):
+    def design_residential_apartments(self, block_attr, A_res, pop, ratios, Afloor):
         """Lays out the specified residential area with high density apartments for a given population
         and ratios for the block. Algorithm works within floor constraints, but ignores these if the site
         cannot be laid out properly.
@@ -1485,8 +1537,9 @@ class UrbanFormAbstraction(UBModule):
             Ars = AextraOutdoor * (Ars / Aos)
 
         pPG = block_attr.get_attribute("pLU_PG")
-        pactive = block_attr.get_attribute("Active")
-        Ablock = map_attr.get_attribute("BlockArea")
+        pactive = block_attr.get_attribute("Activity")
+        Ablock = self.meta.get_attribute("Area")
+        print(pPG, pactive, Ablock, float(int(self.park_OSR)))
         Apg = pPG * pactive * Ablock * float(int(self.park_OSR))
 
         # Step 4a: Work out Building Footprint using OSR
@@ -1680,12 +1733,11 @@ class UrbanFormAbstraction(UBModule):
                     self.resLUIdict["LSR"][dictindex], self.resLUIdict["RSR"][dictindex],
                     self.resLUIdict["OCR"][dictindex], self.resLUIdict["TCR"][dictindex]]
 
-    def build_nonres_area(self, block_attr, map_attr, Aluc, type, frontage):
+    def build_nonres_area(self, block_attr, Aluc, type, frontage):
         """Function to build non-residential urban form (LI, HI, COM, ORC) based on the typology of estates and plot
         ratios and the provision of sufficient space for building, carparks, service/loading bay and landscaping.
 
         :param block_attr: The UBVector() object containing the current Block's attributes
-        :param map_attr: The global Map Attributes UBVector() instance
         :param Aluc: Area of land use in question
         :param type: Type of the land use (LI, HI, COM, ORC)
         :param frontage: frontage parameters determined for current Block.
@@ -1709,7 +1761,7 @@ class UrbanFormAbstraction(UBModule):
         Wfrontage = laneW + nstrip + fpath
 
         # STEP 1: Determine employment in the area
-        employed = self.determine_employment(self.employment_mode, block_attr, map_attr, Aluc, type)
+        employed = self.determine_employment(self.employment_mode, block_attr, Aluc, type)
         nresdict["TotalBlockEmployed"] = employed
 
         # self.notify( "Employed + Dens"+str(employed))
@@ -1900,18 +1952,18 @@ class UrbanFormAbstraction(UBModule):
         nresdict["EstateEffectiveImpervious"] = Aimp_connected
         return nresdict
 
-    def determine_employment(self, method, block_attr, map_attr, Aluc, type):
+    def determine_employment(self, method, block_attr, Aluc, type):
         """Determines the employment of the block based on the selected method. Calls
         some alternative functions for scaling or other aspects.
 
         :param method: The method selected by the user for determining employment
         :param block_attr: UBVector() instance of current Block attributes
-        :param map_attr: UBVector() instance of global Map Attributes
         :param Aluc: Area of the land use
         :param type: type of the non-residential land use
         :return: The total employment for the Block's current non-res land use
         """
-        if method == "I" and map_attr.get_attribute("include_employment") == 1:
+        employed = 0    # initialize
+        if method == "I":   # [TO DO]
             # Condition required to do this: there has to be data on employment input
             employed = block_attr.get_attribute("TOTALjobs")  # total employment for Block
             # Scale this value based on the hypothetical area and employee distribution
@@ -1931,7 +1983,7 @@ class UrbanFormAbstraction(UBModule):
                 self.notify("Something's wrong here...")
         return employed
 
-    def scale_employment(self, block_attr, employed, Aluc):
+    def scale_employment(self, block_attr, employed, Aluc):     # [TO DO]
         pass
         # Scales the employed value down based on Aluc, used for "S" and "D" methods
         return employed
