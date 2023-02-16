@@ -334,7 +334,7 @@ def import_linear_network(filename, option, global_offsets, **kwargs):
                 for j in range(geometry.GetPointCount()):
                     coordinates.append((geometry.GetX(j) - global_offsets[0], geometry.GetY(j) - global_offsets[1]))
                 linefeature = ubdata.UBVector(coordinates)
-                linefeature.determine_geometry(coordinates)
+                linefeature.determine_geometry()
                 for a in attnames:
                     linefeature.add_attribute(str(a), currentfeature.GetFieldAsString(a))
                 linefeatures.append(linefeature)
@@ -349,7 +349,7 @@ def import_linear_network(filename, option, global_offsets, **kwargs):
                         coordinates.append((linestring.GetX(k) - global_offsets[0],
                                             linestring.GetY(k) - global_offsets[1]))
                     linefeature = ubdata.UBVector(coordinates)
-                    linefeature.determine_geometry(coordinates)
+                    linefeature.determine_geometry()
                     for a in attnames:
                         linefeature.add_attribute(str(a), currentfeature.GetFieldAsString(a))
                     linefeatures.append(linefeature)
@@ -402,7 +402,7 @@ def import_point_features(filepath, option, global_offsets):
                     coordinates = (pt.GetX() - global_offsets[0], pt.GetY() - global_offsets[1])
                     if option == "POINTS":
                         pointfeature = ubdata.UBVector(coordinates)
-                        pointfeature.determine_geometry(coordinates)
+                        pointfeature.determine_geometry()
                         for a in attnames:
                             pointfeature.add_attribute(str(a), feature.GetFieldAsString(a))
                         pointfeatures.append(pointfeature)
@@ -414,7 +414,7 @@ def import_point_features(filepath, option, global_offsets):
                 coordinates = (geom.GetX() - global_offsets[0], geom.GetY() - global_offsets[1])
                 if option == "POINTS":
                     pointfeature = ubdata.UBVector(coordinates)
-                    pointfeature.determine_geometry(coordinates)
+                    pointfeature.determine_geometry()
                     for a in attnames:
                         pointfeature.add_attribute(str(a), feature.GetFieldAsString(a))
                     pointfeatures.append(pointfeature)
