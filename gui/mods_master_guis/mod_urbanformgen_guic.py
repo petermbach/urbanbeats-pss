@@ -1145,4 +1145,13 @@ class UrbanFormGenLaunch(QtWidgets.QDialog):
             prompt_msg = "Please select an Asset Collection to use for this simulation!"
             QtWidgets.QMessageBox.warning(self, "No Asset Collection selected", prompt_msg, QtWidgets.QMessageBox.Ok)
             return False
+
+        # (2) Selected asset collection does not have land use or population data
+        self.update_asset_col_metadata()
+        if self.metadata.get_attribute("mod_landuse_import") != 1 or self.metadata.get_attribute("mod_population") != 1:
+            prompt_msg = "The current asset collection selected does not contain land use or population data." \
+                         "Please run the Map Landuse or Map Population Module(s) on this asset collection first."
+            QtWidgets.QMessageBox.warning(self, "Pre-requisite Modules required", prompt_msg,
+                                          QtWidgets.QMessageBox.Ok)
+            return True
         return True
