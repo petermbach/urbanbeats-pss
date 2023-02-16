@@ -26,7 +26,6 @@ __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 # --- PYTHON LIBRARY IMPORTS ---
 
 # --- URBANBEATS LIBRARY IMPORTS ---
-import model.progref.ubglobals as ubglobals
 import model.mods_master.mod_urbanformgen as mod_urbanformgen
 
 # --- GUI IMPORTS ---
@@ -605,7 +604,7 @@ class UrbanFormGenLaunch(QtWidgets.QDialog):
             self.ui.und_stateauto_radio.setChecked(1)
 
         undev_type = self.module.get_parameter("und_type_manual")
-        undevindex = ubglobals.UNDEVSTATES.index(undev_type)
+        undevindex = mod_urbanformgen.UNDEVSTATES.index(undev_type)
         self.ui.und_statemanual_combo.setCurrentIndex(int(undevindex))
         self.ui.und_allowdev_check.setChecked(int(self.module.get_parameter("und_allowdev")))
         self.enable_disable_others()
@@ -1116,7 +1115,7 @@ class UrbanFormGenLaunch(QtWidgets.QDialog):
             self.module.set_parameter("und_state", "A")
 
         self.module.set_parameter("und_type_manual",
-                                  ubglobals.UNDEVSTATES[self.ui.und_statemanual_combo.currentIndex()])
+                                  mod_urbanformgen.UNDEVSTATES[self.ui.und_statemanual_combo.currentIndex()])
         self.module.set_parameter("und_allowdev", int(self.ui.und_allowdev_check.isChecked()))
 
         self.module.set_parameter("agg_allocres", int(self.ui.agg_allocateres_check.isChecked()))

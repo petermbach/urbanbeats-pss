@@ -2011,3 +2011,4 @@ class UrbanFormAbstraction(UBModule):
 
 # GLOBAL VARIABLES TIED TO THIS MODULE
 PLANNINGTEMPLATES = ["Victorian Planning Provisions (AU)", "EU Planning", "Custom..."]
+UNDEVSTATES = ['GF', 'BF', 'AG']
