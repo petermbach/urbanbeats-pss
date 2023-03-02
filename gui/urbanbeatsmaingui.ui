@@ -8,7 +8,7 @@
     <x>0</x>
     <y>0</y>
     <width>1368</width>
-    <height>715</height>
+    <height>870</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -61,11 +61,11 @@
           </size>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="Project_tab">
           <attribute name="icon">
-           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+           <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
             <normaloff>:/icons/Distributor-report-icon.png</normaloff>:/icons/Distributor-report-icon.png</iconset>
           </attribute>
           <attribute name="title">
@@ -90,7 +90,7 @@ p, li { white-space: pre-wrap; }
          </widget>
          <widget class="QWidget" name="Simulation_tab">
           <attribute name="icon">
-           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+           <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
             <normaloff>:/icons/earth-icon.png</normaloff>:/icons/earth-icon.png</iconset>
           </attribute>
           <attribute name="title">
@@ -120,7 +120,7 @@ p, li { white-space: pre-wrap; }
                <string>Locations</string>
               </property>
               <property name="icon">
-               <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+               <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                 <normaloff>:/icons/location.png</normaloff>:/icons/location.png</iconset>
               </property>
              </item>
@@ -129,7 +129,7 @@ p, li { white-space: pre-wrap; }
                <string>Simulation Boundaries</string>
               </property>
               <property name="icon">
-               <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+               <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                 <normaloff>:/icons/boundaries_view.png</normaloff>:/icons/boundaries_view.png</iconset>
               </property>
              </item>
@@ -186,7 +186,7 @@ p, li { white-space: pre-wrap; }
                      <string>Add</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                     <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                       <normaloff>:/icons/location_add.png</normaloff>:/icons/location_add.png</iconset>
                     </property>
                     <property name="iconSize">
@@ -240,7 +240,7 @@ p, li { white-space: pre-wrap; }
                      <string>Delete</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                     <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                       <normaloff>:/icons/location_remove.png</normaloff>:/icons/location_remove.png</iconset>
                     </property>
                     <property name="iconSize">
@@ -284,7 +284,7 @@ p, li { white-space: pre-wrap; }
                      <string>Update</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                     <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                       <normaloff>:/icons/eye-2387853_960_720.png</normaloff>:/icons/eye-2387853_960_720.png</iconset>
                     </property>
                     <property name="iconSize">
@@ -365,7 +365,7 @@ p, li { white-space: pre-wrap; }
                      <string>Add</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                     <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                       <normaloff>:/icons/boundaries_add.png</normaloff>:/icons/boundaries_add.png</iconset>
                     </property>
                     <property name="iconSize">
@@ -409,7 +409,7 @@ p, li { white-space: pre-wrap; }
                      <string>Update </string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                     <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                       <normaloff>:/icons/eye-2387853_960_720.png</normaloff>:/icons/eye-2387853_960_720.png</iconset>
                     </property>
                     <property name="iconSize">
@@ -450,7 +450,7 @@ p, li { white-space: pre-wrap; }
                      <string>Delete</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                     <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                       <normaloff>:/icons/boundaries_delete.png</normaloff>:/icons/boundaries_delete.png</iconset>
                     </property>
                     <property name="iconSize">
@@ -491,7 +491,7 @@ p, li { white-space: pre-wrap; }
                      <string>Add Shape</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                     <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                       <normaloff>:/icons/custom_shape.png</normaloff>:/icons/custom_shape.png</iconset>
                     </property>
                     <property name="iconSize">
@@ -535,7 +535,7 @@ p, li { white-space: pre-wrap; }
          </widget>
          <widget class="QWidget" name="assets">
           <attribute name="icon">
-           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+           <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
             <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
           </attribute>
           <attribute name="title">
@@ -583,7 +583,7 @@ p, li { white-space: pre-wrap; }
                  <string>New</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                 <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                   <normaloff>:/icons/add-icon.png</normaloff>:/icons/add-icon.png</iconset>
                 </property>
                </widget>
@@ -594,7 +594,7 @@ p, li { white-space: pre-wrap; }
                  <string>Delete</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                 <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                   <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
                 </property>
                </widget>
@@ -605,7 +605,7 @@ p, li { white-space: pre-wrap; }
                  <string>Export...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                 <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                   <normaloff>:/icons/export-icon.png</normaloff>:/icons/export-icon.png</iconset>
                 </property>
                </widget>
@@ -619,7 +619,7 @@ p, li { white-space: pre-wrap; }
                  <string> Display</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                 <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                   <normaloff>:/icons/eye-2387853_960_720.png</normaloff>:/icons/eye-2387853_960_720.png</iconset>
                 </property>
                </widget>
@@ -649,7 +649,7 @@ p, li { white-space: pre-wrap; }
                <string>Example_Ad-hoc</string>
               </property>
               <property name="icon">
-               <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+               <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                 <normaloff>:/icons/Very-Basic-Design-icon.png</normaloff>:/icons/Very-Basic-Design-icon.png</iconset>
               </property>
               <property name="text">
@@ -719,7 +719,7 @@ p, li { white-space: pre-wrap; }
                <string>My UrbanBEATS Scenario</string>
               </property>
               <property name="icon">
-               <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+               <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                 <normaloff>:/icons/book-open.png</normaloff>:/icons/book-open.png</iconset>
               </property>
               <property name="text">
@@ -779,7 +779,7 @@ p, li { white-space: pre-wrap; }
          </widget>
          <widget class="QWidget" name="Narrative_tab">
           <attribute name="icon">
-           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+           <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
             <normaloff>:/icons/Map-icon (1).png</normaloff>:/icons/Map-icon (1).png</iconset>
           </attribute>
           <attribute name="title">
@@ -803,7 +803,7 @@ p, li { white-space: pre-wrap; }
              </property>
              <widget class="QWidget" name="general">
               <attribute name="icon">
-               <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+               <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                 <normaloff>:/icons/Info-icon.png</normaloff>:/icons/Info-icon.png</iconset>
               </attribute>
               <attribute name="title">
@@ -828,7 +828,7 @@ p, li { white-space: pre-wrap; }
              </widget>
              <widget class="QWidget" name="datasets">
               <attribute name="icon">
-               <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+               <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                 <normaloff>:/icons/Misc-Database-3-icon.png</normaloff>:/icons/Misc-Database-3-icon.png</iconset>
               </attribute>
               <attribute name="title">
@@ -864,7 +864,7 @@ p, li { white-space: pre-wrap; }
              </widget>
              <widget class="QWidget" name="modules">
               <attribute name="icon">
-               <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+               <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                 <normaloff>:/icons/Data-Flow-Chart-icon.png</normaloff>:/icons/Data-Flow-Chart-icon.png</iconset>
               </attribute>
               <attribute name="title">
@@ -880,7 +880,7 @@ p, li { white-space: pre-wrap; }
                      <string>Add...</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                     <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                       <normaloff>:/icons/add-icon.png</normaloff>:/icons/add-icon.png</iconset>
                     </property>
                    </widget>
@@ -891,7 +891,7 @@ p, li { white-space: pre-wrap; }
                      <string>Remove</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                     <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                       <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
                     </property>
                    </widget>
@@ -902,7 +902,7 @@ p, li { white-space: pre-wrap; }
                      <string>Details</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                     <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                       <normaloff>:/icons/Info-icon.png</normaloff>:/icons/Info-icon.png</iconset>
                     </property>
                    </widget>
@@ -913,7 +913,7 @@ p, li { white-space: pre-wrap; }
                      <string>Run</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                     <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                       <normaloff>:/icons/Play-icon.png</normaloff>:/icons/Play-icon.png</iconset>
                     </property>
                    </widget>
@@ -968,7 +968,7 @@ p, li { white-space: pre-wrap; }
                     <string>Create Simulation Grid</string>
                    </property>
                    <property name="icon">
-                    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                      <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
                    </property>
                   </item>
@@ -998,7 +998,7 @@ p, li { white-space: pre-wrap; }
              </widget>
              <widget class="QWidget" name="outputs">
               <attribute name="icon">
-               <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+               <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                 <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
               </attribute>
               <attribute name="title">
@@ -1039,7 +1039,7 @@ p, li { white-space: pre-wrap; }
                      <string>Update View</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                     <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                       <normaloff>:/icons/Refresh-icon.png</normaloff>:/icons/Refresh-icon.png</iconset>
                     </property>
                    </widget>
@@ -1056,7 +1056,7 @@ p, li { white-space: pre-wrap; }
                      <string>Metadata</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                     <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                       <normaloff>:/icons/map-icon.png</normaloff>:/icons/map-icon.png</iconset>
                     </property>
                    </widget>
@@ -1067,7 +1067,7 @@ p, li { white-space: pre-wrap; }
                      <string>Export...</string>
                     </property>
                     <property name="icon">
-                     <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+                     <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
                       <normaloff>:/icons/export-icon.png</normaloff>:/icons/export-icon.png</iconset>
                     </property>
                    </widget>
@@ -1083,7 +1083,7 @@ p, li { white-space: pre-wrap; }
          </widget>
          <widget class="QWidget" name="Log_tab">
           <attribute name="icon">
-           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+           <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
             <normaloff>:/icons/Clipboard-icon.png</normaloff>:/icons/Clipboard-icon.png</iconset>
           </attribute>
           <attribute name="title">
@@ -1106,35 +1106,6 @@ p, li { white-space: pre-wrap; }
            </item>
           </layout>
          </widget>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="OutputConsole_lbl">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Output Console&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QTextEdit" name="OutputConsole">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>133</height>
-          </size>
-         </property>
-         <property name="horizontalScrollBarPolicy">
-          <enum>Qt::ScrollBarAlwaysOn</enum>
-         </property>
-         <property name="lineWrapMode">
-          <enum>QTextEdit::NoWrap</enum>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-         <property name="textInteractionFlags">
-          <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-         </property>
         </widget>
        </item>
       </layout>
@@ -1160,7 +1131,7 @@ p, li { white-space: pre-wrap; }
             <string>Options</string>
            </property>
            <property name="icon">
-            <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+            <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
              <normaloff>:/icons/Settings-icon.png</normaloff>:/icons/Settings-icon.png</iconset>
            </property>
           </widget>
@@ -1177,7 +1148,7 @@ p, li { white-space: pre-wrap; }
             <string>Metadata</string>
            </property>
            <property name="icon">
-            <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+            <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
              <normaloff>:/icons/map-icon.png</normaloff>:/icons/map-icon.png</iconset>
            </property>
           </widget>
@@ -1194,7 +1165,7 @@ p, li { white-space: pre-wrap; }
             <string>Extent</string>
            </property>
            <property name="icon">
-            <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+            <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
              <normaloff>:/icons/2216358 - globe locati.png</normaloff>:/icons/2216358 - globe locati.png</iconset>
            </property>
           </widget>
@@ -1270,7 +1241,7 @@ p, li { white-space: pre-wrap; }
       <string>Scenario</string>
      </property>
      <property name="icon">
-      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+      <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
        <normaloff>:/icons/Map-icon (1).png</normaloff>:/icons/Map-icon (1).png</iconset>
      </property>
      <addaction name="actionDefine_New_Scenario"/>
@@ -1282,7 +1253,7 @@ p, li { white-space: pre-wrap; }
       <string>Geography</string>
      </property>
      <property name="icon">
-      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+      <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
        <normaloff>:/icons/earth-icon.png</normaloff>:/icons/earth-icon.png</iconset>
      </property>
      <addaction name="actionAdd_Location"/>
@@ -1310,7 +1281,7 @@ p, li { white-space: pre-wrap; }
       <string>Urban Modelling</string>
      </property>
      <property name="icon">
-      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+      <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
        <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
      </property>
      <addaction name="actionGrowth_Model"/>
@@ -1323,7 +1294,7 @@ p, li { white-space: pre-wrap; }
       <string>Urban Planning</string>
      </property>
      <property name="icon">
-      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+      <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
        <normaloff>:/icons/Very-Basic-Design-icon.png</normaloff>:/icons/Very-Basic-Design-icon.png</iconset>
      </property>
      <addaction name="actionCity_wide_Planning"/>
@@ -1340,7 +1311,7 @@ p, li { white-space: pre-wrap; }
       <string>Spatial Mapping</string>
      </property>
      <property name="icon">
-      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+      <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
        <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
      </property>
      <addaction name="actionPlanning_Overlays"/>
@@ -1354,7 +1325,7 @@ p, li { white-space: pre-wrap; }
       <string>Infrastructure</string>
      </property>
      <property name="icon">
-      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+      <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
        <normaloff>:/icons/Bench-icon.png</normaloff>:/icons/Bench-icon.png</iconset>
      </property>
      <addaction name="actionHousehold_Appliances"/>
@@ -1366,7 +1337,7 @@ p, li { white-space: pre-wrap; }
       <string>Socio-Economic</string>
      </property>
      <property name="icon">
-      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+      <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
        <normaloff>:/icons/community-users-icon.png</normaloff>:/icons/community-users-icon.png</iconset>
      </property>
      <addaction name="actionStakeholder_Groups"/>
@@ -1378,7 +1349,7 @@ p, li { white-space: pre-wrap; }
       <string>Spatial Setup</string>
      </property>
      <property name="icon">
-      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+      <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
        <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
      </property>
      <addaction name="actionRepresentation"/>
@@ -1389,7 +1360,7 @@ p, li { white-space: pre-wrap; }
       <string>Climate Setup</string>
      </property>
      <property name="icon">
-      <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+      <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
        <normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</iconset>
      </property>
      <addaction name="actionData_Selection"/>
@@ -1522,7 +1493,7 @@ p, li { white-space: pre-wrap; }
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+        <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
          <normaloff>:/icons/add-icon.png</normaloff>:/icons/add-icon.png</iconset>
        </property>
        <property name="iconSize">
@@ -1539,7 +1510,7 @@ p, li { white-space: pre-wrap; }
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+        <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
          <normaloff>:/icons/map-icon.png</normaloff>:/icons/map-icon.png</iconset>
        </property>
        <property name="iconSize">
@@ -1556,7 +1527,7 @@ p, li { white-space: pre-wrap; }
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+        <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
          <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
        </property>
        <property name="iconSize">
@@ -1573,7 +1544,7 @@ p, li { white-space: pre-wrap; }
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+        <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
          <normaloff>:/icons/eye-2387853_960_720.png</normaloff>:/icons/eye-2387853_960_720.png</iconset>
        </property>
        <property name="iconSize">
@@ -1590,7 +1561,7 @@ p, li { white-space: pre-wrap; }
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+        <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
          <normaloff>:/icons/arrowright.png</normaloff>:/icons/arrowright.png</iconset>
        </property>
        <property name="iconSize">
@@ -1806,9 +1777,6 @@ p, li { white-space: pre-wrap; }
    <property name="features">
     <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
-   <property name="allowedAreas">
-    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
-   </property>
    <property name="windowTitle">
     <string>Scenarios</string>
    </property>
@@ -1850,7 +1818,7 @@ p, li { white-space: pre-wrap; }
          <string>Scenario_Name</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+         <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
           <normaloff>:/icons/book-open.png</normaloff>:/icons/book-open.png</iconset>
         </property>
         <item>
@@ -1902,7 +1870,7 @@ p, li { white-space: pre-wrap; }
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+           <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
             <normaloff>:/icons/add-icon.png</normaloff>:/icons/add-icon.png</iconset>
           </property>
           <property name="iconSize">
@@ -1919,7 +1887,7 @@ p, li { white-space: pre-wrap; }
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+           <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
             <normaloff>:/icons/activate.png</normaloff>:/icons/activate.png</iconset>
           </property>
           <property name="iconSize">
@@ -1936,7 +1904,7 @@ p, li { white-space: pre-wrap; }
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+           <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
             <normaloff>:/icons/Editing-edit-icon.png</normaloff>:/icons/Editing-edit-icon.png</iconset>
           </property>
           <property name="iconSize">
@@ -1953,7 +1921,7 @@ p, li { white-space: pre-wrap; }
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+           <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
             <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
           </property>
           <property name="iconSize">
@@ -2079,7 +2047,7 @@ p, li { white-space: pre-wrap; }
              </font>
             </property>
             <property name="icon">
-             <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+             <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
               <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
             </property>
             <property name="flags">
@@ -2096,7 +2064,7 @@ p, li { white-space: pre-wrap; }
              </font>
             </property>
             <property name="icon">
-             <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+             <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
               <normaloff>:/icons/admin_border.png</normaloff>:/icons/admin_border.png</iconset>
             </property>
            </item>
@@ -2110,7 +2078,7 @@ p, li { white-space: pre-wrap; }
              </font>
             </property>
             <property name="icon">
-             <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+             <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
               <normaloff>:/icons/topography.png</normaloff>:/icons/topography.png</iconset>
             </property>
            </item>
@@ -2129,7 +2097,7 @@ p, li { white-space: pre-wrap; }
              </font>
             </property>
             <property name="icon">
-             <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+             <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
               <normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</iconset>
             </property>
            </item>
@@ -2148,7 +2116,7 @@ p, li { white-space: pre-wrap; }
              </font>
             </property>
             <property name="icon">
-             <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+             <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
               <normaloff>:/icons/House-icon.png</normaloff>:/icons/House-icon.png</iconset>
             </property>
            </item>
@@ -2162,7 +2130,7 @@ p, li { white-space: pre-wrap; }
              </font>
             </property>
             <property name="icon">
-             <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+             <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
               <normaloff>:/icons/City_icon_(Noun_Project).svg.png</normaloff>:/icons/City_icon_(Noun_Project).svg.png</iconset>
             </property>
            </item>
@@ -2181,7 +2149,7 @@ p, li { white-space: pre-wrap; }
              </font>
             </property>
             <property name="icon">
-             <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+             <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
               <normaloff>:/icons/Bench-icon.png</normaloff>:/icons/Bench-icon.png</iconset>
             </property>
            </item>
@@ -2251,7 +2219,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+          <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
            <normaloff>:/icons/chart-search-icon.png</normaloff>:/icons/chart-search-icon.png</iconset>
          </property>
          <property name="iconSize">
@@ -2280,7 +2248,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+          <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
            <normaloff>:/icons/Play-icon.png</normaloff>:/icons/Play-icon.png</iconset>
          </property>
          <property name="iconSize">
@@ -2309,7 +2277,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+          <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
            <normaloff>:/icons/folder-open-icon.png</normaloff>:/icons/folder-open-icon.png</iconset>
          </property>
          <property name="iconSize">
@@ -2338,7 +2306,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+          <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
            <normaloff>:/icons/Reports-icon.png</normaloff>:/icons/Reports-icon.png</iconset>
          </property>
          <property name="iconSize">
@@ -2367,7 +2335,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+          <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
            <normaloff>:/icons/maps-icon.png</normaloff>:/icons/maps-icon.png</iconset>
          </property>
          <property name="iconSize">
@@ -2452,9 +2420,46 @@ p, li { white-space: pre-wrap; }
    <addaction name="actionaction_coffeebreak"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QDockWidget" name="dockWidget">
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="windowTitle">
+    <string>Output Console</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QVBoxLayout" name="verticalLayout_12">
+     <item>
+      <widget class="QTextEdit" name="OutputConsole">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>133</height>
+        </size>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOn</enum>
+       </property>
+       <property name="lineWrapMode">
+        <enum>QTextEdit::NoWrap</enum>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
   <action name="actionNew_Project">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/new-file-icon.png</normaloff>:/icons/new-file-icon.png</iconset>
    </property>
    <property name="text">
@@ -2466,7 +2471,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionOpen_Project">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/open-file-icon.png</normaloff>:/icons/open-file-icon.png</iconset>
    </property>
    <property name="text">
@@ -2478,7 +2483,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionSave">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Actions-document-save-icon.png</normaloff>:/icons/Actions-document-save-icon.png</iconset>
    </property>
    <property name="text">
@@ -2495,7 +2500,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionImport_Project">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/import-icon.png</normaloff>:/icons/import-icon.png</iconset>
    </property>
    <property name="text">
@@ -2504,7 +2509,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionExport_Project">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/export-icon.png</normaloff>:/icons/export-icon.png</iconset>
    </property>
    <property name="text">
@@ -2513,7 +2518,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionQuit">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Sign-Shutdown-icon.png</normaloff>:/icons/Sign-Shutdown-icon.png</iconset>
    </property>
    <property name="text">
@@ -2525,7 +2530,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionPreferences">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Settings-icon (1).png</normaloff>:/icons/Settings-icon (1).png</iconset>
    </property>
    <property name="text">
@@ -2534,7 +2539,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionEdit_Project_Details">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/edit-file-icon.png</normaloff>:/icons/edit-file-icon.png</iconset>
    </property>
    <property name="text">
@@ -2543,7 +2548,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionView_Documentation">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Help-icon.png</normaloff>:/icons/Help-icon.png</iconset>
    </property>
    <property name="text">
@@ -2552,7 +2557,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionOnline_Help">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Categories-applications-internet-icon.png</normaloff>:/icons/Categories-applications-internet-icon.png</iconset>
    </property>
    <property name="text">
@@ -2561,7 +2566,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionAbout">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Info-icon.png</normaloff>:/icons/Info-icon.png</iconset>
    </property>
    <property name="text">
@@ -2570,7 +2575,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionLike_on_Facebook">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/social-facebook-box-blue-icon.png</normaloff>:/icons/social-facebook-box-blue-icon.png</iconset>
    </property>
    <property name="text">
@@ -2579,7 +2584,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionShare_on_Twiter">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/twitter-icon.png</normaloff>:/icons/twitter-icon.png</iconset>
    </property>
    <property name="text">
@@ -2588,7 +2593,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionOpen_Project_Folder">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/folder-open-icon.png</normaloff>:/icons/folder-open-icon.png</iconset>
    </property>
    <property name="text">
@@ -2602,7 +2607,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionResults_Viewer">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/chart-search-icon.png</normaloff>:/icons/chart-search-icon.png</iconset>
    </property>
    <property name="text">
@@ -2611,7 +2616,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionModel_Calibration_Viewer">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Actions-office-chart-area-icon.png</normaloff>:/icons/Actions-office-chart-area-icon.png</iconset>
    </property>
    <property name="text">
@@ -2640,7 +2645,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionView_Project_Description">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Distributor-report-icon.png</normaloff>:/icons/Distributor-report-icon.png</iconset>
    </property>
    <property name="text">
@@ -2654,7 +2659,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionAdd_Data">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/add-icon.png</normaloff>:/icons/add-icon.png</iconset>
    </property>
    <property name="text">
@@ -2666,7 +2671,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionImport_Archive_File">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Misc-Download-Database-icon.png</normaloff>:/icons/Misc-Download-Database-icon.png</iconset>
    </property>
    <property name="text">
@@ -2680,7 +2685,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionExport_Data_Archive">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/if_Upload_Database_66056.png</normaloff>:/icons/if_Upload_Database_66056.png</iconset>
    </property>
    <property name="text">
@@ -2689,7 +2694,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionReset_Data_Library">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Refresh-icon.png</normaloff>:/icons/Refresh-icon.png</iconset>
    </property>
    <property name="text">
@@ -2703,7 +2708,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionDelete_Scenario">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
    </property>
    <property name="text">
@@ -2712,7 +2717,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionDefine_New_Scenario">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/add-icon.png</normaloff>:/icons/add-icon.png</iconset>
    </property>
    <property name="text">
@@ -2721,7 +2726,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionView_Full_Project_Log">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Clipboard-icon.png</normaloff>:/icons/Clipboard-icon.png</iconset>
    </property>
    <property name="text">
@@ -2730,7 +2735,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionPerformance">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Bar-chart-icon.png</normaloff>:/icons/Bar-chart-icon.png</iconset>
    </property>
    <property name="text">
@@ -2739,7 +2744,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionSubmit_a_Bug_Report">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/debug-png-image-88477.png</normaloff>:/icons/debug-png-image-88477.png</iconset>
    </property>
    <property name="text">
@@ -2748,7 +2753,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionRun">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Play-icon.png</normaloff>:/icons/Play-icon.png</iconset>
    </property>
    <property name="text">
@@ -2775,7 +2780,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionResidential">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/House-icon.png</normaloff>:/icons/House-icon.png</iconset>
    </property>
    <property name="text">
@@ -2784,7 +2789,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionNon_Residentail">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Building-icon.png</normaloff>:/icons/Building-icon.png</iconset>
    </property>
    <property name="text">
@@ -2798,7 +2803,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionTransport">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Car-icon.png</normaloff>:/icons/Car-icon.png</iconset>
    </property>
    <property name="text">
@@ -2807,7 +2812,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionOpen_Spaces">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Tree-icon.png</normaloff>:/icons/Tree-icon.png</iconset>
    </property>
    <property name="text">
@@ -2816,7 +2821,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionMiscellaneous">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/gps-2845363_960_720.png</normaloff>:/icons/gps-2845363_960_720.png</iconset>
    </property>
    <property name="text">
@@ -2855,7 +2860,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionSocio_Economic">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Actions-view-pim-tasks-icon.png</normaloff>:/icons/Actions-view-pim-tasks-icon.png</iconset>
    </property>
    <property name="text">
@@ -2899,7 +2904,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionImpact">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Market-Analysis-icon.png</normaloff>:/icons/Market-Analysis-icon.png</iconset>
    </property>
    <property name="text">
@@ -2908,7 +2913,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionDecision_Analysis">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Data-Flow-Chart-icon.png</normaloff>:/icons/Data-Flow-Chart-icon.png</iconset>
    </property>
    <property name="text">
@@ -2937,7 +2942,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionEdit_Scenario">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Editing-edit-icon.png</normaloff>:/icons/Editing-edit-icon.png</iconset>
    </property>
    <property name="text">
@@ -2946,7 +2951,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionReporting_Options">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Distributor-report-icon.png</normaloff>:/icons/Distributor-report-icon.png</iconset>
    </property>
    <property name="text">
@@ -2955,7 +2960,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionMap_Export_Options">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/maps-icon.png</normaloff>:/icons/maps-icon.png</iconset>
    </property>
    <property name="text">
@@ -2972,7 +2977,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionActionReset">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/Refresh-icon.png</normaloff>:/icons/Refresh-icon.png</iconset>
    </property>
    <property name="text">
@@ -3007,7 +3012,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionaction_coffeebreak">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/iconfinder_addiction_Coffee_1_3122405.png</normaloff>:/icons/iconfinder_addiction_Coffee_1_3122405.png</iconset>
    </property>
    <property name="text">
@@ -3022,7 +3027,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionAdd_Simulation_Boundary">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/boundaries_add.png</normaloff>:/icons/boundaries_add.png</iconset>
    </property>
    <property name="text">
@@ -3034,7 +3039,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionView_Simulation_Boundaries">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/boundaries_view.png</normaloff>:/icons/boundaries_view.png</iconset>
    </property>
    <property name="text">
@@ -3046,7 +3051,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionAdd_Basic_Shape_Boundary">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/custom_shape.png</normaloff>:/icons/custom_shape.png</iconset>
    </property>
    <property name="text">
@@ -3058,7 +3063,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionAdd_Location">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/location_add.png</normaloff>:/icons/location_add.png</iconset>
    </property>
    <property name="text">
@@ -3070,7 +3075,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionView_Locations">
    <property name="icon">
-    <iconset resource="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+    <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
      <normaloff>:/icons/location.png</normaloff>:/icons/location.png</iconset>
    </property>
    <property name="text">
@@ -3095,11 +3100,10 @@ p, li { white-space: pre-wrap; }
   <tabstop>deleteScenario</tabstop>
   <tabstop>ScenarioView_Widget</tabstop>
   <tabstop>Log</tabstop>
-  <tabstop>OutputConsole</tabstop>
   <tabstop>SimDock_resultsview</tabstop>
  </tabstops>
  <resources>
-  <include location="../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
+  <include location="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
  </resources>
  <connections>
   <connection>
