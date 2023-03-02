@@ -2378,7 +2378,7 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>447</width>
+                   <width>532</width>
                    <height>428</height>
                   </rect>
                  </property>
@@ -3198,7 +3198,7 @@ p, li { white-space: pre-wrap; }
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>-214</y>
+               <y>0</y>
                <width>550</width>
                <height>569</height>
               </rect>
@@ -5464,7 +5464,7 @@ p, li { white-space: pre-wrap; }
  </widget>
  <resources>
   <include location="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
-  <include location="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
+  <include location="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
  </resources>
  <connections>
   <connection>
