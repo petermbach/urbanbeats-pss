@@ -62,7 +62,7 @@ class WaterDemandMapping(UBModule):
         self.create_parameter("residential_method", STRING, "Method for determinining residential water use.")
         self.residential_method = "EUA"  # EUA = end use analysis, DQI = direct flow input
 
-        self.flowrates = []  # Initialize these variables, used in the EUA method
+        self.flowrates = {}  # Initialize these variables, used in the EUA method
         self.baserating = 0
 
         # END USE ANALYSIS
@@ -348,55 +348,102 @@ class WaterDemandMapping(UBModule):
         self.xllcorner = self.meta.get_attribute("xllcorner")
         self.yllcorner = self.meta.get_attribute("yllcorner")
 
+        # PER-REQUISITES CHECK - needs to have a few modules run
+        if self.meta.get_attribute("mod_urbanformgen") != 1:
+            self.notify("Cannot start module! Asset collection has no urban form information yet.")
+            return False
+
+        # CLEAN THE ATTRIBUTES LIST
+        att_schema = ["WD_HHKitchen", "WD_HHShower", "WD_HHToilet", "WD_HHLaundry", "WD_HHDish", "WD_HHIndoor",
+                      "WD_HHHot", "HH_GreyW", "HH_BlackW", "WD_Indoor", "WD_HotVol", "WW_ResGrey", "WW_ResBlack",
+                      "WD_HHNonPot", "WD_HHGarden", "WD_Outdoor", "WD_COM", "WD_HotCOM", "WD_Office", "WD_HotOffice",
+                      "WD_LI", "WD_HotLI", "WD_HI", "WD_HotHI", "WD_NRes", "WD_HotNRes", "WD_NResIrri", "WW_ComGrey",
+                      "WW_ComBlack", "WW_IndGrey", "WW_IndBlack", "WD_POSIrri", "Blk_WD", "Blk_WDIrri", "Blk_WDHot",
+                      "Blk_WW", "Blk_WWGrey", "Blk_WWBlack", "Blk_Losses"]
+
+        grid_assets = self.assets.get_assets_with_identifier(self.assetident)
+        att_reset_count = 0
+        for i in range(len(grid_assets)):
+            for att in att_schema:
+                if grid_assets[i].remove_attribute(att):
+                    att_reset_count += 1
+        self.notify("Removed "+str(att_reset_count)+" attribute entries")
+
+        self.meta.add_attribute("mod_waterdemand", 1)
+        self.assetident = self.meta.get_attribute("AssetIdent")
+        self.xllcorner = self.meta.get_attribute("xllcorner")
+        self.yllcorner = self.meta.get_attribute("yllcorner")
+        return True
+
     def run_module(self):
         """ The main algorithm for the module, links with the active simulation, its data library and output folders."""
-        self.initialize_runstate()
+        self.notify_progress(0)
+        if not self.initialize_runstate():
+            self.notify("Module run terminated!")
+            return True
 
-        self.notify("Mapping Regions to the Simulation Grid")
+        self.notify("Calculating water consumption and wastewater generation over the simulation grid.")
         self.notify("--- === ---")
         self.notify("Geometry Type: " + self.assetident)
         self.notify_progress(0)
 
-        print(self.boundaries_to_map)
+        # --- SECTION 1 - Get asset information
+        self.griditems = self.assets.get_assets_with_identifier(self.assetident)
+        self.notify("Total assets within the map: "+str(len(self.griditems)))
+        total_assets = len(self.griditems)
+        progress_counter = 0
+        self.notify_progress(10)
 
-        # --- SECTION 1 - (description)
-        # --- SECTION 2 - (description)
-        # --- SECTION 3 - (description)
-
-        self.notify("Mapping of regions to simulation grid complete")
-        self.notify_progress(100)
-        return True
-
-        map_attr.add_attribute("HasWATERUSE", 1)
-        self.notify("Calculating Water Consumption and Wastewater Generation...")
+        # --- SECTION 2 - Calculate water demands
         if self.residential_method == "EUA":
             self.flowrates = self.retrieve_standards(self.res_standard)  # Get the flowrates from the standards
             self.baserating = self.res_baseefficiency  # The index to look up
             self.res_endusebasedemands()  # Initialize the calculation of base end use demands
         self.initialize_per_capita_residential_use()  # As a statistic and also for non-residential stuff.
-        for block_attr in blockslist:
+
+        for i in range(len(self.griditems)):
+
+            # PROGRESS NOTIFIER
+            progress_counter += 1
+            if progress_counter > total_assets / 4:
+                self.notify_progress(40)
+            elif progress_counter > total_assets / 2:
+                self.notify_progress(60)
+            elif progress_counter > total_assets / 4 * 3:
+                self.notify_progress(80)
+
+            block_attr = self.griditems[i]
+            currentID = block_attr.get_attribute("BlockID")
+
             if block_attr.get_attribute("Status") == 0:
                 continue
-            # print(f"Now calculating demands for Block: {block_attr.get_attribute('BlockID')}")
+
             self.map_water_consumption(block_attr)
 
         # SAVE PATTERN DATA INTO MAP ATTRIBUTES
+        self.notify_progress(90)
+        self.notify("Saving off diurnal patterns.")
+
         categories = DIURNAL_CATS
         if self.loss_pat == "CDP":
-            map_attr.add_attribute("dp_losses", CDP)  # Add constant pattern for losses
+            self.meta.add_attribute("DP_losses", CDP)  # Add constant pattern for losses
         else:
-            map_attr.add_attribute("dp_losses", "INV")  # Invert the pattern when it is time to
+            self.meta.add_attribute("DP_losses", "INV")  # Invert the pattern when it is time to
         for cat in DIURNAL_CATS:
             if eval("self." + cat + "_pat") == "SDD":
-                map_attr.add_attribute("dp_" + cat, SDD)
+                self.meta.add_attribute("dp_" + cat, SDD)
             elif eval("self." + cat + "_pat") == "CDP":
-                map_attr.add_attribute("dp_" + cat, CDP)
+                self.meta.add_attribute("dp_" + cat, CDP)
             elif eval("self." + cat + "_pat") == "OHT":
-                map_attr.add_attribute("dp_" + cat, OHT)
+                self.meta.add_attribute("dp_" + cat, OHT)
             elif eval("self." + cat + "_pat") == "AHC":
-                map_attr.add_attribute("dp_" + cat, AHC)
+                self.meta.add_attribute("dp_" + cat, AHC)
             else:
-                map_attr.add_attribute("dp_" + cat, eval("self." + cat + "_cp"))
+                self.meta.add_attribute("dp_" + cat, eval("self." + cat + "_cp"))
+
+        self.notify("Mapping of water demands complete.")
+        self.notify_progress(100)
+        return True
 
     # ==========================================
     # OTHER MODULE METHODS
@@ -435,14 +482,13 @@ class WaterDemandMapping(UBModule):
 
     def initialize_per_capita_residential_use(self):
         """Calculates a quick per capita water use [L/day] based on the selected residential method."""
-        map_attr = self.scenario.get_asset_with_name("MapAttributes")
         if self.residential_method == "EUA":
-            avg_occup = map_attr.get_attribute("AvgOccup")
+            avg_occup = self.meta.get_attribute("AvgOccup")
             self.avg_per_res_capita = self.kitchendem + self.showerdem + self.toiletdem + \
                                       float(self.laundrydem / avg_occup) + float(self.dishwasherdem / avg_occup)
         else:
             self.avg_per_res_capita = self.res_dailyindoor_vol
-        map_attr.add_attribute("AvgPerCapWaterUse", self.avg_per_res_capita)
+        self.meta.add_attribute("AvgPerCapWaterUse", self.avg_per_res_capita)
         self.notify("The Average Per Capita Water Use is: " + str(self.avg_per_res_capita) + " L/day")
         return True
 
@@ -506,8 +552,7 @@ class WaterDemandMapping(UBModule):
             block_attr.add_attribute("WW_ResGrey", sum([a * b for a, b in zip(gw, blk_demands)]) / 1000.0)  # [kL/day]
             block_attr.add_attribute("WW_ResBlack", sum([a * b for a, b in zip(bw, blk_demands)]) / 1000.0)  # [kL/day]
 
-            map_attr = self.scenario.get_asset_with_name("MapAttributes")
-            map_attr.add_attribute("WD_RES_Method", "EUA")
+            self.meta.add_attribute("WD_RES_Method", "EUA")
         else:  # If no residential, then simply set all attributes to zero
             block_attr.add_attribute("WD_HHKitchen", 0.0)
             block_attr.add_attribute("WD_HHShower", 0.0)
@@ -559,8 +604,7 @@ class WaterDemandMapping(UBModule):
             block_attr.add_attribute("WW_ResGrey", volHHF * qty * propGW / 1000.0)  # Block Res Greywater [kL/day]
             block_attr.add_attribute("WW_ResBlack", volHHF * qty * propBW / 1000.0)  # Block Res Blackwater [kL/day]
 
-            map_attr = self.scenario.get_asset_with_name("MapAttributes")
-            map_attr.add_attribute("WD_RES_Method", "DQI")
+            self.meta.add_attribute("WD_RES_Method", "DQI")
         else:
             block_attr.add_attribute("WD_HHIndoor", 0)
             block_attr.add_attribute("WD_HHHot", 0)

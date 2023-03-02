@@ -571,6 +571,7 @@ class UrbanFormAbstraction(UBModule):
         self.meta = self.assets.get_asset_with_name("meta")
         if self.meta is None:
             self.notify("Fatal Error! Asset Collection missing Metadata")
+            return False
 
         # PRE-REQUISITES CHECK - needs to have a few modules run
         if self.meta.get_attribute("mod_landuse_import") != 1:
@@ -599,6 +600,7 @@ class UrbanFormAbstraction(UBModule):
                       "ORCAeNstrip", "ORCAeFpath", "ORCAestate", "avSt_ORC", "ORCAfront", "ORCAfrEIA", "ORCAestate",
                       "ORCAeBldg", "ORCFloors", "ORCAeLoad", "ORCAeCPark", "avLt_ORC", "ORCAeLgrey", "ORCAeEIA",
                       "ORCAeTIA", "Blk_TIA", "Blk_EIA", "Blk_EIF", "Blk_TIF", "Blk_RoofsA"]
+
         grid_assets = self.assets.get_assets_with_identifier(self.assetident)
         att_reset_count = 0
         for i in range(len(grid_assets)):

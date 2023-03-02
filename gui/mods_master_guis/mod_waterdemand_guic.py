@@ -382,7 +382,14 @@ class WaterDemandLaunch(QtWidgets.QDialog):
         # - else: get self.meta(Occupancy) and calculate
         # [TO DO] if used in a scenario, grab the occupancy from the module info
 
-        avg_occupancy = self.simulation.get_active_scenario().get_module_object("URBPLAN", 0).get_parameter("occup_avg")
+        if self.ui.assetcol_combo.currentIndex() != 0:
+            self.assetcol = self.simulation.get_asset_collection_by_name(self.ui.assetcol_combo.currentText())
+            self.meta = self.assetcol.get_asset_with_name("meta")
+            if self.meta is not None:
+                avg_occupancy = self.meta.get_attribute("AvgOccup")
+        else:
+            self.ui.res_enduse_summarybox.setText("Total: (undefined) L/person/day)")
+            return True
 
         avg_use = self.ui.kitchen_freq.value() * self.ui.kitchen_dur.value() * \
                   standard_dict["Kitchen"][int(self.ui.res_standard_eff.currentIndex())] + \
@@ -619,7 +626,8 @@ class WaterDemandLaunch(QtWidgets.QDialog):
 
         # (2) Selected asset collection does not have urban form data
         self.update_asset_col_metadata()
-        if self.metadata.get_attribute("mod_urbanformgen") != 1 or self.metadata.get_attribute("mod_urbanformcon") != 1:
+        if self.metadata.get_attribute("mod_urbanformgen") != 1 and \
+                self.metadata.get_attribute("mod_urbanformdata") != 1:
             prompt_msg = "The current asset collection selected does not contain urban form information to calculate" \
                          "water demands. Please run the Abstract Urban Form Module on this asset collection first."
             QtWidgets.QMessageBox.warning(self, "Pre-requisite Modules required", prompt_msg, QtWidgets.QMessageBox.Ok)
@@ -636,7 +644,7 @@ class CustomPatternLaunch(QtWidgets.QDialog):
         the current custom pattern selected.
 
         :param module: reference to the UBModule() Spatial Mapping Module Instance
-        :param enduse: the end use key as per ubglobals.DIURNAL_CATS
+        :param enduse: the end use key as per module.DIURNAL_CATS
         :param parent: None
         """
         QtWidgets.QDialog.__init__(self, parent)
@@ -646,7 +654,7 @@ class CustomPatternLaunch(QtWidgets.QDialog):
         self.enduse = enduse
 
         # Transfer pattern data into table
-        self.ui.endusetype.setText(ubglobals.DIURNAL_LABELS[ubglobals.DIURNAL_CATS.index(self.enduse)])
+        self.ui.endusetype.setText(mod_waterdemand.DIURNAL_LABELS[mod_waterdemand.DIURNAL_CATS.index(self.enduse)])
         self.pattern = self.module.get_wateruse_custompattern(self.enduse)
         self.ui.avg_box.setText(str(round(sum(self.pattern) / len(self.pattern), 3)))
 
