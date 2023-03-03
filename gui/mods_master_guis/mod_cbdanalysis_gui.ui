@@ -859,7 +859,7 @@ Correction proceeds as follows:
  </tabstops>
  <resources>
   <include location="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
-  <include location="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
+  <include location="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
  </resources>
  <connections>
   <connection>

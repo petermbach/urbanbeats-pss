@@ -14,7 +14,7 @@
    <string>Suitability Mapping for Nature-based Solutions</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+   <iconset resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
     <normaloff>:/icons/nbs_suitabilitymap.png</normaloff>:/icons/nbs_suitabilitymap.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -64,7 +64,7 @@
          <string>OK</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+         <iconset resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
           <normaloff>:/icons/check.png</normaloff>:/icons/check.png</iconset>
         </property>
        </widget>
@@ -81,7 +81,7 @@
          <string>Close</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+         <iconset resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
           <normaloff>:/icons/delete-icon.png</normaloff>:/icons/delete-icon.png</iconset>
         </property>
        </widget>
@@ -98,7 +98,7 @@
          <string>Help</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+         <iconset resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
           <normaloff>:/icons/Help-icon.png</normaloff>:/icons/Help-icon.png</iconset>
         </property>
        </widget>
@@ -206,7 +206,7 @@ p, li { white-space: pre-wrap; }
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">:/mod_imgs/module_imgs/mod_nbssuitability.jpg</pixmap>
+         <pixmap resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">:/mod_imgs/module_imgs/mod_nbssuitability.jpg</pixmap>
         </property>
        </widget>
       </item>
@@ -293,7 +293,7 @@ p, li { white-space: pre-wrap; }
          <string>Run</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc">
+         <iconset resource="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
           <normaloff>:/icons/Play-icon.png</normaloff>:/icons/Play-icon.png</iconset>
         </property>
        </widget>
@@ -476,6 +476,7 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <resources>
+  <include location="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
   <include location="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
  </resources>
  <connections>
