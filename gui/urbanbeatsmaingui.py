@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1368, 870)
+        MainWindow.resize(1368, 720)
         self.Central_Widget = QtWidgets.QWidget(MainWindow)
         self.Central_Widget.setObjectName("Central_Widget")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.Central_Widget)
@@ -759,6 +759,7 @@ class Ui_MainWindow(object):
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.ToolboxDock)
         self.SimDock = QtWidgets.QDockWidget(MainWindow)
         self.SimDock.setMinimumSize(QtCore.QSize(146, 131))
+        self.SimDock.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea|QtCore.Qt.RightDockWidgetArea)
         self.SimDock.setObjectName("SimDock")
         self.SimDock_Contents = QtWidgets.QWidget()
         self.SimDock_Contents.setObjectName("SimDock_Contents")
@@ -1234,7 +1235,7 @@ class Ui_MainWindow(object):
         self.Settings_Toolbar.addAction(self.actionaction_coffeebreak)
 
         self.retranslateUi(MainWindow)
-        self.ScenarioView_Widget.setCurrentIndex(1)
+        self.ScenarioView_Widget.setCurrentIndex(0)
         self.geography_stack.setCurrentIndex(1)
         self.scenarioMgmt_tabview.setCurrentIndex(0)
         self.actionMinimize.triggered.connect(MainWindow.hide)

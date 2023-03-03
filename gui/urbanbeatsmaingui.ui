@@ -8,7 +8,7 @@
     <x>0</x>
     <y>0</y>
     <width>1368</width>
-    <height>870</height>
+    <height>720</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -61,7 +61,7 @@
           </size>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="Project_tab">
           <attribute name="icon">
@@ -2178,6 +2178,9 @@ p, li { white-space: pre-wrap; }
      <width>146</width>
      <height>131</height>
     </size>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
    </property>
    <property name="windowTitle">
     <string>Control Panel</string>
