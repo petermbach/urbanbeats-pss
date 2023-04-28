@@ -3005,7 +3005,7 @@ p, li { white-space: pre-wrap; }
                        </size>
                       </property>
                       <property name="currentIndex">
-                       <number>0</number>
+                       <number>1</number>
                       </property>
                       <widget class="QWidget" name="page_3">
                        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -3415,7 +3415,7 @@ p, li { white-space: pre-wrap; }
                     <item>
                      <widget class="QStackedWidget" name="bf_lcc_coststack">
                       <property name="currentIndex">
-                       <number>0</number>
+                       <number>1</number>
                       </property>
                       <widget class="QWidget" name="page_22">
                        <layout class="QGridLayout" name="gridLayout_8">
@@ -5024,8 +5024,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>605</width>
-                  <height>1009</height>
+                  <width>639</width>
+                  <height>1040</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -5149,7 +5149,7 @@ p, li { white-space: pre-wrap; }
                        <item row="2" column="0">
                         <widget class="QCheckBox" name="roof_st_check">
                          <property name="text">
-                          <string>Street</string>
+                          <string>Street/Neighbourhood</string>
                          </property>
                         </widget>
                        </item>
@@ -6336,8 +6336,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>605</width>
-                  <height>1009</height>
+                  <width>639</width>
+                  <height>1040</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -6461,7 +6461,7 @@ p, li { white-space: pre-wrap; }
                        <item row="2" column="0">
                         <widget class="QCheckBox" name="wall_st_check">
                          <property name="text">
-                          <string>Street</string>
+                          <string>Street/Neighbourhood</string>
                          </property>
                         </widget>
                        </item>
@@ -7610,24 +7610,24 @@ p, li { white-space: pre-wrap; }
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="inf">
+           <widget class="QWidget" name="infil">
             <layout class="QVBoxLayout" name="verticalLayout_34">
              <item>
-              <widget class="QLabel" name="inf_title">
+              <widget class="QLabel" name="infil_title">
                <property name="text">
                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Infiltration Systems&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="Line" name="inf_line">
+              <widget class="Line" name="infil_line">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QScrollArea" name="inf_scrollarea">
+              <widget class="QScrollArea" name="infil_scrollarea">
                <property name="frameShape">
                 <enum>QFrame::NoFrame</enum>
                </property>
@@ -7645,16 +7645,16 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>605</width>
-                  <height>1009</height>
+                  <width>639</width>
+                  <height>1040</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_29">
                  <item>
-                  <widget class="QWidget" name="inf_info" native="true">
+                  <widget class="QWidget" name="infil_info" native="true">
                    <layout class="QHBoxLayout" name="horizontalLayout_24">
                     <item>
-                     <widget class="QLabel" name="inf_img">
+                     <widget class="QLabel" name="infil_img">
                       <property name="text">
                        <string/>
                       </property>
@@ -7664,7 +7664,7 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <widget class="QTextBrowser" name="inf_descr">
+                     <widget class="QTextBrowser" name="infil_descr">
                       <property name="maximumSize">
                        <size>
                         <width>16777215</width>
@@ -7696,7 +7696,7 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="inf_scales_title">
+                  <widget class="QLabel" name="infil_scales_title">
                    <property name="text">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt; font-weight:600; font-style:italic;&quot;&gt;Scale(s), Types of Applications and Permissible Locations&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
@@ -7718,7 +7718,7 @@ p, li { white-space: pre-wrap; }
                      <number>0</number>
                     </property>
                     <item>
-                     <widget class="QWidget" name="inf_scales" native="true">
+                     <widget class="QWidget" name="infil_scales" native="true">
                       <property name="minimumSize">
                        <size>
                         <width>150</width>
@@ -7727,7 +7727,7 @@ p, li { white-space: pre-wrap; }
                       </property>
                       <layout class="QGridLayout" name="gridLayout_51">
                        <item row="5" column="0">
-                        <widget class="QCheckBox" name="inf_flow_check">
+                        <widget class="QCheckBox" name="infil_flow_check">
                          <property name="enabled">
                           <bool>true</bool>
                          </property>
@@ -7737,28 +7737,28 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="0" column="0">
-                        <widget class="QLabel" name="inf_scales_lbl">
+                        <widget class="QLabel" name="infil_scales_lbl">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Available Scales&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="6" column="0">
-                        <widget class="QCheckBox" name="inf_pollute_check">
+                        <widget class="QCheckBox" name="infil_pollute_check">
                          <property name="text">
                           <string>Pollution Control</string>
                          </property>
                         </widget>
                        </item>
                        <item row="4" column="0">
-                        <widget class="QLabel" name="inf_objectives_lbl">
+                        <widget class="QLabel" name="infil_objectives_lbl">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Objectives&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="0">
-                        <widget class="QCheckBox" name="inf_reg_check">
+                        <widget class="QCheckBox" name="infil_reg_check">
                          <property name="enabled">
                           <bool>true</bool>
                          </property>
@@ -7768,21 +7768,21 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="2" column="0">
-                        <widget class="QCheckBox" name="inf_st_check">
+                        <widget class="QCheckBox" name="infil_st_check">
                          <property name="text">
-                          <string>Street</string>
+                          <string>Street/Neighbourhood</string>
                          </property>
                         </widget>
                        </item>
                        <item row="1" column="0">
-                        <widget class="QCheckBox" name="inf_lot_check">
+                        <widget class="QCheckBox" name="infil_lot_check">
                          <property name="text">
                           <string>Lot</string>
                          </property>
                         </widget>
                        </item>
                        <item row="7" column="0">
-                        <widget class="QCheckBox" name="inf_recycle_check">
+                        <widget class="QCheckBox" name="infil_recycle_check">
                          <property name="enabled">
                           <bool>true</bool>
                          </property>
@@ -7795,7 +7795,7 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <widget class="QWidget" name="inf_locs" native="true">
+                     <widget class="QWidget" name="infil_locs" native="true">
                       <property name="minimumSize">
                        <size>
                         <width>150</width>
@@ -7804,7 +7804,7 @@ p, li { white-space: pre-wrap; }
                       </property>
                       <layout class="QGridLayout" name="gridLayout_52">
                        <item row="1" column="0">
-                        <widget class="QCheckBox" name="inf_pg_check">
+                        <widget class="QCheckBox" name="infil_pg_check">
                          <property name="enabled">
                           <bool>true</bool>
                          </property>
@@ -7814,7 +7814,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="0" column="0">
-                        <widget class="QLabel" name="inf_permissions_lbl">
+                        <widget class="QLabel" name="infil_permissions_lbl">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Permissible Locations&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
@@ -7834,21 +7834,21 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="2" column="0">
-                        <widget class="QCheckBox" name="inf_ref_check">
+                        <widget class="QCheckBox" name="infil_ref_check">
                          <property name="text">
                           <string>Reserves and Floodways</string>
                          </property>
                         </widget>
                        </item>
                        <item row="6" column="0">
-                        <widget class="QCheckBox" name="inf_ns_check">
+                        <widget class="QCheckBox" name="infil_ns_check">
                          <property name="text">
                           <string>Nature Strips</string>
                          </property>
                         </widget>
                        </item>
                        <item row="3" column="0">
-                        <widget class="QCheckBox" name="inf_for_check">
+                        <widget class="QCheckBox" name="infil_for_check">
                          <property name="enabled">
                           <bool>true</bool>
                          </property>
@@ -7858,7 +7858,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="4" column="0">
-                        <widget class="QCheckBox" name="inf_agr_check">
+                        <widget class="QCheckBox" name="infil_agr_check">
                          <property name="enabled">
                           <bool>true</bool>
                          </property>
@@ -7868,7 +7868,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="5" column="0">
-                        <widget class="QCheckBox" name="inf_und_check">
+                        <widget class="QCheckBox" name="infil_und_check">
                          <property name="enabled">
                           <bool>true</bool>
                          </property>
@@ -7878,7 +7878,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="7" column="0">
-                        <widget class="QCheckBox" name="inf_garden_check">
+                        <widget class="QCheckBox" name="infil_garden_check">
                          <property name="enabled">
                           <bool>true</bool>
                          </property>
@@ -7894,17 +7894,17 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="inf_spec_title">
+                  <widget class="QLabel" name="infil_spec_title">
                    <property name="text">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt; font-weight:600; font-style:italic;&quot;&gt;System Sizing and Specification&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QWidget" name="inf_spec_widget" native="true">
+                  <widget class="QWidget" name="infil_spec_widget" native="true">
                    <layout class="QGridLayout" name="gridLayout_53">
                     <item row="0" column="1">
-                     <widget class="QComboBox" name="inf_specmethod_combo">
+                     <widget class="QComboBox" name="infil_specmethod_combo">
                       <item>
                        <property name="text">
                         <string>Capture Ratio (rule-of-thumb size)</string>
@@ -7918,17 +7918,17 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item row="4" column="0" colspan="3">
-                     <widget class="QWidget" name="inf_spec_systemchar_widget2" native="true">
+                     <widget class="QWidget" name="infil_spec_systemchar_widget2" native="true">
                       <layout class="QGridLayout" name="gridLayout_54">
                        <item row="0" column="2">
-                        <widget class="QLabel" name="inf_spec_systemchar_rangemin_lbl">
+                        <widget class="QLabel" name="infil_spec_systemchar_rangemin_lbl">
                          <property name="text">
                           <string>min.</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="5">
-                        <widget class="QLineEdit" name="inf_spec_systemchar_rangemax_box"/>
+                        <widget class="QLineEdit" name="infil_spec_systemchar_rangemax_box"/>
                        </item>
                        <item row="1" column="1">
                         <spacer name="horizontalSpacer_91">
@@ -7947,17 +7947,17 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="0" column="3">
-                        <widget class="QLineEdit" name="inf_spec_systemchar_rangemin_box"/>
+                        <widget class="QLineEdit" name="infil_spec_systemchar_rangemin_box"/>
                        </item>
                        <item row="0" column="4">
-                        <widget class="QLabel" name="inf_spec_systemchar_rangemax_lbl">
+                        <widget class="QLabel" name="infil_spec_systemchar_rangemax_lbl">
                          <property name="text">
                           <string>max.</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="0">
-                        <widget class="QLabel" name="inf_spec_systemchar_range_lbl">
+                        <widget class="QLabel" name="infil_spec_systemchar_range_lbl">
                          <property name="text">
                           <string>Allowable Range of System Size [sqm]:</string>
                          </property>
@@ -7980,14 +7980,14 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="1" column="0">
-                        <widget class="QLabel" name="inf_spec_systemchar_exfil_lbl">
+                        <widget class="QLabel" name="infil_spec_systemchar_exfil_lbl">
                          <property name="text">
                           <string>Exfiltration Rate:</string>
                          </property>
                         </widget>
                        </item>
                        <item row="1" column="2" colspan="2">
-                        <widget class="QComboBox" name="inf_spec_systemchar_exfil_combo">
+                        <widget class="QComboBox" name="infil_spec_systemchar_exfil_combo">
                          <property name="whatsThis">
                           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -8068,7 +8068,7 @@ p, li { white-space: pre-wrap; }
                      </spacer>
                     </item>
                     <item row="0" column="0">
-                     <widget class="QLabel" name="inf_specmethod_lbl">
+                     <widget class="QLabel" name="infil_specmethod_lbl">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                         <horstretch>0</horstretch>
@@ -8090,17 +8090,17 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item row="2" column="0" colspan="3">
-                     <widget class="QWidget" name="inf_spec_systemchar_widget" native="true">
+                     <widget class="QWidget" name="infil_spec_systemchar_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_55">
                        <item row="1" column="2">
-                        <widget class="QLabel" name="inf_spec_systemchar_lbl">
+                        <widget class="QLabel" name="infil_spec_systemchar_lbl">
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;X&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
                        </item>
                        <item row="1" column="1">
-                        <widget class="QComboBox" name="inf_spec_systemchar_ed">
+                        <widget class="QComboBox" name="infil_spec_systemchar_ed">
                          <property name="minimumSize">
                           <size>
                            <width>150</width>
@@ -8151,7 +8151,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="1" column="3">
-                        <widget class="QComboBox" name="inf_spec_systemchar_fd">
+                        <widget class="QComboBox" name="infil_spec_systemchar_fd">
                          <property name="minimumSize">
                           <size>
                            <width>150</width>
@@ -8197,7 +8197,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="0" column="0" colspan="4">
-                        <widget class="QLabel" name="inf_spec_systemchar_title">
+                        <widget class="QLabel" name="infil_spec_systemchar_title">
                          <property name="whatsThis">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Low Flow Bypass = &lt;/p&gt;&lt;p&gt;High Flow Bypass = &lt;/p&gt;&lt;p&gt;Saturated hydraulic conductivity = 180mm/hr&lt;/p&gt;&lt;p&gt;TN content of filter media = &lt;/p&gt;&lt;p&gt;Orthophosphate content of filter media =&lt;/p&gt;&lt;p&gt;Overflow Weir Width = &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Unlined Filter Media Perimeter adjusted to maintain aspect ratio&lt;/p&gt;&lt;p&gt;Unlined filter media base&lt;/p&gt;&lt;p&gt;Vegetated with effective nutrient removal plants&lt;/p&gt;&lt;p&gt;Underdrain Present&lt;/p&gt;&lt;p&gt;Submerged Zone with Carbon Present, depth = 0.45m&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
@@ -8210,7 +8210,7 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item row="1" column="0" colspan="3">
-                     <widget class="QStackedWidget" name="inf_spec_stack">
+                     <widget class="QStackedWidget" name="infil_spec_stack">
                       <property name="minimumSize">
                        <size>
                         <width>0</width>
@@ -8223,7 +8223,7 @@ p, li { white-space: pre-wrap; }
                       <widget class="QWidget" name="page_11">
                        <layout class="QVBoxLayout" name="verticalLayout_30">
                         <item>
-                         <widget class="QGroupBox" name="inf_capture_widget">
+                         <widget class="QGroupBox" name="infil_capture_widget">
                           <property name="minimumSize">
                            <size>
                             <width>0</width>
@@ -8235,14 +8235,14 @@ p, li { white-space: pre-wrap; }
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_31">
                            <item>
-                            <widget class="QCheckBox" name="inf_capture_check">
+                            <widget class="QCheckBox" name="infil_capture_check">
                              <property name="text">
                               <string>Use a single universal capture ratio</string>
                              </property>
                             </widget>
                            </item>
                            <item>
-                            <widget class="QWidget" name="inf_specflow_widget" native="true">
+                            <widget class="QWidget" name="infil_specflow_widget" native="true">
                              <layout class="QHBoxLayout" name="horizontalLayout_8">
                               <item>
                                <widget class="QLabel" name="runoff_img_6">
@@ -8273,14 +8273,14 @@ p, li { white-space: pre-wrap; }
                                </widget>
                               </item>
                               <item>
-                               <widget class="QLabel" name="inf_captureflow_lbl">
+                               <widget class="QLabel" name="infil_captureflow_lbl">
                                 <property name="text">
                                  <string>Surface Area (VOL) [%]:</string>
                                 </property>
                                </widget>
                               </item>
                               <item>
-                               <widget class="QDoubleSpinBox" name="inf_captureflow_ratiospin">
+                               <widget class="QDoubleSpinBox" name="infil_captureflow_ratiospin">
                                 <property name="suffix">
                                  <string>%</string>
                                 </property>
@@ -8299,14 +8299,14 @@ p, li { white-space: pre-wrap; }
                                </widget>
                               </item>
                               <item>
-                               <widget class="QRadioButton" name="inf_captureflow_area_radio">
+                               <widget class="QRadioButton" name="infil_captureflow_area_radio">
                                 <property name="text">
                                  <string>of contributing area</string>
                                 </property>
                                </widget>
                               </item>
                               <item>
-                               <widget class="QRadioButton" name="inf_captureflow_imp_radio">
+                               <widget class="QRadioButton" name="infil_captureflow_imp_radio">
                                 <property name="text">
                                  <string>of contributing impervious area</string>
                                 </property>
@@ -8316,17 +8316,17 @@ p, li { white-space: pre-wrap; }
                             </widget>
                            </item>
                            <item>
-                            <widget class="QWidget" name="inf_capturewq_widget" native="true">
+                            <widget class="QWidget" name="infil_capturewq_widget" native="true">
                              <layout class="QGridLayout" name="gridLayout_15">
                               <item row="0" column="1">
-                               <widget class="QLabel" name="inf_capturewq_lbl">
+                               <widget class="QLabel" name="infil_capturewq_lbl">
                                 <property name="text">
                                  <string>Surface Area (TSS) [%]:</string>
                                 </property>
                                </widget>
                               </item>
                               <item row="0" column="3">
-                               <widget class="QRadioButton" name="inf_capturewq_area_radio">
+                               <widget class="QRadioButton" name="infil_capturewq_area_radio">
                                 <property name="text">
                                  <string>of contributing area</string>
                                 </property>
@@ -8361,7 +8361,7 @@ p, li { white-space: pre-wrap; }
                                </widget>
                               </item>
                               <item row="0" column="2">
-                               <widget class="QDoubleSpinBox" name="inf_capturewq_ratiospin">
+                               <widget class="QDoubleSpinBox" name="infil_capturewq_ratiospin">
                                 <property name="suffix">
                                  <string>%</string>
                                 </property>
@@ -8380,7 +8380,7 @@ p, li { white-space: pre-wrap; }
                                </widget>
                               </item>
                               <item row="0" column="4">
-                               <widget class="QRadioButton" name="inf_capturewq_imp_radio">
+                               <widget class="QRadioButton" name="infil_capturewq_imp_radio">
                                 <property name="text">
                                  <string>of contributing impervious area</string>
                                 </property>
@@ -8410,33 +8410,33 @@ p, li { white-space: pre-wrap; }
                       <widget class="QWidget" name="page_12">
                        <layout class="QVBoxLayout" name="verticalLayout_32">
                         <item>
-                         <widget class="QGroupBox" name="inf_curve_widget">
+                         <widget class="QGroupBox" name="infil_curve_widget">
                           <property name="title">
                            <string>Design Curve (performance curve lookup)</string>
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_33">
                            <item>
-                            <widget class="QWidget" name="inf_curveselect_widget" native="true">
+                            <widget class="QWidget" name="infil_curveselect_widget" native="true">
                              <layout class="QGridLayout" name="gridLayout_56">
                               <item row="0" column="0">
-                               <widget class="QLabel" name="inf_curveselect_lbl">
+                               <widget class="QLabel" name="infil_curveselect_lbl">
                                 <property name="text">
                                  <string>Conceptual Design:</string>
                                 </property>
                                </widget>
                               </item>
                               <item row="1" column="2">
-                               <widget class="QLineEdit" name="inf_curveselect_custom_box"/>
+                               <widget class="QLineEdit" name="infil_curveselect_custom_box"/>
                               </item>
                               <item row="1" column="1">
-                               <widget class="QRadioButton" name="inf_curveselect_custom_radio">
+                               <widget class="QRadioButton" name="infil_curveselect_custom_radio">
                                 <property name="text">
                                  <string>Custom Design Curve</string>
                                 </property>
                                </widget>
                               </item>
                               <item row="1" column="3">
-                               <widget class="QToolButton" name="inf_curveselect_custom_browse">
+                               <widget class="QToolButton" name="infil_curveselect_custom_browse">
                                 <property name="enabled">
                                  <bool>true</bool>
                                 </property>
@@ -8446,7 +8446,7 @@ p, li { white-space: pre-wrap; }
                                </widget>
                               </item>
                               <item row="0" column="1">
-                               <widget class="QRadioButton" name="inf_curveselect_default_radio">
+                               <widget class="QRadioButton" name="infil_curveselect_default_radio">
                                 <property name="text">
                                  <string>UrbanBEATS' Design Curve Database</string>
                                 </property>
@@ -8479,14 +8479,14 @@ p, li { white-space: pre-wrap; }
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="inf_lcc_title">
+                  <widget class="QLabel" name="infil_lcc_title">
                    <property name="text">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt; font-weight:600; font-style:italic;&quot;&gt;Life Cycle and Costing Information&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QWidget" name="inf_lcc_widget" native="true">
+                  <widget class="QWidget" name="infil_lcc_widget" native="true">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -8495,17 +8495,17 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_62">
                     <item>
-                     <widget class="QLabel" name="inf_lcc_temp_lbl">
+                     <widget class="QLabel" name="infil_lcc_temp_lbl">
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Temporal Information&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QWidget" name="inf_lcc_time_widget" native="true">
+                     <widget class="QWidget" name="infil_lcc_time_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_57">
                        <item row="1" column="0">
-                        <widget class="QLabel" name="inf_lcc_renewal_lbl">
+                        <widget class="QLabel" name="infil_lcc_renewal_lbl">
                          <property name="text">
                           <string>Renewal Cycle:</string>
                          </property>
@@ -8525,7 +8525,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="1" column="1">
-                        <widget class="QSpinBox" name="inf_lcc_renewal_spin">
+                        <widget class="QSpinBox" name="infil_lcc_renewal_spin">
                          <property name="suffix">
                           <string> years</string>
                          </property>
@@ -8557,7 +8557,7 @@ p, li { white-space: pre-wrap; }
                         </spacer>
                        </item>
                        <item row="0" column="1">
-                        <widget class="QSpinBox" name="inf_lcc_avglife_spin">
+                        <widget class="QSpinBox" name="infil_lcc_avglife_spin">
                          <property name="minimumSize">
                           <size>
                            <width>150</width>
@@ -8582,7 +8582,7 @@ p, li { white-space: pre-wrap; }
                         </widget>
                        </item>
                        <item row="0" column="0">
-                        <widget class="QLabel" name="inf_lcc_avglife_lbl">
+                        <widget class="QLabel" name="infil_lcc_avglife_lbl">
                          <property name="text">
                           <string>Average System Design Life Span:</string>
                          </property>
@@ -8592,31 +8592,31 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="inf_lcc_cost_title">
+                     <widget class="QLabel" name="infil_lcc_cost_title">
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Unit Costs&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QWidget" name="inf_lcc_costmethod_widget" native="true">
+                     <widget class="QWidget" name="infil_lcc_costmethod_widget" native="true">
                       <layout class="QHBoxLayout" name="horizontalLayout_26">
                        <item>
-                        <widget class="QLabel" name="inf_lcc_costmethod_lbl">
+                        <widget class="QLabel" name="infil_lcc_costmethod_lbl">
                          <property name="text">
                           <string>Cost Estimation Method:</string>
                          </property>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QRadioButton" name="inf_lcc_costdetailed_radio">
+                        <widget class="QRadioButton" name="infil_lcc_costdetailed_radio">
                          <property name="text">
                           <string>Detailed Breakdown</string>
                          </property>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QRadioButton" name="inf_lcc_costindicative_radio">
+                        <widget class="QRadioButton" name="infil_lcc_costindicative_radio">
                          <property name="text">
                           <string>Indicative Cost</string>
                          </property>
@@ -8626,21 +8626,21 @@ p, li { white-space: pre-wrap; }
                      </widget>
                     </item>
                     <item>
-                     <widget class="QStackedWidget" name="inf_lcc_coststack">
+                     <widget class="QStackedWidget" name="infil_lcc_coststack">
                       <property name="currentIndex">
                        <number>1</number>
                       </property>
                       <widget class="QWidget" name="page_30">
                        <layout class="QGridLayout" name="gridLayout_58">
                         <item row="3" column="0">
-                         <widget class="QLabel" name="inf_lcc_rc_lbl">
+                         <widget class="QLabel" name="infil_lcc_rc_lbl">
                           <property name="text">
                            <string>Renewal Cost (RC) [$ per sqm]:</string>
                           </property>
                          </widget>
                         </item>
                         <item row="4" column="1">
-                         <widget class="QLineEdit" name="inf_lcc_dc_box">
+                         <widget class="QLineEdit" name="infil_lcc_dc_box">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -8650,14 +8650,14 @@ p, li { white-space: pre-wrap; }
                          </widget>
                         </item>
                         <item row="1" column="0">
-                         <widget class="QLabel" name="inf_lcc_tac_lbl">
+                         <widget class="QLabel" name="infil_lcc_tac_lbl">
                           <property name="text">
                            <string>Total Acquisition Cost (TAC) [$ per sqm]:</string>
                           </property>
                          </widget>
                         </item>
                         <item row="4" column="0">
-                         <widget class="QLabel" name="inf_lcc_dc_lbl">
+                         <widget class="QLabel" name="infil_lcc_dc_lbl">
                           <property name="text">
                            <string>Decommissioning Cost (DC) [$ per sqm]:</string>
                           </property>
@@ -8690,7 +8690,7 @@ p, li { white-space: pre-wrap; }
                          </spacer>
                         </item>
                         <item row="2" column="1">
-                         <widget class="QLineEdit" name="inf_lcc_tam_box">
+                         <widget class="QLineEdit" name="infil_lcc_tam_box">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -8700,7 +8700,7 @@ p, li { white-space: pre-wrap; }
                          </widget>
                         </item>
                         <item row="1" column="1">
-                         <widget class="QLineEdit" name="inf_lcc_tac_box">
+                         <widget class="QLineEdit" name="infil_lcc_tac_box">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -8736,14 +8736,14 @@ p, li { white-space: pre-wrap; }
                          </spacer>
                         </item>
                         <item row="2" column="0">
-                         <widget class="QLabel" name="inf_lcc_tam_lbl">
+                         <widget class="QLabel" name="infil_lcc_tam_lbl">
                           <property name="text">
                            <string>Total Annual Maintenance Cost (TAM) [$ per sqm]:</string>
                           </property>
                          </widget>
                         </item>
                         <item row="3" column="1">
-                         <widget class="QLineEdit" name="inf_lcc_rc_box">
+                         <widget class="QLineEdit" name="infil_lcc_rc_box">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -8757,14 +8757,14 @@ p, li { white-space: pre-wrap; }
                       <widget class="QWidget" name="page_31">
                        <layout class="QGridLayout" name="gridLayout_59">
                         <item row="0" column="0">
-                         <widget class="QLabel" name="inf_lcc_tacind_lbl">
+                         <widget class="QLabel" name="infil_lcc_tacind_lbl">
                           <property name="text">
                            <string>Total Acquisition Cost (TAC) [$ per sqm]:</string>
                           </property>
                          </widget>
                         </item>
                         <item row="2" column="0">
-                         <widget class="QLabel" name="inf_lcc_rcind_lbl">
+                         <widget class="QLabel" name="infil_lcc_rcind_lbl">
                           <property name="text">
                            <string>Renewal Cost (RC) [% of TAC]:</string>
                           </property>
@@ -8803,7 +8803,7 @@ p, li { white-space: pre-wrap; }
                          </spacer>
                         </item>
                         <item row="2" column="1">
-                         <widget class="QDoubleSpinBox" name="inf_lcc_rcind_spin">
+                         <widget class="QDoubleSpinBox" name="infil_lcc_rcind_spin">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -8819,7 +8819,7 @@ p, li { white-space: pre-wrap; }
                          </widget>
                         </item>
                         <item row="0" column="1">
-                         <widget class="QLineEdit" name="inf_lcc_tacind_box">
+                         <widget class="QLineEdit" name="infil_lcc_tacind_box">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -8829,21 +8829,21 @@ p, li { white-space: pre-wrap; }
                          </widget>
                         </item>
                         <item row="3" column="0">
-                         <widget class="QLabel" name="inf_lcc_dcind_lbl">
+                         <widget class="QLabel" name="infil_lcc_dcind_lbl">
                           <property name="text">
                            <string>Decommissioning Cost (DC) [% of TAC]:</string>
                           </property>
                          </widget>
                         </item>
                         <item row="1" column="0">
-                         <widget class="QLabel" name="inf_lcc_tamind_lbl">
+                         <widget class="QLabel" name="infil_lcc_tamind_lbl">
                           <property name="text">
                            <string>Total Annual Maintenance Cost (TAM) [% of TAC]:</string>
                           </property>
                          </widget>
                         </item>
                         <item row="3" column="1">
-                         <widget class="QDoubleSpinBox" name="inf_lcc_dcind_spin">
+                         <widget class="QDoubleSpinBox" name="infil_lcc_dcind_spin">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -8891,7 +8891,7 @@ p, li { white-space: pre-wrap; }
                          </spacer>
                         </item>
                         <item row="1" column="1">
-                         <widget class="QDoubleSpinBox" name="inf_lcc_tamind_spin">
+                         <widget class="QDoubleSpinBox" name="infil_lcc_tamind_spin">
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
@@ -8954,8 +8954,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>605</width>
-                  <height>1009</height>
+                  <width>639</width>
+                  <height>1040</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -9079,7 +9079,7 @@ p, li { white-space: pre-wrap; }
                        <item row="2" column="0">
                         <widget class="QCheckBox" name="pb_st_check">
                          <property name="text">
-                          <string>Street</string>
+                          <string>Street/Neighbourhood</string>
                          </property>
                         </widget>
                        </item>
@@ -9151,6 +9151,9 @@ p, li { white-space: pre-wrap; }
                        </item>
                        <item row="6" column="0">
                         <widget class="QCheckBox" name="pb_ns_check">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
                          <property name="text">
                           <string>Nature Strips</string>
                          </property>
@@ -9401,94 +9404,6 @@ p, li { white-space: pre-wrap; }
                     <item row="2" column="0" colspan="3">
                      <widget class="QWidget" name="pb_spec_systemchar_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_64">
-                       <item row="1" column="2">
-                        <widget class="QLabel" name="pb_spec_systemchar_lbl">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;X&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="1">
-                        <widget class="QComboBox" name="pb_spec_systemchar_ed">
-                         <property name="minimumSize">
-                          <size>
-                           <width>150</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="currentIndex">
-                          <number>0</number>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>0mm ED Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>100mm ED Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>200mm ED Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>300mm ED Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>400mm ED Depth</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item row="1" column="4">
-                        <spacer name="horizontalSpacer_105">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="1" column="3">
-                        <widget class="QComboBox" name="pb_spec_systemchar_fd">
-                         <property name="minimumSize">
-                          <size>
-                           <width>150</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>200mm Filter Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>400mm Filter Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>600mm Filter Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>800mm Filter Depth</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
                        <item row="1" column="0">
                         <spacer name="horizontalSpacer_106">
                          <property name="orientation">
@@ -9505,7 +9420,7 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </spacer>
                        </item>
-                       <item row="0" column="0" colspan="4">
+                       <item row="0" column="0" colspan="3">
                         <widget class="QLabel" name="pb_spec_systemchar_title">
                          <property name="whatsThis">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Low Flow Bypass = &lt;/p&gt;&lt;p&gt;High Flow Bypass = &lt;/p&gt;&lt;p&gt;Saturated hydraulic conductivity = 180mm/hr&lt;/p&gt;&lt;p&gt;TN content of filter media = &lt;/p&gt;&lt;p&gt;Orthophosphate content of filter media =&lt;/p&gt;&lt;p&gt;Overflow Weir Width = &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Unlined Filter Media Perimeter adjusted to maintain aspect ratio&lt;/p&gt;&lt;p&gt;Unlined filter media base&lt;/p&gt;&lt;p&gt;Vegetated with effective nutrient removal plants&lt;/p&gt;&lt;p&gt;Underdrain Present&lt;/p&gt;&lt;p&gt;Submerged Zone with Carbon Present, depth = 0.45m&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -9514,6 +9429,57 @@ p, li { white-space: pre-wrap; }
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;General System Characteristics&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                         </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QComboBox" name="pb_spec_systemchar_combo">
+                         <property name="minimumSize">
+                          <size>
+                           <width>350</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>0.25m Mean Depth, Outflow via Overflow Weir</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>0.50m Mean Depth, Outflow via Overflow Weir</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>0.75m Mean Depth, Outflow via Overflow Weir</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>1.00m Mean Depth, Outflow via Overflow Weir</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>1.25m Mean Depth, Outflow via Overflow Weir</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item row="1" column="3">
+                        <spacer name="horizontalSpacer_105">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
                        </item>
                       </layout>
                      </widget>
@@ -10266,8 +10232,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>605</width>
-                  <height>1009</height>
+                  <width>639</width>
+                  <height>1040</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_41">
@@ -10391,7 +10357,7 @@ p, li { white-space: pre-wrap; }
                        <item row="2" column="0">
                         <widget class="QCheckBox" name="pave_st_check">
                          <property name="text">
-                          <string>Street</string>
+                          <string>Street/Neighbourhood</string>
                          </property>
                         </widget>
                        </item>
@@ -11575,8 +11541,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>605</width>
-                  <height>1009</height>
+                  <width>639</width>
+                  <height>1019</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_48">
@@ -11700,7 +11666,7 @@ p, li { white-space: pre-wrap; }
                        <item row="2" column="0">
                         <widget class="QCheckBox" name="tank_st_check">
                          <property name="text">
-                          <string>Street</string>
+                          <string>Street/Neighbourhood</string>
                          </property>
                         </widget>
                        </item>
@@ -11772,6 +11738,9 @@ p, li { white-space: pre-wrap; }
                        </item>
                        <item row="6" column="0">
                         <widget class="QCheckBox" name="tank_ns_check">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
                          <property name="text">
                           <string>Nature Strips</string>
                          </property>
@@ -11833,67 +11802,40 @@ p, li { white-space: pre-wrap; }
                  <item>
                   <widget class="QWidget" name="tank_spec_widget" native="true">
                    <layout class="QGridLayout" name="gridLayout_82">
-                    <item row="0" column="1">
-                     <widget class="QComboBox" name="tank_specmethod_combo">
-                      <item>
-                       <property name="text">
-                        <string>Capture Ratio (rule-of-thumb size)</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Design Curve (performance curve look-up)</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                    <item row="4" column="0" colspan="3">
+                    <item row="3" column="0" colspan="3">
                      <widget class="QWidget" name="tank_spec_systemchar_widget2" native="true">
                       <layout class="QGridLayout" name="gridLayout_83">
-                       <item row="0" column="2">
-                        <widget class="QLabel" name="tank_spec_systemchar_rangemin_lbl">
-                         <property name="text">
-                          <string>min.</string>
+                       <item row="2" column="2">
+                        <widget class="QLineEdit" name="tank_spec_systemchar_mindead">
+                         <property name="maximumSize">
+                          <size>
+                           <width>100</width>
+                           <height>16777215</height>
+                          </size>
                          </property>
                         </widget>
                        </item>
-                       <item row="0" column="5">
-                        <widget class="QLineEdit" name="tank_spec_systemchar_rangemax_box"/>
+                       <item row="2" column="0">
+                        <widget class="QLabel" name="tank_spec_systemchar_range_lbl">
+                         <property name="text">
+                          <string>Minimum Dead Storage Level[m]:</string>
+                         </property>
+                        </widget>
                        </item>
-                       <item row="1" column="1">
-                        <spacer name="horizontalSpacer_133">
+                       <item row="2" column="3" colspan="2">
+                        <spacer name="horizontalSpacer_136">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
                          </property>
-                         <property name="sizeType">
-                          <enum>QSizePolicy::Fixed</enum>
-                         </property>
                          <property name="sizeHint" stdset="0">
                           <size>
-                           <width>20</width>
+                           <width>40</width>
                            <height>20</height>
                           </size>
                          </property>
                         </spacer>
                        </item>
-                       <item row="0" column="3">
-                        <widget class="QLineEdit" name="tank_spec_systemchar_rangemin_box"/>
-                       </item>
-                       <item row="0" column="4">
-                        <widget class="QLabel" name="tank_spec_systemchar_rangemax_lbl">
-                         <property name="text">
-                          <string>max.</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="0">
-                        <widget class="QLabel" name="tank_spec_systemchar_range_lbl">
-                         <property name="text">
-                          <string>Allowable Range of System Size [sqm]:</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="1">
+                       <item row="2" column="1">
                         <spacer name="horizontalSpacer_134">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
@@ -11909,209 +11851,8 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </spacer>
                        </item>
-                       <item row="1" column="0">
-                        <widget class="QLabel" name="tank_spec_systemchar_exfil_lbl">
-                         <property name="text">
-                          <string>Exfiltration Rate:</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="2" colspan="2">
-                        <widget class="QComboBox" name="tank_spec_systemchar_exfil_combo">
-                         <property name="whatsThis">
-                          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;The likely exfiltration rate from the system (less than the theoretical maximum infiltration rate of the soil). Select this value based on performance data of systems in your city.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>0 (lined system)</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>0.18 mm/hr</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>0.36 mm/hr</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>1.8 mm/hr</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>3.6 mm/hr</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item row="1" column="4" colspan="3">
-                        <spacer name="horizontalSpacer_135">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="0" column="6">
-                        <spacer name="horizontalSpacer_136">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                    <item row="0" column="2">
-                     <spacer name="horizontalSpacer_15">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeType">
-                       <enum>QSizePolicy::Maximum</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>100</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item row="0" column="0">
-                     <widget class="QLabel" name="tank_specmethod_lbl">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>150</width>
-                        <height>16777215</height>
-                       </size>
-                      </property>
-                      <property name="whatsThis">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Low Flow Bypass = &lt;/p&gt;&lt;p&gt;High Flow Bypass = &lt;/p&gt;&lt;p&gt;Saturated hydraulic conductivity = 180mm/hr&lt;/p&gt;&lt;p&gt;TN content of filter media = &lt;/p&gt;&lt;p&gt;Orthophosphate content of filter media =&lt;/p&gt;&lt;p&gt;Overflow Weir Width = &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Unlined Filter Media Perimeter adjusted to maintain aspect ratio&lt;/p&gt;&lt;p&gt;Unlined filter media base&lt;/p&gt;&lt;p&gt;Vegetated with effective nutrient removal plants&lt;/p&gt;&lt;p&gt;Underdrain Present&lt;/p&gt;&lt;p&gt;Submerged Zone with Carbon Present, depth = 0.45m&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Sizing Method&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="0" colspan="3">
-                     <widget class="QWidget" name="tank_spec_systemchar_widget" native="true">
-                      <layout class="QGridLayout" name="gridLayout_84">
-                       <item row="1" column="2">
-                        <widget class="QLabel" name="tank_spec_systemchar_lbl">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;X&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
                        <item row="1" column="1">
-                        <widget class="QComboBox" name="tank_spec_systemchar_ed">
-                         <property name="minimumSize">
-                          <size>
-                           <width>150</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="currentIndex">
-                          <number>0</number>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>0mm ED Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>100mm ED Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>200mm ED Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>300mm ED Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>400mm ED Depth</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item row="1" column="4">
                         <spacer name="horizontalSpacer_137">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="1" column="3">
-                        <widget class="QComboBox" name="tank_spec_systemchar_fd">
-                         <property name="minimumSize">
-                          <size>
-                           <width>150</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>200mm Filter Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>400mm Filter Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>600mm Filter Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>800mm Filter Depth</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item row="1" column="0">
-                        <spacer name="horizontalSpacer_138">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
                          </property>
@@ -12120,13 +11861,43 @@ p, li { white-space: pre-wrap; }
                          </property>
                          <property name="sizeHint" stdset="0">
                           <size>
+                           <width>20</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item row="1" column="3" colspan="2">
+                        <spacer name="horizontalSpacer_138">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
                            <width>40</width>
                            <height>20</height>
                           </size>
                          </property>
                         </spacer>
                        </item>
-                       <item row="0" column="0" colspan="4">
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="tank_spec_systemchar_range_lbl_2">
+                         <property name="text">
+                          <string>Maximum Tank Depth [m]:</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="2">
+                        <widget class="QLineEdit" name="tank_spec_systemchar_maxdepth">
+                         <property name="maximumSize">
+                          <size>
+                           <width>100</width>
+                           <height>16777215</height>
+                          </size>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="0">
                         <widget class="QLabel" name="tank_spec_systemchar_title">
                          <property name="whatsThis">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Low Flow Bypass = &lt;/p&gt;&lt;p&gt;High Flow Bypass = &lt;/p&gt;&lt;p&gt;Saturated hydraulic conductivity = 180mm/hr&lt;/p&gt;&lt;p&gt;TN content of filter media = &lt;/p&gt;&lt;p&gt;Orthophosphate content of filter media =&lt;/p&gt;&lt;p&gt;Overflow Weir Width = &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Unlined Filter Media Perimeter adjusted to maintain aspect ratio&lt;/p&gt;&lt;p&gt;Unlined filter media base&lt;/p&gt;&lt;p&gt;Vegetated with effective nutrient removal plants&lt;/p&gt;&lt;p&gt;Underdrain Present&lt;/p&gt;&lt;p&gt;Submerged Zone with Carbon Present, depth = 0.45m&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -12136,7 +11907,28 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </widget>
                        </item>
+                       <item row="3" column="2" colspan="2">
+                        <widget class="QCheckBox" name="tank_spec_systemchar_aboveground">
+                         <property name="text">
+                          <string>Tanks only allowed above-ground</string>
+                         </property>
+                        </widget>
+                       </item>
                       </layout>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QComboBox" name="tank_specmethod_combo">
+                      <item>
+                       <property name="text">
+                        <string>Capture Ratio (rule-of-thumb size)</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Design Curve (performance curve look-up)</string>
+                       </property>
+                      </item>
                      </widget>
                     </item>
                     <item row="1" column="0" colspan="3">
@@ -12148,7 +11940,7 @@ p, li { white-space: pre-wrap; }
                        </size>
                       </property>
                       <property name="currentIndex">
-                       <number>1</number>
+                       <number>0</number>
                       </property>
                       <widget class="QWidget" name="page_17">
                        <layout class="QVBoxLayout" name="verticalLayout_49">
@@ -12251,7 +12043,7 @@ p, li { white-space: pre-wrap; }
                               <item row="0" column="1">
                                <widget class="QLabel" name="tank_capturewq_lbl">
                                 <property name="text">
-                                 <string>Surface Area (TSS) [%]:</string>
+                                 <string>Surface Area (WQ) [%]:</string>
                                 </property>
                                </widget>
                               </item>
@@ -12403,6 +12195,44 @@ p, li { white-space: pre-wrap; }
                         </item>
                        </layout>
                       </widget>
+                     </widget>
+                    </item>
+                    <item row="0" column="2">
+                     <spacer name="horizontalSpacer_15">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeType">
+                       <enum>QSizePolicy::Maximum</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>100</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="tank_specmethod_lbl">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>150</width>
+                        <height>16777215</height>
+                       </size>
+                      </property>
+                      <property name="whatsThis">
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Low Flow Bypass = &lt;/p&gt;&lt;p&gt;High Flow Bypass = &lt;/p&gt;&lt;p&gt;Saturated hydraulic conductivity = 180mm/hr&lt;/p&gt;&lt;p&gt;TN content of filter media = &lt;/p&gt;&lt;p&gt;Orthophosphate content of filter media =&lt;/p&gt;&lt;p&gt;Overflow Weir Width = &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Unlined Filter Media Perimeter adjusted to maintain aspect ratio&lt;/p&gt;&lt;p&gt;Unlined filter media base&lt;/p&gt;&lt;p&gt;Vegetated with effective nutrient removal plants&lt;/p&gt;&lt;p&gt;Underdrain Present&lt;/p&gt;&lt;p&gt;Submerged Zone with Carbon Present, depth = 0.45m&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      </property>
+                      <property name="text">
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Sizing Method&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      </property>
                      </widget>
                     </item>
                    </layout>
@@ -12867,6 +12697,9 @@ p, li { white-space: pre-wrap; }
              </item>
              <item>
               <widget class="QScrollArea" name="rbf_scrollarea">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="frameShape">
                 <enum>QFrame::NoFrame</enum>
                </property>
@@ -12884,8 +12717,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>605</width>
-                  <height>1009</height>
+                  <width>639</width>
+                  <height>1040</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -12968,7 +12801,7 @@ p, li { white-space: pre-wrap; }
                        <item row="5" column="0">
                         <widget class="QCheckBox" name="rbf_flow_check">
                          <property name="enabled">
-                          <bool>true</bool>
+                          <bool>false</bool>
                          </property>
                          <property name="text">
                           <string>Flow Reduction</string>
@@ -12999,7 +12832,7 @@ p, li { white-space: pre-wrap; }
                        <item row="3" column="0">
                         <widget class="QCheckBox" name="rbf_reg_check">
                          <property name="enabled">
-                          <bool>true</bool>
+                          <bool>false</bool>
                          </property>
                          <property name="text">
                           <string>Catchment-scale</string>
@@ -13009,7 +12842,7 @@ p, li { white-space: pre-wrap; }
                        <item row="2" column="0">
                         <widget class="QCheckBox" name="rbf_st_check">
                          <property name="text">
-                          <string>Street</string>
+                          <string>Street/Neighbourhood</string>
                          </property>
                         </widget>
                        </item>
@@ -13023,7 +12856,7 @@ p, li { white-space: pre-wrap; }
                        <item row="7" column="0">
                         <widget class="QCheckBox" name="rbf_recycle_check">
                          <property name="enabled">
-                          <bool>true</bool>
+                          <bool>false</bool>
                          </property>
                          <property name="text">
                           <string>Recycling</string>
@@ -13045,7 +12878,7 @@ p, li { white-space: pre-wrap; }
                        <item row="1" column="0">
                         <widget class="QCheckBox" name="rbf_pg_check">
                          <property name="enabled">
-                          <bool>true</bool>
+                          <bool>false</bool>
                          </property>
                          <property name="text">
                           <string>Parks and Gardens</string>
@@ -13089,7 +12922,7 @@ p, li { white-space: pre-wrap; }
                        <item row="3" column="0">
                         <widget class="QCheckBox" name="rbf_for_check">
                          <property name="enabled">
-                          <bool>true</bool>
+                          <bool>false</bool>
                          </property>
                          <property name="text">
                           <string>Forests</string>
@@ -13099,7 +12932,7 @@ p, li { white-space: pre-wrap; }
                        <item row="4" column="0">
                         <widget class="QCheckBox" name="rbf_agr_check">
                          <property name="enabled">
-                          <bool>true</bool>
+                          <bool>false</bool>
                          </property>
                          <property name="text">
                           <string>Agricultural Land</string>
@@ -13109,7 +12942,7 @@ p, li { white-space: pre-wrap; }
                        <item row="5" column="0">
                         <widget class="QCheckBox" name="rbf_und_check">
                          <property name="enabled">
-                          <bool>true</bool>
+                          <bool>false</bool>
                          </property>
                          <property name="text">
                           <string>Undeveloped Land</string>
@@ -13119,7 +12952,7 @@ p, li { white-space: pre-wrap; }
                        <item row="7" column="0">
                         <widget class="QCheckBox" name="rbf_garden_check">
                          <property name="enabled">
-                          <bool>true</bool>
+                          <bool>false</bool>
                          </property>
                          <property name="text">
                           <string>Household Gardens</string>
@@ -13677,7 +13510,7 @@ p, li { white-space: pre-wrap; }
                               <item row="1" column="3">
                                <widget class="QToolButton" name="rbf_curveselect_custom_browse">
                                 <property name="enabled">
-                                 <bool>true</bool>
+                                 <bool>false</bool>
                                 </property>
                                 <property name="text">
                                  <string>Browse...</string>
@@ -14194,7 +14027,7 @@ p, li { white-space: pre-wrap; }
                   <x>0</x>
                   <y>0</y>
                   <width>639</width>
-                  <height>1040</height>
+                  <height>1066</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_71">
@@ -14318,12 +14151,15 @@ p, li { white-space: pre-wrap; }
                        <item row="2" column="0">
                         <widget class="QCheckBox" name="sw_st_check">
                          <property name="text">
-                          <string>Street</string>
+                          <string>Street/Neighbourhood</string>
                          </property>
                         </widget>
                        </item>
                        <item row="1" column="0">
                         <widget class="QCheckBox" name="sw_lot_check">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
                          <property name="text">
                           <string>Lot</string>
                          </property>
@@ -14332,7 +14168,7 @@ p, li { white-space: pre-wrap; }
                        <item row="7" column="0">
                         <widget class="QCheckBox" name="sw_recycle_check">
                          <property name="enabled">
-                          <bool>true</bool>
+                          <bool>false</bool>
                          </property>
                          <property name="text">
                           <string>Recycling</string>
@@ -14428,7 +14264,7 @@ p, li { white-space: pre-wrap; }
                        <item row="7" column="0">
                         <widget class="QCheckBox" name="sw_garden_check">
                          <property name="enabled">
-                          <bool>true</bool>
+                          <bool>false</bool>
                          </property>
                          <property name="text">
                           <string>Household Gardens</string>
@@ -14468,6 +14304,26 @@ p, li { white-space: pre-wrap; }
                     <item row="4" column="0" colspan="3">
                      <widget class="QWidget" name="sw_spec_systemchar_widget2" native="true">
                       <layout class="QGridLayout" name="gridLayout_104">
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="sw_spec_systemchar_range_lbl">
+                         <property name="text">
+                          <string>Allowable Range of System Size [sqm]:</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="6">
+                        <spacer name="horizontalSpacer_169">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
                        <item row="0" column="2">
                         <widget class="QLabel" name="sw_spec_systemchar_rangemin_lbl">
                          <property name="text">
@@ -14478,7 +14334,14 @@ p, li { white-space: pre-wrap; }
                        <item row="0" column="5">
                         <widget class="QLineEdit" name="sw_spec_systemchar_rangemax_box"/>
                        </item>
-                       <item row="1" column="1">
+                       <item row="0" column="4">
+                        <widget class="QLabel" name="sw_spec_systemchar_rangemax_lbl">
+                         <property name="text">
+                          <string>max.</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="1">
                         <spacer name="horizontalSpacer_165">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
@@ -14494,47 +14357,14 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </spacer>
                        </item>
-                       <item row="0" column="3">
-                        <widget class="QLineEdit" name="sw_spec_systemchar_rangemin_box"/>
-                       </item>
-                       <item row="0" column="4">
-                        <widget class="QLabel" name="sw_spec_systemchar_rangemax_lbl">
-                         <property name="text">
-                          <string>max.</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="0">
-                        <widget class="QLabel" name="sw_spec_systemchar_range_lbl">
-                         <property name="text">
-                          <string>Allowable Range of System Size [sqm]:</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="1">
-                        <spacer name="horizontalSpacer_167">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeType">
-                          <enum>QSizePolicy::Fixed</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>20</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="1" column="0">
+                       <item row="2" column="0">
                         <widget class="QLabel" name="sw_spec_systemchar_exfil_lbl">
                          <property name="text">
                           <string>Exfiltration Rate:</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="1" column="2" colspan="2">
+                       <item row="2" column="2" colspan="2">
                         <widget class="QComboBox" name="sw_spec_systemchar_exfil_combo">
                          <property name="whatsThis">
                           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -14570,7 +14400,10 @@ p, li { white-space: pre-wrap; }
                          </item>
                         </widget>
                        </item>
-                       <item row="1" column="4" colspan="3">
+                       <item row="0" column="3">
+                        <widget class="QLineEdit" name="sw_spec_systemchar_rangemin_box"/>
+                       </item>
+                       <item row="2" column="4" colspan="3">
                         <spacer name="horizontalSpacer_168">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
@@ -14583,18 +14416,31 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </spacer>
                        </item>
-                       <item row="0" column="6">
-                        <spacer name="horizontalSpacer_169">
+                       <item row="0" column="1">
+                        <spacer name="horizontalSpacer_167">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
                          </property>
+                         <property name="sizeType">
+                          <enum>QSizePolicy::Fixed</enum>
+                         </property>
                          <property name="sizeHint" stdset="0">
                           <size>
-                           <width>40</width>
+                           <width>20</width>
                            <height>20</height>
                           </size>
                          </property>
                         </spacer>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="sw_spec_systemchar_maxlength_lbl">
+                         <property name="text">
+                          <string>Max Length [m]:</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="2" colspan="2">
+                        <widget class="QLineEdit" name="sw_spec_systemchar_maxlength_box"/>
                        </item>
                       </layout>
                      </widget>
@@ -14640,94 +14486,6 @@ p, li { white-space: pre-wrap; }
                     <item row="2" column="0" colspan="3">
                      <widget class="QWidget" name="sw_spec_systemchar_widget" native="true">
                       <layout class="QGridLayout" name="gridLayout_105">
-                       <item row="1" column="2">
-                        <widget class="QLabel" name="sw_spec_systemchar_lbl">
-                         <property name="text">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;X&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="1">
-                        <widget class="QComboBox" name="sw_spec_systemchar_ed">
-                         <property name="minimumSize">
-                          <size>
-                           <width>150</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="currentIndex">
-                          <number>0</number>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>0mm ED Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>100mm ED Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>200mm ED Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>300mm ED Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>400mm ED Depth</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item row="1" column="4">
-                        <spacer name="horizontalSpacer_171">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="1" column="3">
-                        <widget class="QComboBox" name="sw_spec_systemchar_fd">
-                         <property name="minimumSize">
-                          <size>
-                           <width>150</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>200mm Filter Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>400mm Filter Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>600mm Filter Depth</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>800mm Filter Depth</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
                        <item row="1" column="0">
                         <spacer name="horizontalSpacer_172">
                          <property name="orientation">
@@ -14744,7 +14502,7 @@ p, li { white-space: pre-wrap; }
                          </property>
                         </spacer>
                        </item>
-                       <item row="0" column="0" colspan="4">
+                       <item row="0" column="0" colspan="3">
                         <widget class="QLabel" name="sw_spec_systemchar_title">
                          <property name="whatsThis">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Low Flow Bypass = &lt;/p&gt;&lt;p&gt;High Flow Bypass = &lt;/p&gt;&lt;p&gt;Saturated hydraulic conductivity = 180mm/hr&lt;/p&gt;&lt;p&gt;TN content of filter media = &lt;/p&gt;&lt;p&gt;Orthophosphate content of filter media =&lt;/p&gt;&lt;p&gt;Overflow Weir Width = &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Unlined Filter Media Perimeter adjusted to maintain aspect ratio&lt;/p&gt;&lt;p&gt;Unlined filter media base&lt;/p&gt;&lt;p&gt;Vegetated with effective nutrient removal plants&lt;/p&gt;&lt;p&gt;Underdrain Present&lt;/p&gt;&lt;p&gt;Submerged Zone with Carbon Present, depth = 0.45m&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -14752,6 +14510,37 @@ p, li { white-space: pre-wrap; }
                          <property name="text">
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;General System Characteristics&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="3">
+                        <spacer name="horizontalSpacer_171">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QComboBox" name="sw_spec_systemchar_combo">
+                         <property name="minimumSize">
+                          <size>
+                           <width>300</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>1% slope, 0.5m Vegetation, 1:6 trapezoid</string>
+                          </property>
+                         </item>
                         </widget>
                        </item>
                       </layout>
