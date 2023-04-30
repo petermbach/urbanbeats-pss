@@ -598,6 +598,7 @@ class ShowMetadataDialogLaunch(QtWidgets.QDialog):
         self.ui.assetcol_assettypes_combo.addItem("(select an asset type to view data)")
         for key in asset_types.keys():
             self.ui.assetcol_assettypes_combo.addItem(str(key))
+        self.ui.assetcol_assettypes_combo.setCurrentIndex(0)
 
         # Update Modules Table
         for att in self.meta.get_all_attributes():
@@ -611,7 +612,12 @@ class ShowMetadataDialogLaunch(QtWidgets.QDialog):
 
     def update_attributes_table(self):
         self.ui.attributes_list.clear()
-        if self.ui.assetcol_assettypes_combo.currentText() == "Metadata":
+        if self.assets is None:
+            return True
+        if self.ui.assetcol_assettypes_combo.currentIndex() == 0:
+            return True # Do nothing
+        elif self.ui.assetcol_assettypes_combo.currentText() == "Metadata":
+            # Do the population based on self.meta
             metadata = self.meta.get_all_attributes()
             self.ui.attributes_list.headerItem().setText(2, "Value")
             for att in metadata:
@@ -622,17 +628,25 @@ class ShowMetadataDialogLaunch(QtWidgets.QDialog):
                 twi.setText(1, "-")
                 twi.setText(2, str(metadata[att]))
                 self.ui.attributes_list.addTopLevelItem(twi)
-            # Do the population based on self.meta
-            pass
         else:   # Not the metadata
             self.ui.attributes_list.headerItem().setText(2, "Description")
-            pass
+            asset_subset = self.assets.get_assets_with_identifier(self.ui.assetcol_assettypes_combo.currentText())
+            attribute_list = asset_subset[0].get_all_attributes()
+            for att in list(attribute_list.keys()):
+                twi = QtWidgets.QTreeWidgetItem()
+                twi.setText(0, str(att))
+                twi.setText(1, '-')
+                twi.setText(2, str(type(attribute_list[att])))
+                self.ui.attributes_list.addTopLevelItem(twi)
+            # Identify all attributes for a particular asset type in the schema [TO DO]
+            # Populate the table with these attributes
+
         self.ui.attributes_list.sortItems(0, QtCore.Qt.SortOrder.AscendingOrder)
         self.ui.attributes_list.resizeColumnToContents(0)
         return True
 
     def export_assetcol_report(self):
-        print("Exporting Asset Collection report")
+        print("Exporting Asset Collection report")      # This can allow us to export a metadata report [TO DO]
         pass
 
 
