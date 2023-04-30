@@ -47,6 +47,7 @@ from .openprojectdialog import Ui_OpenProjectDialog      # Open Existing Project
 from .logdialog import Ui_LogDialog         # Project Log Dialog
 from .adddatadialog import Ui_AddDataDialog      # Add Data Dialog
 from .newscenario import Ui_NewScenarioDialog    # Scenario Creation Dialog
+from .metadatadialog import Ui_MetadataDialog   # Metadata dialogue for asset collection query
 from .mapexportoptions import Ui_MapExportDialog
 from .reportoptions import Ui_ReportingDialog
 
@@ -546,6 +547,93 @@ class CreateScenarioLaunch(QtWidgets.QDialog):
         else:
             # If cancel or close is called, ignore
             QtWidgets.QDialog.done(self, r)  # Call the parent's method instead of the override.
+
+
+class ShowMetadataDialogLaunch(QtWidgets.QDialog):
+    """Class definition for the metadata dialogue to view asset collection information in UrbanBEATS."""
+    def __init__(self, main, simulation, assetname, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
+        self.ui = Ui_MetadataDialog()
+        self.ui.setupUi(self)
+
+        # --- CONNECTIONS WITH CORE AND GUI ---
+        self.maingui = main
+        self.simulation = simulation
+        self.asset_col = simulation.get_global_asset_collection()
+        self.export_path = self.simulation.get_project_path()+"/output/"
+        self.meta = None
+        self.assets = None
+
+        # --- SETUP DYNAMIC COMBO BOX ---
+        self.ui.assetcol_combo.clear()
+        self.ui.assetcol_combo.addItem("(select asset collection)")
+        [self.ui.assetcol_combo.addItem(str(asset_name)) for asset_name in self.asset_col.keys()]
+        if assetname == 0:
+            self.ui.assetcol_combo.setCurrentIndex(0)
+        else:
+            pass    # Then we need to locate the correct asset collection
+
+        # SIGNALS AND SLOTS
+        self.ui.assetcol_combo.currentIndexChanged.connect(self.update_metadatadialog_with_assetcol_data)
+        self.ui.assetcol_assettypes_combo.currentIndexChanged.connect(self.update_attributes_table)
+        self.ui.export_button.clicked.connect(self.export_assetcol_report)
+
+    def update_metadatadialog_with_assetcol_data(self):
+        # Clear all GUI elements
+        self.ui.module_list.clear()
+        self.ui.assetcol_assettypes_combo.clear()
+        self.ui.attributes_list.clear()
+
+        # Grab asset collection information and start populating
+        if self.ui.assetcol_combo.currentText() not in self.asset_col.keys():
+            return True
+        else:
+            self.assets = self.simulation.get_asset_collection_by_name(self.ui.assetcol_combo.currentText())
+            if self.assets is None:
+                return True
+        self.meta = self.assets.get_asset_with_name("meta")
+
+        # Population Asset Type Combo
+        asset_types = self.assets.get_asset_types()
+        self.ui.assetcol_assettypes_combo.addItem("(select an asset type to view data)")
+        for key in asset_types.keys():
+            self.ui.assetcol_assettypes_combo.addItem(str(key))
+
+        # Update Modules Table
+        for att in self.meta.get_all_attributes():
+            if "mod_" in att:
+                twi = QtWidgets.QTreeWidgetItem()
+                twi.setText(0, str(att.split("mod_")[1]))
+                twi.setText(1, "Today")
+                self.ui.module_list.addTopLevelItem(twi)
+        self.ui.module_list.resizeColumnToContents(0)
+        return True
+
+    def update_attributes_table(self):
+        self.ui.attributes_list.clear()
+        if self.ui.assetcol_assettypes_combo.currentText() == "Metadata":
+            metadata = self.meta.get_all_attributes()
+            self.ui.attributes_list.headerItem().setText(2, "Value")
+            for att in metadata:
+                if "mod_" in att:
+                    continue
+                twi = QtWidgets.QTreeWidgetItem()
+                twi.setText(0, str(att))
+                twi.setText(1, "-")
+                twi.setText(2, str(metadata[att]))
+                self.ui.attributes_list.addTopLevelItem(twi)
+            # Do the population based on self.meta
+            pass
+        else:   # Not the metadata
+            self.ui.attributes_list.headerItem().setText(2, "Description")
+            pass
+        self.ui.attributes_list.sortItems(0, QtCore.Qt.SortOrder.AscendingOrder)
+        self.ui.attributes_list.resizeColumnToContents(0)
+        return True
+
+    def export_assetcol_report(self):
+        print("Exporting Asset Collection report")
+        pass
 
 
 # --- MAP EXPORT DIALOG ---

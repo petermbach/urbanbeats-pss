@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>942</width>
-    <height>509</height>
+    <height>602</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Project Log</string>
+   <string>Asset Collection Metadata Explorer</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -74,7 +74,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Metadata</string>
+         <string>Asset Collection Metadata Explorer</string>
         </property>
        </widget>
       </item>
@@ -97,71 +97,6 @@
       </sizepolicy>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="2" column="2">
-       <widget class="QTreeWidget" name="attributes_list">
-        <property name="verticalScrollBarPolicy">
-         <enum>Qt::ScrollBarAlwaysOn</enum>
-        </property>
-        <property name="sortingEnabled">
-         <bool>true</bool>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-        <column>
-         <property name="text">
-          <string>Asset Type</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Attribute Name</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Details</string>
-         </property>
-        </column>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QTreeWidget" name="module_list">
-        <property name="maximumSize">
-         <size>
-          <width>300</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="verticalScrollBarPolicy">
-         <enum>Qt::ScrollBarAlwaysOn</enum>
-        </property>
-        <column>
-         <property name="text">
-          <string notr="true">Module Name</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Value</string>
-         </property>
-        </column>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="module_title">
-        <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;MODULES RUN&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="attributes_title">
-        <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;ATTRIBUTE DATA&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="0" colspan="3">
        <widget class="QWidget" name="gridname_widget" native="true">
         <layout class="QGridLayout" name="gridLayout_7">
@@ -232,6 +167,132 @@
             </size>
            </property>
           </spacer>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="2" column="0" rowspan="2">
+       <widget class="QTreeWidget" name="module_list">
+        <property name="maximumSize">
+         <size>
+          <width>300</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOn</enum>
+        </property>
+        <column>
+         <property name="text">
+          <string notr="true">Module Name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Last Run</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="module_title">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;MODULES RUN&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QTreeWidget" name="attributes_list">
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOn</enum>
+        </property>
+        <property name="sortingEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+        <column>
+         <property name="text">
+          <string>Attribute Name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Units</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Value</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="attributes_title">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;ATTRIBUTE DATA&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QWidget" name="assettypes_widget" native="true">
+        <layout class="QGridLayout" name="gridLayout_8">
+         <property name="leftMargin">
+          <number>6</number>
+         </property>
+         <property name="topMargin">
+          <number>6</number>
+         </property>
+         <property name="rightMargin">
+          <number>6</number>
+         </property>
+         <property name="bottomMargin">
+          <number>6</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="assetcol_assettypes_lbl">
+           <property name="minimumSize">
+            <size>
+             <width>100</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="whatsThis">
+            <string>Width of the square cell in the city grid in metres</string>
+           </property>
+           <property name="text">
+            <string>Select Asset Type:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="assetcol_assettypes_combo">
+           <property name="minimumSize">
+            <size>
+             <width>100</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <item>
+            <property name="text">
+             <string>(select asset type)</string>
+            </property>
+           </item>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -308,7 +369,24 @@
  <resources>
   <include location="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
   <include location="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
-  <include location="../graphics/ubeats.qrc"/>
+  <include location="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>done_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MetadataDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>889</x>
+     <y>573</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>470</x>
+     <y>300</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

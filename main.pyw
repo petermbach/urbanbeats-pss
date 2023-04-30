@@ -222,6 +222,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.assetcol_new_button.clicked.connect(self.add_new_ubcollection_to_table)
         self.ui.assetcol_delete_button.clicked.connect(self.remove_selected_collection_from_project)
         self.ui.assetcol_export.clicked.connect(self.show_export_assets_dialog)
+        self.ui.asset_display.clicked.connect(self.show_metadata_dialog)
+        self.ui.global_assets_table.itemDoubleClicked.connect(self.show_metadata_dialog_with_active)
 
         # MAP AND DATA VIEW SECTION --- (with the map controls)
         self.ui.DataView_extent.clicked.connect(self.update_map_display)
@@ -1128,6 +1130,12 @@ class MainWindow(QtWidgets.QMainWindow):
         # [TO DO] once function creation implemented!
 
     def show_metadata_dialog(self):
+        """Launches the metadata dialog without a pre-selection."""
+        metadatadialog = ubdialogs.ShowMetadataDialogLaunch(self, self.get_active_simulation_object(), 0)
+        metadatadialog.exec_()
+        return True
+
+    def show_metadata_dialog_with_active(self):
         pass
 
     def update_preview_data(self):
