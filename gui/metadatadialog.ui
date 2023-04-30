@@ -224,7 +224,7 @@
         </column>
         <column>
          <property name="text">
-          <string>Value</string>
+          <string>Description/Value</string>
          </property>
         </column>
        </widget>

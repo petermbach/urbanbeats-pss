@@ -146,11 +146,11 @@ class Ui_MetadataDialog(object):
         self.attributes_list.setSortingEnabled(True)
         self.attributes_list.headerItem().setText(0, _translate("MetadataDialog", "Attribute Name"))
         self.attributes_list.headerItem().setText(1, _translate("MetadataDialog", "Units"))
-        self.attributes_list.headerItem().setText(2, _translate("MetadataDialog", "Value"))
+        self.attributes_list.headerItem().setText(2, _translate("MetadataDialog", "Description/Value"))
         self.attributes_title.setText(_translate("MetadataDialog", "<html><head/><body><p><span style=\" font-weight:600;\">ATTRIBUTE DATA</span></p></body></html>"))
         self.assetcol_assettypes_lbl.setWhatsThis(_translate("MetadataDialog", "Width of the square cell in the city grid in metres"))
         self.assetcol_assettypes_lbl.setText(_translate("MetadataDialog", "Select Asset Type:"))
         self.assetcol_assettypes_combo.setItemText(0, _translate("MetadataDialog", "(select asset type)"))
         self.export_button.setText(_translate("MetadataDialog", "Export Summary..."))
         self.done_button.setText(_translate("MetadataDialog", "Done"))
-# import ubeats_rc
+import ubeats_rc
