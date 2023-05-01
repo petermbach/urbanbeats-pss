@@ -173,7 +173,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Variant for calling only the performance assessment
 
         # ADVANCED MENU
-        # self.ui.actionModel_Calibration_Viewer.triggered.connect(self.show_calibration_viewer)
+        self.ui.actionModel_Calibration_Viewer.triggered.connect(self.show_calibration_viewer)
 
         # WINDOW MENU
         # actionMinimize has been implemented through QtDesigner

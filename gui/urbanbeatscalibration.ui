@@ -109,6 +109,34 @@
        </widget>
       </item>
       <item>
+       <widget class="QLabel" name="assetcol_title">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Asset Collection&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="assetcol_combo">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <item>
+         <property name="text">
+          <string>(select asset collection)</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
        <widget class="QWidget" name="calibrationSettings" native="true">
         <property name="minimumSize">
          <size>
@@ -135,34 +163,6 @@
          <property name="bottomMargin">
           <number>6</number>
          </property>
-         <item>
-          <widget class="QLabel" name="assetcol_title">
-           <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Asset Collection&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="assetcol_combo">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <item>
-            <property name="text">
-             <string>(select asset collection)</string>
-            </property>
-           </item>
-          </widget>
-         </item>
          <item>
           <widget class="QLabel" name="calibset_title">
            <property name="text">
@@ -245,7 +245,7 @@
            </item>
            <item>
             <property name="text">
-             <string>Block by Block</string>
+             <string>SimGrid by SimGrid</string>
             </property>
            </item>
           </widget>

@@ -153,4 +153,4 @@ class Ui_MetadataDialog(object):
         self.assetcol_assettypes_combo.setItemText(0, _translate("MetadataDialog", "(select asset type)"))
         self.export_button.setText(_translate("MetadataDialog", "Export Summary..."))
         self.done_button.setText(_translate("MetadataDialog", "Done"))
-import ubeats_rc
+# import ubeats_rc

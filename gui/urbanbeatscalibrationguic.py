@@ -54,20 +54,18 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
         # --- INITIALIZE MAIN VARIABLES ---
         self.maingui = main    # the main runtime - for GUI changes
         self.simulation = simulation
+        self.asset_col = simulation.get_global_asset_collection()
         self.scenario = scenario      # the active scenario to be featured in the calibration viewer
+        self.assets = None
+        self.assetlist = None
+        self.meta = None
 
         self.enable_disable_gui()
-        if self.scenario is None:
-            self.map_attr = None
-            self.blockslist = None
-        else:
-            self.map_attr = scenario.get_asset_with_name("MapAttributes")
-            blocks = self.scenario.get_assets_with_identifier("BlockID")
-            self.blockslist = []
-            for i in range(len(blocks)):
-                if not blocks[i].get_attribute("Status"):
-                    continue
-                self.blockslist.append(blocks[i])   # This blocks list removes all status zero blocks
+
+        # --- SETUP DYNAMIC COMBO BOX ---
+        self.ui.assetcol_combo.clear()
+        self.ui.assetcol_combo.addItem("(select asset collection)")
+        [self.ui.assetcol_combo.addItem(str(asset_name)) for asset_name in self.asset_col.keys()]
 
         self.ui.set_param_combo.setCurrentIndex(0)
         self.ui.set_aggregation_combo.setCurrentIndex(0)
@@ -87,6 +85,9 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
         self.active_metrics = []
 
         # --- SIGNALS AND SLOTS ---
+        self.ui.assetcol_combo.currentIndexChanged.connect(self.enable_disable_gui)
+        self.ui.assetcol_combo.currentIndexChanged.connect(self.get_modelled_assets)
+
         self.ui.set_param_combo.currentIndexChanged.connect(self.setup_calibration)
         self.ui.set_aggregation_combo.currentIndexChanged.connect(self.setup_calibration)
         self.ui.set_datasource_combo.currentIndexChanged.connect(self.setup_calibration)
@@ -106,7 +107,7 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
 
     def enable_disable_gui(self):
         """Disables the GUI and makes it inaccessible if no scenario is currently selected."""
-        if self.scenario is None:
+        if self.ui.assetcol_combo.currentIndex() == 0:
             self.ui.calibrationSettings.setEnabled(0)
             self.ui.calibrationResults.setEnabled(0)
             self.ui.calibrationWebView.setEnabled(0)
@@ -136,7 +137,7 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
         self.ui.plot_controls_widget.setEnabled(0)
 
         # Step 0 - Do we even have data
-        if self.map_attr is None:
+        if self.meta is None:
             prompt_msg = "There is no asset data for this scenario! Please run the simulation first!"
             QtWidgets.QMessageBox.warning(self, 'No Asset Data', prompt_msg, QtWidgets.QMessageBox.Ok)
             return True
@@ -147,32 +148,32 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
         if self.active_param is None:
             return True
         elif self.active_param in ["allot", "houses", "tia", "tif", "roofarea"] and \
-            not self.map_attr.get_attribute("HasURBANFORM"):
-            prompt_msg = "Urban Planning Module was not run for this case study. Please run this module first!"
-            QtWidgets.QMessageBox.warning(self, 'No Urban Planning Data', prompt_msg, QtWidgets.QMessageBox.Ok)
+            not self.meta.get_attribute("mod_urbanformgen"):
+            prompt_msg = "Urban Planning Data non-existent. Please run a module first to obtain urban form data!"
+            QtWidgets.QMessageBox.warning(self, 'No Urban Form Data', prompt_msg, QtWidgets.QMessageBox.Ok)
             return True
-        elif self.active_param in ["demand", "ww"] and not self.map_attr.get_attribute("HasSPATIALMAPPING"):
-            prompt_msg = "Spatial Mapping Module was not run for this case study. Please run this module first!"
-            QtWidgets.QMessageBox.warning(self, 'No Spatial Mapping Data', prompt_msg, QtWidgets.QMessageBox.Ok)
+        elif self.active_param in ["demand", "ww"] and not self.meta.get_attribute("mod_waterdemand"):
+            prompt_msg = "Water Demand Mapping was not run for this case study. Please run this module first!"
+            QtWidgets.QMessageBox.warning(self, 'No Water Use Data', prompt_msg, QtWidgets.QMessageBox.Ok)
             return True
         else:
             pass
 
         # Step 2 - Aggregation Level
-        agg_levels = [None, "Total", "Region", "Suburb", "PlanZone", "Block"]
+        agg_levels = [None, "Total", "Region", "Suburb", "PlanZone", "Simgrid"]
         self.active_agg_level = agg_levels[self.ui.set_aggregation_combo.currentIndex()]
         if self.active_agg_level is None:
             return True
-        elif self.active_agg_level == "Region" and not self.map_attr.get_attribute("HasGEOPOLITICAL"):
+        elif self.active_agg_level == "Region" and not self.meta.get_attribute("mod_mapregions"):
             self.ui.set_aggregation_combo.setCurrentIndex(0)
             prompt_msg = "The current simulation does not contain information on Geopolitical Regions. " \
                          "Please choose another aggregation level!"
             QtWidgets.QMessageBox.warning(self, 'No Geopolitical Data', prompt_msg, QtWidgets.QMessageBox.Ok)
-        elif self.active_agg_level == "Suburb" and not self.map_attr.get_attribute("HasSUBURBS"):
+        elif self.active_agg_level == "Suburb" and not self.meta.get_attribute("mod_mapregions"):
             prompt_msg = "The current simulation does not contain information on Suburban Regions. " \
                          "Please choose another aggregation level!"
             QtWidgets.QMessageBox.warning(self, 'No Suburban Data', prompt_msg, QtWidgets.QMessageBox.Ok)
-        elif self.active_agg_level == "PlanZone" and not self.map_attr.get_attribute("HasPLANZONES"):
+        elif self.active_agg_level == "PlanZone" and not self.meta.get_attribute("mod_mapregions"):
             prompt_msg = "The current simulation does not contain information on Planning Zones. " \
                          "Please choose another aggregation level!"
             QtWidgets.QMessageBox.warning(self, 'No Planning Zone Data', prompt_msg, QtWidgets.QMessageBox.Ok)
@@ -219,17 +220,18 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
     def setup_data_table(self, calibdata=None):
         """Sets up the data table for the calibration."""
         self.ui.set_data_table.setRowCount(0)
-        if self.active_agg_level == "Block":
-            for i in range(len(self.blockslist)):
+        assetident = self.meta.get_attribute("AssetIdent")
+        if self.active_agg_level == "Simgrid":
+            for i in range(len(self.assetlist)):
                 self.ui.set_data_table.insertRow(0)
                 twi = QtWidgets.QTableWidgetItem()
-                twi.setText("BlockID"+str(self.blockslist[i].get_attribute("BlockID")))
+                twi.setText(assetident + str(self.assetlist[i].get_attribute(assetident)))
                 self.ui.set_data_table.setItem(0, 0, twi)
                 if calibdata is not None:
                     twi = QtWidgets.QTableWidgetItem()
                     try:
-                        twi.setText(str(round(calibdata["BlockID" +
-                                                        str(self.blockslist[i].get_attribute("BlockID"))], 2)))
+                        twi.setText(str(round(calibdata[assetident +
+                                                        str(self.assetlist[i].get_attribute(assetident))], 2)))
                     except KeyError:
                         continue
                     self.ui.set_data_table.setItem(0, 1, twi)
@@ -246,7 +248,7 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
                     pass
                 self.ui.set_data_table.setItem(0, 1, twi)
         elif self.active_agg_level == "PlanZone":
-            names = ubmethods.get_subregions_subset_from_blocks("PlanZone", self.blockslist)
+            names = ubmethods.get_subregions_subset_from_blocks("PlanZone", self.assetlist)
             for n in names:
                 twi = QtWidgets.QTableWidgetItem()
                 twi.setText(str(n))
@@ -260,7 +262,7 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
                         continue
                     self.ui.set_data_table.setItem(0, 1, twi)
         elif self.active_agg_level == "Region":
-            names = ubmethods.get_subregions_subset_from_blocks("Region", self.blockslist)
+            names = ubmethods.get_subregions_subset_from_blocks("Region", self.assetlist)
             for n in names:
                 twi = QtWidgets.QTableWidgetItem()
                 twi.setText(str(n))
@@ -274,7 +276,7 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
                         continue
                     self.ui.set_data_table.setItem(0, 1, twi)
         elif self.active_agg_level == "Suburb":
-            names = ubmethods.get_subregions_subset_from_blocks("Suburb", self.blockslist)
+            names = ubmethods.get_subregions_subset_from_blocks("Suburb", self.assetlist)
             for n in names:
                 twi = QtWidgets.QTableWidgetItem()
                 twi.setText(str(n))
@@ -338,9 +340,9 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
         """Generates an impervious area estimate from the Melbourne Water MUSIC Modelling Guidelines for the current
         Blocks List. Summarises this to regional scale if necessary.
         """
-        block_size = self.map_attr.get_attribute("BlockSize")       # Needed for area vs. fraction calculation
+        # block_size = self.meta.get_attribute("BlockSize")       # Needed for area vs. fraction calculation
 
-        nonreslucmatrix = ["COM", "LI", "HI", "ORC", "CIV", "SVU", "TR", "RD", "PG", "REF", "UND", "NA",
+        nonreslucmatrix = ["COM", "LI", "HI", "ORC", "CIV", "SVU", "TR", "RD", "PG", "REF", "UND", "UNC",
                            "FOR", "AGR", "WAT"]     # Abbreviations for non-residential land uses
 
         dataset = {}    # Will hold the MW MMG Data Set
@@ -354,48 +356,51 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
 
         # Calculate impervious area for non-residential land uses block by block
         calibdata = {}      # Will hold the calibration data set
-        for i in range(len(self.blockslist)):       # Scan all the Blocks
-            asset = self.blockslist[i]
-            blockID = "BlockID"+str(asset.get_attribute("BlockID"))
+        for i in range(len(self.assetlist)):       # Scan all the Blocks
+            assetident = self.meta.get_attribute("AssetIdent")
+            asset = self.assetlist[i]
+            asset_ID = assetident+str(asset.get_attribute(assetident))
             if asset.get_attribute("Status") == 0:
                 continue        # Check zero status
 
-            calibdata[blockID] = 0.0     # Initialize the value
+            calibdata[asset_ID] = 0.0     # Initialize the value
 
             # Non-Residential Land uses - add impervious area for current
             for luc in nonreslucmatrix:
-                calibdata[blockID] += asset.get_attribute("pLU_"+luc) * float(dataset[luc][2])  # Grab the Median
+                calibdata[asset_ID] += asset.get_attribute("pLU_"+luc) * float(dataset[luc][2])  # Grab the Median
 
             # Residential - figure out lot size first, then work out impervious area
             lotarea = asset.get_attribute("ResLotArea")
+            print(lotarea)
             if lotarea == 0 or lotarea is None:
                 pass
-            if lotarea < 350.0:
-                calibdata[blockID] += asset.get_attribute("pLU_RES") * float(dataset["RES-350"][2])
+            elif lotarea < 350.0:
+                calibdata[asset_ID] += asset.get_attribute("pLU_RES") * float(dataset["RES-350"][2])
             elif lotarea < 500.0:
-                calibdata[blockID] += asset.get_attribute("pLU_RES") * float(dataset["RES-500"][2])
+                calibdata[asset_ID] += asset.get_attribute("pLU_RES") * float(dataset["RES-500"][2])
             elif lotarea < 800.0:
-                calibdata[blockID] += asset.get_attribute("pLU_RES") * float(dataset["RES-800"][2])
+                calibdata[asset_ID] += asset.get_attribute("pLU_RES") * float(dataset["RES-800"][2])
             else:
-                calibdata[blockID] += asset.get_attribute("pLU_RES") * float(dataset["RES-4000"][2])
+                calibdata[asset_ID] += asset.get_attribute("pLU_RES") * float(dataset["RES-4000"][2])
 
             # HDR
             if asset.get_attribute("HDRFlats") not in [0, None]:
-                calibdata[blockID] += asset.get_attribute("pLU_RES") * float(dataset["HDR"][2])
+                calibdata[asset_ID] += asset.get_attribute("pLU_RES") * float(dataset["HDR"][2])
 
             if metric == "Area":    # Convert proportions to area
-                calibdata[blockID] = calibdata[blockID] * asset.get_attribute("Active") * float(block_size) * float(
-                    block_size)
+                calibdata[asset_ID] = calibdata[asset_ID] * asset.get_attribute("Activity") * \
+                                      float(asset.get_attribute("Area"))
             else:
                 pass    # Fraction
-        if self.active_agg_level == "Block":
+        if self.active_agg_level == "Simgrid":
             return calibdata
         elif self.active_agg_level == "Total":
             imptot = []
             activetot = []
-            for i in range(len(self.blockslist)):
-                imptot.append(calibdata["BlockID"+str(self.blockslist[i].get_attribute("BlockID"))])
-                activetot.append(self.blockslist[i].get_attribute("Active"))
+            assetident = self.meta.get_attribute("AssetIdent")
+            for i in range(len(self.assetlist)):
+                imptot.append(calibdata[assetident + str(self.assetlist[i].get_attribute(assetident))])
+                activetot.append(self.assetlist[i].get_attribute("Activity"))
             if metric == "Area":
                 return {"Case Study":sum(imptot)}
             elif metric == "Fraction":
@@ -404,13 +409,14 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
                 return None
         else:   # There is a smaller aggregation level...
             newcalibdata = {}
-            agg_levels = ubmethods.get_subregions_subset_from_blocks(self.active_agg_level, self.blockslist)
+            assetident = self.meta.get_attribute("AssetIdent")
+            agg_levels = ubmethods.get_subregions_subset_from_blocks(self.active_agg_level, self.assetlist)
             for i in agg_levels:    # Set up the dictionary
                 newcalibdata[i] = [[], []]      # [ [imp_total], [activity] ]
-            for i in range(len(self.blockslist)):   # Go through Blocks list and add data
-                region = self.blockslist[i].get_attribute(self.active_agg_level)
-                newcalibdata[region][0].append(calibdata["BlockID"+str(self.blockslist[i].get_attribute("BlockID"))])
-                newcalibdata[region][1].append(self.blockslist[i].get_attribute("Active"))
+            for i in range(len(self.assetlist)):   # Go through Blocks list and add data
+                region = self.assetlist[i].get_attribute(self.active_agg_level)
+                newcalibdata[region][0].append(calibdata[assetident + str(self.assetlist[i].get_attribute(assetident))])
+                newcalibdata[region][1].append(self.assetlist[i].get_attribute("Activity"))
             for i in newcalibdata.keys():       # Go region by region
                 # For every region, do the summation
                 if metric == "Area":
@@ -467,6 +473,26 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
                                e10, e30, e50]
         return True
 
+    def get_modelled_assets(self):
+        """Retrieves the assets and metadata"""
+        if self.ui.assetcol_combo.currentIndex() == 0:
+            self.meta = None
+            self.assetlist = None
+            return True
+        else:
+            self.assets = self.simulation.get_asset_collection_by_name(self.ui.assetcol_combo.currentText())
+            if self.assets is None:
+                self.meta = None
+                self.assetlist = None
+                return True
+            self.meta = self.assets.get_asset_with_name("meta")
+            self.assetlist = []
+            allassets = self.assets.get_assets_with_identifier(self.meta.get_attribute("AssetIdent"))
+            for i in range(len(allassets)):
+                if allassets[i].get_attribute("Status"):
+                    self.assetlist.append(allassets[i])
+        return True
+
     def get_modelled_data(self):
         """Sets the self.active_model_data variable with the modelled data for comparison with calibration data."""
         attnames = self.attribute_keys[self.active_param]   # The attributes to look up.
@@ -474,27 +500,28 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
         if self.active_agg_level == "Total":    # I want the whole sum across the case study
             self.active_model_data["Case Study"] = 0.0
             adjustment = 0.0    # Holds the adjustment factor for 'tif'
-            for i in range(len(self.blockslist)):
+            for i in range(len(self.assetlist)):
                 for j in range(len(attnames)):
                     if self.active_param != "tif":
-                        self.active_model_data["Case Study"] += self.blockslist[i].get_attribute(attnames[j])
+                        self.active_model_data["Case Study"] += self.assetlist[i].get_attribute(attnames[j])
                         adjustment = 1.0
                     else:
-                        self.active_model_data["Case Study"] += self.blockslist[i].get_attribute(attnames[j]) * \
-                                                                self.blockslist[i].get_attribute("Active")
-                        adjustment += self.blockslist[i].get_attribute("Active")
+                        self.active_model_data["Case Study"] += self.assetlist[i].get_attribute(attnames[j]) * \
+                                                                self.assetlist[i].get_attribute("Activity")
+                        adjustment += self.assetlist[i].get_attribute("Activity")
             self.active_model_data["Case Study"] = float(self.active_model_data["Case Study"] / adjustment)
-        elif self.active_agg_level == "Block":
-            for i in range(len(self.blockslist)):
-                blockid = "BlockID" + str(self.blockslist[i].get_attribute("BlockID"))
-                self.active_model_data[blockid] = 0.0
+        elif self.active_agg_level == "Simgrid":
+            assetident = self.meta.get_attribute("AssetIdent")
+            for i in range(len(self.assetlist)):
+                assetID = assetident + str(self.assetlist[i].get_attribute(assetident))
+                self.active_model_data[assetID] = 0.0
                 for j in range(len(attnames)):
-                    self.active_model_data[blockid] += self.blockslist[i].get_attribute(attnames[j])
+                    self.active_model_data[assetID] += self.assetlist[i].get_attribute(attnames[j])
         else:   # Region based
-            regionnames = ubmethods.get_subregions_subset_from_blocks(self.active_agg_level, self.blockslist)
+            regionnames = ubmethods.get_subregions_subset_from_blocks(self.active_agg_level, self.assetlist)
             for n in regionnames:
                 self.active_model_data[n] = 0.0
-                subsetblocks = ubmethods.get_subset_of_blocks_by_region(self.active_agg_level, n, self.blockslist)
+                subsetblocks = ubmethods.get_subset_of_blocks_by_region(self.active_agg_level, n, self.assetlist)
                 adjustment = 0.0
                 for i in range(len(subsetblocks)):
                     for j in range(len(attnames)):
@@ -503,8 +530,8 @@ class LaunchCalibrationViewer(QtWidgets.QDialog):
                             adjustment = 1.0
                         else:
                             self.active_model_data[n] += subsetblocks[i].get_attribute(attnames[j]) * \
-                                                         subsetblocks[i].get_attribute("Active")
-                            adjustment += subsetblocks[i].get_attribute("Active")
+                                                         subsetblocks[i].get_attribute("Activity")
+                            adjustment += subsetblocks[i].get_attribute("Activity")
                 self.active_model_data[n] = float(self.active_model_data[n] / adjustment)
         return True
 
