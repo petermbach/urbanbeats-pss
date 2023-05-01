@@ -76,7 +76,7 @@ class NbSDesignToolboxSetup(UBModule):
         self.pb = 1
         self.pp = 0
         self.tank = 1
-        self.retb = 0
+        self.rbf = 0
         self.sw = 1
 
         # MODULE PARAMETERS
@@ -106,6 +106,29 @@ class NbSDesignToolboxSetup(UBModule):
         self.rec_priority = 0       # 0 = High, 1 = Medium, 2 = Low
         self.rec_tar = 80.0
 
+        # Stormwater Harvesting Settings
+        self.create_parameter("rec_method", STRING, "Stormwater harvesting storage sizing method")
+        self.create_parameter("rec_raindata", STRING, "Rain data fileID in data library")
+        self.create_parameter("rec_petdata", STRING, "PET data fileID in data library")
+        self.create_parameter("rec_rainlength", DOUBLE, "Length of rainfall to use")
+        self.create_parameter("rec_demmin", DOUBLE, "Minimum allowable demand range of total inflow")
+        self.create_parameter("rec_demmax", DOUBLE, "Maximum allowable demand range of total inflow")
+        self.create_parameter("rec_strategy", STRING, "Spatial stormwater harvesting strategy")
+        self.create_parameter("rec_swhbenefits", BOOL, "Account for benefits of stormwater harvesting on Qty/WQ?")
+        self.create_parameter("rec_unitinflow", DOUBLE, "Unit runoff rate [kL/sqm/imparea]")
+        self.create_parameter("rec_unitinflowauto", BOOL, "Auto-determine unit runoff rate?")
+        self.rec_method = "SB"  # EQ = equation, SB = storage behaviour modelling
+        self.rec_raindata = ""
+        self.rec_petdata = ""
+        self.rec_rainlength = 1
+        self.rec_demmin = 10.0
+        self.rec_demmax = 100.0
+        self.rec_strategy = "A"    # D = downstream, U = upstream, A = all
+        self.rec_swhbenefits = 0
+        self.rec_unitinflow = 0.545
+        self.rec_unitinflowauto = 0
+
+        # Planning Overlays
         self.create_parameter("consider_overlays", BOOL, "Consider planning overlays as restrictive for BGI")
         self.create_parameter("ovrly_shp", BOOL, "Use an overlay shapefile to restrict areas")
         self.create_parameter("ovrly_suit", BOOL, "Use land use suitability to limit implementation")
@@ -573,6 +596,12 @@ class NbSDesignToolboxSetup(UBModule):
         self.sw_new_pct = 80.0  # per [m2]
         self.sw_decom_pct = 90.0  # per [m2]
 
+        # ADVANCED PARAMETERS DEFINITION
+        self.userTech = {}
+        self.technames = ["BF", "WET", "ROOF", "WALL", "INFIL", "PB", "PP", "TANK", "RBF", "SW"]
+        self.scalenames = ["lot", "street", "region"]
+
+
     def set_module_data_library(self, datalib):
         self.datalibrary = datalib
 
@@ -583,36 +612,112 @@ class NbSDesignToolboxSetup(UBModule):
         if self.assets is None:
             self.notify("Fatal Error Missing Asset Collection")
 
-        # Metadata Check - need to make sure we have access to the metadata
+        # METADATA CHECK - need to make sure we have access to the metadata
         self.meta = self.assets.get_asset_with_name("meta")
         if self.meta is None:
             self.notify("Fatal Error! Asset Collection missing Metadata")
         self.meta.add_attribute("mod_mapregions", 1)
         self.assetident = self.meta.get_attribute("AssetIdent")
 
+        # PRE-REQUISITES CHECK - need to have a few modules run
+        if self.meta.get_attribute("mod_urbanformgen") != 1:
+            self.notify("Cannot start module! Data on Urban Form is missing! Please generate urban form first")
+            return False
+        elif self.meta.get_attribute("mod_waterdemand") != 1 and self.rec_obj:
+            self.notify("To do stormwater harvesting, water demand needs to be known! Please run this module first!")
+            return False
+
+        # CLEAN THE ATTRIBUTES LIST
+        att_schema = [
+
+        ]
+
+        grid_assets = self.assets.get_assets_with_identifier(self.assetident)
+        att_reset_count = 0
+        for i in range(len(grid_assets)):
+            for att in att_schema:
+                if grid_assets[i].remove_attribute(att):
+                    att_reset_count += 1
+        self.notify("Removed "+str(att_reset_count)+" attribute entries")
+        # Also need to remove the asset collection WSUD [TO DO] Whatever that will look like!
+
+        self.meta.add_attribute("mod_nbsdesigntoolbox", 1)
+        self.assetident = self.meta.get_attribute("AssetIdent")
         self.xllcorner = self.meta.get_attribute("xllcorner")
         self.yllcorner = self.meta.get_attribute("yllcorner")
+        return True
 
     def run_module(self):
         """ The main algorithm for the module, links with the active simulation, its data library and output folders."""
         self.notify_progress(0)
-        self.initialize_runstate()
+        if not self.initialize_runstate():
+            self.notify("Module run terminated")
+            return True
 
         self.notify("Setting up NbS Design Toolbox")
         self.notify("--- === ---")
         self.notify("Geometry Type: " + self.assetident)
+        self.notify_progress(0)
+
+        # --- SECTION 0 - GRAB ASSET INFORMATION ---
+        self.griditems = self.assets.get_assets_with_identifier(self.assetident)
+        self.notify("Total assets making up the case study area: "+str(len(self.griditems)))
+        total_assets = len(self.griditems)
+        progress_counter = 0
+        self.notify_progress(10)
+        geomtype = self.meta.get_attribute("Geometry")
+
+        # --- SECTION 1 - CALCULATE GLOBAL VARIABLES FOR PLANNING OF NBS RELATED TO TARGETS
+        # Get targets for design
+        self.system_tarQ = self.runoff_obj * self.runoff_tar
+        self.system_tarTSS = self.wq_obj * self.wq_tss_tar
+        self.system_tarTN = self.wq_obj * self.wq_tn_tar
+        self.system_tarTP = self.wq_obj * self.wq_tp_tar
+        self.system_rec = self.rec_obj * self.rec_tar
+        self.targetsvector = [self.system_tarQ, self.system_tarTSS, self.system_tarTP,
+                              self.system_tarTN, self.system_rec]
+        self.notify("Targets to meet Qty, TSS, TP, TN, Rel%: "+str(self.targetsvector))
+
+        # Calculate system depths
+        self.sysdepths = {"TANK": self.tank_maxdepth - self.tank_mindead, "WET": self.wet_spec, "PB": self.pb_spec}
+
+        # Create Technologies shortlist
+        self.compile_user_techlist()
+        self.notify("Using technologies: "+str(self.userTech))
+        self.notify_progress(20)
+
+        # --- SECTION 2 - DESIGN AREAS FOR DIFFERENT SURFACE AREA BASED DESIGNS
 
 
-        # --- SECTION 1 - (description)
-        # --- SECTION 2 - (description)
-        # --- SECTION 3 - (description)
 
-        self.notify("Toolbox Setup Complete")
+
+
+
+
+        self.notify("Toolbox Setup Complete for Simulation Grid")
         self.notify_progress(100)
         return True
 
     # ==========================================
     # OTHER MODULE METHODS
     # ==========================================
-    def method_example(self):
-        pass
+    def compile_user_techlist(self):
+        """Compiles a dictionary of the technologies the user should use and at what scales these different techs should
+        be used. Results are presented as a dictionary, self.userTech, which is instantiated at the start as {} and
+        updated here to reflect the new parameters."""
+        self.userTech = {}
+        for j in self.technames:
+            if eval("self."+j.lower()+" == 1"):
+                self.userTech[j] = {}       # Each scale will have a dictionary
+                for k in range(len(self.scalenames)):
+                    k_scale = self.scalenames[k]
+                    try:
+                        if eval("self."+str(j.lower())+"_"+str(k_scale)+" == 1"):
+                            self.userTech[j][k_scale] = 1       # {"BF": {"lot": 1, "street": 1, "region": 1}, etc.}
+                        else:
+                            self.userTech[j][k_scale] = 0
+                    except NameError:
+                        pass
+                    except AttributeError:
+                        pass
+        return True

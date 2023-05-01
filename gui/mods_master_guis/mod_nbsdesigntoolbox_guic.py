@@ -107,7 +107,24 @@ class NbSDesignToolboxSetupLaunch(QtWidgets.QDialog):
                 self.ui.assetcol_combo.setEnabled(0)
         self.update_asset_col_metadata()
 
-        #Other combos
+        self.ui.swh_rain_combo.clear()
+
+        self.rainseries = self.datalibrary.get_dataref_array("temporal", ["Hydrological"], subtypes="Rainfall",
+                                                             scenario=self.active_scenario_name)
+        if len(self.rainseries) == 0:
+            self.ui.swh_rain_combo.addItem("(no rainfall data in project)")
+        else:
+            self.ui.swh_rain_combo.addItem("(select rainfall data set)")
+            [self.ui.swh_rain_combo.addItem(str(self.rainseries[0][i])) for i in range(len(self.rainseries[0]))]
+
+        self.ui.swh_pet_combo.clear()
+        self.petseries = self.datalibrary.get_dataref_array("temporal", ["Hydrological"], subtypes="Evapotranspiration",
+                                                            scenario=self.active_scenario_name)
+        if len(self.petseries) == 0:
+            self.ui.swh_pet_combo.addItem("(no evapotranspiration data in project)")
+        else:
+            self.ui.swh_pet_combo.addItem("(select evapotranspiration data set")
+            [self.ui.swh_pet_combo.addItem(str(self.petseries[0][i])) for i in range(len(self.petseries[0]))]
 
         # --- SIGNALS AND SLOTS ---
         # Navigation
@@ -238,6 +255,11 @@ class NbSDesignToolboxSetupLaunch(QtWidgets.QDialog):
         self.ui.pollute_tp_spin.setEnabled(self.ui.pollute_check.isChecked())
         self.ui.recycle_target_spin.setEnabled(self.ui.recycle_check.isChecked())
         self.ui.recycle_pri_combo.setEnabled(self.ui.recycle_check.isChecked())
+
+        self.ui.swh_climatemethod_widget.setEnabled(self.ui.recycle_check.isChecked())
+        self.ui.swh_strategysetting_widget1.setEnabled(self.ui.recycle_check.isChecked())
+        self.ui.swh_strategysetting_widget2.setEnabled(self.ui.recycle_check.isChecked())
+        self.ui.swh_benefits_widget.setEnabled(self.ui.recycle_check.isChecked())
 
         self.ui.suitability_widget_shp.setEnabled(self.ui.overlays_check.isChecked())
         self.ui.suitability_widget_lu.setEnabled(self.ui.overlays_check.isChecked())
@@ -424,6 +446,32 @@ class NbSDesignToolboxSetupLaunch(QtWidgets.QDialog):
         self.ui.recycle_check.setChecked(int(self.module.get_parameter("rec_obj")))
         self.ui.recycle_pri_combo.setCurrentIndex(int(self.module.get_parameter("rec_priority")))
         self.ui.recycle_target_spin.setValue(self.module.get_parameter("rec_tar"))
+
+        # Stormwater Harvesting
+        swhmethods = ["EQ", "SB"]
+        self.ui.swh_method.setCurrentIndex(swhmethods.index(self.module.get_parameter("rec_method")))
+        try:
+            self.ui.swh_rain_combo.setCurrentIndex(self.rainseries[1].index(self.module.get_parameter("rec_raindata")))
+        except:
+            self.ui.swh_rain_combo.setCurrentIndex(0)
+        try:
+            self.ui.swh_pet_combo.setCurrentIndex(self.petseries[1].index(self.module.get_parameter("rec_petdata")))
+        except:
+            self.ui.swh_pet_combo.setCurrentIndex(0)
+
+        self.ui.rec_rainfall_spin.setValue(float(self.module.get_parameter("rec_rainlength")))
+
+        self.ui.rec_demrange_min.setValue(float(self.module.get_parameter("rec_demmin")))
+        self.ui.rec_demrange_max.setValue(float(self.module.get_parameter("rec_demmax")))
+        if self.module.get_parameter("rec_strategy") == "D":
+            self.ui.radio_hsdown.setChecked(1)
+        elif self.module.get_parameter("rec_strategy") == "U":
+            self.ui.radio_hsup.setChecked(1)
+        else:
+            self.ui.radio_hsall.setChecked(1)
+        self.ui.swh_benefits_check.setChecked(int(self.module.get_parameter("rec_swhbenefits")))
+        self.ui.rec_unitrunoff_box.setText(str(self.module.get_parameter("rec_unitinflow")))
+        self.ui.rec_unitrunoff_auto.setChecked(int(self.module.get_parameter("rec_unitinflowauto")))
 
         # Planning Restrictions
         self.ui.overlays_check.setChecked(int(self.module.get_parameter("consider_overlays")))
@@ -853,6 +901,30 @@ class NbSDesignToolboxSetupLaunch(QtWidgets.QDialog):
         self.module.set_parameter("rec_obj", int(self.ui.recycle_check.isChecked()))
         self.module.set_parameter("rec_priority", int(self.ui.recycle_pri_combo.currentIndex()))
         self.module.set_parameter("rec_tar", float(self.ui.recycle_target_spin.value()))
+
+        # Stormwater Harvesting
+        swhmethods = ["EQ", "SB"]
+        self.module.set_parameter("rec_method", swhmethods[self.ui.swh_method.currentIndex()])
+        if self.ui.swh_rain_combo.currentIndex() == 0:
+            self.module.set_parameter("rec_raindata", "")
+        else:
+            self.module.set_parameter("rec_raindata", self.rainseries[1][self.ui.swh_rain_combo.currentIndex()-1])
+        if self.ui.swh_pet_combo.currentIndex() == 0:
+            self.module.set_parameter("rec_petdata", "")
+        else:
+            self.module.set_parameter("rec_petdata", self.petseries[1][self.ui.swh_pet_combo.currentIndex()-1])
+        self.module.set_parameter("rec_rainlength", float(self.ui.rec_rainfall_spin.value()))
+        self.module.set_parameter("rec_demmin", float(self.ui.rec_demrange_min.value()))
+        self.module.set_parameter("rec_demmax", float(self.ui.rec_demrange_max.value()))
+        if self.ui.radio_hsdown.isChecked():
+            self.module.set_parameter("rec_strategy", "D")
+        elif self.ui.radio_hsup.isChecked():
+            self.module.set_parameter("rec_strategy", "U")
+        else:
+            self.module.set_parameter("rec_strategy", "A")
+        self.module.set_parameter("rec_swhbenefits", int(self.ui.swh_benefits_check.isChecked()))
+        self.module.set_parameter("rec_unitflow", float(self.ui.rec_unitrunoff_box.text()))
+        self.module.set_parameter("rec_unitflowauto", int(self.ui.rec_unitrunoff_auto.isChecked()))
 
         # Planning Restrictions
         self.module.set_parameter("consider_overlays", int(self.ui.overlays_check.isChecked()))
