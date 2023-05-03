@@ -24,7 +24,11 @@ __author__ = "Peter M. Bach"
 __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
+import numpy as np
+import pandas as pd
+import datetime as dt
 from model.ubmodule import *
+
 
 class NbSDesignToolboxSetup(UBModule):
     """ Generates the simulation grid upon which many assessments will be based. This SimGrid will provide details on
@@ -642,6 +646,7 @@ class NbSDesignToolboxSetup(UBModule):
         # Also need to remove the asset collection WSUD [TO DO] Whatever that will look like!
 
         self.meta.add_attribute("mod_nbsdesigntoolbox", 1)
+        self.meta.add_attribute("mod_dt_nbsdesigntoolbox", str(dt.datetime.now().isoformat()))  # Last run
         self.assetident = self.meta.get_attribute("AssetIdent")
         self.xllcorner = self.meta.get_attribute("xllcorner")
         self.yllcorner = self.meta.get_attribute("yllcorner")
@@ -686,12 +691,77 @@ class NbSDesignToolboxSetup(UBModule):
         self.notify("Using technologies: "+str(self.userTech))
         self.notify_progress(20)
 
-        # --- SECTION 2 - DESIGN AREAS FOR DIFFERENT SURFACE AREA BASED DESIGNS
+        # --- SECTION 2a - DESIGN AREAS FOR DIFFERENT SURFACE AREA BASED DESIGNS
+        self.notify("Getting system designs")
+        nbsdesignrules = {}
+        for tech in self.userTech.keys():       # e.g. BF
+            if self.bf_method == "CAPTURE":     # Capture ratio method
+                if self.bf_univcapt:
+                    nbsdesignrules["BF"] = [self.bf_flow_surfAratio, self.bf_flow_ratiodef, self.bf_flow_surfAratio,
+                                            self.bf_flow_ratiodef]
+                else:
+                    nbsdesignrules["BF"] = [self.bf_flow_surfAratio, self.bf_flow_ratiodef, self.bf_wq_surfAratio,
+                                            self.bf_flow_ratiodef]
+            else:   # METHOD IS DESIGN CURVE
+                if self.bf_curvemethod == "UBEATS":      # Design curve method
+                    design_data = self.get_design_curve_data("BF")
+                else:
+                    design_data = self.read_custom_dcv()
+                    # Load deisgn curve
+                    # Read data from it
+                nbsdesignrules["BF"] = design_data
 
+        # --- SECTION 2b - Load and prepare climate data for storage-behaviour model
+        if self.rec_obj:
+            pass
+            # Initialize meteorological data vectors: load rainfall and evaporation files, create scaling factors for
+            # PET data.
+            self.notify("Loading climate")
+            self.load_rescale_climate_data()
 
+        # --- SECTION 3 - Loop through simulation assets and determine locations for suitable NbS Tech ---
+        # Define design increments - this is where we now start working with numpy arrays and pandas dataframes
+        self.lot_incr = np.linspace(0, 1, int(self.lot_rigour) + 1)
+        self.street_incr = np.linspace(0, 1, int(self.street_rigour) + 1)
+        self.region_incr = np.linspace(0, 1, int(self.region_rigour) + 1)
 
+        # Get the technologies used at each scale
+        lot_tech = [key for key in self.userTech.keys() if self.userTech[key]["lot"]]
+        street_tech = [key for key in self.userTech.keys() if self.userTech[key]["street"]]
+        region_tech = [key for key in self.userTech.keys() if self.userTech[key]["region"]]
+        self.notify("Lot-scale Technologies List: "+str(lot_tech))
+        self.notify("Street-scale Technologies List: "+str(street_tech))
+        self.notify("Regional-scale Technologies List: "+str(region_tech))
 
+        # Initialize the Pandas Data Frame of all options for the case study
+        self.notify("Now assessing NbS Opportunities across the simulation grid")
+        for i in range(len(self.griditems)):
+            curasset = self.griditems[i]
+            if curasset.get_attribute("Status") == 0:
+                continue
 
+            curID = curasset.get_attribute(self.assetident)
+            self.notify("Currently assessing "+str(self.assetident)+str(curID))
+
+            # --- (a) Assess Lot Opportunities
+            # for land uses: RES, HDR, LI, HI, COM
+            if self.scale_lot and len(lot_tech) != 0:
+                # Then do lot-scale tech
+                self.assess_lot_scale_opportunities(lot_tech, curasset, curID)
+
+            # --- (b) Assess Street/Neighbourhood Opportunities
+            # to be put in street-sides or in parklands
+            if self.scale_street and len(street_tech) != 0:
+                # Then do street
+                pass
+
+            # --- (c) Assess Regional Opportunities
+            # to be used in parklands generally across multiple drainage units
+            if self.scale_region and len(region_tech) != 0:
+                # Then do region
+                pass
+
+        # --- SECTION 4 - Consolidation and clean-up
 
 
         self.notify("Toolbox Setup Complete for Simulation Grid")
@@ -701,6 +771,123 @@ class NbSDesignToolboxSetup(UBModule):
     # ==========================================
     # OTHER MODULE METHODS
     # ==========================================
+    def retrieve_design_curve_data(self, techtype, flow, tss, tn, tp):
+        """Goes into the UrbanBEATS custom design curve database to retrieve surface area requirement for flow, tss, tn,
+        tp targets specified.
+        """
+        basepath = self.activesim.get_program_rootpath()+"/ancillary/nbscurves/"
+        if techtype in ["BF", "INFIL"]:
+            # Then we want extended detention depth and filter depth EDD and FD
+            edd = round(self.bf_ed/1000.0, 1)
+            fd = round(self.bf_fd/1000.0, 1)
+            exfil = self.bf_exfil
+            filename = basepath + techtype + "-EDD"+str(edd)+"m-FD"+str(fd)+"m-DC.dcv"
+        elif techtype in ["PB"]:
+            # Then we want mean depth, e.g. 0.25m Mean Depth, Outflow via Overflow Weir
+            pass
+        elif techtype in ["WET"]:
+            # Then we want extended detention depth and detention time, e.g. 250mm Ext. Detention Depth, 72hr detention
+            pass
+        else:
+            pass
+
+    def assess_lot_scale_opportunities(self, techlist, curasset, curID):
+        """Assess all possible NBS Opportunities at the Lot scale i.e., RES, COM, LI, HI for the current asset
+        passed to the function.
+        """
+        # Step 1 - Check if there are lot-stuff to work with!
+        hasHouses = int(curasset.get_attribute("HasHouses"))        # LOW DENSITY RESIDENTIAL LAND USE
+        num_houses = int(curasset.get_attribute("ResHouses"))
+        res_avail_sp = curasset.get_attribute("avLt_RES")
+        Alot = curasset.get_attribute("ResLotArea")
+        Aimpres = curasset.get_attribute("ResLotEIA")
+
+        hasFlats = int(curasset.get_attribute("HasFlats"))          # HIGH-DENSITY RESIDENTIAL LAND USE
+        num_hdr = 1
+        hdr_avail_sp = curasset.get_attribute("av_HDRes")
+        Ahdr = curasset.get_attribute("HDR_TIA")+curasset.get_attribute("HDRGarden")
+        Aimphdr = curasset.get_attribute("HDR_EIA")
+
+        hasLI = int(curasset.get_attribute("Has_LI"))
+        num_estatesLI = int(curasset.get_attribute("LIestates"))
+        li_avail_sp = curasset.get_attribute("avLt_LI")
+        Ali = curasset.get_attribute("LIAestate")
+        Aimpli = curasset.get_attribute("LIAeEIA")
+
+        hasHI = int(curasset.get_attribute("Has_HI"))
+        num_estatesHI = int(curasset.get_attribute("HIestates"))
+        hi_avail_sp = curasset.get_attribute("avLt_HI")
+        Ahi = curasset.get_attribute("HIAestate")
+        Aimphi = curasset.get_attribute("HIAeEIA")
+
+        hasCOM = int(curasset.get_attribute("Has_COM"))
+        num_estatesCOM = int(curasset.get_attribute("COMestates"))
+        com_avail_sp = curasset.get_attribute("avLt_COM")
+        Acom = curasset.get_attribute("COMAestate")
+        Aimpcom = curasset.get_attribute("COMAeEIA")
+
+        print(sum(hasHouses, hasFlats, hasLI, hasHI, hasCOM))
+        print(sum(res_avail_sp, hdr_avail_sp, li_avail_sp, hi_avail_sp, com_avail_sp))
+
+        # SKIP CONDITION #1 - no units to build in
+        if sum(hasHouses, hasFlats, hasLI, hasHI, hasCOM) == 0:
+            return None
+
+        # SKIP CONDITION #2 - no available space to build on
+        if sum(res_avail_sp, hdr_avail_sp, li_avail_sp, hi_avail_sp, com_avail_sp) < 0.0001:
+            return None
+
+        # INCORPORATE ANY FURTHER INFORMAITN LIKE SOIL INFILTRATION
+        pass
+
+        # SIZE THE REQUIRED STORAGE VOLUME FOR POTABLE SUPPLY SUBSTITUTION
+
+        # DESIGN THE TECHNOLOGIES NOW FOR THEIR APPLICATIONS
+        for tech in techlist:
+            tech_application = self.get_technology_applications_boollist(tech)
+            minsize = eval("self."+tech+"_minsize")
+            maxsize = eval("self."+tech+"_maxsize")
+
+
+
+
+    def get_technology_applications_boollist(self, techabbr):
+        """Simply creates a boolean list of whether a particular technology was chosen for flow management
+        water quality control and/or water recycling, this list will inform the sizing of the system."""
+        try:
+            purposeQ = eval("self."+techabbr+"_flow * self.runoff_obj")
+            if purposeQ == None:
+                purposeQ = 0
+        except NameError:
+            purposeQ = 0
+        except AttributeError:
+            purposeQ = 0
+
+        try:
+            purposeWQ = eval("self."+techabbr+"_wq * self.wq_obj")
+            if purposeWQ == None:
+                purposeWQ = 0
+        except NameError:
+            purposeWQ = 0
+        except AttributeError:
+            purpsoeWQ = 0
+
+        try:
+            purposeREC = eval("self."+techabbr+"_rec * self.rec_obj")
+            if purposeREC == None:
+                purposeREC = 0
+        except NameError:
+            purposeREC = 0
+        except AttributeError:
+            purposeREC = 0
+        purposes = [purposeQ, purposeWQ, purposeREC]
+        return purposes
+
+
+    def load_rescale_climate_data(self):
+        pass    # [ TO DO ]
+        return True
+
     def compile_user_techlist(self):
         """Compiles a dictionary of the technologies the user should use and at what scales these different techs should
         be used. Results are presented as a dictionary, self.userTech, which is instantiated at the start as {} and
@@ -717,7 +904,7 @@ class NbSDesignToolboxSetup(UBModule):
                         else:
                             self.userTech[j][k_scale] = 0
                     except NameError:
-                        pass
+                        self.userTech[j][k_scale] = 0
                     except AttributeError:
-                        pass
+                        self.userTech[j][k_scale] = 0
         return True

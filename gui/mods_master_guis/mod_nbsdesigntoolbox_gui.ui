@@ -180,7 +180,9 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;Grid Restrictions: &lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Does not run on Rasters&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;Reference: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;Reference: &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;- Bach, P.M., McCarthy, D.T., Urich, C., Sitzenfrei, R., Kleidorfer, M., Rauch, W. and Deletic, A., 2013. A planning algorithm for quantifying decentralised water management opportunities in urban environments. Water Science and Technology, 68(8), pp.1857-1865.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;- Bach, P.M., Kuller, M., McCarthy, D.T. and Deletic, A., 2020. A spatial planning-support system for generating decentralised urban stormwater management schemes. Science of The Total Environment, 726, p.138282.&lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt; &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </item>
@@ -1493,7 +1495,7 @@ p, li { white-space: pre-wrap; }
                     <item row="4" column="0" colspan="2">
                      <widget class="QLabel" name="rec_rainfall_lbl">
                       <property name="text">
-                       <string>Years of Rainfall to account for (stormwater harvesting only):</string>
+                       <string>Max. years of rainfall to use for stormwater harvesting assessment:</string>
                       </property>
                      </widget>
                     </item>
@@ -2885,8 +2887,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>639</width>
-                  <height>1040</height>
+                  <width>605</width>
+                  <height>1009</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -4194,8 +4196,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>639</width>
-                  <height>1040</height>
+                  <width>605</width>
+                  <height>1009</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -5477,8 +5479,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>639</width>
-                  <height>1040</height>
+                  <width>605</width>
+                  <height>1009</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -6789,8 +6791,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>639</width>
-                  <height>1040</height>
+                  <width>605</width>
+                  <height>1009</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -8098,8 +8100,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>639</width>
-                  <height>1040</height>
+                  <width>605</width>
+                  <height>1009</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -9407,8 +9409,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>639</width>
-                  <height>1040</height>
+                  <width>605</width>
+                  <height>1009</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -10685,8 +10687,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>639</width>
-                  <height>1040</height>
+                  <width>605</width>
+                  <height>1009</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_41">
@@ -11994,8 +11996,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>639</width>
-                  <height>1019</height>
+                  <width>605</width>
+                  <height>988</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_48">
@@ -13170,8 +13172,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>639</width>
-                  <height>1040</height>
+                  <width>605</width>
+                  <height>1009</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -14480,7 +14482,7 @@ p, li { white-space: pre-wrap; }
                   <x>0</x>
                   <y>0</y>
                   <width>605</width>
-                  <height>1066</height>
+                  <height>1035</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_71">
@@ -15744,6 +15746,7 @@ p, li { white-space: pre-wrap; }
   <include location="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
   <include location="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
   <include location="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
+  <include location="../../../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
  </resources>
  <connections>
   <connection>
