@@ -66,12 +66,69 @@ class NbSLayoutGeneration(UBModule):
         self.create_parameter("service_hdr", BOOL, "High-density residential")
         self.create_parameter("service_com", BOOL, "Commercial land use")
         self.create_parameter("service_li", BOOL, "Light industry service")
-        # self.create_parameter()
+        self.create_parameter("service_hi", BOOL, "Heavy industry service")
+        self.create_parameter("redundancy", DOUBLE, "Allowable level of service redundancy [%]")
+        self.runoff_service = 30.0
+        self.wq_service = 80.0
+        self.rec_service = 30.0
+        self.service_luc = 0
+        self.service_res = 1
+        self.service_hdr = 1
+        self.service_com = 0
+        self.service_li = 0
+        self.service_hi = 0
+        self.redundancy = 25.0
 
+        self.create_parameter("search_method", STRING, "Search method for the Monte Carlo")
+        self.create_parameter("maxiter", DOUBLE, "Maximum number of Monte Carlo Iterations")
+        self.create_parameter("numstrats", DOUBLE, "Final number of strategies to select")
+        self.create_parameter("selectstrat", STRING, "Selection strategy for options")
+        self.create_parameter("selectmethod", STRING, "Ranking/Selection method")
+        self.search_method = "UNTARGET"     # UNTARGET = for loop, # TARGET = while loop
+        self.maxiter = 1000
+        self.numstrats = 10
+        self.selectstrat = "TOP"    # TOP = top-scoring options, RAND = probability weighted random
+        self.selectmethod = "RANK"  # RANK = ranking top options, CONF = confidence interval based
 
-        # Evaluation Settings
+        # EVALUATION TAB
+        self.create_parameter("scalepref", BOOL, "Assign a scale preference?")
+        self.create_parameter("scaleweight", DOUBLE, "Weighting of scales solutions")
+        self.create_parameter("techpref", BOOL, "Assign a technology preference?")
+        self.create_parameter("techprefmatrixfile", STRING, "The MCA matrix file")
+        self.create_parameter("techprefmatrixdef", BOOL, "Use UrbanBEATS' default MCA matrix")
+        self.create_parameter("tech_incl", BOOL, "Include technical criteria")
+        self.create_parameter("env_incl", BOOL, "Include environmental criteria")
+        self.create_parameter("econ_incl", BOOL, "Include economic criteria")
+        self.create_parameter("soc_incl", BOOL, "Include social criteria")
+        self.create_parameter("tech_w", DOUBLE, "Weighting for technical criteria")
+        self.create_parameter("env_w", DOUBLE, "Weighting for environmental criteria")
+        self.create_parameter("econ_w", DOUBLE, "Weighting for economic criteria")
+        self.create_parameter("soc_w", DOUBLE, "Weighting for socail criteria")
+        self.scalepref = 0
+        self.scaleweight = 2    # [1,3] 1= lot, 3 = end of pipe
+        self.techpref = 0
+        self.techprefmatrixfile = "(load custom matrix)"
+        self.techprefmatrixdef = 1
+        self.tech_incl = 1
+        self.env_incl = 1
+        self.econ_incl = 1
+        self.soc_incl = 1
+        self.tech_w = 2
+        self.env_w = 2
+        self.econ_w = 2
+        self.soc_w = 2
 
+        self.create_parameter("scoringstrat", STRING, "Scoring method")
+        self.create_parameter("scoringmethod", STRING, "Method of tallying scores,e.g., weighted-sum")
+        self.create_parameter("includestoch", BOOL, "Include stochastic noise?")
+        self.create_parameter("multifunction_bonus", DOUBLE, "Multi-functionality bonus?")
+        self.scoringstrat = "SNP"   # NP = service-based no penalty, LP = linear penalty, EP = exponential penalty
+        self.scoringmethod = "WSM"  # WSM = weighted-sum, WPM = weighted-product
+        self.includestoch = 0
+        self.multifunction_bonus = 10.0
 
+        # ADVANCED PARAMETERS
+        pass
 
     def set_module_data_library(self, datalib):
         self.datalibrary = datalib
