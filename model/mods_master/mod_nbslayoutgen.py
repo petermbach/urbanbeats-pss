@@ -57,6 +57,21 @@ class NbSLayoutGeneration(UBModule):
         self.create_parameter("assetcolname", STRING, "Name of the asset collection to use")
         self.assetcolname = "(select asset collection)"
 
+        # Service Level Settings
+        self.create_parameter("runoff_service", DOUBLE, "Service level for runoff objective")
+        self.create_parameter("wq_service", DOUBLE, "Service level for pollution maangement service")
+        self.create_parameter("rec_service", DOUBLE, "Service level for stormwater harvesting service")
+        self.create_parameter("service_luc", BOOL, "Apply services levels to specific land use types?")
+        self.create_parameter("service_res", BOOL, "Residential dwellings")
+        self.create_parameter("service_hdr", BOOL, "High-density residential")
+        self.create_parameter("service_com", BOOL, "Commercial land use")
+        self.create_parameter("service_li", BOOL, "Light industry service")
+        # self.create_parameter()
+
+
+        # Evaluation Settings
+
+
 
     def set_module_data_library(self, datalib):
         self.datalibrary = datalib

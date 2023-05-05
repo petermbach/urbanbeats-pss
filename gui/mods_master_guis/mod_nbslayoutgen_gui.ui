@@ -1326,7 +1326,7 @@ p, li { white-space: pre-wrap; }
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>608</width>
+               <width>566</width>
                <height>575</height>
               </rect>
              </property>
@@ -2043,7 +2043,7 @@ p, li { white-space: pre-wrap; }
  </widget>
  <resources>
   <include location="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
-  <include location="../../../../../Dropbox/UrbanBEATS Master Project/graphics/ubeats.qrc"/>
+  <include location="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
  </resources>
  <connections>
   <connection>
