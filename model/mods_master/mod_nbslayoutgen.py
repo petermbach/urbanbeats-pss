@@ -122,7 +122,7 @@ class NbSLayoutGeneration(UBModule):
         self.create_parameter("scoringmethod", STRING, "Method of tallying scores,e.g., weighted-sum")
         self.create_parameter("includestoch", BOOL, "Include stochastic noise?")
         self.create_parameter("multifunction_bonus", DOUBLE, "Multi-functionality bonus?")
-        self.scoringstrat = "SNP"   # NP = service-based no penalty, LP = linear penalty, EP = exponential penalty
+        self.scoringstrat = "NP"   # NP = service-based no penalty, LP = linear penalty, EP = exponential penalty
         self.scoringmethod = "WSM"  # WSM = weighted-sum, WPM = weighted-product
         self.includestoch = 0
         self.multifunction_bonus = 10.0
