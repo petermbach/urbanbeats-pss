@@ -581,33 +581,49 @@ class UrbanFormAbstraction(UBModule):
             self.notify("Cannot start module! Data on Population, please run Map Population module first")
             return False
 
-        # CLEARN THE ATTRIBUTES LIST
-        att_schema = ["MiscAtot", "MiscAimp", "MiscAirr", "MiscThresh", "UND_Type", "UND_av", "OpenSpace", "AGreenOS",
-                      "ASquare", "PG_av", "REF_av", "ANonW_Util", "SVU_avWS", "SVU_avWW", "SVU_avSW", "SVU_avOTH",
-                      "RoadTIA", "ParkBuffer", "RD_av", "HasRes", "HasHouses", "ResARoad", "ResANstrip", "ResAFpath",
-                      "HouseOccup", "ResParcels", "ResFrontT", "avSt_RES", "WResNstrip", "ResAllots", "ResDWpLot",
-                      "ResHouses", "ResLotArea", "ResRoof", "avLt_RES", "ResHFloors", "ResLotTIA", "ResLotEIA",
-                      "ResGarden", "ResRoofCon", "ResLotALS", "ResLotARS", "HasFlats", "avSt_RES", "HDRFlats",
-                      "HDRRoofA", "HDROccup", "HDR_TIA", "HDR_EIA", "HDRFloors", "av_HDRes", "HDRGarden", "HDRCarPark",
-                      "Has_LI", "LIjobs", "LIestates", "LIAeRoad", "LIAeNstrip", "LIAeFpath", "LIAestate", "avSt_LI",
-                      "LIAfront", "LIAfrEIA", "LIAestate", "LIAeBldg", "LIFloors", "LIAeLoad", "LIAeCPark", "avLt_LI",
-                      "LIAeLgrey", "LIAeEIA", "LIAeTIA", "Has_HI", "HIjobs", "HIestates", "HIAeRoad", "HIAeNstrip",
-                      "HIAeFpath", "HIAestate", "avSt_HI", "HIAfront", "HIAfrEIA", "HIAestate", "HIAeBldg", "HIFloors",
-                      "HIAeLoad", "HIAeCPark", "avLt_HI", "HIAeLgrey", "HIAeEIA", "HIAeTIA", "Has_COM", "COMjobs",
-                      "COMestates", "COMAeRoad", "COMAeNstrip", "COMAeFpath", "COMAestate", "avSt_COM", "COMAfront",
-                      "COMAfrEIA", "COMAestate", "COMAeBldg", "COMFloors", "COMAeLoad", "COMAeCPark", "avLt_COM",
-                      "COMAeLgrey", "COMAeEIA", "COMAeTIA", "Has_ORC", "ORCjobs", "ORCestates", "ORCAeRoad",
-                      "ORCAeNstrip", "ORCAeFpath", "ORCAestate", "avSt_ORC", "ORCAfront", "ORCAfrEIA", "ORCAestate",
-                      "ORCAeBldg", "ORCFloors", "ORCAeLoad", "ORCAeCPark", "avLt_ORC", "ORCAeLgrey", "ORCAeEIA",
-                      "ORCAeTIA", "Blk_TIA", "Blk_EIA", "Blk_EIF", "Blk_TIF", "Blk_RoofsA"]
+        # CLEAN THE ATTRIBUTES LIST
+        self.att_schema = {"MiscAtot": 0.0, "MiscAimp": 0.0, "MiscAirr": 0.0, "MiscThresh": 0.0, "UND_Type": "",
+                           "UND_av": 0.0, "OpenSpace": 0.0, "AGreenOS": 0.0, "ASquare": 0.0, "PG_av": 0.0,
+                           "REF_av": 0.0, "ANonW_Util": 0.0, "SVU_avWS": 0.0, "SVU_avWW": 0.0, "SVU_avSW": 0.0,
+                           "SVU_avOTH": 0.0, "RoadTIA": 0.0, "ParkBuffer": 0.0, "RD_av": 0.0, "HasRes": int(0),
+                           "HasHouses": int(0), "ResARoad": 0.0, "ResANstrip": 0.0, "ResAFpath": 0.0, "HouseOccup": 0.0,
+                           "ResParcels": int(0), "ResFrontT": 0.0, "avSt_RES": 0.0, "WResNstrip": 0.0,
+                           "ResAllots": int(0), "ResDWpLot": int(0), "ResHouses": int(0), "ResLotArea": 0.0,
+                           "ResRoof": 0.0, "avLt_RES": 0.0, "ResHFloors": int(0), "ResLotTIA": 0.0, "ResLotEIA": 0.0,
+                           "ResGarden": 0.0, "ResRoofCon": 0.0, "ResLotALS": 0.0, "ResLotARS": 0.0, "HasFlats": int(0),
+                           "avSt_RES": 0.0, "HDRFlats": int(0), "HDRRoofA": 0.0, "HDROccup": 0.0, "HDR_TIA": 0.0,
+                           "HDR_EIA": 0.0, "HDRFloors": int(0), "av_HDRes": 0.0, "HDRGarden": 0.0, "HDRCarPark": 0.0,
+                           "Has_LI": int(0), "LIjobs": int(0), "LIestates": int(0), "LIAeRoad": 0.0, "LIAeNstrip": 0.0,
+                           "LIAeFpath": 0.0, "LIAestate": 0.0, "avSt_LI": 0.0, "LIAfront": 0.0, "LIAfrEIA": 0.0,
+                           "LIAestate": 0.0, "LIAeBldg": 0.0, "LIFloors": int(0), "LIAeLoad": 0.0, "LIAeCPark": 0.0,
+                           "avLt_LI": 0.0, "LIAeLgrey": 0.0, "LIAeEIA": 0.0, "LIAeTIA": 0.0, "Has_HI": int(0),
+                           "HIjobs": int(0), "HIestates": int(0), "HIAeRoad": 0.0, "HIAeNstrip": 0.0, "HIAeFpath": 0.0,
+                           "HIAestate": 0.0, "avSt_HI": 0.0, "HIAfront": 0.0, "HIAfrEIA": 0.0, "HIAestate": 0.0,
+                           "HIAeBldg": 0.0, "HIFloors": int(0), "HIAeLoad": 0.0, "HIAeCPark": 0.0, "avLt_HI": 0.0,
+                           "HIAeLgrey": 0.0, "HIAeEIA": 0.0, "HIAeTIA": 0.0, "Has_COM": int(0), "COMjobs": int(0),
+                           "COMestates": int(0), "COMAeRoad": 0.0, "COMAeNstrip": 0.0, "COMAeFpath": 0.0,
+                           "COMAestate": 0.0, "avSt_COM": 0.0, "COMAfront": 0.0, "COMAfrEIA": 0.0, "COMAestate": 0.0,
+                           "COMAeBldg": 0.0, "COMFloors": int(0), "COMAeLoad": 0.0, "COMAeCPark": 0.0, "avLt_COM": 0.0,
+                           "COMAeLgrey": 0.0, "COMAeEIA": 0.0, "COMAeTIA": 0.0, "Has_ORC": int(0), "ORCjobs": int(0),
+                           "ORCestates": 0.0, "ORCAeRoad": 0.0, "ORCAeNstrip": 0.0, "ORCAeFpath": 0.0,
+                           "ORCAestate": 0.0, "avSt_ORC": 0.0, "ORCAfront": 0.0, "ORCAfrEIA": 0.0, "ORCAestate": 0.0,
+                           "ORCAeBldg": 0.0, "ORCFloors": int(0), "ORCAeLoad": 0.0, "ORCAeCPark": 0.0, "avLt_ORC": 0.0,
+                           "ORCAeLgrey": 0.0, "ORCAeEIA": 0.0, "ORCAeTIA": 0.0, "Blk_TIA": 0.0, "Blk_EIA": 0.0,
+                           "Blk_EIF": 0.0, "Blk_TIF": 0.0, "Blk_RoofsA": 0.0}
 
+        # CLEANUP IF MODULE IS RESET
         grid_assets = self.assets.get_assets_with_identifier(self.assetident)
         att_reset_count = 0
         for i in range(len(grid_assets)):
-            for att in att_schema:
+            for att in self.att_schema.keys():
                 if grid_assets[i].remove_attribute(att):
                     att_reset_count += 1
         self.notify("Removed "+str(att_reset_count)+" attribute entries")
+
+        # Initialize ALL Attribute Data for the simulation grid - this ensures that all attributes are in the assets
+        for i in range(len(grid_assets)):
+            for att in self.att_schema.keys():
+                grid_assets[i].add_attribute(att, self.att_schema[att])
 
         self.meta.add_attribute("mod_urbanformgen", 1)
         self.assetident = self.meta.get_attribute("AssetIdent")
@@ -919,7 +935,6 @@ class UrbanFormAbstraction(UBModule):
             minHouse = self.person_space * self.occup_avg * 4  # Work out the minimum house size
             if A_res >= minHouse and ResPop > self.occup_flat_avg:
                 resdict = self.build_residential(block_attr, A_res)
-
                 # Transfer res_dict attributes to output vector
                 block_attr.add_attribute("HasRes", 1)
 
@@ -1080,6 +1095,7 @@ class UrbanFormAbstraction(UBModule):
 
             if A_com != 0:
                 com_dict = self.build_nonres_area(block_attr, A_com, "COM", frontage)
+                print(com_dict)
                 if com_dict["Has_COM"] == 1:
                     block_attr.add_attribute("Has_COM", 1)
                     # Transfer attributes from COM dictionary
@@ -1371,7 +1387,7 @@ class UrbanFormAbstraction(UBModule):
             Nallotments = Ndwunits / DWperLot
             Alot = Aca / Nallotments
             Wlot = Alot / Dlot
-            print(f"{Wlot}, {self.min_allot_width} dwellings per lot: {DWperLot}, {Ndwunits}, {Nallotments}, {Alot}")
+            # print(f"{Wlot}, {self.min_allot_width} dwellings per lot: {DWperLot}, {Ndwunits}, {Nallotments}, {Alot}")
             # self.notify(str(DWperLot)+str(Nallotments)+str(Alot)+str(Wlot))
 
         self.notify("For this block, we need " + str(DWperLot) + " dwellings on each allotment")
@@ -1541,7 +1557,7 @@ class UrbanFormAbstraction(UBModule):
         pPG = block_attr.get_attribute("pLU_PG")
         pactive = block_attr.get_attribute("Activity")
         Ablock = self.meta.get_attribute("Area")
-        print(pPG, pactive, Ablock, float(int(self.park_OSR)))
+        # print(pPG, pactive, Ablock, float(int(self.park_OSR)))
         Apg = pPG * pactive * Ablock * float(int(self.park_OSR))
 
         # Step 4a: Work out Building Footprint using OSR
