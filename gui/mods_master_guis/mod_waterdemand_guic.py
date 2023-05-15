@@ -104,6 +104,7 @@ class WaterDemandLaunch(QtWidgets.QDialog):
         self.update_asset_col_metadata()
 
         # --- SIGNALS AND SLOTS ---
+        self.ui.resdemand_analysis_combo.currentIndexChanged.connect(self.update_demand_method_stack)
         self.ui.res_standard_button.clicked.connect(self.show_res_standard_details)
         self.ui.res_standard_combo.currentIndexChanged.connect(self.populate_ratings_combo)
         self.ui.res_enduse_summarybutton.clicked.connect(self.show_res_enduse_summary)
@@ -437,6 +438,11 @@ class WaterDemandLaunch(QtWidgets.QDialog):
         for i in ratinglist:
             self.ui.res_standard_eff.addItem(i)
         self.ui.res_standard_eff.setCurrentIndex(0)
+        return True
+
+    def update_demand_method_stack(self):
+        """Switches the stack of parameters depending on the method chosen for residential analysis."""
+        self.ui.res_analysis_stack.setCurrentIndex(self.ui.resdemand_analysis_combo.currentIndex())
         return True
 
     def save_values(self):

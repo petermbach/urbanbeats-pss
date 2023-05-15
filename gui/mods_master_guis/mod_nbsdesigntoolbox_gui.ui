@@ -2600,7 +2600,7 @@ p, li { white-space: pre-wrap; }
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>621</width>
+                     <width>566</width>
                      <height>448</height>
                     </rect>
                    </property>
@@ -2887,7 +2887,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>639</width>
+                  <width>605</width>
                   <height>1040</height>
                  </rect>
                 </property>
@@ -4196,7 +4196,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>639</width>
+                  <width>605</width>
                   <height>1040</height>
                  </rect>
                 </property>
@@ -5479,7 +5479,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>639</width>
+                  <width>605</width>
                   <height>1040</height>
                  </rect>
                 </property>
@@ -6791,7 +6791,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>639</width>
+                  <width>605</width>
                   <height>1040</height>
                  </rect>
                 </property>
@@ -8100,7 +8100,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>639</width>
+                  <width>605</width>
                   <height>1040</height>
                  </rect>
                 </property>
@@ -9409,7 +9409,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>639</width>
+                  <width>605</width>
                   <height>1040</height>
                  </rect>
                 </property>
@@ -10687,7 +10687,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>639</width>
+                  <width>605</width>
                   <height>1040</height>
                  </rect>
                 </property>
@@ -11996,7 +11996,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>639</width>
+                  <width>605</width>
                   <height>1019</height>
                  </rect>
                 </property>
@@ -13172,7 +13172,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>639</width>
+                  <width>605</width>
                   <height>1040</height>
                  </rect>
                 </property>
@@ -14481,7 +14481,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>639</width>
+                  <width>605</width>
                   <height>1066</height>
                  </rect>
                 </property>
@@ -15746,7 +15746,7 @@ p, li { white-space: pre-wrap; }
   <include location="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
   <include location="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
   <include location="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
-  <include location="../../../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
+  <include location="../../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>
  </resources>
  <connections>
   <connection>
