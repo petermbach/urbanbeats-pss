@@ -25,6 +25,7 @@ __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 import numpy as np
+import pandas
 import pandas as pd
 import datetime as dt
 from model.ubmodule import *
@@ -644,9 +645,10 @@ class NbSDesignToolboxSetup(UBModule):
             return False
 
         # CLEAN THE ATTRIBUTES LIST
-        att_schema = {
-
-        }
+        att_schema = {"LOT_Avail": 0.0, "ST_Avail": 0.0, "REG_Avail": 0.0, "NBS_Divers": 0.0, "NBS_Types": int(0),
+                      "NBS_DesLOT": int(0), "NBS_DesST": int(0), "NBS_DesREG": int(0), "NBS_DesTOT": int(0),
+                      "NBS_Flex": 0.0, "MaxImpQTY": 0.0, "MaxImpWQ": 0.0, "MaxScale": "", "MaxSysType": "",
+                      "MaxADesign": 0.0, "MaxSFact": 0.0}
 
         grid_assets = self.assets.get_assets_with_identifier(self.assetident)
         att_reset_count = 0
@@ -663,7 +665,7 @@ class NbSDesignToolboxSetup(UBModule):
                 grid_assets[i].add_attribute(att, att_schema[att])
 
         self.meta.add_attribute("mod_nbsdesigntoolbox", 1)
-        self.meta.add_attribute("mod_dt_nbsdesigntoolbox", str(dt.datetime.now().isoformat()))  # Last run
+        self.meta.add_attribute("mod_dt_nbsdesigntoolbox", str(dt.datetime.now().isoformat().split(".")[0]))  # Last run
         self.assetident = self.meta.get_attribute("AssetIdent")
         self.xllcorner = self.meta.get_attribute("xllcorner")
         self.yllcorner = self.meta.get_attribute("yllcorner")
@@ -766,6 +768,7 @@ class NbSDesignToolboxSetup(UBModule):
 
         # Initialize the Pandas Data Frame of all options for the case study
         self.notify("Now assessing NbS Opportunities across the simulation grid")
+        nbsdatabase = []
         for i in range(len(self.griditems)):
             curasset = self.griditems[i]
             if curasset.get_attribute("Status") == 0:
@@ -774,30 +777,87 @@ class NbSDesignToolboxSetup(UBModule):
             curID = curasset.get_attribute(self.assetident)
             self.notify("Currently assessing "+str(self.assetident)+str(curID))
 
-            asset_sysdiversity = 0      # Tracks the total number of system types usable on the site
-            asset_flex = 0       # Tracks total number of NbS designs, relative to its rigour (Nlot / Lotrigour)
-
             # --- (a) Assess Lot Opportunities
             # for land uses: RES, HDR, LI, HI, COM
             if self.scale_lot and len(lot_tech) != 0:   # Then do lot-scale tech
                 lot_options = self.assess_lot_opportunities(lot_tech, lot_incr, curasset, curID, nbsdesignrules)
-                print(lot_options)
+                for opt in range(len(lot_options)):
+                    nbsdatabase.append(lot_options[opt])
 
             # --- (b) Assess Street/Neighbourhood Opportunities
             # to be put in street-sides or in parklands
             if self.scale_street and len(street_tech) != 0:     # Then do street
                 st_options = self.assess_street_opportunities(street_tech, street_incr, curasset, curID, nbsdesignrules)
-                print(st_options)
+                for opt in range(len(st_options)):
+                    nbsdatabase.append(st_options[opt])
 
             # --- (c) Assess Regional Opportunities
             # to be used in parklands generally across multiple drainage units
             if self.scale_region and len(region_tech) != 0:     # Then do region
                 re_options = self.assess_region_opportunities(region_tech, region_incr, curasset, curID, nbsdesignrules)
-                print(re_options)
+                for opt in range(len(re_options)):
+                    nbsdatabase.append(re_options[opt])
 
+        # --- SECTION 4 - Consolidation the NbS Database and clean-up
+        self.notify("Total number of NbS designs generated: "+str(len(nbsdatabase)))
+        self.notify("Consolidating design information to simulation grid")
+        # Consolidate the pandas database
+        f = open("C:/Users/peter/Downloads/NBSdatabase.txt", 'w')
+        f.write(str(nbsdatabase))
+        f.close()
+        df = pandas.DataFrame(data=nbsdatabase)
+        print(df)
+        print(df.describe())
 
-        # --- SECTION 4 - Consolidation and clean-up
+        # Write performance indicators
+        # (0) Total available space for NbS
+        # KPIs:
+        for i in range(len(self.griditems)):
+            curasset = self.griditems[i]
 
+            # (1) System diversity - total number and types of different possible NbS solutions
+            designs = df[df["AssetID"] == curasset.get_attribute(self.assetident)]  # All designs for this current ID
+            if designs.shape[0] == 0:
+                continue    # Skip, all values will be zero anyway based on default setup
+
+            assettypenum = len(designs["SysType"].value_counts())
+            assettypenames = designs["SysType"].value_counts().index.to_list()
+            assettypenames.sort()
+
+            curasset.add_attribute("NBS_Divers", assettypenum)
+            curasset.add_attribute("NBS_Types", assettypenames)
+
+            # (2) System flexibility - total number of designs made, possible designs weighted to the increment
+            totalnumdesigns = designs.shape[0]
+            lotdesigns = designs[designs["Scale"].str.contains("L_")]
+            lotluctypes = len(lotdesigns.value_counts().index.to_list())
+            if lotluctypes == 0:
+                lotflex = 0
+            else:
+                lotflex = float(lotdesigns.shape[0])/float(len(lotdesigns.value_counts().index.to_list()))/self.lot_rigour
+            streetdesigns = designs[designs["Scale"].str.contains("STREET")]
+            streetflex = float(streetdesigns.shape[0])/self.street_rigour
+            regdesigns = designs[designs["Scale"].str.contains("REGION")]
+            regflex = float(regdesigns.shape[0])/self.region_rigour
+            asset_flex = (lotflex + streetflex + regflex)
+
+            curasset.add_attribute("NBS_DesLOT", lotdesigns.shape[0])
+            curasset.add_attribute("NBS_DesST", streetdesigns.shape[0])
+            curasset.add_attribute("NBS_DesREG", regdesigns.shape[0])
+            curasset.add_attribute("NBS_DesTOT", totalnumdesigns)
+            curasset.add_attribute("NBS_Flex", asset_flex)
+
+            # (3) Maximum achievable service
+            max_serve = designs[designs["WQImpServed"] == designs["WQImpServed"].max()].iloc[0].to_list()
+
+            curasset.add_attribute("MaxImpQTY", max_serve[6])
+            curasset.add_attribute("MaxImpWQ", max_serve[7])
+            curasset.add_attribute("MaxScale", max_serve[1])
+            curasset.add_attribute("MaxSysType", max_serve[2])
+            curasset.add_attribute("MaxADesign", max_serve[3])
+            curasset.add_attribute("MaxSFact", max_serve[4])
+
+            # - Draw the catchment as a treatment map [Maybe TO DO]
 
         self.notify("Toolbox Setup Complete for Simulation Grid")
         self.notify_progress(100)
@@ -837,7 +897,7 @@ class NbSDesignToolboxSetup(UBModule):
         if hasHouses is None:
             hasHouses, num_houses, res_avail_sp, Alot, Aimpres = 0, 0, 0, 0, 0
         else:
-            num_houses = curasset.get_attribute("ResHouses")
+            num_allots = curasset.get_attribute("ResAllots")
             res_avail_sp = curasset.get_attribute("avLt_RES")
             Alot = curasset.get_attribute("ResLotArea")
             Aimpres = curasset.get_attribute("ResLotEIA")
@@ -880,13 +940,17 @@ class NbSDesignToolboxSetup(UBModule):
 
         # SKIP CONDITION #1 - no units to build in
         if sum([hasHouses, hasFlats, hasLI, hasHI, hasCOM]) == 0:
-            self.notify(self.assetident+str(curID)+" has no applicable lots or estates for systems, skipping")
+            # .notify(self.assetident+str(curID)+" has no applicable lots or estates for systems, skipping")
             return techdesigns  # Empty list
 
         # SKIP CONDITION #2 - no available space to build on
         if sum([res_avail_sp, hdr_avail_sp, li_avail_sp, hi_avail_sp, com_avail_sp]) < 0.0001:
-            self.notify(self.assetident + str(curID) + " has no available space for systems, skipping")
+            # self.notify(self.assetident + str(curID) + " has no available space for systems, skipping")
             return techdesigns     # Empty list
+
+        # KPIs - write total available space
+        curasset.add_attribute("LOT_Avail", sum([num_allots*res_avail_sp, hdr_avail_sp, li_avail_sp*num_estatesLI,
+                                                 hi_avail_sp*num_estatesHI, com_avail_sp*num_estatesCOM]))
 
         # INCORPORATE ANY FURTHER INFORMATION LIKE SOIL INFILTRATION
         pass
@@ -896,12 +960,10 @@ class NbSDesignToolboxSetup(UBModule):
 
         # DESIGN THE TECHNOLOGIES NOW FOR THEIR APPLICATIONS
         for tech in techlist:
-            print(f'Current Tech: {tech}')
             if tech in ["TANK"]:
                 continue
 
             # LOOKUP TECHNOLOGY PARAMETERS TO GENERIC VARIABLES
-            univcapt = eval("self."+tech.lower()+"_univcapt")
             minsize = eval("self." + tech.lower() + "_minsize")
             maxsize = eval("self." + tech.lower() + "_maxsize")
             rules = nbsdesignrules[tech]    # [psysFLOW, ratiodefFLOW, psysWQ, ratiodefWQ]
@@ -911,7 +973,7 @@ class NbSDesignToolboxSetup(UBModule):
 
             res_options = self.design_lot_scale_surface_area_system(Alot, Aimpres, res_avail_sp, minsize,
                                                                     maxsize, rules, exfil, flow, wq, techincr, curID,
-                                                                    num_houses, tech, "L_RES")
+                                                                    num_allots, tech, "L_RES")
             [techdesigns.append(option) for option in res_options]
 
             hdr_options = self.design_lot_scale_surface_area_system(Ahdr, Aimphdr, hdr_avail_sp, minsize,
@@ -954,7 +1016,7 @@ class NbSDesignToolboxSetup(UBModule):
             else:
                 A_system = max(A_system, rules[2]/100.0 * Aimp, minsize)    # if the area is bigger, replace...
 
-        if A_system > maxsize:
+        if A_system == 0 or A_system > maxsize:
             return []
 
         # STEP 2 - GET ADDITIONAL AREA
@@ -1013,13 +1075,16 @@ class NbSDesignToolboxSetup(UBModule):
 
         # SKIP CONDITION #1 - no units to build in
         if sum([street_space, und_space, pg_space, ref_space, svu_space, rd_space]) <= 0.0001:
-            self.notify(self.assetident + str(curID) + " has noavailable space for systems, skipping")
+            # self.notify(self.assetident + str(curID) + " has noavailable space for systems, skipping")
             return techdesigns  # Empty list
 
         # SKIP CONDITION #2 - no available space to build on
         if catchimp == 0:
-            self.notify(self.assetident + str(curID) + " has no local impervious to serve, skipping")
+            # self.notify(self.assetident + str(curID) + " has no local impervious to serve, skipping")
             return techdesigns  # Empty list
+
+        # KPI 0 - write available space
+        curasset.add_attribute("ST_Avail", sum([und_space, pg_space, ref_space, svu_space, rd_space]))
 
         # INCORPORATE ANY FURTHER INFORMATION LIKE SOIL INFILTRATION
         pass
@@ -1029,7 +1094,6 @@ class NbSDesignToolboxSetup(UBModule):
 
         # DESIGN THE TECHNOLOGIES NOW FOR THEIR APPLICATIONS
         for tech in techlist:
-            print(f'Current Tech: {tech}')
             if tech in ["TANK"]:
                 continue
 
@@ -1120,14 +1184,14 @@ class NbSDesignToolboxSetup(UBModule):
         # Step 1 - Check if there are lot-stuff to work with! Upstream!
         upstreamids = curasset.get_attribute("UpstrIDs")
         if len(upstreamids) == 0:
-            self.notify("AssetID"+str(curID)+" has no upstream areas, skipping!")
+            # self.notify("AssetID"+str(curID)+" has no upstream areas, skipping!")
             return []
 
         upstrareas = self.assets.retrieve_attribute_value_list(self.assetident, "Blk_TIA", upstreamids)
         upstreamimp = sum(upstrareas[1])
 
         if upstreamimp == 0:
-            self.notify("No upstream impervious area to design for, skipping")
+            # self.notify("No upstream impervious area to design for, skipping")
             return []
 
         upstrcatch = self.assets.retrieve_attribute_value_list(self.assetident, "Area", upstreamids)
@@ -1141,8 +1205,11 @@ class NbSDesignToolboxSetup(UBModule):
         ref_space = curasset.get_attribute("REF_av")
         svu_space = curasset.get_attribute("SVU_avSW")
         if sum([und_space, pg_space, ref_space, svu_space]) <= 0.0001:
-            self.notify("No available space for systems, skipping.")
+            # self.notify("No available space for systems, skipping.")
             return []
+
+        # KPI 0 - write available space at regional scale
+        curasset.add_attribute("REG_Avail", sum([und_space, pg_space, ref_space, svu_space]))
 
         # INCORPORATE ANY FURTHER INFORMATION LIKE SOIL INFILTRATION
         pass
