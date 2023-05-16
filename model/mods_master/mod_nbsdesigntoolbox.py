@@ -97,7 +97,7 @@ class NbSDesignToolboxSetup(UBModule):
         self.create_parameter("wq_tss_tar", DOUBLE, "Annual TSS load reduction target")
         self.create_parameter("wq_tn_tar", DOUBLE, "Annual TN load reduction target")
         self.create_parameter("wq_tp_tar", DOUBLE, "Annual TP load reduction target")
-        self.wq_obj = 0
+        self.wq_obj = 1
         self.wq_priority = 0        # 0 = High, 1 = Medium, 2 = Low
         self.wq_tss_tar = 80.0
         self.wq_tn_tar = 45.0
@@ -252,7 +252,7 @@ class NbSDesignToolboxSetup(UBModule):
         self.wet_rec = 1
 
         self.create_parameter("wet_permissions", LIST, "A map of possible and not possible locations")
-        self.wet_permissions = {"PG": 1, "REF": 1, "FOR": 1, "AGR": 1, "UND": 1}
+        self.wet_permissions = {"PG": 1, "REF": 1, "FOR": 1, "AGR": 1, "UND": 1, "nstrip": 0, "garden": 0}
 
         self.create_parameter("wet_method", STRING, "Method for sizing wetland system")
         self.wet_method = "CAPTURE"  # or CURVE
@@ -284,6 +284,9 @@ class NbSDesignToolboxSetup(UBModule):
         self.wet_minsize = 0.0
         self.wet_maxsize = 9999999.0
         self.wet_exfil = 0.0
+        # ADVANCED
+        self.wet_sysdepth = [0.25, 0.5, 0.75, 0.25, 0.5, 0.75]
+        self.wet_dettime = [72, 72, 72, 48, 48, 48]
 
         # BF Life Cycle Characteristics
         self.create_parameter("wet_avglife", DOUBLE, "Avg. System Life")
@@ -434,6 +437,8 @@ class NbSDesignToolboxSetup(UBModule):
         self.pb_minsize = 0.0
         self.pb_maxsize = 9999999.0
         self.pb_exfil = 3.6
+        # ADVANCED
+        self.pb_sysdepth = [0.25, 0.5, 0.75, 1.00, 1.25]
 
         # PB Life Cycle Characteristics
         self.create_parameter("pb_avglife", DOUBLE, "Avg. System Life")
@@ -476,7 +481,7 @@ class NbSDesignToolboxSetup(UBModule):
         self.tank_rec = 1
 
         self.create_parameter("tank_permissions", LIST, "A map of possible and not psosible locations")
-        self.tank_permissions = {"PG": 1, "REF": 1, "FOR": 1, "AGR": 1, "UND": 1, "garden": 1}
+        self.tank_permissions = {"PG": 1, "REF": 1, "FOR": 1, "AGR": 1, "UND": 1, "nstrip": 0, "garden": 1}
 
         self.create_parameter("tank_method", STRING, "Method for sizing Ponds system")
         self.tank_method = "CAPTURE"  # or CURVE
@@ -542,7 +547,7 @@ class NbSDesignToolboxSetup(UBModule):
         self.sw_wq = 1
 
         self.create_parameter("sw_permissions", LIST, "A map of possible and not psosible locations")
-        self.sw_permissions = {"PG": 1, "REF": 1, "FOR": 1, "AGR": 1, "UND": 1, "nstrip": 1}
+        self.sw_permissions = {"PG": 1, "REF": 1, "FOR": 1, "AGR": 1, "UND": 1, "nstrip": 1, "garden": 1}
 
         self.create_parameter("sw_method", STRING, "Method for sizing biofilter system")
         self.sw_method = "CAPTURE"  # or CURVE
@@ -601,6 +606,13 @@ class NbSDesignToolboxSetup(UBModule):
         self.sw_decom_pct = 90.0  # per [m2]
 
         # ADVANCED PARAMETERS DEFINITION
+        self.system_tarQ = 0        # Final system target Flow
+        self.system_tarTSS = 0      # TSS
+        self.system_tarTN = 0       # TN
+        self.system_tarTP = 0       # TP
+        self.system_tarREC = 0      # Recycling/Stormwater harvesting
+        self.targetsvector = [0, 0, 0, 0, 0]    # All targets Q, TSS, TN, TP, REC put together
+        self.sysdepths = {}     # Initialize system acceptable depths
         self.userTech = {}
         self.technames = ["BF", "WET", "ROOF", "WALL", "INFIL", "PB", "PP", "TANK", "RBF", "SW"]
         self.scalenames = ["lot", "street", "region"]
@@ -632,18 +644,23 @@ class NbSDesignToolboxSetup(UBModule):
             return False
 
         # CLEAN THE ATTRIBUTES LIST
-        att_schema = [
+        att_schema = {
 
-        ]
+        }
 
         grid_assets = self.assets.get_assets_with_identifier(self.assetident)
         att_reset_count = 0
         for i in range(len(grid_assets)):
-            for att in att_schema:
+            for att in att_schema.keys():
                 if grid_assets[i].remove_attribute(att):
                     att_reset_count += 1
         self.notify("Removed "+str(att_reset_count)+" attribute entries")
         # Also need to remove the asset collection WSUD [TO DO] Whatever that will look like!
+
+        # INITIALIZE THE ATTRIBUTES LIST
+        for i in range(len(grid_assets)):
+            for att in att_schema.keys():
+                grid_assets[i].add_attribute(att, att_schema[att])
 
         self.meta.add_attribute("mod_nbsdesigntoolbox", 1)
         self.meta.add_attribute("mod_dt_nbsdesigntoolbox", str(dt.datetime.now().isoformat()))  # Last run
@@ -678,13 +695,15 @@ class NbSDesignToolboxSetup(UBModule):
         self.system_tarTSS = self.wq_obj * self.wq_tss_tar
         self.system_tarTN = self.wq_obj * self.wq_tn_tar
         self.system_tarTP = self.wq_obj * self.wq_tp_tar
-        self.system_rec = self.rec_obj * self.rec_tar
+        self.system_tarREC = self.rec_obj * self.rec_tar
         self.targetsvector = [self.system_tarQ, self.system_tarTSS, self.system_tarTP,
-                              self.system_tarTN, self.system_rec]
+                              self.system_tarTN, self.system_tarREC]
         self.notify("Targets to meet Qty, TSS, TP, TN, Rel%: "+str(self.targetsvector))
 
-        # Calculate system depths
-        self.sysdepths = {"TANK": self.tank_maxdepth - self.tank_mindead, "WET": self.wet_spec, "PB": self.pb_spec}
+        # Calculate system depths [m]
+        self.sysdepths = {"TANK": self.tank_maxdepth - self.tank_mindead,
+                          "WET": self.wet_sysdepth[self.wet_spec],
+                          "PB": self.pb_sysdepth[self.pb_spec]}
 
         # Create Technologies shortlist
         self.compile_user_techlist()
@@ -692,28 +711,40 @@ class NbSDesignToolboxSetup(UBModule):
         self.notify_progress(20)
 
         # --- SECTION 2a - DESIGN AREAS FOR DIFFERENT SURFACE AREA BASED DESIGNS
-        self.notify("Getting system designs")
-        nbsdesignrules = {}
+        self.notify("Getting system designs")       # Loop across each system type and get the design requirements
+        nbsdesignrules = {}     # Containing sizing ratios [%]
         for tech in self.userTech.keys():       # e.g. BF
-            if self.bf_method == "CAPTURE":     # Capture ratio method
-                if self.bf_univcapt:
-                    nbsdesignrules["BF"] = [self.bf_flow_surfAratio, self.bf_flow_ratiodef, self.bf_flow_surfAratio,
-                                            self.bf_flow_ratiodef]
+            if tech in ["TANK"]:
+                continue    # Skip raintank systems
+            if eval("self."+tech.lower()+"_method") == "CAPTURE":     # Capture ratio method
+                if eval("self."+tech.lower()+"_univcapt"):      # Universal capture method?
+                    nbsdesignrules[tech] = [eval("self."+tech.lower()+"_flow_surfAratio") *
+                                            eval("self."+tech.lower()+"_flow") * self.runoff_obj,
+                                            eval("self."+tech.lower()+"_flow_ratiodef"),
+                                            eval("self."+tech.lower()+"_flow_surfAratio") *
+                                            eval("self."+tech.lower()+"_wq") * self.wq_obj,
+                                            eval("self."+tech.lower()+"_flow_ratiodef")]
                 else:
-                    nbsdesignrules["BF"] = [self.bf_flow_surfAratio, self.bf_flow_ratiodef, self.bf_wq_surfAratio,
-                                            self.bf_flow_ratiodef]
+                    nbsdesignrules[tech] = [eval("self."+tech.lower()+"_flow_surfAratio") *
+                                            eval("self."+tech.lower()+"_flow") * self.runoff_obj,
+                                            eval("self."+tech.lower()+"_flow_ratiodef"),
+                                            eval("self."+tech.lower()+"_wq_surfAratio") *
+                                            eval("self."+tech.lower()+"_wq") * self.wq_obj,
+                                            eval("self."+tech.lower()+"_wq_ratiodef")]
             else:   # METHOD IS DESIGN CURVE
-                if self.bf_curvemethod == "UBEATS":      # Design curve method
-                    design_data = self.get_design_curve_data("BF")
-                else:
-                    design_data = self.read_custom_dcv()
-                    # Load deisgn curve
-                    # Read data from it
-                nbsdesignrules["BF"] = design_data
+                pass    # [TO DO] DESIGN CURVE METHOD
+                # if self.bf_curvemethod == "UBEATS":      # Design curve method
+                #     design_data = self.get_design_curve_data("BF")
+                # else:
+                #     design_data = self.read_custom_dcv()
+                #     # Load deisgn curve
+                #     # Read data from it
+                # nbsdesignrules["BF"] = design_data
+        self.notify(nbsdesignrules)
 
         # --- SECTION 2b - Load and prepare climate data for storage-behaviour model
         if self.rec_obj:
-            pass
+            pass    # [ TO DO ]
             # Initialize meteorological data vectors: load rainfall and evaporation files, create scaling factors for
             # PET data.
             self.notify("Loading climate")
@@ -721,17 +752,17 @@ class NbSDesignToolboxSetup(UBModule):
 
         # --- SECTION 3 - Loop through simulation assets and determine locations for suitable NbS Tech ---
         # Define design increments - this is where we now start working with numpy arrays and pandas dataframes
-        self.lot_incr = np.linspace(0, 1, int(self.lot_rigour) + 1)
-        self.street_incr = np.linspace(0, 1, int(self.street_rigour) + 1)
-        self.region_incr = np.linspace(0, 1, int(self.region_rigour) + 1)
+        lot_incr = np.linspace(0, 1, int(self.lot_rigour) + 1)
+        street_incr = np.linspace(0, 1, int(self.street_rigour) + 1)
+        region_incr = np.linspace(0, 1, int(self.region_rigour) + 1)
 
         # Get the technologies used at each scale
         lot_tech = [key for key in self.userTech.keys() if self.userTech[key]["lot"]]
         street_tech = [key for key in self.userTech.keys() if self.userTech[key]["street"]]
         region_tech = [key for key in self.userTech.keys() if self.userTech[key]["region"]]
-        self.notify("Lot-scale Technologies List: "+str(lot_tech))
-        self.notify("Street-scale Technologies List: "+str(street_tech))
-        self.notify("Regional-scale Technologies List: "+str(region_tech))
+        self.notify("Lot-scale Technologies List: "+str(lot_tech)+" at increments of "+str(lot_incr))
+        self.notify("Street-scale Technologies List: "+str(street_tech)+" at increments of "+str(street_incr))
+        self.notify("Regional-scale Technologies List: "+str(region_tech)+" at increments of "+str(region_incr))
 
         # Initialize the Pandas Data Frame of all options for the case study
         self.notify("Now assessing NbS Opportunities across the simulation grid")
@@ -743,23 +774,27 @@ class NbSDesignToolboxSetup(UBModule):
             curID = curasset.get_attribute(self.assetident)
             self.notify("Currently assessing "+str(self.assetident)+str(curID))
 
+            asset_sysdiversity = 0      # Tracks the total number of system types usable on the site
+            asset_flex = 0       # Tracks total number of NbS designs, relative to its rigour (Nlot / Lotrigour)
+
             # --- (a) Assess Lot Opportunities
             # for land uses: RES, HDR, LI, HI, COM
-            if self.scale_lot and len(lot_tech) != 0:
-                # Then do lot-scale tech
-                self.assess_lot_scale_opportunities(lot_tech, curasset, curID)
+            if self.scale_lot and len(lot_tech) != 0:   # Then do lot-scale tech
+                lot_options = self.assess_lot_opportunities(lot_tech, lot_incr, curasset, curID, nbsdesignrules)
+                print(lot_options)
 
             # --- (b) Assess Street/Neighbourhood Opportunities
             # to be put in street-sides or in parklands
-            if self.scale_street and len(street_tech) != 0:
-                # Then do street
-                pass
+            if self.scale_street and len(street_tech) != 0:     # Then do street
+                st_options = self.assess_street_opportunities(street_tech, street_incr, curasset, curID, nbsdesignrules)
+                print(st_options)
 
             # --- (c) Assess Regional Opportunities
             # to be used in parklands generally across multiple drainage units
-            if self.scale_region and len(region_tech) != 0:
-                # Then do region
-                pass
+            if self.scale_region and len(region_tech) != 0:     # Then do region
+                re_options = self.assess_region_opportunities(region_tech, region_incr, curasset, curID, nbsdesignrules)
+                print(re_options)
+
 
         # --- SECTION 4 - Consolidation and clean-up
 
@@ -791,71 +826,301 @@ class NbSDesignToolboxSetup(UBModule):
         else:
             pass
 
-    def assess_lot_scale_opportunities(self, techlist, curasset, curID):
+    def assess_lot_opportunities(self, techlist, techincr, curasset, curID, nbsdesignrules):
         """Assess all possible NBS Opportunities at the Lot scale i.e., RES, COM, LI, HI for the current asset
         passed to the function.
         """
+        techdesigns = []    # list of tech
+
         # Step 1 - Check if there are lot-stuff to work with!
-        hasHouses = int(curasset.get_attribute("HasHouses"))        # LOW DENSITY RESIDENTIAL LAND USE
-        num_houses = int(curasset.get_attribute("ResHouses"))
-        res_avail_sp = curasset.get_attribute("avLt_RES")
-        Alot = curasset.get_attribute("ResLotArea")
-        Aimpres = curasset.get_attribute("ResLotEIA")
+        hasHouses = curasset.get_attribute("HasHouses")        # LOW DENSITY RESIDENTIAL LAND USE
+        if hasHouses is None:
+            hasHouses, num_houses, res_avail_sp, Alot, Aimpres = 0, 0, 0, 0, 0
+        else:
+            num_houses = curasset.get_attribute("ResHouses")
+            res_avail_sp = curasset.get_attribute("avLt_RES")
+            Alot = curasset.get_attribute("ResLotArea")
+            Aimpres = curasset.get_attribute("ResLotEIA")
 
-        hasFlats = int(curasset.get_attribute("HasFlats"))          # HIGH-DENSITY RESIDENTIAL LAND USE
-        num_hdr = 1
-        hdr_avail_sp = curasset.get_attribute("av_HDRes")
-        Ahdr = curasset.get_attribute("HDR_TIA")+curasset.get_attribute("HDRGarden")
-        Aimphdr = curasset.get_attribute("HDR_EIA")
+        hasFlats = curasset.get_attribute("HasFlats")          # HIGH-DENSITY RESIDENTIAL LAND USE
+        if hasFlats is None:
+            hasFlats, num_hdr, hdr_avail_sp, Ahdr, Aimphdr = 0,0,0,0,0
+        else:
+            num_hdr = 1
+            hdr_avail_sp = curasset.get_attribute("av_HDRes")
+            Ahdr = curasset.get_attribute("HDR_TIA")+curasset.get_attribute("HDRGarden")
+            Aimphdr = curasset.get_attribute("HDR_EIA")
 
-        hasLI = int(curasset.get_attribute("Has_LI"))
-        num_estatesLI = int(curasset.get_attribute("LIestates"))
-        li_avail_sp = curasset.get_attribute("avLt_LI")
-        Ali = curasset.get_attribute("LIAestate")
-        Aimpli = curasset.get_attribute("LIAeEIA")
+        hasLI = curasset.get_attribute("Has_LI")
+        if hasLI is None:
+            hasLI, num_estatesLI, li_avail_sp, Ali, Aimpli = 0, 0, 0, 0, 0
+        else:
+            num_estatesLI = curasset.get_attribute("LIestates")
+            li_avail_sp = curasset.get_attribute("avLt_LI")
+            Ali = curasset.get_attribute("LIAestate")
+            Aimpli = curasset.get_attribute("LIAeEIA")
 
-        hasHI = int(curasset.get_attribute("Has_HI"))
-        num_estatesHI = int(curasset.get_attribute("HIestates"))
-        hi_avail_sp = curasset.get_attribute("avLt_HI")
-        Ahi = curasset.get_attribute("HIAestate")
-        Aimphi = curasset.get_attribute("HIAeEIA")
+        hasHI = curasset.get_attribute("Has_HI")
+        if hasHI is None:
+            hasHI, numestatesHI, hi_avail_sp, Ahi, Aimphi = 0, 0, 0, 0, 0
+        else:
+            num_estatesHI = curasset.get_attribute("HIestates")
+            hi_avail_sp = curasset.get_attribute("avLt_HI")
+            Ahi = curasset.get_attribute("HIAestate")
+            Aimphi = curasset.get_attribute("HIAeEIA")
 
-        hasCOM = int(curasset.get_attribute("Has_COM"))
-        num_estatesCOM = int(curasset.get_attribute("COMestates"))
-        com_avail_sp = curasset.get_attribute("avLt_COM")
-        Acom = curasset.get_attribute("COMAestate")
-        Aimpcom = curasset.get_attribute("COMAeEIA")
-
-        print(sum(hasHouses, hasFlats, hasLI, hasHI, hasCOM))
-        print(sum(res_avail_sp, hdr_avail_sp, li_avail_sp, hi_avail_sp, com_avail_sp))
+        hasCOM = curasset.get_attribute("Has_COM")
+        if hasCOM is None:
+            hasCOM, num_estatesCOM, com_avail_sp, Acom, Aimpcom = 0, 0, 0, 0, 0
+        else:
+            num_estatesCOM = curasset.get_attribute("COMestates")
+            com_avail_sp = curasset.get_attribute("avLt_COM")
+            Acom = curasset.get_attribute("COMAestate")
+            Aimpcom = curasset.get_attribute("COMAeEIA")
 
         # SKIP CONDITION #1 - no units to build in
-        if sum(hasHouses, hasFlats, hasLI, hasHI, hasCOM) == 0:
-            return None
+        if sum([hasHouses, hasFlats, hasLI, hasHI, hasCOM]) == 0:
+            self.notify(self.assetident+str(curID)+" has no applicable lots or estates for systems, skipping")
+            return techdesigns  # Empty list
 
         # SKIP CONDITION #2 - no available space to build on
-        if sum(res_avail_sp, hdr_avail_sp, li_avail_sp, hi_avail_sp, com_avail_sp) < 0.0001:
-            return None
+        if sum([res_avail_sp, hdr_avail_sp, li_avail_sp, hi_avail_sp, com_avail_sp]) < 0.0001:
+            self.notify(self.assetident + str(curID) + " has no available space for systems, skipping")
+            return techdesigns     # Empty list
 
-        # INCORPORATE ANY FURTHER INFORMAITN LIKE SOIL INFILTRATION
+        # INCORPORATE ANY FURTHER INFORMATION LIKE SOIL INFILTRATION
         pass
 
         # SIZE THE REQUIRED STORAGE VOLUME FOR POTABLE SUPPLY SUBSTITUTION
+        # [TO DO]
 
         # DESIGN THE TECHNOLOGIES NOW FOR THEIR APPLICATIONS
         for tech in techlist:
-            tech_application = self.get_technology_applications_boollist(tech)
-            minsize = eval("self."+tech+"_minsize")
-            maxsize = eval("self."+tech+"_maxsize")
+            print(f'Current Tech: {tech}')
+            if tech in ["TANK"]:
+                continue
 
+            # LOOKUP TECHNOLOGY PARAMETERS TO GENERIC VARIABLES
+            univcapt = eval("self."+tech.lower()+"_univcapt")
+            minsize = eval("self." + tech.lower() + "_minsize")
+            maxsize = eval("self." + tech.lower() + "_maxsize")
+            rules = nbsdesignrules[tech]    # [psysFLOW, ratiodefFLOW, psysWQ, ratiodefWQ]
+            exfil = eval("self."+tech.lower()+"_exfil")
+            flow = eval("self."+tech.lower()+"_flow")
+            wq = eval("self."+tech.lower()+"_wq")
 
+            res_options = self.design_lot_scale_surface_area_system(Alot, Aimpres, res_avail_sp, minsize,
+                                                                    maxsize, rules, exfil, flow, wq, techincr, curID,
+                                                                    num_houses, tech, "L_RES")
+            [techdesigns.append(option) for option in res_options]
 
+            hdr_options = self.design_lot_scale_surface_area_system(Ahdr, Aimphdr, hdr_avail_sp, minsize,
+                                                                    maxsize, rules, exfil, flow, wq, techincr, curID,
+                                                                    num_hdr, tech, "L_HDR")
+            [techdesigns.append(option) for option in hdr_options]
+
+            li_options = self.design_lot_scale_surface_area_system(Ali, Aimpli, li_avail_sp, minsize,
+                                                                   maxsize, rules, exfil, flow, wq, techincr, curID,
+                                                                   num_estatesLI, tech, "L_LI")
+            [techdesigns.append(option) for option in li_options]
+
+            hi_options = self.design_lot_scale_surface_area_system(Ahi, Aimphi, hi_avail_sp, minsize,
+                                                                   maxsize, rules, exfil, flow, wq, techincr, curID,
+                                                                   num_estatesHI, tech, "L_HI")
+            [techdesigns.append(option) for option in hi_options]
+
+            com_options = self.design_lot_scale_surface_area_system(Acom, Aimpcom, com_avail_sp, minsize,
+                                                                    maxsize, rules, exfil, flow, wq, techincr, curID,
+                                                                    num_estatesCOM, tech, "L_COM")
+            [techdesigns.append(option) for option in com_options]
+
+        return techdesigns
+
+    def design_lot_scale_surface_area_system(self, Alot, Aimp, avsp, minsize, maxsize, rules, exfil,
+                                             flow, wq, incr, curid, qtyunits, tech, scaleabbr):
+        """Basic algorithm for sizing system by ratios for flow or water quality objectives. Rule of thumb sizing for
+        any surface area based system.
+        """
+        # STEP 1 - GET DESIGN AREA
+        A_system = 0    # initialize
+        if self.runoff_obj:     # If we designing for runoff or using universal capture
+            if rules[1] == "ALL":
+                A_system = max(A_system, rules[0]/100.0 * Alot, minsize)
+            else:
+                A_system = max(A_system, rules[0]/100.0 * Aimp, minsize)
+        if self.wq_obj:    # if water quality and we using different capture ratios...
+            if rules[3] == "ALL":
+                A_system = max(A_system, rules[2]/100.0 * Alot, minsize)
+            else:
+                A_system = max(A_system, rules[2]/100.0 * Aimp, minsize)    # if the area is bigger, replace...
+
+        if A_system > maxsize:
+            return []
+
+        # STEP 2 - GET ADDITIONAL AREA
+        if tech in ["BF", "INFIL"]:     # Infiltrating systems
+            if exfil > 180:
+                setback = 1.0
+            elif exfil > 36:
+                setback = 2.0
+            elif exfil > 3.6:
+                setback = 4.0
+            else:
+                setback = 5.0
+
+            A_required = np.power((np.sqrt(A_system) + 2 * setback), 2)
+            scale_fact = A_required/A_system
+        elif tech in ["WET", "PB"]:     # Basin Systems
+            scale_fact = 1.3
+            A_required = A_system * scale_fact
+        else:
+            A_required = 0
+
+        # STEP 3 - Does it fit?
+        options = []
+        if A_required < avsp and A_required != 0:       # if there is space and the area is not zero...
+            # YES - setup database
+            for i in range(len(incr)):
+                if incr[i] == 0:
+                    continue
+                option = {"AssetID": curid, "Scale": scaleabbr, "SysType": tech, "A_design": A_system,
+                          "scale_fact": scale_fact, "Qty": int(qtyunits*incr[i]),
+                          "QtyImpServed": self.runoff_obj * flow * Aimp * int(qtyunits*incr[i]),
+                          "WQImpServed": self.wq_obj * wq * Aimp * int(qtyunits*incr[i]),
+                          "DesignIncr": incr[i]
+                          }
+                options.append(option)
+        return options
+
+    def assess_street_opportunities(self, techlist, techincr, curasset, curID, nbsdesignrules):
+        """Basic algorithm for sizing system by ratios for flow or water quality objectives. Rule of thumb sizing for
+                any surface area based system.
+                """
+        techdesigns = []  # list of tech
+
+        # Step 1 - Check if there are lot-stuff to work with!
+        catchment = curasset.get_attribute("Area") * curasset.get_attribute("Activity")
+        catchimp = curasset.get_attribute("Blk_TIA")
+
+        street_space = sum([curasset.get_attribute("avSt_RES"), curasset.get_attribute("avSt_LI"),
+                            curasset.get_attribute("avSt_HI"), curasset.get_attribute("avSt_COM"),
+                            curasset.get_attribute("avSt_ORC")])
+        und_space = curasset.get_attribute("UND_av")
+        pg_space = curasset.get_attribute("PG_av")
+        ref_space = curasset.get_attribute("REF_av")
+        svu_space = curasset.get_attribute("SVU_avSW")
+        rd_space = curasset.get_attribute("RD_av")
+
+        # SKIP CONDITION #1 - no units to build in
+        if sum([street_space, und_space, pg_space, ref_space, svu_space, rd_space]) <= 0.0001:
+            self.notify(self.assetident + str(curID) + " has noavailable space for systems, skipping")
+            return techdesigns  # Empty list
+
+        # SKIP CONDITION #2 - no available space to build on
+        if catchimp == 0:
+            self.notify(self.assetident + str(curID) + " has no local impervious to serve, skipping")
+            return techdesigns  # Empty list
+
+        # INCORPORATE ANY FURTHER INFORMATION LIKE SOIL INFILTRATION
+        pass
+
+        # SIZE THE REQUIRED STORAGE VOLUME FOR POTABLE SUPPLY SUBSTITUTION
+        # [TO DO]
+
+        # DESIGN THE TECHNOLOGIES NOW FOR THEIR APPLICATIONS
+        for tech in techlist:
+            print(f'Current Tech: {tech}')
+            if tech in ["TANK"]:
+                continue
+
+            # LOOKUP TECHNOLOGY PARAMETERS TO GENERIC VARIABLES
+            univcapt = eval("self." + tech.lower() + "_univcapt")
+            minsize = eval("self." + tech.lower() + "_minsize")
+            maxsize = eval("self." + tech.lower() + "_maxsize")
+            rules = nbsdesignrules[tech]  # [psysFLOW, ratiodefFLOW, psysWQ, ratiodefWQ]
+            exfil = eval("self." + tech.lower() + "_exfil")
+            flow = eval("self." + tech.lower() + "_flow")
+            wq = eval("self." + tech.lower() + "_wq")
+
+            # Get permissions
+            tp = eval("self." + tech.lower() + "_permissions")  # permissions
+            avail_space = street_space * tp["nstrip"] + und_space * tp["UND"] + \
+                          pg_space * tp["PG"] + ref_space * tp["REF"] + svu_space + rd_space
+
+            street_options = self.design_surface_area_system(catchment, catchimp, avail_space, minsize,
+                                                             maxsize, rules, exfil, flow, wq, techincr, curID,
+                                                             tech, "STREET")
+            [techdesigns.append(option) for option in street_options]
+
+        return techdesigns
+
+    def design_surface_area_system(self, catchment, catchimp, avsp, minsize, maxsize, rules, exfil,
+                                   flow, wq, techincr, curid, tech, scaleabbr):
+        """Basic algorithm for sizing system by ratios for flow or water quality objectives. Rule of thumb sizing for
+        any surface area based system.
+        """
+        options = []
+        for incr in techincr:
+            if incr == 0:
+                continue
+
+            # STEP 1 - GET DESIGN AREA
+            A_system = 0  # initialize
+            if self.runoff_obj:
+                if rules[1] == "ALL":
+                    A_system = max(A_system, rules[0] / 100.0 * catchment*incr, minsize)
+                else:
+                    A_system = max(A_system, rules[0] / 100.0 * catchimp*incr, minsize)
+            if self.wq_obj:
+                if rules[3] == "ALL":
+                    A_system = max(A_system, rules[2] / 100.0 * catchment*incr, minsize)
+                else:
+                    A_system = max(A_system, rules[2] / 100.0 * catchimp*incr, minsize)
+
+            if A_system > maxsize:
+                return []
+
+            # STEP 2 - GET ADDITIONAL AREA
+            if tech in ["BF", "INFIL"]:  # Infiltrating systems
+                if exfil > 180:
+                    setback = 1.0
+                elif exfil > 36:
+                    setback = 2.0
+                elif exfil > 3.6:
+                    setback = 4.0
+                else:
+                    setback = 5.0
+
+                A_required = np.power((np.sqrt(A_system) + 2 * setback), 2)
+                scale_fact = A_required / A_system
+            elif tech in ["WET", "PB"]:  # Basin Systems
+                scale_fact = 1.3
+                A_required = A_system * scale_fact
+            else:
+                A_required = 0
+
+            # STEP 3 - Does it fit?
+            if A_required < avsp and A_required != 0:  # if there is space and the area is not zero...
+                # YES - setup database
+                option = {"AssetID": curid, "Scale": scaleabbr, "SysType": tech, "A_design": A_system,
+                          "scale_fact": scale_fact, "Qty": 1,
+                          "QtyImpServed": self.runoff_obj * flow * catchimp * incr,
+                          "WQImpServed": self.wq_obj * wq * catchimp * incr,
+                          "DesignIncr": incr
+                          }
+                options.append(option)
+
+        return options
+
+    def assess_region_opportunities(self, techlist, techinr, curasset, curID, nbsdesignrules):
+        pass
+        return True
 
     def get_technology_applications_boollist(self, techabbr):
         """Simply creates a boolean list of whether a particular technology was chosen for flow management
         water quality control and/or water recycling, this list will inform the sizing of the system."""
         try:
-            purposeQ = eval("self."+techabbr+"_flow * self.runoff_obj")
+            purposeQ = eval("self."+techabbr.lower()+"_flow * self.runoff_obj")
             if purposeQ == None:
                 purposeQ = 0
         except NameError:
@@ -864,16 +1129,16 @@ class NbSDesignToolboxSetup(UBModule):
             purposeQ = 0
 
         try:
-            purposeWQ = eval("self."+techabbr+"_wq * self.wq_obj")
+            purposeWQ = eval("self."+techabbr.lower()+"_wq * self.wq_obj")
             if purposeWQ == None:
                 purposeWQ = 0
         except NameError:
             purposeWQ = 0
         except AttributeError:
-            purpsoeWQ = 0
+            purposeWQ = 0
 
         try:
-            purposeREC = eval("self."+techabbr+"_rec * self.rec_obj")
+            purposeREC = eval("self."+techabbr.lower()+"_rec * self.rec_obj")
             if purposeREC == None:
                 purposeREC = 0
         except NameError:

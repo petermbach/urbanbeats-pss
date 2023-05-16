@@ -488,7 +488,7 @@ class NbSDesignToolboxSetupLaunch(QtWidgets.QDialog):
         self.ui.planscales_region_check.setChecked(int(self.module.get_parameter("scale_region")))
         self.ui.planscales_lot_rigour.setValue(int(self.module.get_parameter("lot_rigour")))
         self.ui.planscales_street_rigour.setValue(int(self.module.get_parameter("street_rigour")))
-        self.ui.planscales_lot_rigour.setValue(int(self.module.get_parameter("region_rigour")))
+        self.ui.planscales_region_rigour.setValue(int(self.module.get_parameter("region_rigour")))
 
         # === SECTION: LOAD EXISTING NBS ASSETS =======================================
 
@@ -570,6 +570,8 @@ class NbSDesignToolboxSetupLaunch(QtWidgets.QDialog):
         self.ui.wet_for_check.setChecked(int(wet_locs["FOR"]))
         self.ui.wet_agr_check.setChecked(int(wet_locs["AGR"]))
         self.ui.wet_und_check.setChecked(int(wet_locs["UND"]))
+        self.ui.wet_ns_check.setChecked(int(wet_locs["nstrip"]))
+        self.ui.wet_garden_check.setChecked(int(wet_locs["garden"]))
 
         # System Sizing and Spec
         self.ui.wet_specmethod_combo.setCurrentIndex(self.sizingmethod.index(self.module.get_parameter("wet_method")))
@@ -701,6 +703,7 @@ class NbSDesignToolboxSetupLaunch(QtWidgets.QDialog):
         self.ui.pb_for_check.setChecked(int(pb_locs["FOR"]))
         self.ui.pb_agr_check.setChecked(int(pb_locs["AGR"]))
         self.ui.pb_und_check.setChecked(int(pb_locs["UND"]))
+        self.ui.pb_ns_check.setChecked(int(pb_locs["nstrip"]))
         self.ui.pb_garden_check.setChecked(int(pb_locs["garden"]))
 
         # System Sizing and Spec
@@ -766,6 +769,7 @@ class NbSDesignToolboxSetupLaunch(QtWidgets.QDialog):
         self.ui.tank_for_check.setChecked(int(tank_locs["FOR"]))
         self.ui.tank_agr_check.setChecked(int(tank_locs["AGR"]))
         self.ui.tank_und_check.setChecked(int(tank_locs["UND"]))
+        self.ui.tank_ns_check.setChecked(int(tank_locs["nstrip"]))
         self.ui.tank_garden_check.setChecked(int(tank_locs["garden"]))
 
         # System Sizing and Spec
@@ -825,6 +829,7 @@ class NbSDesignToolboxSetupLaunch(QtWidgets.QDialog):
         self.ui.sw_agr_check.setChecked(int(sw_locs["AGR"]))
         self.ui.sw_und_check.setChecked(int(sw_locs["UND"]))
         self.ui.sw_ns_check.setChecked(int(sw_locs["nstrip"]))
+        self.ui.sw_garden_check.setChecked(int(sw_locs["garden"]))
 
         # System Sizing and Spec
         self.ui.sw_specmethod_combo.setCurrentIndex(self.sizingmethod.index(self.module.get_parameter("sw_method")))
@@ -1030,6 +1035,8 @@ class NbSDesignToolboxSetupLaunch(QtWidgets.QDialog):
             "FOR": int(self.ui.wet_for_check.isChecked()),
             "AGR": int(self.ui.wet_agr_check.isChecked()),
             "UND": int(self.ui.wet_und_check.isChecked()),
+            "nstrip": int(self.ui.wet_ns_check.isChecked()),
+            "garden": int(self.ui.wet_garden_check.isChecked())
         }
         self.module.set_parameter("wet_permissions", wet_locs)
 
@@ -1174,6 +1181,7 @@ class NbSDesignToolboxSetupLaunch(QtWidgets.QDialog):
             "FOR": int(self.ui.pb_for_check.isChecked()),
             "AGR": int(self.ui.pb_agr_check.isChecked()),
             "UND": int(self.ui.pb_und_check.isChecked()),
+            "nstrip": int(self.ui.pb_ns_check.isChecked()),
             "garden": int(self.ui.pb_garden_check.isChecked())
         }
         self.module.set_parameter("pb_permissions", pb_locs)
@@ -1243,6 +1251,7 @@ class NbSDesignToolboxSetupLaunch(QtWidgets.QDialog):
             "FOR": int(self.ui.tank_for_check.isChecked()),
             "AGR": int(self.ui.tank_agr_check.isChecked()),
             "UND": int(self.ui.tank_und_check.isChecked()),
+            "nstrip": int(self.ui.tank_ns_check.isChecked()),
             "garden": int(self.ui.tank_garden_check.isChecked())
         }
         self.module.set_parameter("tank_permissions", tank_locs)
@@ -1308,6 +1317,7 @@ class NbSDesignToolboxSetupLaunch(QtWidgets.QDialog):
             "AGR": int(self.ui.sw_agr_check.isChecked()),
             "UND": int(self.ui.sw_und_check.isChecked()),
             "nstrip": int(self.ui.sw_ns_check.isChecked()),
+            "garden": int(self.ui.sw_garden_check.isChecked()),
         }
         self.module.set_parameter("sw_permissions", sw_locs)
 
@@ -1380,6 +1390,15 @@ class NbSDesignToolboxSetupLaunch(QtWidgets.QDialog):
         if self.ui.assetcol_combo.currentIndex() == 0:
             prompt_msg = "Please select an Asset Collection to use for this simulation!"
             QtWidgets.QMessageBox.warning(self, "No Asset Collection selected", prompt_msg, QtWidgets.QMessageBox.Ok)
+            return False
+
+        # (2) Do we have at least one objective to plan for?
+        if sum([int(self.ui.runoff_check.isChecked()),
+                int(self.ui.pollute_check.isChecked()),
+                int(self.ui.recycle_check.isChecked())]) == 0:
+            prompt_msg = "No NbS systems are needed for current setup, please define at least one objective to " \
+                         "manage for the simulation to run!!"
+            QtWidgets.QMessageBox.warning(self, "No NbS Systems Needed...", prompt_msg, QtWidgets.QMessageBox.Ok)
             return False
 
         return True
