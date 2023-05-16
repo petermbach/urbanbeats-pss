@@ -1034,7 +1034,6 @@ class NbSDesignToolboxSetup(UBModule):
                 continue
 
             # LOOKUP TECHNOLOGY PARAMETERS TO GENERIC VARIABLES
-            univcapt = eval("self." + tech.lower() + "_univcapt")
             minsize = eval("self." + tech.lower() + "_minsize")
             maxsize = eval("self." + tech.lower() + "_maxsize")
             rules = nbsdesignrules[tech]  # [psysFLOW, ratiodefFLOW, psysWQ, ratiodefWQ]
@@ -1113,41 +1112,66 @@ class NbSDesignToolboxSetup(UBModule):
         return options
 
     def assess_region_opportunities(self, techlist, techinr, curasset, curID, nbsdesignrules):
+        """Basic algorithm for sizing system by ratios for flow or water quality objectives at the regional scale.
+        Rule of thumb sizing for any surface area based system.
+                        """
+        techdesigns = []  # list of tech
+
+        # Step 1 - Check if there are lot-stuff to work with! Upstream!
+        upstreamids = curasset.get_attribute("UpstrIDs")
+        if len(upstreamids) == 0:
+            self.notify("AssetID"+str(curID)+" has no upstream areas, skipping!")
+            return []
+
+        upstrareas = self.assets.retrieve_attribute_value_list(self.assetident, "Blk_TIA", upstreamids)
+        upstreamimp = sum(upstrareas[1])
+
+        if upstreamimp == 0:
+            self.notify("No upstream impervious area to design for, skipping")
+            return []
+
+        upstrcatch = self.assets.retrieve_attribute_value_list(self.assetident, "Area", upstreamids)
+        upstractivity = self.assets.retrieve_attribute_value_list(self.assetident, "Activity", upstreamids)
+        upstrcatcharea = 0
+        for i in range(len(upstrcatch[0])):
+            upstrcatcharea += (upstrcatch[1][i] * upstractivity[1][i])
+
+        und_space = curasset.get_attribute("UND_av")
+        pg_space = curasset.get_attribute("PG_av")
+        ref_space = curasset.get_attribute("REF_av")
+        svu_space = curasset.get_attribute("SVU_avSW")
+        if sum([und_space, pg_space, ref_space, svu_space]) <= 0.0001:
+            self.notify("No available space for systems, skipping.")
+            return []
+
+        # INCORPORATE ANY FURTHER INFORMATION LIKE SOIL INFILTRATION
         pass
-        return True
 
-    def get_technology_applications_boollist(self, techabbr):
-        """Simply creates a boolean list of whether a particular technology was chosen for flow management
-        water quality control and/or water recycling, this list will inform the sizing of the system."""
-        try:
-            purposeQ = eval("self."+techabbr.lower()+"_flow * self.runoff_obj")
-            if purposeQ == None:
-                purposeQ = 0
-        except NameError:
-            purposeQ = 0
-        except AttributeError:
-            purposeQ = 0
+        # SIZE THE REQUIRED STORAGE VOLUME FOR POTABLE SUPPLY SUBSTITUTION
+        # [TO DO]
 
-        try:
-            purposeWQ = eval("self."+techabbr.lower()+"_wq * self.wq_obj")
-            if purposeWQ == None:
-                purposeWQ = 0
-        except NameError:
-            purposeWQ = 0
-        except AttributeError:
-            purposeWQ = 0
+        # DESIGN THE TECHNOLOGIES NOW FOR THEIR APPLICATIONS
+        for tech in techlist:
+            if tech in ["TANK"]:
+                continue
 
-        try:
-            purposeREC = eval("self."+techabbr.lower()+"_rec * self.rec_obj")
-            if purposeREC == None:
-                purposeREC = 0
-        except NameError:
-            purposeREC = 0
-        except AttributeError:
-            purposeREC = 0
-        purposes = [purposeQ, purposeWQ, purposeREC]
-        return purposes
+            # LOOKUP TECHNOLOGY PARAMETERS TO GENERIC VARIABLES
+            minsize = eval("self." + tech.lower() + "_minsize")
+            maxsize = eval("self." + tech.lower() + "_maxsize")
+            rules = nbsdesignrules[tech]  # [psysFLOW, ratiodefFLOW, psysWQ, ratiodefWQ]
+            exfil = eval("self." + tech.lower() + "_exfil")
+            flow = eval("self." + tech.lower() + "_flow")
+            wq = eval("self." + tech.lower() + "_wq")
 
+            # Get permissions
+            tp = eval("self." + tech.lower() + "_permissions")  # permissions
+            avail_space = und_space * tp["UND"] + pg_space * tp["PG"] + ref_space * tp["REF"] + svu_space
+            region_options = self.design_surface_area_system(upstrcatcharea, upstreamimp, avail_space, minsize,
+                                                             maxsize, rules, exfil, flow, wq, techinr, curID,
+                                                             tech, "REGION")
+            [techdesigns.append(option) for option in region_options]
+
+        return techdesigns
 
     def load_rescale_climate_data(self):
         pass    # [ TO DO ]
