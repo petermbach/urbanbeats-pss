@@ -354,12 +354,15 @@ class WaterDemandMapping(UBModule):
             return False
 
         # CLEAN THE ATTRIBUTES LIST
-        att_schema = ["WD_HHKitchen", "WD_HHShower", "WD_HHToilet", "WD_HHLaundry", "WD_HHDish", "WD_HHIndoor",
-                      "WD_HHHot", "HH_GreyW", "HH_BlackW", "WD_Indoor", "WD_HotVol", "WW_ResGrey", "WW_ResBlack",
-                      "WD_HHNonPot", "WD_HHGarden", "WD_Outdoor", "WD_COM", "WD_HotCOM", "WD_Office", "WD_HotOffice",
-                      "WD_LI", "WD_HotLI", "WD_HI", "WD_HotHI", "WD_NRes", "WD_HotNRes", "WD_NResIrri", "WW_ComGrey",
-                      "WW_ComBlack", "WW_IndGrey", "WW_IndBlack", "WD_POSIrri", "Blk_WD", "Blk_WDIrri", "Blk_WDHot",
-                      "Blk_WW", "Blk_WWGrey", "Blk_WWBlack", "Blk_Losses"]
+        att_schema = ["WD_HHKitch", "WD_HHShowr", "WD_HHToilt", "WD_HHLaund", "WD_HHDish", "WD_HHIndr",
+                      "WD_HHHot", "HH_GreyW", "HH_BlackW", "WD_Indoor", "WD_HotVol", "WD_NonPot", "WW_ResGrey",
+                      "WW_ResBlak", "WD_HHNonP", "WD_HHGardn", "WD_Outdoor", "WD_COM", "WD_HotCOM", "WD_Office",
+                      "WD_HotOff", "WD_LI", "WD_HotLI", "WD_HI", "WD_HotHI", "WD_NRes", "WD_HotNRes", "WD_NResIrr",
+                      "WW_ComGrey", "WW_ComBlak", "WW_IndGrey", "WW_IndBlak", "WD_POSIrr", "Blk_WD", "Blk_WDIrr",
+                      "Blk_WDHot", "Blk_WW", "Blk_WWGrey", "Blk_WWBlak", "Blk_Loss",
+                      "WD_NonPotable", "WD_HHIndoor", "WD_HHNonPot", "WW_ResBlack", "WD_HHGarden", "WD_HotOffice",
+                      "WD_NResIrri", "WW_ComBlack", "WW_IndBlack", "WD_NResIrr", "Blk_WWBlack"
+                      ]
 
         grid_assets = self.assets.get_assets_with_identifier(self.assetident)
         att_reset_count = 0
@@ -537,12 +540,12 @@ class WaterDemandMapping(UBModule):
                   int(self.res_laundry_wwq == "B"), int(self.res_dishwasher_wwq == "B")]
 
             # Write the information in terms of the single House level and the Block Level
-            block_attr.add_attribute("WD_HHKitchen", indoor_demands[0])  # Household Kitchen use [L/hh/day]
-            block_attr.add_attribute("WD_HHShower", indoor_demands[1])  # Household Shower use [L/hh/day]
-            block_attr.add_attribute("WD_HHToilet", indoor_demands[2])  # Household Toilet use [L/hh/day]
-            block_attr.add_attribute("WD_HHLaundry", indoor_demands[3])  # Household Laundry use [L/hh/day]
+            block_attr.add_attribute("WD_HHKitch", indoor_demands[0])  # Household Kitchen use [L/hh/day]
+            block_attr.add_attribute("WD_HHShowr", indoor_demands[1])  # Household Shower use [L/hh/day]
+            block_attr.add_attribute("WD_HHToilt", indoor_demands[2])  # Household Toilet use [L/hh/day]
+            block_attr.add_attribute("WD_HHLaund", indoor_demands[3])  # Household Laundry use [L/hh/day]
             block_attr.add_attribute("WD_HHDish", indoor_demands[4])  # Household Dishwasher [L/hh/day]
-            block_attr.add_attribute("WD_HHIndoor", sum(indoor_demands))  # Total Household Use [L/hh/day]
+            block_attr.add_attribute("WD_HHIndr", sum(indoor_demands))  # Total Household Use [L/hh/day]
             block_attr.add_attribute("WD_HHHot", sum(hotwater_volumes))  # Total Household Hot Water [L/hh/day]
             block_attr.add_attribute("HH_GreyW", sum([a * b for a, b in zip(gw, indoor_demands)]))  # [L/hh/day]
             block_attr.add_attribute("HH_BlackW", sum([a * b for a, b in zip(bw, indoor_demands)]))  # [L/hh/day]
@@ -550,16 +553,16 @@ class WaterDemandMapping(UBModule):
             block_attr.add_attribute("WD_Indoor", sum(blk_demands) / 1000.0)  # Total Block Indoor use [kL/day]
             block_attr.add_attribute("WD_HotVol", sum(blk_hotwater) / 1000.0)  # Total Block Hot Water [kL/day]
             block_attr.add_attribute("WW_ResGrey", sum([a * b for a, b in zip(gw, blk_demands)]) / 1000.0)  # [kL/day]
-            block_attr.add_attribute("WW_ResBlack", sum([a * b for a, b in zip(bw, blk_demands)]) / 1000.0)  # [kL/day]
+            block_attr.add_attribute("WW_ResBlak", sum([a * b for a, b in zip(bw, blk_demands)]) / 1000.0)  # [kL/day]
 
             self.meta.add_attribute("WD_RES_Method", "EUA")
         else:  # If no residential, then simply set all attributes to zero
-            block_attr.add_attribute("WD_HHKitchen", 0.0)
-            block_attr.add_attribute("WD_HHShower", 0.0)
-            block_attr.add_attribute("WD_HHToilet", 0.0)
-            block_attr.add_attribute("WD_HHLaundry", 0.0)
+            block_attr.add_attribute("WD_HHKitch", 0.0)
+            block_attr.add_attribute("WD_HHShowr", 0.0)
+            block_attr.add_attribute("WD_HHToilt", 0.0)
+            block_attr.add_attribute("WD_HHLaund", 0.0)
             block_attr.add_attribute("WD_HHDish", 0.0)
-            block_attr.add_attribute("WD_HHIndoor", 0.0)
+            block_attr.add_attribute("WD_HHIndr", 0.0)
             block_attr.add_attribute("WD_HHHot", 0.0)
             block_attr.add_attribute("HH_GreyW", 0.0)
             block_attr.add_attribute("HH_BlackW", 0.0)
@@ -567,7 +570,7 @@ class WaterDemandMapping(UBModule):
             block_attr.add_attribute("WD_Indoor", 0.0)
             block_attr.add_attribute("WD_HotVol", 0.0)
             block_attr.add_attribute("WW_ResGrey", 0.0)
-            block_attr.add_attribute("WW_ResBlack", 0.0)
+            block_attr.add_attribute("WW_ResBlak", 0.0)
         return True
 
     def res_directanalysis(self, block_attr):
@@ -592,31 +595,31 @@ class WaterDemandMapping(UBModule):
             propBW = 1.0 - propGW
 
             # Create attributes, up-scale at the same time.
-            block_attr.add_attribute("WD_HHIndoor", volHHF)  # Household Indoor Water use [L/hh/day]
+            block_attr.add_attribute("WD_HHIndr", volHHF)  # Household Indoor Water use [L/hh/day]
             block_attr.add_attribute("WD_HHHot", volHot)  # Household Indoor hot water [L/hh/day]
-            block_attr.add_attribute("WD_HHNonPot", volNp)  # Household non-potable use [L/hh/day]
+            block_attr.add_attribute("WD_HHNonP", volNp)  # Household non-potable use [L/hh/day]
             block_attr.add_attribute("HH_GreyW", volHHF * propGW)  # HH Greywater [L/hh/day]
             block_attr.add_attribute("HH_BlackW", volHHF * propBW)  # HH Blackwater [L/hh/day]
 
             block_attr.add_attribute("WD_Indoor", volHHF * qty / 1000.0)  # Block Indoor Residential use [kL/day]
             block_attr.add_attribute("WD_HotVol", volHot * qty / 1000.0)  # Block Indoor Res Hot water use [kL/day]
-            block_attr.add_attribute("WD_NonPotable", volNp * qty / 1000.0)  # Block Res Nonpotable use [kL/day]
+            block_attr.add_attribute("WD_NonPot", volNp * qty / 1000.0)  # Block Res Nonpotable use [kL/day]
             block_attr.add_attribute("WW_ResGrey", volHHF * qty * propGW / 1000.0)  # Block Res Greywater [kL/day]
-            block_attr.add_attribute("WW_ResBlack", volHHF * qty * propBW / 1000.0)  # Block Res Blackwater [kL/day]
+            block_attr.add_attribute("WW_ResBlak", volHHF * qty * propBW / 1000.0)  # Block Res Blackwater [kL/day]
 
             self.meta.add_attribute("WD_RES_Method", "DQI")
         else:
-            block_attr.add_attribute("WD_HHIndoor", 0)
+            block_attr.add_attribute("WD_HHIndr", 0)
             block_attr.add_attribute("WD_HHHot", 0)
-            block_attr.add_attribute("WD_HHNonPot", 0)
+            block_attr.add_attribute("WD_HHNonP", 0)
             block_attr.add_attribute("HH_GreyW", 0)
             block_attr.add_attribute("HH_BlackW", 0)
 
             block_attr.add_attribute("WD_Indoor", 0)
             block_attr.add_attribute("WD_HotVol", 0)
-            block_attr.add_attribute("WD_NonPotable", 0)
+            block_attr.add_attribute("WD_NonPot", 0)
             block_attr.add_attribute("WW_ResGrey", 0.0)
-            block_attr.add_attribute("WW_ResBlack", 0.0)
+            block_attr.add_attribute("WW_ResBlak", 0.0)
         return True
 
     def res_irrigation(self, block_attr):
@@ -632,10 +635,10 @@ class WaterDemandMapping(UBModule):
                 qty = 1  # If it's apartments, we don't sub-divide the garden space
 
             gardenVolHH = self.res_outdoor_vol * garden * 100.0 / 365.0  # Convert [ML/ha/year] to [L/day]
-            block_attr.add_attribute("WD_HHGarden", gardenVolHH)  # Household garden irrigation [L/hh/day]
+            block_attr.add_attribute("WD_HHGardn", gardenVolHH)  # Household garden irrigation [L/hh/day]
             block_attr.add_attribute("WD_Outdoor", gardenVolHH * qty / 1000.0)  # Block Residential Irrigation [kL/day]
         else:
-            block_attr.add_attribute("WD_HHGarden", 0.0)
+            block_attr.add_attribute("WD_HHGardn", 0.0)
             block_attr.add_attribute("WD_Outdoor", 0.0)
         return True
 
@@ -736,18 +739,18 @@ class WaterDemandMapping(UBModule):
         block_attr.add_attribute("WD_COM", comdemand)  # Commercial demand [kL/day]
         block_attr.add_attribute("WD_HotCOM", comhot)  # Commercial hot Water [kL/day]
         block_attr.add_attribute("WD_Office", orcdemand)  # Office demand [kL/day]
-        block_attr.add_attribute("WD_HotOffice", orchot)  # Office hot water [kL/day]
+        block_attr.add_attribute("WD_HotOff", orchot)  # Office hot water [kL/day]
         block_attr.add_attribute("WD_LI", lidemand)  # Light Industry demand [kL/day]
         block_attr.add_attribute("WD_HotLI", lihot)  # Light industry hot water [kL/day]
         block_attr.add_attribute("WD_HI", hidemand)  # Heavy Industry demand [kL/day]
         block_attr.add_attribute("WD_HotHI", hihot)  # Heavy industry hot water [kL/day]
         block_attr.add_attribute("WD_NRes", comdemand + orcdemand + lidemand + hidemand)  # Total non-res [kL/day]
         block_attr.add_attribute("WD_HotNRes", comhot + orchot + lihot + hihot)
-        block_attr.add_attribute("WD_NResIrri", irrigation_vol)  # Total non-res irrigation [kL/day]
+        block_attr.add_attribute("WD_NResIrr", irrigation_vol)  # Total non-res irrigation [kL/day]
         block_attr.add_attribute("WW_ComGrey", (comdemand + orcdemand) * com_propGW)
-        block_attr.add_attribute("WW_ComBlack", (comdemand + orcdemand) * com_propBW)
+        block_attr.add_attribute("WW_ComBlak", (comdemand + orcdemand) * com_propBW)
         block_attr.add_attribute("WW_IndGrey", (lidemand + hidemand) * ind_propGW)
-        block_attr.add_attribute("WW_IndBlack", (lidemand + hidemand) * ind_propBW)
+        block_attr.add_attribute("WW_IndBlak", (lidemand + hidemand) * ind_propBW)
 
     def public_spaces_wateruse(self, block_attr):
         """Calculates the public open spaces water use, including mainly the irrigation of open spaces and landmark
@@ -756,7 +759,7 @@ class WaterDemandMapping(UBModule):
         parkspace = block_attr.get_attribute("AGreenOS") * int(self.irrigate_parks)
         landmarkspace = block_attr.get_attribute("MiscAirr") * int(self.irrigate_landmarks)
         refspace = block_attr.get_attribute("REF_av") * int(self.irrigate_reserves)
-        block_attr.add_attribute("WD_POSIrri", self.pos_irrigation_vol * 1000 / 365.0 *
+        block_attr.add_attribute("WD_POSIrr", self.pos_irrigation_vol * 1000 / 365.0 *
                                  (parkspace + landmarkspace + refspace) / 10000.0)  # Total OS irrigation [kL/day]
         return True
 
@@ -764,13 +767,13 @@ class WaterDemandMapping(UBModule):
         """Scans the water demand attributes and calculates total demands for various sub-categories. Includes losses"""
         print("Getting total water use.")
         total_blk_indoor = block_attr.get_attribute("WD_Indoor") + block_attr.get_attribute("WD_NRes")
-        total_irrigation = block_attr.get_attribute("WD_Outdoor") + block_attr.get_attribute("WD_NResIrri") + \
-                           block_attr.get_attribute("WD_POSIrri")
+        total_irrigation = block_attr.get_attribute("WD_Outdoor") + block_attr.get_attribute("WD_NResIrr") + \
+                           block_attr.get_attribute("WD_POSIrr")
         total_blk_hotwater = block_attr.get_attribute("WD_HotVol") + block_attr.get_attribute("WD_HotNRes")
         total_blk_greywater = block_attr.get_attribute("WW_ResGrey") + block_attr.get_attribute("WW_ComGrey") + \
                               block_attr.get_attribute("WW_IndGrey")
-        total_blk_blackwater = block_attr.get_attribute("WW_ResBlack") + block_attr.get_attribute("WW_ComBlack") + \
-                               block_attr.get_attribute("WW_IndBlack")
+        total_blk_blackwater = block_attr.get_attribute("WW_ResBlak") + block_attr.get_attribute("WW_ComBlak") + \
+                               block_attr.get_attribute("WW_IndBlak")
         total_blk_demand = total_blk_indoor + total_irrigation
         total_blk_ww = total_blk_greywater + total_blk_blackwater
 
@@ -780,12 +783,12 @@ class WaterDemandMapping(UBModule):
             total_losses = 0.0
 
         block_attr.add_attribute("Blk_WD", total_blk_demand / 1000.0 * 365.0)  # Total Demand [ML/year]
-        block_attr.add_attribute("Blk_WDIrri", total_irrigation / 1000.0 * 365.0)  # Total Irrigation [ML/year]
+        block_attr.add_attribute("Blk_WDIrr", total_irrigation / 1000.0 * 365.0)  # Total Irrigation [ML/year]
         block_attr.add_attribute("Blk_WDHot", total_blk_hotwater / 1000.0 * 365.0)  # Total Hot Water [ML/year]
         block_attr.add_attribute("Blk_WW", total_blk_ww / 1000.0 * 365.0)  # Total Block Wastewater [ML/year]
         block_attr.add_attribute("Blk_WWGrey", total_blk_greywater / 1000.0 * 365.0)  # Total greywater [ML/year]
-        block_attr.add_attribute("Blk_WWBlack", total_blk_blackwater / 1000.0 * 365.0)  # Total blackwater [ML/year]
-        block_attr.add_attribute("Blk_Losses", total_losses / 1000.0 * 365.0)  # Total system losses [ML/year]
+        block_attr.add_attribute("Blk_WWBlak", total_blk_blackwater / 1000.0 * 365.0)  # Total blackwater [ML/year]
+        block_attr.add_attribute("Blk_Loss", total_losses / 1000.0 * 365.0)  # Total system losses [ML/year]
         return True
 
     def vary_demand_stochastically(self, basedemand, varyfactor):
