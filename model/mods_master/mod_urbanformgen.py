@@ -593,19 +593,19 @@ class UrbanFormAbstraction(UBModule):
                            "ResGarden": 0.0, "ResRoofCon": 0.0, "ResLotALS": 0.0, "ResLotARS": 0.0, "HasFlats": int(0),
                            "avSt_RES": 0.0, "HDRFlats": int(0), "HDRRoofA": 0.0, "HDROccup": 0.0, "HDR_TIA": 0.0,
                            "HDR_EIA": 0.0, "HDRFloors": int(0), "av_HDRes": 0.0, "HDRGarden": 0.0, "HDRCarPark": 0.0,
-                           "Has_LI": int(0), "LIjobs": int(0), "LIestates": int(0), "LIAeRoad": 0.0, "LIAeNstrip": 0.0,
+                           "Has_LI": int(0), "LIjobs": int(0), "LIestates": int(0), "LIAeRoad": 0.0, "LIAeNStrp": 0.0,
                            "LIAeFpath": 0.0, "LIAestate": 0.0, "avSt_LI": 0.0, "LIAfront": 0.0, "LIAfrEIA": 0.0,
                            "LIAestate": 0.0, "LIAeBldg": 0.0, "LIFloors": int(0), "LIAeLoad": 0.0, "LIAeCPark": 0.0,
                            "avLt_LI": 0.0, "LIAeLgrey": 0.0, "LIAeEIA": 0.0, "LIAeTIA": 0.0, "Has_HI": int(0),
-                           "HIjobs": int(0), "HIestates": int(0), "HIAeRoad": 0.0, "HIAeNstrip": 0.0, "HIAeFpath": 0.0,
+                           "HIjobs": int(0), "HIestates": int(0), "HIAeRoad": 0.0, "HIAeNStrp": 0.0, "HIAeFpath": 0.0,
                            "HIAestate": 0.0, "avSt_HI": 0.0, "HIAfront": 0.0, "HIAfrEIA": 0.0, "HIAestate": 0.0,
                            "HIAeBldg": 0.0, "HIFloors": int(0), "HIAeLoad": 0.0, "HIAeCPark": 0.0, "avLt_HI": 0.0,
                            "HIAeLgrey": 0.0, "HIAeEIA": 0.0, "HIAeTIA": 0.0, "Has_COM": int(0), "COMjobs": int(0),
-                           "COMestates": int(0), "COMAeRoad": 0.0, "COMAeNstrip": 0.0, "COMAeFpath": 0.0,
+                           "COMestates": int(0), "COMAeRoad": 0.0, "COMAeNStrp": 0.0, "COMAeFpath": 0.0,
                            "COMAestate": 0.0, "avSt_COM": 0.0, "COMAfront": 0.0, "COMAfrEIA": 0.0, "COMAestate": 0.0,
                            "COMAeBldg": 0.0, "COMFloors": int(0), "COMAeLoad": 0.0, "COMAeCPark": 0.0, "avLt_COM": 0.0,
                            "COMAeLgrey": 0.0, "COMAeEIA": 0.0, "COMAeTIA": 0.0, "Has_ORC": int(0), "ORCjobs": int(0),
-                           "ORCestates": 0.0, "ORCAeRoad": 0.0, "ORCAeNstrip": 0.0, "ORCAeFpath": 0.0,
+                           "ORCestates": 0.0, "ORCAeRoad": 0.0, "ORCAeNStrp": 0.0, "ORCAeFpath": 0.0,
                            "ORCAestate": 0.0, "avSt_ORC": 0.0, "ORCAfront": 0.0, "ORCAfrEIA": 0.0, "ORCAestate": 0.0,
                            "ORCAeBldg": 0.0, "ORCFloors": int(0), "ORCAeLoad": 0.0, "ORCAeCPark": 0.0, "avLt_ORC": 0.0,
                            "ORCAeLgrey": 0.0, "ORCAeEIA": 0.0, "ORCAeTIA": 0.0, "Blk_TIA": 0.0, "Blk_EIA": 0.0,
@@ -1033,7 +1033,7 @@ class UrbanFormAbstraction(UBModule):
                     block_attr.add_attribute("LIjobs", indLI_dict["TotalBlockEmployed"])
                     block_attr.add_attribute("LIestates", indLI_dict["Estates"])
                     block_attr.add_attribute("LIAeRoad", indLI_dict["Aroad"])
-                    block_attr.add_attribute("LIAeNstrip", indLI_dict["Anstrip"])
+                    block_attr.add_attribute("LIAeNStrp", indLI_dict["Anstrip"])
                     block_attr.add_attribute("LIAeFpath", indLI_dict["Afpath"])
                     block_attr.add_attribute("LIAestate", indLI_dict["Aestate"])
                     block_attr.add_attribute("avSt_LI", indLI_dict["av_St"])
@@ -1067,7 +1067,7 @@ class UrbanFormAbstraction(UBModule):
                     block_attr.add_attribute("HIjobs", indHI_dict["TotalBlockEmployed"])
                     block_attr.add_attribute("HIestates", indHI_dict["Estates"])
                     block_attr.add_attribute("HIAeRoad", indHI_dict["Aroad"])
-                    block_attr.add_attribute("HIAeNstrip", indHI_dict["Anstrip"])
+                    block_attr.add_attribute("HIAeNStrp", indHI_dict["Anstrip"])
                     block_attr.add_attribute("HIAeFpath", indHI_dict["Afpath"])
                     block_attr.add_attribute("HIAestate", indHI_dict["Aestate"])
                     block_attr.add_attribute("avSt_HI", indHI_dict["av_St"])
@@ -1102,7 +1102,7 @@ class UrbanFormAbstraction(UBModule):
                     block_attr.add_attribute("COMjobs", com_dict["TotalBlockEmployed"])
                     block_attr.add_attribute("COMestates", com_dict["Estates"])
                     block_attr.add_attribute("COMAeRoad", com_dict["Aroad"])
-                    block_attr.add_attribute("COMAeNstrip", com_dict["Anstrip"])
+                    block_attr.add_attribute("COMAeNStrp", com_dict["Anstrip"])
                     block_attr.add_attribute("COMAeFpath", com_dict["Afpath"])
                     block_attr.add_attribute("COMAestate", com_dict["Aestate"])
                     block_attr.add_attribute("avSt_COM", com_dict["av_St"])
@@ -1135,7 +1135,7 @@ class UrbanFormAbstraction(UBModule):
                     block_attr.add_attribute("ORCjobs", orc_dict["TotalBlockEmployed"])
                     block_attr.add_attribute("ORCestates", orc_dict["Estates"])
                     block_attr.add_attribute("ORCAeRoad", orc_dict["Aroad"])
-                    block_attr.add_attribute("ORCAeNstrip", orc_dict["Anstrip"])
+                    block_attr.add_attribute("ORCAeNStrp", orc_dict["Anstrip"])
                     block_attr.add_attribute("ORCAeFpath", orc_dict["Afpath"])
                     block_attr.add_attribute("ORCAestate", orc_dict["Aestate"])
                     block_attr.add_attribute("avSt_ORC", orc_dict["av_St"])
