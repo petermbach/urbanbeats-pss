@@ -1458,8 +1458,8 @@ p, li { white-space: pre-wrap; }
   <widget class="QDockWidget" name="DataDock">
    <property name="minimumSize">
     <size>
-     <width>297</width>
-     <height>185</height>
+     <width>0</width>
+     <height>0</height>
     </size>
    </property>
    <property name="floating">
@@ -1759,8 +1759,8 @@ p, li { white-space: pre-wrap; }
   <widget class="QDockWidget" name="ScenarioDock">
    <property name="minimumSize">
     <size>
-     <width>291</width>
-     <height>217</height>
+     <width>0</width>
+     <height>0</height>
     </size>
    </property>
    <property name="floating">
@@ -1933,8 +1933,8 @@ p, li { white-space: pre-wrap; }
   <widget class="QDockWidget" name="ToolboxDock">
    <property name="minimumSize">
     <size>
-     <width>200</width>
-     <height>483</height>
+     <width>0</width>
+     <height>0</height>
     </size>
    </property>
    <property name="floating">
@@ -2219,6 +2219,12 @@ p, li { white-space: pre-wrap; }
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QDockWidget" name="dockWidget">
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>0</height>
+    </size>
+   </property>
    <property name="floating">
     <bool>false</bool>
    </property>
