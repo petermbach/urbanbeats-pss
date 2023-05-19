@@ -61,7 +61,7 @@
           </size>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="Project_tab">
           <attribute name="icon">
@@ -72,6 +72,121 @@
            <string>Project</string>
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_10">
+           <item>
+            <widget class="QWidget" name="widget_2" native="true">
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;Project Overview&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="Project_projectfolder">
+                <property name="maximumSize">
+                 <size>
+                  <width>30</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>Open Project Folder</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
+                  <normaloff>:/icons/folder-open-icon.png</normaloff>:/icons/folder-open-icon.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>30</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="flat">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="Project_resultsview">
+                <property name="maximumSize">
+                 <size>
+                  <width>30</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>Results Viewer</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
+                  <normaloff>:/icons/chart-search-icon.png</normaloff>:/icons/chart-search-icon.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>30</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="flat">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="Project_report">
+                <property name="maximumSize">
+                 <size>
+                  <width>30</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>Export Results</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
+                  <normaloff>:/icons/Reports-icon.png</normaloff>:/icons/Reports-icon.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>30</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="flat">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
            <item>
             <widget class="QTextEdit" name="Project">
              <property name="readOnly">
@@ -2172,204 +2287,6 @@ p, li { white-space: pre-wrap; }
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="SimDock">
-   <property name="minimumSize">
-    <size>
-     <width>146</width>
-     <height>131</height>
-    </size>
-   </property>
-   <property name="allowedAreas">
-    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
-   </property>
-   <property name="windowTitle">
-    <string>Control Panel</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>2</number>
-   </attribute>
-   <widget class="QWidget" name="SimDock_Contents">
-    <layout class="QVBoxLayout" name="verticalLayout_14">
-     <item>
-      <layout class="QGridLayout" name="gridLayout">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <property name="spacing">
-        <number>3</number>
-       </property>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="SimDock_resultsview">
-         <property name="maximumSize">
-          <size>
-           <width>40</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Results Viewer</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
-           <normaloff>:/icons/chart-search-icon.png</normaloff>:/icons/chart-search-icon.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>40</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QPushButton" name="SimDock_run">
-         <property name="maximumSize">
-          <size>
-           <width>40</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Run Simulation</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
-           <normaloff>:/icons/Play-icon.png</normaloff>:/icons/Play-icon.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>30</width>
-           <height>30</height>
-          </size>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QPushButton" name="SimDock_projectfolder">
-         <property name="maximumSize">
-          <size>
-           <width>40</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Open Project Folder</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
-           <normaloff>:/icons/folder-open-icon.png</normaloff>:/icons/folder-open-icon.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>40</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <widget class="QPushButton" name="SimDock_report">
-         <property name="maximumSize">
-          <size>
-           <width>40</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Export Results</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
-           <normaloff>:/icons/Reports-icon.png</normaloff>:/icons/Reports-icon.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>35</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="SimDock_mapoptions">
-         <property name="maximumSize">
-          <size>
-           <width>40</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Customize Map Outputs</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
-           <normaloff>:/icons/maps-icon.png</normaloff>:/icons/maps-icon.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>35</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <spacer name="sep_simdock">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </widget>
-  </widget>
   <widget class="QToolBar" name="Project_Toolbar">
    <property name="windowTitle">
     <string>Project Management</string>
@@ -2383,6 +2300,7 @@ p, li { white-space: pre-wrap; }
    <addaction name="actionView_Project_Description"/>
    <addaction name="actionView_Full_Project_Log"/>
    <addaction name="actionResults_Viewer"/>
+   <addaction name="actionOpen_Project_Folder"/>
    <addaction name="separator"/>
    <addaction name="actionRun"/>
   </widget>
@@ -2431,7 +2349,7 @@ p, li { white-space: pre-wrap; }
     <string>Output Console</string>
    </property>
    <attribute name="dockWidgetArea">
-    <number>1</number>
+    <number>8</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents">
     <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -3103,7 +3021,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>deleteScenario</tabstop>
   <tabstop>ScenarioView_Widget</tabstop>
   <tabstop>Log</tabstop>
-  <tabstop>SimDock_resultsview</tabstop>
  </tabstops>
  <resources>
   <include location="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc"/>

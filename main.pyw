@@ -210,14 +210,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.ScenarioDock_View.itemDoubleClicked.connect(self.set_current_tree_selected_as_active_scenario)
 
         # OVERVIEW SECTION --- (tabs: Project, Geography, Scenario, Log)
+        # PROJECT
+        self.ui.Project_projectfolder.clicked.connect(self.open_project_folder)
+        self.ui.Project_report.clicked.connect(self.show_reporting_settings)
+        self.ui.Project_resultsview.clicked.connect(self.show_results_viewer)
+        # GEOGRAPHY
         self.ui.location_add_button.clicked.connect(self.show_add_location_dialog)
         self.ui.location_delete_button.clicked.connect(self.delete_location_from_project)
         self.ui.boundary_add_button.clicked.connect(self.show_add_simulation_boundary_dialog)
         self.ui.boundary_shape_add_button.clicked.connect(self.show_add_shape_boundary_dialog)
         self.ui.boundary_delete_button.clicked.connect(self.delete_simulation_boundary)
         self.ui.geography_combo.currentIndexChanged.connect(self.update_active_geography_table)
-
-        # Asset Collection
+        # ASSET COLLECTION
         self.update_assetcol_tree()
         self.ui.assetcol_new_button.clicked.connect(self.add_new_ubcollection_to_table)
         self.ui.assetcol_delete_button.clicked.connect(self.remove_selected_collection_from_project)
@@ -234,13 +238,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setup_toolbox_tree()
         self.ui.toolboxTree.expandAll()
         self.ui.toolboxTree.doubleClicked.connect(self.launch_module_from_toolbox)
-
-        # CONTROL PANEL INTERFACE
-        self.ui.SimDock_projectfolder.clicked.connect(self.open_project_folder)
-        self.ui.SimDock_mapoptions.clicked.connect(self.show_map_export_settings)
-        self.ui.SimDock_report.clicked.connect(self.show_reporting_settings)
-        self.ui.SimDock_resultsview.clicked.connect(self.show_results_viewer)
-        self.ui.SimDock_run.clicked.connect(self.call_run_simulation)
 
     # MAIN INTERFACE GENERAL FUNCTIONALITY
     def printc(self, textmessage):
@@ -282,7 +279,6 @@ class MainWindow(QtWidgets.QMainWindow):
         if condition == "startup":
             self.ui.DataDock.setEnabled(0)
             self.ui.ScenarioDock.setEnabled(0)
-            self.ui.SimDock.setEnabled(0)
             self.ui.ScenarioView_Widget.setEnabled(0)
             self.ui.DataView_extent.setEnabled(0)
             self.ui.DataView_meta.setEnabled(0)
@@ -292,7 +288,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.toolboxTree.setEnabled(1)
             self.ui.DataDock.setEnabled(1)
             self.ui.ScenarioDock.setEnabled(1)
-            self.ui.SimDock.setEnabled(1)
             self.ui.ScenarioView_Widget.setEnabled(1)
             self.ui.DataView_extent.setEnabled(1)
             self.ui.DataView_meta.setEnabled(1)
@@ -1376,7 +1371,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def enable_disable_run_controls(self, state):
         """Enables or Disables the run button controls depending on run state."""
         self.ui.actionRun.setEnabled(state)
-        self.ui.SimDock_run.setEnabled(state)
 
 
 # --- START SCREEN LAUNCH ---
