@@ -688,7 +688,7 @@ class NbSDesignToolboxSetup(UBModule):
         self.notify("Total assets making up the case study area: "+str(len(self.griditems)))
         total_assets = len(self.griditems)
         progress_counter = 0
-        self.notify_progress(10)
+        self.notify_progress(5)
         geomtype = self.meta.get_attribute("Geometry")
 
         # --- SECTION 1 - CALCULATE GLOBAL VARIABLES FOR PLANNING OF NBS RELATED TO TARGETS
@@ -710,7 +710,7 @@ class NbSDesignToolboxSetup(UBModule):
         # Create Technologies shortlist
         self.compile_user_techlist()
         self.notify("Using technologies: "+str(self.userTech))
-        self.notify_progress(20)
+        self.notify_progress(10)
 
         # --- SECTION 2a - DESIGN AREAS FOR DIFFERENT SURFACE AREA BASED DESIGNS
         self.notify("Getting system designs")       # Loop across each system type and get the design requirements
@@ -765,11 +765,22 @@ class NbSDesignToolboxSetup(UBModule):
         self.notify("Lot-scale Technologies List: "+str(lot_tech)+" at increments of "+str(lot_incr))
         self.notify("Street-scale Technologies List: "+str(street_tech)+" at increments of "+str(street_incr))
         self.notify("Regional-scale Technologies List: "+str(region_tech)+" at increments of "+str(region_incr))
+        self.notify_progress(20)
 
         # Initialize the Pandas Data Frame of all options for the case study
         self.notify("Now assessing NbS Opportunities across the simulation grid")
         nbsdatabase = []
         for i in range(len(self.griditems)):
+            # PROGRESS NOTIFIER
+            progress_counter += 1
+            if progress_counter > total_assets / 4:
+                self.notify_progress(40)
+            elif progress_counter > total_assets / 2:
+                self.notify_progress(60)
+            elif progress_counter > total_assets / 4 * 3:
+                self.notify_progress(80)
+
+
             curasset = self.griditems[i]
             if curasset.get_attribute("Status") == 0:
                 continue
@@ -801,13 +812,9 @@ class NbSDesignToolboxSetup(UBModule):
         # --- SECTION 4 - Consolidation the NbS Database and clean-up
         self.notify("Total number of NbS designs generated: "+str(len(nbsdatabase)))
         self.notify("Consolidating design information to simulation grid")
-        # Consolidate the pandas database
-        f = open("C:/Users/peter/Downloads/NBSdatabase.txt", 'w')
-        f.write(str(nbsdatabase))
-        f.close()
+
+        # Instantiate Pandas Database
         df = pandas.DataFrame(data=nbsdatabase)
-        print(df)
-        print(df.describe())
 
         # Write performance indicators
         # (0) Total available space for NbS
@@ -860,6 +867,11 @@ class NbSDesignToolboxSetup(UBModule):
             # - Draw the catchment as a treatment map [Maybe TO DO]
 
         self.notify("Toolbox Setup Complete for Simulation Grid")
+        self.notify_progress(90)
+        self.notify("Exporting NbS Database to Projects Folder")
+        filepath = self.activesim.get_project_path() + "/collections/"
+        fullname = filepath + "/" + str(self.assetcolname) + "_NbS_tbox.udb"
+        df.to_pickle(fullname)
         self.notify_progress(100)
         return True
 
