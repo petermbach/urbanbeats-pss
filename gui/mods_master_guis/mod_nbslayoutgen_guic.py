@@ -118,7 +118,6 @@ class NbSLayoutGenerationLaunch(QtWidgets.QDialog):
         self.ui.techpref_econ_check.clicked.connect(self.enable_disable_guis)
         self.ui.techpref_soc_check.clicked.connect(self.enable_disable_guis)
 
-
         # --- RUNTIME SIGNALS AND SLOTS ---
         self.accepted.connect(self.save_values)
         self.ui.run_button.clicked.connect(self.run_module_in_runtime)

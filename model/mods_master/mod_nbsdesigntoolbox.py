@@ -633,8 +633,6 @@ class NbSDesignToolboxSetup(UBModule):
         self.meta = self.assets.get_asset_with_name("meta")
         if self.meta is None:
             self.notify("Fatal Error! Asset Collection missing Metadata")
-        self.meta.add_attribute("mod_mapregions", 1)
-        self.assetident = self.meta.get_attribute("AssetIdent")
 
         # PRE-REQUISITES CHECK - need to have a few modules run
         if self.meta.get_attribute("mod_urbanformgen") != 1:
@@ -779,7 +777,6 @@ class NbSDesignToolboxSetup(UBModule):
                 self.notify_progress(60)
             elif progress_counter > total_assets / 4 * 3:
                 self.notify_progress(80)
-
 
             curasset = self.griditems[i]
             if curasset.get_attribute("Status") == 0:

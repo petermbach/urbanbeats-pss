@@ -25,6 +25,8 @@ __copyright__ = "Copyright 2017-2022. Peter M. Bach"
 
 # --- PYTHON LIBRARY IMPORTS ---
 from model.ubmodule import *
+import datetime as dt
+import pandas as pd
 
 class NbSLayoutGeneration(UBModule):
     """ Generates the simulation grid upon which many assessments will be based. This SimGrid will provide details on
@@ -128,7 +130,8 @@ class NbSLayoutGeneration(UBModule):
         self.multifunction_bonus = 10.0
 
         # ADVANCED PARAMETERS
-        pass
+        self.griditems = []
+        self.nbsdf = None
 
     def set_module_data_library(self, datalib):
         self.datalibrary = datalib
@@ -139,31 +142,84 @@ class NbSLayoutGeneration(UBModule):
         self.assets = self.activesim.get_asset_collection_by_name(self.assetcolname)
         if self.assets is None:
             self.notify("Fatal Error Missing Asset Collection")
+            return False
 
         # Metadata Check - need to make sure we have access to the metadata
         self.meta = self.assets.get_asset_with_name("meta")
         if self.meta is None:
             self.notify("Fatal Error! Asset Collection missing Metadata")
-        self.meta.add_attribute("mod_mapregions", 1)
-        self.assetident = self.meta.get_attribute("AssetIdent")
+            return False
 
+        # PRE-REQUISITES CHECK - need to have a few modules run and a database exist
+        if self.meta.get_attribute("mod_nbsdesigntoolbox") != 1:
+            self.notify("Cannot start module! No data on possible nature-based solutions generated!")
+            return False
+
+        # CLEAN THE ATTRIBUTES LIST
+        att_schema = {
+
+        }
+
+        grid_assets = self.assets.get_assets_with_identifier(self.assetident)
+        att_reset_count = 0
+        for i in range(len(grid_assets)):
+            for att in att_schema.keys():
+                if grid_assets[i].remove_attribute(att):
+                    att_reset_count += 1
+        self.notify("Removed "+str(att_reset_count)+" attribute entries")
+        # Also need to remove the asset collection NBS Shapefile layouts
+
+        # INITIALIZE THE ATTRIBUTES LIST
+        for i in range(len(grid_assets)):
+            for att in att_schema.keys():
+                grid_assets[i].add_attribute(att, att_schema[att])
+
+        self.meta.add_attribute("mod_nbslayoutgen", 1)
+        self.meta.add_attribute("mod_dt_nbslayoutgen", str(dt.datetime.now().isoformat().split(".")[0]))  # Last run
+        self.assetident = self.meta.get_attribute("AssetIdent")
         self.xllcorner = self.meta.get_attribute("xllcorner")
         self.yllcorner = self.meta.get_attribute("yllcorner")
+        return True
 
     def run_module(self):
         """ The main algorithm for the module, links with the active simulation, its data library and output folders."""
         self.notify_progress(0)
-        self.initialize_runstate()
+        if not self.initialize_runstate():
+            self.notify("Module run terminated")
+            return True
 
         self.notify("Generating NbS Layouts for the Simulation Grid")
         self.notify("--- === ---")
         self.notify("Geometry Type: " + self.assetident)
+        self.notify_progress(0)
 
-        # --- SECTION 1 - (description)
-        # --- SECTION 2 - (description)
-        # --- SECTION 3 - (description)
+        # --- SECTION 0 - GRAB ASSET INFORMATION AND NBS DATABASE ---
+        self.griditems = self.assets.get_assets_with_identifier(self.assetident)
+        self.notify("Total assets making up the case study area: "+str(len(self.griditems)))
+        total_assets = len(self.griditems)
+        progress_counter = 0
 
-        self.notify("Layout Generation Complete")
+        projectpath = self.activesim.get_project_path()
+        self.nbsdf = pd.read_pickle(projectpath+"/collections/"+self.assetcolname+"_NbS_tbox.udb")
+        print(self.nbsdf.head(10))
+        self.notify("A total of "+str(self.nbsdf.shape[0])+" NbS designs identified across case study")
+
+        self.notify_progress(10)
+
+        # --- SECTION 1 - Construct In-Block Options first
+        for i in range(len(self.griditems)):
+            curasset = self.griditems[i]
+            # cursys = self.nbsdf[]
+
+
+        # --- SECTION 2 - Monte Carlo Loop
+
+
+
+        # --- SECTION 3 - Filtering of solutions and export of Top Ranks
+
+
+        self.notify("NbS Layout Generation Complete")
         self.notify_progress(100)
         return True
 
