@@ -145,7 +145,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionView_Project_Description.triggered.connect(lambda: self.show_new_project_dialog(2))
         self.ui.actionView_Full_Project_Log.triggered.connect(self.show_project_log)
         self.ui.actionReporting_Options.triggered.connect(self.show_reporting_settings)
-        self.ui.actionMap_Export_Options.triggered.connect(self.show_map_export_settings)
 
         # Geography Submenu ---
         self.ui.actionAdd_Location.triggered.connect(self.show_add_location_dialog)
@@ -640,12 +639,6 @@ class MainWindow(QtWidgets.QMainWindow):
         calibrationviewer.exec_()
 
     # Output option guis - map export and report creation dialogs
-    def show_map_export_settings(self):
-        """Launches the map export options dialog window for the current scenario, where the user can customize
-        the export format and types of spatial data required as output files from the model."""
-        mapexportdialog = ubdialogs.MapExportDialogLaunch(self.get_active_simulation_object().get_active_scenario())
-
-        mapexportdialog.exec_()
 
     def show_reporting_settings(self):
         """Launches the report creation dialog window, where the user can select and create reporting options. The

@@ -1380,147 +1380,24 @@ p, li { white-space: pre-wrap; }
     </widget>
     <addaction name="actionView_Project_Description"/>
     <addaction name="actionView_Full_Project_Log"/>
+    <addaction name="actionOpen_Project_Folder"/>
     <addaction name="separator"/>
     <addaction name="menuGeography"/>
     <addaction name="menuScenario"/>
     <addaction name="separator"/>
     <addaction name="actionReporting_Options"/>
-    <addaction name="actionMap_Export_Options"/>
    </widget>
    <widget class="QMenu" name="menuSimulation">
     <property name="title">
      <string>Simulation</string>
     </property>
-    <widget class="QMenu" name="menuUrban_Modelling">
-     <property name="title">
-      <string>Urban Modelling</string>
-     </property>
-     <property name="icon">
-      <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
-       <normaloff>:/icons/Transport-Road-Worker-icon.png</normaloff>:/icons/Transport-Road-Worker-icon.png</iconset>
-     </property>
-     <addaction name="actionGrowth_Model"/>
-     <addaction name="actionSpatial_Attraction"/>
-     <addaction name="actionSpatial_Allocation"/>
-     <addaction name="actionDefine_IF"/>
-    </widget>
-    <widget class="QMenu" name="menuUrban_Planning">
-     <property name="title">
-      <string>Urban Planning</string>
-     </property>
-     <property name="icon">
-      <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
-       <normaloff>:/icons/Very-Basic-Design-icon.png</normaloff>:/icons/Very-Basic-Design-icon.png</iconset>
-     </property>
-     <addaction name="actionCity_wide_Planning"/>
-     <addaction name="actionResidential"/>
-     <addaction name="actionNon_Residentail"/>
-     <addaction name="actionTransport"/>
-     <addaction name="actionOpen_Spaces"/>
-     <addaction name="actionMiscellaneous"/>
-     <addaction name="separator"/>
-     <addaction name="actionCivic_Infrastructure"/>
-    </widget>
-    <widget class="QMenu" name="menuSpatial_Mapping">
-     <property name="title">
-      <string>Spatial Mapping</string>
-     </property>
-     <property name="icon">
-      <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
-       <normaloff>:/icons/GISLayers.png</normaloff>:/icons/GISLayers.png</iconset>
-     </property>
-     <addaction name="actionPlanning_Overlays"/>
-     <addaction name="actionLand_Cover"/>
-     <addaction name="actionWater_Demands"/>
-     <addaction name="actionPollution_Mapping"/>
-     <addaction name="actionFlood_Risk_Mapping"/>
-    </widget>
-    <widget class="QMenu" name="menuInfrastructure">
-     <property name="title">
-      <string>Infrastructure</string>
-     </property>
-     <property name="icon">
-      <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
-       <normaloff>:/icons/Bench-icon.png</normaloff>:/icons/Bench-icon.png</iconset>
-     </property>
-     <addaction name="actionHousehold_Appliances"/>
-     <addaction name="actionGreen_Infrastructure"/>
-     <addaction name="actionWater_Recycling_and_Reuse"/>
-    </widget>
-    <widget class="QMenu" name="menuSocio_Economic">
-     <property name="title">
-      <string>Socio-Economic</string>
-     </property>
-     <property name="icon">
-      <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
-       <normaloff>:/icons/community-users-icon.png</normaloff>:/icons/community-users-icon.png</iconset>
-     </property>
-     <addaction name="actionStakeholder_Groups"/>
-     <addaction name="actionCost_Information"/>
-     <addaction name="actionBenefits_Assessment"/>
-    </widget>
-    <widget class="QMenu" name="menuSpatial_Setup">
-     <property name="title">
-      <string>Spatial Setup</string>
-     </property>
-     <property name="icon">
-      <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
-       <normaloff>:/icons/Data-Grid-icon.png</normaloff>:/icons/Data-Grid-icon.png</iconset>
-     </property>
-     <addaction name="actionRepresentation"/>
-     <addaction name="actionConnectivity"/>
-    </widget>
-    <widget class="QMenu" name="menuClimate_Setup">
-     <property name="title">
-      <string>Climate Setup</string>
-     </property>
-     <property name="icon">
-      <iconset resource="../../../Dropbox/01_URBANBEATS/Development/graphics/ubeats.qrc">
-       <normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</normaloff>:/icons/cloudy-with-rain-2667018_960_720.png</iconset>
-     </property>
-     <addaction name="actionData_Selection"/>
-     <addaction name="actionScenario_Definition"/>
-    </widget>
-    <addaction name="menuSpatial_Setup"/>
-    <addaction name="menuClimate_Setup"/>
-    <addaction name="separator"/>
-    <addaction name="menuUrban_Modelling"/>
-    <addaction name="menuUrban_Planning"/>
-    <addaction name="menuSocio_Economic"/>
-    <addaction name="separator"/>
-    <addaction name="menuSpatial_Mapping"/>
-    <addaction name="actionSocio_Economic"/>
-    <addaction name="menuInfrastructure"/>
-    <addaction name="separator"/>
-    <addaction name="actionPerformance"/>
-    <addaction name="actionImpact"/>
-    <addaction name="actionDecision_Analysis"/>
-    <addaction name="separator"/>
     <addaction name="actionRun"/>
    </widget>
    <widget class="QMenu" name="menuAdvanced">
     <property name="title">
      <string>Advanced</string>
     </property>
-    <widget class="QMenu" name="menuUrban_Modules">
-     <property name="title">
-      <string>Urban Modules</string>
-     </property>
-     <addaction name="actionUrban_Modelling_Settings"/>
-     <addaction name="actionUrban_Planning_Settings"/>
-     <addaction name="actionFacilities_Data"/>
-    </widget>
-    <widget class="QMenu" name="menuPlugins">
-     <property name="title">
-      <string>Plugins</string>
-     </property>
-     <addaction name="actionLand_Use_Reclassifier"/>
-     <addaction name="actionSSANTO"/>
-    </widget>
-    <addaction name="menuUrban_Modules"/>
-    <addaction name="actionWater_Modules"/>
     <addaction name="actionModel_Calibration_Viewer"/>
-    <addaction name="menuPlugins"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">

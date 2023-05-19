@@ -48,7 +48,6 @@ from .logdialog import Ui_LogDialog         # Project Log Dialog
 from .adddatadialog import Ui_AddDataDialog      # Add Data Dialog
 from .newscenario import Ui_NewScenarioDialog    # Scenario Creation Dialog
 from .metadatadialog import Ui_MetadataDialog   # Metadata dialogue for asset collection query
-from .mapexportoptions import Ui_MapExportDialog
 from .reportoptions import Ui_ReportingDialog
 
 
@@ -648,25 +647,6 @@ class ShowMetadataDialogLaunch(QtWidgets.QDialog):
     def export_assetcol_report(self):
         print("Exporting Asset Collection report")      # This can allow us to export a metadata report [TO DO]
         pass
-
-
-# --- MAP EXPORT DIALOG ---
-class MapExportDialogLaunch(QtWidgets.QDialog):
-    """Class definition for the export options for all spatial maps from UrbanBEATS. Connects the GUI
-    Ui_MapExportDialog() with the Main Window."""
-    def __init__(self, scenarios, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
-        self.ui = Ui_MapExportDialog()
-        self.ui.setupUi(self)
-
-        self.ui.ok_button.clicked.connect(self.save_values)
-        self.ui.cancel_button.clicked.connect(self.reject)
-
-    def save_values(self):
-        """Saves all values to the project's current scenario. This is relevant as the scenario's settings will
-        determine what gets exported to files."""
-        # Save stuff
-        self.accept()
 
 
 # --- REPORTING OPTIONS DIALOG ---
